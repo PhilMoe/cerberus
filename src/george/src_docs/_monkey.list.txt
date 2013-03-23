@@ -1,0 +1,9 @@
+
+# Module monkey.list
+
+The list module provides support for doubly linked lists.
+
+In addition to the generic List class, the list module also provides utility classes for handling lists of ints, floats and strings.
+
+Please refer to the [[List]] class for more information on how monkey implements linked lists.
+

@@ -1,0 +1,12 @@
+
+# Tutorials
+
+Start with [[First Monkey steps]] and [[Drawing with images]], some nice beginner tutorials by Simon Armstrong.
+
+[Learn Monkey](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/learnmonkey.pdf) with this friendly beginners guide by James Boyd (pdf).
+
+View the [Monkey Pixels](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/monkeypixels/monkeypixels_tutorial.pdf) tutorial by Robbert Prins (pdf).
+
+Follow the [Path of the Monkey](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/pathofthemonkey/index.html) by Patrick Strandell.
+
+Check out invaderJim's great new [[http://www.youtube.com/user/smalltimeoutlaws/videos?view=1|YouTube tutorials]].

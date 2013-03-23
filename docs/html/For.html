@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 For 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Keyword For</h1>
+<p>
+Declares the start of a For/Next loop.
+<p>
+<h2> Syntax</h2>
+<p>
+For Local <em>IndexVar</em> := <em>start_value</em> To <em>end_value</em> [ Step <em>constant_value</em> ]<br>
+&nbsp;&nbsp;<em>Statements...</em><br>
+Next
+<p>
+For Local <em>IndexVar</em> := <em>start_value</em> Until <em>end_value</em> [ Step <em>constant_value</em> ]<br>
+&nbsp;&nbsp;<em>Statements...</em><br>
+Next
+<p>
+For Local <em>IndexVar</em> := Eachin <em>value_set</em><br>
+&nbsp;&nbsp;<em>Statements...</em><br>
+Next
+<p>
+<h2> Description</h2>
+<p>
+For declares the start of a For/Next loop, allowing for iteration through a set of values or objects.
+<p>
+There are three variants of the For/Next loop, modifying the values of the index variable via the range keywords below:
+<p>
+<li><code>To</code>: Iterates through the given start and end values;</li>
+<li><code>Until</code>: This variant of For/Next stops iterating before the last value in the loop, useful for iterating through zero-based arrays. (See Example 3.)</li>
+<li><code>Eachin</code>: Iterates through a set of objects or values, such as a list or array;</li>
+<p>
+In the To and Until variants, the optional Step keyword, followed by a constant value, allows control over the size of the iteration step.
+<p>
+<em>Alternatives to the closing Next keyword are End For, or simply End.</em>
+<p>
+<h2> See also</h2>
+<p>
+<a href='Next.html'>Next</a> <a href='To.html'>To</a> <a href='Eachin.html'>Eachin</a> <a href='Until.html'>Until</a>
+<p>
+<h2> Example</h2>
+<p>
+<pre>
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+Next
+
+' With optional Step
+
+For k=1 To 1000 Step 100
+&nbsp;&nbsp;Print k
+Next
+
+' Alternative syntax examples
+
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+End
+
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+End For
+</pre>
+<p>
+<h2> Example 2</h2>
+<p>
+<pre>
+' Assume m:MyObject and mylist:List
+
+For m=Eachin mylist
+&nbsp;&nbsp;Print m.myField
+Next
+
+' Assume i:Int and myarray:Int[]
+
+For i=Eachin myarray
+&nbsp;&nbsp;Print myarray[i]
+Next
+</pre>
+<p>
+<h2> Example 3</h2>
+<p>
+<pre>
+NUM = 100 ' Assume myarray[NUM] has been declared
+
+' Prints 0 to 99 without requiring NUM-1
+
+For k=0 Until NUM
+&nbsp;&nbsp;Print myarray[k]
+Next
+</pre>
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

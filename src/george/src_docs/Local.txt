@@ -1,0 +1,27 @@
+# Keyword Local
+
+Declares a local variable.
+
+## Syntax
+
+Local *Identifier:Type* [ = *Expression* ]  
+Local *Identifier:*= *Expression*
+
+## Description
+
+The Local keyword declares a temporary variable of a given type; this variable is valid only within the local scope in which it is declared.
+
+The alternative syntax provided allows the variable's type to be deduced from the expression.
+
+## See also
+
+[[Const]] [[Global]] [[Field]]  
+[Language reference](Language_reference#variables)
+
+## Example
+
+<pre>
+Local sausages:Int = 100
+Local name:String = "Bill"
+Local thing:MyObject = New MyObject
+</pre>

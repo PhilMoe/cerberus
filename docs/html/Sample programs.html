@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Sample programs 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<p>
+<h1> Monkey samples</h1>
+<p>
+<h2> Arthur "devolonter" and Olga "AhNinniah" Bikmullin</h2>
+<p>
+<li><a href='../../bananas/devolonter/matchup/matchup.monkey'>Match up</a> </li>
+<p>
+<h2> Gerry Quin</h2>
+<p>
+<li><a href='../../bananas/gerryq/picpuzzle/picpuzzle.monkey'>Picture puzzle</a></li>
+<p>
+<h2> Impixi</h2>
+<p>
+<li><a href='../../bananas/impixi/life/life.monkey'>Game of life</a></li>
+<p>
+<h2> Ferdi</h2>
+<p>
+<li><a href='../../bananas/ferdi/snake/snake.monkey'>Snake</a></li>
+<li><a href='../../bananas/ferdi/breakout/breakout.monkey'>Breakout</a></li>
+<p>
+<h2> Charlie Knight</h2>
+<p>
+<li><a href='../../bananas/charlie/blobmonster/blobmonster.monkey'>Blob monster</a></li>
+<p>
+<h2> Origaming</h2>
+<p>
+<li><a href='../../bananas/origaming/DegreeAndRadian/DegreeAndRadian.monkey'>Degrees vs Radians</a></li>
+<li><a href='../../bananas/origaming/FollowMouse/FollowMouse.monkey'>Follow mouse</a></li>
+<li><a href='../../bananas/origaming/MacOsMenu/MacOsMenu.monkey'>MacOS dock style menu</a></li>
+<li><a href='../../bananas/origaming/RotatingObjects/RotatingObjects'>Rotating objects</a></li>
+<p>
+<h2> Richard Betson</h2>
+<p>
+<li><a href='../../bananas/Richard_Betson/mirror_fx_transform/mirror_fx_transform.monkey'>Mirror FX</a></li>
+<li><a href='../../bananas/Richard_Betson/TileImage/TileImage.monkey'>Tile Image</a></li>
+<li><a href='../../bananas/Richard_Betson/line_v_circle_collision/line_v_circle_collision.monkey'>Line vs circle</a></li>
+<li><a href='../../bananas/Richard_Betson/simple_verlet_physics/simple_verlet_physics.monkey'>Simple verlet physics</a></li>
+<p>
+<h2> Jonathan Pittock</h2>
+<p>
+<li><a href='../../bananas/skn3/monkenstein/monkenstein.monkey'>Monkenstein</a></li>
+<li><a href='../../bananas/skn3/spiralmatrix/spiralmatrix.monkey'>Spiral matrix</a></li>
+<li><a href='../../bananas/skn3/texteffect/texteffect.monkey'>Text effect</a></li>
+<li><a href='../../bananas/skn3/tweening/tweendemo.monkey'>Tween demo</a></li>
+<li><a href='../../bananas/skn3/config/configdemo.monkey'>Config demo</a></li>
+<li><a href='../../bananas/skn3/iconfun/iconfun.monkey'>Async icon fun!</a></li>
+<p>
+<h2> James Boyd</h2>
+<p>
+<li><a href='../../bananas/hitoro/autofit/autofitdemo.monkey'>Auto-fit</a></li>
+<li><a href='../../bananas/hitoro/basicgame/basicgame.monkey'>Basic game</a></li>
+<li><a href='../../bananas/hitoro/delta/delta.monkey'>Delta timing</a></li>
+<li><a href='../../bananas/hitoro/gamestates_demo/gamestates_demo.monkey'>Game states</a></li>
+<li><a href='../../bananas/hitoro/jump_rotate/jump_rotate.monkey'>Jump rotate</a></li>
+<li><a href='../../bananas/hitoro/matrixrocks/matrixrocks.monkey'>Matrix rocks!</a></li>
+<li><a href='../../bananas/hitoro/rockout/rockout.monkey'>Rockout</a></li>
+<li><a href='../../bananas/hitoro/rotationsickness/rotationsickness.monkey'>Rotation sickness</a></li>
+<p>
+<h2> Christian Perfect</h2>
+<p>
+<li><a href='../../bananas/warpy/bezier/bezier.monkey'>Bezier</a></li>
+<li><a href='../../bananas/warpy/hilbert/hilbert.monkey'>Hilbert</a></li>
+<li><a href='../../bananas/warpy/horsey/horsey.monkey'>Horsey!</a></li>
+<li><a href='../../bananas/warpy/json/json.monkey'>JSON</a></li>
+<li><a href='../../bananas/warpy/monkeypuzzle/monkeypuzzle.monkey'>MonkeyPuzzle</a></li>
+<li><a href='../../bananas/warpy/pegs/pegs.monkey'>Pegs</a></li>
+<li><a href='../../bananas/warpy/transform/transform.monkey'>Transform</a></li>
+<li><a href='../../bananas/warpy/transform/transform_mouse.monkey'>Transform mouse</a></li>
+</ul|
+<p>
+<h2> Peter Scheutz</h2>
+<p>
+<li><a href='../../bananas/difference/champagne/champagne.monkey'>Champagne</a></li>
+<li><a href='../../bananas/difference/clock/clock.monkey'>Clock</a></li>
+<p>
+<h2> Robin Shackford</h2>
+<p>
+<li><a href='../../bananas/beaker/angelfont_example/angelfont_example.monkey'>Angelfont</a></li>
+<p>
+<h2> Mark Sibly</h2>
+<p>
+<li><a href='../../bananas/mak/acceltest/acceltest.monkey'>Accelerometer test</a></li>
+<li><a href='../../bananas/mak/audiotest/audiotest.monkey'>Audio test</a></li>
+<li><a href='../../bananas/mak/firepaint/firepaint.monkey'>Touch test</a></li>
+<li><a href='../../bananas/mak/mojotest/mojotest.monkey'>Graphics test</a></li>
+<li><a href='../../bananas/mak/suspendtest/suspendtest.monkey'>Suspend test</a></li>
+<li><a href='../../bananas/mak/bouncyaliens/bouncyaliens.monkey'>Bouncy Aliens!</a></li>
+<li><a href='../../bananas/mak/httpgetter/httpgetter.monkey'>Simple async HTTP demo</a></li>
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

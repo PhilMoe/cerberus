@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Extends 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Keyword Extends</h1>
+<p>
+Declares that class definition inherits a parent class.
+<p>
+<h2> Syntax</h2>
+<p>
+Class <em>Identifier</em> [ < <em>Parameters</em> > ] [ <code>Extends</code> <em>Class</em> ] [ Implements <em>Interfaces</em> ] [ Final ]<br>
+&nbsp;&nbsp;' Declarations...<br>
+End [ Class ]
+<p>
+<h2> Description</h2>
+<p>
+The Extends keyword allows a class to 'extend' a parent class, thereby inheriting all of its fields, methods, functions, globals and constants.
+<p>
+This new class can add its own fields, methods, etc, but can also over-ride the existing fields, methods and so on by redefining them.
+<p>
+<h2> See also</h2>
+<p>
+<a href='Class.html'>Class</a> <a href='Super.html'>Super</a><br>
+<a href='Language reference.html#classes'>Language reference</a>
+<p>
+<h2> Example</h2>
+<p>
+Here we have three classes:
+<p>
+<li>a base class, Animal, with an 'x' field, a 'legs' field and a 'Move' method;</li>
+<li>the Dog class 'extends' the Animal class, inheriting the x and legs fields and adding its own 'Bark' method;</li>
+<li>the Fly class also extends the Animal class, but over-rides the legs field and Move method, while adding a 'y' field and a 'Buzz' method.</li>
+<p>
+<pre>
+Class Animal
+
+&nbsp;&nbsp;Field x
+&nbsp;&nbsp;Field legs = 4
+
+&nbsp;&nbsp;Method Move ()
+&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;End
+
+End
+
+Class Dog Extends Animal
+
+&nbsp;&nbsp;Method Bark ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof"
+&nbsp;&nbsp;End
+
+End
+
+Class Fly Extends Animal
+
+&nbsp;&nbsp;Field legs = 6
+&nbsp;&nbsp;Field y
+
+&nbsp;&nbsp;Method Move ()
+&nbsp;&nbsp;&nbsp;&nbsp;x = Rnd (-4, 4)
+&nbsp;&nbsp;&nbsp;&nbsp;y = Rnd (-4, 4)
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method Buzz ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "ZzzzZZZzzzzzZZZZ..."
+&nbsp;&nbsp;End
+
+End
+</pre>
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

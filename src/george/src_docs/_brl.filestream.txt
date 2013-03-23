@@ -1,0 +1,28 @@
+
+# Module brl.filestream
+
+# Import brl.stream
+
+A filestream allows you to read/write data from/to a file.
+
+Please see the [[FileStream]] class for more information on filestreams.
+
+
+# Class brl.filestream.FileStream Extends Stream
+
+A filestream allows you to read/write data from/to a file.
+
+
+# Function Open:FileStream( path:String,mode:String )
+
+Opens a new filestream. The @mode parameter should be one of the following:
+
++ "r" - open a filestream for reading. 
+
++ "w" - open a filestream for writing. If the file does not already exist, it will be created. If the file already exists, it will be deleted first.
+
++ "u" - open a filestream for updating. If the file does not already exist, it will be created.
+
+## See also
+
+[[Resource paths]]

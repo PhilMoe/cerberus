@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_monkey.html'>monkey</a> 
+				
+			
+				/  <a href='_monkey.list.html'>list</a> 
+				
+			
+				/ 
+				 StringList 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class StringList</h1>
+				<b>Extends</b> <a href='_monkey.list.List.html'>List</a>&lt;String&gt;<br><br>
+				
+				
+			
+			
+			
+			
+			
+				StringList is a convenience class for handling lists of string values. 
+				
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+				<div class='box'>
+				<h2>Constructors</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#New'>New</a>  ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Compare'>Compare</a> : Int ( lhs:String, rhs:String )</td></tr>
+				
+					<tr><td><a href='#Join'>Join</a> : String ( separator:String )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constructor Documentation</h2>
+				
+					<a name='New'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method New  ()</h3>
+					Creates a new empty StringList.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Compare'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Compare : Int ( lhs:String, rhs:String )</h3>
+					Implements the <a href='_monkey.list.List.html#Compare'>List.Compare</a> method, which allows StringLists to be sorted using the <a href='_monkey.list.List.html#Sort'>Sort</a> method.
+					
+					
+					</div>
+				
+					<a name='Join'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Join : String ( separator:String )</h3>
+					Concatenates the elements of the list together, inserting the specified separator between each element.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

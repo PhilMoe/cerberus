@@ -1,0 +1,8 @@
+
+# Module monkey.stack
+
+The stack module provides support for stacks.
+
+In addition to the generic Stack class, the stack module also provides utility classes for handling stacks of ints, floats and strings.
+
+Please refer to the [[Stack]] class for more information on how monkey implements stacks.

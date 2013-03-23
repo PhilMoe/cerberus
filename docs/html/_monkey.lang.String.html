@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_monkey.html'>monkey</a> 
+				
+			
+				/  <a href='_monkey.lang.html'>lang</a> 
+				
+			
+				/ 
+				 String 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class String</h1>
+				
+				
+				
+			
+			
+			
+			
+			
+				The String type is a fundamental monkey type used to represent sequences of characters. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Properties</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Length'>Length</a> : Int ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Compare'>Compare</a> : Int ( str:String )</td></tr>
+				
+					<tr><td><a href='#Contains'>Contains</a> : Bool ( str:String )</td></tr>
+				
+					<tr><td><a href='#EndsWith'>EndsWith</a> : Bool ( str:String )</td></tr>
+				
+					<tr><td><a href='#Find'>Find</a> : Int ( str:String, start:Int )</td></tr>
+				
+					<tr><td><a href='#FindLast'>FindLast</a> : Int ( str:String )</td></tr>
+				
+					<tr><td><a href='#FindLast (2)'>FindLast</a> : Int ( str:String, start:Int )</td></tr>
+				
+					<tr><td><a href='#Join'>Join</a> : String ( pieces:String[] )</td></tr>
+				
+					<tr><td><a href='#Replace'>Replace</a> : String ( findStr:String, replaceStr:String )</td></tr>
+				
+					<tr><td><a href='#Split'>Split</a> : String[] ( separator:String )</td></tr>
+				
+					<tr><td><a href='#StartsWith'>StartsWith</a> : Bool ( str:String )</td></tr>
+				
+					<tr><td><a href='#ToChars'>ToChars</a> : Int[] ()</td></tr>
+				
+					<tr><td><a href='#ToLower'>ToLower</a> : String ()</td></tr>
+				
+					<tr><td><a href='#ToUpper'>ToUpper</a> : String ()</td></tr>
+				
+					<tr><td><a href='#Trim'>Trim</a> : String ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<div class='box'>
+				<h2>Functions</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#FromChar'>FromChar</a> : String ( charCode:Int )</td></tr>
+				
+					<tr><td><a href='#FromChars'>FromChars</a> : String ( charCodes:Int[] )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				The String type is a fundamental monkey type used to represent sequences of characters.
+<p>
+Please see the Types section of the monkey language reference for more information on the string type.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+
+			
+				<div class='box'>
+				<h2>Property Documentation</h2>
+				
+					<a name='Length'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Length : Int () Property</h3>
+					Returns the number of characters contained in the string.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Compare'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Compare : Int ( str:String )</h3>
+					Compares two strings. Returns a value &lt;0 if this string is less than <i>str</i>, a value &gt;0 if this string is greater than <i>str</i>, or 0 if the strings are equal.
+					
+					
+					</div>
+				
+					<a name='Contains'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Contains : Bool ( str:String )</h3>
+					Returns true if the string contains <i>str</i>, else false.
+					
+					
+					</div>
+				
+					<a name='EndsWith'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method EndsWith : Bool ( str:String )</h3>
+					Returns true if this string ends with <i>str</i>, else false.
+					
+					
+					</div>
+				
+					<a name='Find'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Find : Int ( str:String, start:Int )</h3>
+					Returns the offset of the first occurrence of <i>str</i> within this string, starting at the specified start offset.
+<p>
+Returns -1 if <i>str</i> is not found.
+					
+					
+					</div>
+				
+					<a name='FindLast'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method FindLast : Int ( str:String )</h3>
+					Returns the offset of the last occurrence of <i>str</i> within this string, starting at the optional offset specified by <i>start</i>.
+<p>
+Returns -1 if <i>str</i> is not found.
+					
+					
+					</div>
+				
+					<a name='FindLast (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method FindLast : Int ( str:String, start:Int )</h3>
+					Returns the offset of the last occurrence of <i>str</i> within this string, starting at the optional offset specified by <i>start</i>.
+<p>
+Returns -1 if <i>str</i> is not found.
+					
+					
+					</div>
+				
+					<a name='Join'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Join : String ( pieces:String[] )</h3>
+					Creates a single string by joining together each element of <i>pieces</i>, using the current string as a separator.
+					
+					
+					</div>
+				
+					<a name='Replace'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Replace : String ( findStr:String, replaceStr:String )</h3>
+					Replaces all occurrences of <i>findStr</i> with <i>replaceStr</i> and returns the result.
+					
+					
+					</div>
+				
+					<a name='Split'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Split : String[] ( separator:String )</h3>
+					Splits this string into an array of pieces, using the <i>separator</i> string to delimit each piece.
+					
+					
+					</div>
+				
+					<a name='StartsWith'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method StartsWith : Bool ( str:String )</h3>
+					Returns true if the string starts with <i>str</i>, else false.
+					
+					
+					</div>
+				
+					<a name='ToChars'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ToChars : Int[] ()</h3>
+					Converts string to an array of character codes.
+					
+					
+					</div>
+				
+					<a name='ToLower'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ToLower : String ()</h3>
+					Converts the string to lowercase and returns the result.
+					
+						<p><b>See also</b> <a href='_monkey.lang.String.html#ToUpper'>ToUpper</a>
+					
+					
+					</div>
+				
+					<a name='ToUpper'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ToUpper : String ()</h3>
+					Converts the string to uppercase and returns the result.
+					
+						<p><b>See also</b> <a href='_monkey.lang.String.html#ToLower'>ToLower</a>
+					
+					
+					</div>
+				
+					<a name='Trim'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Trim : String ()</h3>
+					Removes any leading and trailing whitespace from the string and returns the result.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+				<div class='box'>
+				<h2>Function Documentation</h2>
+				
+					<a name='FromChar'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function FromChar : String ( charCode:Int )</h3>
+					Creates and returns a string of length 1 containing the character code specified by <i>charCode</i>.
+					
+					
+					</div>
+				
+					<a name='FromChars'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function FromChars : String ( charCodes:Int[] )</h3>
+					Creates and returns a string containing the character codes in the specified <i>charCode</i> array.
+					
+					
+					</div>
+				
+				</div>
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 reflection 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+				<h1>Module reflection</h1>
+			
+			
+			
+			
+			
+			
+			
+			
+				Reflection allows your program to inspect and access all or some of your program's declarations dynamically at runtime. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+				<div class='box'>
+				<h2>Classes</h2>
+				<table class='small'>
+				
+					<tr><td><a href='_reflection.ArrayBoxer.html'>ArrayBoxer</a></td></tr>
+				
+					<tr><td><a href='_reflection.ClassInfo.html'>ClassInfo</a></td></tr>
+				
+					<tr><td><a href='_reflection.ConstInfo.html'>ConstInfo</a></td></tr>
+				
+					<tr><td><a href='_reflection.FieldInfo.html'>FieldInfo</a></td></tr>
+				
+					<tr><td><a href='_reflection.FunctionInfo.html'>FunctionInfo</a></td></tr>
+				
+					<tr><td><a href='_reflection.GlobalInfo.html'>GlobalInfo</a></td></tr>
+				
+					<tr><td><a href='_reflection.MethodInfo.html'>MethodInfo</a></td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constants</h2>
+				<table class='small'>
+				
+					<tr><td>ATTRIBUTE_ABSTRACT : Int</td></tr>
+				
+					<tr><td>ATTRIBUTE_EXTERN : Int</td></tr>
+				
+					<tr><td>ATTRIBUTE_FINAL : Int</td></tr>
+				
+					<tr><td>ATTRIBUTE_INTERFACE : Int</td></tr>
+				
+					<tr><td>ATTRIBUTE_PRIVATE : Int</td></tr>
+				
+				</table>
+				</div>
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Functions</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#ArrayClass'>ArrayClass</a> : ClassInfo ( elementType:String )</td></tr>
+				
+					<tr><td><a href='#BoolClass'>BoolClass</a> : ClassInfo ()</td></tr>
+				
+					<tr><td><a href='#BoxBool'>BoxBool</a> : Object ( value:Bool )</td></tr>
+				
+					<tr><td><a href='#BoxFloat'>BoxFloat</a> : Object ( value:Float )</td></tr>
+				
+					<tr><td><a href='#BoxInt'>BoxInt</a> : Object ( value:Int )</td></tr>
+				
+					<tr><td><a href='#BoxString'>BoxString</a> : Object ( value:String )</td></tr>
+				
+					<tr><td><a href='#FloatClass'>FloatClass</a> : ClassInfo ()</td></tr>
+				
+					<tr><td><a href='#GetClass'>GetClass</a> : ClassInfo ( name:String )</td></tr>
+				
+					<tr><td><a href='#GetClass (2)'>GetClass</a> : ClassInfo ( obj:Object )</td></tr>
+				
+					<tr><td><a href='#GetClasses'>GetClasses</a> : ClassInfo[] ()</td></tr>
+				
+					<tr><td><a href='#GetConst'>GetConst</a> : ConstInfo ( name:String )</td></tr>
+				
+					<tr><td><a href='#GetConsts'>GetConsts</a> : ConstInfo[] ()</td></tr>
+				
+					<tr><td><a href='#GetFunction'>GetFunction</a> : FunctionInfo ( name:String, argTypes:ClassInfo[] )</td></tr>
+				
+					<tr><td><a href='#GetFunctions'>GetFunctions</a> : FunctionInfo[] ()</td></tr>
+				
+					<tr><td><a href='#GetGlobal'>GetGlobal</a> : GlobalInfo ( name:String )</td></tr>
+				
+					<tr><td><a href='#GetGlobals'>GetGlobals</a> : GlobalInfo[] ()</td></tr>
+				
+					<tr><td><a href='#IntClass'>IntClass</a> : ClassInfo ()</td></tr>
+				
+					<tr><td><a href='#StringClass'>StringClass</a> : ClassInfo ()</td></tr>
+				
+					<tr><td><a href='#UnboxBool'>UnboxBool</a> : Bool ( box:Object )</td></tr>
+				
+					<tr><td><a href='#UnboxFloat'>UnboxFloat</a> : Float ( box:Object )</td></tr>
+				
+					<tr><td><a href='#UnboxInt'>UnboxInt</a> : Int ( box:Object )</td></tr>
+				
+					<tr><td><a href='#UnboxString'>UnboxString</a> : String ( box:Object )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				Reflection allows your program to inspect and access all or some of your program's declarations dynamically at runtime.
+<p>
+<h3> Enabling reflection</h3>
+<p>
+To enable reflection, you must at least import the reflection module.
+<p>
+In addition, you may provide a 'filter' to limit reflection to a subset of modules using the REFLECTION_FILTER app config setting.
+<p>
+By default, the reflection module will set REFLECTION_FILTER to '*' indicating all modules should be reflected. To override this, you must set REFLECTION_FILTER before importing the reflection module.
+<p>
+Reflection can incur significant overhead, so it's a probably a good idea to only reflect what you really need to.
+<p>
+Here are some examples of using REFLECTION_FILTER:
+<p>
+<pre>
+REFLECTION_FILTER="myapp*"                  'only reflect declarations in the main app
+REFLECTION_FILTER="myapp*|mojo*"            'reflect the main app AND mojo modules
+REFLECTION_FILTER="myapp.reflect|mojo*|os*" 'reflect myapp.reflect module AND mojo and os modules.
+REFLECTION_FILTER="mojo.graphics"           'only reflect mojo.graphics module
+</pre>
+<p>
+<h3> Declaration names</h3>
+<p>
+Declarations that appear at 'module scope' - that is, declarations that do not appear within a class - are fully qualified by the module they appear in.
+<p>
+For example, the DrawImage function that appears in the mojo.graphics module is named "mojo.graphics.DrawImage".
+<p>
+This is the name returned by the various Name() methods, and is the name you should use with the GetConst, GetGlobal, GetFunction and GetClass functions.
+<p>
+As a convenience, you can also use unqualified names with the Get functions as long as there is only one unique declaration with the given name.
+<p>
+For example, GetFunction( "mojo.graphics.DrawImage" ) and GetFunction( "DrawImage" ) will return the same FunctionInfo object, as long as DrawImage is only declared in one module.
+<p>
+Declarations that appear at class scope are not qualified.
+<p>
+<h3> Box objects</h3>
+<p>
+Non-object values of type int, float, string and array must be 'boxed' before they are passed to reflection methods such as SetValue and Invoke.
+<p>
+To do this, use the BoxInt, BoxFloat, BoxString functions. These functions all return a 'box' Object which is suitable for use with SetValue and Invoke.
+<p>
+Similarly, reflection methods such as GetValue and Invoke that return non-object values will return boxed values. 
+<p>
+To unbox these values, use the UnboxInt, UnboxFloat and UnboxString functions.
+<p>
+Here's an example of boxing and unboxing in action:
+<p>
+<pre>
+Import reflection
+
+Global MyGlobal:=123
+
+Function Main()
+
+'Get GlobalInfo for MyGlobal 
+	Local g:=GetGlobal( "MyGlobal" )
+
+'Read and unbox value of MyGlobal
+	Local n1:=UnboxInt( g.GetValue() )
+
+'Print it...
+	Print "n1="+n1
+
+'Box and write value of MyGlobal
+	g.SetValue( BoxInt( n1*2 ) )
+
+'Read, unbox and dump...
+	Local n2:=UnboxInt( g.GetValue() )
+	Print "n2="+n2
+End
+</pre>
+<p>
+Boxing and Unboxing arrays is slightly trickier - you must use the Box and Unbox functions declared in the ArrayBoxer class to do this. Here's an example:
+<p>
+<pre>
+Import reflection
+
+Global MyGlobal:Int[]
+
+Function Main()
+
+	'create an int array
+	Local intArray:Int[]=[1,2,3,4,5]
+
+	'box it...	
+	Local boxedArray:=ArrayBoxer&lt;Int&gt;.Box( intArray )
+	
+	'set value of MyGlobal
+	GetGlobal( "MyGlobal" ).SetValue( boxedArray )
+	
+	'dump array
+	For Local i:=Eachin MyGlobal
+		Print i
+	Next
+	
+	'reassign MyGlobal
+	MyGlobal=[6,7,8,9,10]
+	
+	'read value of MyGlobal
+	boxedArray=GetGlobal( "MyGlobal" ).GetValue()
+	
+	'Unbox it...
+	intArray=ArrayBoxer&lt;Int&gt;.Unbox( boxedArray )
+	
+	'dump unboxed array
+	For Local i:=Eachin intArray
+		Print i
+	Next
+
+End
+</pre>
+				</div>
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Function Documentation</h2>
+				
+					<a name='ArrayClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function ArrayClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ( elementType:String )</h3>
+					Returns the class of an array.
+<p>
+The elementType parameter is case sensitive, and must be the fully qualified name of the element type.
+<p>
+The elementType parameter may itself be an array, in which case the returned class represents a multidimensional array.
+<p>
+This is actually the class of the objects used to box arrays, since arrays aren't objects and therefore don't have a class.
+					
+					
+					</div>
+				
+					<a name='BoolClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function BoolClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ()</h3>
+					Returns the class of a 'bool'.
+<p>
+This is actually the class of the objects used to box bools, since bools aren't objects and therefore don't have a class.
+					
+					
+					</div>
+				
+					<a name='BoxBool'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function BoxBool : Object ( value:Bool )</h3>
+					Creates a box object with the given value.
+<p>
+Box objects can be passed to the SetValue methods of FieldInfo and GlobalInfo objects, and used as parameters for the Invoke methods of MethodInfo and FunctionInfo objects.
+<p>
+Box objects are also returned by the GetValue methods of ConstInfo, FieldInfo and GlobalInfo objects, and by the Invoke methods of MethodInfo and FunctionInfo objects.
+					
+						<p><b>See also</b> <a href='_reflection.html#UnboxBool'>UnboxBool</a>
+					
+					
+					</div>
+				
+					<a name='BoxFloat'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function BoxFloat : Object ( value:Float )</h3>
+					Creates a box object with the given value.
+<p>
+Box objects can be passed to the SetValue methods of FieldInfo and GlobalInfo objects, and used as parameters for the Invoke methods of MethodInfo and FunctionInfo objects.
+<p>
+Box objects are also returned by the GetValue methods of ConstInfo, FieldInfo and GlobalInfo objects, and by the Invoke methods of MethodInfo and FunctionInfo objects.
+					
+						<p><b>See also</b> <a href='_reflection.html#UnboxFloat'>UnboxFloat</a>
+					
+					
+					</div>
+				
+					<a name='BoxInt'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function BoxInt : Object ( value:Int )</h3>
+					Creates a box object with the given value.
+<p>
+Box objects can be passed to the SetValue methods of FieldInfo and GlobalInfo objects, and used as parameters for the Invoke methods of MethodInfo and FunctionInfo objects.
+<p>
+Box objects are also returned by the GetValue methods of ConstInfo, FieldInfo and GlobalInfo objects, and by the Invoke methods of MethodInfo and FunctionInfo objects.
+					
+						<p><b>See also</b> <a href='_reflection.html#UnboxInt'>UnboxInt</a>
+					
+					
+					</div>
+				
+					<a name='BoxString'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function BoxString : Object ( value:String )</h3>
+					Creates a box object with the given value.
+<p>
+Box objects can be passed to the SetValue methods of FieldInfo and GlobalInfo objects, and used as parameters for the Invoke methods of MethodInfo and FunctionInfo objects.
+<p>
+Box objects are also returned by the GetValue methods of ConstInfo, FieldInfo and GlobalInfo objects, and by the Invoke methods of MethodInfo and FunctionInfo objects.
+					
+						<p><b>See also</b> <a href='_reflection.html#UnboxString'>UnboxString</a>
+					
+					
+					</div>
+				
+					<a name='FloatClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function FloatClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ()</h3>
+					Returns the class of a 'float'.
+<p>
+This is actually the class of the objects used to box floats, since floats aren't objects and therefore don't have a class.
+					
+					
+					</div>
+				
+					<a name='GetClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ( name:String )</h3>
+					Returns the ClassInfo object with the given name, or Null if no object is found.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetClasses'>GetClasses</a>, <a href='_reflection.ClassInfo.html'>ClassInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetClass (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ( obj:Object )</h3>
+					Returns the ClassInfo object with the given name, or Null if no object is found.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetClasses'>GetClasses</a>, <a href='_reflection.ClassInfo.html'>ClassInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetClasses'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetClasses : <a href='_reflection.ClassInfo.html'>ClassInfo</a>[] ()</h3>
+					Returns an array of all reflected classes.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetClass'>GetClass</a>, <a href='_reflection.ClassInfo.html'>ClassInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetConst'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetConst : <a href='_reflection.ConstInfo.html'>ConstInfo</a> ( name:String )</h3>
+					Returns the ConstInfo object with the given name, or Null if no object is found.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetConsts'>GetConsts</a>, <a href='_reflection.ConstInfo.html'>ConstInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetConsts'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetConsts : <a href='_reflection.ConstInfo.html'>ConstInfo</a>[] ()</h3>
+					Returns an array of all consts declared at module scope.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetConst'>GetConst</a>, <a href='_reflection.ConstInfo.html'>ConstInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetFunction'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetFunction : <a href='_reflection.FunctionInfo.html'>FunctionInfo</a> ( name:String, argTypes:<a href='_reflection.ClassInfo.html'>ClassInfo</a>[] )</h3>
+					Returns the FunctionInfo object with the given name and parameter types, or Null if no object is found.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetFunctions'>GetFunctions</a>, <a href='_reflection.FunctionInfo.html'>FunctionInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetFunctions'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetFunctions : <a href='_reflection.FunctionInfo.html'>FunctionInfo</a>[] ()</h3>
+					Returns an array of all reflected functions.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetFunction'>GetFunction</a>, <a href='_reflection.FunctionInfo.html'>FunctionInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetGlobal'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetGlobal : <a href='_reflection.GlobalInfo.html'>GlobalInfo</a> ( name:String )</h3>
+					Returns the GlobalInfo object with the given name, or Null if no object is found.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetGlobals'>GetGlobals</a>, <a href='_reflection.GlobalInfo.html'>GlobalInfo</a>
+					
+					
+					</div>
+				
+					<a name='GetGlobals'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetGlobals : <a href='_reflection.GlobalInfo.html'>GlobalInfo</a>[] ()</h3>
+					Returns an array of all reflected globals.
+					
+						<p><b>See also</b> <a href='_reflection.html#GetGlobal'>GetGlobal</a>, <a href='_reflection.GlobalInfo.html'>GlobalInfo</a>
+					
+					
+					</div>
+				
+					<a name='IntClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function IntClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ()</h3>
+					Returns the class of an 'int'.
+<p>
+This is actually the class of the objects used to box ints, since ints aren't objects and therefore don't have a class.
+					
+					
+					</div>
+				
+					<a name='StringClass'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function StringClass : <a href='_reflection.ClassInfo.html'>ClassInfo</a> ()</h3>
+					Returns the class of a 'string'.
+<p>
+This is actually the class of the objects used to box strings, since strings aren't objects and therefore don't have a class.
+					
+					
+					</div>
+				
+					<a name='UnboxBool'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function UnboxBool : Bool ( box:Object )</h3>
+					Unboxes a bool. The box must have been previously created with BoxBool.
+					
+						<p><b>See also</b> <a href='_reflection.html#BoxBool'>BoxBool</a>
+					
+					
+					</div>
+				
+					<a name='UnboxFloat'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function UnboxFloat : Float ( box:Object )</h3>
+					Unboxes a float. The box must have been previously created with BoxFloat.
+					
+						<p><b>See also</b> <a href='_reflection.html#BoxFloat'>BoxFloat</a>
+					
+					
+					</div>
+				
+					<a name='UnboxInt'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function UnboxInt : Int ( box:Object )</h3>
+					Unboxes an int. The box must have been previously created with BoxInt.
+					
+						<p><b>See also</b> <a href='_reflection.html#BoxInt'>BoxInt</a>
+					
+					
+					</div>
+				
+					<a name='UnboxString'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function UnboxString : String ( box:Object )</h3>
+					Unboxes a string. The box must have been previously created with BoxString.
+					
+						<p><b>See also</b> <a href='_reflection.html#BoxString'>BoxString</a>
+					
+					
+					</div>
+				
+				</div>
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

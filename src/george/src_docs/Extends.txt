@@ -1,0 +1,65 @@
+# Keyword Extends
+
+Declares that class definition inherits a parent class.
+
+## Syntax
+
+Class *Identifier* [ < *Parameters* > ] [ `Extends` *Class* ] [ Implements *Interfaces* ] [ Final ]  
+&nbsp;&nbsp;' Declarations...  
+End [ Class ]
+
+## Description
+
+The Extends keyword allows a class to 'extend' a parent class, thereby inheriting all of its fields, methods, functions, globals and constants.
+
+This new class can add its own fields, methods, etc, but can also over-ride the existing fields, methods and so on by redefining them.
+
+## See also
+
+[[Class]] [[Super]]  
+[Language reference](Language_reference#classes)
+
+## Example
+
+Here we have three classes:
+
+* a base class, Animal, with an 'x' field, a 'legs' field and a 'Move' method;
+* the Dog class 'extends' the Animal class, inheriting the x and legs fields and adding its own 'Bark' method;
+* the Fly class also extends the Animal class, but over-rides the legs field and Move method, while adding a 'y' field and a 'Buzz' method.
+
+<pre>
+Class Animal
+
+&nbsp;&nbsp;Field x
+&nbsp;&nbsp;Field legs = 4
+
+&nbsp;&nbsp;Method Move ()
+&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;End
+
+End
+
+Class Dog Extends Animal
+
+&nbsp;&nbsp;Method Bark ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof"
+&nbsp;&nbsp;End
+
+End
+
+Class Fly Extends Animal
+
+&nbsp;&nbsp;Field legs = 6
+&nbsp;&nbsp;Field y
+
+&nbsp;&nbsp;Method Move ()
+&nbsp;&nbsp;&nbsp;&nbsp;x = Rnd (-4, 4)
+&nbsp;&nbsp;&nbsp;&nbsp;y = Rnd (-4, 4)
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method Buzz ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "ZzzzZZZzzzzzZZZZ..."
+&nbsp;&nbsp;End
+
+End
+</pre>

@@ -1,0 +1,16 @@
+
+# Class monkey.list.IntList Extends List<Int>
+
+IntList is a convenience class for handling lists of integer values.
+
+
+# Method New()
+
+Creates a new empty IntList.
+
+
+# Method Compare:Int(lhs:Int,rhs:Int)
+
+Implements the [[List.Compare]] method, which allows IntLists to be sorted using the [[Sort]] method.
+
+

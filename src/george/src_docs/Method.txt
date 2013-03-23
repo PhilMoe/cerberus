@@ -1,0 +1,89 @@
+# Keyword Method
+
+Declares the beginning of a class method.
+
+## Syntax
+
+Method *Identifier*: *ReturnType* ( *Parameters* ) [ Property ] [ Abstract ] [ Final ]  
+&nbsp;&nbsp;*Statements...*  
+End [ Method ]
+
+## Description
+
+The Method keyword begins the declaration of a class method.
+
+Please see the Methods section of the monkey language reference for more information on methods.
+
+## See also
+
+[[End]] [[Class]] [[Property]] [[Abstract]] [[Final]]  
+[Language reference (Classes)](Language_reference#classes)  
+[Language reference (Methods)](Language_reference#methods)
+
+## Examples
+
+An example of methods as statements.
+
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
+
+&nbsp;&nbsp;Method PrintX ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method PrintY ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
+
+End
+
+Local g:GameObject = New GameObject
+
+p.x = 100
+p.y = 200
+
+' Accessing method...
+
+p.PrintX
+p.PrintY
+</pre>
+
+Strict mode version of above GameObject class. (Note use of Void return type.)
+
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
+
+&nbsp;&nbsp;Method PrintX:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method PrintY:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
+
+End
+</pre>
+
+Method returning value of Float type.
+
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Method AddFloats:Float (value1:Float, value2:Float)
+&nbsp;&nbsp;&nbsp;&nbsp;Return value1 + value2
+&nbsp;&nbsp;End
+
+End
+
+Local g:GameObject = New GameObject
+
+' Accessing method...
+
+Print g.AddFloats (1.5, 2.0)
+</pre>

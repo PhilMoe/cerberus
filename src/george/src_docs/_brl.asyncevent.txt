@@ -1,0 +1,40 @@
+
+# Module brl.asyncevent
+
+# Import brl.asyncstream Private
+
+The asyncevent module provides core functionality for handling asynchronous (async) events.
+
+An async event occurs when an async operation completes or changes state. Async operations are operations that execute 'in the background' while your app is running, typically on another thread, and include network data transfers and network connections.
+
+When an async event occurs, your program is notified by means of a method call to an event handler object you  provided when the async operation was started. Such event handler objects must implement the correct interface method for the operation being performed. For example, when you start an async stream [[AsyncStream.Read|Read]] operation, you must provide an object with a method that implements the [[IOnReadComplete]] interface method. This is the method that will be called when the async read completes.
+
+In order for async events to occur, the global [[UpdateAsyncEvents]] function must be called at regular intervals - once per OnUpdate is generally enough. This is when your event handler methods will actually be called.
+
+Internally, the [[UpdateAsyncEvents]] function simply calls the UpdateAsyncEvents interface method for each object contained in a global queue. You can add and remove your own objects to and from this queue with the [[AddAsyncEventSource]] and [[RemoveAsyncEventSource]] functions. Objects in this queue must implement the [[IAsyncEventSource]] interface.
+
+
+# Function AddAsyncEventSource:Void( source:IAsyncEventSource )
+
+Adds @source to the global list of event sources to be processed by [[UpdateAsyncEvents]].
+
+
+# Function RemoveAsyncEventSource:Void( source:IAsyncEventSource )
+
+Removes @source from the global list of event sources to be processed by [[UpdateAsyncEvents]].
+
+
+# Function UpdateAsyncEvents:Void()
+
+Calls the [[IAsyncEventSource.UpdateAsyncEvents|UpdateAsyncEvents]] method for each event source contained in the global list of event sources.
+
+You must call this function repeatedly (for example, at the start of OnUpdate) for the various OnComplete handlers to continue to execute.
+
+
+# Interface brl.asyncevent.IAsyncEventSource
+
+# Method UpdateAsyncEvents:Void()
+
+This method is called by the global [[brl.asyncevent.UpdateAsyncEvents|UpdateAsyncEvents]] function for each event source that has been added to the global list of event sources.
+
+You should not normally call this method directly.

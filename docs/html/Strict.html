@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Strict 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Directive Strict</h1>
+<p>
+Enables monkey's Strict syntax mode.
+<p>
+<h2> Syntax</h2>
+<p>
+Strict
+<p>
+<h2> Description</h2>
+<p>
+By default, Monkey allows you to take certain shortcuts when programming. However, Monkey also offers a special Strict mode for programmers who prefer a stricter language definition.
+<p>
+The differences between the Strict and non-Strict modes are:
+<p>
+<h2> Strict mode</h2>
+<p>
+<li>You must always specify the type of all variables, function return values and function parameters.</li>
+<p>
+<li>All function call parameters must be enclosed in brackets.</li>
+<p>
+<li>A function that does not return Void must end with a Return statement.</li>
+<p>
+<h2> Non-Strict mode</h2>
+<p>
+<li>Variable type, function return type and function parameter types can be optionally omitted. In this case they will default to Int.</li>
+<p>
+<li>Return statements can be omitted at the end of a function. In this case, a Return statement will be automatically generated that will return an appropriate default value for the function type. That is, False for bool, 0 for int and float, "" for string, [] for arrays and Null for objects.</li>
+<p>
+<li>The brackets around function call parameters are optional if the function is being used as a statement, or if the function can be called with no parameters.</li>
+<p>
+To use Strict mode, the Strict directive must be placed at the very top of your module. Note that Strict is applied on a per-module basis and that Strict and non-Strict modules can legitimately import each other.
+<p>
+<em>While syntax is shown in Strict mode, the examples in this documentation will normally be presented in non-Strict form.</em>
+<p>
+<h2> See also</h2>
+<p>
+Return <a href='Int.html'>Int</a> <a href='Float.html'>Float</a> <a href='_monkey.lang.String.html'>String</a> <a href='Bool.html'>Bool</a> <a href='Void.html'>Void</a>
+<p>
+<h2> Example</h2>
+<p>
+<pre>
+Strict
+
+' In Strict mode...
+
+Function Main:Int()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' the :Int type definition is compulsory...
+&nbsp;&nbsp;Print( "Strict mode is...different!" )&nbsp;&nbsp;' all function calls require brackets...
+&nbsp;&nbsp;Return 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' and we MUST return a value.
+End
+</pre>
+<p>
+<h2> Example 2</h2>
+<p>
+<pre>
+' Non-Strict version of first example, declaring no Return
+' type, no brackets for Print statement and no Return value.
+
+Function Main ()
+&nbsp;&nbsp;Print "Non-Strict mode is...forgiving!"
+End
+</pre>
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

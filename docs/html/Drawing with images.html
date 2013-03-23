@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Drawing with images 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Drawing with Images</h1>
+<p>
+In this tutorial we load some images from our apps data folder and learn more about <a href='_mojo.graphics.html'>mojo.graphics</a>.
+<p>
+<pre>
+Import mojo
+	
+Class Game Extends App
+
+	Field image:Image
+
+    Method OnCreate()
+		SetUpdateRate 30
+		image=LoadImage("monkey64.png")
+    End
+
+	Method OnRender()
+		Cls
+		DrawImage image,20,20 		
+	End
+
+End
+
+Function Main()
+    New Game()
+End
+</pre>	
+<p>
+Create a new monkey file, paste the above code, and save as "game.monkey" in a new folder on your computer.
+<p>
+This app, when run, produces a black display as the <a href='_mojo.graphics.html#LoadImage'>LoadImage</a> command will fail to find the file monkey64.png.
+<p>
+In the same folder that you saved "game.monkey" create a new directory named "game.data". Copy this <a href='http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/monkeylogos/monkey64.png'>image</a> to the newly created .data folder.
+<p>
+<h2> Add Points where you Click</h2>
+<p>
+Now we add a new Point class that contains an x y coordinate pair using floating point values.
+<p>
+<pre>
+Class Point
+	Field x#
+	Field y#
+End
+</pre>
+<p>
+We also add a List container to manage the Points that we store each time the user clicks on the screen.
+<p>
+<pre>
+	Field points:=New List<Point>
+</pre>
+<p>
+The := syntax is a shortcut for a standard equate that infers the type of the Left Hand Side (LHS) from the type on the Right Hand Side (RHS). In this case the Field named points of type List&LT;Point&GT; could have also been declared and initialized using the longer winded:
+<p>
+<pre>
+	Field points.List<Point>=New List<Point>
+</pre>
+<p>
+The type List&LT;Point&GT; is an example of a monkey template. A List&LT;Point&GT; supports the standard List interface but specifically for objects of type Point.
+<p>
+<pre>
+Import mojo
+
+Class Point
+	Field x#
+	Field y#
+End
+
+Class Game Extends App
+
+	Field image:Image
+	Field points:=New List<Point>
+
+	Method OnCreate()
+		SetUpdateRate 30
+		image=LoadImage("monkey64.png")
+	End
+
+	Method AddPoint(x#,y#)
+		Local p:Point=New Point
+		p.x=x
+		p.y=y
+		points.AddLast p
+	End
+
+	Method OnUpdate()
+		If MouseHit() AddPoint MouseX,MouseY
+	End
+
+	Method OnRender()
+		Cls
+		For Local point:=Eachin points
+			DrawImage image,point.x,point.y
+		Next
+	End
+
+End
+
+Function Main()
+    New Game()
+End
+</pre>
+	
+The AddLast method is called on the list to add an entry each time the user clicks the mouse.
+<p>
+The OnRender method draws the list of monkeys by using the enumeration
+<p>
+<pre>
+		For Local point:=Eachin points
+</pre>
+<p>
+This allows monkey code to process each element of the list in the order they were added.
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

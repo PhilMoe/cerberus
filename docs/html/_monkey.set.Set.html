@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_monkey.html'>monkey</a> 
+				
+			
+				/  <a href='_monkey.set.html'>set</a> 
+				
+			
+				/ 
+				 Set 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class Set</h1>
+				
+				
+				
+			
+			
+			
+			
+			
+				A set is a container style object that provides a mechanism for keeping track of a number of objects. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+				<div class='box'>
+				<h2>Constructors</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#New'>New</a>  ( map:Map&lt;T, Object&gt; )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Clear'>Clear</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Contains'>Contains</a> : Bool ( value:T )</td></tr>
+				
+					<tr><td><a href='#Count'>Count</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Insert'>Insert</a> : Int ( value:T )</td></tr>
+				
+					<tr><td><a href='#IsEmpty'>IsEmpty</a> : Bool ()</td></tr>
+				
+					<tr><td><a href='#ObjectEnumerator'>ObjectEnumerator</a> : Object ()</td></tr>
+				
+					<tr><td><a href='#Remove'>Remove</a> : Int ( value:T )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				A set is a container style object that provides a mechanism for keeping track of a number of objects.
+<p>
+Each object in a set occurs exactly once - inserting the same object into a set multiple times does not result in the set containing multiple references to the same object.
+<p>
+Sets are implemented behind the scenes using Map objects, and are just as efficient at insertng, removing and finding objects.
+<p>
+Classes that extend Set<T> must invoke Super.New with an instance of a map object.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constructor Documentation</h2>
+				
+					<a name='New'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method New  ( map:<a href='_monkey.map.Map.html'>Map</a>&lt;T, Object&gt; )</h3>
+					Extending classes should invoke this method with a valid map object to be used to implement the set.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Clear'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Clear : Int ()</h3>
+					Removes all items from the set.
+					
+					
+					</div>
+				
+					<a name='Contains'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Contains : Bool ( value:T )</h3>
+					Return True if the specified value is contained in the set, else False.
+					
+					
+					</div>
+				
+					<a name='Count'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Count : Int ()</h3>
+					Counts and returns the number of objects in the set.
+<p>
+Note that this method takes O(N) time - that is, it must visit each object in the set.
+					
+					
+					</div>
+				
+					<a name='Insert'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Insert : Int ( value:T )</h3>
+					Inserts value into the set.
+					
+					
+					</div>
+				
+					<a name='IsEmpty'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method IsEmpty : Bool ()</h3>
+					Returns True if the set is empty, ie: contains no items, else False.
+					
+					
+					</div>
+				
+					<a name='ObjectEnumerator'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ObjectEnumerator : Object ()</h3>
+					Returns an enumerator object that allows sets to be used with For Eachin loops.
+					
+					
+					</div>
+				
+					<a name='Remove'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Remove : Int ( value:T )</h3>
+					Removes value from the set.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

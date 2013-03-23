@@ -1,0 +1,17 @@
+
+# Class monkey.map.StringMap<V> Extends Map<String,V>
+
+A StringMap is a convenience class for mapping strings to values.
+
+
+# Method New()
+
+Create a new empty StringMap.
+
+
+# Method Compare:Int(lhs:String,rhs:String)
+
+Implements the [[Map.Compare]] method.
+
+
+

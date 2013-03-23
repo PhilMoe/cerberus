@@ -1,0 +1,10 @@
+
+# Class monkey.stack.IntStack Extends Stack<Int>
+
+An IntStack is a convenience class for dealing with stacks of ints.
+
+
+# Method New()
+
+Creates a new empty IntStack.
+

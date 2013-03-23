@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Interface 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Keyword Interface</h1>
+<p>
+Declares an interface.
+<p>
+<h2> Syntax</h2>
+<p>
+Interface <em>Identifier</em> [ Extends <em>Interfaces</em> ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <em>Declarations...</em><br>
+End [ Interface ]
+<p>
+<h2> Description</h2>
+<p>
+The Interface keyword begins the declaration of an interface.
+<p>
+Please see the Interfaces section of the monkey language reference for more information on interfaces.
+<p>
+<h2> See also</h2>
+<p>
+<a href='End.html'>End</a> <a href='Class.html'>Class</a> <a href='Implements.html'>Implements</a><br>
+<a href='Language reference.html#interfaces'>Language reference (Interfaces)</a><br>
+<p>
+<h2> Example</h2>
+<p>
+An example of a simple interface.
+<p>
+<pre>
+Interface Computer
+
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;
+End
+
+Class PC Implements Computer
+
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "BIOS version 1.01. Performing ancient rituals..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Calculating 1 + 1..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "The result of 1 + 1 equals 2!"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+End
+
+Class C64 Implements Computer
+
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "**** COMMODORE 64 BASIC V2 **** | 64K RAM SYSTEM  38911 BASIC BYTES FREE"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Calculating missile position..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Enemies exploding!"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+End
+
+Function Main ()
+
+&nbsp;&nbsp;Print ""
+&nbsp;&nbsp;Print "PC"
+&nbsp;&nbsp;Print ""
+
+&nbsp;&nbsp;Local ibm:Computer = New PC
+&nbsp;&nbsp;
+&nbsp;&nbsp;ibm.Boot
+&nbsp;&nbsp;ibm.Process
+&nbsp;&nbsp;ibm.Display
+
+&nbsp;&nbsp;Print ""
+&nbsp;&nbsp;Print "C64"
+&nbsp;&nbsp;Print ""
+
+&nbsp;&nbsp;Local commodore:Computer = New C64
+&nbsp;&nbsp;
+&nbsp;&nbsp;commodore.Boot
+&nbsp;&nbsp;commodore.Process
+&nbsp;&nbsp;commodore.Display
+
+End
+</pre>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

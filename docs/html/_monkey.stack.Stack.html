@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_monkey.html'>monkey</a> 
+				
+			
+				/  <a href='_monkey.stack.html'>stack</a> 
+				
+			
+				/ 
+				 Stack 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class Stack</h1>
+				
+				
+				
+			
+			
+			
+			
+			
+				Stacks provide 2 basic operations - push and pop. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+				<div class='box'>
+				<h2>Constructors</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#New'>New</a>  ()</td></tr>
+				
+					<tr><td><a href='#New (2)'>New</a>  ( data:T[] )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Backwards'>Backwards</a> : Object ()</td></tr>
+				
+					<tr><td><a href='#Clear'>Clear</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Contains'>Contains</a> : Bool ( value:T )</td></tr>
+				
+					<tr><td><a href='#Equals'>Equals</a> : Bool ( lhs:T, rhs:T )</td></tr>
+				
+					<tr><td><a href='#Get'>Get</a> : T ( index:Int )</td></tr>
+				
+					<tr><td><a href='#Insert'>Insert</a> : Int ( index:Int, value:T )</td></tr>
+				
+					<tr><td><a href='#IsEmpty'>IsEmpty</a> : Bool ()</td></tr>
+				
+					<tr><td><a href='#Length'>Length</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#ObjectEnumerator'>ObjectEnumerator</a> : Object ()</td></tr>
+				
+					<tr><td><a href='#Pop'>Pop</a> : T ()</td></tr>
+				
+					<tr><td><a href='#Push'>Push</a> : Int ( value:T )</td></tr>
+				
+					<tr><td><a href='#Push (2)'>Push</a> : Int ( values:T[] )</td></tr>
+				
+					<tr><td><a href='#Remove'>Remove</a> : Int ( index:Int )</td></tr>
+				
+					<tr><td><a href='#RemoveEach'>RemoveEach</a> : Int ( value:T )</td></tr>
+				
+					<tr><td><a href='#Set'>Set</a> : Int ( index:Int, value:T )</td></tr>
+				
+					<tr><td><a href='#ToArray'>ToArray</a> : T[] ()</td></tr>
+				
+					<tr><td><a href='#Top'>Top</a> : T ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				Stacks provide 2 basic operations - push and pop. Pushing an item on a stack adds the item to the top of the stack, while popping an item removes the item from the top of the stack and returns it.
+<p>
+Stacks may also be efficiently indexed using an integer index, and elements may be inserted and removed. This allows stacks to also be used as a dynamic array (an array where the length can change), much like a C++ vector.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constructor Documentation</h2>
+				
+					<a name='New'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method New  ()</h3>
+					Creates a new empty Stack object.
+					
+					
+					</div>
+				
+					<a name='New (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method New  ( data:T[] )</h3>
+					Creates a new Stack object initialized with an array of values.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Backwards'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Backwards : Object ()</h3>
+					Returns an object that may be used to iterate backwards through the stack with a For EachIn loop.
+<p>
+Note that this does not actually reverse or modify the stack in any way.
+					
+					
+						<p><b>Example</b> <pre>
+Function Main()
+
+	Local stk:=New StringStack
+	
+	stk.Push "Hello"
+	stk.Push "there"
+	stk.Push "this"
+	stk.Push "is"
+	stk.Push "a"
+	stk.Push "test"
+	
+	Print "Fowards:"
+	For Local t$=EachIn stk
+		Print t
+	Next
+	
+	Print ""
+	
+	Print "Backwards:"
+	For Local t$=Eachin stk.Backwards()
+		Print t
+	Next
+
+End
+</pre>
+					
+					</div>
+				
+					<a name='Clear'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Clear : Int ()</h3>
+					Removes all items from the stack.
+					
+					
+					</div>
+				
+					<a name='Contains'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Contains : Bool ( value:T )</h3>
+					Returns true if <i>value</i> is contained in the stack.
+					
+					
+					</div>
+				
+					<a name='Equals'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Equals : Bool ( lhs:T, rhs:T )</h3>
+					This method is used by the <a href='_monkey.stack.Stack.html#Contains'>Contains</a> and <a href='_monkey.stack.Stack.html#RemoveEach'>RemoveEach</a> methods to determine element equality.
+<p>
+By default, this method compares <i>lhs</i> and <i>rhs</i> using the '=' operator. Extending classes may override this method to provide their own equality test.
+					
+					
+					</div>
+				
+					<a name='Get'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Get : T ( index:Int )</h3>
+					Returns the element at the specified index.
+<p>
+An index of 0 represents the bottom of the stack, and an index of Length-1 represents the top.
+					
+						<p><b>See also</b> <a href='_monkey.stack.Stack.html#Set'>Set</a>
+					
+					
+					</div>
+				
+					<a name='Insert'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Insert : Int ( index:Int, value:T )</h3>
+					Inserts value into the stack, shifting existing elements up if necessary.
+<p>
+This will increase the length of the stack by 1.
+<p>
+An index of 0 represents the bottom of the stack, and an index of length-1 represents the top.
+					
+					
+					</div>
+				
+					<a name='IsEmpty'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method IsEmpty : Bool ()</h3>
+					Return True if the stack is empty, ie: it contains no items, else False.
+					
+					
+					</div>
+				
+					<a name='Length'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Length : Int ()</h3>
+					Returns the number of items in the stack.
+					
+					
+					</div>
+				
+					<a name='ObjectEnumerator'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ObjectEnumerator : Object ()</h3>
+					Returns an enumerator object suitable for use with For EachIn loops.
+					
+					
+					</div>
+				
+					<a name='Pop'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Pop : T ()</h3>
+					Removes the item at the top of the stack and returns it.
+<p>
+This will decrease the length of the stack by 1.
+<p>
+If the stack is empty, the behaviour of Pop is undefined.
+					
+					
+					</div>
+				
+					<a name='Push'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Push : Int ( value:T )</h3>
+					Pushes a value on the top of the stack.
+<p>
+This will increase the length of the stack by 1.
+					
+					
+					</div>
+				
+					<a name='Push (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Push : Int ( values:T[] )</h3>
+					Pushes an array of values on the top of the stack starting with element 0.
+<p>
+This will increase the length of the stack by the length of the array.
+					
+					
+					</div>
+				
+					<a name='Remove'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Remove : Int ( index:Int )</h3>
+					Removes the value at the specified index from the stack, shifting existing elements down if necessary.
+<p>
+This will decrease the length of the stack by 1.
+<p>
+An index of 0 represents the bottom of the stack, and an index of length-1 represents the top.
+					
+					
+					</div>
+				
+					<a name='RemoveEach'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method RemoveEach : Int ( value:T )</h3>
+					Finds and removes all elements in the stack equal to value, shifting existing elements down if necessary.
+<p>
+This will decrease the length of the stack by the number of occurances of value in the stack.
+					
+					
+					</div>
+				
+					<a name='Set'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Set : Int ( index:Int, value:T )</h3>
+					Overwrites the existing value at index with value.
+<p>
+An index of 0 represents the bottom of the stack, and an index of stack length-1 represents the top.
+					
+					
+					</div>
+				
+					<a name='ToArray'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ToArray : T[] ()</h3>
+					Converts the stack to an array of values.
+					
+					
+					</div>
+				
+					<a name='Top'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Top : T ()</h3>
+					Returns the item at the top of the stack.
+<p>
+If the stack is empty, the behaviour of Top is undefined.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

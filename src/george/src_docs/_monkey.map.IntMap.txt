@@ -1,0 +1,16 @@
+
+# Class monkey.map.IntMap<V> Extends Map<Int,V>
+
+An IntMap is a convenience class for mapping ints to values.
+
+
+# Method New()
+
+Creates a new empty IntMap.
+
+
+# Method Compare:Int(lhs:Int,rhs:Int)
+
+Implements the [[Map.Compare]] method.
+
+

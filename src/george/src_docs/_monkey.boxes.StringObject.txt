@@ -1,0 +1,46 @@
+
+# Class monkey.boxes.StringObject
+
+The StringObject box class can be used to encapsulate a string value inside an object.
+
+
+# Field value:String
+
+The string value contained in the StringObject.
+
+
+# Method New()
+
+Creates a new StringObject containing an empty string.
+
+
+# Method New(value:Int)
+
+Creates a new StringObject containing a string representing the given int value.
+
+
+# Method New(value:Float)
+
+Creates a new StringObject containing a string representing the given float value.
+
+
+# Method New(value:String)
+
+Creates a new StringObject containing the given string value.
+
+
+# Method ToString:String()
+
+Returns the string value contained in the StringObject.
+
+
+# Method Equals:Bool(box:StringObject)
+
+Tests StringObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:StringObject)
+
+Compares StringObjects. Returns a value \<0 if this string value is less than @box, a value \>0 if this string value is greater than @box, or 0 if both string values are equal.
+
+

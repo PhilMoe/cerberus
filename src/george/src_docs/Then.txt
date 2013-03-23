@@ -1,0 +1,37 @@
+# Keyword Then
+
+Optional separator used for readability in If blocks.
+
+## Syntax
+
+If *expression* [Then]  
+&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*  
+Endif  
+
+If *expression* [Then] *Statements...*  
+
+## Description
+
+The keyword Then allows separation of expression and statement(s); however, its only function is to aid readability according to programmer preference and it can be safely left out.
+
+## See also
+
+[[If]]  
+
+## Examples
+
+<pre>
+' Simple variable check:
+
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
+&nbsp;&nbsp;&nbsp;&nbsp;Endif
+
+' Single-line example, using Then:
+
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Then Print "a equals one"
+
+' The 'Then' separator is optional:
+
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Print "a equals one"
+</pre>

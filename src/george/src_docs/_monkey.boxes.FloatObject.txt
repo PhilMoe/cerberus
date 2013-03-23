@@ -1,0 +1,49 @@
+
+# Class monkey.boxes.FloatObject
+
+The FloatObject box class can be used to encapsulate a float value inside an object.
+
+
+# Field value:Float
+
+The float value contined in the FloatObject.
+
+
+# Method New()
+
+Creates a new FloatObject with the value 0.0
+
+
+# Method New(value:Int)
+
+Creates a new FloatObject with the given int value converted to a float.
+
+
+# Method New(value:Float)
+
+Creates a new FloatObject with the given float value.
+
+
+# Method ToInt:Int()
+
+Returns the float value contained in the FloatObject converted to an int.
+
+
+# Method ToFloat:Float()
+
+Returns the float value contained in the FloatObject.
+
+
+# Method ToString:String()
+
+Returns the float value contained in the FloatObject converted to a string.
+
+
+# Method Equals:Bool(box:FloatObject)
+
+Tests FloatObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:FloatObject)
+
+Compares FloatObjects. Returns a value \<0 if this float value is less than @box, a value \>0 if this float value is greater than @box, or 0 if both float values are equal.

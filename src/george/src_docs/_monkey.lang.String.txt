@@ -1,0 +1,165 @@
+
+# Class monkey.lang.String
+
+The String type is a fundamental monkey type used to represent sequences of characters.
+
+Please see the Types section of the monkey language reference for more information on the string type.
+
+
+# Method Length:Int() Property
+
+Returns the number of characters contained in the string.
+
+
+# Method Compare:Int(str:String)
+
+Compares two strings. Returns a value \<0 if this string is less than @str, a value \>0 if this string is greater than @str, or 0 if the strings are equal.
+
+## Parameters
+
+@str - string to compare this string with.
+
+
+# Method Find:Int(str:String,start:Int)
+
+Returns the offset of the first occurrence of @str within this string, starting at the specified start offset.
+
+Returns -1 if @str is not found.
+
+## Parameters
+
+@str - string to find.
+
+@start - offset to start search at.
+
+
+# Method FindLast:Int(str:String)
+
+Returns the offset of the last occurrence of @str within this string, starting at the optional offset specified by @start.
+
+Returns -1 if @str is not found.
+
+## Parameters
+
+@str - string to search for.
+
+@start - offset to start search.
+
+
+# Method FindLast:Int(str:String,start:Int)
+
+Returns the offset of the last occurrence of @str within this string, starting at the optional offset specified by @start.
+
+Returns -1 if @str is not found.
+
+## Parameters
+
+@str - string to search for.
+
+@start - offset to start search.
+
+
+# Method Trim:String()
+
+Removes any leading and trailing whitespace from the string and returns the result.
+
+
+# Method Join:String(pieces:String[])
+
+Creates a single string by joining together each element of @pieces, using the current string as a separator.
+
+## Parameters
+
+@pieces - An array of string to be joined.
+
+
+# Method Split:String[](separator:String)
+
+Splits this string into an array of pieces, using the @separator string to delimit each piece.
+
+## Parameters
+
+@separator - string to use to separate pieces.
+
+
+# Method Replace:String(findStr:String,replaceStr:String)
+
+Replaces all occurrences of @findStr with @replaceStr and returns the result.
+
+## Parameters
+
+@findStr - string to search for.
+
+@replaceStr - string to replace with.
+
+
+# Method ToLower:String()
+
+Converts the string to lowercase and returns the result.
+
+## See also
+
+[[String.ToUpper|ToUpper]]
+
+
+# Method ToUpper:String()
+
+Converts the string to uppercase and returns the result.
+
+
+## See also
+
+[[String.ToLower|ToLower]]
+
+
+# Method Contains:Bool(str:String)
+
+Returns true if the string contains @str, else false.
+
+
+## Parameters
+
+@str - string to check for.
+
+
+# Method StartsWith:Bool(str:String)
+
+Returns true if the string starts with @str, else false.
+
+
+## Parameters
+
+@str - string to check for.
+
+
+# Method EndsWith:Bool(str:String)
+
+Returns true if this string ends with @str, else false.
+
+## Parameters
+
+@str - string to check for.
+
+
+# Method ToChars:Int[]()
+
+Converts string to an array of character codes.
+
+
+# Function FromChar:String(charCode:Int)
+
+Creates and returns a string of length 1 containing the character code specified by @charCode.
+
+## Parameters
+
+@charCode - character code to convert to a string.
+
+
+# Function FromChars:String(charCodes:Int[])
+
+Creates and returns a string containing the character codes in the specified @charCode array.
+
+## Parameters
+
+@charCodes - array of character codes.
+

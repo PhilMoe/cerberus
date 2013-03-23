@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_monkey.html'>monkey</a> 
+				
+			
+				/  <a href='_monkey.map.html'>map</a> 
+				
+			
+				/ 
+				 Map 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class Map&lt;K,V&gt;</h1>
+				
+				
+				
+			
+			
+			
+			
+			
+				A map is a container style object that provides a mechanism for associating <em>key</em> objects with <em>value</em> objects. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Add'>Add</a> : Bool ( key:K, value:V )</td></tr>
+				
+					<tr><td><a href='#Clear'>Clear</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Compare'>Compare</a> : Int ( lhs:K, rhs:K )</td></tr>
+				
+					<tr><td><a href='#Contains'>Contains</a> : Bool ( key:K )</td></tr>
+				
+					<tr><td><a href='#Count'>Count</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Get'>Get</a> : V ( key:K )</td></tr>
+				
+					<tr><td><a href='#IsEmpty'>IsEmpty</a> : Bool ()</td></tr>
+				
+					<tr><td><a href='#Keys'>Keys</a> : Object ()</td></tr>
+				
+					<tr><td><a href='#ObjectEnumerator'>ObjectEnumerator</a> : Object ()</td></tr>
+				
+					<tr><td><a href='#Remove'>Remove</a> : Int ( key:K )</td></tr>
+				
+					<tr><td><a href='#Set'>Set</a> : Bool ( key:K, value:V )</td></tr>
+				
+					<tr><td><a href='#Update'>Update</a> : Bool ( key:K, value:V )</td></tr>
+				
+					<tr><td><a href='#Values'>Values</a> : Object ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				A map is a container style object that provides a mechanism for associating <em>key</em> objects with <em>value</em> objects. This is done using special node objects that contains a reference to both a key and a value, along with information about the node's location within the map.
+<p>
+Each key in a map occurs exactly once - a map cannot contain multiple equivalent keys.
+<p>
+Maps are very efficient, and can handle inserting, removing and finding keys in 'O(log2)' time. That is, the time needed to insert, remove or find a key is proportional to log2 of the number of items in the map.
+<p>
+Classes that extend map must implement the Compare method. This method is used by the map to compare keys, and must return -1 if the first key is less than the second, +1 if the first key is greater than the second, or 0 if the  keys are equal.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Add'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Add : Bool ( key:K, value:V )</h3>
+					Adds a key/value pair to the map.
+<p>
+The map is only modified if it does not already contain the given key, in which case a new key/value association is created and true is returned.
+<p>
+If the map already contains key, it is not modified and false is returned.
+					
+						<p><b>See also</b> <a href='_monkey.map.Map.html#Set'>Set</a>, <a href='_monkey.map.Map.html#Get'>Get</a>
+					
+					
+					</div>
+				
+					<a name='Clear'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Clear : Int ()</h3>
+					Removes all keys and values from the map.
+					
+					
+					</div>
+				
+					<a name='Compare'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Compare : Int ( lhs:K, rhs:K )</h3>
+					The compare method must return a negative value if lhs < rhs, a positive value if lhs > rhs, or 0 if lhs = rhs.
+<p>
+The compare method is abstract so must be implemented by all subclasses of Map.
+					
+					
+					</div>
+				
+					<a name='Contains'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Contains : Bool ( key:K )</h3>
+					Return true if the specified key is contained in the map.
+					
+					
+					</div>
+				
+					<a name='Count'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Count : Int ()</h3>
+					Returns the number of key/value pairs in the map.
+<p>
+Note that this method takes O(N) time, ie: it must visit each element of the map.
+					
+					
+					</div>
+				
+					<a name='Get'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Get : V ( key:K )</h3>
+					Returns the value contained in the map associated with the specified key.
+<p>
+If the key is not contained in the map, null is returned.
+					
+						<p><b>See also</b> <a href='_monkey.map.Map.html#Add'>Add</a>, <a href='_monkey.map.Map.html#Set'>Set</a>
+					
+					
+					</div>
+				
+					<a name='IsEmpty'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method IsEmpty : Bool ()</h3>
+					Returns True if the map is empty, ie: contains no keys/values, else False.
+					
+					
+					</div>
+				
+					<a name='Keys'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Keys : Object ()</h3>
+					Returns an object that can be used to iterate through all keys in a map with a For Eachin loop.
+					
+					
+					</div>
+				
+					<a name='ObjectEnumerator'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method ObjectEnumerator : Object ()</h3>
+					Returns an object that can be used to enumerate all nodes in the map with a For EachIn loop.
+					
+						<p><b>See also</b> <a href='_monkey.map.Node.html'>Node</a>
+					
+					
+					</div>
+				
+					<a name='Remove'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Remove : Int ( key:K )</h3>
+					Removes the key from the map.
+					
+					
+					</div>
+				
+					<a name='Set'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Set : Bool ( key:K, value:V )</h3>
+					Set the value in a map associated with the given key.
+<p>
+Returns true if key was added to the map, or false if map already contained the given key.
+<p>
+The map is always updated - the return value only indicates whether an existing key/value association was updated (false) or a new one created (true).
+					
+						<p><b>See also</b> <a href='_monkey.map.Map.html#Add'>Add</a>, <a href='_monkey.map.Map.html#Get'>Get</a>
+					
+					
+					</div>
+				
+					<a name='Update'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Update : Bool ( key:K, value:V )</h3>
+					Updates an existing key/value pair.
+<p>
+If the map does not contain <i>key</i>, the map is not modified and false is returned.
+<p>
+Otherwise, the map is updated and true is returned.
+					
+					
+					</div>
+				
+					<a name='Values'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Values : Object ()</h3>
+					Returns an object that can be used to enumerate all values in the map with a For Eachin loop.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

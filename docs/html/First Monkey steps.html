@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 First monkey steps 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> First Monkey steps</h1>
+<p>
+Skid spills some source...
+<p>
+<p>
+<h2> Main</h2>
+<p>
+We begin with the smallest monkey program.
+<p>
+<pre>
+Function Main()
+	Print "Hello"
+End
+</pre>
+	
+In which, with the HTML5 target selected, we verify we are able to create and view our monkey developments. 
+<p>
+To learn more about the Main entry point of a program make sure you read the Programs and Declarations section of the <a href='Language reference.html'>Language reference</a>.
+<p>
+<p>
+<h2> Game App</h2>
+<p>
+We now build a mojo <a href='_mojo.app.App.html'>App</a> which we call Game (in monkey class names are typically capitalized).
+<p>
+<pre>
+Import mojo
+
+Class Game Extends App
+	
+	Method OnCreate()
+		Print "hello"
+	End
+	
+End
+
+Function Main()
+	New Game()
+End
+</pre>	
+<p>
+A mojo <a href='_mojo.app.App.html'>App</a> is used to provide us methods of input, graphics and sound. The framework above creates a single App using the Game class definition.<br>
+<p>
+<p>
+<h2> Spiral animation</h2>
+<p>
+With our game object defined we extend the basic Update and Render parts of the app.
+<p>
+The minimum requirements for an animating monkey application are an <a href='_mojo.app.App.html'>App</a> implementing the methods:
+<p>
+<li>App.OnCreate must call <a href='_mojo.app.html#SetUpdateRate'>SetUpdateRate</a></li>
+<p>
+<li>App.OnUpdate can use mojo input commands</li>
+<p>
+<li>App.OnRender can use mojo drawing commands</li>
+<p>
+The following draws an animated spiral shape using the <a href='_mojo.graphics.html#DrawRect'>DrawRect</a> command.
+<p>
+<pre>
+Import mojo
+
+Class Game Extends App
+
+	' radial sprial with axis aligned phase
+		
+	Function DrawSpiral(clock)
+		Local w=DeviceWidth/2
+		For Local i#=0 Until w*1.5 Step .2
+			Local x#,y#
+			x=w+i<em>Sin(i</em>3+clock)
+			y=w+i<em>Cos(i</em>2+clock)
+			DrawRect  x,y,1,1
+		Next
+	End
+
+	Field updateCount
+	
+	Method OnCreate()
+		Print "spiral"
+		
+		SetUpdateRate 60
+	End
+	
+	Method OnUpdate()
+		updateCount+=1
+	End
+		
+	Method OnRender()
+		Cls
+		DrawSpiral updateCount
+		DrawSpiral updateCount*1.1
+	End
+	
+End
+
+Function Main()
+	New Game()
+End
+</pre>	
+<p>
+Each spiral drawn by the program begins at the middle of the screen and spirals out using the Maths functions <a href='_monkey.math.html#Sin'>Sin</a> and <a href='_monkey.math.html#Cos'>Cos</a>.
+<p>
+View the <a href='http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/spiral/MonkeyGame.html'>Spiral</a> animation fully built.
+<p>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

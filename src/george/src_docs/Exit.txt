@@ -1,0 +1,51 @@
+# Keyword Exit
+
+Allows program flow to 'jump out' of loops, continuing execution after the relevant closing keyword.
+
+## Syntax
+
+Exit  
+
+## Description
+
+The Exit keyword allows program flow to 'jump out' of Repeat and While loops, continuing execution after the relevant closing keyword.
+
+## See also
+
+[[Repeat]] [[While]]
+
+## Example
+
+<pre>
+x = 1
+
+Repeat
+&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;If x = 3 Then Exit
+Forever
+
+' Program flow will continue here after Exit
+
+Print "Exited loop!"
+</pre>
+
+## Example 2
+
+<pre>
+x = 1
+
+' Inner loop example
+
+Repeat
+
+&nbsp;&nbsp;Repeat
+&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;&nbsp;&nbsp;If x = 3 Then Exit
+&nbsp;&nbsp;Forever
+
+&nbsp;&nbsp;' Program flow will continue here after Exit
+
+&nbsp;&nbsp;Print "Exited inner loop!"
+
+Forever
+</pre>

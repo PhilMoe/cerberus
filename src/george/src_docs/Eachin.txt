@@ -1,0 +1,17 @@
+# Keyword Eachin
+
+Defines the set of objects or values to be assigned to the index variable in a For/Next loop. See [[For]] for details and examples.
+
+## Syntax
+
+For Local *IndexVar* := Eachin *value_set*  
+&nbsp;&nbsp;*Statements...*  
+Next
+
+## Description
+
+Eachin provides for a variation of the standard For/Next loop which will iterate through a set of objects or values, such as a list or array.
+
+## See also
+
+[[For]] [[Next]]

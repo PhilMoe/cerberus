@@ -1,0 +1,49 @@
+
+#Resource paths in monkey.
+
+App resources may be stored in many different locations, for example, in an app's data dir, on the local filesystem, or on a remote server.
+
+When using functions and methods that open or load resources, you can use any of the following special prefixes when specifying resource paths:
+
++ Use the "http://" or "https://" prefix to locate resources stored on a server.
+
++ Use the "monkey://data/" prefix to locate resources that were placed in the app's data/ directory when it was built.
+
++ Use the "monkey://internal/" prefix to locate resources stored in the app's internal storage directory.
+
+Not all prefixes work on all targets and the exact behavior of each prefix is target dependant. For example, android and ios can load images from http:// but not audio, while glfw cannot load from http:// at all. Full support for all prefixes is an ongoing mission!
+
+Also, note that Mojo module load commands will automatically insert a "monkey://data/" prefix before any path that does not already incude a prefix.
+
+
+##Supported resource path prefixes
+
++ **web** = http://, https://
+
++ **data** = monkey://data/
+
++ **file** = monkey://internal/
+
+<table>
+<tr><th>Function</th>
+<th>Html5</th> <th>Flash</th> <th>Glfw</th> <th>Android</th> <th>iOS</th> <th>XNA</th> <th>PSM</th></tr>
+
+<tr><td>[[mojo.app.LoadString|LoadString]]</td>
+<td>web, data</td> <td>data</td> <td>data, file</td> <td>web, data, file</dh> <td>data, file</td> <td>data</td> <td>data</td> </tr>
+
+<tr><td>[[mojo.graphics.LoadImage|LoadImage]]</td>
+<td>web, data</td> <td>data</td> <td>data, file</td> <td>web, data, file</dh> <td>web, data, file</td> <td>data</td> <td>data</td> </tr>
+
+<tr><td>[[mojo.audio.LoadSound|LoadSound]]</td>
+<td>web, data</td> <td>data</td> <td>data, file</td> <td>data</dh> <td>data, file</td> <td>data</td> <td>data</td> </tr>
+
+<tr><td>[[mojo.audio.PlayMusic|PlayMusic]]</td>
+<td>web, data</td> <td>data</td> <td>data, file</td> <td>data</dh> <td>data, file</td> <td>data</td> <td>data</td> </tr>
+
+<tr><td>[[brl.databuffer.DataBuffer.Load|DataBuffer.Load]]</td>
+<td>web, data</td> <td>data</td> <td>data, file</td> <td>web, data, file</dh> <td>data, file</td> <td>data</td> <td>data</td> </tr>
+
+<tr><td>[[brl.filestream.FileStream.Open|FileStream.Open]]</td>
+<td>N/A</td> <td>N/A</td> <td>file</td> <td>file</dh> <td>file</td> <td>file</td> <td>file</td> </tr>
+
+</table>

@@ -1,0 +1,48 @@
+
+# Class monkey.boxes.IntObject
+
+The IntObject box class can be used to encapsulate an int value inside an object.
+
+
+# Field value:Int
+
+The value contained in the IntObject.
+
+# Method New()
+
+Creates a new IntObject with the value 0.
+
+
+# Method New(value:Int)
+
+Creates a new IntObject with the given value.
+
+
+# Method New(value:Float)
+
+Creates a new IntObject with the given float value converted to an int.
+
+
+# Method ToInt:Int()
+
+Returns the int value contained in the IntObject.
+
+
+# Method ToFloat:Float()
+
+Returns the int value contained in the IntObject converted to a float.
+
+
+# Method ToString:String()
+
+Returns the int value contained in the IntObject converted to a string.
+
+
+# Method Equals:Bool(box:IntObject)
+
+Tests IntObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:IntObject)
+
+Compares IntObjects. Returns a value \<0 if this int value is less than @box, a value \>0 if this int value is greater than @box, or 0 if both int values are equal.

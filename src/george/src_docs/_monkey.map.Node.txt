@@ -1,0 +1,30 @@
+
+# Class monkey.map.Node
+
+Node objects are responsible for mainting the association between keys and values in a map.
+
+
+'# Method New(key:K,value:V,color:Int,parent:Node<K,V>)
+
+
+'# Method Count:Int(n:Int)
+
+
+# Method Key:K() Property
+
+Returns the key contained in the map node.
+
+
+# Method Value:V() Property
+
+Returns the value contained in the map node.
+
+
+'# Method NextNode:Node()
+
+
+'# Method PrevNode:Node()
+
+
+'# Method Copy:Node(parent:Node)
+

@@ -1,0 +1,11 @@
+
+# Module monkey.set
+
+# Import monkey.map Private
+
+The set module provides support for sets, collections of ordered objects.
+
+In addition to the generic Set class, the set module also provides utility classes for handling sets of ints, floats and strings.
+
+Please Refer to the [[Set]] class for more information on how monkey implements sets.
+

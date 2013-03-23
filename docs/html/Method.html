@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Method 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Keyword Method</h1>
+<p>
+Declares the beginning of a class method.
+<p>
+<h2> Syntax</h2>
+<p>
+Method <em>Identifier</em>: <em>ReturnType</em> ( <em>Parameters</em> ) [ Property ] [ Abstract ] [ Final ]<br>
+&nbsp;&nbsp;<em>Statements...</em><br>
+End [ Method ]
+<p>
+<h2> Description</h2>
+<p>
+The Method keyword begins the declaration of a class method.
+<p>
+Please see the Methods section of the monkey language reference for more information on methods.
+<p>
+<h2> See also</h2>
+<p>
+<a href='End.html'>End</a> <a href='Class.html'>Class</a> <a href='Property.html'>Property</a> <a href='Abstract.html'>Abstract</a> <a href='Final.html'>Final</a><br>
+<a href='Language reference.html#classes'>Language reference (Classes)</a><br>
+<a href='Language reference.html#methods'>Language reference (Methods)</a>
+<p>
+<h2> Examples</h2>
+<p>
+An example of methods as statements.
+<p>
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
+
+&nbsp;&nbsp;Method PrintX ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method PrintY ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
+
+End
+
+Local g:GameObject = New GameObject
+
+p.x = 100
+p.y = 200
+
+' Accessing method...
+
+p.PrintX
+p.PrintY
+</pre>
+<p>
+Strict mode version of above GameObject class. (Note use of Void return type.)
+<p>
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
+
+&nbsp;&nbsp;Method PrintX:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
+
+&nbsp;&nbsp;Method PrintY:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
+
+End
+</pre>
+<p>
+Method returning value of Float type.
+<p>
+<pre>
+Class GameObject
+
+&nbsp;&nbsp;Method AddFloats:Float (value1:Float, value2:Float)
+&nbsp;&nbsp;&nbsp;&nbsp;Return value1 + value2
+&nbsp;&nbsp;End
+
+End
+
+Local g:GameObject = New GameObject
+
+' Accessing method...
+
+Print g.AddFloats (1.5, 2.0)
+</pre>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

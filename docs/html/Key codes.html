@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Key codes 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Key codes</h1>
+<p>
+The following constants are for use with KeyDown and KeyHit:
+<pre>
+KEY_BACKSPACE
+KEY_TAB
+KEY_ENTER
+KEY_ESCAPE
+KEY_SPACE
+KEY_SHIFT
+KEY_CONTROL
+KEY_PAGEUP
+KEY_PAGEDOWN
+KEY_END
+KEY_HOME
+KEY_LEFT
+KEY_UP
+KEY_RIGHT
+KEY_DOWN
+KEY_INSERT
+KEY_DELETE
+KEY_F1
+KEY_F2
+KEY_F3
+KEY_F4
+KEY_F5
+KEY_F6
+KEY_F7
+KEY_F8
+KEY_F9
+KEY_F10
+KEY_F11
+KEY_F12
+KEY_0
+KEY_1
+KEY_2
+KEY_3
+KEY_4
+KEY_5
+KEY_6
+KEY_7
+KEY_8
+KEY_9
+KEY_A
+KEY_B
+KEY_C
+KEY_D
+KEY_E
+KEY_F
+KEY_G
+KEY_H
+KEY_I
+KEY_J
+KEY_K
+KEY_L
+KEY_M
+KEY_N
+KEY_O
+KEY_P
+KEY_Q
+KEY_R
+KEY_S
+KEY_T
+KEY_U
+KEY_V
+KEY_W
+KEY_X
+KEY_Y
+KEY_Z
+KEY_TILDE
+KEY_MINUS
+KEY_EQUALS
+KEY_OPENBRACKET
+KEY_CLOSEBRACKET
+KEY_BACKSLASH
+KEY_SEMICOLON
+KEY_QUOTES
+KEY_COMMA
+KEY_PERIOD
+KEY_SLASH
+</pre>
+<p>
+As a convenience, the commands KeyDown and KeyHit can also be used to test non-keyboard devices using these additional constants:
+<pre>
+KEY_LMB			'Left mouse button
+KEY_RMB			'Right mouse button
+KEY_MMB			'Middle mouse button
+
+KEY_JOY0_A		'A button on joystick 0
+KEY_JOY0_B		'B button on joystick 0
+KEY_JOY0_X		'X button on joystick 0
+KEY_JOY0_Y		'Y button on joystick 0
+KEY_JOY0_LEFT	'left button on joystick 0
+KEY_JOY0_UP		'up button on joystick 0
+KEY_JOY0_RIGHT	'right button on joystick 0
+KEY_JOY0_DOWN	'down button on joystick 0
+
+KEY_TOUCH0		'First touch - note: 32 touch codes supported. KEY_TOUCHn=KEY_TOUCH0+n, where n>=0 and n<32
+</pre>
+<p>
+The following constants are for use with MouseDown and MouseHit:
+<pre>
+MOUSE_LEFT
+MOUSE_RIGHT
+MOUSE_MIDDLE
+</pre>
+<p>
+The following constants are for use with JoyDown and JoyHit:
+<pre>
+JOY_A
+JOY_B
+JOY_X
+JOY_Y
+JOY_LB
+JOY_RB
+JOY_BACK
+JOY_START
+JOY_LEFT
+JOY_UP
+JOY_RIGHT
+JOY_DOWN
+</pre>
+<p>
+The following constants are for use with GetChar:
+<pre>
+CHAR_TAB
+CHAR_BACKSPACE
+CHAR_ENTER
+CHAR_ESCAPE
+CHAR_PAGEUP
+CHAR_PAGEDOWN
+CHAR_END
+CHAR_HOME
+CHAR_LEFT
+CHAR_UP
+CHAR_RIGHT
+CHAR_DOWN
+CHAR_INSERT
+CHAR_DELETE
+</pre>
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

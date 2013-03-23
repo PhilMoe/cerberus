@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/ 
+				 Final 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+			<h1> Keyword Final</h1>
+<p>
+Declares that a class may not be extended or that a method may not be overridden.
+<p>
+<h2> Syntax</h2>
+<p>
+Class <em>Identifier</em> [ < <em>Parameters</em> > ] [ Extends <em>Class</em> ] [ Implements <em>Interfaces</em> ] [ <code>Final</code> ]<br>
+&nbsp;&nbsp;' Declarations...<br>
+End [ Class ]
+<p>
+Method <em>Identifier</em>: <em>ReturnType</em> ( <em>Parameters</em> ) [ Property ] [ Abstract ] [ <code>Final</code> ]<br>
+&nbsp;&nbsp;<em>Statements...</em><br>
+End [ Method ]
+<p>
+<h2> Description</h2>
+<p>
+The Final modifier can be used in two contexts:
+<p>
+<li>Classes - the Final keyword at the end of a Class statement declares that the class may not be extended by other classes;</li>
+<li>Methods - the Final keyword at the end of a Method statement declares that a method may not be overridden (in an extended version of a <em>non</em>-Final class).</li>
+<p>
+The examples below should help to clarify these cases.
+<p>
+<h2> See also</h2>
+<p>
+<a href='Class.html'>Class</a> <a href='Method.html'>Method</a><br>
+<a href='Language reference.html#classes'>Language reference</a>
+<p>
+<h2> Example</h2>
+<p>
+<em>In this case, we try to extend the Dog class to create a Doberman class; however, this is forbidden due to the Final keyword in the Class statement.</em>
+<p>
+<em><code>This example will intentionally generate an error</code>.</em>
+<p>
+<pre>
+' Runnable example
+
+Class Dog Final
+
+&nbsp;&nbsp;Method Bark ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof!"
+&nbsp;&nbsp;End
+
+End
+
+Class Doberman Extends Dog
+
+&nbsp;&nbsp;' Think I'll make my own Dog!
+
+End
+
+Function Main ()
+
+&nbsp;&nbsp;Local d:Doberman = New Doberman
+
+End
+</pre>
+<p>
+<em>In the example below, Dog</em> can <em>be extended (no Final modifier); however, we have stated that the Bark method may not be overridden, again, using the Final modifier.</em>
+<p>
+<em><code>This example will intentionally generate an error</code>.</em>
+<p>
+<pre>
+' Runnable example
+
+Class Dog
+
+&nbsp;&nbsp;Method Bark () Final
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof!"
+&nbsp;&nbsp;End
+
+End
+
+Class Doberman Extends Dog
+
+&nbsp;&nbsp;Method Bark ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "RRGGGHHHRRRGHGHWWRRRRR!!!"
+&nbsp;&nbsp;End
+
+End
+
+Function Main ()
+
+&nbsp;&nbsp;Local d:Doberman = New Doberman
+&nbsp;&nbsp;d.Bark
+
+End
+</pre>
+<p>
+Note that in both cases, no error will be flagged unless (in the first example) you try to create a Doberman, or (in the second example) call the erroneously overridden method.
+		
+		
+		
+			
+		
+		
+		
+			
+			
+			
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

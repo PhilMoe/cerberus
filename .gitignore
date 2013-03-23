@@ -1,6 +1,10 @@
 bin
 modules/mojo
 modules/brlx
-src/george
 src/rebuildall
 src/rebuilaall.exe
+src/george/src_docs/_mojo.*
+docs/html/_mojo.*
+Monkey
+Monkey.app
+Monkey.exe

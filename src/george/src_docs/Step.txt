@@ -1,0 +1,25 @@
+# Keyword Step
+
+Optional For/Next loop modifier specifying size of iteration step. See [[For]] for details and examples.
+
+## Syntax
+
+For Local *IndexVar* := *start_value* To *end_value* [ Step *constant_value* ]  
+&nbsp;&nbsp;*Statements...*  
+Next
+
+## Description
+
+The optional Step keyword, followed by a constant value, allows control over the size of the iteration step in a For/Next loop.
+
+## See also
+
+[[For]] [[Next]] [[To]] [[Until]]
+
+## Example
+
+<pre>
+For k=1 To 1000 Step 100
+&nbsp;&nbsp;Print k
+Next
+</pre>

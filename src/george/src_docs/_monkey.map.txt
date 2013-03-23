@@ -1,0 +1,10 @@
+
+# Module monkey.map
+
+The map module provides support for associative maps.
+
+In addition to the generic Map class, the map module also provides utility classes for handling maps of ints, floats and strings.
+
+Please refer to the [[Map]] class for more information on how monkey implements maps.
+
+

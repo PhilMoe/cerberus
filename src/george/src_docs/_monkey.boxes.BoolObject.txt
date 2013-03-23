@@ -1,0 +1,29 @@
+
+# Class monkey.boxes.BoolObject
+
+The BoolObject box class can be used to encapsulate an bool value inside an object.
+
+
+# Field value:Bool
+
+The bool value contained in this BoolObject.
+
+
+# Method New()
+
+Creates a new BoolObject that contains the value false.
+
+
+# Method New(value:Bool)
+
+Creates a new BoolObject with the given value.
+
+
+# Method ToBool:Bool()
+
+Returns the bool value contained in the BoolObject.
+
+
+# Method Equals:Bool(box:BoolObject)
+
+Returns 'true' if the value contained in the BoolObject equals the value contained in @box.

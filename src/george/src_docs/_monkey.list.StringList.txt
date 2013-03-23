@@ -1,0 +1,26 @@
+
+# Class monkey.list.StringList Extends List<String>
+
+StringList is a convenience class for handling lists of string values.
+
+
+# Method New()
+
+Creates a new empty StringList.
+
+
+# Method Compare:Int(lhs:String,rhs:String)
+
+Implements the [[List.Compare]] method, which allows StringLists to be sorted using the [[Sort]] method.
+
+
+# Method Join:String(separator:String)
+
+Concatenates the elements of the list together, inserting the specified separator between each element.
+
+
+## Parameters
+
+separator - string to use to separate elements.
+
+

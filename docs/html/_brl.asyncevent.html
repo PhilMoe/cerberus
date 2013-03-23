@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_brl.html'>brl</a> 
+				
+			
+				/ 
+				 asyncevent 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+				<h1>Module brl.asyncevent</h1>
+			
+			
+			
+			
+			
+			
+			
+			
+				The asyncevent module provides core functionality for handling asynchronous (async) events. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+				<div class='box'>
+				<h2>Interfaces</h2>
+				<table class='small'>
+				
+					<tr><td><a href='_brl.asyncevent.IAsyncEventSource.html'>IAsyncEventSource</a></td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Functions</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#AddAsyncEventSource'>AddAsyncEventSource</a> : Void ( source:IAsyncEventSource )</td></tr>
+				
+					<tr><td><a href='#RemoveAsyncEventSource'>RemoveAsyncEventSource</a> : Void ( source:IAsyncEventSource )</td></tr>
+				
+					<tr><td><a href='#UpdateAsyncEvents'>UpdateAsyncEvents</a> : Void ()</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				The asyncevent module provides core functionality for handling asynchronous (async) events.
+<p>
+An async event occurs when an async operation completes or changes state. Async operations are operations that execute 'in the background' while your app is running, typically on another thread, and include network data transfers and network connections.
+<p>
+When an async event occurs, your program is notified by means of a method call to an event handler object you  provided when the async operation was started. Such event handler objects must implement the correct interface method for the operation being performed. For example, when you start an async stream <a href='_brl.asyncstream.AsyncStream.html#Read'>Read</a> operation, you must provide an object with a method that implements the <a href='_brl.asyncstream.IOnReadComplete.html'>IOnReadComplete</a> interface method. This is the method that will be called when the async read completes.
+<p>
+In order for async events to occur, the global <a href='_brl.asyncevent.html#UpdateAsyncEvents'>UpdateAsyncEvents</a> function must be called at regular intervals - once per OnUpdate is generally enough. This is when your event handler methods will actually be called.
+<p>
+Internally, the <a href='_brl.asyncevent.html#UpdateAsyncEvents'>UpdateAsyncEvents</a> function simply calls the UpdateAsyncEvents interface method for each object contained in a global queue. You can add and remove your own objects to and from this queue with the <a href='_brl.asyncevent.html#AddAsyncEventSource'>AddAsyncEventSource</a> and <a href='_brl.asyncevent.html#RemoveAsyncEventSource'>RemoveAsyncEventSource</a> functions. Objects in this queue must implement the <a href='_brl.asyncevent.IAsyncEventSource.html'>IAsyncEventSource</a> interface.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Function Documentation</h2>
+				
+					<a name='AddAsyncEventSource'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function AddAsyncEventSource : Void ( source:<a href='_brl.asyncevent.IAsyncEventSource.html'>IAsyncEventSource</a> )</h3>
+					Adds <i>source</i> to the global list of event sources to be processed by <a href='_brl.asyncevent.html#UpdateAsyncEvents'>UpdateAsyncEvents</a>.
+					
+					
+					</div>
+				
+					<a name='RemoveAsyncEventSource'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function RemoveAsyncEventSource : Void ( source:<a href='_brl.asyncevent.IAsyncEventSource.html'>IAsyncEventSource</a> )</h3>
+					Removes <i>source</i> from the global list of event sources to be processed by <a href='_brl.asyncevent.html#UpdateAsyncEvents'>UpdateAsyncEvents</a>.
+					
+					
+					</div>
+				
+					<a name='UpdateAsyncEvents'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function UpdateAsyncEvents : Void ()</h3>
+					Calls the <a href='_brl.asyncevent.IAsyncEventSource.html#UpdateAsyncEvents'>UpdateAsyncEvents</a> method for each event source contained in the global list of event sources.
+<p>
+You must call this function repeatedly (for example, at the start of OnUpdate) for the various OnComplete handlers to continue to execute.
+					
+					
+					</div>
+				
+				</div>
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

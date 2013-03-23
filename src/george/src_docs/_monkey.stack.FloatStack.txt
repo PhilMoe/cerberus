@@ -1,0 +1,9 @@
+
+# Class monkey.stack.FloatStack Extends Stack<Float>
+
+A FloatStack is a convenience class for dealing with stacks of floats.
+
+
+# Method New()
+
+Creates a new empty FloatStack.

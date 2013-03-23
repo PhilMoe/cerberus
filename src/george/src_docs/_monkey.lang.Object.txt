@@ -1,0 +1,9 @@
+
+# Class monkey.lang.Object
+
+The Object class is the common base class for all monkey objects.
+
+The object class currently has no members.
+
+Please see the Object Type and Classes sections of the monkey language reference for more information about class and objects.
+

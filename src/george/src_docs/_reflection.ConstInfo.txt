@@ -1,0 +1,24 @@
+
+# Class reflection.ConstInfo
+
+ConstInfo objects describe constant values declared by your program.
+
+
+# Method Name:String() Property
+
+Get name of const.
+
+
+# Method Attributes:Int() Property
+
+Get const attributes.
+
+
+# Method Type:ClassInfo() Property
+
+Get type of const.
+
+
+# Method GetValue:Object()
+
+Get value of const.
