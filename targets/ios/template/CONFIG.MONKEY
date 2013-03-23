@@ -1,0 +1,15 @@
+
+#IOS_RETINA_ENABLED=true
+#IOS_ACCELEROMETER_ENABLED=true
+#IOS_DISPLAY_LINK_ENABLED=false
+
+#OPENGL_DEPTH_BUFFER_ENABLED=false
+#OPENGL_GLES20_ENABLED=false
+
+#MOJO_IMAGE_FILTERING_ENABLED=true
+
+#TEXT_FILES="*.txt|*.xml|*.json"
+#IMAGE_FILES="*.png|*.jpg"
+#SOUND_FILES="*.wav|*.mp3|*.m4a"
+#MUSIC_FILES="*.wav|*.mp3|*.m4a"
+#BINARY_FILES="*.bin|*.dat"

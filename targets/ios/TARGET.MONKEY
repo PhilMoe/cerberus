@@ -1,0 +1,4 @@
+
+#TARGET_NAME="iOS Game"
+#TARGET_SYSTEM="ios"
+#TARGET_BUILDER="ios"

@@ -1,5 +1,6 @@
 bin
 modules/mojo
 modules/brlx
+src/george
 src/rebuildall
 src/rebuilaall.exe

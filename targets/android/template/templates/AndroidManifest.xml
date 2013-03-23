@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="${ANDROID_APP_PACKAGE}"
+	android:versionCode="1"
+	android:versionName="1.0"
+	android:installLocation="auto">
+	
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="7" />
+	
+	<uses-feature android:glEsVersion="0x00010001" />
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+	${ANDROID_MANIFEST_MAIN}
+		
+	<application android:label="${ANDROID_APP_LABEL}" android:icon="@drawable/icon">
+	
+		<activity 
+			android:name="MonkeyGame"
+			android:label="${ANDROID_APP_LABEL}"
+			android:screenOrientation="${ANDROID_SCREEN_ORIENTATION}"
+			android:configChanges="keyboardHidden|orientation"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		
+		${ANDROID_MANIFEST_APPLICATION}
+		
+	</application>
+</manifest> 
+          

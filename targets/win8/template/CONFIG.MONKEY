@@ -1,0 +1,14 @@
+
+#WIN8_SCREEN_ORIENTATION=1			'1=portrait, 2=landscape
+
+#OPENGL_GLES20_ENABLED=false
+#OPENGL_DEPTH_BUFFER_ENABLED=false
+
+#MOJO_AUTO_SUSPEND_ENABLED=false
+#MOJO_IMAGE_FILTERING_ENABLED=True
+
+#TEXT_FILES="*.txt|*.xml|*.json"
+#IMAGE_FILES="*.png|*.jpg"
+#SOUND_FILES="*.wav|*.mp3"
+#MUSIC_FILES="*.wav|*.mp3"
+#BINARY_FILES="*.bin|*.dat"

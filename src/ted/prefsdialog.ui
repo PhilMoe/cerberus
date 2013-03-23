@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PrefsDialog</class>
+ <widget class="QDialog" name="PrefsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>394</width>
+    <height>455</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>IDE Options</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Code Editor Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QFormLayout" name="formLayout_3">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="familyLabel">
+          <property name="text">
+           <string>Font Family</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QFontComboBox" name="fontComboBox"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="pointSizeLabel">
+          <property name="text">
+           <string>Font Size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="fontSizeWidget">
+          <property name="value">
+           <number>12</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="tabSizeLabel_2">
+          <property name="text">
+           <string>Tab size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="tabSizeWidget"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="smoothFontsLabel">
+          <property name="text">
+           <string>Smooth fonts</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="smoothFontsWidget">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Code Editor Colors</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="backgroundColorLabel">
+          <property name="text">
+           <string>Background</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="ColorSwatch" name="backgroundColorWidget" native="true"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="defaultColorLabel">
+          <property name="text">
+           <string>Default</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="ColorSwatch" name="defaultColorWidget" native="true"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="highlightColorLabel">
+          <property name="text">
+           <string>Highlight</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="ColorSwatch" name="highlightColorWidget" native="true"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="numbersColorLabel">
+          <property name="text">
+           <string>Numbers</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="ColorSwatch" name="numbersColorWidget" native="true"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="stringsColorLabel">
+          <property name="text">
+           <string>Strings</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="ColorSwatch" name="stringsColorWidget" native="true"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="ColorSwatch" name="identifiersColorWidget" native="true"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="keywordsColorLabel">
+          <property name="text">
+           <string>Keywords</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="ColorSwatch" name="keywordsColorWidget" native="true"/>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="commentsColorLabel">
+          <property name="text">
+           <string>Comments</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="ColorSwatch" name="commentsColorWidget" native="true"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="identifiersColorLabel">
+          <property name="text">
+           <string>Identifiers</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Tool Paths</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <layout class="QFormLayout" name="formLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="monkeyLabel">
+          <property name="text">
+           <string>Monkey</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="blitzMaxLabel">
+          <property name="text">
+           <string>BlitzMax</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QWidget" name="widget" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="monkeyPathWidget">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="monkeyPathButton">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QWidget" name="widget_2" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="blitzmaxPathWidget">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="blitzmaxPathButton">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="okayButton">
+       <property name="text">
+        <string>Okay</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ColorSwatch</class>
+   <extends>QWidget</extends>
+   <header>colorswatch.h</header>
+   <container>1</container>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>fontComboBox</tabstop>
+  <tabstop>fontSizeWidget</tabstop>
+  <tabstop>tabSizeWidget</tabstop>
+  <tabstop>smoothFontsWidget</tabstop>
+  <tabstop>monkeyPathButton</tabstop>
+  <tabstop>blitzmaxPathButton</tabstop>
+  <tabstop>monkeyPathWidget</tabstop>
+  <tabstop>blitzmaxPathWidget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>stringsColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>keywordsColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>372</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>defaultColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>242</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>numbersColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>backgroundColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>identifiersColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>346</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>commentsColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fontComboBox</sender>
+   <signal>currentFontChanged(QFont)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onFontChanged(QFont)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>164</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>138</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fontSizeWidget</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onFontSizeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>164</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>138</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>monkeyPathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onBrowseForPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>310</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blitzmaxPathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onBrowseForPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>505</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabSizeWidget</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onTabSizeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highlightColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>143</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>smoothFontsWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onSmoothFontsChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>176</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okayButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>318</x>
+     <y>546</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>182</x>
+     <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onColorChanged()</slot>
+  <slot>onFontChanged(QFont)</slot>
+  <slot>onFontSizeChanged(int)</slot>
+  <slot>onBrowseForPath()</slot>
+  <slot>onTabSizeChanged(int)</slot>
+  <slot>onSmoothFontsChanged(bool)</slot>
+ </slots>
+</ui>

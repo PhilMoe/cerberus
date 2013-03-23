@@ -1,0 +1,4 @@
+
+#TARGET_NAME="Glfw Game"
+#TARGET_SYSTEM="glfw"
+#TARGET_BUILDER="glfw"

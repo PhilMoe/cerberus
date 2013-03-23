@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/Back.png</file>
+        <file>icons/Build.png</file>
+        <file>icons/Build-Run.png</file>
+        <file>icons/Close.png</file>
+        <file>icons/Copy.png</file>
+        <file>icons/Cut.png</file>
+        <file>icons/Find.png</file>
+        <file>icons/Forward.png</file>
+        <file>icons/Go.png</file>
+        <file>icons/Home.png</file>
+        <file>icons/New.png</file>
+        <file>icons/Open.png</file>
+        <file>icons/Paste.png</file>
+        <file>icons/Save.png</file>
+        <file>icons/Step.png</file>
+        <file>icons/Step-In.png</file>
+        <file>icons/Step-Out.png</file>
+        <file>icons/Stop.png</file>
+    </qresource>
+</RCC>
