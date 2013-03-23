@@ -1,0 +1,6 @@
+#ignore bin dir
+bin
+
+#ignore mojo module
+modules/mojo
+
