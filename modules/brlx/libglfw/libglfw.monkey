@@ -1,0 +1,32 @@
+
+#If LANG<>"cpp"
+#Error "libglfw is not available on this target"
+#Endif
+
+#INCDIRS+="${CD}/native/include"
+#INCDIRS+="${CD}/native/lib"
+#INCDIRS+="${CD}/native/lib/win32"
+
+#SRCS+="${CD}/native/lib/enable.c"
+#SRCS+="${CD}/native/lib/fullscreen.c"
+#SRCS+="${CD}/native/lib/glext.c"
+#SRCS+="${CD}/native/lib/image.c"
+#SRCS+="${CD}/native/lib/init.c"
+#SRCS+="${CD}/native/lib/input.c"
+#SRCS+="${CD}/native/lib/joystick.c" 
+#SRCS+="${CD}/native/lib/stream.c"
+#SRCS+="${CD}/native/lib/tga.c"
+#SRCS+="${CD}/native/lib/thread.c"
+#SRCS+="${CD}/native/lib/time.c"
+#SRCS+="${CD}/native/lib/window.c"
+#SRCS+="${CD}/native/lib/win32/win32_dllmain.c"
+#SRCS+="${CD}/native/lib/win32/win32_enable.c"
+#SRCS+="${CD}/native/lib/win32/win32_fullscreen.c"
+#SRCS+="${CD}/native/lib/win32/win32_glext.c"
+#SRCS+="${CD}/native/lib/win32/win32_init.c"
+#SRCS+="${CD}/native/lib/win32/win32_joystick.c"
+#SRCS+="${CD}/native/lib/win32/win32_thread.c"
+#SRCS+="${CD}/native/lib/win32/win32_time.c"
+#SRCS+="${CD}/native/lib/win32/win32_window.c"
+
+#LIBS+="opengl32"
