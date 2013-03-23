@@ -4,3 +4,6 @@ bin
 #ignore mojo module
 modules/mojo
 
+#ignore brlx module
+modules/brlx
+
