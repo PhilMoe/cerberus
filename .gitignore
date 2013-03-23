@@ -1,9 +1,5 @@
-#ignore bin dir
 bin
-
-#ignore mojo module
 modules/mojo
-
-#ignore brlx module
 modules/brlx
-
+src/rebuildall
+src/rebuilaall.exe
