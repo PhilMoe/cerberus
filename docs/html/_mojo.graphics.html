@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_mojo.html'>mojo</a> 
+				
+			
+				/ 
+				 graphics 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+				<h1>Module mojo.graphics</h1>
+			
+			
+			
+			
+			
+			
+			
+			
+				The graphics module contains various functions that allow you to draw 2D graphics on all supported monkey target platforms. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+				<div class='box'>
+				<h2>Classes</h2>
+				<table class='small'>
+				
+					<tr><td><a href='_mojo.graphics.Image.html'>Image</a></td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constants</h2>
+				<table class='small'>
+				
+					<tr><td>AdditiveBlend : Int</td></tr>
+				
+					<tr><td>AlphaBlend : Int</td></tr>
+				
+				</table>
+				</div>
+			
+		
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Functions</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Cls'>Cls</a> : Int ( r:Float=0, g:Float=0, b:Float=0 )</td></tr>
+				
+					<tr><td><a href='#CreateImage'>CreateImage</a> : Image ( width:Int, height:Int, flags:Int=image.defaultflags )</td></tr>
+				
+					<tr><td><a href='#DeviceHeight'>DeviceHeight</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#DeviceWidth'>DeviceWidth</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#DrawCircle'>DrawCircle</a> : Int ( x:Float, y:Float, r:Float )</td></tr>
+				
+					<tr><td><a href='#DrawEllipse'>DrawEllipse</a> : Int ( x:Float, y:Float, xr:Float, yr:Float )</td></tr>
+				
+					<tr><td><a href='#DrawImage'>DrawImage</a> : Int ( image:Image, x:Float, y:Float, frame:Int=0 )</td></tr>
+				
+					<tr><td><a href='#DrawImage (2)'>DrawImage</a> : Int ( image:Image, x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:Float, frame:Int=0 )</td></tr>
+				
+					<tr><td><a href='#DrawImageRect'>DrawImageRect</a> : Int ( image:Image, x:Float, y:Float, srcX:Int, srcY:Int, srcWidth:Int, srcHeight:Int, frame:Int=0 )</td></tr>
+				
+					<tr><td><a href='#DrawImageRect (2)'>DrawImageRect</a> : Int ( image:Image, x:Float, y:Float, srcX:Int, srcY:Int, srcWidth:Int, srcHeight:Int, rotation:Float, scaleX:Float, scaleY:Float, frame:Int=0 )</td></tr>
+				
+					<tr><td><a href='#DrawLine'>DrawLine</a> : Int ( x1:Float, y1:Float, x2:Float, y2:Float )</td></tr>
+				
+					<tr><td><a href='#DrawOval'>DrawOval</a> : Int ( x:Float, y:Float, w:Float, h:Float )</td></tr>
+				
+					<tr><td><a href='#DrawPoint'>DrawPoint</a> : Int ( x:Float, y:Float )</td></tr>
+				
+					<tr><td><a href='#DrawPoly'>DrawPoly</a> : Int ( verts:Float[] )</td></tr>
+				
+					<tr><td><a href='#DrawRect'>DrawRect</a> : Int ( x:Float, y:Float, w:Float, h:Float )</td></tr>
+				
+					<tr><td><a href='#DrawText'>DrawText</a> : Int ( text:String, x:Float, y:Float, xalign:Float=0, yalign:Float=0 )</td></tr>
+				
+					<tr><td><a href='#FontHeight'>FontHeight</a> : Float ()</td></tr>
+				
+					<tr><td><a href='#GetAlpha'>GetAlpha</a> : Float ()</td></tr>
+				
+					<tr><td><a href='#GetBlend'>GetBlend</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#GetColor'>GetColor</a> : Float[] ()</td></tr>
+				
+					<tr><td><a href='#GetColor (2)'>GetColor</a> : Int ( color:Float[] )</td></tr>
+				
+					<tr><td><a href='#GetFont'>GetFont</a> : Image ()</td></tr>
+				
+					<tr><td><a href='#GetMatrix'>GetMatrix</a> : Float[] ()</td></tr>
+				
+					<tr><td><a href='#GetMatrix (2)'>GetMatrix</a> : Int ( matrix:Float[] )</td></tr>
+				
+					<tr><td><a href='#GetScissor'>GetScissor</a> : Float[] ()</td></tr>
+				
+					<tr><td><a href='#GetScissor (2)'>GetScissor</a> : Int ( scissor:Float[] )</td></tr>
+				
+					<tr><td><a href='#LoadImage'>LoadImage</a> : Image ( path:String, frameCount:Int=1, flags:Int=image.defaultflags )</td></tr>
+				
+					<tr><td><a href='#LoadImage (2)'>LoadImage</a> : Image ( path:String, frameWidth:Int, frameHeight:Int, frameCount:Int, flags:Int=image.defaultflags )</td></tr>
+				
+					<tr><td><a href='#PopMatrix'>PopMatrix</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#PushMatrix'>PushMatrix</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#ReadPixels'>ReadPixels</a> : Void ( pixels:Int[], x:Int, y:Int, width:Int, height:Int, arrayOffset:Int=0, arrayPitch:Int=0 )</td></tr>
+				
+					<tr><td><a href='#Rotate'>Rotate</a> : Int ( angle:Float )</td></tr>
+				
+					<tr><td><a href='#Scale'>Scale</a> : Int ( x:Float, y:Float )</td></tr>
+				
+					<tr><td><a href='#SetAlpha'>SetAlpha</a> : Int ( alpha:Float )</td></tr>
+				
+					<tr><td><a href='#SetBlend'>SetBlend</a> : Int ( blend:Int )</td></tr>
+				
+					<tr><td><a href='#SetColor'>SetColor</a> : Int ( r:Float, g:Float, b:Float )</td></tr>
+				
+					<tr><td><a href='#SetFont'>SetFont</a> : Int ( font:Image, firstChar:Int=32 )</td></tr>
+				
+					<tr><td><a href='#SetMatrix'>SetMatrix</a> : Int ( m:Float[] )</td></tr>
+				
+					<tr><td><a href='#SetMatrix (2)'>SetMatrix</a> : Int ( ix:Float, iy:Float, jx:Float, jy:Float, tx:Float, ty:Float )</td></tr>
+				
+					<tr><td><a href='#SetScissor'>SetScissor</a> : Int ( x:Float, y:Float, width:Float, height:Float )</td></tr>
+				
+					<tr><td><a href='#TextWidth'>TextWidth</a> : Float ( text:String )</td></tr>
+				
+					<tr><td><a href='#Transform'>Transform</a> : Int ( m:Float[] )</td></tr>
+				
+					<tr><td><a href='#Transform (2)'>Transform</a> : Int ( ix:Float, iy:Float, jx:Float, jy:Float, tx:Float, ty:Float )</td></tr>
+				
+					<tr><td><a href='#Translate'>Translate</a> : Int ( x:Float, y:Float )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				The graphics module contains various functions that allow you to draw 2D graphics on all supported monkey target platforms.
+<p>
+The module supports rendering of file based images, and a small set of simple primitives.
+<p>
+Transparency effects can be achieved using SetAlpha to set the global alpha level, and fullscreen rotation and scaling effects can be achieved using the various matrix commands such as Translate, Rotate and Scale.
+<p>
+The graphics module is state based, and commands that 'set' various states will remain in effect until a subsequent 'set' modifies the state.
+				</div>
+			
+			
+			
+			
+			
+			
+			
+
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Function Documentation</h2>
+				
+					<a name='Cls'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Cls : Int ( r:Float=0, g:Float=0, b:Float=0 )</h3>
+					Clears the graphics device to the specified color.
+<p>
+The current color, alpha and blend mode are ignored by Cls. However, the scissor rect is still used so only the area inside the scissor rect is cleared.
+					
+					
+					</div>
+				
+					<a name='CreateImage'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function CreateImage : <a href='_mojo.graphics.Image.html'>Image</a> ( width:Int, height:Int, flags:Int=image.defaultflags )</h3>
+					Creates an empty image for use with <a href='_mojo.graphics.Image.html#WritePixels'>Image.WritePixels</a>.
+<p>
+The contents of the image are initially undefined.
+					
+					
+					</div>
+				
+					<a name='DeviceHeight'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DeviceHeight : Int ()</h3>
+					Returns the height of the graphics device, in pixels.
+<p>
+Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#DeviceWidth'>DeviceWidth</a>
+					
+					
+					</div>
+				
+					<a name='DeviceWidth'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DeviceWidth : Int ()</h3>
+					Returns the width of the graphics device, in pixels.
+<p>
+Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#DeviceHeight'>DeviceHeight</a>
+					
+					
+					</div>
+				
+					<a name='DrawCircle'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawCircle : Int ( x:Float, y:Float, r:Float )</h3>
+					Draws a circle of the given radius at coordinates x, y.
+<p>
+The circle is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+					
+					</div>
+				
+					<a name='DrawEllipse'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawEllipse : Int ( x:Float, y:Float, xr:Float, yr:Float )</h3>
+					Draws an ellipse of radii xRadius, yRadius at coordinates x, y.
+<p>
+The ellipse is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#DrawOval'>DrawOval</a>
+					
+					
+					</div>
+				
+					<a name='DrawImage'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawImage : Int ( image:<a href='_mojo.graphics.Image.html'>Image</a>, x:Float, y:Float, frame:Int=0 )</h3>
+					Draws an image at coordinates x, y, offset by the image's handle.
+<p>
+The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#LoadImage'>LoadImage</a>, <a href='_mojo.graphics.html#DrawImageRect'>DrawImageRect</a>
+					
+					
+					</div>
+				
+					<a name='DrawImage (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawImage : Int ( image:<a href='_mojo.graphics.Image.html'>Image</a>, x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:Float, frame:Int=0 )</h3>
+					Draws an image at coordinates x, y, offset by the image's handle.
+<p>
+The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+<p>
+The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#LoadImage'>LoadImage</a>, <a href='_mojo.graphics.html#DrawImageRect'>DrawImageRect</a>
+					
+					
+					</div>
+				
+					<a name='DrawImageRect'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawImageRect : Int ( image:<a href='_mojo.graphics.Image.html'>Image</a>, x:Float, y:Float, srcX:Int, srcY:Int, srcWidth:Int, srcHeight:Int, frame:Int=0 )</h3>
+					Draws a sub-rectangle of an image at coordinates x, y, offset by the image's handle.
+<p>
+The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#LoadImage'>LoadImage</a>, <a href='_mojo.graphics.html#DrawImage'>DrawImage</a>
+					
+					
+					</div>
+				
+					<a name='DrawImageRect (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawImageRect : Int ( image:<a href='_mojo.graphics.Image.html'>Image</a>, x:Float, y:Float, srcX:Int, srcY:Int, srcWidth:Int, srcHeight:Int, rotation:Float, scaleX:Float, scaleY:Float, frame:Int=0 )</h3>
+					Draws a sub-rectangle of an image at coordinates x, y, offset by the image's handle.
+<p>
+The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+<p>
+The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#LoadImage'>LoadImage</a>, <a href='_mojo.graphics.html#DrawImage'>DrawImage</a>
+					
+					
+					</div>
+				
+					<a name='DrawLine'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawLine : Int ( x1:Float, y1:Float, x2:Float, y2:Float )</h3>
+					Draws a line from x1, y1 to x2, y2.
+<p>
+The line is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+					
+					</div>
+				
+					<a name='DrawOval'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawOval : Int ( x:Float, y:Float, w:Float, h:Float )</h3>
+					Draws an oval of size width, height at coordinates x, y.
+<p>
+The oval is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#DrawEllipse'>DrawEllipse</a>
+					
+					
+					</div>
+				
+					<a name='DrawPoint'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawPoint : Int ( x:Float, y:Float )</h3>
+					Draws a point at the coordinates x, y.
+<p>
+The point is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+					
+					</div>
+				
+					<a name='DrawPoly'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawPoly : Int ( verts:Float[] )</h3>
+					Draw a convex polygon using the provided vertices.
+<p>
+The polygon is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+<p>
+If the polygon described by vertices is not convex, the results are undefined.
+<p>
+The vertices array must contain at least 3 x,y pairs.
+					
+					
+					</div>
+				
+					<a name='DrawRect'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawRect : Int ( x:Float, y:Float, w:Float, h:Float )</h3>
+					Draws a rectangle of size width, height at the coordinates x, y.
+<p>
+The rectangle is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+					
+					
+					</div>
+				
+					<a name='DrawText'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function DrawText : Int ( text:String, x:Float, y:Float, xalign:Float=0, yalign:Float=0 )</h3>
+					Draws text at coordinates x, y in the current font.
+<p>
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+<p>
+xalign and yalign allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+<p>
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+<p>
+Note: The font functionality in mojo is very limited and intended mainly for debugging purposes.
+					
+					
+					</div>
+				
+					<a name='FontHeight'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function FontHeight : Float ()</h3>
+					Returns the height of the current font.
+					
+					
+					</div>
+				
+					<a name='GetAlpha'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetAlpha : Float ()</h3>
+					Returns the current alpha level in the range 0 to 1 inclusive.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetAlpha'>SetAlpha</a>
+					
+					
+					</div>
+				
+					<a name='GetBlend'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetBlend : Int ()</h3>
+					Returns the current blend mode, one of:
+<p>
+<pre>
+AlphaBlend
+AdditiveBlend
+</pre>
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetBlend'>SetBlend</a>
+					
+					
+					</div>
+				
+					<a name='GetColor'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetColor : Float[] ()</h3>
+					Returns the current color as a 3 component float array containg the current color's red, green and blue components respectively.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetColor'>SetColor</a>
+					
+					
+					</div>
+				
+					<a name='GetColor (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetColor : Int ( color:Float[] )</h3>
+					Copies the current color to <i>color</i>.
+<p>
+The length of <i>color</i> must be at least 3.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetColor'>SetColor</a>
+					
+					
+					</div>
+				
+					<a name='GetFont'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetFont : <a href='_mojo.graphics.Image.html'>Image</a> ()</h3>
+					Returns the current font.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetFont'>SetFont</a>
+					
+					
+					</div>
+				
+					<a name='GetMatrix'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetMatrix : Float[] ()</h3>
+					Returns the current transformation matrix as an array of 6 floats.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetMatrix'>SetMatrix</a>
+					
+					
+					</div>
+				
+					<a name='GetMatrix (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetMatrix : Int ( matrix:Float[] )</h3>
+					Copies the current transformation matrix to <i>matrix</i>.
+<p>
+The length of <i>matrix</i> must be at least 6.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetMatrix'>SetMatrix</a>
+					
+					
+					</div>
+				
+					<a name='GetScissor'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetScissor : Float[] ()</h3>
+					Returns the current scissor rectangle as a 4 component float array containg the scissor rectangle's x,y, width and height coordinates respectively.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetScissor'>SetScissor</a>
+					
+					
+					</div>
+				
+					<a name='GetScissor (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function GetScissor : Int ( scissor:Float[] )</h3>
+					Copies the current scissor rectangle to <i>scissor</i>.
+<p>
+The length of <i>scissor</i> must be at least 4.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#SetScissor'>SetScissor</a>
+					
+					
+					</div>
+				
+					<a name='LoadImage'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function LoadImage : <a href='_mojo.graphics.Image.html'>Image</a> ( path:String, frameCount:Int=1, flags:Int=image.defaultflags )</h3>
+					Loads an image from path.
+<p>
+The frames of a multi-frame image must be laid out in a single horizontal strip, in which case the width of the image is the width of image file divided by the number of frames, and the height of the image is the height of the image file.
+<p>
+The image must be a PNG or JPEG image format, and must have the three-letter file extension .png or .jpg (not .jpeg). PNGs with alpha transparency channels are supported.
+<p>
+Like all game data, the image file must be saved in your project's .data folder or one of its sub-folders.
+<p>
+If your images contain edge padding, you will need to use one of the padding flags such as XYPadding.
+<p>
+See DefaultFlags for a list of valid image flags.
+					
+						<p><b>See also</b> <a href='Resource paths.html'>Resource paths</a>, <a href='File formats.html'>File formats</a>, <a href='_mojo.graphics.Image.html#DefaultFlags'>DefaultFlags</a>, <a href='_mojo.graphics.Image.html#GrabImage'>GrabImage</a>
+					
+					
+					</div>
+				
+					<a name='LoadImage (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function LoadImage : <a href='_mojo.graphics.Image.html'>Image</a> ( path:String, frameWidth:Int, frameHeight:Int, frameCount:Int, flags:Int=image.defaultflags )</h3>
+					Loads an image from path.
+<p>
+The frames of a multi-frame image may occupy more than 1 row. In this case, frames should be laid out left-to-right, top-to-bottom.
+<p>
+The image must be a PNG or JPEG image format, and must have the three-letter file extension .png or .jpg (not .jpeg). PNGs with alpha transparency channels are supported.
+<p>
+Like all game data, the image file must be saved in your project's .data folder or one of its sub-folders.
+<p>
+If your images contain edge padding, you will need to use one of the padding flags such as XYPadding.
+<p>
+See DefaultFlags for a list of valid image flags.
+					
+						<p><b>See also</b> <a href='Resource paths.html'>Resource paths</a>, <a href='_mojo.graphics.Image.html#DefaultFlags'>DefaultFlags</a>, <a href='_mojo.graphics.Image.html#GrabImage'>GrabImage</a>
+					
+					
+					</div>
+				
+					<a name='PopMatrix'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function PopMatrix : Int ()</h3>
+					Pops a matrix from the internal matrix stack and makes it the current matrix.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#PushMatrix'>PushMatrix</a>
+					
+					
+					</div>
+				
+					<a name='PushMatrix'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function PushMatrix : Int ()</h3>
+					Pushes the current matrix onto the internal matrix stack.
+<p>
+The matrix can be restored at a later time using PopMatrix.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#PopMatrix'>PopMatrix</a>
+					
+					
+					</div>
+				
+					<a name='ReadPixels'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function ReadPixels : Void ( pixels:Int[], x:Int, y:Int, width:Int, height:Int, arrayOffset:Int=0, arrayPitch:Int=0 )</h3>
+					Copies a rectangular section of pixels from the current render buffer into an int array.
+<p>
+The pixel data is stored in int-per-pixel ARGB format, with the alpha component stored in bits 24-31, the red component in bits 16-23, the green component in bits 8-15 and the blue component in bits 0-7.
+<p>
+The optional <i>arrayOffset</i> parameter allows you to specify an index into the array at which to start writing pixel values.
+<p>
+The optional <i>arrayPitch</i> parameter allows you to specify a 'pitch'. This is the number of array elements between successive rows in the array. If this is 0, then <i>width</i> is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
+					
+					
+					</div>
+				
+					<a name='Rotate'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Rotate : Int ( angle:Float )</h3>
+					Multiplies the current matrix by a matrix representing the specified rotation.
+					
+					
+					</div>
+				
+					<a name='Scale'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Scale : Int ( x:Float, y:Float )</h3>
+					Multiplies the current matrix by a matrix representing the specified scale.
+					
+					
+					</div>
+				
+					<a name='SetAlpha'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetAlpha : Int ( alpha:Float )</h3>
+					Sets the current global alpha level.
+<p>
+Alpha controls the 'mixing' that occurs when rendering. An alpha value of 1 results in completely opaque rendering, while 0 results in completely transparent rendering.
+<p>
+In the case of images which contain alpha, the alpha used for rendering is the product of each image pixel's alpha and the current global alpha.
+<p>
+Global alpha affects all drawing operations except for Cls.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetAlpha'>GetAlpha</a>
+					
+					
+					</div>
+				
+					<a name='SetBlend'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetBlend : Int ( blend:Int )</h3>
+					Sets the current blending mode.
+<p>
+The current blending mode affects all drawing commands except for Cls.
+<p>
+The mode parameter can be one of the following:
+<p>
+<pre>
+AlphaBlend
+AdditiveBlend
+</pre>
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetBlend'>GetBlend</a>
+					
+					
+					</div>
+				
+					<a name='SetColor'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetColor : Int ( r:Float, g:Float, b:Float )</h3>
+					Sets the current color.
+<p>
+The current color is used by all drawing operations except Cls.
+<p>
+Note: Drawing images in any color other than 255,255,255 on the HTML5 target will incur a major runtime overhead. For best results on the HTML5 target, either use colored imaged sparingly, or consider using 'pre-colored' images stored in multiple image files.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetColor'>GetColor</a>
+					
+					
+					</div>
+				
+					<a name='SetFont'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetFont : Int ( font:<a href='_mojo.graphics.Image.html'>Image</a>, firstChar:Int=32 )</h3>
+					Sets the font for use with DrawText.
+<p>
+The font parameter may be Null, in which case an internal 7x11 white-on-black font is used and the firstChar parameter is ignored.
+<p>
+Note: The font functionality in mojo is very limited and intended mainly for debugging purposes
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetFont'>GetFont</a>
+					
+					
+					</div>
+				
+					<a name='SetMatrix'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetMatrix : Int ( m:Float[] )</h3>
+					Sets the current matrix.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetMatrix'>GetMatrix</a>
+					
+					
+					</div>
+				
+					<a name='SetMatrix (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetMatrix : Int ( ix:Float, iy:Float, jx:Float, jy:Float, tx:Float, ty:Float )</h3>
+					Sets the current matrix.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetMatrix'>GetMatrix</a>
+					
+					
+					</div>
+				
+					<a name='SetScissor'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function SetScissor : Int ( x:Float, y:Float, width:Float, height:Float )</h3>
+					Sets the current scissor rectangle to the rectangle specified by x, y, width and height.
+<p>
+All drawing commands are 'clipped' to the current scissor rectangle. To disable clipping, set the scissor rectangle to 0,0,DeviceWidth,DeviceHeight.
+<p>
+The rectangle coordinates used with SetScissor are device coordinates, and are not affected by the current matrix.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#GetScissor'>GetScissor</a>
+					
+					
+					</div>
+				
+					<a name='TextWidth'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function TextWidth : Float ( text:String )</h3>
+					Returns the width of the given text.
+					
+					
+					</div>
+				
+					<a name='Transform'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Transform : Int ( m:Float[] )</h3>
+					Multiplies the current matrix by the specified matrix.
+					
+					
+					</div>
+				
+					<a name='Transform (2)'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Transform : Int ( ix:Float, iy:Float, jx:Float, jy:Float, tx:Float, ty:Float )</h3>
+					Multiplies the current matrix by the specified matrix.
+					
+					
+					</div>
+				
+					<a name='Translate'></a>
+					<div class='box'>
+					<h3 class='rounded'>Function Translate : Int ( x:Float, y:Float )</h3>
+					Multiplies the current matrix by a matrix representing the specified translation.
+					
+					
+					</div>
+				
+				</div>
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

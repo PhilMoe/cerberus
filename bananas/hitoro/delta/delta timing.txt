@@ -1,0 +1,23 @@
+
+-------------------------------------------------------------------------------
+Delta Timing class
+-------------------------------------------------------------------------------
+
+Keeps game object speeds as intended, regardless of actual frame update
+rate.
+
+-------------------------------------------------------------------------------
+Usage...
+-------------------------------------------------------------------------------
+	
+1)	Create DeltaTimer object, eg.
+	"Local dt:DeltaTimer = New DeltaTimer (60)"
+	where 60 is your game's intended frame rate,
+	regardless of device frame rate.
+	
+2)	Call dt.UpdateDelta at start of OnUpdate...
+	
+3)	Multiply all speeds by dt.delta...
+	
+4)	That's it.
+

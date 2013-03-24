@@ -1,0 +1,13 @@
+
+attribute vec4 Position;
+//attribute vec3 Normal;
+attribute vec2 TexCoords;
+
+uniform mat4 MVPMatrix;
+
+varying vec2 texCoords;
+
+void main(){
+	gl_Position=MVPMatrix * Position;
+	texCoords=TexCoords;
+}

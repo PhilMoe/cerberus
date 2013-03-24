@@ -1,0 +1,141 @@
+
+# Class mojo.graphics.Image
+
+An image is a rectangular area of pixels, loaded from an image file with LoadImage or grabbed from another image with GrabImage.
+
+Image can be created using [[LoadImage]] and drawn with [[DrawImage]] or [[DrawImageRect]].
+
+Images have a width, a height and a handle. A handle is a 'local origin' which allows you to control the centre point of an image when drawing it.
+
+Images can also contain multiple 'frames', and when drawing an image a specific frame may be drawn. Each frame in a multi-frame image is the same width and height.
+
+Images can also be used as 'image atlases'. An image atlas is a single image that contains multiple smaller images. You can use the GrabImage method of Image to 'grab' an image from an atlas.
+
+The idea behind image atlases is that they can be rendered much more efficiently by graphics hardware, so for best results you should try and make as much use of image atlases as possibly. As a nice side effect, image atlases can also be convenient for artists to deal with.
+
+Import note: When creating an image atlas or an image containing multiple animation frames, it is a good idea to add a single pixel border around each frame that extends the pixels at the edges of the frame. This will prevent rendering 'noise' caused by accidental fetches of pixels outside the frame, which can sometimes occur due to mathematical inaccuracies. To enable padding, you should use one of the image padding flags: Image.XPadding, Image.YPadding or Image.XYPadding when using LoadImage or GrabImage.
+
+
+# Const MidHandle:Int
+
+
+# Const XPadding:Int
+
+
+# Const YPadding:Int
+
+
+# Const XYPadding:Int
+
+
+# Global DefaultFlags:Int
+
+The image flags used by default when an image is loaded or grabbed.
+
+Image flags can be one of:
+
+* Image.MidHandle - indicates the image should be automatically handled by its centre once created.  
+* Image.XPadding - indicates each image frame includes a one pixel padding border to the left and to the right.  
+* Image.YPadding - indicates each image frame includes a one pixel padding border above and below.  
+* Image.XYPadding - indicates both XPadding and YPadding.
+
+DefaultFlags is initially 0.
+
+## See also
+
+[[LoadImage]], [[GrabImage]]
+
+
+# Method Width:Int()
+
+Returns the width of the image, in pixels.
+
+
+# Method Height:Int()
+
+Returns the height of the image, in pixels.
+
+
+# Method Frames:Int()
+
+Returns the number of frames in the image.
+
+
+# Method Flags:Int()
+
+Returns the flags used to create the image.
+
+
+# Method HandleX:Float()
+
+Returns the x coordinate of the current image's handle.
+
+## See also
+
+[[Image.SetHandle|SetHandle]] [[Image.HandleY|HandleY]]
+
+
+# Method HandleY:Float()
+
+Returns the y coordinate of the current image's handle.
+
+## See also
+
+[[Image.SetHandle|SetHandle]] [[Image.HandleX|HandleX]]
+
+
+# Method GrabImage:Image(x:Int,y:Int,width:Int,height:Int,frames:Int,flags:Int)
+
+GrabImage creates a new image by 'grabbing' a rectangular region of the current image.
+
+Multiple frame images are assumed to be laid out in a horizontal strip, in which case width and height are the dimensions of each frame, and the source image must be wide enough to contain the entire strip.
+
+Note that if image flags includes any padding, then the specified rectangle includes padding. This means image width and/or height may be '2 less' than the width and/or height you specify.
+
+## See also
+
+[[Image.DefaultFlags|DefaultFlags]]
+
+
+# Method SetHandle:Int(tx:Float,ty:Float)
+
+Sets the image offset handle for this image. The handle is a 2D offset subtracted from the x,y coordinates of the image when it is drawn. 
+
+By default, images have a handle of 0,0, meaning the top-left pixel appears at the coordinates used in DrawImage.
+
+By specifying Image.MidHandle when loading or grabbing an image - or by setting Image.Default flags to Image.MidHandle before hand - images will automatically be handled by their centre instead.
+
+The image handle is subtracted before rotation and scale are applied providing a 'local' origin.
+
+## See also
+
+[[Image.HandleX|HandleX]] [[Image.HandleY|HandleY]]
+
+
+# Method Discard:Int()
+
+Discard any underlying resources associated with the image.
+
+This isn't normally necessary because automatic memory management will eventually take care of this for you. However, on devices with limited resources this may which to do this manually.
+
+
+# Method WritePixels:Void(pixels:Int[],x:Int,y:Int,width:Int,height:Int,arrayOffset:Int=0,arrayPitch:Int=0)
+
+Copies a rectangular section of pixels from an int array to the image.
+
+The pixel data must be stored in int-per-pixel ARGB format, with the alpha component stored in bits 24-31, the red component in bits 16-23, the green component in bits 8-15 and the blue component in bits 0-7.
+
+The optional @arrayOffset parameter allows you to specify an index into the array from which to start reading pixel values.
+
+The optional @arrayPitch parameter allows you to specify a 'pitch' - the number of array elements between successive rows in the array. If this is 0, then @width is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
+
+
+## Parameters
+
+@pixels - an int array containing pixel data.
+
+@x, @y, @width, @height - coords of rectangle to write.
+
+@arrayOffset - optional array offset.
+
+@arrayPitch - optional array pitch.

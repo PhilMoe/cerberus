@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+
+body{
+	margin:0px;
+	padding:0px;
+	color:#4488ff;
+	background-color:white;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#header{
+	margin:0px;
+	padding:8px;
+	vertical-align:middle;
+}
+
+#page{
+	margin:0px;
+	padding:16px 32px;
+	color:#333333;
+	background-color:#e8e8e8;
+	font-family:Arial;
+	font-size:14px;
+}
+
+#menu{
+	margin:8px;
+	padding:8px;
+	width:180px;
+	border-radius:8px;
+	background-color:white;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	vertical-align:top;
+	float:left;
+}
+
+#main{
+	padding:8px;
+	overflow:hidden;
+}
+
+#navpath{
+	margin:0px 8px 1px 8px;
+	padding:8px;
+	border-radius:8px 8px 0 0;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:#f8f8f8;
+	font-size:12px;
+}
+
+#content{
+	margin:0 8px;
+	padding:16px 32px;
+	border-radius:0 0 8px 8px;
+	box-shadow:4px 4px 4px 0px rgba(0,0,0,.1);
+	background-color:white;
+}
+
+#footer{
+	clear:both;
+}
+
+.idx{
+	display:inline-block;
+	width:32%;
+	overflow:hidden;
+	vertical-align:middle;
+}
+
+.rounded{
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #cccccc;
+	background-color:#f8f8f8;
+}
+
+.box{
+	padding:0 0 24px;
+}
+
+.blk{
+	color:#000000;
+}
+
+.small{
+	font-size:12px;
+}
+
+a{
+	color:#224488;
+	text-decoration:none;
+}
+
+li{
+	margin-left:8px;
+}
+
+h1{
+	font-size:18px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:16px;
+	font-weight:bold;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+}
+
+table{
+	margin:0 16px;
+	padding:4px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	border-spacing:1px;
+	text-align:left;
+}
+
+th{
+	background-color:#dddddd;
+	padding:2px 8px;
+}
+
+td{
+	background-color:#eeeeee;
+	padding:2px 8px;
+}
+
+pre{
+	margin:0 16px;
+	padding:8px;
+	border-radius:8px;
+	border:solid 1px #eeeeee;
+	background-color:#fcfcfc;
+	font-size:12px;
+	white-space:pre-wrap;	//fixme!
+}
+
+</style>
+</head>
+<body>
+
+<div id='header'>
+
+	<a href='Home.html'>
+	<img style='display:inline-block;vertical-align:middle;' src='img/monkey32.png' /><b> Monkey V60 Documentation </b>
+	</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Module list.html'>Modules</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Class index.html'>Classes</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Interface index.html'>Interfaces</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Function index.html'>Functions</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Language reference.html'>Language</a>
+	
+	&nbsp;&nbsp;|&nbsp;&nbsp; <a class='small' href='Index.html'>Index</a>
+
+</div>
+
+<div id='page'>
+
+<!--
+
+	<div id='menu'>
+
+		
+
+	</div>
+-->
+
+	<div id='main'>
+	
+		<div id='navpath'>
+		
+		<a href='Home.html'>Home</a>
+		
+		
+			
+				/  <a href='_mojo.html'>mojo</a> 
+				
+			
+				/  <a href='_mojo.graphics.html'>graphics</a> 
+				
+			
+				/ 
+				 Image 
+			
+		
+			
+		</div>
+		
+		<div id='content'>
+		
+		
+		
+		
+			
+		
+		
+		
+		
+			<div class='box'>
+
+			
+			
+			
+				<h1>Class Image</h1>
+				
+				
+				
+			
+			
+			
+			
+			
+				An image is a rectangular area of pixels, loaded from an image file with LoadImage or grabbed from another image with GrabImage. 
+				<a href='#long_desc'>More...</a>
+			
+			
+			</div>
+
+			
+		
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Constants</h2>
+				<table class='small'>
+				
+					<tr><td>MidHandle : Int</td></tr>
+				
+					<tr><td>XPadding : Int</td></tr>
+				
+					<tr><td>XYPadding : Int</td></tr>
+				
+					<tr><td>YPadding : Int</td></tr>
+				
+				</table>
+				</div>
+			
+		
+			
+				<div class='box'>
+				<h2>Globals</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#DefaultFlags'>DefaultFlags</a> : Int</td></tr>
+				
+				</table>
+				</div>
+			
+		
+			
+			
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Methods</h2>
+				<table class='small'>
+				
+					<tr><td><a href='#Discard'>Discard</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Flags'>Flags</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#Frames'>Frames</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#GrabImage'>GrabImage</a> : Image ( x:Int, y:Int, width:Int, height:Int, frames:Int, flags:Int )</td></tr>
+				
+					<tr><td><a href='#HandleX'>HandleX</a> : Float ()</td></tr>
+				
+					<tr><td><a href='#HandleY'>HandleY</a> : Float ()</td></tr>
+				
+					<tr><td><a href='#Height'>Height</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#SetHandle'>SetHandle</a> : Int ( tx:Float, ty:Float )</td></tr>
+				
+					<tr><td><a href='#Width'>Width</a> : Int ()</td></tr>
+				
+					<tr><td><a href='#WritePixels'>WritePixels</a> : Void ( pixels:Int[], x:Int, y:Int, width:Int, height:Int, arrayOffset:Int=0, arrayPitch:Int=0 )</td></tr>
+				
+				</table>
+				</div>
+			
+			
+			
+			
+			
+				<a name='long_desc'></a>
+				<div class='box'>
+				<h2>Detailed Discussion</h2>
+				An image is a rectangular area of pixels, loaded from an image file with LoadImage or grabbed from another image with GrabImage.
+<p>
+Image can be created using <a href='_mojo.graphics.html#LoadImage'>LoadImage</a> and drawn with <a href='_mojo.graphics.html#DrawImage'>DrawImage</a> or <a href='_mojo.graphics.html#DrawImageRect'>DrawImageRect</a>.
+<p>
+Images have a width, a height and a handle. A handle is a 'local origin' which allows you to control the centre point of an image when drawing it.
+<p>
+Images can also contain multiple 'frames', and when drawing an image a specific frame may be drawn. Each frame in a multi-frame image is the same width and height.
+<p>
+Images can also be used as 'image atlases'. An image atlas is a single image that contains multiple smaller images. You can use the GrabImage method of Image to 'grab' an image from an atlas.
+<p>
+The idea behind image atlases is that they can be rendered much more efficiently by graphics hardware, so for best results you should try and make as much use of image atlases as possibly. As a nice side effect, image atlases can also be convenient for artists to deal with.
+<p>
+Import note: When creating an image atlas or an image containing multiple animation frames, it is a good idea to add a single pixel border around each frame that extends the pixels at the edges of the frame. This will prevent rendering 'noise' caused by accidental fetches of pixels outside the frame, which can sometimes occur due to mathematical inaccuracies. To enable padding, you should use one of the image padding flags: Image.XPadding, Image.YPadding or Image.XYPadding when using LoadImage or GrabImage.
+				</div>
+			
+			
+			
+			
+			
+				<div class='box'>
+				<h2>Global Documentation</h2>
+				
+					<a name='DefaultFlags'></a>
+					<div class='box'>
+					<h3 class='rounded'>Global DefaultFlags : Int</h3>
+					The image flags used by default when an image is loaded or grabbed.
+<p>
+Image flags can be one of:
+<p>
+<li>Image.MidHandle - indicates the image should be automatically handled by its centre once created.<br></li>
+<li>Image.XPadding - indicates each image frame includes a one pixel padding border to the left and to the right.<br></li>
+<li>Image.YPadding - indicates each image frame includes a one pixel padding border above and below.<br></li>
+<li>Image.XYPadding - indicates both XPadding and YPadding.</li>
+<p>
+DefaultFlags is initially 0.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.html#LoadImage'>LoadImage</a>, <a href='_mojo.graphics.Image.html#GrabImage'>GrabImage</a>
+					
+					
+					</div>
+				
+				</div>
+			
+			
+			
+
+			
+
+			
+				<div class='box'>
+				<h2>Method Documentation</h2>
+				
+					<a name='Discard'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Discard : Int ()</h3>
+					Discard any underlying resources associated with the image.
+<p>
+This isn't normally necessary because automatic memory management will eventually take care of this for you. However, on devices with limited resources this may which to do this manually.
+					
+					
+					</div>
+				
+					<a name='Flags'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Flags : Int ()</h3>
+					Returns the flags used to create the image.
+					
+					
+					</div>
+				
+					<a name='Frames'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Frames : Int ()</h3>
+					Returns the number of frames in the image.
+					
+					
+					</div>
+				
+					<a name='GrabImage'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method GrabImage : <a href='_mojo.graphics.Image.html'>Image</a> ( x:Int, y:Int, width:Int, height:Int, frames:Int, flags:Int )</h3>
+					GrabImage creates a new image by 'grabbing' a rectangular region of the current image.
+<p>
+Multiple frame images are assumed to be laid out in a horizontal strip, in which case width and height are the dimensions of each frame, and the source image must be wide enough to contain the entire strip.
+<p>
+Note that if image flags includes any padding, then the specified rectangle includes padding. This means image width and/or height may be '2 less' than the width and/or height you specify.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.Image.html#DefaultFlags'>DefaultFlags</a>
+					
+					
+					</div>
+				
+					<a name='HandleX'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method HandleX : Float ()</h3>
+					Returns the x coordinate of the current image's handle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.Image.html#SetHandle'>SetHandle</a> <a href='_mojo.graphics.Image.html#HandleY'>HandleY</a>
+					
+					
+					</div>
+				
+					<a name='HandleY'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method HandleY : Float ()</h3>
+					Returns the y coordinate of the current image's handle.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.Image.html#SetHandle'>SetHandle</a> <a href='_mojo.graphics.Image.html#HandleX'>HandleX</a>
+					
+					
+					</div>
+				
+					<a name='Height'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Height : Int ()</h3>
+					Returns the height of the image, in pixels.
+					
+					
+					</div>
+				
+					<a name='SetHandle'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method SetHandle : Int ( tx:Float, ty:Float )</h3>
+					Sets the image offset handle for this image. The handle is a 2D offset subtracted from the x,y coordinates of the image when it is drawn. 
+<p>
+By default, images have a handle of 0,0, meaning the top-left pixel appears at the coordinates used in DrawImage.
+<p>
+By specifying Image.MidHandle when loading or grabbing an image - or by setting Image.Default flags to Image.MidHandle before hand - images will automatically be handled by their centre instead.
+<p>
+The image handle is subtracted before rotation and scale are applied providing a 'local' origin.
+					
+						<p><b>See also</b> <a href='_mojo.graphics.Image.html#HandleX'>HandleX</a> <a href='_mojo.graphics.Image.html#HandleY'>HandleY</a>
+					
+					
+					</div>
+				
+					<a name='Width'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method Width : Int ()</h3>
+					Returns the width of the image, in pixels.
+					
+					
+					</div>
+				
+					<a name='WritePixels'></a>
+					<div class='box'>
+					<h3 class='rounded'>Method WritePixels : Void ( pixels:Int[], x:Int, y:Int, width:Int, height:Int, arrayOffset:Int=0, arrayPitch:Int=0 )</h3>
+					Copies a rectangular section of pixels from an int array to the image.
+<p>
+The pixel data must be stored in int-per-pixel ARGB format, with the alpha component stored in bits 24-31, the red component in bits 16-23, the green component in bits 8-15 and the blue component in bits 0-7.
+<p>
+The optional <i>arrayOffset</i> parameter allows you to specify an index into the array from which to start reading pixel values.
+<p>
+The optional <i>arrayPitch</i> parameter allows you to specify a 'pitch' - the number of array elements between successive rows in the array. If this is 0, then <i>width</i> is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
+					
+					
+					</div>
+				
+				</div>
+			
+
+			
+
+		
+		
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br>
+					
+		</div>
+
+	</div>
+	
+	<div id='footer'>
+
+	</div>
+
+</div> 
+
+</body>
+</html>

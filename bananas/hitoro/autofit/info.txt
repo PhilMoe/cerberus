@@ -1,0 +1,33 @@
+
+AutoFit: Virtual display library
+
+FEATURES
+
+Allows you to program a game for a single resolution. Correctly scales display
+on the fly to fit actual device resolution, so that aspect ratio is retained and
+borders applied where necessary. Also allows display zooming; more features to
+come!
+
+USAGE
+
+1) In OnCreate method:
+
+	SetVirtualDisplay (width, height)			- Sets "hard-coded" game resolution;
+									  this will be scaled to "real" resolution
+
+2) In OnUpdate method:
+
+	VMouseX							- Mouse co-ordinates (scaled/zoomed from real to
+	VMouseY							  virtual display)
+
+	SetVirtualZoom						- Change zoom level
+	GetVirtualZoom						- Get current zoom level
+
+	AdjustVirtualZoom						- Zoom in/out *by* given amount
+
+3) At start of OnRender method:
+
+	UpdateVirtualDisplay					- Sets drawing scale and applies borders before
+									  you start drawing
+
+See functions in autofit.monkey for further options.

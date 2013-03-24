@@ -1,0 +1,15 @@
+For the desktop browsers, the following techniques generated the <b>highest frame rates</b>:
+
+Snapping positions to integer values rather than using floating point values. JavaScript supports several different ways to snap, such as "parseInt" and "| 0". We would expect using the <i>or</i> operator to be faster than a <i>function</i> call, but have not yet tested this. Note that snapping could generate visible artifacts, particularly at very low resolutions.
+
+Using the <i>DIV</i> tag with background image instead of <i>IMG</i> tag. The difference is particularly noticeable when using individual sprites instead of sprite sheets, as changing the IMG's src property is very slow.
+
+Many individual sprites are faster than sprite sheets in nearly every case. The exceptions were the fully hardware accelerated browsers on Windows, where sprite sheets offer a 5-10% advantage. Unless you are only targeting those browsers, we recommend staying with individual sprites. For browsers with the CANVAS tag, we expect an optimum balance of download and draw performance is to download sprite sheets but then use CANVAS to cut them up.
+
+Update DOM elements rather than using innerHTML to load the parent. For several browsers, Firefox 4, Chrome 10 and 11, and IE9, innerHTML was faster, particularly for rotated sprites. However, for those browsers CANVAS tag performance was far superior to DOM manipulation, so update and switch to CANVAS when possible.
+
+For axis-aligned images with integer position values, the CANVAS tag was superior across all desktop browsers. This had not been the case with floating point values -- and indicates software blitting in their render pipelines -- but if you are snapping and drawing axis aligned images, use CANVAS when you are able to.
+
+For browsers that support 3D transforms -- we are currently testing on Chrome and Safari -- using translate3d(x,y,z) is equal to or faster than translate(x,y).
+
+On desktops, using CSS transitions for motion or CSS keyframes for animations were slower than simply using JavaScript for these tasks. Worse, they often generated noisy framerates, so they are not a good solution for games in desktop browsers.

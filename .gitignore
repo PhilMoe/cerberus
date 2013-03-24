@@ -1,12 +1,14 @@
 bin
-modules/mojo
-modules/brlx
-src/rebuildall
-src/rebuilaall.exe
-src/george/src_docs/_mojo.*
-docs/html/_mojo.*
+
 Monkey
 Monkey.app
 Monkey.exe
-bananas
 
+src/rebuildall
+src/rebuilaall.exe
+
+modules/brlx
+
+modules/mojo/native/*
+!modules/mojo/native/mojo.html5.js
+!modules/mojo/native/asyncimageloader.js

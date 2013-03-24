@@ -1,0 +1,142 @@
+
+# Class mojo.app.App
+
+# Import mojo.graphics Private
+
+# Import mojo.input Private
+
+# Import mojo.audio Private
+
+This is the main application class.
+
+All mojo based applications must declare a class that extends App and that implements the OnCreate, OnUpdate, OnRender and OnLoading methods.
+
+A new instance of this class must be then created inside your applications Main function. The OnCreate, OnUpdate, OnRender and OnLoading methods will be called as necessary while your application runs.
+
+OnCreate is called when mojo has been initialized and your app can safely start using mojo functions. This is generally where code to load resources such and images and sounds goes. This is where the application's update rate is initially set too - see: SetUpdateRate.
+
+OnUpdate is called when the update timer ticks, and is where your game logic code should go. The update timer is set using the SetUpdateRate function.
+
+OnRender is called when your application should render itself. If the update timer is ticking, this is also called as soon as possible after OnUpdate, however OnRender may be called at any time in generally if your application requires refreshing.
+
+OnLoading is called insetad of OnRender when your application should render itself, but there are still resources being loaded.
+
+Import note: 
+
+No mojo functions or methods should be used before OnCreate is called! Before this, mojo is not fully initialized and cannot be safely used. This means that global variables cannot be initialied using Millisecs, LoadImage or indeed ANY mojo functions.
+
+
+'# Method New()
+
+
+# Method OnCreate:Int()
+
+The OnCreate method is called when mojo has been initialized and the application has been successfully created.
+
+At this point, applications can start loading resources such as images and sounds, and set the update rate using SetUpdateRate.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+## Example
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+Import mojo.input
+
+Class MyGame Extends App
+	Field x:Int=0
+	Field y:Int=0
+	Field playerShipSprite:Image
+		
+	Method OnCreate()
+
+		'Load any images and sounds here
+		'ship.png must be found in your project's .data folder
+		playerShipSprite=LoadImage("ship.png")
+
+		SetUpdateRate 30
+
+		End
+	
+	Method OnUpdate()
+		x=MouseX
+		y=MouseY
+	End
+	
+	Method OnRender()
+		Cls
+		DrawImage playerShipSprite,x,y
+	End
+End
+
+Function Main()
+	New MyGame
+End
+</pre>
+
+
+# Method OnUpdate:Int()
+
+This method is automatically called when the application's update timer ticks. Once OnUpdate has been called, mojo will then attempt to call OnRender as soon as possible.
+
+Note that OnUpdate is only called if SetUpdateRate has been called to start the update timer. Otherwise, your application will receive OnRender calls only.
+
+OnUpdate is commonly used in conjunction with OnRender to manage the main game loop. OnUpdate is typically used to update objects and game state, while OnRender is used to draw graphics. 
+
+The return value from this method is currently ignored, but should be 0 for future compatibility.
+
+## See also
+
+[[SetUpdateRate]]
+
+
+# Method OnSuspend:Int()
+
+OnSuspend is called when your application is about to be suspended. 
+
+While suspended, Mojo will make no further calls to any applications 'On' methods, except for OnResume.
+
+Note that on some targets such as iOS and Android, OnSuspend represents a 'last chance' to save application data before your application is terminated.
+
+The return value from this method is currently ignored, but should be 0 for future compatibility.
+
+## See also
+
+[[App.OnResume|OnResume]]
+
+
+# Method OnResume:Int()
+
+OnResume is called when your application is made active again after having been in a suspended state.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+## See also
+
+[[App.OnSuspend|OnSuspend]]
+
+
+# Method OnRender:Int()
+
+This method is automatically called when the application should render itself, such as when the application first starts, or following an OnUpdate call.
+
+If your application is taking to long to update and/render itself, OnRender calls may be skipped to allow it to 'catch up'.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+## See also
+
+[[App.OnUpdate|OnUpdate]], [[App.OnLoading|OnLoading]]
+
+
+# Method OnLoading:Int()
+
+This method is called instead of OnRender when the application should render itself, but there are still resources such as images or sounds in the process of being loaded.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+## See also
+
+[[App.OnRender|OnRender]]
+

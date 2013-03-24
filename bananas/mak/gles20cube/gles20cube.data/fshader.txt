@@ -1,0 +1,13 @@
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec4 Color;
+uniform sampler2D Texture;
+
+varying vec2 texCoords;
+
+void main(){
+	gl_FragColor=Color * texture2D( Texture,texCoords );
+}

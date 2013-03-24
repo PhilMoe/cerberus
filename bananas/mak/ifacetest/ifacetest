@@ -1,0 +1,88 @@
+
+'Import mojo
+
+Interface Drawable
+
+	Method Draw()
+
+End
+
+Interface Killable
+
+	Method Kill()
+
+End
+
+Interface Bonkable Extends Drawable,Killable
+
+	Method Bonk()
+
+End
+
+Class Entity
+
+End
+
+Class Actor Extends Entity Implements Drawable
+
+	Method Draw()
+		Print "Actor.Draw"
+	End
+	
+	Method Kill()
+		Print "Actor.Kill"
+	End
+
+End
+
+Class Sprite Extends Actor Implements Bonkable
+
+	Method Draw()
+		Print "Sprite.Draw"
+	End
+	
+	Method Kill()
+		Print "Sprite.Kill"
+	End
+	
+	Method Bonk()
+		Print "Sprite.Bonk"
+	End
+	
+End
+
+Function Test( object:Object )
+	If Drawable( object ) Print "Object is drawable"
+	If Killable( object ) Print "Object is killable"
+	If Bonkable( object ) Print "Object is bonkable"
+End
+
+Function Draw( drawable:Drawable )
+	drawable.Draw
+
+	Test drawable
+End
+
+Function Kill( killable:Killable )
+	killable.Kill
+
+	Test killable
+End
+
+Function Bonk( bonkable:Bonkable )
+	bonkable.Bonk
+
+	Test bonkable
+End
+
+Function Main()
+
+	Local actor:=New Actor
+	Draw actor
+
+	Local sprite:=New Sprite
+	Draw sprite
+	Kill sprite
+	Bonk sprite
+	
+End

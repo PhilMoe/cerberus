@@ -1,0 +1,296 @@
+
+# Module mojo.app
+
+# Import mojo.graphics Private
+
+# Import mojo.input Private
+
+# Import mojo.audio Private
+
+The app module contains the App class along with various support functions for controlling application behaviour.
+
+
+# Function LoadState:String()
+
+Loads a string representing the application's persistant state as previously saved with SaveState.
+
+If the application state hasn't yet been previously saved, LoadState returns an empty string.
+
+This is generally used to store data such as user preferences and high score tables.
+
+Note: On the android target, building and uploading a new version of an application to a device will not clear the application's state. To do this, you must manually uninstall the application from the device first.
+
+## See also
+
+[[SaveState]]
+
+## Example
+
+<pre>
+'run this app several times to see application state being updated.
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Field state$
+	
+	Method OnCreate()
+	
+		'comment out the following line to reset state
+		state=LoadState()
+
+		If state
+			Print "state found - updating state!"
+			state=Int( state )+1
+		Else
+			Print "state not found - creating initial state!"
+			state="1"
+		Endif
+		
+		SaveState state
+	End
+	
+	Method OnRender()
+		Cls 
+		DrawText "state="+state,0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function SaveState:Int(state:String)
+
+Saves a string representing the application's persistant state.
+
+This is generally used to store data such as user preferences and high score tables.
+
+Note: On the android target, building and uploading a new version of an application to a device will not clear the application's state. To do this, you must manually uninstall the application from the device first.
+
+## Parameters
+
+state - application state to save.
+
+## See also
+
+[[LoadState]]
+
+
+# Function LoadString:String(path:String)
+
+Loads a string from path.
+
+## See also
+
+[[Resource paths]], [[File formats]]
+
+
+## Parameters
+
+path - the data file path of the string to load, relative to your applications .data folder.
+
+
+# Function SetUpdateRate:Int(hertz:Int)
+
+Sets the application's update rate.
+
+This is the number of times per second that the application's OnUpdate method should be called. Commonly used update rates are 15, 30 or 60 updates per second.
+
+OnRender is also called at the same frequency if possible (after each OnUpdate), meaning SetUpdateRate effectively also sets the target frames per second.
+
+## Parameters
+
+hertz - update rate in 'updates per second'
+
+## See also
+
+[[Resource paths]], [[App.OnUpdate|OnUpdate]], [[UpdateRate]]
+
+## Example
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Field updates,updateRate
+
+	Method OnCreate()
+		updateRate=15
+		SetUpdateRate updateRate
+	End
+	
+	Method OnUpdate()
+		updates+=1
+		If updates=updateRate
+			updates=0
+			updateRate*=2
+			If updateRate=240 updateRate=15
+			SetUpdateRate updateRate
+		Endif
+		
+	End
+	
+	Method OnRender()
+		Cls 128,0,255
+		DrawText "updateRate="+updateRate+", updates="+updates,0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function UpdateRate:Int()
+
+Returns the current update rate, as set by SetUpdateRate.
+
+## See also
+
+[[SetUpdateRate]]
+
+
+# Function Millisecs:Int()
+
+Returns the number milliseconds (thousandths of a second) the application has been running. Divide this by 1000.0 to get the number of seconds the applications has been running.
+
+## Example
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		SetUpdateRate 10
+	End
+	
+	Method OnRender()
+		Cls 128,0,255
+		DrawText "Application has been running for: "+Millisecs()/1000.0+" seconds.",0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function GetDate:Int[]()
+
+Returns the current date and time as an array of 7 integers: year, month (1-12), day (1-31), hours (0-23), minutes (0-59), seconds (0-59) and milliseconds (0-999).
+
+## Example
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		SetUpdateRate 60
+		
+	End
+	
+	Method OnRender()
+
+		Local date:=GetDate()
+	
+		Local months:=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+	
+		Local day:=("0"+date[2])[-2..]
+		Local month:=months[date[1]-1]
+		Local year:=date[0]
+		Local hour:=("0"+date[3])[-2..]
+		Local min:=("0"+date[4])[-2..]
+		Local sec:=("0"+date[5])[-2..] + "." + ("00"+date[6])[-3..]
+		
+		Local now:=hour+":"+min+":"+sec+"  "+day+" "+month+" "+year
+		
+		Cls
+		DrawText now,DeviceWidth/2,DeviceHeight/2,.5,.5
+	End
+
+End
+
+Function Main()
+
+	New MyApp
+	
+End
+</pre>
+
+
+# Function GetDate:Void( date:Int[] )
+
+Fills the @date array with 7 integers representing the current date: year, month (1-12), day (1-31), hours (0-23), minutes (0-59), seconds (0-59) and milliseconds (0-999).
+
+
+# Function OpenUrl:Int( url:String )
+
+Opens the given url using the underlying operating system.
+
+OpenUrl is only available on the hltm5, glfw, android, ios and win8 targets. On other targets, OpenUrl does nothing.
+
+## Example
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		SetUpdateRate 60
+
+	End
+	
+	Method OnUpdate()
+	
+		If MouseHit(0)
+			If MouseY()\<DeviceHeight/2
+				OpenUrl "http://www.monkeycoder.co.nz"
+			Else
+				OpenUrl "mailto:blitzmunter@gmail.com"
+			Endif
+		Endif
+	End
+	
+	Method OnRender()
+	
+		Cls
+		DrawText "Click above to visit Monkeycoder, below to email Mark!",DeviceWidth/2,DeviceHeight/2,.5,.5
+	End
+	
+
+End
+
+Function Main()
+
+	New MyApp
+
+End
+</pre>
+
+
+# Function HideMouse:Void()
+
+Hides the mouse pointer if the underlying operation system supports a mouse.
+
+
+# Function ShowMouse:Void()
+
+Shows the mouse pointer if the underlying operation system supports a mouse.

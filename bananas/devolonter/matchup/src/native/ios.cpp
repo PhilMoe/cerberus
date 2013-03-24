@@ -1,0 +1,1 @@
+#include <mach/mach_time.h>class functions {public:	static int systemMillisecs() {		mach_timebase_info_data_t timeInfo;		mach_timebase_info(&timeInfo);				uint64_t nanos = mach_absolute_time();				nanos *= timeInfo.numer;		nanos /= timeInfo.denom;		return nanos/1000000L;	}	};
