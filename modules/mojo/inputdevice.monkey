@@ -98,6 +98,7 @@ Class InputDevice
 	Method KeyEvent:Void( event:Int,data:Int )
 		Select event
 		Case BBGameEvent.KeyDown
+			If _keyDown[data] Return
 			_keyDown[data]=True
 			_keyHit[data]+=1
 			If data=KEY_LMB
@@ -108,6 +109,7 @@ Class InputDevice
 				_keyHit[KEY_LMB]+=1
 			Endif
 		Case BBGameEvent.KeyUp
+			If Not _keyDown[data] Return
 			_keyDown[data]=False
 			If data=KEY_LMB
 				_keyDown[KEY_TOUCH0]=False
