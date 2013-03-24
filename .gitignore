@@ -10,6 +10,8 @@ src/rebuilaall.exe
 
 modules/brlx
 
+modules/brl/native/GoogleAdMobAdsSdk*
+
 modules/mojo/native/*
 !modules/mojo/native/mojo.html5.js
 !modules/mojo/native/asyncimageloader.js
