@@ -1,4 +1,5 @@
-bin
+bin/*
+!bin/config.*.txt
 
 Monkey
 Monkey.app

@@ -1,0 +1,49 @@
+
+'--------------------
+'Monkey modules path
+'
+'Can be overriden via transcc cmd line
+'
+MODPATH="${MONKEYDIR}/modules"
+'--------------------
+
+'--------------------
+'HTML player path.
+'
+'Must be set for HTML5 target support.
+'
+HTML_PLAYER="${TRANSDIR}/mserver_linux"
+'--------------------
+
+'--------------------
+'Java dev kit path
+'
+'Must be set to a valid dir for ANDROID and FLASH target support
+'
+'Make sure to install the 32 bit JDK, even on 64 bit Windows!
+'
+'The Java JDK is currently available here:
+'	http://www.oracle.com/technetwork/java/javase/downloads/index.html
+'
+JDK_PATH="${HOME}/jdk1.7.0_09"
+'--------------------
+
+'--------------------
+'Android SDK and tool paths.
+'
+'Must be set to a valid for for ANDROID target support.
+'
+ANDROID_PATH="${HOME}/android-sdk-linux"
+'--------------------
+
+'--------------------
+'Flex SDK and flash player path.
+'
+'FLEX_PATH Must be set for FLASH target support.
+'
+FLEX_PATH="${HOME}/flex_sdk_4.6"
+'
+'for opening .swf files...monkey will use HTML_PLAYER if this is not set.
+'FLASH_PLAYER="...?..."
+'--------------------
+
