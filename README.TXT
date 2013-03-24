@@ -1,7 +1,5 @@
 For more Monkey fun, please visit: http://www.monkeycoder.co.nz
 
-Added by marksibly!
-
 Monkey is released under the zlib/libpng license.
 
 The zlib/libpng License
