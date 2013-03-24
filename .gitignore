@@ -17,3 +17,4 @@ targets/glfw/oalinst.exe
 modules/mojo/native/*
 !modules/mojo/native/mojo.html5.js
 !modules/mojo/native/asyncimageloader.js
+!modules/mojo/native/asyncsoundloader.js
