@@ -3,6 +3,8 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V70 *****
 
+Changed os.LoadDir behavior with recursive LoadDirs - used to only load file names, now also loads dir names by default.
+
 Put all native code imports inside #If target/lang conditional blocks.
 
 Added some BLAH_IMPLEMENTED checking to extern class decls in brl.
