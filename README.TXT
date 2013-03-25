@@ -1,3 +1,6 @@
+
+Edited on Mac!
+
 For more Monkey fun, please visit: http://www.monkeycoder.co.nz
 
 Monkey is released under the zlib/libpng license.
