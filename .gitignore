@@ -8,6 +8,8 @@ Monkey.exe
 src/rebuildall
 src/rebuilaall.exe
 
+src/createrelease
+
 modules/brlx
 
 modules/brl/native/GoogleAdMobAdsSdk*

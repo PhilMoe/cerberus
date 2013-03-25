@@ -209,13 +209,18 @@ retcode - application return code.
 # Const FILETYPE_DIR:Int
 
 
-# Function LoadDir:String[](path:String,recursive:Bool,hidden:Bool)
+# Function LoadDir:String[](path:String,recursive:Bool,hidden:Bool=False,files:Bool=True,dirs:Bool=True)
 
 Loads the file names in the directory specified by path into a string array.
 
-If recursive is True, LoadDir will also load file names in subdirectories, but will not add subdirectories to the output string array.
+If recursive is True, LoadDir will also load file names in subdirectories.
 
 If hidden is True, then hidden files - files starting with a dot - are also loaded.
+
+If files is False, the output array will contain file paths.
+
+if dirs is False, the output array will contain directory paths.
+
 
 ## Parameters
 
