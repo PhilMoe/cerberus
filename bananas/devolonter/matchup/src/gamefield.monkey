@@ -164,7 +164,9 @@ Public
 		If (cardsLeft > 0) Return
 	
 		cardsLeft = cards.Length()
-		Seed = SystemMillisecs()
+		
+		Local date:Int[] = GetDate()
+		Seed = (date[3] * 3600 + date[4] * 60 + date[5]) * 1000 + date[6]
 	
 		Local numTypes:Int = cards.Length() / 2
 		Local typesLeft:Int[numTypes]
