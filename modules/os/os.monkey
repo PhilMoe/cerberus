@@ -32,7 +32,7 @@ Const FILETYPE_NONE=0
 Const FILETYPE_FILE=1
 Const FILETYPE_DIR=2
 
-Function LoadDir$[]( path$,recursive?,hidden?=False,listfiles?=True,listdirs?=True )
+Function LoadDir$[]( path$,recursive?,hidden?=False )
 
 	Local dirs:=New StringList,files:=New StringList
 	
@@ -49,10 +49,13 @@ Function LoadDir$[]( path$,recursive?,hidden?=False,listfiles?=True,listdirs?=Tr
 			
 			Select FileType( path+"/"+f )
 			Case FILETYPE_FILE
-				If listfiles files.AddLast f
+				files.AddLast f
 			Case FILETYPE_DIR
-				If listdirs files.AddLast f
-				If recursive dirs.AddLast f
+				If recursive
+					dirs.AddLast f
+				Else
+					files.AddLast f
+				Endif
 			End
 		Next
 	Wend
@@ -85,7 +88,7 @@ Function CopyDir( srcpath$,dstpath$,recursive?=True,hidden?=False )
 		Case FILETYPE_FILE
 			If Not CopyFile( srcp,dstp ) Return False
 		Case FILETYPE_DIR
-			If recursive And Not CopyDir( srcp,dstp,recursive,hidden,false ) Return False
+			If recursive And Not CopyDir( srcp,dstp,recursive,hidden ) Return False
 		End
 	Next
 	

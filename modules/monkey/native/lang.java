@@ -23,6 +23,11 @@ class bb_std_lang{
 	
 	static NumberFormat numberFormat=NumberFormat.getInstance();
 	
+	static boolean[] emptyBoolArray=new boolean[0];
+	static int[] emptyIntArray=new int[0];
+	static float[] emptyFloatArray=new float[0];
+	static String[] emptyStringArray=new String[0];
+	
 	static void pushErr(){
 		errStack.addElement( errInfo );
 	}
@@ -214,10 +219,6 @@ class bb_std_lang{
 		if( lhslen>0 ) System.arraycopy( lhs,0,res,0,lhslen );
 		if( rhslen>0 ) System.arraycopy( rhs,0,res,lhslen,rhslen );
 		return res;
-	}
-	
-	static int arrayLength( Object arr ){
-		return arr!=null ? Array.getLength( arr ) : 0;
 	}
 }
 
