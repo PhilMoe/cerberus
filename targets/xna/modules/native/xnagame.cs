@@ -88,8 +88,8 @@ public class BBXnaGame : BBGame{
 		if( key>=48 && key<=57 && !_shift ) return key;
 		if( key>=65 && key<=90 &&  _shift ) return key;
 		if( key>=65 && key<=90 && !_shift ) return key+32;
-		if( key>=33 && key<=40 || key==45 ) return key | 0x10000;
 	 	if( key==8 || key==9 || key==27 || key==32 ) return key;
+		if( key>=33 && key<=40 || key==45 ) return key | 0x10000;
 	 	if( key==46 ) return 127;
 		return 0;
 	}
