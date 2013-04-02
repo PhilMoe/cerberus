@@ -185,7 +185,7 @@ End If Then Else ElseIf EndIf While Wend Repeat Until Forever
 For To Step Next Return Module Interface Implements Inline Throw
 </pre>
 
-[[keywords|Language keywords]] are case insensitive - for example, you may use the keyword function, Function or indeed even fUNCTION (not recommended) to declare a function.
+[[Keywords|Language keywords]] are case insensitive - for example, you may use the keyword function, Function or indeed even fUNCTION (not recommended) to declare a function.
 
 The keywords Module, Inline and Array are not currently used by the Monkey language but are reserved for future use.
 

@@ -100,7 +100,7 @@ Function Main()
 End
 </pre>
 	
-The [[List.AddLast|AddLast]] method is called on the list to add an entry each time the user clicks the mouse.
+The [[monkey.list.List.AddLast|AddLast]] method is called on the list to add an entry each time the user clicks the mouse.
 
 The OnRender method draws the list of monkeys by using the enumeration
 
