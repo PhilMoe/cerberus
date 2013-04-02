@@ -34,6 +34,10 @@ Class JavaTranslator Extends CTranslator
 			If StringType( ty ) Return "~q~q"
 			If ArrayType( ty ) 
 				Local elemTy:=ArrayType( ty ).elemType
+				If BoolType( elemTy ) Return "bb_std_lang.emptyBoolArray"
+				If IntType( elemTy ) Return "bb_std_lang.emptyIntArray"
+				If FloatType( elemTy ) Return "bb_std_lang.emptyFloatArray"
+				If StringType( elemTy ) Return "bb_std_lang.emptyStringArray"
 				Local t$="[0]"
 				While ArrayType( elemTy )
 					elemTy=ArrayType( elemTy ).elemType
@@ -276,8 +280,7 @@ Class JavaTranslator Extends CTranslator
 		'string/array methods
 		Case "length"
 			If StringType( expr.exprType ) Return texpr+".length()"
-			Return "bb_std_lang.arrayLength"+Bra( texpr )
-
+			Return texpr+".length"
 		Case "resize" 
 			Local fn$="resizeArray"
 			Local ty:=ArrayType( expr.exprType ).elemType

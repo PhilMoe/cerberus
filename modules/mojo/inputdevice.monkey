@@ -1,6 +1,8 @@
 
 Private
 
+Import keycodes
+
 Global device:InputDevice
 
 Const MAX_JOYSTATES=4
@@ -27,6 +29,7 @@ Class InputDevice
 			_keyDown[i]=False
 			_keyHit[i]=0
 		Next
+		_keyHitPut=0
 		_charGet=0
 		_charPut=0
 	End
@@ -51,6 +54,11 @@ Class InputDevice
 		Local chr:=_charQueue[_charGet]
 		_charGet+=1
 		Return chr
+	End
+	
+	Method PeekChar:Int( index:Int )
+		If index>=0 And index<_charPut-_charGet Return _charQueue[_charGet+index]
+		Return 0
 	End
 	
 	Method MouseX:Float()
@@ -98,23 +106,32 @@ Class InputDevice
 	Method KeyEvent:Void( event:Int,data:Int )
 		Select event
 		Case BBGameEvent.KeyDown
-			If _keyDown[data] Return
-			_keyDown[data]=True
-			_keyHit[data]+=1
-			If data=KEY_LMB
-				_keyDown[KEY_TOUCH0]=True
-				_keyHit[KEY_TOUCH0]+=1
-			Else If data=KEY_TOUCH0
-				_keyDown[KEY_LMB]=True
-				_keyHit[KEY_LMB]+=1
+			If Not _keyDown[data]
+				If _keyHitPut>=_keyHitQueue.Length-1 Return
+				_keyDown[data]=True
+				_keyHit[data]+=1
+				_keyHitQueue[_keyHitPut]=data
+				_keyHitPut+=1
+				If data=KEY_LMB
+					_keyDown[KEY_TOUCH0]=True
+					_keyHit[KEY_TOUCH0]+=1
+					_keyHitQueue[_keyHitPut]=KEY_TOUCH0
+					_keyHitPut+=1
+				Else If data=KEY_TOUCH0
+					_keyDown[KEY_LMB]=True
+					_keyHit[KEY_LMB]+=1
+					_keyHitQueue[_keyHitPut]=KEY_LMB
+					_keyHitPut+=1
+				Endif
 			Endif
 		Case BBGameEvent.KeyUp
-			If Not _keyDown[data] Return
-			_keyDown[data]=False
-			If data=KEY_LMB
-				_keyDown[KEY_TOUCH0]=False
-			Else If data=KEY_TOUCH0
-				_keyDown[KEY_LMB]=False
+			If _keyDown[data]
+				_keyDown[data]=False
+				If data=KEY_LMB
+					_keyDown[KEY_TOUCH0]=False
+				Else If data=KEY_TOUCH0
+					_keyDown[KEY_LMB]=False
+				Endif
 			Endif
 		Case BBGameEvent.KeyChar
 			If _charPut<_charQueue.Length
@@ -190,9 +207,10 @@ Class InputDevice
 	End
 	
 	Method EndUpdate:Void()
-		For Local i=0 Until 512
-			_keyHit[i]=0
+		For Local i:=0 Until _keyHitPut
+			_keyHit[_keyHitQueue[i]]=0
 		Next
+		_keyHitPut=0
 		_charGet=0
 		_charPut=0
 	End
@@ -204,6 +222,8 @@ Private
 
 	Field _keyDown:Bool[512]
 	Field _keyHit:Int[512]
+	Field _keyHitQueue:Int[33]
+	Field _keyHitPut:int
 	Field _charQueue:Int[32]
 	Field _charPut:Int
 	Field _charGet:Int

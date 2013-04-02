@@ -10,6 +10,8 @@ src/rebuilaall.exe
 
 src/createrelease
 
+docs/*
+
 modules/brlx
 
 modules/brl/native/GoogleAdMobAdsSdk*

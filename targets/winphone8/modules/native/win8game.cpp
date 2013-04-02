@@ -544,13 +544,8 @@ void BBWin8Game::CreateD3dDevice(){
 
 	_windowBounds=window->Bounds;
 	
-	float windowWidth=DipsToPixels( _windowBounds.Width );
-	float windowHeight=DipsToPixels( _windowBounds.Height );
-
-	bool swapDimensions=false;
-		
-	_renderTargetSize.Width=swapDimensions ? windowHeight : windowWidth;
-	_renderTargetSize.Height=swapDimensions ? windowWidth : windowHeight;
+	_renderTargetSize.Width=DipsToPixels( _windowBounds.Width );
+	_renderTargetSize.Height=DipsToPixels( _windowBounds.Height );
 	
 	int width=_renderTargetSize.Width;
 	int height=_renderTargetSize.Height;
@@ -655,9 +650,6 @@ void BBWin8Game::CreateD3dDevice(){
 		dxgiDevice->Release();
 	}
 	
-//	for orientation!	
-//	DXASS( swapChain->SetRotation( rotation ) );
-
 	// Create a render target view of the swap chain back buffer.
 	//
 	ID3D11Texture2D *backBuffer;

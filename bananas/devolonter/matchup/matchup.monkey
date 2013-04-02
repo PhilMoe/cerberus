@@ -6,9 +6,7 @@
 
 Import src.game
 
-#If TARGET = "android" Then
-	#ANDROID_SCREEN_ORIENTATION="landscape"
-#End
+#ANDROID_SCREEN_ORIENTATION = "landscape"
 
 Function Main()
 	New Game()

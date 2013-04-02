@@ -3,20 +3,6 @@ Strict
 Import mojo
 Import gamefield
 
-#if TARGET = "glfw" And HOST = "macos"
-	Import "native/${TARGET}.macos.${LANG}"
-#Else
-	Import "native/${TARGET}.${LANG}"
-#End
-
-Extern
-
-#If LANG="cpp"
-	Function SystemMillisecs:Int() = "functions::systemMillisecs"
-#Else
-	Function SystemMillisecs:Int() = "functions.systemMillisecs"
-#End
-
 Public
 
 Class Game Extends App
@@ -45,6 +31,12 @@ Class Game Extends App
 	End Method
 	
 	Method OnUpdate:Int()
+		#If TARGET <> "android"
+			If (KeyHit(KEY_CLOSE)) Error ""
+		#Else
+			If (KeyHit(KEY_BACK)) Error ""
+		#End		
+	
 		If (gameField.IsComplete) Then
 			If (KeyHit(KEY_SPACE)) Then
 				gameField = New GameField(4, 3)
