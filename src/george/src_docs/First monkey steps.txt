@@ -47,11 +47,11 @@ With our game object defined we extend the basic Update and Render parts of the 
 
 The minimum requirements for an animating monkey application are an [[App]] implementing the methods:
 
-* [[App.OnCreate]] must call [[SetUpdateRate]]
+* [[mojo.app.App.OnCreate|OnCreate]] must call [[SetUpdateRate]]
 
-* [[App.OnUpdate]] can use mojo input commands
+* [[mojo.app.App.OnUpdate|OnUpdate]] can use mojo input commands
 
-* [[App.OnRender]] can use mojo drawing commands
+* [[mojo.app.App.OnRender|OnRender]] can use mojo drawing commands
 
 The following draws an animated spiral shape using the [[DrawRect]] command.
 

@@ -480,7 +480,7 @@ Class Docs Implements LinkResolver
 
 	Method LoadTopic:Void( path:String )
 	
-		Local src:=LoadString( "src_docs/"+path+".txt" )
+		Local src:=LoadString( "src_docs/"+path+".txt" ).Replace( "~r","" )
 		If Not src
 			Print "Can't load: "+path
 			Return
@@ -493,13 +493,11 @@ Class Docs Implements LinkResolver
 	
 		Print "Loading: "+path
 	
-		Local src:=LoadString("src_docs/_"+path+".txt")
+		Local src:=LoadString("src_docs/_"+path+".txt").Replace( "~r","" )
 		If Not src
 			Print "Can't load: "+path
 			Return
 		End
-		
-		src=src.Replace("~r","")
 		
 		Local decl:Decl,scope:Decl,decls:=New Stack<Decl>
 		Local lines:=src.Split("~n"),block:="",buf:=New StringStack
@@ -591,7 +589,7 @@ Function Main()
 
 	ChangeDir "../../"
 	
-	Local docs:=New Docs(LoadString("page_template.html"))
+	Local docs:=New Docs( LoadString( "page_template.html" ).Replace( "~r","" ) )
 	
 	docs.MakeDocs
 

@@ -1,0 +1,6 @@
+
+# Module mojo.keycodes
+
+The keycodes module contains keyboard and input related constants.
+
+See the [[Key codes]] page for a list of all constants defined in this module.

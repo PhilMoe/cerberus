@@ -1,7 +1,7 @@
 
 # Tutorials
 
-Start with [[First Monkey steps]] and [[Drawing with images]], some nice beginner tutorials by Simon Armstrong.
+Start with [[First monkey steps]] and [[Drawing with images]], some nice beginner tutorials by Simon Armstrong.
 
 [Learn Monkey](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/learnmonkey.pdf) with this friendly beginners guide by James Boyd (pdf).
 

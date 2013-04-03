@@ -47,7 +47,7 @@ path - file path of the sound to load.
 
 ## See also
 
-[[Sound]], [[Resource paths]], [[File format]]
+[[Sound]], [[Resource paths]], [[File formats]]
 
 
 # Function PlaySound:Int(sound:Sound,channel:Int=0,flags:Int=0)
