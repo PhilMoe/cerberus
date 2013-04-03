@@ -54,6 +54,7 @@ MINGW_PATH="${SYSTEMDRIVE}\MinGW"
 'The Java JDK is currently available here:
 '	http://www.oracle.com/technetwork/java/javase/downloads/index.html
 '
+JDK_PATH="${PROGRAMFILES}\Java\jdk1.7.0_17"
 JDK_PATH="${PROGRAMFILES}\Java\jdk1.7.0_02"
 JDK_PATH="${PROGRAMFILES}\Java\jdk1.6.0_23"
 JDK_PATH="${PROGRAMFILES}\Java\jdk1.6.0_21"
