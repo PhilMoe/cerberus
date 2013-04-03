@@ -3,7 +3,9 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V70 *****
 
-Changed os.LoadDir behavior with recursive LoadDirs - used to only load file names, now also loads dir names by default.
+Souped up win8 VB performance; fixed several win8 bugs.
+
+Moved all input related constants to mojo.keycodes module.
 
 Put all native code imports inside #If target/lang conditional blocks.
 

@@ -20,6 +20,7 @@ HTML_PLAYER=open -n "${MONKEYDIR}/bin/mserver_macos.app" --args
 '
 'Must be set for FLASH target support.
 '
+FLEX_PATH="${HOME}/flex_sdk_4.9.1"
 FLEX_PATH="${HOME}/flex_sdk_4.9"
 FLEX_PATH="${HOME}/flex_sdk_4.6"
 '
