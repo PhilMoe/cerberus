@@ -109,7 +109,7 @@ Class Markdown
 			Local i1:=i0+l
 			While i1<src.Length
 				Local c:=src[i1]
-				If (c=95) Or (c>=65 And c<=90) Or (c>=97 And c<=122) Or  (i1>i0+l And c>=48 And c<=57) 
+				If (c=95) Or (c>=65 And c<=90) Or (c>=97 And c<=122) Or (i1>i0+l And c>=48 And c<=57) 
 					i1+=1
 					Continue
 				Endif

@@ -388,6 +388,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		return state;
 	}
 	
+	//Temporary fix!
+	static public String LoadState_V66b(){
+		SharedPreferences prefs=_androidGame._activity.getPreferences( 0 );
+		return prefs.getString( "gxtkAppState","" );
+	}
+	
 	public boolean PollJoystick( int port,float[] joyx,float[] joyy,float[] joyz,boolean[] buttons ){
 		if( port!=0 ) return false;
 		joyx[0]=_joyx[0];joyy[0]=_joyy[0];joyz[0]=_joyz[0];
