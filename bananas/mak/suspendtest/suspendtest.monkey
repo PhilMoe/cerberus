@@ -13,7 +13,7 @@ Class MyApp Extends App
 
 	Method OnCreate()
 
-		Local state$=LoadState()
+		Local state$=LoadState_V66b()
 		If state
 			creates=Int( state )+1
 		Else

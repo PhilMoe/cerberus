@@ -1,6 +1,13 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v70b *****
+
+Added temp LoadState_V66b() to Android target for kludging around LoadState issues. If you have recently updated a <v67 app to >=v67, and users have mysteriously 'lost' their save games, you can use this to recover their old save games. However, you might want to let user decide whether to use 'old' or 'new' save game.
+
+Android LoadState now checks for <v67 state data if >=v67 state data not found - my bad, I renamed the state 'key' in v67.
+
+
 ***** V70 *****
 
 Souped up win8 VB performance; fixed several win8 bugs.
