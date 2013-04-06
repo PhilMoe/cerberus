@@ -271,7 +271,7 @@ Function ClientThread:Object( data:Object )
 
 				WriteLine stream,"HTTP/1.1 206 Partial Content"
 				WriteLine stream, "ETag: " + etag
-				'WriteDataType(Get, stream)
+				WriteDataType(Get, stream)
 				WriteLine stream, "Content-Length: " + data.Length
 				WriteLine stream,"Content-Range: bytes "+range_start+"-"+range_end+"/"+length
 				WriteLine stream,""
