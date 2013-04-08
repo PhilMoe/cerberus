@@ -9,6 +9,8 @@ Import brl.eventqueue
 
 Import maxgui.drivers
 
+Const Version:String = "0.2"
+
 Global mserverPort=50607
 Global localhostIp=HostIp( "localhost" )
 
@@ -240,7 +242,8 @@ Function ClientThread:Object( data:Object )
 				
 				WriteLine stream,"HTTP/1.1 304 Not Modified"
 				WriteLine stream,"ETag: "+etag
-				WriteLine stream,""
+				WriteDataType(Get, stream)
+				WriteLine stream, ""
 				
 			Else If range_start=-1
 
@@ -252,6 +255,7 @@ Function ClientThread:Object( data:Object )
 				WriteLine stream,"HTTP/1.1 200 OK"
 				WriteLine stream,"ETag: "+etag
 				WriteLine stream,"Content-Length: "+data.length
+				WriteDataType(Get, stream)
 				WriteLine stream,""
 				stream.WriteBytes data,data.length
 			
@@ -269,7 +273,8 @@ Function ClientThread:Object( data:Object )
 
 				WriteLine stream,"HTTP/1.1 206 Partial Content"
 				WriteLine stream,"ETag: "+etag
-				WriteLine stream,"Content-Length: "+data.length
+				WriteDataType(Get, stream)
+				WriteLine stream, "Content-Length: " + data.Length
 				WriteLine stream,"Content-Range: bytes "+range_start+"-"+range_end+"/"+length
 				WriteLine stream,""
 				stream.WriteBytes data,data.length
@@ -363,6 +368,7 @@ Function MServer()
 
 	StartGUI
 		
+	Print "MServer " + Version
 	Print "MServer active and listening on port "+mserverPort
 	
 	Local serverId
@@ -450,3 +456,75 @@ Function HTTPDecode$( t$ )
 	t=t.Replace( "%25","%" )
 	Return t
 End Function
+
+Function WriteDataType(documentRequest:String, stream:TStream)
+	Local content:String = "text/plain"
+	Local i:Int = documentRequest.FindLast(".")
+	Local ext:String = ""
+	If i >= 0 And i < documentRequest.Length - 1 Then ext = documentRequest[i + 1..]
+
+	Select ext
+		Case "wav", "wave"
+			content = "audio/vnd.wave"
+		Case "webm"
+			content = "audio/webm"
+		Case "ra"
+			content = "audio/vnd.rn-realaudio"
+		Case "ogg"
+			content = "audio/ogg"
+		Case "mp3", "m4a"
+			content = "audio/mpeg"
+		
+		Case "gif"
+			content = "image/gif"
+			
+		Case "jpeg", "jpg", "jfif", "pjpeg"
+			content = "image/jpeg"
+			
+		Case "png"
+			content = "image/png"
+			
+		Case "svg"
+			content = "image/svg+xml"
+			
+		Case "tiff", "tff"
+			content = "image/tiff"
+			
+		Case "ico", "icon", "icn"
+			content = "image/vnd.microsoft.icon"
+			
+		Case "js"
+		 	content = "application/javascript"
+		
+		Case "xml"
+			content = "text/xml"
+			
+		Case "pdf"
+			content = "application/pdf"
+			
+		Case "zip"
+			content = "application/zip"
+			
+		Case "gzip"
+			content = "application/gzip"
+			
+		Case "cmd"
+			content = "text/cmd"
+			
+		Case "csv"
+			content = "text/csv"
+		
+		Case "css"
+			content = "text/css"
+		
+		Case "txt"
+			content = "text/plain"
+			
+		Case "html", "htm"
+			content = "text/html"
+	End Select
+	
+	WriteLine(stream, "Content-Type: " + content + ";")
+End Function
+
+
