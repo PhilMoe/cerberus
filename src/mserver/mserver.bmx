@@ -9,6 +9,8 @@ Import brl.eventqueue
 
 Import maxgui.drivers
 
+Const Version:String = "0.2"
+
 Global mserverPort=50607
 Global localhostIp=HostIp( "localhost" )
 
@@ -366,6 +368,7 @@ Function MServer()
 
 	StartGUI
 		
+	Print "MServer " + Version
 	Print "MServer active and listening on port "+mserverPort
 	
 	Local serverId
