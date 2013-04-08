@@ -239,7 +239,7 @@ Function ClientThread:Object( data:Object )
 				Print p+"GET "+get+" (304 Not Modified)"
 				
 				WriteLine stream,"HTTP/1.1 304 Not Modified"
-				WriteLine stream, "ETag: " + etag
+				WriteLine stream,"ETag: "+etag
 				WriteDataType(Get, stream)
 				WriteLine stream, ""
 				
@@ -270,7 +270,7 @@ Function ClientThread:Object( data:Object )
 				Print p+"GET "+get+" (206 Partial Content: "+range_start+"-"+range_end+")"
 
 				WriteLine stream,"HTTP/1.1 206 Partial Content"
-				WriteLine stream, "ETag: " + etag
+				WriteLine stream,"ETag: "+etag
 				WriteDataType(Get, stream)
 				WriteLine stream, "Content-Length: " + data.Length
 				WriteLine stream,"Content-Range: bytes "+range_start+"-"+range_end+"/"+length
@@ -459,8 +459,6 @@ Function WriteDataType(documentRequest:String, stream:TStream)
 	Local i:Int = documentRequest.FindLast(".")
 	Local ext:String = ""
 	If i >= 0 And i < documentRequest.Length - 1 Then ext = documentRequest[i + 1..]
-
-	Print ext
 
 	Select ext
 		Case "wav", "wave"
