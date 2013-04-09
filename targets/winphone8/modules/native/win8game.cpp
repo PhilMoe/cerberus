@@ -9,6 +9,7 @@ public:
 	
 	static void Main( int argc,const char *argv[] );
 	
+	virtual void SetKeyboardEnabled( bool enabled );
 	virtual void SetUpdateRate( int updateRate );
 	virtual int Millisecs();
 	virtual int SaveState( String state );
@@ -118,6 +119,14 @@ void BBWin8Game::Main( int argc,const char *argv[] ){
 	if( !_win8Game->Delegate() ) return;
 	
 	_win8Game->Run();
+}
+
+void BBWin8Game::SetKeyboardEnabled( bool enabled ){
+	BBGame::SetKeyboardEnabled( enabled );
+
+#if WINDOWS_PHONE_8
+	CoreWindow::GetForCurrentThread()->IsKeyboardInputEnabled=enabled;
+#endif
 }
 
 void BBWin8Game::SetUpdateRate( int hertz ){
@@ -725,11 +734,22 @@ void Win8Game::SetWindow( CoreWindow ^window ){
 		int minint=accel->MinimumReportInterval;
 		accel->ReportInterval=minint;//( minint );
 		
-		//Can't get this working...poll in UpdateGame instead.
+		//Can't get this working...poll in UpdateGame instead?
 		//accel->ReadingChanged+=ref new TypedEventHandler<Accelerometer^,AccelerometerReadingChangedEventArgs^>( this,&Win8Game::OnAccelerometerReadingChanged );
 	}
 #endif
 */
+
+#if WINDOWS_PHONE_8
+	Windows::Phone::UI::Input::HardwareButtons::BackPressed+=
+		ref new EventHandler<Windows::Phone::UI::Input::BackPressedEventArgs^>( this,&Win8Game::OnBackButtonPressed );
+
+	auto inputPane=Windows::UI::ViewManagement::InputPane::GetForCurrentView();
+
+	inputPane->Showing+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneShowing );
+
+	inputPane->Hiding+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneHiding );
+#endif
 }
 
 void Win8Game::Load( Platform::String ^entryPoint ){
@@ -745,7 +765,6 @@ void Win8Game::Uninitialize(){
 
 void Win8Game::OnWindowSizeChanged( CoreWindow ^sender,WindowSizeChangedEventArgs ^args ){
 	Print( "Window Size Changed" );
-	
 //	_renderer->UpdateForWindowSizeChange();
 }
 
@@ -773,6 +792,11 @@ void Win8Game::OnWindowClosed( CoreWindow ^sender,CoreWindowEventArgs ^args ){
 void Win8Game::OnKeyDown( CoreWindow ^sender,KeyEventArgs ^args ){
 	int data=(int)args->VirtualKey;
 	BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyDown,data );
+#if WINDOWS_PHONE_8
+	if( data==8 ){
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyChar,data );
+	}
+#endif	
 }
 
 void Win8Game::OnKeyUp( CoreWindow ^sender,KeyEventArgs ^args ){
@@ -842,7 +866,20 @@ void Win8Game::OnAccelerometerReadingChanged( Accelerometer ^sender,Acceleromete
 	float x=reading->AccelerationX;
 	float y=reading->AccelerationY;
 	float z=reading->AccelerationZ;
-	
-	//Never gets here!
 }
 
+void Win8Game::OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args ){
+}
+
+void Win8Game::OnInputPaneShowing( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args ){
+}
+
+//The only way to detect if inputPane has been dismissed...
+void Win8Game::OnInputPaneHiding( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args ){
+#if WINDOWS_PHONE_8
+	BBWin8Game *game=BBWin8Game::Win8Game();
+	if( game->KeyboardEnabled() ){
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyChar,27 );
+	}
+#endif
+}

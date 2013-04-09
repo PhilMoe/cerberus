@@ -1364,7 +1364,7 @@ int Print( String t ){
 	buf[n]=0;
 	
 #if __cplusplus_winrt
-//	OutputDebugStringA( buf );
+	OutputDebugStringA( buf );
 #else
 	fputs( buf,stdout );
 	fflush( stdout );
