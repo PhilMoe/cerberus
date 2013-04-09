@@ -23,7 +23,7 @@ Class Block Extends Sprite
 		GameSession.CurrentLevel.FallingBlocks.AddLast Self
 		Self.parent = GameSession.CurrentLevel.FallingBlocks
 		
-		GameSession.CurrentLevel.Blocks.Remove Self
+		GameSession.CurrentLevel.Blocks.RemoveEach Self
 		
 		If Self.hitby
 			Self.xs = Self.hitby.xs * 0.5
@@ -36,7 +36,7 @@ Class Block Extends Sprite
 	End
 	
 	Method Delete ()
-		parent.Remove Self
+		parent.RemoveEach Self
 	End
 	
 	Method New (img:Image, x:Float, y:Float, xs:Float, ys:Float, xscale:Float, yscale:Float)
