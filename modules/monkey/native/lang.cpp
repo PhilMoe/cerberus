@@ -534,6 +534,8 @@ template<class T> void gc_mark_elements( int n,Array<T> *p ){
 		
 // ***** String *****
 
+static const char *_str_load_err;
+
 class String{
 public:
 	String():rep( &nullRep ){
@@ -916,6 +918,8 @@ public:
 	
 	static String Load( unsigned char *p,int n ){
 	
+		_str_load_err=0;
+		
 		unsigned char *e=p+n;
 		std::vector<Char> chars;
 		
@@ -964,7 +968,7 @@ public:
 				chars.push_back( c );
 			}
 			if( fail ){
-				puts( "Invalid UTF-8!" );fflush( stdout );
+				_str_load_err="Invalid UTF-8";
 				return String( q,n );
 			}
 		}
