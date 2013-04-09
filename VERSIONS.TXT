@@ -1,6 +1,16 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** ???? *****
+
+Fixed Android LoadBitmap so it returns Null instead of throwing exception.
+
+Added file path to 'invalid utf8' warning in os.LoadString; rebuilt trans.
+
+Added "screenSize" to android target manifest android:configChanges setting so apps with targetSdkVersion>=12 don't reset when orientation changes.
+
+Merged Ziggy's mserver tweaks.
+
 ***** v70b *****
 
 Added temp LoadState_V66b() to Android target for kludging around LoadState issues. If you have recently updated a <v67 app to >=v67, and users have mysteriously 'lost' their save games, you can use this to recover their old save games. However, you might want to let user decide whether to use 'old' or 'new' save game.
