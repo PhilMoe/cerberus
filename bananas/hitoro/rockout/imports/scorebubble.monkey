@@ -19,7 +19,7 @@ Class ScoreBubble Extends Sprite
 	End
 
 	Method Delete ()
-		parent.Remove Self
+		parent.RemoveEach Self
 	End
 	
 	Function UpdateAll ()

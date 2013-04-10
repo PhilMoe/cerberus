@@ -231,7 +231,7 @@ Class ActionTimer Extends Timer Implements TimerCompleteListener Abstract
 	End Method
 	
 	Method OnTimerComplete:Void()
-		GameField.Timers.Remove(Self)
+		GameField.Timers.RemoveEach(Self)
 	End Method
 
 End Class
