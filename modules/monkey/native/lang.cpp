@@ -1364,7 +1364,11 @@ int Print( String t ){
 	buf[n]=0;
 	
 #if __cplusplus_winrt
+
+#if CFG_WIN8_PRINT_ENABLED
 	OutputDebugStringA( buf );
+#endif
+
 #else
 	fputs( buf,stdout );
 	fflush( stdout );

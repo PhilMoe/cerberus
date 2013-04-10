@@ -1,4 +1,5 @@
 
+#WIN8_PRINT_ENABLED=False
 #WIN8_SCREEN_ORIENTATION=1			'1=portrait, 2=landscape
 
 #OPENGL_GLES20_ENABLED=false

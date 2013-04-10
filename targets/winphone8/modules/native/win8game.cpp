@@ -764,8 +764,7 @@ void Win8Game::Uninitialize(){
 }
 
 void Win8Game::OnWindowSizeChanged( CoreWindow ^sender,WindowSizeChangedEventArgs ^args ){
-	Print( "Window Size Changed" );
-//	_renderer->UpdateForWindowSizeChange();
+//	Print( "Window Size Changed" );
 }
 
 void Win8Game::OnVisibilityChanged( CoreWindow ^sender,VisibilityChangedEventArgs ^args ){
@@ -781,11 +780,12 @@ void Win8Game::OnVisibilityChanged( CoreWindow ^sender,VisibilityChangedEventArg
 }
 
 void Win8Game::OnInputEnabled( CoreWindow ^window,InputEnabledEventArgs ^args ){
-	Print( "Input Enabled" );
+//	Print( "Input Enabled" );
 }
 
 void Win8Game::OnWindowClosed( CoreWindow ^sender,CoreWindowEventArgs ^args ){
-	Print( "Window Closed" );
+//	Print( "Window Closed" );
+
 	_windowClosed=true;
 }
 
@@ -828,8 +828,9 @@ void Win8Game::OnPointerMoved( CoreWindow ^sender,PointerEventArgs ^args ){
 }
 
 void Win8Game::OnActivated( CoreApplicationView ^applicationView,IActivatedEventArgs ^args ){
-	Print( "Activated" );
-	CoreWindow::GetForCurrentThread()->Activate();
+//	Print( "Activated" );
+
+//	CoreWindow::GetForCurrentThread()->Activate();
 }
 
 void Win8Game::OnSuspending( Platform::Object ^sender,SuspendingEventArgs ^args ){
@@ -839,14 +840,16 @@ void Win8Game::OnSuspending( Platform::Object ^sender,SuspendingEventArgs ^args 
 	// aware that a deferral may not be held indefinitely. After about five seconds,
 	// the app will be forced to exit.
 	
-	BBWin8Game::Win8Game()->SuspendGame();
-	
+//	BBWin8Game::Win8Game()->SuspendGame();
+
+/*	
 	SuspendingDeferral ^deferral=args->SuspendingOperation->GetDeferral();
 
 	create_task( [this,deferral](){
 		// Insert your code here.
 		deferral->Complete();
 	} );
+*/
 }
  
 void Win8Game::OnResuming( Platform::Object ^sender,Platform::Object ^args ){
