@@ -3,6 +3,8 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** ???? *****
 
+Fixed Select in generic code causing internal error.
+
 Fixed Android LoadBitmap so it returns Null instead of throwing exception.
 
 Added file path to 'invalid utf8' warning in os.LoadString; rebuilt trans.
