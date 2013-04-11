@@ -131,7 +131,9 @@ gxtkGraphics.prototype.SetScissor=function( x,y,w,h ){
 		this.gc.closePath();
 	}
 	this.gc.fillStyle=this.color;
-	this.gc.strokeStyle=this.color;
+	this.gc.strokeStyle=this.color;	
+	this.gc.globalAlpha=this.alpha;	
+	this.gc.globalCompositeOperation=this.blend;
 	if( this.tformed ) this.gc.setTransform( this.ix,this.iy,this.jx,this.jy,this.tx,this.ty );
 }
 
