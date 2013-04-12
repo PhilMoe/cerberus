@@ -12,12 +12,14 @@ Please see the [[Key codes]] page for a full list of keyboard, mouse and joystic
 
 # Function EnableKeyboard:Int()
 
-On the android and ios targets, this function enables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
+On the android, ios and windows phone 8 targets, this function enables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
 
 A virtual keyboard is a graphical representation of a keyboard overlaid on the display that allows users to enter text by means of touching symbols representing keys.
 
-After enabling the virtual keyboard, you program will be able to use GetChar to receive keystrokes, just as if there were a real keyboard present. It is up to the program to eventually call DisableKeyboard when appropriate, for example, when GetChar returns 13 (ie: the 'Enter' key) or 27 (ie: the 'Esc' key).
+After enabling the virtual keyboard, you program will be able to use GetChar to receive keystrokes, just as if there were a real keyboard present. It is up to the program to eventually call DisableKeyboard when appropriate, for example, when GetChar returns CHAR_ENTER (ie: the 'Enter' key) or CHAR_ESCAPE (ie: the 'Esc/Back' key).
 
+Important note: On some targets, the virtual keyboard may be automatically disabled by the underlying OS when either 'Enter' or 'Esc/Back' are pressed. To maintain compatibility with all targets, apps should *always* respond to CHAR_ENTER and CHAR_ESCAPE GetChar events by calling [[DisableKeyboard]] regardless of target.
+ 
 On the GLFW, HTML5, Flash and XNA (Windows) targets, keyboard support is always assumed to be available and your program can always use GetChar to receive keystrokes.
 
 On the XNA XBOX and Windows Phone 7 targets, keyboard support is currently unavailable.
@@ -29,7 +31,9 @@ On the XNA XBOX and Windows Phone 7 targets, keyboard support is currently unava
 
 # Function DisableKeyboard:Int()
 
-On the android and ios targets, this function disables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
+On the android, ios and windows phone 8 targets, this function disables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
+
+Important note: On some targets, the virtual keyboard may be automatically disabled by the underlying OS when either 'Enter' or 'Esc/Back' are pressed. To maintain compatibility with all targets, apps should *always* respond to CHAR_ENTER and CHAR_ESCAPE GetChar events by calling [[DisableKeyboard]] regardless of target.
 
 ## See also
 
