@@ -38,10 +38,11 @@ protected:
 
 	void OnAccelerometerReadingChanged( Windows::Devices::Sensors::Accelerometer ^sender, Windows::Devices::Sensors::AccelerometerReadingChangedEventArgs ^args );
 
-	void OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args );
-	
+#if WINDOWS_PHONE_8
 	void OnInputPaneShowing( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args );
 	void OnInputPaneHiding( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args );
+	void OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args );
+#endif
 
 private:
 	bool _windowClosed;

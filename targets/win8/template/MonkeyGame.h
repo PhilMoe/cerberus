@@ -25,7 +25,7 @@ protected:
 	void OnResuming( Platform::Object ^sender,Platform::Object ^args );
 	void OnWindowClosed( Windows::UI::Core::CoreWindow ^sender,Windows::UI::Core::CoreWindowEventArgs ^args );
 	void OnVisibilityChanged( Windows::UI::Core::CoreWindow ^sender,Windows::UI::Core::VisibilityChangedEventArgs ^args );
-	
+
 	void OnInputEnabled( Windows::UI::Core::CoreWindow ^window,Windows::UI::Core::InputEnabledEventArgs ^args );
 
 	void OnKeyDown( Windows::UI::Core::CoreWindow ^sender,Windows::UI::Core::KeyEventArgs ^args );
@@ -37,6 +37,12 @@ protected:
 	void OnPointerMoved( Windows::UI::Core::CoreWindow ^sender,Windows::UI::Core::PointerEventArgs ^args );
 
 	void OnAccelerometerReadingChanged( Windows::Devices::Sensors::Accelerometer ^sender, Windows::Devices::Sensors::AccelerometerReadingChangedEventArgs ^args );
+
+#if WINDOWS_PHONE_8
+	void OnInputPaneShowing( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args );
+	void OnInputPaneHiding( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args );
+	void OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args );
+#endif
 
 private:
 	bool _windowClosed;

@@ -9,6 +9,7 @@ public:
 	
 	static void Main( int argc,const char *argv[] );
 	
+	virtual void SetKeyboardEnabled( bool enabled );
 	virtual void SetUpdateRate( int updateRate );
 	virtual int Millisecs();
 	virtual int SaveState( String state );
@@ -118,6 +119,14 @@ void BBWin8Game::Main( int argc,const char *argv[] ){
 	if( !_win8Game->Delegate() ) return;
 	
 	_win8Game->Run();
+}
+
+void BBWin8Game::SetKeyboardEnabled( bool enabled ){
+	BBGame::SetKeyboardEnabled( enabled );
+
+#if WINDOWS_PHONE_8
+	CoreWindow::GetForCurrentThread()->IsKeyboardInputEnabled=enabled;
+#endif
 }
 
 void BBWin8Game::SetUpdateRate( int hertz ){
@@ -725,11 +734,18 @@ void Win8Game::SetWindow( CoreWindow ^window ){
 		int minint=accel->MinimumReportInterval;
 		accel->ReportInterval=minint;//( minint );
 		
-		//Can't get this working...poll in UpdateGame instead.
+		//Can't get this working...poll in UpdateGame instead?
 		//accel->ReadingChanged+=ref new TypedEventHandler<Accelerometer^,AccelerometerReadingChangedEventArgs^>( this,&Win8Game::OnAccelerometerReadingChanged );
 	}
 #endif
 */
+
+#if WINDOWS_PHONE_8
+	auto inputPane=Windows::UI::ViewManagement::InputPane::GetForCurrentView();
+	inputPane->Showing+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneShowing );
+	inputPane->Hiding+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneHiding );
+	Windows::Phone::UI::Input::HardwareButtons::BackPressed+=ref new EventHandler<Windows::Phone::UI::Input::BackPressedEventArgs^>( this,&Win8Game::OnBackButtonPressed );
+#endif
 }
 
 void Win8Game::Load( Platform::String ^entryPoint ){
@@ -744,14 +760,12 @@ void Win8Game::Uninitialize(){
 }
 
 void Win8Game::OnWindowSizeChanged( CoreWindow ^sender,WindowSizeChangedEventArgs ^args ){
-	Print( "Window Size Changed" );
-	
-//	_renderer->UpdateForWindowSizeChange();
+//	Print( "Window Size Changed" );
 }
 
 void Win8Game::OnVisibilityChanged( CoreWindow ^sender,VisibilityChangedEventArgs ^args ){
-	Print( "Visibility Changed" );
-	
+//	Print( "Visibility Changed" );
+
 	_windowVisible=args->Visible;
 	
 	if( _windowVisible ){
@@ -762,17 +776,22 @@ void Win8Game::OnVisibilityChanged( CoreWindow ^sender,VisibilityChangedEventArg
 }
 
 void Win8Game::OnInputEnabled( CoreWindow ^window,InputEnabledEventArgs ^args ){
-	Print( "Input Enabled" );
+//	Print( "Input Enabled" );
 }
 
 void Win8Game::OnWindowClosed( CoreWindow ^sender,CoreWindowEventArgs ^args ){
-	Print( "Window Closed" );
+//	Print( "Window Closed" );
 	_windowClosed=true;
 }
 
 void Win8Game::OnKeyDown( CoreWindow ^sender,KeyEventArgs ^args ){
 	int data=(int)args->VirtualKey;
 	BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyDown,data );
+#if WINDOWS_PHONE_8
+	if( data==8 ){
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyChar,data );
+	}
+#endif	
 }
 
 void Win8Game::OnKeyUp( CoreWindow ^sender,KeyEventArgs ^args ){
@@ -804,45 +823,40 @@ void Win8Game::OnPointerMoved( CoreWindow ^sender,PointerEventArgs ^args ){
 }
 
 void Win8Game::OnActivated( CoreApplicationView ^applicationView,IActivatedEventArgs ^args ){
-	Print( "Activated" );
+//	Print( "Activated" );
 	CoreWindow::GetForCurrentThread()->Activate();
 }
 
+//WP8 only?
 void Win8Game::OnSuspending( Platform::Object ^sender,SuspendingEventArgs ^args ){
-	Print( "Suspending" );
-	// Save app state asynchronously after requesting a deferral. Holding a deferral
-	// indicates that the application is busy performing suspending operations. Be
-	// aware that a deferral may not be held indefinitely. After about five seconds,
-	// the app will be forced to exit.
-	
-	BBWin8Game::Win8Game()->SuspendGame();
-	
-	SuspendingDeferral ^deferral=args->SuspendingOperation->GetDeferral();
-
-	create_task( [this,deferral](){
-		// Insert your code here.
-		deferral->Complete();
-	} );
+//	Print( "Suspending" );
 }
  
+//WP8 only?
 void Win8Game::OnResuming( Platform::Object ^sender,Platform::Object ^args ){
-	Print( "Resuming" );
-
-	// Restore any data or state that was unloaded on suspend. By default, data
-	// and state are persisted when resuming from suspend. Note that this event
-	// does not occur if the app was previously terminated.
-	
-	BBWin8Game::Win8Game()->ResumeGame();
+//	Print( "Resuming" );
 }
 
 void Win8Game::OnAccelerometerReadingChanged( Accelerometer ^sender,AccelerometerReadingChangedEventArgs ^args ){
-
 	AccelerometerReading ^reading=args->Reading;
 	
 	float x=reading->AccelerationX;
 	float y=reading->AccelerationY;
 	float z=reading->AccelerationZ;
-	
-	//Never gets here!
 }
 
+#if WINDOWS_PHONE_8
+void Win8Game::OnInputPaneShowing( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args ){
+}
+
+//The only way to detect if inputPane has been dismissed...
+void Win8Game::OnInputPaneHiding( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args ){
+	BBWin8Game *game=BBWin8Game::Win8Game();
+	if( game->KeyboardEnabled() ){
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyChar,27 );
+	}
+}
+
+void Win8Game::OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args ){
+}
+#endif
