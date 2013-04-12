@@ -1,7 +1,17 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** ???? *****
+***** V70c *****
+
+Added temp SaveState_V66b().
+
+Merged mwtb's html5 SetScissor fix.
+
+Merged Devolonter's bananas tweaks.
+
+Added WIN8_PRINT_ENABLED app config var - defaults to 'false', due to apps with print failing 'app store' guidelines.
+
+Added EnabledKeyboard/DisableKeyboard support to windows phone 8 - not yet windows (store?) 8. Note: 'back' on windows phone 8 ALWAYS clears virtual keyboard, whether or not you call DisableKeyboard in response to GetChar()=27. See EnableKeyboard/DisableKeyboard docs for how to handle this.
 
 Fixed Select in generic code causing internal error.
 
@@ -13,7 +23,7 @@ Added "screenSize" to android target manifest android:configChanges setting so a
 
 Merged Ziggy's mserver tweaks.
 
-***** v70b *****
+***** V70b *****
 
 Added temp LoadState_V66b() to Android target for kludging around LoadState issues. If you have recently updated a <v67 app to >=v67, and users have mysteriously 'lost' their save games, you can use this to recover their old save games. However, you might want to let user decide whether to use 'old' or 'new' save game.
 
