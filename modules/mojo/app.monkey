@@ -75,6 +75,13 @@ Class GameDelegate Extends BBGameDelegate
 
 	Method KeyEvent:Void( event:Int,data:Int )
 		_input.KeyEvent event,data
+		If event<>BBGameEvent.KeyDown Return
+		Select data
+		Case KEY_CLOSE
+			_app.OnClose
+		Case KEY_BACK
+			_app.OnBack
+		End
 	End
 
 	Method MouseEvent:Void( event:Int,data:Int,x:Float,y:Float )
@@ -102,7 +109,6 @@ Class App
 	Method New()
 		If _app Error "App has already been created"
 		_app=Self
-'		_game=BBGame.Game()
 		_delegate=New GameDelegate
 		_game.SetDelegate _delegate
 	End
@@ -124,7 +130,15 @@ Class App
 	
 	Method OnResume()
 	End
+	
+	Method OnClose()
+		EndApp
+	End
 
+	Method OnBack()
+		OnClose
+	End
+	
 End
 
 Function LoadState$()
@@ -172,4 +186,8 @@ End
 
 Function ShowMouse()
 	_game.SetMouseVisible True
+End
+
+Function EndApp()
+	Error ""
 End

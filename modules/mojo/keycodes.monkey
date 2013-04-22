@@ -89,8 +89,8 @@ Const KEY_JOY3_A=$160		'32 joy3 states
 
 Const KEY_TOUCH0=$180		'32 touch states
 
-Const KEY_BACK=$1a0			'back button (android)
-Const KEY_MENU=$1a1			'menu button (android)
+Const KEY_BACK=$1a0			'back button (android/winphone8)
+Const KEY_MENU=$1a1			'menu button (android/winphone8)
 Const KEY_SEARCH=$1a2		'search button (android)
 
 Const KEY_CLOSE=$1b0		'close button (glfw/desktop xna)

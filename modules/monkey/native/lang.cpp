@@ -1377,8 +1377,18 @@ int Print( String t ){
 	return 0;
 }
 
+class BBExitApp{
+};
+
 int Error( String err ){
-	if( !err.Length() ) exit( 0 );
+	if( !err.Length() ){
+#if __cplusplus_winrt
+		throw BBExitApp();
+//		System::Windows::Application::Current->Terminate();
+#else
+		exit( 0 );
+#endif
+	}
 	dbg_error( err.ToCString<char>() );
 	return 0;
 }

@@ -1455,7 +1455,7 @@ Class Parser
 		
 		If CParse( "<" )
 			If attrs & DECL_EXTERN Err "Extern classes cannot be generic."
-			If attrs & CLASS_INTERFACE Err "Interfaces cannot be generic."
+			'If attrs & CLASS_INTERFACE Err "Interfaces cannot be generic."
 			Repeat
 				args.Push ParseIdent()
 			Until Not CParse(",")

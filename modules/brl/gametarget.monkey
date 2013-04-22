@@ -25,6 +25,7 @@ Class BBGame Extends Null
 	Method PollJoystick:Bool( port:Int,joyx:Float[],joyy:Float[],joyz:Float[],buttons:Bool[] )
 	Method OpenUrl:Void( url:String )
 	Method SetMouseVisible( visible:Bool )
+	Method PathToFilePath:String( path:String )
 
 	Function Game:BBGame()
 End

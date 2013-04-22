@@ -1,4 +1,3 @@
-
 // Stdcpp trans.system runtime.
 //
 // Placed into the public domain 24/02/2011.

@@ -192,11 +192,11 @@ void BBGame::OpenUrl( String url ){
 void BBGame::SetMouseVisible( bool visible ){
 }
 
-//***** C++ Game *****
-
 String BBGame::PathToFilePath( String path ){
 	return "";
 }
+
+//***** C++ Game *****
 
 FILE *BBGame::OpenFile( String path,String mode ){
 

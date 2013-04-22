@@ -133,11 +133,11 @@ public class BBGame{
 	public virtual void SetMouseVisible( bool visible ){
 	}
 	
-	//***** C# extensions *****
-	
 	public virtual String PathToFilePath( String path ){
 		return "";
 	}
+	
+	//***** C# extensions *****
 	
 	public virtual FileStream OpenFile( String path,FileMode mode ){
 		try{

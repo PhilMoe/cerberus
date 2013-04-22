@@ -107,21 +107,14 @@ Class InputDevice
 		Select event
 		Case BBGameEvent.KeyDown
 			If Not _keyDown[data]
-				If _keyHitPut>=_keyHitQueue.Length-1 Return
 				_keyDown[data]=True
-				_keyHit[data]+=1
-				_keyHitQueue[_keyHitPut]=data
-				_keyHitPut+=1
+				PutKeyHit data
 				If data=KEY_LMB
 					_keyDown[KEY_TOUCH0]=True
-					_keyHit[KEY_TOUCH0]+=1
-					_keyHitQueue[_keyHitPut]=KEY_TOUCH0
-					_keyHitPut+=1
+					PutKeyHit KEY_TOUCH0
 				Else If data=KEY_TOUCH0
 					_keyDown[KEY_LMB]=True
-					_keyHit[KEY_LMB]+=1
-					_keyHitQueue[_keyHitPut]=KEY_LMB
-					_keyHitPut+=1
+					PutKeyHit KEY_LMB
 				Endif
 			Endif
 		Case BBGameEvent.KeyUp
@@ -150,7 +143,7 @@ Class InputDevice
 			Return
 		Case BBGameEvent.MouseMove
 		Default
-			return
+			Return
 		End
 		_mouseX=x
 		_mouseY=y
@@ -197,7 +190,7 @@ Class InputDevice
 				If state.buttons[j]
 					If Not _keyDown[key]
 						_keyDown[key]=True
-						_keyHit[key]+=1
+						PutKeyHit key
 					Endif
 				Else
 					_keyDown[key]=False
@@ -235,5 +228,12 @@ Private
 	Field _accelY:Float
 	Field _accelZ:Float
 	Field _joyStates:JoyState[MAX_JOYSTATES]
+	
+	Method PutKeyHit:Void( key:Int )
+		If _keyHitPut=_keyHitQueue.Length Return
+		_keyHit[key]+=1
+		_keyHitQueue[_keyHitPut]=key
+		_keyHitPut+=1
+	End
 
 End

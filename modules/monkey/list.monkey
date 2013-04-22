@@ -413,7 +413,7 @@ Class StringList Extends List<String>
 		Super.New( data )
 	End
 	
-	Method Join$( separator$="" )
+	Method Join$( separator:String="" )
 		Return separator.Join( ToArray() )
 	End
 	
