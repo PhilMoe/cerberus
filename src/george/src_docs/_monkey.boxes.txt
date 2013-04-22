@@ -1,9 +1,0 @@
-
-# Module monkey.boxes
-
-The boxes module provides a set of classes that allow you to use 'box' objects.
-
-A box object is an object that provides a container for non-object values. This is sometimes useful in situations when you would like to use non-object values with code designed to work solely with objects.
-
-
-
