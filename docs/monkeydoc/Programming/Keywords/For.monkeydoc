@@ -1,0 +1,87 @@
+> Keyword For
+
+Declares the start of a For/Next loop.
+
+>> Syntax
+
+For Local *IndexVar* := *start_value* To *end_value* [ Step *constant_value* ]~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+For Local *IndexVar* := *start_value* Until *end_value* [ Step *constant_value* ]~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+For Local *IndexVar* := Eachin *value_set*~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+>> Description
+
+For declares the start of a For/Next loop, allowing for iteration through a set of values or objects.
+
+There are three variants of the For/Next loop, modifying the values of the index variable via the range keywords below:
+
+* `To`: Iterates through the given start and end values;
+* `Until`: This variant of For/Next stops iterating before the last value in the loop, useful for iterating through zero-based arrays. (See Example 3.)
+* `Eachin`: Iterates through a set of objects or values, such as a list or array;
+
+In the To and Until variants, the optional Step keyword, followed by a constant value, allows control over the size of the iteration step.
+
+*Alternatives to the closing Next keyword are End For, or simply End.*
+
+>> See also
+
+[[Next]] [[To]] [[Eachin]] [[Until]]
+
+>> Example
+
+<pre>
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+Next
+
+' With optional Step
+
+For k=1 To 1000 Step 100
+&nbsp;&nbsp;Print k
+Next
+
+' Alternative syntax examples
+
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+End
+
+For k=1 To 1000
+&nbsp;&nbsp;Print k
+End For
+</pre>
+
+>> Example 2
+
+<pre>
+' Assume m:MyObject and mylist:List
+
+For m=Eachin mylist
+&nbsp;&nbsp;Print m.myField
+Next
+
+' Assume i:Int and myarray:Int[]
+
+For i=Eachin myarray
+&nbsp;&nbsp;Print myarray[i]
+Next
+</pre>
+
+>> Example 3
+
+<pre>
+NUM = 100 ' Assume myarray[NUM] has been declared
+
+' Prints 0 to 99 without requiring NUM-1
+
+For k=0 Until NUM
+&nbsp;&nbsp;Print myarray[k]
+Next
+</pre>

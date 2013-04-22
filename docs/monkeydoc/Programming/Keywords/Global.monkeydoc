@@ -1,0 +1,28 @@
+> Keyword Global
+
+Declares a global variable.
+
+>> Syntax
+
+Global *Identifier:Type* [ = *Expression* ]
+
+Global *Identifier:*= *Expression*
+
+>> Description
+
+The Global keyword declares a permanent variable of a given type; this variable is accessible throughout the entire module scope. Global variables may be declared at module scope, or within a class declaration.
+
+The alternative syntax provided allows the variable's type to be deduced from the expression.
+
+>> See also
+
+[[Const]] [[Local]] [[Field]]  
+[Language reference](Language reference#variables)
+
+>> Example
+
+<pre>
+Global Gravity:Float = 0.9
+Global GameName:String = "Gravity Dog"
+Global Player:MyObject = New MyObject
+</pre>

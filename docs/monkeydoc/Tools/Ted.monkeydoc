@@ -1,0 +1,7 @@
+> Ted
+
+Ted is a simple text editor/IDE for monkey.
+
+Ted is written in C++ and [Qt](http://qt.nokia.com/products/), and is located in the monkey 'bin' directory along with any necessary Qt libraries.
+
+Normally, you should not need to run Ted directly. Instead, use the [[Monkey]] app in the main monkey directory which launches Ted for you.

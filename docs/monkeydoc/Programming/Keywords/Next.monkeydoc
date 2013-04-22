@@ -1,0 +1,27 @@
+> Keyword Next
+
+Declares the end of a For/Next loop. See [[For]] for details and examples.
+
+>> Syntax
+
+For Local *IndexVar* := *start_value* To *end_value* [ Step *constant_value* ]~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+For Local *IndexVar* := *start_value* Until *end_value* [ Step *constant_value* ]~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+For Local *IndexVar* := Eachin *value_set*~n
+&nbsp;&nbsp;*Statements...*~n
+Next
+
+>> Description
+
+Next declares the end of a For/Next loop.
+
+*An alternative to Next is End For, or simply End.*
+
+>> See also
+
+[[For]] [[To]] [[Eachin]] [[Until]]

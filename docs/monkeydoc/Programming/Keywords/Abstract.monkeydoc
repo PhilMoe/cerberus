@@ -1,0 +1,63 @@
+> Keyword Abstract
+
+Declares method as Abstract.
+
+>> Syntax
+
+Method *Identifier*: *ReturnType* ( *Parameters* ) [ Property ] [ `Abstract` ] [ Final ]  
+&nbsp;&nbsp;*Statements...*  
+End [ Method ]
+
+>> Description
+
+The Abstract keyword declares that a method must be implemented by extending classes. An abstract method also implies that the container class is abstract; this means that objects cannot be created from the resulting abstract class. Objects may only be created from classes that a) extend this class and b) implement the abstract method.
+
+>> See also
+
+[[Method]] [[Property]]  
+[Language reference (Methods)](Language reference#methods)  
+
+>> Examples
+
+In this example, Enemy contains an abstract method. This means that objects cannot be created from the Enemy class directly, because there is no specific definition for its Die method; we must first extend the class (see Hoodlum and Alien) *and* implement the abstract 'Die' method in each extending class.
+
+<pre>
+Class Enemy
+&nbsp;&nbsp;Method Die () Abstract
+End
+
+Class Hoodlum Extends Enemy
+
+&nbsp;&nbsp;' Must implement Die method...
+
+&nbsp;&nbsp;Method Die ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "B'oss, he-- he killed me, b'oss!"
+&nbsp;&nbsp;End
+
+End
+
+Class Alien Extends Enemy
+
+&nbsp;&nbsp;' Must implement Die method...
+
+&nbsp;&nbsp;Method Die ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "X'll #hyep, g''ta!! Boss'yap!"
+&nbsp;&nbsp;End
+
+End
+
+Function Main ()
+
+&nbsp;&nbsp;' Not allowed...
+
+'&nbsp;&nbsp;Local e:Enemy = New Enemy
+
+&nbsp;&nbsp;Local h:Hoodlum = New Hoodlum
+&nbsp;&nbsp;h.Die
+
+&nbsp;&nbsp;Local a:Alien = New Alien
+&nbsp;&nbsp;a.Die
+
+End
+
+</pre>

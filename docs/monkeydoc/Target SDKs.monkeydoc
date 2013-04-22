@@ -1,0 +1,19 @@
+> Target SDKs
+
+In order to build output target projects, the correct SDKs for each target must be installed. 
+
+In addition, a special config file used by [[Trans]], the Monkey translator may have to be edited.
+
+This config file is named "config.winnt.txt" or "config.macos.txt" and is located in your Monkey installation's "bin" directory.
+
+Please refer to the following installation guides: 
+
+* [[The HTML5 target]]
+* [[The GLFW target]]
+* [[The Flash target]]
+* [[The Android target]]
+* [[The iOS target]]
+* [[The XNA target]]
+* [[The Stdcpp target]]
+
+Please also see: [[App config settings]].

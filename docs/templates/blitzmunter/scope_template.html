@@ -1,0 +1,261 @@
+		
+<div class="box">
+
+<h1>${KIND} ${IDENT}${TYPE}</h1>
+
+${IF SUMMARY}
+	${SUMMARY}
+	${IF DESCRIPTION}<a href="#description">More...</a>${ENDIF}
+${ENDIF}
+
+${IF EXTENDS}
+	<p><b>Extends</b> ${XEXTENDS}
+${ENDIF}
+
+${IF IMPLEMENTS}
+	<p><b>Implements</b> ${XIMPLEMENTS}
+${ENDIF}
+
+${IF EXTENDED_BY}
+	<p><b>Extended by</b> ${XEXTENDED_BY}
+${ENDIF}
+
+</div>
+
+${IF IMPORTS}			
+	<div class="box">
+	<h2>Imports</h2>
+	<table class="small">
+	${FOR IMPORTS}
+		<tr><td><a href="${URL}">${IDENT}</a></td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF CLASSES}
+	<div class="box">
+	<h2>Classes</h2>
+	<table class="small">
+	${FOR CLASSES}
+		<tr><td><a href="${URL}">${IDENT}</a></td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF IFACES}
+	<div class="box">
+	<h2>Interfaces</h2>
+	<table class="small">
+	${FOR IFACES}
+		<tr><td><a href="${URL}">${IDENT}</a></td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF CONSTS}
+	<div class="box">
+	<h2>Constants</h2>
+	<table class="small">
+	${FOR CONSTS}
+		<tr><td>${IDENT} : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF GLOBALS}
+	<div class="box">
+	<h2>Globals</h2>
+	<table class="small">
+	${FOR GLOBALS}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF FIELDS}
+	<div class="box">
+	<h2>Fields</h2>
+	<table class="small">
+	${FOR FIELDS}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF CTORS}
+	<div class="box">
+	<h2>Constructors</h2>
+	<table class="small">
+	${FOR CTORS}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF PROPERTIES}
+	<div class="box">
+	<h2>Properties</h2>
+	<table class="small">
+	${FOR PROPERTIES}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF METHODS}
+	<div class="box">
+	<h2>Methods</h2>
+	<table class="small">
+	${FOR METHODS}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF FUNCTIONS}
+	<div class="box">
+	<h2>Functions</h2>
+	<table class="small">
+	${FOR FUNCTIONS}
+		<tr><td><a href="#${UIDENT}">${IDENT}</a> : ${TYPE}</td></tr>
+	${NEXT}
+	</table>
+	</div>
+${ENDIF}
+
+${IF DESCRIPTION}
+	<div class="box">
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	${DESCRIPTION}
+	${IF LINKS}
+		<p><b>See also</b> ${LINKS}
+	${ENDIF}
+	${IF EXAMPLE}
+		<p><b>Example</b> ${EXAMPLE}
+	${ENDIF}
+	</div>
+${ENDIF}
+
+${IF FIELDS}
+	<div class="box">
+	<h2>Field Documentation</h2>
+	${FOR FIELDS}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Field ${IDENT} : ${XTYPE}</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}
+
+${IF GLOBALS}
+	<div class="box">
+	<h2>Global Documentation</h2>
+	${FOR GLOBALS}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Global ${IDENT} : ${XTYPE}</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}
+
+${IF CTORS}
+	<div class="box">
+	<h2>Constructor Documentation</h2>
+	${FOR CTORS}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Method New ${XTYPE}</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}
+
+${IF PROPERTIES}
+	<div class="box">
+	<h2>Property Documentation</h2>
+	${FOR PROPERTIES}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Method ${IDENT} : ${XTYPE} Property</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}
+
+${IF METHODS}
+	<div class="box">
+	<h2>Method Documentation</h2>
+	${FOR METHODS}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Method ${IDENT} : ${XTYPE}</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}
+
+${IF FUNCTIONS}
+	<div class="box">
+	<h2>Function Documentation</h2>
+	${FOR FUNCTIONS}
+		<a name="${UIDENT}"></a>
+		<div class="box">
+		<h3 class="rounded">Function ${IDENT} : ${XTYPE}</h3>
+		${DESCRIPTION}
+		${IF LINKS}
+			<p><b>See also</b> ${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<p><b>Example</b> ${EXAMPLE}
+		${ENDIF}
+		</div>
+	${NEXT}
+	</div>
+${ENDIF}

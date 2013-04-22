@@ -1,0 +1,33 @@
+> Keyword Null
+
+Null is a Monkey constant representing an empty Object reference.
+
+>> Syntax
+
+Null represents an empty Object, thereby allowing comparison between Null and an object's handle in order to determine whether or not the object actually exists.
+
+An object's handle may also be set to Null, thereby freeing the object and marking it for garbage collection (assuming no other handles still point to it); however, it is recommended that objects be allowed to go out of scope where possible, rather than nullifying them.
+
+>> Description
+
+>> See also
+
+[Language reference (Classes)](Language reference#classes)  
+
+>> Example
+
+<pre>
+Class Example
+&nbsp;&nbsp;&nbsp;&nbsp;Field something:Int
+End
+
+Function Main ()
+
+&nbsp;&nbsp;&nbsp;&nbsp;Local e:Example
+
+&nbsp;&nbsp;&nbsp;&nbsp;' e = New Example ' Uncomment this line to change the outcome...
+
+&nbsp;&nbsp;&nbsp;&nbsp;If e = Null Then Print "Object doesn't exist!" Else Print "Object exists!"
+
+End
+</pre>

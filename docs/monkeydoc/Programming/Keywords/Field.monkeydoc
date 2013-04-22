@@ -1,0 +1,47 @@
+> Keyword Field
+
+Declares a class field variable.
+
+>> Syntax
+
+Field *Identifier:Type* [ = *Expression* ]~n
+
+Field *Identifier:*= *Expression*
+
+>> Description
+
+The Field keyword declares an instance variable within a custom class. The field is valid for the lifetime of the object it belongs to.
+
+A field's default value upon object creation can be set in the field's declaration.
+
+To access an object's fields, use the syntax *object.field*. (See example.)
+
+The alternative syntax provided allows the variable's type to be deduced from the expression.
+
+>> See also
+
+[[Const]] [[Local]] [[Global]]  
+[Language reference](Language reference#variables)
+
+>> Example
+
+<pre>
+' Declaring class and fields
+
+Class Player
+&nbsp;&nbsp;Field name:String
+&nbsp;&nbsp;Field points:Int = 0
+End
+
+' Creating object "p" of type "Player"
+
+Local p:Player = New Player
+
+' Accessing fields
+
+p.name = "Mary"
+p.points = 100
+
+Print p.name
+Print p.points
+</pre>

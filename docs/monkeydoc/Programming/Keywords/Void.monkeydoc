@@ -1,0 +1,28 @@
+> Return type Void
+
+The built-in void return identifier.
+
+>> Description
+
+Void is a special function/method return type, used where a function or method is not intended to return a value, but instead acts as a statement.
+
+The Void return type is only required in Strict mode where no value is being returned.
+
+>> See also
+
+[[Int]] [[Float]] [[String]] [[Bool]] [[Strict]]  
+[Language reference](Language reference#functions)
+
+>> Example
+
+<pre>
+Strict
+
+' Nothing is being returned by this function,
+' but we're in Strict mode so we specify the
+' Void return type.
+
+Function SayHi:Void ()
+&nbsp;&nbsp;Print "Hi"
+End
+</pre>

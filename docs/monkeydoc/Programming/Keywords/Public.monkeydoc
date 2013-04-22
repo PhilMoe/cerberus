@@ -1,0 +1,28 @@
+> Directive Public
+
+Declares following code as publicly accessible.
+
+>> Syntax
+
+Public
+
+>> Description
+
+The Public and Private directives are used to control the visibility of subsequent declarations in a module or class.
+
+If the Public directive is used in the main body of a module, all subsequent declarations will be public, and will be visible outside of the current module.
+
+>> See also
+
+[[Private]]
+[Language reference](Language reference#visibility)
+
+>> Example
+
+<pre>
+Private
+Global x,y,z        'These are private to the current module/class
+
+Public
+Global P,Q,R        'These can be used by any module/class
+</pre>
