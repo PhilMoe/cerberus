@@ -1,0 +1,29 @@
+
+# Class reflection.GlobalInfo
+
+GlobalInfo objects describe globals declared by your program.
+
+
+# Method Name:String() Property
+
+Get name of global.
+
+
+# Method Attributes:Int() Property
+
+Get global attributes.
+
+
+# Method Type:ClassInfo() Property
+
+Get type of global.
+
+
+# Method GetValue:Object()
+
+Get value of global.
+
+
+# Method SetValue:Void(obj:Object)
+
+Set value of global.

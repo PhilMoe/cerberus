@@ -1,0 +1,19 @@
+
+# Class reflection.ArrayBoxer
+
+The ArrayBoxer class is a utility class that allows you to box and unbox arrays for use with reflection.
+
+Box objects can be passed to the SetValue methods of FieldInfo and GlobalInfo objects, and used as parameters for the Invoke methods of MethodInfo and FunctionInfo objects.
+
+Box objects are also returned by the GetValue methods of ConstInfo, FieldInfo and GlobalInfo objects, and by the Invoke methods of MethodInfo and FunctionInfo objects.
+
+
+# Function Box:Object(value:T[])
+
+Box an array.
+
+
+# Function Unbox:T[](box:Object)
+
+Unbox an array.
+

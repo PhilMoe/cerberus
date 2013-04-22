@@ -1,0 +1,125 @@
+
+# Class reflection.ClassInfo
+
+ClassInfo objects describe classes declared by your program and in modules.
+
+The ArrayLength, GetElement, SetElement and NewArray methods are only valid if the class represents an array box class. You can determine whether a class is an array box class with the ElementType method. If ElementType returns non-null, then the class is an array box class.
+
+The recursive parameter of the GetConst, GetGlobal, GetField, GetMethod and GetFunction methods indicates whether or not the entire class hierarchy should be searched, or only the current class.
+
+The recursive parameter of the GetConsts, GetGlobals, GetFields, GetMethods and GetFunctions methods indicates whether or not all declarations spanning the entire class hierarchy should be returned, or only those declared within the current class.
+
+
+# Method Name:String() Property
+
+Get name of class.
+
+
+# Method Attributes:Int() Property
+
+Get class attributes.
+
+
+# Method SuperClass:ClassInfo() Property
+
+Get super class of class.
+
+
+# Method Interfaces:ClassInfo[]() Property
+
+Get interfaces implemented by this class, or interfaces extended by this interface.
+
+
+# Method ElementType:ClassInfo() Property
+
+Get array element type.
+
+
+# Method ArrayLength:Int(inst:Object)
+
+Get length of an array.
+
+
+# Method GetElement:Object(inst:Object,index:Int)
+
+Get an array element.
+
+
+# Method SetElement:Void(inst:Object,index:Int,value:Object)
+
+Set an array element.
+
+
+# Method NewInstance:Object()
+
+Create a new object of this class.
+
+
+# Method NewArray:Object(length:Int)
+
+Create a new array box object of this class.
+
+
+# Method ExtendsClass:Bool(clas:ClassInfo)
+
+Check if class extends another class, or implements an interface.
+
+
+# Method GetConsts:ConstInfo[](recursive:Bool)
+
+Get all consts declared by class.
+
+
+# Method GetConst:ConstInfo(name:String,recursive:Bool)
+
+Get a class const.
+
+
+# Method GetGlobals:GlobalInfo[](recursive:Bool)
+
+Get all globals declared by class.
+
+
+# Method GetGlobal:GlobalInfo(name:String,recursive:Bool)
+
+Get a class global.
+
+
+# Method GetFields:FieldInfo[](recursive:Bool)
+
+Get all fields declared by class.
+
+
+# Method GetField:FieldInfo(name:String,recursive:Bool)
+
+Get a class field.
+
+
+# Method GetMethods:MethodInfo[](recursive:Bool)
+
+Get all methods declared by class.
+
+
+# Method GetMethod:MethodInfo(name:String,argTypes:ClassInfo[],recursive:Bool)
+
+Get a class method.
+
+
+# Method GetFunctions:FunctionInfo[](recursive:Bool)
+
+Get all functions declared by class.
+
+
+# Method GetFunction:FunctionInfo(name:String,argTypes:ClassInfo[],recursive:Bool)
+
+Get a class function.
+
+
+# Method GetConstructors:FunctionInfo[]()
+
+Get all constructors declared by class.
+
+
+# Method GetConstructor:FunctionInfo(argTypes:ClassInfo[])
+
+Get a class constructor.

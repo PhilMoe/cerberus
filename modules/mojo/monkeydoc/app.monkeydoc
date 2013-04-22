@@ -1,0 +1,469 @@
+
+# Module mojo.app
+
+# Import mojo.graphics Private
+
+# Import mojo.input Private
+
+# Import mojo.audio Private
+
+The app module contains the App class along with various support functions for controlling application behaviour.
+
+
+# Function LoadState:String()
+
+Loads a string representing the application's persistant state as previously saved with SaveState.
+
+If the application state hasn't yet been previously saved, LoadState returns an empty string.
+
+This is generally used to store data such as user preferences and high score tables.
+
+Note: On the android target, building and uploading a new version of an application to a device will not clear the application's state. To do this, you must manually uninstall the application from the device first.
+
+Links: 
+
+[[SaveState]]
+
+Example: 
+
+<pre>
+'run this app several times to see application state being updated.
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Field state$
+	
+	Method OnCreate()
+	
+		'comment out the following line to reset state
+		state=LoadState()
+
+		If state
+			Print "state found - updating state!"
+			state=Int( state )+1
+		Else
+			Print "state not found - creating initial state!"
+			state="1"
+		Endif
+		
+		SaveState state
+	End
+	
+	Method OnRender()
+		Cls 
+		DrawText "state="+state,0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function SaveState:Int(state:String)
+
+Saves a string representing the application's persistant state.
+
+This is generally used to store data such as user preferences and high score tables.
+
+Note: On the android target, building and uploading a new version of an application to a device will not clear the application's state. To do this, you must manually uninstall the application from the device first.
+
+Params: 
+
+state - application state to save.
+
+Links: 
+
+[[LoadState]]
+
+
+# Function LoadString:String(path:String)
+
+Loads a string from path.
+
+Links: 
+
+[[Resource paths]], [[File formats]]
+
+
+Params: 
+
+path - the data file path of the string to load, relative to your applications .data folder.
+
+
+# Function SetUpdateRate:Int(hertz:Int)
+
+Sets the application's update rate.
+
+This is the number of times per second that the application's OnUpdate method should be called. Commonly used update rates are 15, 30 or 60 updates per second.
+
+OnRender is also called at the same frequency if possible (after each OnUpdate), meaning SetUpdateRate effectively also sets the target frames per second.
+
+Params: 
+
+hertz - update rate in 'updates per second'
+
+Links: 
+
+[[Resource paths]], [[App.OnUpdate|OnUpdate]], [[UpdateRate]]
+
+Example: 
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Field updates,updateRate
+
+	Method OnCreate()
+		updateRate=15
+		SetUpdateRate updateRate
+	End
+	
+	Method OnUpdate()
+		updates+=1
+		If updates=updateRate
+			updates=0
+			updateRate*=2
+			If updateRate=240 updateRate=15
+			SetUpdateRate updateRate
+		Endif
+		
+	End
+	
+	Method OnRender()
+		Cls 128,0,255
+		DrawText "updateRate="+updateRate+", updates="+updates,0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function UpdateRate:Int()
+
+Returns the current update rate, as set by SetUpdateRate.
+
+Links: 
+
+[[SetUpdateRate]]
+
+
+# Function Millisecs:Int()
+
+Returns the number milliseconds (thousandths of a second) the application has been running. Divide this by 1000.0 to get the number of seconds the applications has been running.
+
+Example: 
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		SetUpdateRate 10
+	End
+	
+	Method OnRender()
+		Cls 128,0,255
+		DrawText "Application has been running for: "+Millisecs()/1000.0+" seconds.",0,0
+	End
+	
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function GetDate:Int[]()
+
+Returns the current date and time as an array of 7 integers: year, month (1-12), day (1-31), hours (0-23), minutes (0-59), seconds (0-59) and milliseconds (0-999).
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		SetUpdateRate 60
+		
+	End
+	
+	Method OnRender()
+
+		Local date:=GetDate()
+	
+		Local months:=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+	
+		Local day:=("0"+date[2])[-2..]
+		Local month:=months[date[1]-1]
+		Local year:=date[0]
+		Local hour:=("0"+date[3])[-2..]
+		Local min:=("0"+date[4])[-2..]
+		Local sec:=("0"+date[5])[-2..] + "." + ("00"+date[6])[-3..]
+		
+		Local now:=hour+":"+min+":"+sec+"  "+day+" "+month+" "+year
+		
+		Cls
+		DrawText now,DeviceWidth/2,DeviceHeight/2,.5,.5
+	End
+
+End
+
+Function Main()
+
+	New MyApp
+	
+End
+</pre>
+
+
+# Function GetDate:Void( date:Int[] )
+
+Fills the @date array with 7 integers representing the current date: year, month (1-12), day (1-31), hours (0-23), minutes (0-59), seconds (0-59) and milliseconds (0-999).
+
+
+# Function OpenUrl:Int( url:String )
+
+Opens the given url using the underlying operating system.
+
+OpenUrl is only available on the hltm5, glfw, android, ios and win8 targets. On other targets, OpenUrl does nothing.
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		SetUpdateRate 60
+
+	End
+	
+	Method OnUpdate()
+	
+		If MouseHit(0)
+			If MouseY()\<DeviceHeight/2
+				OpenUrl "http://www.monkeycoder.co.nz"
+			Else
+				OpenUrl "mailto:blitzmunter@gmail.com"
+			Endif
+		Endif
+	End
+	
+	Method OnRender()
+	
+		Cls
+		DrawText "Click above to visit Monkeycoder, below to email Mark!",DeviceWidth/2,DeviceHeight/2,.5,.5
+	End
+	
+
+End
+
+Function Main()
+
+	New MyApp
+
+End
+</pre>
+
+
+# Function HideMouse:Void()
+
+Hides the mouse pointer if the underlying operation system supports a mouse.
+
+
+# Function ShowMouse:Void()
+
+Shows the mouse pointer if the underlying operation system supports a mouse.
+
+
+# Function EndApp:Void()
+
+Ends the current application.
+
+Note that ending an application may not be completely possible on some targets - for example, html5 and flash applications cannot be 'closed' because they are usually embedded in a browser. However, Monkey will attempt to end the app as best it can, at least ensuring that no more app code will be executed.
+
+Important! On Windows Phone 8, The only time you can end an application is when the OS calls your app's OnClose or OnBack method. Calling EndApp at any other time will have no effect on Windows Phone 8.
+
+
+# Class mojo.app.App
+
+'# Import mojo.graphics Private
+
+'# Import mojo.input Private
+
+'# Import mojo.audio Private
+
+This is the main application class.
+
+All mojo based applications must declare a class that extends App and that implements the OnCreate, OnUpdate, OnRender and OnLoading methods.
+
+A new instance of this class must be then created inside your applications Main function. The OnCreate, OnUpdate, OnRender and OnLoading methods will be called as necessary while your application runs.
+
+OnCreate is called when mojo has been initialized and your app can safely start using mojo functions. This is generally where code to load resources such and images and sounds goes. This is where the application's update rate is initially set too - see: SetUpdateRate.
+
+OnUpdate is called when the update timer ticks, and is where your game logic code should go. The update timer is set using the SetUpdateRate function.
+
+OnRender is called when your application should render itself. If the update timer is ticking, this is also called as soon as possible after OnUpdate, however OnRender may be called at any time in generally if your application requires refreshing.
+
+OnLoading is called insetad of OnRender when your application should render itself, but there are still resources being loaded.
+
+Import note: 
+
+No mojo functions or methods should be used before OnCreate is called! Before this, mojo is not fully initialized and cannot be safely used. This means that global variables cannot be initialied using Millisecs, LoadImage or indeed ANY mojo functions.
+
+
+'# Method New()
+
+
+# Method OnCreate:Int()
+
+The OnCreate method is called when mojo has been initialized and the application has been successfully created.
+
+At this point, applications can start loading resources such as images and sounds, and set the update rate using SetUpdateRate.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+Example: 
+
+<pre>
+Import mojo.app
+Import mojo.graphics
+Import mojo.input
+
+Class MyGame Extends App
+	Field x:Int=0
+	Field y:Int=0
+	Field playerShipSprite:Image
+		
+	Method OnCreate()
+
+		'Load any images and sounds here
+		'ship.png must be found in your project's .data folder
+		playerShipSprite=LoadImage("ship.png")
+
+		SetUpdateRate 30
+
+	End
+	
+	Method OnUpdate()
+		x=MouseX
+		y=MouseY
+	End
+	
+	Method OnRender()
+		Cls
+		DrawImage playerShipSprite,x,y
+	End
+End
+
+Function Main()
+	New MyGame
+End
+</pre>
+
+
+# Method OnUpdate:Int()
+
+This method is automatically called when the application's update timer ticks. Once OnUpdate has been called, mojo will then attempt to call OnRender as soon as possible.
+
+Note that OnUpdate is only called if SetUpdateRate has been called to start the update timer. Otherwise, your application will receive OnRender calls only.
+
+OnUpdate is commonly used in conjunction with OnRender to manage the main game loop. OnUpdate is typically used to update objects and game state, while OnRender is used to draw graphics. 
+
+The return value from this method is currently ignored, but should be 0 for future compatibility.
+
+Links: 
+
+[[SetUpdateRate]]
+
+
+# Method OnSuspend:Int()
+
+OnSuspend is called when your application is about to be suspended. 
+
+While suspended, Mojo will make no further calls to any applications 'On' methods, except for OnResume.
+
+Note that on some targets such as iOS and Android, OnSuspend represents a 'last chance' to save application data before your application is terminated.
+
+The return value from this method is currently ignored, but should be 0 for future compatibility.
+
+Links: 
+
+[[App.OnResume|OnResume]]
+
+
+# Method OnResume:Int()
+
+OnResume is called when your application is made active again after having been in a suspended state.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+Links: 
+
+[[App.OnSuspend|OnSuspend]]
+
+
+# Method OnRender:Int()
+
+This method is automatically called when the application should render itself, such as when the application first starts, or following an OnUpdate call.
+
+If your application is taking to long to update and/render itself, OnRender calls may be skipped to allow it to 'catch up'.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+Links: 
+
+[[App.OnUpdate|OnUpdate]], [[App.OnLoading|OnLoading]]
+
+
+# Method OnLoading:Int()
+
+This method is called instead of OnRender when the application should render itself, but there are still resources such as images or sounds in the process of being loaded.
+
+The return value of this method is currently ignored, but should be 0 for future compatibility.
+
+Links: 
+
+[[App.OnRender|OnRender]]
+
+
+# Method OnClose:Int()
+
+This method is called when the application's 'close' button is pressed.
+
+This method is only used by the glfw, android and windows 8 targets.
+
+By default, the OnClose method calls EndApp. To override this behavior, you must provide your own OnClose method when extending the App class.
+
+Important! On Windows Phone 8, The only time you can end an application is when the OS calls your app's OnClose or OnBack method. To end an application, use [[EndApp]].
+
+
+# Method OnBack:Int()
+
+This method is called when the application's 'back' button is pressed.
+
+This method is only used by the android and windows phone 8 targets.
+
+By default, the OnBack method calls OnClose. To override this behavior, you must provide your own OnBack method when extending the App class.
+
+Important! On Windows Phone 8, The only time you can end an application is when the OS calls your app's OnClose or OnBack method. To end an application, use [[EndApp]].

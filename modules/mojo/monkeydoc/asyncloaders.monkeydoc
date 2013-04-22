@@ -1,0 +1,42 @@
+
+# Module mojo.asyncloaders
+
+# Import brl.asyncevent
+
+The Mojo async loaders module provides functions and interfaces for loading images and sounds asynchronously.
+
+
+# Function LoadImageAsync:Void( path:String,frames:Int=1,flags:Int=Image.DefaultFlags,onComplete:IOnLoadImageComplete )
+
+Begins loading an image asynchronously.
+
+Once the image has loaded, the [[IOnLoadImageComplete.OnLoadImageComplete|OnLoadImageComplete]] method of the specified @onComplete object will be invoked.
+
+Note: When using asynchronous features, your app must continually call the [[UpdateAsyncEvents]] function to process async events. This can be done be calling UpdateAsyncEvents once per OnUpdate.
+
+
+# Function LoadSoundAsync:Void( path:String,onComplete:IOnLoadSoundComplete )
+
+Begins loading a sound asynchronously.
+
+Once the sound has loaded, the [[IOnLoadSoundComplete.OnLoadSoundComplete|OnLoadSoundComplete]] method of the @onComplete object will be invoked.
+
+Note: When using asynchronous features, your app must continually call the [[UpdateAsyncEvents]] function to process async events. This can be done be calling UpdateAsyncEvents once per OnUpdate.
+
+
+# Interface mojo.asyncloaders.IOnLoadImageComplete
+
+# Method OnLoadImageComplete:Void( image:Image,path:String,source:IAsyncEventSource )
+
+Called when an image has completed loading. 
+
+If @image is null, the load failed.
+
+
+# Interface mojo.asyncloaders.IOnLoadSoundComplete
+
+# Method OnLoadSoundComplete:Void( sound:Sound,path:String,source:IAsyncEventSource )
+
+Called when a sound has completed loading.
+
+If @sound is null, the load failed.

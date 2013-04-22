@@ -1,0 +1,256 @@
+
+# Module brl.markdown
+
+The markdown module converts easy to read/write plain text (known as markdown) to html, using a simple text formatting syntax.
+
+Markdown may also include html. Note that the special html characters \<, \> and \& must therefore be 'escaped' using
+a backslash, the markdown escape character. For example, to insert a literal \< into your markdown, you should use \\<.
+
+To convert markdown text to html, you must create a [[Markdown]] object and call its [[Markdown.ToHtml]] method.
+
+>> Markdown syntax
+
+>>> Paragraph separators
+
+A blank line inserts a paragraph separator into the output.
+
+%Example%
+<pre>
+This
+is
+on
+one
+line...
+
+This is a new paragraph!
+</pre>
+
+%Output%
+
+This
+is
+on
+one
+line...
+
+This is a new paragraph!
+
+---
+
+>>> Line breaks
+
+Appending ~n to the end of a line will cause a line break to be inserted.
+
+%Example%
+<pre>
+Tightly~n
+Packed~n
+Lines~n
+</pre>
+
+%Output%
+
+Tightly~n
+Packed~n
+Lines~n
+
+---
+
+>>> Text style
+
+Text may be enclosed in the following style tags to control text style. Style tags may not span multiple lines.
+
+\*bold\*~n
+\%italic\%~n
+\`code\`
+
+%Example%
+
+<pre>
+*This is in bold*, while %this is in italics%. And `this is some code`.
+</pre>
+
+%Output%
+
+*This is in bold*, while %this is in italics%. And `this is some code`.
+
+---
+
+>>> Lists
+
+\* Unordered list
+
+\+ Ordered list
+
+%Example%
+<pre>
+* Item
+* Another item
+* Yet another item
+
++ Item 1
++ Item 2
++ Item 3
+</pre>
+
+%Output%
+
+* Item
+* Another item
+* Yet another item
+
++ Item 1
++ Item 2
++ Item 3
+
+Lists may contain paragraph separators.
+
+---
+
+>>> Tables
+
+\| Header 1 | Header 2~n
+\| Cell 1   | Cell 2~n
+\| Cell 3   | Cell 4
+
+Tables may not contain paragraph separators - a blank line ends the table.
+
+%Example%
+<pre>
+| Flags   | Meaning
+| 1       | Enable
+| 2       | MidHandle
+</pre>
+
+%Output%
+
+| Flags   | Meaning
+| 1       | Enable
+| 2       | MidHandle
+
+---
+
+>>> Headers
+
+\> Top level header~n
+\>> Second level header~n
+\>>> Third level header~n
+\>>>> Fourth level header~n
+\>>>>> Fifth level header~n
+\>>>>>> Sixth level header
+
+%Example%
+<pre>
+> Title
+>> Chapter 1
+>> Chapter 2
+>>> Figure 1
+</pre>
+
+%Output%
+
+> Title
+>> Chapter 1
+>> Chapter 2
+>>> Figure 1
+
+---
+
+>>> Links
+
+Links may be created by enclosing the link target in \[[ and \]]. In addition, alternate link text may be added using |.
+
+%Example%
+<pre>
+* [[Home]]
+* [[Home|Go Home]]
+</pre>
+
+%Output%
+
+* [[Home]]
+* [[Home|Go Home]]
+
+---
+
+>>> Horizontal dividers
+
+A horizontal divider may be inserted by using one to three dash characters alone on a line.
+
+%Example%
+<pre>
+Above
+---
+Below
+</pre>
+
+%Output%
+
+Above
+---
+Below
+
+---
+
+
+>>> Escaping markdown characters
+
+The backslash character may be used to escape any special markdown characters. To insert a literal backslash, use \\\\.
+
+%Example%
+<pre>
+*This is bold*, but \*this isn't\*.
+</pre>
+
+%Output%
+
+*This is bold*, but \*this isn't\*.
+
+
+# Class Markdown
+
+# Method New( linkResolver:ILinkResolver,prettifier:IPrettifier )
+
+Creates a new markdown object with the given link resolver.
+
+The @linkResolver parameter is used by the markdown object to resolve links. 
+
+@linkResolver may be null, in which case links are not resolved and will instead be converted to plain text.
+
+The @prettifier parameter is used by the markdown object to process \<pre> blocks.
+
+@prettifier may be null, in which case \<pre> blocks are converted to html without modification.
+
+For a discussion of markdown syntax, please see [[brl.markdown]].
+
+
+# Method ToHtml:String( markdown:String )
+
+Converts markdown to html.
+
+
+# Interface ILinkResolver
+
+# Method ResolveLink:String( link:String,text:String )
+
+This method is called when a [[Markdown]] object needs to resolve a link.
+
+The @link parameter contains the link to be resolved, and @text contains the optional link text.
+
+This method should return an html \<a\>...\</a\> entity.
+
+# Interface IPrettifier
+
+# Method BeginPrettyBlock:String()
+
+This method is called when a [[Markdown]] objects encounters a \<pre\> tag, and should return an appropriate html block start tag, eg: \<div\>.
+
+
+# Method PrettifyLine:String( text:String )
+
+This method is called by a [[Markdown]] object for every line inside a \<pre\> block, and should returned an html 'prettified' version of @text.
+
+
+# Method EndPrettyBlock:String()
+
+This method is called when a [[Markdown]] object encounters a \</pre\> tag, and should return an appropriate html block end tag, eg: \</div\>.

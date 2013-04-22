@@ -1,0 +1,29 @@
+
+# Class reflection.MethodInfo
+
+MethodInfo objects describe methods declared by your program.
+
+
+# Method Name:String() Property
+
+Get name of method.
+
+
+# Method Attributes:Int() Property
+
+Get method attributes.
+
+
+# Method ReturnType:ClassInfo() Property
+
+Get return type of method.
+
+
+# Method ParameterTypes:ClassInfo[]() Property
+
+Get method parameter types.
+
+
+# Method Invoke:Object(inst:Object,args:Object[])
+
+Invoke method.

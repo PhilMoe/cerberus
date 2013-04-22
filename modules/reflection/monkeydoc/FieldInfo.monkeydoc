@@ -1,0 +1,29 @@
+
+# Class reflection.FieldInfo
+
+FieldInfo objects describe fields declared within a class.
+
+
+# Method Name:String() Property
+
+Name of field.
+
+
+# Method Attributes:Int() Property
+
+Get field attributes.
+
+
+# Method Type:ClassInfo() Property
+
+Type of field.
+
+
+# Method GetValue:Object(inst:Object)
+
+Get field value.
+
+
+# Method SetValue:Void(inst:Object,value:Object)
+
+Set field value.

@@ -1,0 +1,29 @@
+
+# Module mojo
+
+# Import mojo.app
+
+# Import mojo.audio
+
+# Import mojo.graphics
+
+# Import mojo.input
+
+# Import mojo.asyncloaders
+
+Tho mojo modules provide a lightweight programming framework designed primarily for creating simple 2d games.
+
+Mojo applications must extend the mojo App class declared in mojo.app and create a new instance of this class somewhere inside the Monkey Main() function. This is what actually creates the application.
+
+All data for mojo programs (images, sounds and text files) must go into a special data directory. This directory has the same name as the program's main source file, only with a '.data' extension instead of '.monkey'. For example, if your main source file is called 'joust2k.monkey', then your data directory will need to be named 'joust2k.data'.
+
+Mojo functions should not be called until your application's OnCreate method is called. This means you cannot initialize global variables with values returned by mojo functions such as MilliSecs - you must instead initialize such variables in your application's OnCreate method or later.
+
+To import all the mojo modules into your program, simply use:
+
+<pre>
+Import mojo
+</pre>
+
+This will automatically import the mojo.app, mojo.graphics, mojo.audio and mojo.input modules for you in one hit.
+

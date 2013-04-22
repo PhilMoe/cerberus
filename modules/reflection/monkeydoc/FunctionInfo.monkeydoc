@@ -1,0 +1,29 @@
+
+# Class reflection.FunctionInfo
+
+FunctionInfo objects describe functions declared by your program.
+
+
+# Method Name:String() Property
+
+Get name of function.
+
+
+# Method Attributes:Int() Property
+
+Get function attributes.
+
+
+# Method ReturnType:ClassInfo() Property
+
+Get return type of function.
+
+
+# Method ParameterTypes:ClassInfo[]() Property
+
+Get function parameter types.
+
+
+# Method Invoke:Object(args:Object[])
+
+Invoke function.

@@ -1,0 +1,70 @@
+
+# Module brl.ringbuffer
+
+# Import brl.databuffer
+
+A ringbuffer is a circular FIFO buffer that wraps a [[DataBuffer]].
+
+See the [[RingBuffer]] class for more information.
+
+
+# Class brl.ringbuffer.RingBuffer
+
+A ringbuffer is a circular FIFO buffer that wraps a [[DataBuffer]].
+
+Data can be added to the end of the buffer using [[Put]], and removed from the start of the buffer using [[Get]].
+
+A ringbuffer can also dynamically resize itself as necessary so that [[Put]] always succeeds.
+
+
+# Method New( capacity:int,dynamic:bool )
+
+Creates a new ringbuffer with the given capacity. This is the number of bytes the buffer can store.
+
+If @dynamic is true, the ringbuffer will grow as necessary so that [[Put]] always succeeds.
+
+
+# Method Clear:Void()
+
+Empties the buffer.
+
+
+# Method CanGet:Int()
+
+Returns the number of bytes that can be read from the buffer using [[Get]].
+
+
+# Method CanPut:Int()
+
+Returns the number of bytes that can be written to the buffer using [[Put]].
+
+
+# Method IsEmpty:Bool()
+
+Returns true if the buffer is empty, ie: [[CanGet]]=0.
+
+
+# Method IsFull:Bool()
+
+Return true if the buffer is full, ie: [[CanPut]]=0.
+
+
+# Method Capacity:Int()
+
+Returns the size of the buffer in bytes, ie: [[CanGet]]+[[CanPut]].
+
+
+# Method Get:Int( data:DataBuffer,offset:Int,count:Int )
+
+Removes @count bytes from the start of the ringbuffer and copies them to @data/@offset.
+
+Returns the number of bytes actually transferred.
+
+
+# Method Put:Int( data:DataBuffer,offset:Int,count:Int )
+
+Copies @count bytes from @data/@offset and adds them to the end of the ringbuffer.
+
+Returns the number of bytes actually transferred.
+
+If the buffer is dynamic, this method will reallocate the internal databuffer as necessary so that all @count bytes are always added.
