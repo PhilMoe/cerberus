@@ -40,11 +40,13 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += resources.qrc
 
-DESTDIR = ../../bin
 TARGET = Ted
+#OK, this seems to prevent latest Windows QtCreator from being able to run Ted (builds fine).
+#Solved by using qtcreator-2.4.1
+DESTDIR = ../../bin
 
 win32{
-	RC_FILE = appicon.rc
+        RC_FILE = appicon.rc
 }
 
 mac{

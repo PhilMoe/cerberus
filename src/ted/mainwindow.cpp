@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.12"
+#define TED_VERSION "1.15"
 
 #define SETTINGS_VERSION 2
 
@@ -37,9 +37,17 @@ See LICENSE.TXT for licensing terms.
 #define _QUOTE(X) #X
 #define _STRINGIZE( X ) _QUOTE(X)
 
+static MainWindow *mainWindow;
+
+void cdebug( const QString &q ){
+    if( mainWindow ) mainWindow->cdebug( q );
+}
+
 //***** MainWindow *****
 //
 MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::MainWindow ){
+
+    mainWindow=this;
 
 #ifdef Q_OS_MAC
     QCoreApplication::instance()->setAttribute( Qt::AA_DontShowIconsInMenus );
@@ -97,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _indexWidget->setEditable( true );
     _indexWidget->setInsertPolicy( QComboBox::NoInsert );
     _ui->helpToolBar->addWidget( _indexWidget );
-    connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
+//    connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
 
     //init central tab widget
     _mainTabWidget=new QTabWidget;
@@ -112,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _consoleProc=0;
     _consoleTextWidget=new QTextEdit;
     _consoleTextWidget->setReadOnly( true );
+    //_consoleTextWidget->setAcceptRichText( false );
+    //_consoleTextWidget->setAutoFormatting( QTextEdit::AutoNone );
     //
     _consoleDockWidget=new QDockWidget;
     _consoleDockWidget->setObjectName( "consoleDockWidget" );
@@ -212,7 +222,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     updateActions();
 
     statusBar()->showMessage( "Ready." );
-
 }
 
 MainWindow::~MainWindow(){
@@ -238,6 +247,10 @@ void MainWindow::loadHelpIndex(){
 
     QStringList lines=text.split('\n');
 
+    _indexWidget->disconnect();
+
+    _indexWidget->clear();
+
     for( int i=0;i<lines.count();++i ){
 
         QString line=lines.at( i );
@@ -252,6 +265,8 @@ void MainWindow::loadHelpIndex(){
 
         _helpUrls.insert( topic,url );
     }
+
+    connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
 }
 
 void MainWindow::parseAppArgs(){
@@ -753,6 +768,9 @@ void MainWindow::updateActions(){
     }
 
     //file menu
+    _ui->actionClose->setEnabled( ed || _helpWidget );
+    _ui->actionClose_All->setEnabled( _mainTabWidget->count()>1 || (_mainTabWidget->count()==1 && !_helpWidget) );
+    _ui->actionClose_Others->setEnabled( _mainTabWidget->count()>1 );
     _ui->actionSave->setEnabled( ed && _codeEditor->modified() );
     _ui->actionSave_As->setEnabled( ed );
     _ui->actionSave_All->setEnabled( saveAll );
@@ -780,9 +798,13 @@ void MainWindow::updateActions(){
     _ui->actionViewBrowser->setChecked( !_browserDockWidget->isHidden() );
 
     //build menu
-    bool canBuild=isBuildable( _lockedEditor ? _lockedEditor : _codeEditor ) && _consoleProc==0;
+    CodeEditor *buildEditor=_lockedEditor ? _lockedEditor : _codeEditor;
+    bool canBuild=!_consoleProc && isBuildable( buildEditor );
+    bool canTrans=canBuild && buildEditor->fileType()=="monkey";
     _ui->actionBuildBuild->setEnabled( canBuild );
     _ui->actionBuildRun->setEnabled( canBuild || db );
+    _ui->actionBuildCheck->setEnabled( canTrans );
+    _ui->actionBuildUpdate->setEnabled( canTrans );
     _ui->actionStep->setEnabled( db );
     _ui->actionStep_In->setEnabled( db );
     _ui->actionStep_Out->setEnabled( db );
@@ -794,6 +816,7 @@ void MainWindow::updateActions(){
     _ui->actionHelpBack->setEnabled( _helpWidget!=0 );
     _ui->actionHelpForward->setEnabled( _helpWidget!=0 );
     _ui->actionHelpQuickHelp->setEnabled( _codeEditor!=0 );
+    _ui->actionHelpRebuild->setEnabled( _consoleProc==0 );
 }
 
 void MainWindow::updateWindowTitle(){
@@ -1011,15 +1034,28 @@ void MainWindow::onShowCode( const QString &path,int pos,int len ){
         cursor.setPosition( pos+len,QTextCursor::KeepAnchor );
         editor->setTextCursor( cursor );
         //
-        //int line=editor->document()->findBlock( pos ).blockNumber();
-        //editor->highlightLine( line );
-        //
         if( editor==_codeEditor ) editor->setFocus( Qt::OtherFocusReason );
     }
 }
 
 //Console...
 //
+void MainWindow::print( const QString &str ){
+    QTextCursor cursor=_consoleTextWidget->textCursor();
+    cursor.insertText( str );
+    cursor.insertBlock();
+    cursor.movePosition( QTextCursor::End,QTextCursor::MoveAnchor );
+    _consoleTextWidget->setTextCursor( cursor );
+    //_consoleTextWidget->insertPlainText( str+"\n" );
+    //_consoleTextWidget->append( str );
+}
+
+void MainWindow::cdebug( const QString &str ){
+    _consoleTextWidget->setTextColor( QColor( 255,255,0  ) );
+    print( str );
+}
+
+
 void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 
     cmd=cmd.replace( "${TARGET}",_targetsWidget->currentText().replace( ' ','_' ) );
@@ -1036,7 +1072,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
     _consoleTextWidget->clear();
     _consoleDockWidget->show();
     _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
-    _consoleTextWidget->append( cmd );
+    print( cmd );
 
     if( !_consoleProc->start( cmd ) ){
         delete _consoleProc;
@@ -1056,7 +1092,7 @@ void MainWindow::onProcStdout(){
     QString text=_consoleProc->readLine( 0 );
 
     _consoleTextWidget->setTextColor( QColor( 0,0,0 ) );
-    _consoleTextWidget->append( text );
+    print( text );
 
     if( text.contains( comerr )){
         int i0=text.indexOf( comerr );
@@ -1099,7 +1135,7 @@ void MainWindow::onProcStderr(){
             onShowCode( path,line );
         }else{
             _consoleTextWidget->setTextColor( QColor( 255,128,0 ) );
-            _consoleTextWidget->append( info );
+            print( info );
         }
 
         if( !_debugTreeModel ){
@@ -1115,7 +1151,7 @@ void MainWindow::onProcStderr(){
             _browserTabWidget->setCurrentWidget( _debugTreeWidget );
 
             _consoleTextWidget->setTextColor( QColor( 192,96,0 ) );
-            _consoleTextWidget->append( "STOPPED" );
+            print( "STOPPED" );
         }
 
         _debugTreeModel->stop();
@@ -1126,7 +1162,7 @@ void MainWindow::onProcStderr(){
     }
 
     _consoleTextWidget->setTextColor( QColor( 128,0,0 ) );
-    _consoleTextWidget->append( text );
+    print( text );
 }
 
 void MainWindow::onProcLineAvailable( int channel ){
@@ -1162,7 +1198,7 @@ void MainWindow::onProcFinished(){
 //    qDebug()<<"Done.";
 
     _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
-    _consoleTextWidget->append( "Done." );
+    print( "Done." );
 
     if( _debugTreeModel ){
         _debugTreeWidget->setModel( 0 );
@@ -1180,7 +1216,7 @@ void MainWindow::onProcFinished(){
     statusBar()->showMessage( "Ready." );
 }
 
-void MainWindow::build( bool run ){
+void MainWindow::build( QString mode ){
 
     CodeEditor *editor=_lockedEditor ? _lockedEditor : _codeEditor;
     if( !isBuildable( editor ) ) return;
@@ -1188,15 +1224,35 @@ void MainWindow::build( bool run ){
     QString filePath=editor->path();
     if( filePath.isEmpty() ) return;
 
-    onFileSaveAll();
-
-    statusBar()->showMessage( "Building: "+filePath+"..." );
+    QString cmd,msg="Buillding: "+filePath+"...";
 
     if( editor->fileType()=="monkey" ){
-        runCommand( run ? _runMonkeyCmd : _buildMonkeyCmd,editor );
+        if( mode=="run" ){
+            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -run \"${FILEPATH}\"";
+        }else if( mode=="build" ){
+            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
+        }else if( mode=="update" ){
+            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -update \"${FILEPATH}\"";
+            msg="Updating: "+filePath+"...";
+        }else if( mode=="check" ){
+            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -check \"${FILEPATH}\"";
+            msg="Checking: "+filePath+"...";
+        }
     }else if( editor->fileType()=="bmx" ){
-        runCommand( run ? _runBmxCmd : _buildBmxCmd,editor );
+        if( mode=="run" ){
+            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -r -x ${FILEPATH}";
+        }else if( mode=="build" ){
+            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -x ${FILEPATH}";
+        }
     }
+
+    if( !cmd.length() ) return;
+
+    onFileSaveAll();
+
+    statusBar()->showMessage( msg );
+
+    runCommand( cmd,editor );
 }
 
 //***** File menu *****
@@ -1226,6 +1282,25 @@ void MainWindow::onFileCloseAll(){
         CodeEditor *editor=0;
         for( i=0;i<_mainTabWidget->count();++i ){
             if( editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) ) ) break;
+        }
+        if( !editor ) return;
+
+        if( !closeFile( editor ) ) return;
+    }
+}
+
+void MainWindow::onFileCloseOthers(){
+    if( _helpWidget ) return onFileCloseAll();
+    if( !_codeEditor ) return;
+
+    for(;;){
+        int i;
+        QWidget *widget=0;
+        CodeEditor *editor=0;
+        for( i=0;i<_mainTabWidget->count();++i ){
+            editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) );
+            if( editor && editor!=_codeEditor ) break;
+            editor=0;
         }
         if( !editor ) return;
 
@@ -1448,16 +1523,23 @@ void MainWindow::onViewWindow(){
 //***** Build menu *****
 
 void MainWindow::onBuildBuild(){
-
-    build( false );
+    build( "build" );
 }
 
 void MainWindow::onBuildRun(){
     if( _debugTreeModel ){
         _debugTreeModel->run();
     }else{
-        build( true );
+        build( "run" );
     }
+}
+
+void MainWindow::onBuildCheck(){
+    build( "check" );
+}
+
+void MainWindow::onBuildUpdate(){
+    build( "update" );
 }
 
 void MainWindow::onDebugStep(){
@@ -1477,6 +1559,9 @@ void MainWindow::onDebugStepOut(){
 
 void MainWindow::onDebugKill(){
     if( !_consoleProc ) return;
+
+    _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
+    print( "Killing process..." );
 
     _consoleProc->kill();
 }
@@ -1613,4 +1698,23 @@ void MainWindow::onLinkClicked( const QUrl &url ){
 
     openFile( str,false );
 */
+}
+
+void MainWindow::onHelpRebuild(){
+    if( _consoleProc || _monkeyPath.isEmpty() ) return;
+
+    onFileSaveAll();
+
+    QString cmd="\"${MONKEYPATH}/bin/makedocs"+HOST+"\"";
+
+    runCommand( cmd,0 );
+
+    loadHelpIndex();
+
+    for( int i=0;i<_mainTabWidget->count();++i ){
+        QWebView *webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) );
+
+        if( webView ) webView->triggerPageAction( QWebPage::ReloadAndBypassCache );
+//        if( webView ) webView->reload();
+    }
 }

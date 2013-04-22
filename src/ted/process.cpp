@@ -8,6 +8,8 @@ See LICENSE.TXT for licensing terms.
 
 #include "process.h"
 
+extern void cdebug( const QString &q );
+
 #ifdef Q_OS_WIN
 
 #define CLOSE CloseHandle
@@ -266,9 +268,11 @@ Process::~Process(){
 
     _state=DELETING;
 
-    if( _procwaiter->wait( 10000 ) ) delete _procwaiter; else qDebug()<<"process waiter not finished";
-    if( _linereaders[0]->wait( 1000 ) ) delete _linereaders[0]; else qDebug()<<"stdout reader not finished";
-    if( _linereaders[1]->wait( 1000 ) ) delete _linereaders[1]; else qDebug()<<"stderr reader not finished";
+    if( _procwaiter->wait( 10000 ) )    delete _procwaiter;     else cdebug( "Timeout waiting for process to finish" );
+    
+    if( _linereaders[0]->wait( 1000 ) ) delete _linereaders[0]; else cdebug( "Timeout waiting for stdout reader to finish" );
+    
+    if( _linereaders[1]->wait( 1000 ) ) delete _linereaders[1]; else cdebug( "Timeout waiting for stderr reader to finish" );
 
     CLOSE( _in );
     CLOSE( _out );
