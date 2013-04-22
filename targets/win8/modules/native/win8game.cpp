@@ -744,6 +744,7 @@ void Win8Game::SetWindow( CoreWindow ^window ){
 	auto inputPane=Windows::UI::ViewManagement::InputPane::GetForCurrentView();
 	inputPane->Showing+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneShowing );
 	inputPane->Hiding+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneHiding );
+	
 	Windows::Phone::UI::Input::HardwareButtons::BackPressed+=ref new EventHandler<Windows::Phone::UI::Input::BackPressedEventArgs^>( this,&Win8Game::OnBackButtonPressed );
 #endif
 }
@@ -851,12 +852,17 @@ void Win8Game::OnInputPaneShowing( Windows::UI::ViewManagement::InputPane ^sende
 
 //The only way to detect if inputPane has been dismissed...
 void Win8Game::OnInputPaneHiding( Windows::UI::ViewManagement::InputPane ^sender,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^args ){
-	BBWin8Game *game=BBWin8Game::Win8Game();
-	if( game->KeyboardEnabled() ){
+	if( BBWin8Game::Win8Game()->KeyboardEnabled() ){
 		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyChar,27 );
 	}
 }
 
 void Win8Game::OnBackButtonPressed( Platform::Object ^sender,Windows::Phone::UI::Input::BackPressedEventArgs ^args ){
+	try{
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyDown,0x1a0 );
+		BBWin8Game::Win8Game()->KeyEvent( BBGameEvent::KeyUp,0x1a0 );
+		args->Handled=true;
+	}catch( BBExitApp ){
+	}
 }
 #endif
