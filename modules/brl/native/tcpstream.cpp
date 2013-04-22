@@ -1,7 +1,11 @@
 
 // ***** tcpstream.h *****
 
-#if _WIN32
+#if __cplusplus_winrt
+
+#include <Winsock2.h>
+
+#elif _WIN32
 
 #include <winsock.h>
 

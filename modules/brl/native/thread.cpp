@@ -2,9 +2,7 @@
 // ***** thread.h *****
 
 #if __cplusplus_winrt
-
 using namespace Windows::System::Threading;
-
 #endif
 
 class BBThread : public Object{
@@ -32,7 +30,7 @@ private:
 
 	friend class Launcher;
 
-	ref class Launcher{
+	class Launcher{
 	
 		friend class BBThread;
 		BBThread *_thread;
@@ -40,10 +38,11 @@ private:
 		Launcher( BBThread *thread ):_thread(thread){
 		}
 		
-		void run( IAsyncAction ^whatever ){
+		public:
+		void operator()( IAsyncAction ^operation ){
 			_thread->Run__UNSAFE__();
 			_thread->_state=FINISHED;
-		}
+		} 
 	};
 
 #elif _WIN32
@@ -88,9 +87,9 @@ void BBThread::Start(){
 
 	_state=RUNNING;
 	
-	Launcher ^launcher=ref new Launcher( this );
+	Launcher launcher( this );
 	
-	WorkItemHandler ^handler=ref new WorkItemHandler( launcher,&Launcher::run );
+	auto handler=ref new WorkItemHandler( launcher );
 	
 	ThreadPool::RunAsync( handler );
 }
