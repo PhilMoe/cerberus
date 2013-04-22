@@ -1,4 +1,6 @@
 
+#WIN8_PRINT_ENABLED=True
+
 Import mojo
 
 Class MyApp Extends App
@@ -48,9 +50,6 @@ Class MyApp Extends App
 				str=""
 				enabled=True
 				EnableKeyboard
-			Else If KeyHit( KEY_BACK )
-				Print "Goodbye!"
-				Error ""	'test back button on android...!
 			Endif
 		Endif
 	End
