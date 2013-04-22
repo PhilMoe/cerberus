@@ -3,6 +3,32 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V70c *****
 
+Added Rebuild Help to Ted - can't get QWebPage reload working though, so you'll have to manually right-click/reload the page.
+
+Added Makedocs to rebuildall.bmx/bin.
+
+Added Close Others to Ted.
+
+Added Stack.Sort.
+
+Added brl.filesystem module.
+
+Added Check/Update to Ted's build menu.
+
+Added OnClose and OnBack to mojo App class - on window phone 8, these are the ONLY places you can call EndApp. By default, OnBack calls OnClose and OnClose calls EndApp, so by default back/close will both end an app.
+
+Added EndApp to Mojo. Use this instead of Error "" if you're using Mojo. Error "" still works.
+
+Added monkeydoc as a textfile type to Ted so you get wordwrap.
+
+Html5 Mojo now handles Audio-less DOMs.
+
+Ted rebuilt with Qt4.8.4 on Windows/Mac - tried on Linux: too hard...
+
+Ted console no longer htmlizes app output.
+
+Fixed JoyHit not reseting.
+
 Added temp SaveState_V66b().
 
 Merged mwtb's html5 SetScissor fix.
