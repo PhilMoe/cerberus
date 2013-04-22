@@ -10,7 +10,9 @@ src/rebuildall.exe
 
 src/createrelease
 
-docs/*
+src/ted/ted.pro.user*
+
+docs/html
 
 modules/brlx
 
