@@ -17,28 +17,28 @@ Class Url
 		_port = 80
 		_path = "/"
 		_query = ""
-		_anchor = ""
+		_fragment = ""
 		
 		'start parsing url
 		Local pos1:Int
 		Local pos2:Int
 		Local cursor:Int = 0
 		
-		'find _query and _anchor
+		'find _query and _fragment
 		Local queryPos:= url.Find("?")
 		Local anchorPos:= url.Find("#")
 		
 		'find non data length
 		Local nonDataLength:Int
 		If queryPos = -1 And anchorPos = -1
-			'has no _query or _anchor
+			'has no _query or _fragment
 			nonDataLength = url.Length
 		ElseIf queryPos > - 1 And anchorPos > - 1
 			If queryPos < anchorPos
-				'has _query and _anchor
+				'has _query and _fragment
 				nonDataLength = queryPos
 			Else
-				'has just _anchor
+				'has just _fragment
 				nonDataLength = anchorPos
 				queryPos = -1
 			EndIf
@@ -46,7 +46,7 @@ Class Url
 			'has _query
 			nonDataLength = queryPos
 		Else
-			'has just _anchor
+			'has just _fragment
 			nonDataLength = anchorPos
 		EndIf
 		
@@ -112,7 +112,7 @@ Class Url
 		'find _query
 		If queryPos > - 1
 			If anchorPos > - 1
-				'_query up until _anchor
+				'_query up until _fragment
 				_query = url[queryPos + 1 .. anchorPos]
 			Else
 				'just up until end
@@ -120,8 +120,8 @@ Class Url
 			EndIf
 		EndIf
 		
-		'find _anchor
-		If anchorPos > - 1 _anchor = url[anchorPos + 1 ..]
+		'find _fragment
+		If anchorPos > - 1 _fragment = url[anchorPos + 1 ..]
 	End
 	
 	Method ToString:String()
@@ -129,7 +129,7 @@ Class Url
 	End
 	
 	Method DebugString:String(seperator:String = "~n")
-		Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "user: " + _user + seperator + "pass: " + _pass + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "anchor: " + _anchor
+		Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "user: " + _user + seperator + "pass: " + _pass + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "fragment: " + _fragment
 	End
 	
 	Method Scheme:String()
@@ -160,8 +160,8 @@ Class Url
 		Return _query
 	End
 	
-	Method Anchor:String()
-		Return _anchor
+	Method Fragment:String()
+		Return _fragment
 	End
 	
 	Private
@@ -174,37 +174,37 @@ Class Url
 	Field _port:Int
 	Field _path:String
 	Field _query:String
-	Field _anchor:String
+	Field _fragment:String
 End
 
 #rem
-//test cases
+'test cases
 Function Main:Int()
 	Local url:= New Url("?query=123")
 	Print url.DebugString(", ")
 	
-	url.Set("?query=123#anchor")
+	url.Set("?query=123#fragment")
 	Print url.DebugString(", ")
 	
-	url.Set("monkey://?query=123#anchor")
+	url.Set("monkey://?query=123#fragment")
 	Print url.DebugString(", ")
 	
-	url.Set("monkey://:81234?query=123#anchor")
+	url.Set("monkey://:81234?query=123#fragment")
 	Print url.DebugString(", ")
 
-	url.Set("monkey://user@?query=123#anchor")
+	url.Set("monkey://user@?query=123#fragment")
 	Print url.DebugString(", ")
 		
-	url.Set("monkey://user:pass@?query=123#anchor")
+	url.Set("monkey://user:pass@?query=123#fragment")
 	Print url.DebugString(", ")
 	
-	url.Set("monkey://user:pass@domain.com?query=123#anchor")
+	url.Set("monkey://user:pass@domain.com?query=123#fragment")
 	Print url.DebugString(", ")
 	
-	url.Set("http://user:pass@domain.com/pat/goes/here?query=123#anchor")
+	url.Set("http://user:pass@domain.com/pat/goes/here?query=123#fragment")
 	Print url.DebugString(", ")
 	
-	url.Set("http://user:pass@domain.com#/pat/goes/here?query=123#anchor")
+	url.Set("http://user:pass@domain.com#/pat/goes/here?query=123#fragment")
 	Print url.DebugString(", ")
 End
 #end
