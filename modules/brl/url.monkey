@@ -1,7 +1,6 @@
 
 Class Url
-
-	Method New( url:String,scheme:String="",_port:Int=0 )
+	Method New(url:String, scheme:String = "", port:Int = 0)
 		Set(url)
 		
 		'now override with passed in variables
@@ -129,8 +128,8 @@ Class Url
 		Return _url
 	End
 	
-	Method DebugString:String()
-		Return "url: " + url + "~nscheme: " + _scheme + "~nuser: " + _user + "~npass: " + _pass + "~ndomain: " + _domain + "~nport: " + _port + "~npath: " + _path + "~nquery: " + _query + "~nanchor: " + _anchor
+	Method DebugString:String(seperator:String = "~n")
+		Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "user: " + _user + seperator + "pass: " + _pass + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "anchor: " + _anchor
 	End
 	
 	Method Scheme:String()
@@ -178,3 +177,34 @@ Class Url
 	Field _anchor:String
 End
 
+#rem
+//test cases
+Function Main:Int()
+	Local url:= New Url("?query=123")
+	Print url.DebugString(", ")
+	
+	url.Set("?query=123#anchor")
+	Print url.DebugString(", ")
+	
+	url.Set("monkey://?query=123#anchor")
+	Print url.DebugString(", ")
+	
+	url.Set("monkey://:81234?query=123#anchor")
+	Print url.DebugString(", ")
+
+	url.Set("monkey://user@?query=123#anchor")
+	Print url.DebugString(", ")
+		
+	url.Set("monkey://user:pass@?query=123#anchor")
+	Print url.DebugString(", ")
+	
+	url.Set("monkey://user:pass@domain.com?query=123#anchor")
+	Print url.DebugString(", ")
+	
+	url.Set("http://user:pass@domain.com/pat/goes/here?query=123#anchor")
+	Print url.DebugString(", ")
+	
+	url.Set("http://user:pass@domain.com#/pat/goes/here?query=123#anchor")
+	Print url.DebugString(", ")
+End
+#end
