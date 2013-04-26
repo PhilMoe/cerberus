@@ -1,5 +1,5 @@
 /bin/*
-!/bin/config.*.txt
+!/bin/*.txt
 
 /Monkey
 /Monkey.app
