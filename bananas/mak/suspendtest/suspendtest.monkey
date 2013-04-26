@@ -13,15 +13,6 @@ Class MyApp Extends App
 
 	Method OnCreate()
 
-		Local state$=LoadState_V66b()
-		If state
-			creates=Int( state )+1
-		Else
-			creates=1
-		Endif
-
-		SaveState creates
-
 #If TARGET="flash"
 		tinkle=LoadSound( "tinkle.mp3" )
 #Else If TARGET="android"
