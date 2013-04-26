@@ -870,6 +870,12 @@ public:
 	}
 #endif
 
+#if __cplusplus_winrt
+	Platform::String ^ToWinRTString()const{
+		return ref new Platform::String( rep->data,rep->length );
+	}
+#endif
+
 	bool Save( FILE *fp ){
 		std::vector<unsigned char> buf;
 		Save( buf );

@@ -175,7 +175,7 @@ String LoadString( String path ){
 		fclose( fp );
 		return str;
 	}
-	printf( "FOPEN 'rb' for LoadString '%s' failed\n",C_STR( path ) );fflush( stdout );
+//	printf( "FOPEN 'rb' for LoadString '%s' failed\n",C_STR( path ) );fflush( stdout );
 	return "";
 }
 	

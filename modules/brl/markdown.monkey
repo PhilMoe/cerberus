@@ -281,10 +281,7 @@ Class Markdown
 		Endif
 		
 		If Not src
-			Select _blk
-			Case "table" Return SetBlock( "" )+"<p>"
-'			Case "ol","ul" Return ""
-			End
+			If _blk="table" Return SetBlock( "" )+"<p>"
 			Return "<p>"
 		Endif
 		
@@ -294,7 +291,7 @@ Class Markdown
 		
 		If src.StartsWith( "<pre>" )
 			Local t:=SetBlock( "pre" )
-			If src[8..].Trim() Return t+Prettify( src[5..] )
+			If src[5..].Trim() Return t+Prettify( src[5..] )
 			Return t
 		End
 		

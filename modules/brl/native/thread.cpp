@@ -2,7 +2,9 @@
 // ***** thread.h *****
 
 #if __cplusplus_winrt
+
 using namespace Windows::System::Threading;
+
 #endif
 
 class BBThread : public Object{

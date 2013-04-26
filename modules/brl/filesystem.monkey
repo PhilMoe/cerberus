@@ -1,6 +1,6 @@
 
-#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"glfw" And TARGET<>"stdcpp"
-#Error "The brl.filesystem module is not available for current target"
+#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"win8" And TARGET<>"glfw" And TARGET<>"stdcpp"
+#Error "The brl.filesystem module is not available for the current target"
 #Endif
 
 Import "native/filesystem.${LANG}"
@@ -24,7 +24,7 @@ End
 Private
 
 'A bit icky...
-#BRL_GAMETARGET_IMPLEMENTED="0"
+#BRL_GAMETARGET_IMPLEMENTED=False
 
 Function FixPath:String( path:String )
 #If BRL_GAMETARGET_IMPLEMENTED="0"
@@ -158,31 +158,3 @@ Function LoadDir:String[]( path:String,recursive:Bool=False,hidden:Bool=False )
 	Return files.ToArray()
 End
 
-Function StripDir:String( path:String )
-	Local i=path.FindLast( "/" )
-	If i=-1 i=path.FindLast( "\" )
-	If i<>-1 Return path[i+1..]
-	Return path
-End
-
-Function ExtractDir:String( path:String )
-	Local i=path.FindLast( "/" )
-	If i=-1 i=path.FindLast( "\" )
-	If i<>-1 Return path[..i]
-End
-
-Function StripExt:String( path:String )
-	Local i=path.FindLast( "." )
-	If i<>-1 And path.Find( "/",i+1 )=-1 And path.Find( "\",i+1 )=-1 Return path[..i]
-	Return path
-End
-
-Function ExtractExt:String( path:String )
-	Local i=path.FindLast( "." )
-	If i<>-1 And path.Find( "/",i+1 )=-1 And path.Find( "\",i+1 )=-1 Return path[i+1..]
-	Return ""
-End
-
-Function StripAll:String( path:String )
-	Return StripDir( StripExt( path ) )
-End
