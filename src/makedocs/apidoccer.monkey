@@ -14,6 +14,7 @@ Class Decl
 	Field path:String								'eg: mojo.graphics.DrawImage; monkey.list.List.AddLast
 	Field uident:String								'unique identifier, eg: DrawImage(2)
 	Field docs:=New StringMap<String>				'maps sections to docs
+	Field egdir:String								'example data dir
 	
 	Method New( pdecl:parser.Decl,scope:ScopeDecl )
 		'
@@ -101,9 +102,12 @@ Class ScopeDecl Extends Decl
 	Field decls:=New Stack<Decl>					'inner decls
 	Field declsByUident:=New StringMap<Decl>		'inner decls by uident
 	Field declsByKind:=New StringMap<Stack<Decl>>	'inner decls by kind
+	Field template:PageMaker
 
 	Method New( pdecl:parser.Decl,scope:ScopeDecl )
 		Super.New( pdecl,scope )
+		'
+		If scope template=scope.template
 		'
 		declsByKind.Set "ctor",New Stack<Decl>
 		declsByKind.Set "framework",New Stack<Decl>
@@ -151,7 +155,7 @@ Class ClassDecl Extends ScopeDecl
 	Field impls:Stack<Decl>							'implements
 	Field extby:=New Stack<ClassDecl>
 	
-	Method New( pdecl:parser.Decl,scope:ScopeDecl )
+	Method New( pdecl:parser.Decl,scope:ModuleDecl )
 		Super.New( pdecl,scope )
 	End	
 	
@@ -168,9 +172,10 @@ Class ModuleDecl Extends ScopeDecl
 	Field busy:Bool
 	Field doccer:ApiDoccer
 	
-	Method New( pdecl:parser.Decl,scope:ScopeDecl,doccer:ApiDoccer )
-		Super.New( pdecl,scope )
+	Method New( pdecl:parser.Decl,doccer:ApiDoccer )
+		Super.New( pdecl,Null )
 		Self.doccer=doccer
+		Self.template=doccer.scopeTemplate
 	End	
 	
 	Method FindDeclHere:Decl( path:String )
@@ -190,9 +195,8 @@ End
 Class ApiDoccer Implements ILinkResolver
 
 	Field george:George
-	
 	Field scopes:=New StringMap<ScopeDecl>		'Maps path->scope, eg: brl.databuffer->ModuleDecl ; brl.databuffer.DataBuffer->ClassDecl
-	
+	Field scopeTemplate:PageMaker
 	Field linkScope:ScopeDecl
 	
 	Method New( george:George )
@@ -218,6 +222,11 @@ Class ApiDoccer Implements ILinkResolver
 			MakeScopeDocs decl,maker
 			
 			Local page:=maker.MakePage()
+			
+			If decl.template
+				decl.template.SetString( "CONTENT",page )
+				page=decl.template.MakePage()
+			Endif
 			
 			george.SetPageContent decl.PagePath(),page
 		Next
@@ -284,14 +293,16 @@ Class ApiDoccer Implements ILinkResolver
 			eg=eg.Trim()
 			If eg.StartsWith( "<pre>" ) eg=eg[5..]
 			If eg.EndsWith( "</pre>" ) eg=eg[..-6]
-			If Not eg.StartsWith( "<" )
-				'save example!
-				Local file:=decl.path.Replace( ".","_" )+".monkey"
-				SaveString eg,"docs/html/examples/"+file
-				decl.docs.Set "EXAMPLE_URL","examples/"+file
-				eg="<pre>"+eg+"</pre>"
+			decl.docs.Set "example","<pre>"+eg+"</pre>"
+			
+			'save example
+			Local file:=decl.path.Replace( ".","_" )+".monkey"
+			SaveString eg,"docs/html/examples/"+file
+			decl.docs.Set "EXAMPLE_URL","examples/"+file
+			If FileType( decl.egdir )=FILETYPE_DIR
+				CopyDir decl.egdir,"docs/html/examples/"+StripExt( file )+".data"
 			Endif
-			decl.docs.Set "example",eg
+			
 		Endif
 		
 		'write docs
@@ -397,6 +408,15 @@ Class ApiDoccer Implements ILinkResolver
 		Next
 	End
 	
+	Method LoadExample:Bool( decl:Decl,dir:String )
+		If Not dir Or decl.ident<>decl.uident Return False
+		Local src:=LoadString( dir+"/"+decl.ident+"_example.monkey" )
+		If Not src Return False
+		decl.docs.Set "example",src
+		decl.egdir=dir+"/"+decl.ident+"_example.data"
+		Return True
+	End
+	
 	Method ParseMonkeyFile:Void( srcpath:String,modpath:String )
 	
 		george.SetErrInfo srcpath
@@ -411,6 +431,9 @@ Class ApiDoccer Implements ILinkResolver
 		
 		Local pub:=True
 		
+		Local egdir:=ExtractDir( srcpath )+"/examples"
+		If FileType( egdir )<>FILETYPE_DIR egdir=""
+
 		Local src:=LoadString( srcpath ).Replace( "~r","" )
 		
 		For Local line:=Eachin src.Split( "~n" )
@@ -438,12 +461,14 @@ Class ApiDoccer Implements ILinkResolver
 				Case "end"
 					If sect
 						If Not mdecl
-							mdecl=New ModuleDecl( New parser.Decl( "module",modpath ),Null,Self )
+							mdecl=New ModuleDecl( New parser.Decl( "module",modpath ),Self )
 							scopes.Set mdecl.path,mdecl
 							george.AddPage mdecl.PagePath()
 							docscope=mdecl
 							AddDocsToDecl docs,mdecl
 							docs=Null
+							
+							LoadExample mdecl,egdir
 						Endif
 						sect=""
 					Endif
@@ -494,6 +519,8 @@ Class ApiDoccer Implements ILinkResolver
 					george.AddPage cdecl.PagePath()
 					If cdecl.kind="class" george.AddToIndex "Classes",cdecl.ident,cdecl.PagePath()
 					If cdecl.kind="interface" george.AddToIndex "Interfaces",cdecl.ident,cdecl.PagePath()
+					
+					LoadExample cdecl,egdir
 				Endif
 				docs=Null
 			Case "function","method","global","field","const","property","ctor"
@@ -504,6 +531,8 @@ Class ApiDoccer Implements ILinkResolver
 					
 					george.AddPage decl.PagePath()
 					If decl.kind="function" And docscope=mdecl george.AddToIndex "Functions",decl.ident,decl.PagePath()
+					
+					LoadExample decl,egdir
 				Endif
 				docs=Null
 			End
@@ -522,7 +551,7 @@ Class ApiDoccer Implements ILinkResolver
 		Local pdecl:=New parser.Decl( "module" )
 		pdecl.ident=modpath
 	
-		Local mdecl:=New ModuleDecl( pdecl,Null,Self )
+		Local mdecl:=New ModuleDecl( pdecl,Self )
 		scopes.Set mdecl.path,mdecl
 		
 		george.AddPage mdecl.PagePath()
@@ -532,9 +561,17 @@ Class ApiDoccer Implements ILinkResolver
 		Local sect:="description"
 		Local docs:=New StringStack
 		Local doccing:Decl=mdecl
+		
+		Local egdir:=ExtractDir( srcpath )+"/examples"
+		If FileType( egdir )<>FILETYPE_DIR And StripDir( ExtractDir( srcpath ) )="monkeydoc"
+			egdir=ExtractDir( ExtractDir( srcpath ) )+"/examples"
+			If FileType( egdir )<>FILETYPE_DIR egdir=""
+		Endif
+
+		LoadExample doccing,egdir
 
 		Local src:=LoadString( srcpath )
-		
+				
 		For Local line:=Eachin src.Split( "~n" )
 		
 			If line.StartsWith( "# " )
@@ -572,10 +609,12 @@ Class ApiDoccer Implements ILinkResolver
 					scopes.Set cdecl.path,cdecl
 					scope=cdecl
 					doccing=scope
-
+					
 					george.AddPage cdecl.PagePath()
 					If cdecl.kind="class" george.AddToIndex "Classes",cdecl.ident,cdecl.PagePath()
 					If cdecl.kind="interface" george.AddToIndex "Interfaces",cdecl.ident,cdecl.PagePath()
+
+					LoadExample doccing,egdir
 					
 				Case "function","method","global","field","const","property","ctor"
 				
@@ -583,9 +622,12 @@ Class ApiDoccer Implements ILinkResolver
 					sect="description"
 
 					doccing=New Decl( pdecl,scope )
-
+					
 					george.AddPage doccing.PagePath()
 					If doccing.kind="function" And scope=mdecl george.AddToIndex "Functions",doccing.ident,doccing.PagePath()
+
+					LoadExample doccing,egdir
+
 				 Default
 				 	george.Err "Unrecognized decl kind: "+pdecl.kind
 				End
@@ -619,6 +661,13 @@ Class ApiDoccer Implements ILinkResolver
 	
 	Method ParseModules:Void( dir:String,modpath:String )
 	
+		Local tmp:=scopeTemplate
+		
+		Local p:=dir+"/scope_template.html"
+		If FileType( p )=FILETYPE_FILE 
+			scopeTemplate=New PageMaker( LoadString( p ) )
+		Endif
+		
 		For Local f:=Eachin LoadDir( dir )
 			Local p:=dir+"/"+f
 			Select FileType( p )
@@ -652,6 +701,9 @@ Class ApiDoccer Implements ILinkResolver
 
 				Endif
 			End
+			
 		Next
+
+		scopeTemplate=tmp
 	End
 End

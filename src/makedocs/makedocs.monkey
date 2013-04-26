@@ -1,3 +1,6 @@
+#If TARGET<>"stdcpp"
+#Error "Invalid target"
+#Endif
 
 Import os
 Import brl.markdown
@@ -6,9 +9,6 @@ Import brl.pagemaker
 Import toker
 Import apidoccer
 Import docsdoccer
-
-Const STYLE:="devolonter"
-'Const STYLE:="blitzmunter"
 
 Class George Implements ILinkResolver,IPrettifier
 
@@ -71,7 +71,7 @@ Class George Implements ILinkResolver,IPrettifier
 	
 	Method ResolveLink:String( link:String,text:String )
 		
-		If link.StartsWith( "#" ) Or link.StartsWith( "http:" ) Return MakeLink( link,text )
+		If link.StartsWith( "#" ) Or link.StartsWith( "http:" ) Or link.StartsWith( "https:" ) Return MakeLink( link,text )
 		
 		Local url:=""
 		Local path:=link,hash:=""
@@ -97,7 +97,7 @@ Class George Implements ILinkResolver,IPrettifier
 			If i<>-1 text=text[i+1..]
 		Endif
 		
-'		If Not url Err "Can't find link:"+link
+		If Not url Err "Can't find link:"+link
 		
 		Return MakeLink( url,text )
 	End
@@ -254,14 +254,19 @@ Class George Implements ILinkResolver,IPrettifier
 		Next
 		SaveString out.Join( "~n" ),"docs/html/index.txt"
 		
+		CopyDir styledir+"/data","docs/html/data"
+		
 	End
 	
 	Method HtmlEsc:String( str:String )
 		Return str.Replace( "&","&amp;" ).Replace( "<","&lt;" ).Replace( ">","&gt;" )
 	End
 	
+	Field inrem:=0
+	
 	Method BeginPrettyBlock:String()
 		Return "<div class=pretty>" 
+		inrem=0
 	End
 	
 	Method EndPrettyBlock:String()
@@ -270,6 +275,17 @@ Class George Implements ILinkResolver,IPrettifier
 	
 	Method PrettifyLine:String( text:String )
 	
+		If text="</pre >" text="</pre>"
+		
+		'VERY simple #Rem handling...
+		If inrem
+			If text.StartsWith( "#End" ) inrem-=1
+			Return "<code class=r>"+HtmlEsc( text )+"</code><br>"
+		Else If text.StartsWith( "#Rem" )
+			inrem+=1
+			Return "<code class=r>"+HtmlEsc( text )+"</code><br>"
+		Endif
+
 		ptoker.SetText text
 		Local str:String,out:String,ccls:String
 		Repeat
@@ -327,7 +343,10 @@ Function Main:Int()
 	CreateDir "docs/html/data"
 	CreateDir "docs/html/examples"
 	
-	Local george:=New George( "docs/templates/"+STYLE )
+	Local style:=LoadString( "bin/docstyle.txt" ).Trim()
+	If Not style Or FileType( "docs/templates/"+style )<>FILETYPE_DIR style="devolonter"
+	
+	Local george:=New George( "docs/templates/"+style )
 	
 	Local apidoccer:=New ApiDoccer( george )
 	Local docsdoccer:=New DocsDoccer( george )

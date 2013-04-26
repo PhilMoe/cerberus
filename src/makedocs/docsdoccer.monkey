@@ -55,6 +55,11 @@ Class DocsDoccer Implements ILinkResolver
 			
 			george.SetPageContent it.Key,markdown.ToHtml( src )
 			
+			Local data:=StripExt( it.Value )+".data"
+			If FileType( data )=FILETYPE_DIR
+				CopyDir data,"docs/html/data/"+StripExt( StripDir( it.Key ) )
+			Endif
+			
 		Next
 		
 		george.SetDocBase ""
