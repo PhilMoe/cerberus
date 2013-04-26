@@ -19,7 +19,7 @@ The opengl modules currently depend on the the mojo module to create and manage 
 
 Links: 
 
-[[DataBuffer]] [[LoadImageData]] [OpenGL ES1.1 Reference](http://www.khronos.org/opengles/sdk/1.1/docs/man/)
+[[DataBuffer]], [[LoadImageData]], [OpenGL ES1.1 Reference](http://www.khronos.org/opengles/sdk/1.1/docs/man/)
 
 
 # Const GL_DEPTH_BUFFER_BIT:Int

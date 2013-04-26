@@ -1,6 +1,6 @@
 > The Monkey application
 
-The Monkey app appears in the main directory of your monkey installation, and currently just launches [[Ted]], the Monkey text editor/IDE found in the monkey 'bin' directory. 
+The Monkey app appears in the main directory of your monkey installation, and is used to launch [[Ted]], the Monkey text editor/IDE found in the monkey 'bin' directory. 
 
 When called with command line parameters, Monkey passes these parameters on to Ted.
 

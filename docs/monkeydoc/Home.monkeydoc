@@ -1,13 +1,13 @@
 
 >> Programming Guide
 
+* [[Target SDKs]]
 * [[API Reference]]
+* [[Programming/File formats]]
+* [[Programming/Resource paths]]
+* [[Programming/App config settings]]
 * [[Programming/Language reference]]
 * [[Programming/Keywords|Keyword reference]]
-* [[Programming/App config settings]]
-* [[Programming/Resource paths]]
-* [[Programming/File formats]]
-* [[Target SDKs]]
 * [[Tutorials]]
 * [[Samples]]
 
@@ -19,7 +19,9 @@
 * [[Tools/MServer]]
 * [[Tools/Makedocs]]
 
->> Links
+>> Online resources
 
-* [[http://www.monkeycoder.co.nz|Monkey Coder]]
-* [[Links|3rd party software]]
+* [Learn Monkey](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/learnmonkey.pdf) with this friendly beginners guide by James Boyd (pdf).
+* View the [Monkey Pixels](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/monkeypixels/monkeypixels_tutorial.pdf) tutorial by Robbert Prins (pdf).
+* Follow the [Path of the Monkey](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/pathofthemonkey/index.html) by Patrick Strandell.
+* Check out invaderJim's great new [[http://www.youtube.com/user/smalltimeoutlaws/videos?view=1|YouTube tutorials]].

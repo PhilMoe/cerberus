@@ -83,66 +83,6 @@ Documentation for my.module goes here.
 Documentation for MyFunction goes here.
 </pre>
 
-Note that the `# Import` declarations should be included so that they are included in the output docs, and so that links may be properly resolved.
-
-
->>> Special sections in declaration documentation
-
-Documentation can also include special sections. Sections begin with a `section_name:` tag, where section_name can be one of:
-
-* In: Parameter desctiption
-* Out: Return value description
-* Links: comma separated list of links
-* Example: Example code
-
-For example:
-
-<pre>
-# Function Multiply:Int( x:Int,y:Int )
-
-Multiply 2 values together.
-
-In: x a multiplicand
-In: y another multiplicand
-
-Out: The result of @x times @y.
-
-Links: [[Divide]], [[SquareRoot]]
-
-Example:
-
-Function Main:Int()
-   Print Square( 2 )
-End
-</pre>
-
-The above example assumes monkeydoc file style documentation. If you are using 'in source' documentation, it would look something like this instead:
-
-<pre>
-#Rem monkeydoc
-
-Multiply 2 values together.
-
-In: x a multiplicand
-In: y another multiplicand
-
-Out: The result of @x times @y.
-
-Links: [[Divide]], [[SquareRoot]]
-
-Example:
-
-Function Main:Int()
-   Print Square( 2 )
-End
-
-#End
-Function Multiply:Int( x:Int,y:Int )
-	Return x*y
-End
-</pre>
-
-Note: In and Out sections are not currently converted by Makedocs, but may be implemented in a future version so please feel free to use them.
 
 >>> Markdown links in module documentation
 
@@ -151,4 +91,40 @@ Links to declarations may be created simply by specifying the declaration identi
 Links to declarations may also be absolute, in which case a full declaration path should be provided. For example, \[[mojo.graphics]] will link to the mojo.graphics module. Absolute links to non-scope declarations should use #identifier to specify the 'leaf' declaration, for example \[[mojo.graphics#DrawImage]] will link to the DrawImage function in the mojo.graphics module.
 
 Links may also be created to general documentation, using the same rules as given in the above section 'Markdown links in general documentation'.
+
+
+>>> Adding examples to module documentation
+
+You may add examples using an 'Example:' section, eg:
+
+<pre>
+#Rem monkeydoc
+
+Frobozz the whirligig
+
+Example:
+<pre>
+Function Main()
+	Print Frobozz( "Yes!" )
+End
+</pre >
+#End
+Function Frobozz:Void( str:String )
+'...etc...
+</pre>
+
+In addition, you can add example programs in monkey source code form to an 'examples' directory located in the same directory as the .monkey or .monkeydoc file the docs are located in.
+
+Such example programs should have the same name as the declaration they are providing an example for, with an '_example' suffix. For example, example code for the above function would be named 'Frobozz_example.monkey'.
+
+
+>>> Adding links to module documentation
+
+Documentation may also in include a links section, eg:
+
+Links: \[[X]], \[[Y]], \[[Z]]
+
+Links will be emitted in a 'links' or 'see also' section.
+
+
 

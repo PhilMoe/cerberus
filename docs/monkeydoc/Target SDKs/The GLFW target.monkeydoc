@@ -8,13 +8,13 @@ GLFW apps use OpenGL for graphics and OpenAL for audio.
 
 >> Windows Requirements
 
-* [Visual C++ 2010 Express](http://www.microsoft.com/visualstudio/eng/downloads).
+* [Microsoft Visual C++ Express 2010](http://www.microsoft.com/visualstudio/eng/downloads).
 
 * [OpenAL Windows Drivers](http://connect.creativelabs.com/openal/Downloads/oalinst.zip).
 
 >> MacOS Requirements
 
-* [XCode 3.2.5 or later](http://developer.apple.com/devcenter/mac/index.action).
+* [XCode](http://developer.apple.com/xcode) developer tools. XCode is also available via the Mac 'App Store' app.
 
 >> Notes
 

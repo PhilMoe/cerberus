@@ -29,11 +29,11 @@ Stops program execution.
 
 
 
-# Class monkey.lang.Array
+# Class Array
 
 The Array type is a fundamental monkey type used to represent array values.
 
-Please see the Types section of the monkey language reference for more information on the array type.
+Please see the Types section of the Monkey language reference for more information on the array type.
 
 
 # Method Length:Int() Property
@@ -51,7 +51,7 @@ newLength - new array length.
 
 
 
-# Class monkey.lang.Object
+# Class Object
 
 The Object class is the common base class for all monkey objects.
 
@@ -61,7 +61,7 @@ Please see the Object Type and Classes sections of the monkey language reference
 
 
 
-# Class monkey.lang.String
+# Class String
 
 The String type is a fundamental monkey type used to represent sequences of characters.
 
@@ -227,4 +227,34 @@ Params:
 
 
 
-# Class monkey.lang.Throwable
+# Class Throwable
+
+The Throwable class must be extended by all classes that are intended to be used with [[Throw]].
+
+The Throwable class currently has no members.
+
+Any attempt to throw an object that doesn't extend Throwable will result in a compile time error.
+
+Example:
+<pre>
+Class MyThrowable Extends Throwable
+
+	Field msg:String
+	
+	Method New( msg:String )
+		Self.msg=msg
+	End
+End
+
+Function Test:Void()
+	Throw New MyThrowable( "Thrown!" )
+End
+
+Function Main()
+	Try
+		Test
+	Catch t:MyThrowable
+		Print "MyThrowable thrown: msg="+t.msg
+	End
+End
+</pre>

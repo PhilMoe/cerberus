@@ -1,0 +1,29 @@
+
+# Module brl.filepath
+
+The filepath module contains functions for manipulating file paths.
+
+
+# Function StripDir:String(path:String)
+
+Removes the directory from a file path.
+
+
+# Function ExtractDir:String(path:String)
+
+Returns the directory part of a file path.
+
+
+# Function StripExt:String(path:String)
+
+Removes the file type extension from a file path.
+
+
+# Function ExtractExt:String(path:String)
+
+Returns the file type extension part of a file system path.
+
+
+# Function StripAll:String(path:String)
+
+Removes both the directory and file type extension from a file path.

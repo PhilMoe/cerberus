@@ -47,13 +47,13 @@ With our game object defined we extend the basic Update and Render parts of the 
 
 The minimum requirements for an animating monkey application are an [[App]] implementing the methods:
 
-* [[mojo.app.App.OnCreate|OnCreate]] must call [[SetUpdateRate]]
+* [[OnCreate]] must call [[SetUpdateRate]]
 
-* [[mojo.app.App.OnUpdate|OnUpdate]] can use mojo input commands
+* [[OnUpdate]] can use mojo input commands
 
-* [[mojo.app.App.OnRender|OnRender]] can use mojo drawing commands
+* [[OnRender]] can use mojo drawing commands
 
-The following draws an animated spiral shape using the [[DrawRect]] command.
+The following draws an animated spiral shape using the [[DrawPoint]] command.
 
 <pre>
 Import mojo
@@ -68,7 +68,7 @@ Class Game Extends App
 			Local x#,y#
 			x=w+i*Sin(i*3+clock)
 			y=w+i*Cos(i*2+clock)
-			DrawRect  x,y,1,1
+			DrawPoint x,y
 		Next
 	End
 
@@ -99,4 +99,6 @@ End
 
 Each spiral drawn by the program begins at the middle of the screen and spirals out using the Maths functions [[Sin]] and [[Cos]].
 
-View the [Spiral](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/spiral/MonkeyGame.html) animation fully built.
+Here is the final application:
+
+<iframe src="data/First monkey steps/spiral/spiral.build/html5/MonkeyGame.html" width=640 height=480 scrolling=no></iframe>

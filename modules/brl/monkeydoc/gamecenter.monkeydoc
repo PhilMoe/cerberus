@@ -32,12 +32,12 @@ Notes:
 * Make sure your app's 'Bundle Identifier' in XCode matches the iTunes connect 'Bundle ID' for your app.
 
 
->>Example
+Example:
 
 <pre>
-\#If TARGET<>"ios"
-\#Error "GameCenter is only available on iOS"
-\#End
+#If TARGET<>"ios"
+#Error "GameCenter is only available on iOS"
+#End
 
 Import mojo
 Import brl.gamecenter

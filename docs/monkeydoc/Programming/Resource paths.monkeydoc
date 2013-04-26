@@ -13,7 +13,7 @@ When using functions and methods that open or load resources, you can use any of
 
 Not all prefixes work on all targets and the exact behavior of each prefix is target dependant. For example, android and ios can load images from http:// but not audio, while glfw cannot load from http:// at all. Full support for all prefixes is an ongoing mission!
 
-Also, note that Mojo module load commands will automatically insert a "monkey://data/" prefix before any path that does not already incude a prefix.
+Also, note that Mojo module load commands will automatically insert a "monkey://data/" prefix before any path that does not already incude a prefix. For example, LoadImage( "myimage.png" ) is the same as LoadImage( "monkey://data/myimage.png" ).
 
 
 >> Supported resource path prefixes
@@ -22,10 +22,10 @@ Also, note that Mojo module load commands will automatically insert a "monkey://
 * *data* = monkey://data/
 * *file* = monkey://internal/
 
-| Function | Html5 | Flash | Glfw | Android | iOS | XNA | PSM
-| [[Modules/mojo.app#LoadString]] | web, data | data | data, file | web, data, file</dh> <td>data, file | data | data
-| [[Modules/mojo.graphics#LoadImage]] | web, data | data | data, file | web, data, file</dh> <td>web, data, file | data | data
-| [[Modules/mojo.audio#LoadSound]] | web, data | data | data, file | data</dh> <td>data, file | data | data
-| [[Modules/mojo.audio#PlayMusic]] | web, data | data | data, file | data</dh> <td>data, file | data | data
-| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]] | web, data | data | data, file | web, data, file</dh> <td>data, file | data | data
-| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]] | N/A | N/A | file | file</dh> <td>file | file | file
+| Function														| Android 			| iOS				| Win8			| Glfw			| Html5		| Flash	| Xna	| Psm	| Stdcpp
+| [[Modules/mojo.app#LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.graphics#LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.audio#LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.audio#PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| data	| data	| file
+| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file	| file	| file

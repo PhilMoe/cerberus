@@ -37,7 +37,7 @@ Your graphics driver must support OpenGL2.0 or higher.
 
 Links: 
 
-[[DataBuffer]] [[LoadImageData]] [[App config settings]] [OpenGL ES 2.0 reference](http://www.khronos.org/opengles/sdk/docs/man/)
+[[DataBuffer]], [[LoadImageData]], [[App config settings]], [OpenGL ES 2.0 reference](http://www.khronos.org/opengles/sdk/docs/man/)
 
 
 # Const GL_DEPTH_BUFFER_BIT:Int

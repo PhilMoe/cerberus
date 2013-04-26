@@ -3,10 +3,71 @@
 
 The filesystem module allows you to inspect and modify files on the filesystem.
 
-The filesystem module also includes some utility functions for manipulating file paths.
+IMPORTANT: The filesystem module is currently only available for the android,ios, win8, glfw and stdcpp targets.
 
-IMPORTANT: The filesystem module is currently only available for the stdcpp, glfw, ios and android targets.
+Example:
+<pre>
+#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"win8" And TARGET<>"glfw"
+#Error "Invalid target"
+#Endif
 
+Import mojo
+
+Import brl.FileSystem
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		DeleteDir  "monkey://internal/dir1",True
+		DeleteDir  "monkey://internal/dir2",True
+		DeleteDir  "monkey://internal/dir3",True
+		
+		CreateDir  "monkey://internal/dir1"
+		CreateFile "monkey://internal/dir1/file1"
+		CreateFile "monkey://internal/dir1/file2"
+		CreateDir  "monkey://internal/dir1/dir2"
+		CreateFile "monkey://internal/dir1/dir2/file5"
+		
+		CreateDir  "monkey://internal/dir2"
+		CreateFile "monkey://internal/dir2/file3"
+		CreateFile "monkey://internal/dir2/file4"
+		
+		CopyDir    "monkey://internal/dir1","monkey://internal/dir3",True
+		DeleteFile "monkey://internal/dir1/file1"
+		DeleteFile "monkey://internal/dir3/dir2/file5"
+		
+		SetUpdateRate 60
+	End
+	
+	Method OnUpdate()
+	End
+	
+	Method OnRender()
+		Scale 2,2
+		Cls
+		Local y:=0
+		For Local f:=Eachin LoadDir( "monkey://internal/",True )
+			Local p:="monkey://internal/"+f
+			Local nm:=(f+"                    ")[..20]
+			Local ty:=""
+			If FileType( p )=FILETYPE_FILE
+				ty=FileSize( p )
+			Else
+				ty="(dir)"
+			Endif
+			DrawText nm+ty,0,y
+			y+=12
+		Next
+	End
+End
+
+Function Main()
+
+	New MyApp
+	
+End
+</pre>
 
 # Const FILETYPE_NONE:Int
 
@@ -145,48 +206,4 @@ recursive - a flag indicating whether subdirectories should also be loaded.
 hidden - a flag indicating whether hidden files should also be loaded.
 
 
-
-# Function StripDir:String(path:String)
-
-Removes the directory from a file system path, and returns the file name and extension.
-
-Params: 
-
-path - a file system path.
-
-
-# Function ExtractDir:String(path:String)
-
-Extracts and returns the directory of a file system path.
-
-Params: 
-
-path - a file system path.
-
-
-# Function StripExt:String(path:String)
-
-Extracts and returns the file extension of a file system path.
-
-Params: 
-
-path - a file system path.
-
-
-# Function ExtractExt:String(path:String)
-
-Extracts and returns the file type extension of a file system path.
-
-Params: 
-
-path - a file system path.
-
-
-# Function StripAll:String(path:String)
-
-Removes both the directory and file extension from a file system path, returning just the file name.
-
-Params: 
-
-path - a file system path.
 

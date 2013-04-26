@@ -1621,13 +1621,13 @@ Monkey contains a very simple built-in preprocessor based on the syntax of the M
 
 The following preprocessor directives are supported:
 
-\#If~n
-\#ElseIf~n
-\#Else~n
-\#End~n
-\#Rem~n
-\#Print~n
-\#Error~n
+#If~n
+#ElseIf~n
+#Else~n
+#End~n
+#Rem~n
+#Print~n
+#Error~n
 
 Preprocessor directives must appear at the start of a line, and may be preceded by optional whitespace.
 

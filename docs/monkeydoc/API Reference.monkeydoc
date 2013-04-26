@@ -17,18 +17,18 @@
 >> Networking
 
 | Module					| Contains																|Availability
-| [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Glfw, Stdcpp
-| [[brl.asynctcpstream]]	| The [[AsyncTcpStream]] class for asynchronous tcp transfers			|Android, iOS, Glfw, Stdcpp
-| [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp transfers				|Glfw, Stdcpp
+| [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp transfers				|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.asynctcpstream]]	| The [[AsyncTcpStream]] class for asynchronous tcp transfers			|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Win8, Glfw, Stdcpp
 
 >> Data I/O and filesystem
 
 | Module					| Contains																|Availability
-| [[brl.filestream]]		| The [[FileStream]] class for reading and writing files				|Android, iOS, Glfw, Stdcpp
-| [[brl.filesystem]]		| Functions for examining and modifying the filesystem					|Android, iOS, Glfw, Stdcpp
-| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data					|Android, iOS, Win8, Glfw, Html5, Flash, Xna, PSM, Stdcpp
-| [[brl.datastream]]		| The [[DataStream]] class for reading and writing databuffers			|Android, iOS, Win8, Glfw, Html5, Flash, Xna, PSM, Stdcpp
-| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously		|Android, iOS, Win8, Glfw, Html5, Flash, Xna, PSM, Stdcpp
+| [[brl.filestream]]		| The [[FileStream]] class for reading and writing files				|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.filesystem]]		| Functions for examining and modifying the filesystem					|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data					|All
+| [[brl.datastream]]		| The [[DataStream]] class for reading and writing databuffers			|All
+| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously		|All
 
 
 >> Math and Numeric
@@ -41,6 +41,7 @@
 
 | Module					| Contains																|Availability
 | [[brl.markdown]]			| The [[Markdown]] class for generating html from simple markdown		|All
+| [[brl.filepath]]			| Functions for manipulating file paths								|All
 
 >> Collections
 
@@ -50,11 +51,15 @@
 | [[monkey.map]]			| The [[Map]] class for managing associative maps						|All
 | [[monkey.set]]			| The [[Set]] class for managing sets									|All
 
+>> Language
+
+| Module					| Contains																|Availability
+| [[monkey.lang]]			| Built in functions and classes including [[String]], [[Array]], [[Object]] and [[Throwable]] |All
+| [[reflection]]			| Functions and classes for language reflection						|All
+
 >> Misecellaneous
 
 | Module					| Contains																|Availability
-| [[reflection]]			| Functions and classes for language reflection						|All
-| [[opengl]]				| A wrapper module for the OpenGL API									|Android, iOS, Glfw, Html5
-| [[dom]]					| A wrapper module for the Javascript DOM								|html5
-
+| [[opengl.gles11]]			| A wrapper module for the OpenGL ES 1.1 API							|Android, iOS, Glfw
+| [[opengl.gles20]]			| A wrapper module for the OpenGL ES 2.0 API							|Android, iOS, Glfw, Html5
 

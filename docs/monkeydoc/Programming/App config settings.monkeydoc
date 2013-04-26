@@ -18,63 +18,71 @@ The following app config settings are currently supported, shown with example va
 <pre>
 'Data file filters - note: actual allowable values depends on target
 '
-\#TEXT_FILES="\*.txt|\*.xml|\*.json"
-\#IMAGE_FILES="\*.png|\*.jpg"
-\#SOUND_FILES="\*.wav|\*.ogg"
-\#MUSIC_FILES="\*.wav|\*.ogg"
-\#BINARY_FILES="\*.bin|\*.dat"
+#TEXT_FILES="*.txt|*.xml|*.json"
+#IMAGE_FILES="*.png|*.jpg"
+#SOUND_FILES="*.wav|*.ogg"
+#MUSIC_FILES="*.wav|*.ogg"
+#BINARY_FILES="*.bin|*.dat"
 
 'Mojo settings
 '
-\#MOJO_AUTO_SUSPEND_ENABLED=false
-\#MOJO_HICOLOR_TEXTURES=true
-\#MOJO_IMAGE_FILTERING_ENABLED=true
+#MOJO_AUTO_SUSPEND_ENABLED=false
+#MOJO_HICOLOR_TEXTURES=true
+#MOJO_IMAGE_FILTERING_ENABLED=true
 
 'GLFW settings
 '
-\#GLFW_USE_GCC=False
-\#GLFW_WINDOW_TITLE="Monkey Game"
-\#GLFW_WINDOW_WIDTH=640
-\#GLFW_WINDOW_HEIGHT=480
-\#GLFW_WINDOW_RESIZABLE=false
-\#GLFW_WINDOW_FULLSCREEN=false
+#GLFW_USE_GCC=False
+#GLFW_WINDOW_TITLE="Monkey Game"
+#GLFW_WINDOW_WIDTH=640
+#GLFW_WINDOW_HEIGHT=480
+#GLFW_WINDOW_RESIZABLE=false
+#GLFW_WINDOW_FULLSCREEN=false
 
 'XNA settings
 '
-\#XNA_WINDOW_WIDTH=640
-\#XNA_WINDOW_HEIGHT=480
-\#XNA_WINDOW_WIDTH_XBOX=640
-\#XNA_WINDOW_HEIGHT_XBOX=480
-\#XNA_WINDOW_WIDTH_PHONE=320
-\#XNA_WINDOW_HEIGHT_PHONE=480
-\#XNA_WINDOW_RESIZABLE=false
-\#XNA_WINDOW_FULLSCREEN=false
+#XNA_WINDOW_WIDTH=640
+#XNA_WINDOW_HEIGHT=480
+#XNA_WINDOW_WIDTH_XBOX=640
+#XNA_WINDOW_HEIGHT_XBOX=480
+#XNA_WINDOW_WIDTH_PHONE=320
+#XNA_WINDOW_HEIGHT_PHONE=480
+#XNA_WINDOW_RESIZABLE=false
+#XNA_WINDOW_FULLSCREEN=false
 
 'IOS settings
 '
-\#IOS_RETINA_ENABLED=true
-\#IOS_ACCELEROMETER_ENABLED=true
-\#IOS_DISPLAY_LINK_ENABLED=false
+#IOS_RETINA_ENABLED=true
+#IOS_ACCELEROMETER_ENABLED=true
+#IOS_DISPLAY_LINK_ENABLED=false
 
 'Android settings
 '
-\#ANDROID_APP_LABEL="Monkey Game"
-\#ANDROID_APP_PACKAGE="com.monkey"
-\#ANDROID_SCREEN_ORIENTATION="portrait"  	'one of: user, portrait, landscape, behind, sensor, nosensor, unspecified
-\#ANDROID_NATIVE_GL_ENABLED=false
+#ANDROID_APP_LABEL="Monkey Game"
+#ANDROID_APP_PACKAGE="com.monkey"
+#ANDROID_SCREEN_ORIENTATION="portrait"  	'one of: user, portrait, landscape, behind, sensor, nosensor, unspecified
+#ANDROID_NATIVE_GL_ENABLED=false
 
 'OpenGL settings - valid for html5, glfw, android, ios targets
 '
-\#OPENGL_GLES20_ENABLED=false
-\#OPENGL_DEPTH_BUFFER_ENABLED=false
+#OPENGL_GLES20_ENABLED=false
+#OPENGL_DEPTH_BUFFER_ENABLED=false
 
 'Reflection settings
 '
-\#REFLECTION_FILTER="mymodule\*|mojo\*"
+#REFLECTION_FILTER="mymodule*|mojo*"
+
+'Admob settings
+'
+#ADMOB_PUBLISHER_ID="abcdabcdabcdabc"							'from your admod account
+#ADMOB_ANDROID_TEST_DEVICE1="TEST_EMULATOR"
+#ADMOB_ANDROID_TEST_DEVICE2="ABCDABCDABCDABCDABCDABCDABCDABCD"	'your device's admob ID for test mode
+#ADMOB_ANDROID_TEST_DEVICE3=""
+#ADMOB_ANDROID_TEST_DEVICE4=""
 
 'C++ settings - valid for glfw, ios, stdcpp
 '
-\#CPP_DOUBLE_PRECISION_FLOATS=False
+#CPP_DOUBLE_PRECISION_FLOATS=False
 </pre>
 
 Not all settings are supported by all targets, and when not supported they will silently fail.
