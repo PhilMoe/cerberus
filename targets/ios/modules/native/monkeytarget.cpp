@@ -37,7 +37,7 @@ public:
     }
     
     if( !game->Delegate() ) exit( 0 );
-
+    
 	game->StartGame();
 
 	return YES;

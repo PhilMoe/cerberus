@@ -25,6 +25,7 @@ public:
 	
 	//***** INTERNAL *****
 	
+	virtual void StartGame();
 	virtual void SuspendGame();
 	virtual void ResumeGame();
 	
@@ -344,6 +345,15 @@ BBMonkeyAppDelegate *BBIosGame::GetUIAppDelegate(){
 
 //***** INTERNAL *****
 
+//Bit of a kludge for now...
+void BBIosGame::StartGame(){
+	MonkeyView *view=_appDelegate->view;
+    view->backingWidth=view.frame.size.width;
+    view->backingHeight=view.frame.size.height;
+    BBGame::StartGame();
+
+}
+
 void BBIosGame::SuspendGame(){
 	BBGame::SuspendGame();
 	ValidateUpdateTimer();
@@ -493,8 +503,9 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 }
 
 -(void)drawView:(id)sender{
-
-	if( BBIosGame *game=BBIosGame::IosGame() ) game->RenderGame();
+	if( BBIosGame *game=BBIosGame::IosGame() ){
+		game->RenderGame();
+	}
 }
 
 -(void)presentRenderbuffer{
@@ -535,7 +546,6 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 		if( glCheckFramebufferStatusOES( GL_FRAMEBUFFER_OES )!=GL_FRAMEBUFFER_COMPLETE_OES ) exit(-1);
 		
 	}
-    
 	return YES;
 }
 
