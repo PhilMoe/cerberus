@@ -3,6 +3,14 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V70c *****
 
+Updated glfw linux makefile.
+
+Fixed bool const evalutor bug in trans.
+
+Fixed Invalid DeviceWidth/DeviceHeight in OnCreate on iOS.
+
+Added ANDROID_VERSION_CODE and ANDROID_VERSION_NAME app config settings.
+
 Fixed winrt threads and winphone8 sockets.
 
 Added Rebuild Help to Ted - can't get QWebPage reload working though, so you'll have to manually right-click/reload the page.
