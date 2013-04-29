@@ -152,13 +152,13 @@ ${ENDIF}
 			<td>
 				<ul class="unstyled">
 					${FOR METHODS}
-						<li><a href='#${UIDENT}'>${IDENT}</a> : ${TYPE}</li>
+						<li><a href='${URL}'>${IDENT}</a> : ${TYPE}</li>
 					${NEXT}
 				</ul>
 			</td>
 		</tr>
 	${ENDIF}
-	
+
 	${IF FUNCTIONS}								
 		<tr>
 			<td class="span1 name">Functions:</td>
@@ -171,6 +171,46 @@ ${ENDIF}
 			</td>
 		</tr>
 	${ENDIF}
+	
+	${IF INHERITED_PROPERTIES}							
+		<tr>
+			<td class="span1 name">Inherited Properties:</td>
+			<td>
+				<ul class="unstyled">
+					${FOR PROPERTIES}
+						<li><a href='#${UIDENT}'>${IDENT}</a> : ${TYPE}</li>
+					${NEXT}
+				</ul>
+			</td>
+		</tr>
+	${ENDIF}
+	
+	${IF INHERITED_METHODS}							
+		<tr>
+			<td class="span1 name">Inherited Methods:</td>
+			<td>
+				<ul class="unstyled">
+					${FOR INHERITED_METHODS}
+						<li><a href='${URL}'>${IDENT}</a> : ${TYPE}</li>
+					${NEXT}
+				</ul>
+			</td>
+		</tr>
+	${ENDIF}
+	
+	${IF INHERITED_FUNCTIONS}								
+		<tr>
+			<td class="span1 name">Inherited Functions:</td>
+			<td>
+				<ul class="unstyled">
+					${FOR FUNCTIONS}
+						<li><a href='#${UIDENT}'>${IDENT}</a> : ${TYPE}</li>
+					${NEXT}
+				</ul>
+			</td>
+		</tr>
+	${ENDIF}
+	
 </table>
 
 ${IF DESCRIPTION}

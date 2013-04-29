@@ -343,44 +343,6 @@ At this point, applications can start loading resources such as images and sound
 
 The return value of this method is currently ignored, but should be 0 for future compatibility.
 
-Example: 
-
-<pre>
-Import mojo.app
-Import mojo.graphics
-Import mojo.input
-
-Class MyGame Extends App
-	Field x:Int=0
-	Field y:Int=0
-	Field playerShipSprite:Image
-		
-	Method OnCreate()
-
-		'Load any images and sounds here
-		'ship.png must be found in your project's .data folder
-		playerShipSprite=LoadImage("ship.png")
-
-		SetUpdateRate 30
-
-	End
-	
-	Method OnUpdate()
-		x=MouseX
-		y=MouseY
-	End
-	
-	Method OnRender()
-		Cls
-		DrawImage playerShipSprite,x,y
-	End
-End
-
-Function Main()
-	New MyGame
-End
-</pre>
-
 
 # Method OnUpdate:Int()
 

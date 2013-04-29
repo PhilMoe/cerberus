@@ -16,13 +16,13 @@ Class Decl
 	Field docs:=New StringMap<String>				'maps sections to docs
 	Field egdir:String								'example data dir
 	
-	Method New( pdecl:parser.Decl,scope:ScopeDecl )
+	Method Init:Void( kind:String,ident:String,type:String,texts:String,timpls:String,scope:ScopeDecl )
 		'
-		Self.kind=pdecl.kind
-		Self.ident=pdecl.ident
-		Self.type=pdecl.type
-		Self.texts=pdecl.exts
-		Self.timpls=pdecl.impls
+		Self.kind=kind
+		Self.ident=ident
+		Self.type=type
+		Self.texts=texts
+		Self.timpls=timpls
 		Self.scope=scope
 		'
 		path=ident
@@ -37,15 +37,29 @@ Class Decl
 			path=scope.path+"."+uident
 			scope.decls.Push Self
 			scope.declsByUident.Set uident,Self
-			scope.declsByKind.Get( kind ).Push Self
+			
+			If AliasDecl( Self )
+				scope.GetDecls( "inherited_"+kind ).Push Self
+			Else
+				scope.GetDecls( kind ).Push Self
+			Endif
+			
 		Endif
-		
+		'
 		docs.Set "description",""
 		docs.Set "example",""
 		docs.Set "links",""
 		docs.Set "params",""
 		docs.Set "returns",""
-		
+		'
+	End
+	
+	Method New( decl:Decl,scope:ScopeDecl )
+		Init( decl.kind,decl.ident,decl.type,decl.texts,decl.timpls,scope )
+	End
+
+	Method New( pdecl:parser.Decl,scope:ScopeDecl )
+		Init( pdecl.kind,pdecl.ident,pdecl.type,pdecl.exts,pdecl.impls,scope )
 	End
 	
 	Method PagePath:String()
@@ -66,6 +80,25 @@ Class Decl
 	
 	Method FindDeclHere:Decl( path:String )
 		If path=uident Return Self
+	End
+	
+End
+
+Class AliasDecl Extends Decl
+
+	Field decl:Decl
+
+	Method New( decl:Decl,scope:ScopeDecl )
+		Super.New( decl,scope )
+		Self.decl=decl
+	End
+	
+	Method Resolve:Decl()
+		Return decl
+	End
+	
+	Method PagePath:String()
+		Return decl.PagePath()
 	End
 	
 End
@@ -106,22 +139,15 @@ Class ScopeDecl Extends Decl
 
 	Method New( pdecl:parser.Decl,scope:ScopeDecl )
 		Super.New( pdecl,scope )
-		'
-		If scope template=scope.template
-		'
-		declsByKind.Set "ctor",New Stack<Decl>
-		declsByKind.Set "framework",New Stack<Decl>
-		declsByKind.Set "module",New Stack<Decl>
-		declsByKind.Set "import",New Stack<Decl>
-		declsByKind.Set "class",New Stack<Decl>
-		declsByKind.Set "interface",New Stack<Decl>
-		declsByKind.Set "function",New Stack<Decl>
-		declsByKind.Set "method",New Stack<Decl>
-		declsByKind.Set "property",New Stack<Decl>
-		declsByKind.Set "global",New Stack<Decl>
-		declsByKind.Set "field",New Stack<Decl>
-		declsByKind.Set "const",New Stack<Decl>
-		'
+	End
+	
+	Method GetDecls:Stack<Decl>( kind:String )
+		Local decls:=declsByKind.Get( kind )
+		If Not decls
+			decls=New Stack<Decl>
+			declsByKind.Set kind,decls
+		Endif
+		Return decls
 	End
 	
 	Method FindDeclHere:Decl( path:String )
@@ -157,8 +183,38 @@ Class ClassDecl Extends ScopeDecl
 	
 	Method New( pdecl:parser.Decl,scope:ModuleDecl )
 		Super.New( pdecl,scope )
+		Self.template=scope.template
 	End	
 	
+	Method SetSuper:Void( supr:ClassDecl )
+		exts=supr
+		supr.extby.Push Self
+		While supr
+			For Local kind:=Eachin ["method","function","property"]
+				For Local decl:=Eachin supr.GetDecls( kind )
+					Local found:=False
+					For Local tdecl:=Eachin GetDecls( kind )
+						If decl.ident=tdecl.ident And decl.type=tdecl.type
+							found=True
+							Exit
+						Endif
+					Next
+					If found Continue
+					For Local tdecl:=Eachin GetDecls( "inherited_"+kind )
+						If decl.ident=tdecl.ident And decl.type=tdecl.type
+							found=True
+							Exit
+						Endif
+					Next
+					If found Continue
+					New AliasDecl( decl,Self )
+				Next
+			Next
+			Exit
+			supr=supr.exts
+		Wend
+	End
+ 	
 	Method FindDeclHere:Decl( path:String )
 		Local decl:=Super.FindDeclHere( path )
 		If Not decl And exts decl=exts.FindDeclHere( path )
@@ -182,7 +238,7 @@ Class ModuleDecl Extends ScopeDecl
 		Local decl:=Super.FindDeclHere( path )
 		If decl Or busy Return decl
 		busy=True
-		For Local imp:=Eachin declsByKind.Get( "import" )
+		For Local imp:=Eachin GetDecls( "import" )
 			decl=imp.FindDeclHere( path )
 			If decl Exit
 		Next
@@ -261,18 +317,28 @@ Class ApiDoccer Implements ILinkResolver
 		Return george.ResolveLink( link,text )
 	End
 	
-	Method AddDecl:Void( decl:Decl,maker:PageMaker,markdown:Markdown,prefix:String )
-		maker.SetString prefix+"KIND",Capitalize( decl.kind )
-		maker.SetString prefix+"IDENT",decl.ident
-		maker.SetString prefix+"UIDENT",decl.uident
-		maker.SetString prefix+"URL",george.GetPageUrl( decl.PagePath() )
-		maker.SetString prefix+"PATH",decl.path
-		maker.SetString prefix+"TYPE",StripLinks( HtmlEsc( decl.type ) )
-		maker.SetString prefix+"XTYPE",markdown.ToHtml( HtmlEsc( decl.type ) )
-		maker.SetString prefix+"EXTENDS",StripLinks( HtmlEsc( decl.texts ) )
-		maker.SetString prefix+"XEXTENDS",markdown.ToHtml( HtmlEsc( decl.texts ) )
-		maker.SetString prefix+"IMPLEMENTS",StripLinks( HtmlEsc( decl.timpls ) )
-		maker.SetString prefix+"XIMPLEMENTS",markdown.ToHtml( HtmlEsc( decl.timpls ) )
+	Method AddDecl:Void( decl:Decl,maker:PageMaker,markdown:Markdown )
+	
+		maker.SetString "KIND",Capitalize( decl.kind )
+		maker.SetString "IDENT",decl.ident
+		maker.SetString "UIDENT",decl.uident
+		maker.SetString "URL",george.GetPageUrl( decl.PagePath() )
+'		maker.SetString "PATH",decl.path
+		maker.SetString "TYPE",StripLinks( HtmlEsc( decl.type ) )
+		maker.SetString "XTYPE",markdown.ToHtml( HtmlEsc( decl.type ) )
+		maker.SetString "EXTENDS",StripLinks( HtmlEsc( decl.texts ) )
+		maker.SetString "XEXTENDS",markdown.ToHtml( HtmlEsc( decl.texts ) )
+		maker.SetString "IMPLEMENTS",StripLinks( HtmlEsc( decl.timpls ) )
+		maker.SetString "XIMPLEMENTS",markdown.ToHtml( HtmlEsc( decl.timpls ) )
+		
+		If AliasDecl( decl )
+			Local t:="[["+AliasDecl(decl).decl.scope.PagePath()+"]]"
+			maker.SetString "INHERITED_FROM",StripLinks( t )
+			maker.SetString "XINHERITED_FROM",markdown.ToHtml( t )
+		Else
+			maker.SetString "INHERITED_FROM",""
+			maker.SetString "XINHERITED_FROM",""
+		Endif
 		
 		Local cdecl:=ClassDecl( decl )
 		If cdecl And Not cdecl.extby.IsEmpty()
@@ -283,8 +349,8 @@ Class ApiDoccer Implements ILinkResolver
 				extby+=decl.ident
 				xextby+=george.ResolveLink( decl.PagePath(),decl.ident )
 			Next
-			maker.SetString prefix+"EXTENDED_BY",extby
-			maker.SetString prefix+"XEXTENDED_BY",xextby
+			maker.SetString "EXTENDED_BY",extby
+			maker.SetString "XEXTENDED_BY",xextby
 		Endif
 		
 		'fix example
@@ -309,7 +375,7 @@ Class ApiDoccer Implements ILinkResolver
 		For Local it:=Eachin decl.docs
 			Local html:=it.Value
 			If html html=markdown.ToHtml( it.Value )
-			maker.SetString prefix+it.Key.ToUpper(),html
+			maker.SetString it.Key.ToUpper(),html
 		Next
 		
 	End
@@ -328,10 +394,7 @@ Class ApiDoccer Implements ILinkResolver
 				Local i:=cdecl.texts.Find( "]]" )
 				If i<>-1 
 					Local exts:=ClassDecl( cdecl.scope.FindDecl( cdecl.texts[2..i] ) )
-					If exts
-						cdecl.exts=exts
-						exts.extby.Push cdecl
-					Endif
+					If exts cdecl.SetSuper exts
 				Endif
 				If Not cdecl.exts george.Err "Can't find super class: "+cdecl.texts
 			Endif
@@ -368,20 +431,20 @@ Class ApiDoccer Implements ILinkResolver
 		Endif
 		
 		maker.Clear
-		AddDecl scope,maker,markdown,""
+		AddDecl scope,maker,markdown
 		
-		Local kinds:=["class","function","method","property","global","field","const","import","interface","ctor"]
+		Local kinds:=["class","function","method","property","global","field","const","import","interface","ctor","inherited_method","inherited_function","inherited_property","inherited_field"]
 		
 		scope.SortDecls
 		
 		For Local kind:=Eachin kinds
-			Local decls:=scope.declsByKind.Get( kind )
+			Local decls:=scope.GetDecls( kind )
 			If Not decls.Length Continue
 			
 			maker.BeginList Pluralize(kind).ToUpper()
 			For Local decl:=Eachin decls
 				maker.AddItem
-				AddDecl decl,maker,markdown,""
+				AddDecl decl,maker,markdown
 			Next
 			maker.EndList
 		Next

@@ -35,7 +35,6 @@ Class George Implements ILinkResolver,IPrettifier
 		"Try;Catch;Throw;Throwable;"+
 		"Print;Error;").ToLower()
 	
-	
 	Method New( styledir:String )
 		Self.styledir=styledir
 	End
