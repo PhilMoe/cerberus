@@ -844,6 +844,9 @@ Class BinaryCompareExpr Extends BinaryExpr
 		ty=BalanceTypes( lhs.exprType,rhs.exprType )
 		
 		If ArrayType( ty ) Err "Arrays cannot be compared."
+
+		If BoolType( ty ) And op<>"=" And op<>"<>" Err "Bools can only be compared for equality."
+		
 		If ObjectType( ty ) And op<>"=" And op<>"<>" Err "Objects can only be compared for equality."
 
 		lhs=lhs.Cast( ty )
@@ -858,7 +861,14 @@ Class BinaryCompareExpr Extends BinaryExpr
 	
 	Method Eval$()
 		Local r=-1
-		If IntType( ty )
+		If BoolType( ty )
+			Local lhs:=Self.lhs.Eval()
+			Local rhs:=Self.rhs.Eval()
+			Select op
+			Case "="  r=(lhs= rhs)
+			Case "<>" r=(lhs<>rhs)
+			End Select
+		Else If IntType( ty )
 			Local lhs:=Int( Self.lhs.Eval() )
 			Local rhs:=Int( Self.rhs.Eval() )
 			Select op
