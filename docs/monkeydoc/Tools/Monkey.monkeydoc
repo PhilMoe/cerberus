@@ -1,0 +1,9 @@
+> The Monkey application
+
+The Monkey app appears in the main directory of your monkey installation, and is used to launch [[Ted]], the Monkey text editor/IDE found in the monkey 'bin' directory. 
+
+When called with command line parameters, Monkey passes these parameters on to Ted.
+
+On Windows, Monkey also updates itself in the Windows registry if it is a newer version than the version currently registered. In addition, if no registry key is found for the .monkey file extension, one is created and associated with Monkey.
+
+On MacOS, Monkey starts a new instance of Ted if it is called with command line parameters.

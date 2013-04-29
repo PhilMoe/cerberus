@@ -1,0 +1,90 @@
+> Keyword End
+
+Declares the end of a class, function, method or similar block-style definition, or of certain loop or conditional blocks.
+
+>> Syntax
+
+End [ *block opening keyword* ]
+
+>> Description
+
+The End keyword closes off a class, function, method or similar block (eg. interfaces, future additions), but may also be used in place of block-specific keywords which close certain loops or conditional blocks (ie. those that don't need to perform testing at the end of the block).
+
+End may also be combined with a space followed by the block opening keyword. For example, a Class block may be closed by End or End Class according to individual preference.
+
+Some examples are listed below.
+
+*Class-block closing options:*
+<pre>
+Class/End		Class/End Class
+</pre>
+
+*Function-block closing options:*
+<pre>
+Function/End	Function/End Function
+</pre>
+
+*If-block closing options:*
+<pre>
+If/Endif		If/End		If/End If
+</pre>
+
+*Select-block closing options:*
+<pre>
+Select/End		Select/End Select
+</pre>
+
+*For-loop closing options:*
+<pre>
+For/Next		For/End		For/End For
+</pre>
+
+*While-block closing options:*
+<pre>
+While/Wend		While/End	While/End While
+</pre>
+
+>> See also
+
+[[Class]] [[Function]] [[Method]] [[Interface]]  
+[[If]] [[Endif]] [[Select]] [[For]] [[Next]] [[While]] [[Wend]]  
+
+>> Example
+
+Classes, functions, etc:
+
+<pre>
+' CLASS BLOCKS:
+
+Class Animal				Class Animal
+	' Code						' Code
+End							End Class
+
+' FUNCTION BLOCKS:
+
+Function Walk ()			Function Walk ()
+	' Code						' Code
+End							End Function
+</pre>
+
+Loop/conditional blocks:
+
+<pre>
+' IF BLOCKS:  
+
+If a = b					If a = b					If a = b
+	' Code						' Code						' Code
+Endif						End							End If
+
+' FOR BLOCKS:  
+
+For a = 1 To 10				For a = 1 To 10				For a = 1 To 10
+	' Code						' Code						' Code
+Next						End							End For
+
+' WHILE BLOCKS:  
+
+While a < b					While a < b					While a < b
+	' Code						' Code						' Code
+Wend						End							End While
+</pre>

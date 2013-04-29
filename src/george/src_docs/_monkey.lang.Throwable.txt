@@ -1,5 +1,0 @@
-
-# Class monkey.lang.Throwable
-
-
-

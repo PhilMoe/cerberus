@@ -1,0 +1,21 @@
+> The XNA target
+
+Games written for the XNA target will be able to run on Windows, XBox360 and Windows Phone 7.
+
+>> You will need
+
+* A Vista / Windows 7 PC.
+
+* [Microsoft XNA Game Studio 4](http://www.microsoft.com/download/en/details.aspx?id=23714) download.
+
+* If you want to run your XNA games on Xbox360 or Windows Phone 7 hardware, or publish your games on Xbox live, you will also need a [XNA Creators Club](http://marketplace.xbox.com/en-US/Product/XNA-Creators-Club/66acd000-77fe-1000-9115-d802584e07d1) membership.
+
+>> Notes
+
+The `MSBUILD_PATH` var in your trans config file must be correctly set to use the XNA target. Please see the trans tool for more information about the trans config file.
+
+To be able to download XNA programs to the XBox360 or Windows Phone 7, you will need to join Microsoft's developer program which currently costs about $100USD per year. However, you can still develop XNA programs for Windows free of charge, and run XNA programs on the Windows Phone 7 simulator.
+
+To create a Windows Phone 7 project, you'll need to manually 'Create Copy of Project for Windows Phone 7' from within VC#2010 - right click on the 'MonkeyGame' project in the solution explorer to do this. Do this for the XNA project in your '.build' directory, not the project in the 'targets' directory.
+
+To modify the size and settings of the XNA game window, you will need to modify the file Program.cs in the '.build/xna/MonkeyGame/MonkeyGame' directory.

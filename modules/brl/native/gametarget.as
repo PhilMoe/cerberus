@@ -146,7 +146,11 @@ class BBGame{
 		}
 	}
 	
-	//***** Flash extensions *****
+	public function PathToFilePath( path:String ):String{
+		return "";
+	}
+	
+	//***** Flash Game *****
 	
 	public function PathToUrl( path:String ):String{
 		return path;

@@ -1,0 +1,13 @@
+> Type Bool
+
+The built-in boolean type.
+
+Module: [[monkey.lang]]
+
+>> Description
+
+The Bool type is a fundamental monkey type used to express the result of conditional expressions, such as the comparison operators, and to represent a true/false 'state' in general. A Bool can only contain the values True or False.
+
+Please see the Types section of the monkey language reference for more information on the boolean type.
+
+>> See also [[Language reference#types]]

@@ -1,0 +1,35 @@
+
+# Module brl.asyncdataloader
+
+# Import brl.databuffer
+
+The asyncdataloader module allows you to load databuffers asynchronously.
+
+Please see the [[AsyncDataLoader]] class for more information.
+
+
+# Interface IOnLoadDataComplete
+
+
+# Method OnLoadDataComplete:Void( data:DataBuffer,path:String,source:IAsyncEventSource )
+
+This method is called by [[AsyncDataLoader]] objects when data has finished loading.
+
+If @data is Null, the data load failed.
+
+
+# Class AsyncDataLoader Implements IAsyncEventSource
+
+
+# Method New( path:String,onComplete:IOnLoadDataComplete )
+
+Creates an async data loader object with the given path and completion handler.
+
+To start loading data, call the [[Start]] method.
+
+Once data has loaded, the [[IOnLoadDataComplete.OnLoadDataComplete|OnLoadDataComplete]] method of the completion handler will be called.
+
+
+# Method Start:Void()
+
+Starts loading data.

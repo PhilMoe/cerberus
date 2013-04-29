@@ -32,11 +32,19 @@ private:
 
 	friend class Launcher;
 
-	ref class Launcher{
+	class Launcher{
+	
 		friend class BBThread;
 		BBThread *_thread;
-		Launcher( BBThread *thread ):_thread(thread){}
-		void run( IAsyncAction ^whatever ){_thread->Run__UNSAFE__();_thread->_state=FINISHED;}
+		
+		Launcher( BBThread *thread ):_thread(thread){
+		}
+		
+		public:
+		void operator()( IAsyncAction ^operation ){
+			_thread->Run__UNSAFE__();
+			_thread->_state=FINISHED;
+		} 
 	};
 
 #elif _WIN32
@@ -81,15 +89,15 @@ void BBThread::Start(){
 
 	_state=RUNNING;
 	
-	Launcher ^launcher=ref new Launcher( this );
+	Launcher launcher( this );
 	
-	WorkItemHandler ^handler=ref new WorkItemHandler( launcher,&Launcher::run );
+	auto handler=ref new WorkItemHandler( launcher );
 	
 	ThreadPool::RunAsync( handler );
 }
 
 void BBThread::Wait(){
-	exit(-1);
+	exit( -1 );
 }
 
 #elif _WIN32

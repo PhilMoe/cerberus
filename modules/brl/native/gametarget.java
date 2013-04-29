@@ -140,11 +140,11 @@ abstract class BBGame{
 	public void OpenUrl( String url ){	
 	}
 	
-	//***** Java extensions *****
-	
 	String PathToFilePath( String path ){
 		return "";
 	}
+	
+	//***** Java Game *****
 	
 	public RandomAccessFile OpenFile( String path,String mode ){
 		try{

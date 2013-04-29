@@ -1,0 +1,19 @@
+
+> 3rd party software
+
+**Modules**
+
++ [[http://code.google.com/p/monkeybox2d|Box2d]] - a Monkey port of the popular 2d physics library.
++ [[http://code.google.com/p/diddy|Diddy]] - a collection of utilties and extensions for Monkey.
++ [[http://www.jungleide.com/?page_id=515|Font machine]] - a very useful bitmap font module.
+
+**Frameworks**
+
++ [[http://devolonter.github.com/flixel-monkey|Flixel]] - a port of the popular Flash framework.
++ [[http://www.playniax.com|Ignition]] - a new game framework for Monkey by [[http://www.playniax.com/aboutus.html|Playniax]].
+
+**Tools and utilities**
+
++ [[http://www.jungleide.com|Jungle]] - an awesome IDE for Monkey by [[http://www.lemonbytes.com|LemonBytes]].
+
+

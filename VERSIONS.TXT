@@ -1,7 +1,65 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** v70b *****
+***** V70c *****
+
+Updated glfw linux makefile.
+
+Fixed bool const evalutor bug in trans.
+
+Fixed Invalid DeviceWidth/DeviceHeight in OnCreate on iOS.
+
+Added ANDROID_VERSION_CODE and ANDROID_VERSION_NAME app config settings.
+
+Fixed winrt threads and winphone8 sockets.
+
+Added Rebuild Help to Ted - can't get QWebPage reload working though, so you'll have to manually right-click/reload the page.
+
+Added Makedocs to rebuildall.bmx/bin.
+
+Added Close Others to Ted.
+
+Added Stack.Sort.
+
+Added brl.filesystem module.
+
+Added Check/Update to Ted's build menu.
+
+Added OnClose and OnBack to mojo App class - on window phone 8, these are the ONLY places you can call EndApp. By default, OnBack calls OnClose and OnClose calls EndApp, so by default back/close will both end an app.
+
+Added EndApp to Mojo. Use this instead of Error "" if you're using Mojo. Error "" still works.
+
+Added monkeydoc as a textfile type to Ted so you get wordwrap.
+
+Html5 Mojo now handles Audio-less DOMs.
+
+Ted rebuilt with Qt4.8.4 on Windows/Mac - tried on Linux: too hard...
+
+Ted console no longer htmlizes app output.
+
+Fixed JoyHit not reseting.
+
+Added temp SaveState_V66b().
+
+Merged mwtb's html5 SetScissor fix.
+
+Merged Devolonter's bananas tweaks.
+
+Added WIN8_PRINT_ENABLED app config var - defaults to 'false', due to apps with print failing 'app store' guidelines.
+
+Added EnabledKeyboard/DisableKeyboard support to windows phone 8 - not yet windows (store?) 8. Note: 'back' on windows phone 8 ALWAYS clears virtual keyboard, whether or not you call DisableKeyboard in response to GetChar()=27. See EnableKeyboard/DisableKeyboard docs for how to handle this.
+
+Fixed Select in generic code causing internal error.
+
+Fixed Android LoadBitmap so it returns Null instead of throwing exception.
+
+Added file path to 'invalid utf8' warning in os.LoadString; rebuilt trans.
+
+Added "screenSize" to android target manifest android:configChanges setting so apps with targetSdkVersion>=12 don't reset when orientation changes.
+
+Merged Ziggy's mserver tweaks.
+
+***** V70b *****
 
 Added temp LoadState_V66b() to Android target for kludging around LoadState issues. If you have recently updated a <v67 app to >=v67, and users have mysteriously 'lost' their save games, you can use this to recover their old save games. However, you might want to let user decide whether to use 'old' or 'new' save game.
 

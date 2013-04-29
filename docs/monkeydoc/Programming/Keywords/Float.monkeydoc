@@ -1,0 +1,14 @@
+> Type Float
+
+The built-in float type.
+
+Module: [[monkey.lang]]
+
+>> Description
+
+The Float type is a fundamental monkey type used to represent floating point values.
+
+Please see the Types section of the monkey language reference for more information on the float type.
+
+>> See also
+[Language reference](Language reference#types)

@@ -17,7 +17,7 @@ See LICENSE.TXT for licensing terms.
 #include <QtWebKit/QWebView>
 #endif
 
-static QString textFileTypes=";txt;";
+static QString textFileTypes=";txt;monkeydoc;";
 static QString codeFileTypes=";monkey;bmx;cpp;java;js;as;cs;py;";
 
 inline bool isDigit( QChar ch ){

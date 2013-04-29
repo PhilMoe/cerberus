@@ -80,7 +80,7 @@ Class DataBuffer Extends BBDataBuffer
 		Endif
 	End
 	
-	Method PeekBytes:Int[]( address:Int=0 )
+	Method PeekBytes:Int[]( address:Int )
 	
 		Return PeekBytes( address,Length )
 

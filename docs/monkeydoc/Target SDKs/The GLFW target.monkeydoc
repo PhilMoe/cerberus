@@ -1,0 +1,23 @@
+> The GLFW target
+
+GLFW is a free and open source framework for creating native OpenGL apps for Windows and MacOS.
+
+The GLFW site is currently here: [http://www.glfw.org](http://www.glfw.org).
+
+GLFW apps use OpenGL for graphics and OpenAL for audio.
+
+>> Windows Requirements
+
+* [Microsoft Visual C++ Express 2010](http://www.microsoft.com/visualstudio/eng/downloads).
+
+* [OpenAL Windows Drivers](http://connect.creativelabs.com/openal/Downloads/oalinst.zip).
+
+>> MacOS Requirements
+
+* [XCode](http://developer.apple.com/xcode) developer tools. XCode is also available via the Mac 'App Store' app.
+
+>> Notes
+
+On Windows, the `MSBUILD_PATH` var in your [[Trans]] config file must be set correctly.
+
+To modify the size and layout of GLFW apps, you will need to modify the app's [[App config settings]].

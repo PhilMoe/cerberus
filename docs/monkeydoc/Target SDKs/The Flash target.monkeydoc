@@ -1,0 +1,15 @@
+> The Flash target
+
+Flash is a very popular web based platform by Adobe.
+
+>> You will need
+
+* [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html) open source compiler tools from Adobe.
+
+* [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html) - the Java Development Kit.
+
+>> Notes
+
+The `FLEX_PATH` var in your [[Trans]] config file must be set correctly.
+
+To modify the size and layout of Flash Monkey apps, you will need to modify the MonkeyGame.as file in your app's .build/flash directory.

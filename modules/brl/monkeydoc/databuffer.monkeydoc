@@ -1,0 +1,243 @@
+
+# Module brl.databuffer
+
+Databuffer objects provide storage for arbitrary data. 
+
+For more information on databuffers, please refer to the [[DataBuffer]] class reference.
+
+
+# Class brl.databuffer.DataBuffer
+
+Databuffer objects provide storage for arbitrary data.
+
+Data may be written to a databufffer using one of the 'poke' methods, and read from a databuffer using one of the 'peek' methods.
+
+Parameters that specify buffer addresses or array indices for data transfers are not currently range checked. In general, you should always ensure that these are always valid, ie: >=0 And <=length of the buffer/array. Any transfer count parameters should always be >=0, but will always be clipped to make sure no overreads or overwrites occur.
+
+
+# Method New(length:Int)
+
+Creates a new data buffer of the specified byte length.
+
+Values can be written into the databuffer using the various 'poke' methods, or read using the 'peek' methods.
+
+Params: 
+
+length - buffer size, in bytes.
+
+
+# Method Length:Int()
+
+Returns the length, in bytes, of the data buffer.
+
+
+# Method Discard:Void()
+
+Releases any resources used by the data buffer.
+
+Once discarded, a data buffer should not be used again.
+
+
+# Method PokeByte:Void(address:Int,value:Int)
+
+Writes an 8 bit byte into the data buffer at @address.
+
+Params: 
+
+addr - byte address to poke
+
+value - value to poke
+
+# Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int=0)
+
+Copies bytes from the @bytes array to the databuffer.
+
+Copying starts at @offset within the array and @address within the databuffer, and continues until eith the end of the array or the end of the databuffer is reached.
+
+
+# Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int,count:Int )
+
+Copies bytes from the @bytes array to the databuffer.
+
+Copying starts at @offset within the array and @address within the databuffer, and continues until eith the end of array is reached, the end of the databuffer is reached, or @count bytes have been transferred.
+
+
+# Method PokeShort:Void(address:Int,value:Int)
+
+Writes a 16 bit int value into the data buffer at @address.
+
+Params: 
+
+addr - byte address to poke
+
+value - value to poke
+
+
+# Method PokeInt:Void(address:Int,value:Int)
+
+Writes a 32 bit int value into the data buffer at @address.
+
+Params: 
+
+addr - byte address to poke
+
+value - value to poke
+
+
+# Method PokeFloat:Void(address:Int,value:Float)
+
+Writes a 32 bit float value into the data buffer at @address.
+
+Params: 
+
+@address - byte address to poke
+
+@value - value to poke
+
+
+# Method PokeString:Int(address:Int,value:String,encoding:String="utf8")
+
+Pokes @value into the data buffer at location @address.
+
+The @encoding parameter should be one of:
+
+<pre>
+utf8
+ascii
+</pre>
+
+
+# Method PeekByte:Int(address:Int)
+
+Returns the 8 bit byte contained in the databuffer at @address.
+
+Params: 
+
+@address - byte address to peek.
+
+
+# Method PeekBytes:Int[](address:Int)
+
+Peeks and returns bytes from @address until the end of the databuffer in an int array.
+
+Params: 
+
+@address - byte address to staring peeking.
+
+
+# Method PeekBytes:Int[](address:Int,count:Int)
+
+Peeks and returns @count bytes starting at @address in an int array.
+
+Params: 
+
+@address - byte address to staring peeking.
+
+@count - number of bytes to peek.
+
+# Method PeekBytes:Void( address:Int,bytes:int[],offset:Int=0 )
+
+Copies bytes from @address until the end of the databuffer to @bytes.
+
+Data is written to @bytes starting at index @offset.
+
+Params: 
+
+@address - byte address to staring peeking.
+
+@bytes - array to write bgytes to.
+
+@count - number of bytes to peek.
+
+
+# Method PeekBytes:Void( address:Int,bytes:int[],offset:Int,count:Int )
+
+Copies @count bytes starting at @address from the data to @bytes.
+
+Data is written to @bytes starting at index @offset.
+
+Params: 
+
+@address - byte address to staring peeking.
+
+@bytes - array to write bgytes to.
+
+@count - number of bytes to peek.
+
+
+
+# Method PeekShort:Int(address:Int)
+
+Returns the 16 bit int value contained in the data buffer at @address.
+
+Params: 
+
+@address - byte address to peek
+
+
+# Method PeekInt:Int(address:Int)
+
+Returns the 32 bit int value contained in the data buffer at @address.
+
+Params: 
+
+@address - byte address to peek
+
+
+# Method PeekFloat:Float(address:Int)
+
+Returns the 32 bit float value stored in the data buffer at @address.
+
+Params: 
+
+@address - byte address to poke
+
+@value - value to poke
+
+
+# Method PeekString:String(address:Int,encoding:String="utf8")
+
+Peeks and returns a string from the data buffer.
+
+Data is read from @address up until the end of the data buffer.
+
+The @encoding parameter should be one of:
+
+<pre>
+utf8
+ascii
+</pre>
+
+
+# Method PeekString:String(address:Int,count:Int,encoding:String="utf8")
+
+Peeks and returns a string from the data buffer.
+
+Up to @count bytes are read from the data buffer starting from @address.
+
+The @encoding parameter should be one of:
+
+<pre>
+utf8
+ascii
+</pre>
+
+
+# Method CopyBytes:Void( srcAddress:Int,dst:DataBuffer,dstAddress:Int,count:Int )
+
+Copies @count bytes starting at @srcAddress from this buffer to @dst.
+
+
+# Function Load:DataBuffer(path:String)
+
+Creates and returns a databuffer containing the binary contents of the specified file.
+
+If the file does not exist or cannot be read, null is returned instead.
+
+Params: 
+
+@path - path of file to load.
+
+Links: 
+
+[[Resource paths]]

@@ -140,7 +140,7 @@ Class List<T>
 	
 	Method InsertBefore:Node<T>( where:T,data:T )
 		Local node:=FindNode( where )
-		If node Return New Node( node,node._pred,data )
+		If node Return New Node<T>( node,node._pred,data )
 	End
 	
 	Method InsertAfter:Node<T>( where:T,data:T )
@@ -413,7 +413,7 @@ Class StringList Extends List<String>
 		Super.New( data )
 	End
 	
-	Method Join$( separator$="" )
+	Method Join$( separator:String="" )
 		Return separator.Join( ToArray() )
 	End
 	

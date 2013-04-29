@@ -13,7 +13,7 @@ Class Shot Extends Sprite
 	Field inert:Int = True ' Shots start off inert, until they start to fall. Prevents player colliding while shooting...
 	
 	Method Delete ()
-		parent.Remove Self
+		parent.RemoveEach Self
 	End
 	
 	Global ReloadDelay:Int
@@ -92,7 +92,7 @@ Class Shot Extends Sprite
 			Endif
 
 			If s.y > vdh + 64
-				GameSession.CurrentLevel.Shots.Remove s
+				GameSession.CurrentLevel.Shots.RemoveEach s
 			Endif
 					
 		Next

@@ -32,6 +32,8 @@ public:
     MainWindow( QWidget *parent=0 );
     ~MainWindow();
 
+    void cdebug( const QString &str );
+
 private:
 
     void parseAppArgs();
@@ -58,8 +60,9 @@ private:
     void updateTabLabel( QWidget *widget );
     void updateActions();
 
+    void print( const QString &str );
     void runCommand( QString cmd,QWidget *fileWidget );
-    void build( bool run );
+    void build( QString mode );
 
     bool confirmQuit();
     void closeEvent( QCloseEvent *event );
@@ -72,6 +75,7 @@ public slots:
     void onFileOpenRecent();
     void onFileClose();
     void onFileCloseAll();
+    void onFileCloseOthers();
     void onFileSave();
     void onFileSaveAs();
     void onFileSaveAll();
@@ -101,6 +105,8 @@ public slots:
     //Build/Debug menu
     void onBuildBuild();
     void onBuildRun();
+    void onBuildCheck();
+    void onBuildUpdate();
     void onDebugStep();
     void onDebugStepInto();
     void onDebugStepOut();
@@ -117,6 +123,7 @@ public slots:
     void onHelpForward();
     void onHelpQuickHelp();
     void onHelpAbout();
+    void onHelpRebuild();
 
 private slots:
 

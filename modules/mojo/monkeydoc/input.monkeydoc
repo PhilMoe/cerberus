@@ -1,0 +1,493 @@
+
+# Module mojo.input
+
+# Import mojo.keycodes
+
+The input module allows programs to check for user input from a wide variety of devices such keyboards, mice, joysticks and touchsceens.
+
+The input module uses a 'polling' input model, meaning that your program must continually check (or 'poll') the state of input devices. Polling should be performed during the OnUpdate phase of your program.
+
+Please see the [[Key codes]] page for a full list of keyboard, mouse and joystick constants.
+
+
+# Function EnableKeyboard:Int()
+
+On the android and ios targets, this function enables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
+
+A virtual keyboard is a graphical representation of a keyboard overlaid on the display that allows users to enter text by means of touching symbols representing keys.
+
+After enabling the virtual keyboard, you program will be able to use GetChar to receive keystrokes, just as if there were a real keyboard present. It is up to the program to eventually call DisableKeyboard when appropriate, for example, when GetChar returns 13 (ie: the 'Enter' key) or 27 (ie: the 'Esc' key).
+
+On the GLFW, HTML5, Flash and XNA (Windows) targets, keyboard support is always assumed to be available and your program can always use GetChar to receive keystrokes.
+
+On the XNA XBOX and Windows Phone 7 targets, keyboard support is currently unavailable.
+
+Links: 
+
+[[DisableKeyboard]]
+
+
+# Function DisableKeyboard:Int()
+
+On the android and ios targets, this function disables the native virtual keyboard. On all other targets, both EnableKeyboard and DisableKeyboard have no effect.
+
+Links: 
+
+[[EnableKeyboard]]
+
+
+# Function KeyDown:Int(key:Int)
+
+Returns 1 if the specified key is currently held down, otherwise 0.
+
+Params: 
+
+key - key code of key to check.
+
+Links: 
+
+[[Key codes]], [[KeyHit]]
+
+
+# Function KeyHit:Int(key:Int)
+
+Returns the number of times the specified key has been hit since the last OnUpdate.
+
+Note that any on/off style 'buttons' on any device can be read using the KeyDown and KeyHit commands. For example, to read the state of the left mouse button you can use KeyDown( KEY_LMB ) in addition to MouseDown( MOUSE_LEFT ).
+
+Params: 
+
+key - keycode of the key to check.
+
+Links: 
+
+[[Key codes]], [[KeyDown]]
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Field lineY
+			
+	Method OnCreate()
+		lineY=DeviceHeight()/2
+		SetUpdateRate 30
+	End
+	
+	Method OnUpdate()
+
+		Local hit=KeyHit( KEY_LMB )	'Uses KeyHit to check the left mouse button.  You could also use MouseHit( MOUSE_LEFT )
+		
+		If hit And MouseY()<lineY
+			Print "You clicked above the line."
+		Else If hit And MouseY()>=lineY
+			Print "You clicked on or below the line."
+		End
+	End
+	
+	Method OnRender()
+		Cls
+		DrawLine 0,lineY,DeviceWidth(),lineY
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function PeekChar:Int( index:Int )
+
+Returns the character of the character at the specified index in the keyboard character queue. The character is NOT removed from the keyboard character queue.
+
+If there is no character at the specified index, 0 is returned.
+
+
+# Function GetChar:Int()
+
+Returns the character code of the next character in the keyboard character queue, or 0 if no more characters are available. The character is removed from the keyboard character queue.
+
+The keyboard queue contains characters codes as opposed to the key codes used by KeyDown and KeyUp. Character codes differ from key codes in that they are generally printable and may be modified by the shift, control and alt keys. Character codes also 'repeat' at a rate determined by the OS.
+
+The mapping from key codes to character codes is controlled by the underlying OS, but in practice will generally map to ASCII codes.
+
+The input module also provides special character code mappings for a number of unprintable keys: 
+
+<pre>
+CHAR_TAB
+CHAR_BACKSPACE
+CHAR_ENTER
+CHAR_ESCAPE
+CHAR_PAGEUP
+CHAR_PAGEDOWN
+CHAR_END
+CHAR_HOME
+CHAR_LEFT
+CHAR_UP
+CHAR_RIGHT
+CHAR_DOWN
+CHAR_INSERT
+CHAR_DELETE
+</pre>
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Field text$="Type something:"
+
+	Method OnCreate()
+		SetUpdateRate 30
+	End
+	
+	Method OnUpdate()
+		Repeat
+			Local char=GetChar()
+			If Not char Exit
+			If char>=32
+				text+=String.FromChar( char )
+			Endif
+		Forever
+	End
+	
+	Method OnRender()
+		Cls
+		DrawText text,0,0
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function MouseX:Float()
+
+Returns the x coordinate of the mouse pointer.
+
+On devices with a touch screen but no mouse, MouseX will instead return TouchX( 0 ).
+
+Links: 
+
+[[MouseY]], [[TouchX]]
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		SetUpdateRate 30
+	End
+	
+	Method OnUpdate()
+	End
+	
+	Method OnRender()
+		Cls
+		DrawText "MouseX="+MouseX+", MouseY="+MouseY,0,0
+		DrawCircle MouseX,MouseY,10
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function MouseY:Float()
+
+Returns the y coordinate of the mouse pointer.
+
+On devices with a touch screen but no mouse, MouseY will instead return TouchY( 0 ).
+
+Links: 
+
+[[MouseX]], [[TouchY]]
+
+
+# Function MouseDown:Int(button:Int)
+
+Returns 1 if the specified mouse button is currently held down, otherwise 0.
+
+The button parameter should be one of:
+
+<pre>
+MOUSE_LEFT
+MOUSE_RIGHT
+MOUSE_MIDDLE
+</pre>
+
+Params: 
+
+button - mouse button to check.
+
+Links: 
+
+[[MouseHit]]
+
+
+# Function MouseHit:Int(button:Int)
+
+Returns the number of times the specified mouse button has been pressed since the last OnUpdate.
+
+The button parameter should be one of:
+
+<pre>
+MOUSE_LEFT
+MOUSE_RIGHT
+MOUSE_MIDDLE
+</pre>
+
+Params: 
+
+button - mouse button to check.
+
+Links: 
+
+[[MouseDown]]
+
+
+# Function TouchX:Float(index:Int)
+
+Returns the x coordinate of the finger on a touch screen device.
+
+Note that index refers to the order touches have been made. The first finger to touch the touchscreen will be assigned index 0. If another finger then also touches the touchscreen, it will be assigned index 1 and so on.
+
+On devices with a mouse but no touch screen, TouchX( 0 ) will instead return MouseX.
+
+Links: 
+
+[[TouchY]], [[TouchHit]], [[TouchDown]], [[MouseX]]
+
+
+# Function TouchY:Float(index:Int)
+
+Returns the y coordinate of the finger on a touch screen device.
+
+Note that index refers to the order touches have been made. The first finger to touch the touchscreen will be assigned index 0. If another finger then also touches the touchscreen, it will be assigned index 1 and so on.
+
+On devices with a mouse but no touch screen, TouchY( 0 ) will instead return MouseY.
+
+Links: 
+
+[[TouchX]], [[TouchDown]], [[TouchHit]], [[MouseY]]
+
+
+# Function TouchDown:Int(index:Int)
+
+Returns 1 if the finger specified by index is currently touching the touchscreen, otherwise 0.
+
+Note that index refers to the order touches have been made. The first finger to touch the touchscreen will be assigned index 0. If another finger then also touches the touchscreen, it will be assigned index 1 and so on.
+
+If a finger is touching, you can get its x and y coordinates using the TouchX and TouchY commands.
+
+On devices with a mouse but no touch screen, TouchDown( 0 ) will instead return MouseDown( MOUSE_LEFT ).
+
+Params: 
+
+index - finger index in the range 0 to 31.
+
+Links: 
+
+[[TouchX]], [[TouchY]], [[TouchHit]], [[MouseDown]]
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Field touching
+	
+	Method OnCreate()
+		SetUpdateRate 30
+	End
+	
+	Method OnUpdate()
+		touching=0
+		For Local i=0 Until 32
+			If TouchDown( i ) touching+=1
+		Next
+	End
+	
+	Method OnRender()
+		Cls
+		DrawText touching,0,0
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+
+# Function TouchHit:Int(index:Int)
+
+Returns the number of times the specified finger has made contact with the touchscreen since the last OnUpdate.
+
+Note that index refers to the order touches have been made. The first finger to touch the touchscreen will be assigned index 0. If another finger then also touches the touchscreen, it will be assigned index 1 and so on.
+
+If a finger is touching, you can get its x and y coordinates using the TouchX and TouchY commands.
+
+On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return MouseHit( MOUSE_LEFT ).
+
+Params: 
+
+index - finger index in the range 0 to 31.
+
+Links: 
+
+[[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
+
+
+# Function JoyX:Float(index:Int=0,unit:Int=0)
+
+Returns the x, or horizontal, state of a joystick.
+
+The return value will be in the range -1 to +1, with -1 representing 'left' and +1 representing 'right'.
+
+In the case of controllers with 2 joysticks, the index parameter should be 0 for the left hand joystick, or 1 for the right hand joystick.
+
+Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
+
+Params: 
+
+index - 0 or 1.
+
+
+# Function JoyY:Float(index:Int=0,unit:Int=0)
+
+Returns the y, or vertical, state of a joystick.
+
+The return value will be in the range -1 to +1, with -1 representing 'down' and +1 representing 'up'.
+
+In the case of controllers with 2 joysticks, the index parameter should be 0 for the left hand joystick, or 1 for the right hand joystick.
+
+Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
+
+Params: 
+
+index - 0 or 1.
+
+
+# Function JoyZ:Float(index:Int=0,unit:Int=0)
+
+On Playstation/Xbox style controllers, JoyZ returns the state of the analog shoulder controls.
+
+The returned value will be in the range 0 to 1, with 0 indicating 'unpressed' and 1 indicating 'fully pressed'.
+
+The index parameter should be 0 for the left handler shoulder control, or 1 for the right hand shoulder control.
+
+Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a controller button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
+
+Params: 
+
+index - 0 or 1.
+
+
+# Function JoyDown:Int(button:Int,unit:Int=0)
+
+Return 1 if the specified joystick button is currently held down, else 0.
+
+The button parameter should be one of the following constants:
+
+<pre>
+JOY_A
+JOY_B
+JOY_X
+JOY_Y
+JOY_LB
+JOY_RB
+JOY_BACK
+JOY_START
+JOY_LEFT
+JOY_UP
+JOY_RIGHT
+JOY_DOWN
+</pre>
+
+Params: 
+
+button - joystick button to test.
+
+Links: 
+
+[[JoyHit]]
+
+
+# Function JoyHit:Int(button:Int,unit:Int=0)
+
+Return the number of times the specified joystick button has been pressed since the last OnUpdate.
+
+The button parameter should be one of the following constants:
+
+<pre>
+JOY_A
+JOY_B
+JOY_X
+JOY_Y
+JOY_LB
+JOY_RB
+JOY_BACK
+JOY_START
+JOY_LEFT
+JOY_UP
+JOY_RIGHT
+JOY_DOWN
+</pre>
+
+Params: 
+
+button - joystick button to test.
+
+Links: 
+
+[[JoyDown]]
+
+
+# Function AccelX:Float()
+
+Returns the x compononent of the acceleration applied to the device, as measured by the device's accelerometer if present.
+
+The value returned is in the range -1 to 1 inclusive.
+
+If the device has no accelerometer, 0 is returned.
+
+Accelerometer functionality is currently only available on the android, html5 and ios targets.
+
+
+# Function AccelY:Float()
+
+Returns the y compononent of the acceleration applied to the device, as measured by the device's accelerometer if present.
+
+The value returned is in the range -1 to 1 inclusive.
+
+If the device has no accelerometer, 0 is returned.
+
+Accelerometer functionality is currently only available on the andriod, html5 and ios targets.
+
+
+# Function AccelZ:Float()
+
+Returns the z compononent of the acceleration applied to the device, as measured by the device's accelerometer if present.
+
+The value returned is in the range -1 to 1 inclusive.
+
+If the device has no accelerometer, 0 is returned.
+
+Accelerometer functionality is currently only available on the android,html5 and ios targets.
+

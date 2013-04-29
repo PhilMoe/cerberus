@@ -7,10 +7,9 @@
 
 >>>span tags:
 
-\`...` fixed
+\`...` code
 \*...* bold
 \%...% italic
-\_..._ underline
 
 >>>prefix tags:
 
@@ -29,10 +28,6 @@
 \[[Target]]
 \[[Target|Label]]
 
->>>linebreak:
-
-\.
-
 >>>misc
 
 escape any leading char with \
@@ -46,38 +41,61 @@ By default, first row is a header row. Start a table with a single | for a 'head
 
 #End
 
-Interface LinkResolver
+Interface ILinkResolver
 
 	Method ResolveLink:String( link:String,text:String )
 
 End
 
+Interface IPrettifier
+
+	Method BeginPrettyBlock:String()
+	
+	Method EndPrettyBlock:String()
+
+	Method PrettifyLine:String( text:String )
+	
+End
+
+
 Class Markdown
 
-	Method New( resolver:LinkResolver )
+	Method New( resolver:ILinkResolver,prettifier:IPrettifier )
 		_resolver=resolver
+		_prettifier=prettifier
 	End
 
 	Method ToHtml:String( src:String )
-	
-		If Not src.Contains( "~n" ) Return LineToHtml(src)
+		Local html:=""
+		If src.Contains( "~n" )
+			Local buf:=New StringStack
+			For Local line:=Eachin src.Split( "~n" )
+				buf.Push LineToHtml( line )
+			Next
+			
+			html=buf.Join( "~n" )
+		Else
+			html=LineToHtml( src )
+		Endif
 		
-		Local buf:=New StringStack
-		For Local line:=Eachin src.Split( "~n" )
-			buf.Push LineToHtml( line )
-		Next
-		
-		Return buf.Join( "~n" )
+		If _blk Return html+SetBlock( "" )
+		Return html
 	End
-
+	
 	Private
 	
 	Field _blk:String
-	Field _resolver:LinkResolver
+	Field _resolver:ILinkResolver
+	Field _prettifier:IPrettifier
 	
 	Method Find:Int( src:String,text:String,start:Int )
 		Local i:=src.Find( text,start )
-		If i=-1 Or (i>0 And src[i-1]=92) Return -1
+		If i=-1 Return -1
+		Local j:=i
+		While j>0 And src[j-1]=92
+			j-=1
+		Wend
+		If j<>i And ((i-j)&1)=1 Return -1
 		Return i
 	End
 	
@@ -139,11 +157,11 @@ Class Markdown
 			Local i1:=Find(src,"]]",i0+2)
 			If i1=-1 Exit
 			
-			Local t:=src[i0+2..i1],p:=t
-			Local j:=t.Find("|")
+			Local p:=src[i0+2..i1],t:=""
+			Local j:=p.Find("|")
 			If j<>-1
-				p=t[..j]
-				t=t[j+1..]
+				t=p[j+1..]
+				p=p[..j]
 			Endif
 	
 			Local r:=_resolver.ResolveLink(p,t)
@@ -194,12 +212,25 @@ Class Markdown
 		Return src
 	End
 	
+	Method Prettify:String( text:String )
+		If _prettifier Return _prettifier.PrettifyLine( text )
+		Return text
+	end
+	
 	Method SetBlock:String( blk:String )
 		Local t:=""
 		If _blk<>blk
-			If _blk t="</"+_blk+">"
+			If _blk="pre" And _prettifier
+				t=_prettifier.EndPrettyBlock()
+			Else If _blk
+				t="</"+_blk+">"
+			Endif
 			_blk=blk
-			If _blk t+="<"+_blk+">"
+			If _blk="pre" And _prettifier
+				t=_prettifier.BeginPrettyBlock()
+			Else If _blk
+				t="<"+_blk+">"
+			Endif
 		Endif
 		Return t
 	End
@@ -212,8 +243,6 @@ Class Markdown
 		
 		src=ReplaceSpanTags( src,"%","i" )
 		
-		src=ReplaceSpanTags( src,"_","u" )
-		
 		src=ReplacePrefixTags( src,"@","b" )
 		
 		src=ReplaceLinks( src )
@@ -222,37 +251,61 @@ Class Markdown
 
 		Return src
 	End
+	
+	Method TrimStart:String( str:String )
+		Local i:=0
+		While i<str.Length And str[i]<=32
+			i+=1
+		Wend
+		If i Return str[i..]
+		Return str
+	End
+	
+	Method TrimEnd:String( str:String )
+		Local i:=str.Length
+		While i>0 And str[i-1]<=32
+			i-=1
+		Wend
+		If i<str.Length Return str[..i]
+		Return str
+	End
 
 	Method LineToHtml:String( src:String )
 	
 		'Handle <pre> first...
 		If _blk="pre"
-			If src.StartsWith( "</pre>" )
-				Local t:=SetBlock( "" )
-				Return t+src[6..]
-			Endif
-			Return src
+			Local i:=src.Find( "</pre>" )
+			If i=-1 Return Prettify( src )
+			If src[..i].Trim() Return Prettify( src[..i] )+SetBlock( "" )
+			Return SetBlock( "" )
 		Endif
 		
-		src=src.Trim()
-		If Not src Return SetBlock( "" )+"<p>"
-
+		If Not src
+			If _blk="table" Return SetBlock( "" )+"<p>"
+			Return "<p>"
+		Endif
+		
+		If src="-" Or src="--" Or src="---"
+			Return SetBlock( "" )+"<hr>"
+		End
+		
 		If src.StartsWith( "<pre>" )
 			Local t:=SetBlock( "pre" )
-			Return t+src[5..]
-		Endif
+			If src[5..].Trim() Return t+Prettify( src[5..] )
+			Return t
+		End
 		
-		If src.StartsWith( "|" )
-			If src="|" Return SetBlock( "table" )	'headerless table
+		If src.StartsWith( "| " )
+			src=SpanToHtml( src )
 			Local bits:=New StringStack
 			Local i:=1
 			Repeat
 				Local i0:=Find( src,"|",i )
 				If i0=-1 Exit
-				bits.Push SpanToHtml( src[i..i0].Trim() )
+				bits.Push src[i..i0].Trim()	'SpanToHtml( src[i..i0].Trim() )
 				i=i0+1
 			Forever
-			bits.Push SpanToHtml( src[i..].Trim() )
+			bits.Push src[i..].Trim()	'bits.Push SpanToHtml( src[i..].Trim() )
 			Local tag:="td"
 			If _blk<>"table" tag="th"
 			Return SetBlock( "table" )+"<tr><"+tag+">"+bits.Join( "</"+tag+"><"+tag+">" )+"</"+tag+"></tr>"
@@ -263,24 +316,31 @@ Class Markdown
 			While i<src.Length And src[i]=62	'>
 				i+=1
 			Wend
-			Local t:=SetBlock( "" )
-			src=SpanToHtml( src[i..] )
-			Return t+"<h"+i+">"+src+"</h"+i+">"
+			If i<src.Length And src[i]<=32
+				Local t:=SetBlock( "" )
+				src=SpanToHtml( src[i+1..] )
+				Return t+"<h"+i+">"+src+"</h"+i+">"
+			Endif
 		Endif
 		
-		If src.StartsWith( "*" )
+		If src.StartsWith( "* " )
 			Local t:=SetBlock( "ul" )
-			Return t+"<li>"+SpanToHtml( src[1..] )+"</li>"
+			Return t+"<li>"+SpanToHtml( src[2..] )+"</li>"
 		Endif
 		
-		If src.StartsWith( "+" )
+		If src.StartsWith( "+ " )
 			Local t:=SetBlock( "ol" )
-			Return t+"<li>"+SpanToHtml( src[1..] )+"</li>"
+			Return t+"<li>"+SpanToHtml( src[2..] )+"</li>"
 		Endif
 		
 		Local t:=SetBlock( "" )
 		
+		Local i:=Find( src,"~~n",src.Length-2 )
+		If i<>-1 src=src[..-2]+"<br>"
+		
 		src=SpanToHtml( src )
+		
+'		If src.EndsWith( "  " ) src=src[..-2]+"<br>"
 		
 		Return t+src
 	End

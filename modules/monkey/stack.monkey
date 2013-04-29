@@ -22,36 +22,37 @@ Class Stack<T>
 		Return t
 	End
 
-	Method Equals?( lhs:T,rhs:T )
+	Method Equals:Bool( lhs:T,rhs:T )
 		Return lhs=rhs
 	End
 	
-	Method Compare( lhs:T,rhs:T )
+	Method Compare:Int( lhs:T,rhs:T )
 		Error "Unable to compare items"
 	End
 	
-	Method Clear()
+	Method Clear:Void()
 		For Local i:=0 Until length
 			data[i]=NIL
 		Next
 		length=0
 	End
 
-	Method Length()
+	Method Length:Int() Property
 		Return length
 	End
 
-	Method IsEmpty?()
+	Method IsEmpty:Bool() Property
 		Return length=0
 	End
 	
-	Method Contains?( value:T )
-		For Local i=0 Until length
+	Method Contains:Bool( value:T )
+		For Local i:=0 Until length
 			If Equals( data[i],value ) Return True
 		Next
+		Return False
 	End Method
 	
-	Method Push( value:T )
+	Method Push:Void( value:T )
 		If length=data.Length
 			data=data.Resize( length*2+10 )
 		Endif
@@ -59,13 +60,11 @@ Class Stack<T>
 		length+=1
 	End
 	
-	Method Push( values:T[],offset:Int=0 )
-		For Local i:=offset Until values.Length
-			Push values[i]
-		Next
+	Method Push:Void( values:T[],offset:Int=0 )
+		Push values,offset,values.Length-offset
 	End
 
-	Method Push( values:T[],offset:Int,count:Int )
+	Method Push:Void( values:T[],offset:Int,count:Int )
 		For Local i:=0 Until count
 			Push values[offset+i]
 		Next
@@ -82,7 +81,7 @@ Class Stack<T>
 		Return data[length-1]
 	End
 
-	Method Set( index,value:T )
+	Method Set:Void( index,value:T )
 		data[index]=value
 	End
 
@@ -90,33 +89,33 @@ Class Stack<T>
 		Return data[index]
 	End
 
-	Method Insert( index,value:T )
+	Method Insert:Void( index,value:T )
 		If length=data.Length
 			data=data.Resize( length*2+10 )
 		Endif
-		For Local i=length Until index Step -1
+		For Local i:=length Until index Step -1
 			data[i]=data[i-1]
 		Next
 		data[index]=value
 		length+=1
 	End
 
-	Method Remove( index )
-		For Local i=index Until length-1
+	Method Remove:Void( index:Int )
+		For Local i:=index Until length-1
 			data[i]=data[i+1]
 		Next
 		length-=1
 		data[length]=NIL
 	End
 	
-	Method RemoveEach( value:T )
-		Local i,j=length
+	Method RemoveEach:Void( value:T )
+		Local i:=0,j:=length
 		While i<length
 			If Not Equals( data[i],value )
 				i+=1
 				Continue
 			Endif
-			Local b=i,e=i+1
+			Local b:=i,e:=i+1
 			While e<length And Equals( data[e],value )
 				e+=1
 			Wend
@@ -135,6 +134,13 @@ Class Stack<T>
 		Wend
 	End
 	
+	Method Sort:Void( ascending:Bool=True )
+		If Not length Return
+		Local t:=1
+		If Not ascending t=-1
+		_Sort 0,length-1,t
+	End
+	
 	Method ObjectEnumerator:Enumerator<T>()
 		Return New Enumerator<T>( Self )
 	End
@@ -148,7 +154,59 @@ Private
 	Global NIL:T
 
 	Field data:T[]
-	Field length
+	Field length:Int
+	
+	Method _Swap:Void( x:Int,y:Int ) Final
+		Local t:=data[x]
+		data[x]=data[y]
+		data[y]=t
+	End
+	
+	Method _Less:Bool( x:Int,y:Int,ascending:Int ) Final
+		Return Compare( data[x],data[y] )*ascending<0
+	End
+	
+	Method _Less2:Bool( x:Int,y:T,ascending:Int ) Final
+		Return Compare( data[x],y )*ascending<0
+	End
+	
+	Method _Less3:Bool( x:T,y:Int,ascending:Int ) Final
+		Return Compare( x,data[y] )*ascending<0
+	End
+	
+	Method _Sort:Void( lo:Int,hi:Int,ascending:Int ) Final
+		If hi<=lo Return
+		If lo+1=hi
+			If _Less( hi,lo,ascending ) _Swap( hi,lo )
+			Return
+		Endif
+		Local i:=(hi-lo)/2+lo
+		If _Less( i,lo,ascending ) _Swap( i,lo )
+		If _Less( hi,i,ascending )
+			_Swap( hi,i )
+			If _Less( i,lo,ascending ) _Swap( i,lo )
+		Endif
+		Local x:=lo+1
+		Local y:=hi-1
+		Repeat
+			Local p:=data[i]
+			While _Less2( x,p,ascending )
+				x+=1
+			Wend
+			While _Less3( p,y,ascending )
+				y-=1
+			Wend
+			If x>y Exit
+			If x<y
+				_Swap( x,y )
+				If i=x i=y Else If i=y i=x
+			Endif
+			x+=1
+			y-=1
+		Until x>y
+		_Sort( lo,y,ascending )
+		_Sort( x,hi,ascending )
+	End
 	
 End
 
@@ -164,13 +222,13 @@ Class Enumerator<T>
 
 	Method NextObject:T()
 		index+=1
-		Return stack.Get( index-1 )
+		Return stack.data[index-1]
 	End
 
 Private
 
 	Field stack:Stack<T>
-	Field index
+	Field index:Int
 
 End
 
@@ -203,13 +261,13 @@ Class BackwardsEnumerator<T>
 
 	Method NextObject:T()
 		index-=1
-		Return stack.Get( index )
+		Return stack.data[index]
 	End
 
 Private
 	
 	Field stack:Stack<T>
-	Field index
+	Field index:Int
 
 End
 
@@ -221,11 +279,11 @@ Class IntStack Extends Stack<Int>
 		Super.New( data )
 	End
 	
-	Method Equals?( lhs,rhs )
+	Method Equals:Bool( lhs:Int,rhs:Int )
 		Return lhs=rhs
 	End
 	
-	Method Compare( lhs,rhs )
+	Method Compare:Int( lhs:Int,rhs:Int )
 		Return lhs-rhs
 	End
 
@@ -237,11 +295,11 @@ Class FloatStack Extends Stack<Float>
 		Super.New( data )
 	End
 	
-	Method Equals?( lhs#,rhs# )
+	Method Equals:Bool( lhs:Float,rhs:Float )
 		Return lhs=rhs
 	End
 	
-	Method Compare( lhs#,rhs# )
+	Method Compare:Int( lhs:Float,rhs:Float )
 		If lhs<rhs Return -1
 		Return lhs>rhs
 	End
@@ -254,15 +312,15 @@ Class StringStack Extends Stack<String>
 		Super.New( data )
 	End
 	
-	Method Join$( separator$="" )
+	Method Join:String( separator:String="" )
 		Return separator.Join( ToArray() )
 	End
 	
-	Method Equals?( lhs$,rhs$ )
+	Method Equals:Bool( lhs:String,rhs:String )
 		Return lhs=rhs
 	End
 
-	Method Compare( lhs$,rhs$ )
+	Method Compare:Int( lhs:String,rhs:String )
 		Return lhs.Compare( rhs )
 	End
 

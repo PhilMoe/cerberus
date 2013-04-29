@@ -1,0 +1,11 @@
+
+> Supported file formats
+
+This table lists the file formats supported by Monkey targets.
+
+You should also specify the file formats your app uses via the [[App config settings]] TEXT_FILES, IMAGE_FILES, SOUND_FILES, MUSIC_FILES and BINARY_FILES.
+
+| Function | Html5 | Flash | Glfw | Android | iOS | XNA | PSM
+| [[Modules/mojo.graphics#LoadImage]] | png, jpg | png, jpg |png | png, jpg, bmp, gif | png, jpg, bmp, gif, tif | png, jpg, bmp, tga, dds | png, jpg, bmp, gif
+| [[Modules/mojo.audio#LoadSound]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff | wav, mp3, wma | wav 
+| [[Modules/mojo.audio#PlayMusic]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff | wav, mp3, wma | mp3

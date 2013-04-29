@@ -1,0 +1,30 @@
+
+# Module opengl
+
+The opengl module provides access to various OpenGL APIs on targets with OpenGL support.
+
+Currently, there are 2 APIs supported: OpenGL ES 1.1 and OpenGL ES 2.0.
+
+You can only use one API at a time, and must manually import the correct version - importing opengl alone will not import any APIs.
+
+In addition, opengl support currently depends on the mojo module to create and manage GL contexts, so you will also need to import at least mojo.graphics. 
+
+For example, to import the OpenGL ES 1.1 API, use:
+
+<pre>
+Import mojo
+Import opengl.gles11
+</pre>
+
+To import the OpenGL ES 2.0 API, use:
+
+<pre>
+Import mojo
+Import opengl.gles20
+</pre>
+
+The opengl modules also provide a LoadImageData helper function for loading raw image data.
+
+Links: 
+
+[[opengl.gles11]], [[opengl.gles20]]

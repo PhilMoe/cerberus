@@ -534,6 +534,8 @@ template<class T> void gc_mark_elements( int n,Array<T> *p ){
 		
 // ***** String *****
 
+static const char *_str_load_err;
+
 class String{
 public:
 	String():rep( &nullRep ){
@@ -868,6 +870,12 @@ public:
 	}
 #endif
 
+#if __cplusplus_winrt
+	Platform::String ^ToWinRTString()const{
+		return ref new Platform::String( rep->data,rep->length );
+	}
+#endif
+
 	bool Save( FILE *fp ){
 		std::vector<unsigned char> buf;
 		Save( buf );
@@ -916,6 +924,8 @@ public:
 	
 	static String Load( unsigned char *p,int n ){
 	
+		_str_load_err=0;
+		
 		unsigned char *e=p+n;
 		std::vector<Char> chars;
 		
@@ -964,7 +974,7 @@ public:
 				chars.push_back( c );
 			}
 			if( fail ){
-				puts( "Invalid UTF-8!" );fflush( stdout );
+				_str_load_err="Invalid UTF-8";
 				return String( q,n );
 			}
 		}
@@ -1360,7 +1370,11 @@ int Print( String t ){
 	buf[n]=0;
 	
 #if __cplusplus_winrt
-//	OutputDebugStringA( buf );
+
+#if CFG_WIN8_PRINT_ENABLED
+	OutputDebugStringA( buf );
+#endif
+
 #else
 	fputs( buf,stdout );
 	fflush( stdout );
@@ -1369,8 +1383,18 @@ int Print( String t ){
 	return 0;
 }
 
+class BBExitApp{
+};
+
 int Error( String err ){
-	if( !err.Length() ) exit( 0 );
+	if( !err.Length() ){
+#if __cplusplus_winrt
+		throw BBExitApp();
+//		System::Windows::Application::Current->Terminate();
+#else
+		exit( 0 );
+#endif
+	}
 	dbg_error( err.ToCString<char>() );
 	return 0;
 }

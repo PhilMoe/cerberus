@@ -2,8 +2,9 @@
 Strict
 
 RebuildTrans 
-'RebuildMServer
-'RebuildMonkey
+RebuildMakedocs
+RebuildMServer
+RebuildMonkey
 
 End
 
@@ -22,13 +23,7 @@ Const QUICKTRANS=False
 
 Const trans$=bin+"transcc"+ext
 
-'rebuild with v66
-'Const trans_mk$=bin+"trans"+ext+" -target=stdcpp"
-'Const trans_tmp$="transcc/transcc.build/stdcpp/main"+ext
-
-'rebuild with current trans
-Const trans_mk$=trans+" -target=C++_Tool"
-Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
+Const makedocs$=bin+"makedocs"+ext
 
 Function system( cmd$,fail=True )
 	If system_( cmd ) 
@@ -40,7 +35,6 @@ Function system( cmd$,fail=True )
 End Function
 
 Function RebuildTrans()
-
 	If QUICKTRANS
 ?Win32
 		system "g++ -o ..\bin\transcc_winnt.exe transcc\transcc.build\cpptool\main.cpp"
@@ -51,6 +45,14 @@ Function RebuildTrans()
 ?
 		Return
 	EndIf
+	
+	'To rebuild with v66
+	'Const trans_mk$=bin+"trans"+ext+" -target=stdcpp"
+	'Const trans_tmp$="transcc/transcc.build/stdcpp/main"+ext
+
+	'To rebuild with current trans
+	Const trans_mk$=trans+" -target=C++_Tool"
+	Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
 	
 	system trans_mk+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 transcc/transcc.monkey"
 	
@@ -73,6 +75,29 @@ Function RebuildTrans()
 ?
 	Print "transcc built OK!"
 
+End Function
+
+Function RebuildMakedocs()
+	Const makedocs_tmp$="makedocs/makedocs.build/cpptool/main"+ext
+
+	system trans+" -target=C++_Tool -clean -config=release makedocs/makedocs.monkey"
+	
+	DeleteFile makedocs
+	If FileType( makedocs )
+		Print "***** ERROR ***** Failed to delete makedocs"
+		End
+	Endif
+	
+	CopyFile makedocs_tmp,makedocs
+	If FileType( makedocs )<>FILETYPE_FILE
+		Print "***** ERROR ***** Failed to copy makedocs"
+		End
+	Endif
+
+?Not win32
+	system "chmod +x "+makedocs
+?
+	Print "makedocs built OK!"
 End Function
 
 Function RebuildMServer()

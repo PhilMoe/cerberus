@@ -1,0 +1,31 @@
+
+> Resource paths in monkey
+
+App resources may be stored in many different locations, for example, in an app's data dir, on the local filesystem, or on a remote server.
+
+When using functions and methods that open or load resources, you can use any of the following special prefixes when specifying resource paths:
+
+* Use the "http://" or "https://" prefix to locate resources stored on a server.
+
+* Use the "monkey://data/" prefix to locate resources that were placed in the app's data/ directory when it was built.
+
+* Use the "monkey://internal/" prefix to locate resources stored in the app's internal storage directory.
+
+Not all prefixes work on all targets and the exact behavior of each prefix is target dependant. For example, android and ios can load images from http:// but not audio, while glfw cannot load from http:// at all. Full support for all prefixes is an ongoing mission!
+
+Also, note that Mojo module load commands will automatically insert a "monkey://data/" prefix before any path that does not already incude a prefix. For example, LoadImage( "myimage.png" ) is the same as LoadImage( "monkey://data/myimage.png" ).
+
+
+>> Supported resource path prefixes
+
+* *web* = http://, https://
+* *data* = monkey://data/
+* *file* = monkey://internal/
+
+| Function														| Android 			| iOS				| Win8			| Glfw			| Html5		| Flash	| Xna	| Psm	| Stdcpp
+| [[Modules/mojo.app#LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.graphics#LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.audio#LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/mojo.audio#PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
+| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| data	| data	| file
+| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file	| file	| file

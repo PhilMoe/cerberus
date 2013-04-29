@@ -42,10 +42,11 @@ End
 Function LoadSound:Sound( path$ )
 	Local sample:Sample=device.LoadSample( FixDataPath(path) )
 	If sample Return New Sound( sample )
+	Return Null
 End
 
 Function PlaySound( sound:Sound,channel=0,flags=0 )
-	If sound.sample device.PlaySample sound.sample,channel,flags
+	If sound And sound.sample device.PlaySample sound.sample,channel,flags
 End
 
 Function StopChannel( channel )

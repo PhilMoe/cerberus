@@ -1,0 +1,29 @@
+> Keyword Wend
+
+Wend, short for *While [loop] End*, marks the end of a While loop. See [[While]] for details and examples.
+
+>> Syntax
+
+While *expression*~n
+&nbsp;&nbsp;*Statements...*~n
+Wend
+
+While *expression*~n
+&nbsp;&nbsp;*Statements...*~n
+End
+
+While *expression*~n
+&nbsp;&nbsp;*Statements...*~n
+End While
+
+>> Description
+
+Wend marks the end of a While loop; see the While page below for more details.
+
+Wend may be replaced with the alternatives *End* or *End While* according to preference.
+
+The Exit keyword can be used to 'jump out' of the loop, continuing execution after the closing Wend.
+
+>> See also
+
+[[While]] [[Exit]]

@@ -1,24 +1,26 @@
-bin/*
-!bin/config.*.txt
+/bin/*
+!/bin/*.txt
 
-Monkey
-Monkey.app
-Monkey.exe
+/Monkey
+/Monkey.app
+/Monkey.exe
 
-src/rebuildall
-src/rebuilaall.exe
+/src/rebuildall
+/src/rebuildall.exe
 
-src/createrelease
+/src/createrelease
 
-docs/*
+/src/ted/ted.pro.user*
 
-modules/brlx
+/docs/html
 
-modules/brl/native/GoogleAdMobAdsSdk*
+/modules/brlx
 
-targets/glfw/oalinst.exe
+/modules/brl/native/GoogleAdMobAdsSdk*
 
-modules/mojo/native/*
-!modules/mojo/native/mojo.html5.js
-!modules/mojo/native/asyncimageloader.js
-!modules/mojo/native/asyncsoundloader.js
+/targets/glfw/oalinst.exe
+
+/modules/mojo/native/*
+!/modules/mojo/native/mojo.html5.js
+!/modules/mojo/native/asyncimageloader.js
+!/modules/mojo/native/asyncsoundloader.js

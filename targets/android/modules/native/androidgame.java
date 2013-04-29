@@ -388,10 +388,16 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		return state;
 	}
 	
-	//Temporary fix!
 	static public String LoadState_V66b(){
 		SharedPreferences prefs=_androidGame._activity.getPreferences( 0 );
 		return prefs.getString( "gxtkAppState","" );
+	}
+	
+	static public void SaveState_V66b( String state ){
+		SharedPreferences prefs=_androidGame._activity.getPreferences( 0 );
+		SharedPreferences.Editor editor=prefs.edit();
+		editor.putString( "gxtkAppState",state );
+		editor.commit();
 	}
 	
 	public boolean PollJoystick( int port,float[] joyx,float[] joyy,float[] joyz,boolean[] buttons ){
@@ -424,7 +430,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		if( path.startsWith( "monkey://data/" ) ) return "monkey/"+path.substring(14);
 		return "";
 	}
-	
+
 	public InputStream OpenInputStream( String path ){
 		if( !path.startsWith( "monkey://data/" ) ) return super.OpenInputStream( path );
 		try{
@@ -433,18 +439,19 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		}
 		return null;
 	}
-	
+
 	public Activity GetActivity(){
 		return _activity;
 	}
-	
+
 	public GameView GetGameView(){
 		return _view;
 	}
-	
+
 	public Bitmap LoadBitmap( String path ){
 		try{
 			InputStream in=OpenInputStream( path );
+			if( in==null ) return null;
 
 			BitmapFactory.Options opts=new BitmapFactory.Options();
 			opts.inPreferredConfig=Bitmap.Config.ARGB_8888;

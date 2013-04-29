@@ -1,0 +1,130 @@
+
+> Makedocs
+
+The Makedocs tool converts Monkey documentation to html.
+
+All documentation may use [[Modules/brl.markdown|markdown]] formatting.
+
+>> General documentation
+
+General documentation files should have a '.monkeydoc' extension, and should be placed in the docs/monkeydoc directory.
+
+>>> Markdown links in general documentation
+
+Documentation pages may be linked to using the relative filepath as a link target. For example, if you have added a Tools/MakeImages.monkeydoc file, any file in the Tools directory can link to it using \[[MakeImages]].
+
+Files outside the Tools directory can also link to MakeTools using using \[[Tools/MakeImages]]. The link text will have the directory stripped so will appear simply as 'MakeImages'. 
+
+A plain \[[MakeImages]] is also likely to work even outside the Tools directory, as the link resolver will eventually find MakeTools in the main Index, but it may clash with other definitions of MakeImages so a fully qualified link is preferred.
+
+
+>> Module documentation
+
+There are two ways to document a module - either by placing documentation 'in source' within the actual module source code
+by way of 'monkeydoc comments', or in a separate monkeydoc file.
+
+>>> Documenting modules in monkey source code
+
+To document a module declaration, you should precede the declaration with a monkeydoc comment. A monkeydoc comment is a block comment starting with the line `#Rem monkeydoc`
+
+For example.
+
+<pre>
+#Rem monkeydoc
+Documentation for MyFunction goes here.
+#End
+Function MyFunction:Void()
+...etc...
+</pre>
+
+In addition, the first monkeydoc comment in the file must be of the form...
+
+<pre>
+#Rem monkeydoc Module my.module
+Documentation for my.module goes here...
+#End
+</pre>
+
+...where my.module is the full module path of your module.
+
+
+>>> Documenting modules using an external monkeydoc file
+
+You may also document a module using an external monkeydoc file. This file should either be in the same directory as the module monkey source file, or in a monkeydoc subdirectory, and must have the same name as the module source file but with a '.monkeydoc' extension instead of '.monkey'.
+
+For example, given the module source file:
+
+`modules/flixel/flixel.monkey`
+
+The corresponding monkeydoc file may be located either here...
+
+`modules/flixel/flixel.monkeydoc`
+
+...or here...
+
+`modules/flixel/monkeydoc/flixel.monkeydoc`
+
+Declarations in a monkeydoc file are normal monkey declarations, but must be preceded by a '# '. Declarations must appear BEFORE the actual documentation.
+
+In addition, a monkeydoc file must start with a '# Module my.module' declaration.
+
+For example:
+
+<pre>
+# Module my.module
+
+# Import brl.stream
+# Import brl.markdown
+
+Documentation for my.module goes here.
+
+# Function MyFunction:Void()
+
+Documentation for MyFunction goes here.
+</pre>
+
+
+>>> Markdown links in module documentation
+
+Links to declarations may be created simply by specifying the declaration identifier. The link resolver will attempt to find the correct declaration given the scope of the source documentation.
+
+Links to declarations may also be absolute, in which case a full declaration path should be provided. For example, \[[mojo.graphics]] will link to the mojo.graphics module. Absolute links to non-scope declarations should use #identifier to specify the 'leaf' declaration, for example \[[mojo.graphics#DrawImage]] will link to the DrawImage function in the mojo.graphics module.
+
+Links may also be created to general documentation, using the same rules as given in the above section 'Markdown links in general documentation'.
+
+
+>>> Adding examples to module documentation
+
+You may add examples using an 'Example:' section, eg:
+
+<pre>
+#Rem monkeydoc
+
+Frobozz the whirligig
+
+Example:
+<pre>
+Function Main()
+	Print Frobozz( "Yes!" )
+End
+</pre >
+#End
+Function Frobozz:Void( str:String )
+'...etc...
+</pre>
+
+In addition, you can add example programs in monkey source code form to an 'examples' directory located in the same directory as the .monkey or .monkeydoc file the docs are located in.
+
+Such example programs should have the same name as the declaration they are providing an example for, with an '_example' suffix. For example, example code for the above function would be named 'Frobozz_example.monkey'.
+
+
+>>> Adding links to module documentation
+
+Documentation may also in include a links section, eg:
+
+Links: \[[X]], \[[Y]], \[[Z]]
+
+Links will be emitted in a 'links' or 'see also' section.
+
+
+

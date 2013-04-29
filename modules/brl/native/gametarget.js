@@ -131,6 +131,12 @@ BBGame.prototype.SetMouseVisible=function( visible ){
 	}
 }
 
+BBGame.prototype.PathToFilePath=function( path ){
+	return "";
+}
+
+//***** js Game *****
+
 BBGame.prototype.PathToUrl=function( path ){
 	return path;
 }

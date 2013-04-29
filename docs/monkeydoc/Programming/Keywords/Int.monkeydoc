@@ -1,0 +1,16 @@
+
+> Type Int
+
+The built-in int type.
+
+Module: [[monkey.lang]]
+
+>> Description
+
+The Int type is a fundamental monkey type used to represent signed integer values.
+
+Please see the Types section of the monkey language reference for more information on the int type.
+
+>> See also
+
+[Language reference](Language reference#types)

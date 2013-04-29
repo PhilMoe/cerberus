@@ -1140,15 +1140,15 @@ Class Parser
 		Local expr:=ParseExpr()
 		
 		Local block:BlockDecl=_block
-		
-		'_selTmpId+=1
-		'Local tmpId:=String( _selTmpId )	'1,2,3...
-		'Local tmpVar:LocalDecl=New LocalDecl( tmpId,0,Null,expr )
-		
-		Local tmpVar:LocalDecl=New LocalDecl( "",0,Null,expr )
-		Local tmpExpr:=New VarExpr( tmpVar )
 
-		block.AddStmt New DeclStmt( tmpVar )
+		_selTmpId+=1
+		Local tmpId:=String( _selTmpId )	'1,2,3...
+		block.AddStmt New DeclStmt( tmpId,Null,expr )
+		Local tmpExpr:=New IdentExpr( tmpId )
+		
+'		Local tmpVar:LocalDecl=New LocalDecl( "",0,Null,expr )
+'		Local tmpExpr:=New VarExpr( tmpVar )
+'		block.AddStmt New DeclStmt( tmpVar )
 		
 		While _toke<>"end" And _toke<>"default"
 			SetErr
@@ -1160,10 +1160,10 @@ Class Parser
 				Local comp:Expr
 				Repeat
 				
-'					Local expr:Expr=New IdentExpr( tmpId )
-'					expr=New BinaryCompareExpr( "=",expr,ParseExpr() )
+					Local expr:Expr=New IdentExpr( tmpId )
+					expr=New BinaryCompareExpr( "=",expr,ParseExpr() )
 
-					expr=New BinaryCompareExpr( "=",tmpExpr,ParseExpr() )
+'					local expr:=New BinaryCompareExpr( "=",tmpExpr,ParseExpr() )
 					
 					If comp
 						comp=New BinaryLogicExpr( "or",comp,expr )
@@ -1455,7 +1455,7 @@ Class Parser
 		
 		If CParse( "<" )
 			If attrs & DECL_EXTERN Err "Extern classes cannot be generic."
-			If attrs & CLASS_INTERFACE Err "Interfaces cannot be generic."
+			'If attrs & CLASS_INTERFACE Err "Interfaces cannot be generic."
 			Repeat
 				args.Push ParseIdent()
 			Until Not CParse(",")

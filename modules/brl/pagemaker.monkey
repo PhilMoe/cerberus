@@ -72,15 +72,15 @@ Class PageMaker
 				If cc
 					Local i:=1,inv:=False
 					
-					If bits[1]="NOT" 
+					If bits[i]="NOT" 
 						inv=True
-						i=2
+						i+=1
 					Endif
 					
 					If bits[i]="FIRST"
-						cc=(_iters.Top()=0)
+						cc=(_iters.Get(_iters.Length-2)=0)
 					Else If bits[i]="LAST"
-						cc=(_iters.Top()=_lists.Top().Length-1)
+						cc=(_iters.Get(_iters.Length-2)=_lists.Top().Length-1)
 					Else If bits[i+1]="EQ"
 						cc=GetString( bits[i] )=bits[i+2]
 					Else If bits[i+1]="NE"
@@ -110,8 +110,8 @@ Class PageMaker
 				Endif
 			Case "NEXT"
 				If cc
-					Local list:=_lists.Top()
 					_scopes.Pop
+					Local list:=_lists.Top()
 					Local p:=_iters.Pop()
 					Local j:=_iters.Pop()+1
 					If j<list.Length

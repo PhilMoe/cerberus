@@ -1,0 +1,81 @@
+> Keyword Property
+
+Declares method as property.
+
+>> Syntax
+
+Method *Identifier*: *ReturnType* ( *Parameters* ) [ `Property` ] [ Abstract ] [ Final ]~n
+&nbsp;&nbsp;*Statements...*~n
+End [ Method ]
+
+>> Description
+
+The Property keyword declares that a method is acting as a class property. Properties are generally used to access a single (usually private) field in a controlled fashion.
+
+Unlike a standard method, a property acts as a proxy for a field, and so can be written to (and read from) using the same syntax as for a field or variable. For example, reading a property:
+
+<pre>
+result = myobject.MyProperty
+</pre>
+
+*Note that because it's acting like a field, no method-call brackets are required.*
+
+Writing to a property:
+
+<pre>
+myobject.MyProperty = value
+</pre>
+
+Properties are usually declared in pairs with the same name:
+
+* a 'read' version with no parameters which reads a specific field, and;
+* a 'write' version with a single parameter which writes to the same field.
+
+(In the second example above, the value being assigned is the parameter defined in the 'write' property.)
+
+*Properties with multiple parameters cannot use this shortened syntax and must be called in the same way as a standard method.*
+
+>> See also
+
+[[Method]] [[Abstract]] [[Final]]  
+[Language reference (Methods)](Language reference#methods)  
+
+>> Examples
+
+<pre>
+' Runnable example...
+
+Class BankAccount
+
+&nbsp;&nbsp;Private
+
+&nbsp;&nbsp;&nbsp;&nbsp;Field balance:Int
+
+&nbsp;&nbsp;Public
+
+&nbsp;&nbsp;&nbsp;&nbsp;Method Balance (dollars:Int) Property
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If dollars > 1000000
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "Sent for security check!"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;balance = dollars
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Endif
+
+&nbsp;&nbsp;&nbsp;&nbsp;End
+
+&nbsp;&nbsp;&nbsp;&nbsp;Method Balance:String () Property
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return "$" + balance
+&nbsp;&nbsp;&nbsp;&nbsp;End
+
+End
+
+Function Main ()
+
+&nbsp;&nbsp;Local account:BankAccount = New BankAccount
+
+&nbsp;&nbsp;account.Balance = 50 ' 00000 ' Join to trigger security check!
+
+&nbsp;&nbsp;Print account.Balance
+
+End
+</pre>

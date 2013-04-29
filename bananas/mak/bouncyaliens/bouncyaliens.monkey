@@ -1,5 +1,5 @@
 
-#ANDROID_SCREEN_ORIENTATION="landscape"
+#ANDROID_SCREEN_ORIENTATION="user"'"landscape"
 
 #MOJO_AUTO_SUSPEND_ENABLED=True
 
@@ -61,13 +61,6 @@ Class MyApp Extends App
 	
 	Method OnUpdate()
 	
-		If KeyHit( KEY_BACK ) Or KeyHit( KEY_CLOSE )
-			Print "Bye!"
-			Error ""
-		Endif
-		
-		If KeyHit( KEY_SPACE ) Print "Space!"
-
 		ums=Millisecs
 
 		uframes+=1
@@ -153,8 +146,6 @@ Class MyApp Extends App
 End
 
 Function Main()
-
-	Print "Hello world!"
 
 	New MyApp
 	

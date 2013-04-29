@@ -1,0 +1,37 @@
+
+# Module brl.asynctcpstream
+
+# Import brl.asyncstream
+
+An async tcp stream allows you to connect, read and write to a TCP connection asynchronously.
+
+Please see the [[AsyncTcpStream]] class from more information.
+
+(Note: async tcp streams are only currently available on the stdcpp, glfw, android and ios targets.)
+
+
+# Class brl.asynctcpstream.AsyncTcpStream Extends AsyncStream
+
+An async tcp stream allows you to connect, read and write to a TCP connection asynchronously.
+
+To connect asynchronously, use the [[Connect]] method.
+
+To read or write to the stream, use one of the [[AsyncStream]] methods Read, ReadAll, Write or WriteAll.
+
+(Note: async tcp streams are only currently available on the stdcpp, glfw, android and ios targets.)
+
+
+# Method New()
+
+Creates an unconnected AsyncTcpStream object.
+
+Before reading and writing the stream, the first thing you should do is call [[Connect]].
+
+
+# Method Connect:Void( host:String,port:Int,onComplete:IOnConnectComplete )
+
+Begins connecting to a tcp host and returns immediately. When the connection process is complete, the OnConnectComplete method of the @onComplete object will be called.
+
+Links: 
+
+[[IOnConnectComplete]]

@@ -56,6 +56,7 @@ Class StdcppBuilder Extends Builder
 			Case "macos"
 				OPTS+=" -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3"
 			Case "winnt"
+				OPTS+=" -Wno-free-nonheap-object"
 				LIBS+=" -lwinmm -lws2_32"
 			End
 			

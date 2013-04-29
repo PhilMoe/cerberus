@@ -1,0 +1,1385 @@
+
+# Module opengl.gles20
+
+# Import brl.databuffer
+
+The gles20 module provides a Monkey wrapper for the OpenGL ES 2.0 API on the android, glfw, html5 and ios targets.
+
+The Monkey API is based on the 'C' API, with a few modifications:
+
+* The glGen and glDelete functions have been replaced with WebGL style glCreate and glDelete functions.
+
+* Monkey arrays are used to represent typed pointer parameters. It is up to you to ensure such arrays are large enough for the function being called - you should assume no runtime checking is performed.
+
+* DataBuffer objects are used to represent void pointer parameters. Again, it is up to you to ensure such databuffers are large enough for the function being called.
+
+* Versions of glTexImage that take image file paths have been added to all targets.
+
+To import the gles20 module into your app, use: `Import opengl.gles20`.
+
+The opengl modules currently depend on the the mojo module to create and manage opengl contexts, so you must also import mojo.
+
+>> HTML5 notes
+
+You will need a web browser that supports WebGL.
+
+Client side arrays are not supported in WebGL, so the versions of glVertexAttribPointer and glDrawElements that take a DataBuffer parameter are also not supported. You must use vertex buffer objects for vertex and index data on the HTML5 target. 
+
+LoadImageData is not supported on HTML5, so the only way you can load an image file into a texture is by using the versions of glTexImage that take an image path parameter.
+
+>> Android notes
+
+GLES2.0 is only available on API 8 or higher. In addition, if you want to target API 8 (Android 2.2 'Froyo') and want to use vertex buffer objects, you must set the app config setting "ANDROID_NATIVE_GL_ENABLED" to "true". This will cause some 'native code' to be added to your app that works around an issue in Android API 8. Note that this is not necessary if you are targeting API 9 or higher.
+
+>> GLFW notes
+
+Your graphics driver must support OpenGL2.0 or higher.
+
+Links: 
+
+[[DataBuffer]], [[LoadImageData]], [[App config settings]], [OpenGL ES 2.0 reference](http://www.khronos.org/opengles/sdk/docs/man/)
+
+
+# Const GL_DEPTH_BUFFER_BIT:Int
+
+
+# Const GL_STENCIL_BUFFER_BIT:Int
+
+
+# Const GL_COLOR_BUFFER_BIT:Int
+
+
+# Const GL_FALSE:Int
+
+
+# Const GL_TRUE:Int
+
+
+# Const GL_POINTS:Int
+
+
+# Const GL_LINES:Int
+
+
+# Const GL_LINE_LOOP:Int
+
+
+# Const GL_LINE_STRIP:Int
+
+
+# Const GL_TRIANGLES:Int
+
+
+# Const GL_TRIANGLE_STRIP:Int
+
+
+# Const GL_TRIANGLE_FAN:Int
+
+
+# Const GL_ZERO:Int
+
+
+# Const GL_ONE:Int
+
+
+# Const GL_SRC_COLOR:Int
+
+
+# Const GL_ONE_MINUS_SRC_COLOR:Int
+
+
+# Const GL_SRC_ALPHA:Int
+
+
+# Const GL_ONE_MINUS_SRC_ALPHA:Int
+
+
+# Const GL_DST_ALPHA:Int
+
+
+# Const GL_ONE_MINUS_DST_ALPHA:Int
+
+
+# Const GL_DST_COLOR:Int
+
+
+# Const GL_ONE_MINUS_DST_COLOR:Int
+
+
+# Const GL_SRC_ALPHA_SATURATE:Int
+
+
+# Const GL_FUNC_ADD:Int
+
+
+# Const GL_BLEND_EQUATION:Int
+
+
+# Const GL_BLEND_EQUATION_RGB:Int
+
+
+# Const GL_BLEND_EQUATION_ALPHA:Int
+
+
+# Const GL_FUNC_SUBTRACT:Int
+
+
+# Const GL_FUNC_REVERSE_SUBTRACT:Int
+
+
+# Const GL_BLEND_DST_RGB:Int
+
+
+# Const GL_BLEND_SRC_RGB:Int
+
+
+# Const GL_BLEND_DST_ALPHA:Int
+
+
+# Const GL_BLEND_SRC_ALPHA:Int
+
+
+# Const GL_CONSTANT_COLOR:Int
+
+
+# Const GL_ONE_MINUS_CONSTANT_COLOR:Int
+
+
+# Const GL_CONSTANT_ALPHA:Int
+
+
+# Const GL_ONE_MINUS_CONSTANT_ALPHA:Int
+
+
+# Const GL_BLEND_COLOR:Int
+
+
+# Const GL_ARRAY_BUFFER:Int
+
+
+# Const GL_ELEMENT_ARRAY_BUFFER:Int
+
+
+# Const GL_ARRAY_BUFFER_BINDING:Int
+
+
+# Const GL_ELEMENT_ARRAY_BUFFER_BINDING:Int
+
+
+# Const GL_STREAM_DRAW:Int
+
+
+# Const GL_STATIC_DRAW:Int
+
+
+# Const GL_DYNAMIC_DRAW:Int
+
+
+# Const GL_BUFFER_SIZE:Int
+
+
+# Const GL_BUFFER_USAGE:Int
+
+
+# Const GL_CURRENT_VERTEX_ATTRIB:Int
+
+
+# Const GL_FRONT:Int
+
+
+# Const GL_BACK:Int
+
+
+# Const GL_FRONT_AND_BACK:Int
+
+
+# Const GL_TEXTURE_2D:Int
+
+
+# Const GL_CULL_FACE:Int
+
+
+# Const GL_BLEND:Int
+
+
+# Const GL_DITHER:Int
+
+
+# Const GL_STENCIL_TEST:Int
+
+
+# Const GL_DEPTH_TEST:Int
+
+
+# Const GL_SCISSOR_TEST:Int
+
+
+# Const GL_POLYGON_OFFSET_FILL:Int
+
+
+# Const GL_SAMPLE_ALPHA_TO_COVERAGE:Int
+
+
+# Const GL_SAMPLE_COVERAGE:Int
+
+
+# Const GL_NO_ERROR:Int
+
+
+# Const GL_INVALID_ENUM:Int
+
+
+# Const GL_INVALID_VALUE:Int
+
+
+# Const GL_INVALID_OPERATION:Int
+
+
+# Const GL_OUT_OF_MEMORY:Int
+
+
+# Const GL_CW:Int
+
+
+# Const GL_CCW:Int
+
+
+# Const GL_LINE_WIDTH:Int
+
+
+# Const GL_ALIASED_POINT_SIZE_RANGE:Int
+
+
+# Const GL_ALIASED_LINE_WIDTH_RANGE:Int
+
+
+# Const GL_CULL_FACE_MODE:Int
+
+
+# Const GL_FRONT_FACE:Int
+
+
+# Const GL_DEPTH_RANGE:Int
+
+
+# Const GL_DEPTH_WRITEMASK:Int
+
+
+# Const GL_DEPTH_CLEAR_VALUE:Int
+
+
+# Const GL_DEPTH_FUNC:Int
+
+
+# Const GL_STENCIL_CLEAR_VALUE:Int
+
+
+# Const GL_STENCIL_FUNC:Int
+
+
+# Const GL_STENCIL_FAIL:Int
+
+
+# Const GL_STENCIL_PASS_DEPTH_FAIL:Int
+
+
+# Const GL_STENCIL_PASS_DEPTH_PASS:Int
+
+
+# Const GL_STENCIL_REF:Int
+
+
+# Const GL_STENCIL_VALUE_MASK:Int
+
+
+# Const GL_STENCIL_WRITEMASK:Int
+
+
+# Const GL_STENCIL_BACK_FUNC:Int
+
+
+# Const GL_STENCIL_BACK_FAIL:Int
+
+
+# Const GL_STENCIL_BACK_PASS_DEPTH_FAIL:Int
+
+
+# Const GL_STENCIL_BACK_PASS_DEPTH_PASS:Int
+
+
+# Const GL_STENCIL_BACK_REF:Int
+
+
+# Const GL_STENCIL_BACK_VALUE_MASK:Int
+
+
+# Const GL_STENCIL_BACK_WRITEMASK:Int
+
+
+# Const GL_VIEWPORT:Int
+
+
+# Const GL_SCISSOR_BOX:Int
+
+
+# Const GL_COLOR_CLEAR_VALUE:Int
+
+
+# Const GL_COLOR_WRITEMASK:Int
+
+
+# Const GL_UNPACK_ALIGNMENT:Int
+
+
+# Const GL_PACK_ALIGNMENT:Int
+
+
+# Const GL_MAX_TEXTURE_SIZE:Int
+
+
+# Const GL_MAX_VIEWPORT_DIMS:Int
+
+
+# Const GL_SUBPIXEL_BITS:Int
+
+
+# Const GL_RED_BITS:Int
+
+
+# Const GL_GREEN_BITS:Int
+
+
+# Const GL_BLUE_BITS:Int
+
+
+# Const GL_ALPHA_BITS:Int
+
+
+# Const GL_DEPTH_BITS:Int
+
+
+# Const GL_STENCIL_BITS:Int
+
+
+# Const GL_POLYGON_OFFSET_UNITS:Int
+
+
+# Const GL_POLYGON_OFFSET_FACTOR:Int
+
+
+# Const GL_TEXTURE_BINDING_2D:Int
+
+
+# Const GL_SAMPLE_BUFFERS:Int
+
+
+# Const GL_SAMPLES:Int
+
+
+# Const GL_SAMPLE_COVERAGE_VALUE:Int
+
+
+# Const GL_SAMPLE_COVERAGE_INVERT:Int
+
+
+# Const GL_NUM_COMPRESSED_TEXTURE_FORMATS:Int
+
+
+# Const GL_COMPRESSED_TEXTURE_FORMATS:Int
+
+
+# Const GL_DONT_CARE:Int
+
+
+# Const GL_FASTEST:Int
+
+
+# Const GL_NICEST:Int
+
+
+# Const GL_GENERATE_MIPMAP_HINT:Int
+
+
+# Const GL_BYTE:Int
+
+
+# Const GL_UNSIGNED_BYTE:Int
+
+
+# Const GL_SHORT:Int
+
+
+# Const GL_UNSIGNED_SHORT:Int
+
+
+# Const GL_INT:Int
+
+
+# Const GL_UNSIGNED_INT:Int
+
+
+# Const GL_FLOAT:Int
+
+
+# Const GL_FIXED:Int
+
+
+# Const GL_DEPTH_COMPONENT:Int
+
+
+# Const GL_ALPHA:Int
+
+
+# Const GL_RGB:Int
+
+
+# Const GL_RGBA:Int
+
+
+# Const GL_LUMINANCE:Int
+
+
+# Const GL_LUMINANCE_ALPHA:Int
+
+
+# Const GL_UNSIGNED_SHORT_4_4_4_4:Int
+
+
+# Const GL_UNSIGNED_SHORT_5_5_5_1:Int
+
+
+# Const GL_UNSIGNED_SHORT_5_6_5:Int
+
+
+# Const GL_FRAGMENT_SHADER:Int
+
+
+# Const GL_VERTEX_SHADER:Int
+
+
+# Const GL_MAX_VERTEX_ATTRIBS:Int
+
+
+# Const GL_MAX_VERTEX_UNIFORM_VECTORS:Int
+
+
+# Const GL_MAX_VARYING_VECTORS:Int
+
+
+# Const GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS:Int
+
+
+# Const GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:Int
+
+
+# Const GL_MAX_TEXTURE_IMAGE_UNITS:Int
+
+
+# Const GL_MAX_FRAGMENT_UNIFORM_VECTORS:Int
+
+
+# Const GL_SHADER_TYPE:Int
+
+
+# Const GL_DELETE_STATUS:Int
+
+
+# Const GL_LINK_STATUS:Int
+
+
+# Const GL_VALIDATE_STATUS:Int
+
+
+# Const GL_ATTACHED_SHADERS:Int
+
+
+# Const GL_ACTIVE_UNIFORMS:Int
+
+
+# Const GL_ACTIVE_UNIFORM_MAX_LENGTH:Int
+
+
+# Const GL_ACTIVE_ATTRIBUTES:Int
+
+
+# Const GL_ACTIVE_ATTRIBUTE_MAX_LENGTH:Int
+
+
+# Const GL_SHADING_LANGUAGE_VERSION:Int
+
+
+# Const GL_CURRENT_PROGRAM:Int
+
+
+# Const GL_NEVER:Int
+
+
+# Const GL_LESS:Int
+
+
+# Const GL_EQUAL:Int
+
+
+# Const GL_LEQUAL:Int
+
+
+# Const GL_GREATER:Int
+
+
+# Const GL_NOTEQUAL:Int
+
+
+# Const GL_GEQUAL:Int
+
+
+# Const GL_ALWAYS:Int
+
+
+# Const GL_KEEP:Int
+
+
+# Const GL_REPLACE:Int
+
+
+# Const GL_INCR:Int
+
+
+# Const GL_DECR:Int
+
+
+# Const GL_INVERT:Int
+
+
+# Const GL_INCR_WRAP:Int
+
+
+# Const GL_DECR_WRAP:Int
+
+
+# Const GL_VENDOR:Int
+
+
+# Const GL_RENDERER:Int
+
+
+# Const GL_VERSION:Int
+
+
+# Const GL_EXTENSIONS:Int
+
+
+# Const GL_NEAREST:Int
+
+
+# Const GL_LINEAR:Int
+
+
+# Const GL_NEAREST_MIPMAP_NEAREST:Int
+
+
+# Const GL_LINEAR_MIPMAP_NEAREST:Int
+
+
+# Const GL_NEAREST_MIPMAP_LINEAR:Int
+
+
+# Const GL_LINEAR_MIPMAP_LINEAR:Int
+
+
+# Const GL_TEXTURE_MAG_FILTER:Int
+
+
+# Const GL_TEXTURE_MIN_FILTER:Int
+
+
+# Const GL_TEXTURE_WRAP_S:Int
+
+
+# Const GL_TEXTURE_WRAP_T:Int
+
+
+# Const GL_TEXTURE:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP:Int
+
+
+# Const GL_TEXTURE_BINDING_CUBE_MAP:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_POSITIVE_X:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_NEGATIVE_X:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_POSITIVE_Y:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_POSITIVE_Z:Int
+
+
+# Const GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:Int
+
+
+# Const GL_MAX_CUBE_MAP_TEXTURE_SIZE:Int
+
+
+# Const GL_TEXTURE0:Int
+
+
+# Const GL_TEXTURE1:Int
+
+
+# Const GL_TEXTURE2:Int
+
+
+# Const GL_TEXTURE3:Int
+
+
+# Const GL_TEXTURE4:Int
+
+
+# Const GL_TEXTURE5:Int
+
+
+# Const GL_TEXTURE6:Int
+
+
+# Const GL_TEXTURE7:Int
+
+
+# Const GL_TEXTURE8:Int
+
+
+# Const GL_TEXTURE9:Int
+
+
+# Const GL_TEXTURE10:Int
+
+
+# Const GL_TEXTURE11:Int
+
+
+# Const GL_TEXTURE12:Int
+
+
+# Const GL_TEXTURE13:Int
+
+
+# Const GL_TEXTURE14:Int
+
+
+# Const GL_TEXTURE15:Int
+
+
+# Const GL_TEXTURE16:Int
+
+
+# Const GL_TEXTURE17:Int
+
+
+# Const GL_TEXTURE18:Int
+
+
+# Const GL_TEXTURE19:Int
+
+
+# Const GL_TEXTURE20:Int
+
+
+# Const GL_TEXTURE21:Int
+
+
+# Const GL_TEXTURE22:Int
+
+
+# Const GL_TEXTURE23:Int
+
+
+# Const GL_TEXTURE24:Int
+
+
+# Const GL_TEXTURE25:Int
+
+
+# Const GL_TEXTURE26:Int
+
+
+# Const GL_TEXTURE27:Int
+
+
+# Const GL_TEXTURE28:Int
+
+
+# Const GL_TEXTURE29:Int
+
+
+# Const GL_TEXTURE30:Int
+
+
+# Const GL_TEXTURE31:Int
+
+
+# Const GL_ACTIVE_TEXTURE:Int
+
+
+# Const GL_REPEAT:Int
+
+
+# Const GL_CLAMP_TO_EDGE:Int
+
+
+# Const GL_MIRRORED_REPEAT:Int
+
+
+# Const GL_FLOAT_VEC2:Int
+
+
+# Const GL_FLOAT_VEC3:Int
+
+
+# Const GL_FLOAT_VEC4:Int
+
+
+# Const GL_INT_VEC2:Int
+
+
+# Const GL_INT_VEC3:Int
+
+
+# Const GL_INT_VEC4:Int
+
+
+# Const GL_BOOL:Int
+
+
+# Const GL_BOOL_VEC2:Int
+
+
+# Const GL_BOOL_VEC3:Int
+
+
+# Const GL_BOOL_VEC4:Int
+
+
+# Const GL_FLOAT_MAT2:Int
+
+
+# Const GL_FLOAT_MAT3:Int
+
+
+# Const GL_FLOAT_MAT4:Int
+
+
+# Const GL_SAMPLER_2D:Int
+
+
+# Const GL_SAMPLER_CUBE:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_ENABLED:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_SIZE:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_STRIDE:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_TYPE:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_POINTER:Int
+
+
+# Const GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:Int
+
+
+# Const GL_IMPLEMENTATION_COLOR_READ_TYPE:Int
+
+
+# Const GL_IMPLEMENTATION_COLOR_READ_FORMAT:Int
+
+
+# Const GL_COMPILE_STATUS:Int
+
+
+# Const GL_INFO_LOG_LENGTH:Int
+
+
+# Const GL_SHADER_SOURCE_LENGTH:Int
+
+
+# Const GL_SHADER_COMPILER:Int
+
+
+# Const GL_SHADER_BINARY_FORMATS:Int
+
+
+# Const GL_NUM_SHADER_BINARY_FORMATS:Int
+
+
+# Const GL_LOW_FLOAT:Int
+
+
+# Const GL_MEDIUM_FLOAT:Int
+
+
+# Const GL_HIGH_FLOAT:Int
+
+
+# Const GL_LOW_INT:Int
+
+
+# Const GL_MEDIUM_INT:Int
+
+
+# Const GL_HIGH_INT:Int
+
+
+# Const GL_FRAMEBUFFER:Int
+
+
+# Const GL_RENDERBUFFER:Int
+
+
+# Const GL_RGBA4:Int
+
+
+# Const GL_RGB5_A1:Int
+
+
+# Const GL_RGB565:Int
+
+
+# Const GL_DEPTH_COMPONENT16:Int
+
+
+# Const GL_STENCIL_INDEX:Int
+
+
+# Const GL_STENCIL_INDEX8:Int
+
+
+# Const GL_RENDERBUFFER_WIDTH:Int
+
+
+# Const GL_RENDERBUFFER_HEIGHT:Int
+
+
+# Const GL_RENDERBUFFER_INTERNAL_FORMAT:Int
+
+
+# Const GL_RENDERBUFFER_RED_SIZE:Int
+
+
+# Const GL_RENDERBUFFER_GREEN_SIZE:Int
+
+
+# Const GL_RENDERBUFFER_BLUE_SIZE:Int
+
+
+# Const GL_RENDERBUFFER_ALPHA_SIZE:Int
+
+
+# Const GL_RENDERBUFFER_DEPTH_SIZE:Int
+
+
+# Const GL_RENDERBUFFER_STENCIL_SIZE:Int
+
+
+# Const GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE:Int
+
+
+# Const GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME:Int
+
+
+# Const GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:Int
+
+
+# Const GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE:Int
+
+
+# Const GL_COLOR_ATTACHMENT0:Int
+
+
+# Const GL_DEPTH_ATTACHMENT:Int
+
+
+# Const GL_STENCIL_ATTACHMENT:Int
+
+
+# Const GL_NONE:Int
+
+
+# Const GL_FRAMEBUFFER_COMPLETE:Int
+
+
+# Const GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:Int
+
+
+# Const GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:Int
+
+
+# Const GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:Int
+
+
+# Const GL_FRAMEBUFFER_UNSUPPORTED:Int
+
+
+# Const GL_FRAMEBUFFER_BINDING:Int
+
+
+# Const GL_RENDERBUFFER_BINDING:Int
+
+
+# Const GL_MAX_RENDERBUFFER_SIZE:Int
+
+
+# Const GL_INVALID_FRAMEBUFFER_OPERATION:Int
+
+
+# Function LoadImageData:DataBuffer(path:String,info:Int[])
+
+LoadImageData is a helper function that loads an image in your app's .data directory into a databuffer.
+
+Upon success, info[0] is initialized to the width of the image, and info[1] is initialized to the height of the image. If the info array is not long enough, info is not written.
+
+The image is returned in tightly packed, byte-per-component R,G,B,A format.
+
+IMPORTANT: LoadImageData is not currently available on the HTML5 target.
+
+Params: 
+
+path - path to image to load.
+
+info - an array to receive image info.
+
+Links: 
+
+[[DataBuffer]]
+
+
+# Function glActiveTexture:Void(texture:Int)
+
+
+# Function glAttachShader:Void(program:Int,shader:Int)
+
+
+# Function glBindAttribLocation:Void(program:Int,index:Int,name:String)
+
+
+# Function glBindBuffer:Void(target:Int,buffer:Int)
+
+
+# Function glBindFramebuffer:Void(target:Int,framebuffer:Int)
+
+
+# Function glBindRenderbuffer:Void(target:Int,renderbuffer:Int)
+
+
+# Function glBindTexture:Void(target:Int,texture:Int)
+
+
+# Function glBlendColor:Void(red:Float,green:Float,blue:Float,alpha:Float)
+
+
+# Function glBlendEquation:Void(mode:Int)
+
+
+# Function glBlendEquationSeparate:Void(modeRGB:Int,modeAlpha:Int)
+
+
+# Function glBlendFunc:Void(sfactor:Int,dfactor:Int)
+
+
+# Function glBlendFuncSeparate:Void(srcRGB:Int,dstRGB:Int,srcAlpha:Int,dstAlpha:Int)
+
+
+# Function glBufferData:Void(target:Int,size:Int,data:DataBuffer,usage:Int)
+
+
+# Function glBufferSubData:Void(target:Int,offset:Int,size:Int,data:DataBuffer)
+
+
+# Function glCheckFramebufferStatus:Int(target:Int)
+
+
+# Function glClear:Void(mask:Int)
+
+
+# Function glClearColor:Void(red:Float,green:Float,blue:Float,alpha:Float)
+
+
+# Function glClearDepthf:Void(depth:Float)
+
+
+# Function glClearStencil:Void(s:Int)
+
+
+# Function glColorMask:Void(red:Bool,green:Bool,blue:Bool,alpha:Bool)
+
+
+# Function glCompileShader:Void(shader:Int)
+
+
+# Function glCopyTexImage2D:Void(target:Int,level:Int,internalformat:Int,x:Int,y:Int,width:Int,height:Int,border:Int)
+
+
+# Function glCopyTexSubImage2D:Void(target:Int,level:Int,xoffset:Int,yoffset:Int,x:Int,y:Int,width:Int,height:Int)
+
+
+# Function glCreateBuffer:Int()
+
+
+# Function glCreateFramebuffer:Int()
+
+
+# Function glCreateRenderbuffer:Int()
+
+
+# Function glCreateTexture:Int()
+
+
+# Function glCreateProgram:Int()
+
+
+# Function glCreateShader:Int(type:Int)
+
+
+# Function glDeleteBuffer:Void(buffer:Int)
+
+
+# Function glDeleteFramebuffer:Void(framebuffer:Int)
+
+
+# Function glDeleteRenderbuffer:Void(renderBuffer:Int)
+
+
+# Function glDeleteTexture:Void(texture:Int)
+
+
+# Function glDeleteProgram:Void(program:Int)
+
+
+# Function glDeleteShader:Void(shader:Int)
+
+
+# Function glCullFace:Void(mode:Int)
+
+
+# Function glDepthFunc:Void(func:Int)
+
+
+# Function glDepthMask:Void(flag:Bool)
+
+
+# Function glDepthRangef:Void(zNear:Float,zFar:Float)
+
+
+# Function glDetachShader:Void(program:Int,shader:Int)
+
+
+# Function glDisable:Void(cap:Int)
+
+
+# Function glDisableVertexAttribArray:Void(index:Int)
+
+
+# Function glDrawArrays:Void(mode:Int,first:Int,count:Int)
+
+
+# Function glDrawElements:Void(mode:Int,count:Int,type:Int,ptr:DataBuffer)
+
+
+# Function glDrawElements:Void(mode:Int,count:Int,type:Int,offset:Int)
+
+
+# Function glEnable:Void(cap:Int)
+
+
+# Function glEnableVertexAttribArray:Void(index:Int)
+
+
+# Function glFinish:Void()
+
+
+# Function glFlush:Void()
+
+
+# Function glFramebufferRenderbuffer:Void(target:Int,attachment:Int,renderbuffertarget:Int,renderbuffer:Int)
+
+
+# Function glFramebufferTexture2D:Void(target:Int,attachment:Int,textarget:Int,texture:Int,level:Int)
+
+
+# Function glFrontFace:Void(mode:Int)
+
+
+# Function glGenerateMipmap:Void(target:Int)
+
+
+# Function glGetActiveAttrib:Void(program:Int,index:Int,size:Int[],type:Int[],name:String[])
+
+
+# Function glGetActiveUniform:Void(program:Int,index:Int,size:Int[],type:Int[],name:String[])
+
+
+# Function glGetAttachedShaders:Void(program:Int,maxcount:Int,count:Int[],shaders:Int[])
+
+
+# Function glGetAttribLocation:Int(program:Int,name:String)
+
+
+# Function glGetBooleanv:Void(pname:Int,params:Bool[])
+
+
+# Function glGetBufferParameteriv:Void(target:Int,pname:Int,params:Int[])
+
+
+# Function glGetError:Int()
+
+
+# Function glGetFloatv:Void(pname:Int,params:Float[])
+
+
+# Function glGetFramebufferAttachmentParameteriv:Void(target:Int,attachment:Int,pname:Int,params:Int[])
+
+
+# Function glGetIntegerv:Void(pname:Int,params:Int[])
+
+
+# Function glGetProgramiv:Void(program:Int,pname:Int,params:Int[])
+
+
+# Function glGetProgramInfoLog:String(program:Int)
+
+
+# Function glGetRenderbufferParameteriv:Void(target:Int,pname:Int,params:Int[])
+
+
+# Function glGetShaderiv:Void(shader:Int,pname:Int,params:Int[])
+
+
+# Function glGetShaderInfoLog:String(shader:Int)
+
+
+# Function glGetShaderSource:String(shader:Int)
+
+
+# Function glGetString:String(name:Int)
+
+
+# Function glGetTexParameterfv:Void(target:Int,pname:Int,params:Float[])
+
+
+# Function glGetTexParameteriv:Void(target:Int,pname:Int,params:Int[])
+
+
+# Function glGetUniformfv:Void(program:Int,location:Int,params:Float[])
+
+
+# Function glGetUniformiv:Void(program:Int,location:Int,params:Int[])
+
+
+# Function glGetUniformLocation:Int(program:Int,name:String)
+
+
+# Function glGetVertexAttribfv:Void(index:Int,pname:Int,params:Float[])
+
+
+# Function glGetVertexAttribiv:Void(index:Int,pname:Int,params:Int[])
+
+
+# Function glHint:Void(target:Int,mode:Int)
+
+
+# Function glIsBuffer:Bool(buffer:Int)
+
+
+# Function glIsEnabled:Bool(cap:Int)
+
+
+# Function glIsFramebuffer:Bool(framebuffer:Int)
+
+
+# Function glIsProgram:Bool(program:Int)
+
+
+# Function glIsRenderbuffer:Bool(renderbuffer:Int)
+
+
+# Function glIsShader:Bool(shader:Int)
+
+
+# Function glIsTexture:Bool(texture:Int)
+
+
+# Function glLineWidth:Void(width:Float)
+
+
+# Function glLinkProgram:Void(program:Int)
+
+
+# Function glPixelStorei:Void(pname:Int,param:Int)
+
+
+# Function glPolygonOffset:Void(factor:Float,units:Float)
+
+
+# Function glReadPixels:Void(x:Int,y:Int,width:Int,height:Int,format:Int,type:Int,pixels:DataBuffer)
+
+
+# Function glReleaseShaderCompiler:Void()
+
+
+# Function glRenderbufferStorage:Void(target:Int,internalformat:Int,width:Int,height:Int)
+
+
+# Function glSampleCoverage:Void(value:Float,invert:Bool)
+
+
+# Function glScissor:Void(x:Int,y:Int,width:Int,height:Int)
+
+
+# Function glShaderSource:Void(shader:Int,source:String)
+
+
+# Function glStencilFunc:Void(func:Int,ref:Int,mask:Int)
+
+
+# Function glStencilFuncSeparate:Void(face:Int,func:Int,ref:Int,mask:Int)
+
+
+# Function glStencilMask:Void(mask:Int)
+
+
+# Function glStencilMaskSeparate:Void(face:Int,mask:Int)
+
+
+# Function glStencilOp:Void(fail:Int,zfail:Int,zpass:Int)
+
+
+# Function glStencilOpSeparate:Void(face:Int,fail:Int,zfail:Int,zpass:Int)
+
+
+# Function glTexImage2D:Void(target:Int,level:Int,internalformat:Int,format:Int,type:Int,path:String)
+
+
+# Function glTexImage2D:Void(target:Int,level:Int,internalformat:Int,width:Int,height:Int,border:Int,format:Int,type:Int,pixels:DataBuffer)
+
+
+# Function glTexSubImage2D:Void(target:Int,level:Int,xoffset:Int,yoffset:Int,format:Int,type:Int,path:String)
+
+
+# Function glTexSubImage2D:Void(target:Int,level:Int,xoffset:Int,yoffset:Int,width:Int,height:Int,format:Int,type:Int,pixels:DataBuffer)
+
+
+# Function glTexParameterf:Void(target:Int,pname:Int,param:Float)
+
+
+# Function glTexParameteri:Void(target:Int,pname:Int,param:Int)
+
+
+# Function glUniform1f:Void(location:Int,x:Float)
+
+
+# Function glUniform1i:Void(location:Int,x:Int)
+
+
+# Function glUniform2f:Void(location:Int,x:Float,y:Float)
+
+
+# Function glUniform2i:Void(location:Int,x:Int,y:Int)
+
+
+# Function glUniform3f:Void(location:Int,x:Float,y:Float,z:Float)
+
+
+# Function glUniform3i:Void(location:Int,x:Int,y:Int,z:Int)
+
+
+# Function glUniform4f:Void(location:Int,x:Float,y:Float,z:Float,w:Float)
+
+
+# Function glUniform4i:Void(location:Int,x:Int,y:Int,z:Int,w:Int)
+
+
+# Function glUniform1fv:Void(location:Int,count:Int,v:Float[])
+
+
+# Function glUniform1iv:Void(location:Int,count:Int,v:Int[])
+
+
+# Function glUniform2fv:Void(location:Int,count:Int,v:Float[])
+
+
+# Function glUniform2iv:Void(location:Int,count:Int,v:Int[])
+
+
+# Function glUniform3fv:Void(location:Int,count:Int,v:Float[])
+
+
+# Function glUniform3iv:Void(location:Int,count:Int,v:Int[])
+
+
+# Function glUniform4fv:Void(location:Int,count:Int,v:Float[])
+
+
+# Function glUniform4iv:Void(location:Int,count:Int,v:Int[])
+
+
+# Function glUniformMatrix2fv:Void(location:Int,count:Int,transpose:Bool,value:Float[])
+
+
+# Function glUniformMatrix3fv:Void(location:Int,count:Int,transpose:Bool,value:Float[])
+
+
+# Function glUniformMatrix4fv:Void(location:Int,count:Int,transpose:Bool,value:Float[])
+
+
+# Function glUseProgram:Void(program:Int)
+
+
+# Function glValidateProgram:Void(program:Int)
+
+
+# Function glVertexAttrib1f:Void(indx:Int,x:Float)
+
+
+# Function glVertexAttrib2f:Void(indx:Int,x:Float,y:Float)
+
+
+# Function glVertexAttrib3f:Void(indx:Int,x:Float,y:Float,z:Float)
+
+
+# Function glVertexAttrib4f:Void(indx:Int,x:Float,y:Float,z:Float,w:Float)
+
+
+# Function glVertexAttrib1fv:Void(indx:Int,values:Float[])
+
+
+# Function glVertexAttrib2fv:Void(indx:Int,values:Float[])
+
+
+# Function glVertexAttrib3fv:Void(indx:Int,values:Float[])
+
+
+# Function glVertexAttrib4fv:Void(indx:Int,values:Float[])
+
+
+# Function glVertexAttribPointer:Void(indx:Int,size:Int,type:Int,normalized:Bool,stride:Int,data:DataBuffer)
+
+
+# Function glVertexAttribPointer:Void(indx:Int,size:Int,type:Int,normalized:Bool,stride:Int,offset:Int)
+
+
+# Function glViewport:Void(x:Int,y:Int,width:Int,height:Int)
+
