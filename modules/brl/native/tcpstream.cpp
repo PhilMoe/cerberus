@@ -1,9 +1,11 @@
 
 // ***** tcpstream.h *****
 
-#if !__cplusplus_winrt
+#if WINDOWS_PHONE_8
 
-#if _WIN32
+#include <Winsock2.h>
+
+#elif _WIN32
 
 #include <winsock.h>
 
@@ -154,9 +156,9 @@ int BBTcpStream::Write( BBDataBuffer *buffer,int offset,int count ){
 	return 0;
 }
 
-#else	//__cplusplus_winrt
+/* TODO!!!!!
 
-//***** Windows Store app are a PITA *****
+// ***** Windows Store app are a PITA *****
 
 class BBTcpStream : public BBStream{
 public:
@@ -364,5 +366,4 @@ int BBTcpStream::Write( BBDataBuffer *buffer,int offset,int count ){
 	
 	return count;
 }
-
-#endif
+*/

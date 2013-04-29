@@ -1,7 +1,7 @@
 
 Import brl.stream
 
-#If (LANG="cpp" Or LANG="java") 'And TARGET<>"win8"
+#If (LANG="cpp" Or LANG="java")
 #BRL_TCPSTREAM_IMPLEMENTED=True
 Import "native/tcpstream.${LANG}"
 #Endif
