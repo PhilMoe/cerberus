@@ -38,23 +38,23 @@ In the To and Until variants, the optional Step keyword, followed by a constant 
 
 <pre>
 For k=1 To 1000
-&nbsp;&nbsp;Print k
+	Print k
 Next
 
 ' With optional Step
 
 For k=1 To 1000 Step 100
-&nbsp;&nbsp;Print k
+	Print k
 Next
 
 ' Alternative syntax examples
 
 For k=1 To 1000
-&nbsp;&nbsp;Print k
+	Print k
 End
 
 For k=1 To 1000
-&nbsp;&nbsp;Print k
+	Print k
 End For
 </pre>
 
@@ -64,13 +64,13 @@ End For
 ' Assume m:MyObject and mylist:List
 
 For m=Eachin mylist
-&nbsp;&nbsp;Print m.myField
+	Print m.myField
 Next
 
 ' Assume i:Int and myarray:Int[]
 
 For i=Eachin myarray
-&nbsp;&nbsp;Print myarray[i]
+	Print myarray[i]
 Next
 </pre>
 
@@ -82,6 +82,6 @@ NUM = 100 ' Assume myarray[NUM] has been declared
 ' Prints 0 to 99 without requiring NUM-1
 
 For k=0 Until NUM
-&nbsp;&nbsp;Print myarray[k]
+	Print myarray[k]
 Next
 </pre>

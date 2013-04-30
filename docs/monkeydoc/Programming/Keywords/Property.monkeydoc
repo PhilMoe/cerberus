@@ -47,35 +47,35 @@ Properties are usually declared in pairs with the same name:
 
 Class BankAccount
 
-&nbsp;&nbsp;Private
+	Private
 
-&nbsp;&nbsp;&nbsp;&nbsp;Field balance:Int
+		Field balance:Int
 
-&nbsp;&nbsp;Public
+	Public
 
-&nbsp;&nbsp;&nbsp;&nbsp;Method Balance (dollars:Int) Property
+		Method Balance (dollars:Int) Property
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If dollars > 1000000
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "Sent for security check!"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;balance = dollars
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Endif
+			If dollars > 1000000
+				Print "Sent for security check!"
+			Else
+				balance = dollars
+			Endif
 
-&nbsp;&nbsp;&nbsp;&nbsp;End
+		End
 
-&nbsp;&nbsp;&nbsp;&nbsp;Method Balance:String () Property
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return "$" + balance
-&nbsp;&nbsp;&nbsp;&nbsp;End
+		Method Balance:String () Property
+			Return "$" + balance
+		End
 
 End
 
 Function Main ()
 
-&nbsp;&nbsp;Local account:BankAccount = New BankAccount
+	Local account:BankAccount = New BankAccount
 
-&nbsp;&nbsp;account.Balance = 50 ' 00000 ' Join to trigger security check!
+	account.Balance = 50 ' 00000 ' Join to trigger security check!
 
-&nbsp;&nbsp;Print account.Balance
+	Print account.Balance
 
 End
 </pre>

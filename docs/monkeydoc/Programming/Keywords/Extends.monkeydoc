@@ -30,36 +30,36 @@ Here we have three classes:
 <pre>
 Class Animal
 
-&nbsp;&nbsp;Field x
-&nbsp;&nbsp;Field legs = 4
+	Field x
+	Field legs = 4
 
-&nbsp;&nbsp;Method Move ()
-&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1
-&nbsp;&nbsp;End
+	Method Move ()
+		x = x + 1
+	End
 
 End
 
 Class Dog Extends Animal
 
-&nbsp;&nbsp;Method Bark ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof"
-&nbsp;&nbsp;End
+	Method Bark ()
+		Print "Woof"
+	End
 
 End
 
 Class Fly Extends Animal
 
-&nbsp;&nbsp;Field legs = 6
-&nbsp;&nbsp;Field y
+	Field legs = 6
+	Field y
 
-&nbsp;&nbsp;Method Move ()
-&nbsp;&nbsp;&nbsp;&nbsp;x = Rnd (-4, 4)
-&nbsp;&nbsp;&nbsp;&nbsp;y = Rnd (-4, 4)
-&nbsp;&nbsp;End
+	Method Move ()
+		x = Rnd (-4, 4)
+		y = Rnd (-4, 4)
+	End
 
-&nbsp;&nbsp;Method Buzz ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "ZzzzZZZzzzzzZZZZ..."
-&nbsp;&nbsp;End
+	Method Buzz ()
+		Print "ZzzzZZZzzzzzZZZZ..."
+	End
 
 End
 </pre>

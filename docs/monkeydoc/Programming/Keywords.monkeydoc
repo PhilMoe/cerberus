@@ -15,7 +15,7 @@ The identifiers below are language keywords and are reserved for use by the Monk
 [[Class]] | [[Function]] | [[Method]] | [[Public]] | [[Private]] | [[Property]] | [[New]] | [[Self]] | [[Super]] | [[Extends]] | [[Abstract]] | [[Final]] | [[Interface]] | [[Implements]] | [[Null]]
 
 >> Program flow
-[[If]] | [[Then]] | [[Else]] | [[Elseif]] | [[Endif]] | [[While]] | [[Wend]] | [[Repeat]] | [[Until]] | [[Forever]] | [[For]] | [[To]] | [[Step]] | [[Eachin]] | [[Next]] | Select | Case | Default | [[End]] | Continue | Return | [[Exit]]
+[[If]] | [[Then]] | [[Else]] | [[Elseif]] | [[Endif]] | [[While]] | [[Wend]] | [[Repeat]] | [[Until]] | [[Forever]] | [[For]] | [[To]] | [[Step]] | [[Eachin]] | [[Next]] | [[Select]] | [[Case]] | [[Default]] | [[End]] | [[Continue]] | [[Return]] | [[Exit]]
 
 >> Logic/misc
 And | Or | Shl | Shr | Not | Mod | [[True]] | [[False]]

@@ -43,9 +43,9 @@ Strict
 
 ' In Strict mode...
 
-Function Main:Int()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' the :Int type definition is compulsory...
-&nbsp;&nbsp;Print( "Strict mode is...different!" )&nbsp;&nbsp;' all function calls require brackets...
-&nbsp;&nbsp;Return 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' and we MUST return a value.
+Function Main:Int()							' the :Int type definition is compulsory...
+	Print( "Strict mode is...different!" )	' all function calls require brackets...
+	Return 0								' and we MUST return a value.
 End
 </pre>
 
@@ -56,6 +56,6 @@ End
 ' type, no brackets for Print statement and no Return value.
 
 Function Main ()
-&nbsp;&nbsp;Print "Non-Strict mode is...forgiving!"
+	Print "Non-Strict mode is...forgiving!"
 End
 </pre>

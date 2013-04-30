@@ -22,15 +22,15 @@ The Self keyword provides a way for a method to access the object it belongs to.
 <pre>
 Class Person
 
-&nbsp;&nbsp;Field x:Int, y:Int
+	Field x:Int, y:Int
 
-&nbsp;&nbsp;Method Speak (text:String)
-&nbsp;&nbsp;&nbsp;&nbsp;DrawSpeechBubble (Self, text)
-&nbsp;&nbsp;End
+	Method Speak (text:String)
+		DrawSpeechBubble (Self, text)
+	End
 
 End
 
 Function DrawSpeechBubble (p:Person, say:String)
-&nbsp;&nbsp;DrawText say, p.x, p.y
+	DrawText say, p.x, p.y
 End
 </pre>

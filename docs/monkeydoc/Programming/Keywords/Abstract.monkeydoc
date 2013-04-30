@@ -23,40 +23,40 @@ In this example, Enemy contains an abstract method. This means that objects cann
 
 <pre>
 Class Enemy
-&nbsp;&nbsp;Method Die () Abstract
+	Method Die () Abstract
 End
 
 Class Hoodlum Extends Enemy
 
-&nbsp;&nbsp;' Must implement Die method...
+	' Must implement Die method...
 
-&nbsp;&nbsp;Method Die ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "B'oss, he-- he killed me, b'oss!"
-&nbsp;&nbsp;End
+	Method Die ()
+		Print "B'oss, he-- he killed me, b'oss!"
+	End
 
 End
 
 Class Alien Extends Enemy
 
-&nbsp;&nbsp;' Must implement Die method...
+	' Must implement Die method...
 
-&nbsp;&nbsp;Method Die ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "X'll #hyep, g''ta!! Boss'yap!"
-&nbsp;&nbsp;End
+	Method Die ()
+		Print "X'll #hyep, g''ta!! Boss'yap!"
+	End
 
 End
 
 Function Main ()
 
-&nbsp;&nbsp;' Not allowed...
+	' Not allowed...
 
-'&nbsp;&nbsp;Local e:Enemy = New Enemy
+'	Local e:Enemy = New Enemy
 
-&nbsp;&nbsp;Local h:Hoodlum = New Hoodlum
-&nbsp;&nbsp;h.Die
+	Local h:Hoodlum = New Hoodlum
+	h.Die
 
-&nbsp;&nbsp;Local a:Alien = New Alien
-&nbsp;&nbsp;a.Die
+	Local a:Alien = New Alien
+	a.Die
 
 End
 
