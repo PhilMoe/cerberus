@@ -35,6 +35,8 @@ public:
 private:
 	static BBWin8Game *_win8Game;
 	
+	unsigned int _pointerIds[32];
+	
 	double _nextUpdate;
 	double _updatePeriod;
 	
@@ -697,6 +699,7 @@ void BBWin8Game::CreateD3dDevice(){
 Win8Game::Win8Game():
 _windowClosed( false ),
 _windowVisible( true ){
+	memset( _pointerIds,0,sizeof( _pointerIds ) );
 }
 
 void Win8Game::Initialize( CoreApplicationView ^applicationView ){
@@ -806,21 +809,38 @@ void Win8Game::OnCharacterReceived( CoreWindow ^sender,CharacterReceivedEventArg
 }
 
 void Win8Game::OnPointerPressed( CoreWindow ^sender,PointerEventArgs ^args ){
-	float x=DipsToPixels( args->CurrentPoint->Position.X );
-	float y=DipsToPixels( args->CurrentPoint->Position.Y );
-	BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,0,x,y );
+	auto p=args->CurrentPoint;
+	int id=0;
+	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+	if( id<32 ) return;		//Error! Pointer ID already in use!
+	id=0;
+	while( id<32 && _pointerIds[id] ) ++id;
+	if( id==32 ) return;	//Error! Too many fingers!
+	_pointerIds[id]=p->PointerId;
+	float x=DipsToPixels( p->Position.X );
+	float y=DipsToPixels( p->Position.Y );
+	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchDown,id,x,y );
 }
 
 void Win8Game::OnPointerReleased( CoreWindow ^sender,PointerEventArgs ^args ){
-	float x=DipsToPixels( args->CurrentPoint->Position.X );
-	float y=DipsToPixels( args->CurrentPoint->Position.Y );
-	BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,0,x,y );
+	auto p=args->CurrentPoint;
+	int id=0;
+	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+	if( id==32 ) return; 	//Pointer ID not found!
+	_pointerIds[id]=0;
+	float x=DipsToPixels( p->Position.X );
+	float y=DipsToPixels( p->Position.Y );
+	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchUp,id,x,y );
 }
 
 void Win8Game::OnPointerMoved( CoreWindow ^sender,PointerEventArgs ^args ){
-	float x=DipsToPixels( args->CurrentPoint->Position.X );
-	float y=DipsToPixels( args->CurrentPoint->Position.Y );
-	BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseMove,0,x,y );
+	auto p=args->CurrentPoint;
+	int id=0;
+	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+	if( id==32 ) return;	 //Pointer ID not found!
+	float x=DipsToPixels( p->Position.X );
+	float y=DipsToPixels( p->Position.Y );
+	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchMove,id,x,y );
 }
 
 void Win8Game::OnActivated( CoreApplicationView ^applicationView,IActivatedEventArgs ^args ){

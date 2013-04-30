@@ -47,6 +47,7 @@ protected:
 private:
 	bool _windowClosed;
 	bool _windowVisible;
+	unsigned int _pointerIds[32];
 };
 
 //implemented in monkeytarget.cpp

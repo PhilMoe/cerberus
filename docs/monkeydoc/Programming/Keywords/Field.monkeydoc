@@ -29,8 +29,8 @@ The alternative syntax provided allows the variable's type to be deduced from th
 ' Declaring class and fields
 
 Class Player
-&nbsp;&nbsp;Field name:String
-&nbsp;&nbsp;Field points:Int = 0
+	Field name:String
+	Field points:Int = 0
 End
 
 ' Creating object "p" of type "Player"

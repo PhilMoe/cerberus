@@ -36,7 +36,7 @@ The Exit keyword can be used to 'jump out' of a While loop, continuing execution
 Local a = 1
 
 While a < 10
-&nbsp;&nbsp;&nbsp;&nbsp;a = a + 1
-&nbsp;&nbsp;&nbsp;&nbsp;Print a
+		a = a + 1
+		Print a
 Wend
 </pre>

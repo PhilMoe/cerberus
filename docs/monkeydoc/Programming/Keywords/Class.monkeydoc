@@ -27,8 +27,8 @@ Please see the Classes section of the monkey language reference for more informa
 ' Declaring class and fields...
 
 Class GameObject
-&nbsp;&nbsp;Field x:Float
-&nbsp;&nbsp;Field y:Float
+	Field x:Float
+	Field y:Float
 End
 
 ' Creating object "g" of type "GameObject"...
@@ -51,18 +51,18 @@ Print g.y
 
 <pre>
 Class GameObject
-&nbsp;&nbsp;Field x:Float
-&nbsp;&nbsp;Field y:Float
+	Field x:Float
+	Field y:Float
 End
 
 Class Player Extends GameObject
 
-&nbsp;&nbsp;Field name:String
-&nbsp;&nbsp;Field points:Int = 0
+	Field name:String
+	Field points:Int = 0
 
-&nbsp;&nbsp;Method PrintName ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print name
-&nbsp;&nbsp;End
+	Method PrintName ()
+		Print name
+	End
 
 End
 
