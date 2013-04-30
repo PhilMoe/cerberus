@@ -5,7 +5,7 @@ A url, or web address, is a character string that specifies the location of a re
 
 The format of a url is:
 
-\scheme://user:pass@domain:port/path?query#anchor
+\scheme://user:pass@domain:port/path?query#fragment
 
 Please see the [[Url]] class for more information.
 
@@ -21,15 +21,19 @@ Creates a new url object.
 
 Changes the url.
 
+# Method ToString:String( debug:Bool=false )
+
+Returns the url as a string. Pass in the bool True to get a useful debug string.
+
 # Method Scheme:String()
 
 Returns the scheme part of the url.
 
-# Method User:String()
+# Method Username:String()
 
-Returns the user part of the url.
+Returns the username part of the url.
 
-# Method Pass:String()
+# Method Password:String()
 
 Returns the pass part of the url.
 
@@ -49,6 +53,6 @@ Return the path part of the url.
 
 Return the query part of the url.
 
-# Method Anchor:String()
+# Method Fragment:String()
 
 Return the anchor part of the url.

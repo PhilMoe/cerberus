@@ -11,8 +11,8 @@ Class Url
 	Method Set:Void(url:String)
 		_url = url
 		_scheme = "http"
-		_user = ""
-		_pass = ""
+		_username = ""
+		_password = ""
 		_domain = ""
 		_port = 80
 		_path = "/"
@@ -58,18 +58,18 @@ Class Url
 			cursor = pos1 + 3
 		EndIf
 		
-		'find _user/_pass
+		'find _username/_password
 		pos1 = url.Find("@", cursor)
 		If pos1 > - 1 And pos1 < nonDataLength
 			'find split
 			pos2 = url.Find(":", cursor)
 			If pos2 > - 1 And pos2 < pos1
-				'_user and _pass
-				_user = url[cursor .. pos2]
-				_pass = url[pos2 + 1 .. pos1]
+				'_username and _password
+				_username = url[cursor .. pos2]
+				_password = url[pos2 + 1 .. pos1]
 			Else
-				'just _user
-				_user = url[cursor .. pos1]
+				'just _username
+				_username = url[cursor .. pos1]
 			EndIf
 			
 			'move cursor
@@ -124,24 +124,24 @@ Class Url
 		If anchorPos > - 1 _fragment = url[anchorPos + 1 ..]
 	End
 	
-	Method ToString:String()
-		Return _url
-	End
-	
-	Method DebugString:String(seperator:String = "~n")
-		Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "user: " + _user + seperator + "pass: " + _pass + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "fragment: " + _fragment
+	Method ToString:String(debug:Bool = False)
+		If debug
+			Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "username: " + _username + seperator + "password: " + _password + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "fragment: " + _fragment
+		Else
+			Return _url
+		EndIf
 	End
 	
 	Method Scheme:String()
 		Return _scheme
 	End
 	
-	Method User:String()
-		Return _user
+	Method Username:String()
+		Return _username
 	End
 	
-	Method Pass:String()
-		Return _pass
+	Method Password:String()
+		Return _password
 	End
 	
 	Method Domain:String()
@@ -168,8 +168,8 @@ Class Url
 	
 	Field _url:String
 	Field _scheme:String
-	Field _user:String
-	Field _pass:String
+	Field _username:String
+	Field _password:String
 	Field _domain:String
 	Field _port:Int
 	Field _path:String
