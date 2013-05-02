@@ -17,42 +17,42 @@ Please see the [[Url]] class for more information.
 
 Creates a new url object.
 
-# Method Set( url:String )
+# Method Set:Void( url:String )
 
 Changes the url.
 
-# Method ToString:String( debug:Bool=false )
+# Method ToString:String()
 
-Returns the url as a string. Pass in the bool True to get a useful debug string.
+Returns the url as a string.
 
-# Method Scheme:String()
+# Method Scheme:String() Property
 
 Returns the scheme part of the url.
 
-# Method Username:String()
+# Method Username:String() Property
 
 Returns the username part of the url.
 
-# Method Password:String()
+# Method Password:String() Property
 
 Returns the pass part of the url.
 
-# Method Domain:String()
+# Method Domain:String() Property
 
 Returns the domain part of the url.
 
-# Method Port:Int()
+# Method Port:Int() Property
 
 Returns the port part of the url.
 
-# Method Path:String()
+# Method Path:String() Property
 
 Return the path part of the url.
 
-# Method Query:String()
+# Method Query:String() Property
 
 Return the query part of the url.
 
-# Method Fragment:String()
+# Method Fragment:String() Property
 
 Return the anchor part of the url.

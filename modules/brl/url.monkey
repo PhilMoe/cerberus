@@ -124,43 +124,39 @@ Class Url
 		If anchorPos > - 1 _fragment = url[anchorPos + 1 ..]
 	End
 	
-	Method ToString:String(debug:Bool = False)
-		If debug
-			Return "url: " + _url + seperator + "scheme: " + _scheme + seperator + "username: " + _username + seperator + "password: " + _password + seperator + "domain: " + _domain + seperator + "port: " + _port + seperator + "path: " + _path + seperator + "query: " + _query + seperator + "fragment: " + _fragment
-		Else
-			Return _url
-		EndIf
+	Method ToString:String()
+		Return _url
 	End
 	
-	Method Scheme:String()
+	Method Scheme:String() Property
 		Return _scheme
 	End
 	
-	Method Username:String()
+	Method Username:String() Property
 		Return _username
 	End
 	
-	Method Password:String()
+	Method Password:String() Property
 		Return _password
 	End
 	
-	Method Domain:String()
+	Method Domain:String() Property
 		Return _domain
 	End
 	
-	Method Port:Int()
+	Method Port:Int() Property
 		Return _port
 	End
 	
-	Method Path:String()
+	Method Path:String() Property
 		Return _path
 	End
 	
-	Method Query:String()
+	Method Query:String() Property
 		Return _query
 	End
 	
-	Method Fragment:String()
+	Method Fragment:String() Property
 		Return _fragment
 	End
 	
