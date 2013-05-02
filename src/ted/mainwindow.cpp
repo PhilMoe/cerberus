@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.15"
+#define TED_VERSION "1.17"
 
 #define SETTINGS_VERSION 2
 
@@ -1051,10 +1051,9 @@ void MainWindow::print( const QString &str ){
 }
 
 void MainWindow::cdebug( const QString &str ){
-    _consoleTextWidget->setTextColor( QColor( 255,255,0  ) );
+    _consoleTextWidget->setTextColor( QColor( 128,0,128 ) );
     print( str );
 }
-
 
 void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 
@@ -1191,7 +1190,7 @@ void MainWindow::onProcFinished(){
 
 //    qDebug()<<"onProcFinished. Flushing...";
 
-    while( _consoleProc->waitLineAvailable( 0 ) ){
+    while( _consoleProc->waitLineAvailable( 0,100 ) ){
         onProcLineAvailable( 0 );
     }
 
