@@ -32,25 +32,27 @@ static bool killpg( HANDLE proc ){
         int more=Process32First( snapshot,&pentry );
 
         while( more ){
-
             procs.insert( pentry.th32ProcessID,pentry.th32ParentProcessID );
-
             procExes.insert( pentry.th32ProcessID,QString::fromStdWString( std::wstring(pentry.szExeFile) ) );
-
             more=Process32Next( snapshot,&pentry );
         }
 
         DWORD procid=GetProcessId( proc );
 
+        QSet<DWORD> pset;
+
         QMapIterator<DWORD,DWORD> it( procs );
+
         while( it.hasNext() ){
             it.next();
 
             DWORD pid=it.key();
             DWORD ppid=it.value();
 
-            while( ppid && ppid!=procid && procs.contains(ppid) ){
+            pset.clear();
+            while( ppid && ppid!=procid && procs.contains( ppid ) && !pset.contains( ppid ) ){
                 ppid=procs.value( ppid );
+                pset.insert( ppid );
             }
 
             if( ppid==procid ){
@@ -268,10 +270,9 @@ Process::~Process(){
 
     _state=DELETING;
 
-    if( _procwaiter->wait( 10000 ) )    delete _procwaiter;     else cdebug( "Timeout waiting for process to finish" );
-    
+    if( _procwaiter->wait( 10000 ) ) delete _procwaiter; else cdebug( "Timeout waiting for process to finish" );
+
     if( _linereaders[0]->wait( 1000 ) ) delete _linereaders[0]; else cdebug( "Timeout waiting for stdout reader to finish" );
-    
     if( _linereaders[1]->wait( 1000 ) ) delete _linereaders[1]; else cdebug( "Timeout waiting for stderr reader to finish" );
 
     CLOSE( _in );
@@ -285,6 +286,8 @@ bool Process::wait(){
 }
 
 bool Process::kill(){
+    qDebug()<<"Killing proc";
+
     if( _state!=RUNNING ) return _state==FINISHED;
 
     _linereaders[0]->kill();
@@ -295,6 +298,8 @@ bool Process::kill(){
 #else
     if( killpg( _pid,SIGTERM )>=0 ) return true;
 #endif
+
+    qDebug()<<"proc killed";
 
     return false;
 }
@@ -317,8 +322,8 @@ bool Process::isLineAvailable( int channel ){
     return _linereaders[channel]->isLineAvailable();
 }
 
-bool Process::waitLineAvailable( int channel ){
-    return _linereaders[channel]->waitLineAvailable();
+bool Process::waitLineAvailable( int channel,int millis ){
+    return _linereaders[channel]->waitLineAvailable( millis );
 }
 
 QString Process::readLine( int channel ){
@@ -376,15 +381,15 @@ bool LineReader::isLineAvailable(){
     return _avail;
 }
 
-bool LineReader::waitLineAvailable(){
+bool LineReader::waitLineAvailable( int millis ){
     if( !_avail && !_eof ){
-        if( !wait( 10000 ) ) qDebug()<<"waitLineAvailable timed out";
+        if( !wait( millis ) ) cdebug( "Timeout waiting for process output" );
     }
     return _avail;
 }
 
 QString LineReader::readLine(){
-    if( !waitLineAvailable() ) return "";
+    if( !waitLineAvailable( 10000 ) ) return "";
     QString line=_line;
     _avail=false;
     if( !_eof ) start();

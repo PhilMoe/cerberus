@@ -16,15 +16,6 @@ public:
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions{
 
-	
-	//WUD? Can't set this in IB or it breaks 5.1.1?
-	//
-	if( [_window respondsToSelector:@selector(rootViewController)] ){
-        _window.rootViewController=viewController;
-	}
-	
-    [_window makeKeyAndVisible];
-    
 	game=new BBMonkeyGame();
     
     try{
@@ -37,9 +28,17 @@ public:
     }
     
     if( !game->Delegate() ) exit( 0 );
-    
-	game->StartGame();
 
+	//WUD? Can't set this in IB or it breaks 5.1.1?
+	//
+	//Note: this may trigger drawView, which will invoke initial StartGame, so it needs to be done *after* delegate is set...
+	//	
+	if( [_window respondsToSelector:@selector(rootViewController)] ){
+        _window.rootViewController=viewController;
+	}
+	
+    [_window makeKeyAndVisible];
+    
 	return YES;
 }
 

@@ -39,7 +39,7 @@ public:
 
     bool isEof( int channel );
     bool isLineAvailable( int channel );
-    bool waitLineAvailable( int channel );
+    bool waitLineAvailable( int channel,int millis=10000 );
     QString readLine( int channel );
 
     bool writeLine( const QString &line );
@@ -80,7 +80,7 @@ public:
     void kill();
     bool isEof();
     bool isLineAvailable();
-    bool waitLineAvailable();
+    bool waitLineAvailable( int millis );
     QString readLine();
 
 private:

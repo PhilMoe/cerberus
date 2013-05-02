@@ -1,6 +1,16 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V71 *****
+
+Ted - fixed win32 proc killer hanging on proc cycles - not that proc cycles should be possible in the first place!
+
+
+***** V70e *****
+
+Refixed iOS device size issues.
+
+
 ***** V70d *****
 
 Added more keyword docs.
