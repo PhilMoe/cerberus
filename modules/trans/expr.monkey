@@ -165,7 +165,7 @@ Class ConstExpr Extends Expr
 				value=StringToInt( value[1..],16 )
 			Else
 				'strip leading 0's or we can end up with an octal const!
-				While value.StartsWith( "0" )
+				While value.Length>1 And value.StartsWith( "0" )
 					value=value[1..]
 				Wend
 			Endif
@@ -631,7 +631,6 @@ Class CastExpr Extends Expr
 	
 	Method Eval$()
 		Local val$=expr.Eval()
-		If Not val Return val
 		If BoolType( exprType )
 			If IntType( expr.exprType )
 				If Int( val ) Return "1"
@@ -640,7 +639,7 @@ Class CastExpr Extends Expr
 				If Float( val ) Return "1"
 				Return ""
 			Else If StringType( expr.exprType )
-				If val.Length Return "1"
+				If String( val ) Return "1"
 				Return ""
 			Endif
 		Else If IntType( exprType )
@@ -654,6 +653,7 @@ Class CastExpr Extends Expr
 		Else If StringType( exprType )
 			Return String( val )
 		Endif
+		If Not val Return val
 		Return Super.Eval()
 	End
 	
