@@ -3,7 +3,7 @@ Import os
 
 Function LoadModpath:String()
 
-	Local modpath:=GetEnv( "MONKEY_MODPATH" )
+	Local modpath:=GetEnv( "MODPATH" )
 	If modpath Return modpath
 	
 	Local cfg:=LoadString( "bin/config."+HostOS+".txt" )
