@@ -97,27 +97,7 @@ Class List<T>
 		_head._pred.Remove
 		Return data
 	End
-
-	Method RemoveFirst( value:T )
-		Local node:=_head._succ
-		While node<>_head
-			If Equals( node._data,value ) 
-				node.Remove
-				Return
-			Endif
-			node=node._succ
-		Wend
-	End
-
-	Method RemoveEach( value:T )
-		Local node:=_head._succ
-		While node<>_head
-			Local succ:=node._succ
-			If Equals( node._data,value ) node.Remove
-			node=succ
-		Wend
-	End
-
+	
 	Method AddFirst:Node<T>( data:T )
 		Return New Node<T>( _head._succ,_head,data )
 	End
@@ -126,33 +106,64 @@ Class List<T>
 		Return New Node<T>( _head,_head._pred,data )
 	End
 	
-	Method FindNode:Node<T>( data:T )
-		Return FindNode( data,_head )
+	Method Find:Node<T>( value:T )
+		Return Find( value,_head._succ )
 	End
 	
-	Method FindNode:Node<T>( data:T,from:Node<T> )
-		Local node:=from._succ
+	Method Find:Node<T>( value:T,start:Node<T> )
+		While start<>_head
+			If Equals( value,start._data ) Return start
+			start=start._succ
+		Wend
+		Return Null
+	End
+	
+	Method FindLast:Node<T>( value:T )
+		Return FindLast( value,_head._pred )
+	End
+	
+	Method FindLast:Node<T>( value:T,start:Node<T> )
+		While start<>_head
+			If Equals( value,start._data ) Return start
+			start=start._pred
+		Wend
+		Return Null
+	End
+	
+	Method RemoveFirst:Void( value:T )
+		Local node:=Find( value )
+		If node node.Remove
+	End
+	
+	Method RemoveLast:Void( value:T )
+		Local node:=FindLast( value )
+		If node node.Remove
+	End
+	
+	Method RemoveEach( value:T )
+		Local node:=_head._succ
 		While node<>_head
-			If Equals( node._data,data ) Return node
-			node=node._succ
+			Local succ:=node._succ
+			If Equals( node._data,value ) node.Remove
+			node=succ
 		Wend
 	End
 	
 	Method InsertBefore:Node<T>( where:T,data:T )
-		Local node:=FindNode( where )
+		Local node:=Find( where )
 		If node Return New Node<T>( node,node._pred,data )
 	End
 	
 	Method InsertAfter:Node<T>( where:T,data:T )
-		Local node:=FindNode( where )
+		Local node:=Find( where )
 		If node Return New Node<T>( node._succ,node,data )
 	End
 	
 	Method InsertBeforeEach:Void( where:T,data:T )
-		Local node:=FindNode( where )
+		Local node:=Find( where )
 		While node
 			New Node<T>( node,node._pred,data )
-			node=FindNode( where,node )
+			node=Find( where,node._succ )
 		Wend
 	End
 
@@ -160,7 +171,7 @@ Class List<T>
 		Local node:=FindNode( where )
 		While node
 			node=New Node<T>( node._succ,node,data )
-			node=FindNode( where,node )
+			node=Find( where,node._succ )
 		Wend
 	End
 	

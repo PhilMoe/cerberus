@@ -110,6 +110,29 @@ Removes the last value in the list and returns it.
 
 Using this method on an empty list will cause a runtime error in debug mode, and undefined behavior in release mode.
 
+# Method Find:Node<T>(value:T)
+
+Finds the node containing the first element in the list equal to @value.
+
+If no matching node is found, Null is returned.
+
+
+# Method FindLast:Node<T>(value:T)
+
+Finds the node containing the last element in the list equal to @value.
+
+If no matching node is found, Null is returned.
+
+
+# Method RemoveFirst:Void(value:T)
+
+Finds and removes the first element in the list equal to @value.
+
+
+# Method RemoveLast:Void(value:T)
+
+Finds and removes the last element in the list equal to @value.
+
 
 # Method RemoveEach:Int(value:T)
 
