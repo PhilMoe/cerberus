@@ -160,6 +160,13 @@ Class Url
 		Return _fragment
 	End
 	
+	Method FullPath:String() Property
+		Local full:=_path
+		If _query full+="?"+_query
+		If _fragment full+="#"+_fragment
+		Return full
+	End
+	
 	Private
 	
 	Field _url:String

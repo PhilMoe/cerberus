@@ -39,7 +39,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_responseText=""
 		_bytesReceived=0
 		_header=New StringStack
-		_header.Push _req+" /"+_url.Path()+" HTTP/1.0"
+		_header.Push _req+" /"+_url.FullPath()+" HTTP/1.0"
 		_header.Push "Host: "+_url.Domain()
 		_state=1
 	End
