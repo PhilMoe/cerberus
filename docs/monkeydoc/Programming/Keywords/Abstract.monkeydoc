@@ -14,7 +14,7 @@ The Abstract keyword declares that a method must be implemented by extending cla
 
 >> See also
 
-[[Method]] [[Property]]  
+[[Method]] | [[Property]]~n
 [Language reference (Methods)](Language reference#methods)  
 
 >> Examples
@@ -23,40 +23,40 @@ In this example, Enemy contains an abstract method. This means that objects cann
 
 <pre>
 Class Enemy
-	Method Die () Abstract
+&nbsp;&nbsp;Method Die () Abstract
 End
 
 Class Hoodlum Extends Enemy
 
-	' Must implement Die method...
+&nbsp;&nbsp;' Must implement Die method...
 
-	Method Die ()
-		Print "B'oss, he-- he killed me, b'oss!"
-	End
+&nbsp;&nbsp;Method Die ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "B'oss, he-- he killed me, b'oss!"
+&nbsp;&nbsp;End
 
 End
 
 Class Alien Extends Enemy
 
-	' Must implement Die method...
+&nbsp;&nbsp;' Must implement Die method...
 
-	Method Die ()
-		Print "X'll #hyep, g''ta!! Boss'yap!"
-	End
+&nbsp;&nbsp;Method Die ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "X'll #hyep, g''ta!! Boss'yap!"
+&nbsp;&nbsp;End
 
 End
 
 Function Main ()
 
-	' Not allowed...
+&nbsp;&nbsp;' Not allowed...
 
-'	Local e:Enemy = New Enemy
+'&nbsp;&nbsp;Local e:Enemy = New Enemy
 
-	Local h:Hoodlum = New Hoodlum
-	h.Die
+&nbsp;&nbsp;Local h:Hoodlum = New Hoodlum
+&nbsp;&nbsp;h.Die
 
-	Local a:Alien = New Alien
-	a.Die
+&nbsp;&nbsp;Local a:Alien = New Alien
+&nbsp;&nbsp;a.Die
 
 End
 

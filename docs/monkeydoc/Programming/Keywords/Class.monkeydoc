@@ -18,7 +18,7 @@ Please see the Classes section of the monkey language reference for more informa
 
 >> See also
 
-[[End]] [[Extends]] [[Final]] [[Method]] [[Field]] [[Function]] [[Interface]]  
+[[End]] | [[Extends]] | [[Final]] | [[Method]] | [[Field]] | [[Function]] | [[Interface]]~n
 [Language reference](Language reference#classes)
 
 >> Example
@@ -27,8 +27,8 @@ Please see the Classes section of the monkey language reference for more informa
 ' Declaring class and fields...
 
 Class GameObject
-	Field x:Float
-	Field y:Float
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
 End
 
 ' Creating object "g" of type "GameObject"...
@@ -51,18 +51,18 @@ Print g.y
 
 <pre>
 Class GameObject
-	Field x:Float
-	Field y:Float
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
 End
 
 Class Player Extends GameObject
 
-	Field name:String
-	Field points:Int = 0
+&nbsp;&nbsp;Field name:String
+&nbsp;&nbsp;Field points:Int = 0
 
-	Method PrintName ()
-		Print name
-	End
+&nbsp;&nbsp;Method PrintName ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print name
+&nbsp;&nbsp;End
 
 End
 

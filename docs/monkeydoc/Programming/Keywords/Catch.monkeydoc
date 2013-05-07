@@ -1,0 +1,17 @@
+> Keyword Catch
+
+The Catch keyword is part of the Try/Catch exception-handling construct. See Try for more details on exception handling.
+
+>> Syntax
+Catch *exception*
+
+>> Description
+
+In the event of an exception being thrown within a Try/Catch block, program flow jumps to the Catch section matching the exception type; after the relevant error-handling code is executed, program flow exits the Try/Catch block.
+
+Multiple Catch sections may be declared within a Try/Catch block in order to handle different types of exception. See Try for examples and further details.
+
+>> See also
+
+[[Try]] | [[Throw]] | [[Throwable]] | [[End]]~n
+[Language reference](Language reference#exceptions)

@@ -14,12 +14,12 @@ The optional Step keyword, followed by a constant value, allows control over the
 
 >> See also
 
-[[For]] [[Next]] [[To]] [[Until]]
+[[For]] | [[Next]] | [[To]] | [[Until]]
 
 >> Example
 
 <pre>
 For k=1 To 1000 Step 100
-	Print k
+&nbsp;&nbsp;Print k
 Next
 </pre>

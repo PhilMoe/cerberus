@@ -24,7 +24,7 @@ See the Classes section of the monkey language reference for more details on the
 
 <pre>
 Class MyObject
-	Field whatever:Int = 1
+&nbsp;&nbsp;Field whatever:Int = 1
 End
 
 Local thing:MyObject = New MyObject

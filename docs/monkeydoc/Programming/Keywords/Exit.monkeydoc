@@ -12,7 +12,7 @@ The Exit keyword allows program flow to 'jump out' of Repeat and While loops, co
 
 >> See also
 
-[[Repeat]] [[While]]
+[[Repeat]] | [[While]]
 
 >> Example
 
@@ -20,8 +20,8 @@ The Exit keyword allows program flow to 'jump out' of Repeat and While loops, co
 x = 1
 
 Repeat
-	x = x + 1
-	If x = 3 Then Exit
+&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;If x = 3 Then Exit
 Forever
 
 ' Program flow will continue here after Exit
@@ -38,14 +38,14 @@ x = 1
 
 Repeat
 
-	Repeat
-		x = x + 1
-		If x = 3 Then Exit
-	Forever
+&nbsp;&nbsp;Repeat
+&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1
+&nbsp;&nbsp;&nbsp;&nbsp;If x = 3 Then Exit
+&nbsp;&nbsp;Forever
 
-	' Program flow will continue here after Exit
+&nbsp;&nbsp;' Program flow will continue here after Exit
 
-	Print "Exited inner loop!"
+&nbsp;&nbsp;Print "Exited inner loop!"
 
 Forever
 </pre>

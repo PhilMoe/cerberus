@@ -16,8 +16,8 @@ Please see the Methods section of the monkey language reference for more informa
 
 >> See also
 
-[[End]] [[Class]] [[Property]] [[Abstract]] [[Final]]  
-[Language reference (Classes)](Language reference#classes)  
+[[End]] | [[Class]] | [[Property]] | [[Abstract]] | [[Final]]~n
+[Language reference (Classes)](Language reference#classes)~n
 [Language reference (Methods)](Language reference#methods)
 
 >> Examples
@@ -27,16 +27,16 @@ An example of methods as statements.
 <pre>
 Class GameObject
 
-	Field x:Float
-	Field y:Float
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
 
-	Method PrintX ()
-		Print x
-	End
+&nbsp;&nbsp;Method PrintX ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
 
-	Method PrintY ()
-		Print y
-	End
+&nbsp;&nbsp;Method PrintY ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
 
 End
 
@@ -56,16 +56,16 @@ Strict mode version of above GameObject class. (Note use of Void return type.)
 <pre>
 Class GameObject
 
-	Field x:Float
-	Field y:Float
+&nbsp;&nbsp;Field x:Float
+&nbsp;&nbsp;Field y:Float
 
-	Method PrintX:Void ()
-		Print x
-	End
+&nbsp;&nbsp;Method PrintX:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print x
+&nbsp;&nbsp;End
 
-	Method PrintY:Void ()
-		Print y
-	End
+&nbsp;&nbsp;Method PrintY:Void ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print y
+&nbsp;&nbsp;End
 
 End
 </pre>
@@ -75,9 +75,9 @@ Method returning value of Float type.
 <pre>
 Class GameObject
 
-	Method AddFloats:Float (value1:Float, value2:Float)
-		Return value1 + value2
-	End
+&nbsp;&nbsp;Method AddFloats:Float (value1:Float, value2:Float)
+&nbsp;&nbsp;&nbsp;&nbsp;Return value1 + value2
+&nbsp;&nbsp;End
 
 End
 

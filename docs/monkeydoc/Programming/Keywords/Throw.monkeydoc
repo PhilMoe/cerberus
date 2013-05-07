@@ -1,0 +1,15 @@
+> Keyword Throw
+
+The Throw keyword is part of the Try/Catch exception-handling construct. See Try for more details on exception handling.
+
+>> Syntax
+Throw *exception*
+
+>> Description
+
+Throw is used when an exception needs to be thrown in order to handle undesirable situations. See Try for example usage.
+
+>> See also
+
+[[Try]] | [[Catch]] | [[Throwable]] | [[End]]~n
+[Language reference](Language reference#exceptions)

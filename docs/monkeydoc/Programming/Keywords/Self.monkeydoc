@@ -12,7 +12,7 @@ The Self keyword provides a way for a method to access the object it belongs to.
 
 >> See also
 
-[[Super]] [[Method]]  
+[[Super]] | [[Method]]~n
 [Language reference](Language reference#methods)
 
 >> Example
@@ -22,15 +22,15 @@ The Self keyword provides a way for a method to access the object it belongs to.
 <pre>
 Class Person
 
-	Field x:Int, y:Int
+&nbsp;&nbsp;Field x:Int, y:Int
 
-	Method Speak (text:String)
-		DrawSpeechBubble (Self, text)
-	End
+&nbsp;&nbsp;Method Speak (text:String)
+&nbsp;&nbsp;&nbsp;&nbsp;DrawSpeechBubble (Self, text)
+&nbsp;&nbsp;End
 
 End
 
 Function DrawSpeechBubble (p:Person, say:String)
-	DrawText say, p.x, p.y
+&nbsp;&nbsp;DrawText say, p.x, p.y
 End
 </pre>

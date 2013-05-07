@@ -16,7 +16,7 @@ Please see the Interfaces section of the monkey language reference for more info
 
 >> See also
 
-[[End]] [[Class]] [[Implements]]  
+[[End]] | [[Class]] | [[Implements]]~n
 [Language reference (Interfaces)](Language reference#interfaces)  
 
 >> Example
@@ -26,65 +26,65 @@ An example of a simple interface.
 <pre>
 Interface Computer
 
-	Method Boot ()
-	Method Process ()
-	Method Display ()
-	
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;
 End
 
 Class PC Implements Computer
 
-	Method Boot ()
-		Print "BIOS version 1.01. Performing ancient rituals..."
-	End
-	
-	Method Process ()
-		Print "Calculating 1 + 1..."
-	End
-	
-	Method Display ()
-		Print "The result of 1 + 1 equals 2!"
-	End
-	
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "BIOS version 1.01. Performing ancient rituals..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Calculating 1 + 1..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "The result of 1 + 1 equals 2!"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
 End
 
 Class C64 Implements Computer
 
-	Method Boot ()
-		Print "**** COMMODORE 64 BASIC V2 **** | 64K RAM SYSTEM  38911 BASIC BYTES FREE"
-	End
-	
-	Method Process ()
-		Print "Calculating missile position..."
-	End
-	
-	Method Display ()
-		Print "Enemies exploding!"
-	End
-	
+&nbsp;&nbsp;Method Boot ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "**** COMMODORE 64 BASIC V2 **** | 64K RAM SYSTEM  38911 BASIC BYTES FREE"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Process ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Calculating missile position..."
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
+&nbsp;&nbsp;Method Display ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "Enemies exploding!"
+&nbsp;&nbsp;End
+&nbsp;&nbsp;
 End
 
 Function Main ()
 
-	Print ""
-	Print "PC"
-	Print ""
+&nbsp;&nbsp;Print ""
+&nbsp;&nbsp;Print "PC"
+&nbsp;&nbsp;Print ""
 
-	Local ibm:Computer = New PC
-	
-	ibm.Boot
-	ibm.Process
-	ibm.Display
+&nbsp;&nbsp;Local ibm:Computer = New PC
+&nbsp;&nbsp;
+&nbsp;&nbsp;ibm.Boot
+&nbsp;&nbsp;ibm.Process
+&nbsp;&nbsp;ibm.Display
 
-	Print ""
-	Print "C64"
-	Print ""
+&nbsp;&nbsp;Print ""
+&nbsp;&nbsp;Print "C64"
+&nbsp;&nbsp;Print ""
 
-	Local commodore:Computer = New C64
-	
-	commodore.Boot
-	commodore.Process
-	commodore.Display
+&nbsp;&nbsp;Local commodore:Computer = New C64
+&nbsp;&nbsp;
+&nbsp;&nbsp;commodore.Boot
+&nbsp;&nbsp;commodore.Process
+&nbsp;&nbsp;commodore.Display
 
 End
 </pre>

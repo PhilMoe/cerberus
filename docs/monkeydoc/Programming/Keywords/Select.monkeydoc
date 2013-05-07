@@ -24,7 +24,7 @@ A range of comma-separated values can be handled in a single Case statement to a
 
 >> See also
 
-[[Case]] [[Default]]  
+[[Case]] | [[Default]]~n
 [Language reference](Language reference#statements)  
 
 >> Examples

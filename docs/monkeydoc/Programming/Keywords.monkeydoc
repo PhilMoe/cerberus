@@ -20,6 +20,9 @@ The identifiers below are language keywords and are reserved for use by the Monk
 >> Logic/misc
 And | Or | Shl | Shr | Not | Mod | [[True]] | [[False]]
 
+>> Exceptions
+[[Try]] | [[Catch]] | [[Throw]]
+
 >> Reserved
 Module | Inline
 

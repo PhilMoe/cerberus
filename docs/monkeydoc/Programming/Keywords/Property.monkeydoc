@@ -37,7 +37,7 @@ Properties are usually declared in pairs with the same name:
 
 >> See also
 
-[[Method]] [[Abstract]] [[Final]]  
+[[Method]] | [[Abstract]] | [[Final]]~n
 [Language reference (Methods)](Language reference#methods)  
 
 >> Examples
@@ -47,35 +47,35 @@ Properties are usually declared in pairs with the same name:
 
 Class BankAccount
 
-	Private
+&nbsp;&nbsp;Private
 
-		Field balance:Int
+&nbsp;&nbsp;&nbsp;&nbsp;Field balance:Int
 
-	Public
+&nbsp;&nbsp;Public
 
-		Method Balance (dollars:Int) Property
+&nbsp;&nbsp;&nbsp;&nbsp;Method Balance (dollars:Int) Property
 
-			If dollars > 1000000
-				Print "Sent for security check!"
-			Else
-				balance = dollars
-			Endif
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If dollars > 1000000
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "Sent for security check!"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;balance = dollars
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Endif
 
-		End
+&nbsp;&nbsp;&nbsp;&nbsp;End
 
-		Method Balance:String () Property
-			Return "$" + balance
-		End
+&nbsp;&nbsp;&nbsp;&nbsp;Method Balance:String () Property
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return "$" + balance
+&nbsp;&nbsp;&nbsp;&nbsp;End
 
 End
 
 Function Main ()
 
-	Local account:BankAccount = New BankAccount
+&nbsp;&nbsp;Local account:BankAccount = New BankAccount
 
-	account.Balance = 50 ' 00000 ' Join to trigger security check!
+&nbsp;&nbsp;account.Balance = 50 ' 00000 ' Join to trigger security check!
 
-	Print account.Balance
+&nbsp;&nbsp;Print account.Balance
 
 End
 </pre>

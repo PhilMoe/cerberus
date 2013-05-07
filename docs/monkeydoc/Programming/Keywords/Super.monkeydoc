@@ -13,7 +13,7 @@ The Super keyword allows a method within an extended class to call a 'super clas
 
 >> See also
 
-[[Self]] [[Extends]] [[Method]]  
+[[Self]] | [[Extends]] | [[Method]]~n
 [Language reference](Language reference#methods)
 
 >> Example
@@ -23,35 +23,35 @@ The Super keyword allows a method within an extended class to call a 'super clas
 <pre>
 Class Human
 
-	Method Fly ()
-		Print "No powers -- cannot fly!"
-	End
+&nbsp;&nbsp;Method Fly ()
+&nbsp;&nbsp;&nbsp;&nbsp;Print "No powers -- cannot fly!"
+&nbsp;&nbsp;End
 
 End
 
 Class Hero Extends Human
 
-	Field superpowers:Bool = True
+&nbsp;&nbsp;Field superpowers:Bool = True
 
-	Method Fly ()
+&nbsp;&nbsp;Method Fly ()
 
-		If superpowers
-			Print "Up, up and a--weee!"
-		Else
-			Super.Fly
-		Endif
+&nbsp;&nbsp;&nbsp;&nbsp;If superpowers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "Up, up and a--weee!"
+&nbsp;&nbsp;&nbsp;&nbsp;Else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Super.Fly
+&nbsp;&nbsp;&nbsp;&nbsp;Endif
 
-	End
+&nbsp;&nbsp;End
 
 End
 
 Function Main ()
 
-	Local atomstar:Hero = New Hero
+&nbsp;&nbsp;Local atomstar:Hero = New Hero
 
-'	atomstar.superpowers = False ' Uncomment to give up powers for love...
+'&nbsp;&nbsp;atomstar.superpowers = False ' Uncomment to give up powers for love...
 
-	atomstar.Fly
+&nbsp;&nbsp;atomstar.Fly
 
 End
 </pre>

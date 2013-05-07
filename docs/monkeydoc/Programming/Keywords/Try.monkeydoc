@@ -1,0 +1,159 @@
+> Keyword Try
+
+Declares the start of a Try/Catch block.
+
+>> Syntax
+Try~n
+&nbsp;&nbsp;&nbsp;&nbsp;*code*~n
+Catch *exception*~n
+&nbsp;&nbsp;&nbsp;&nbsp;*error handling code*~n
+End [Try]~n
+
+>> Description
+
+A Try/Catch block is an error-handling construct that allows custom code to be executed in situations which may otherwise cause undesirable behaviour.
+
+The Try/Catch block opens with Try and closes with End (or End Try). The code to be executed within must be followed by at least one Catch section.
+
+In the event of an error occurring within the Try/Catch block, an exception object (based on the native Throwable class) should be 'thrown' via the Throw instruction.
+
+If an exception occurs, program flow jumps to a Catch section declared explicitly for the given exception type. The exception object is 'caught' and the relevant error-handling code is executed.
+
+You can declare multiple exception classes to handle different types of exception and should create a matching Catch section for each one.
+
+After an exception is caught and handled, program flow exits the Try/Catch block and continues.
+
+When a try block has multiple catch blocks and an exception is thrown, the first catch block capable of handling the exception is executed. If no suitable catch block can be found, the exception is passed to the next most recently executed try block, and so on.
+
+If no catch block can be found to catch an exception, a runtime error occurs and the application is terminated.
+
+The Try/Catch method of error-handling allows code to be written without the need to manually check for errors at each step, provided an exception has been set up to handle any errors that *are* likely to be encountered.
+
+>> See also
+
+[[Catch]] | [[Throw]] | [[Throwable]] | [[End]]~n
+[Language reference](Language reference#exceptions)
+
+>> Examples
+
+Here is a basic example of error handling via the use of a custom exception:
+
+<pre>
+
+' A custom exception class:
+
+Class CustomException Extends Throwable
+
+	Field message:String
+	
+	Method New (msg:String)
+		Self.message = msg
+	End
+
+End
+
+' A test function that throws an exception if a is 10 or above:
+
+Function CheckAndPrint (a:Int)
+	If a < 10 Then Print a Else Throw New CustomException ("The value of 'a' must be less than 10!")
+End
+
+' Runnable example:
+
+Function Main:Int ()
+
+	Try
+	
+		For Local value:Int = 1 To 20
+			CheckAndPrint value
+		Next
+		
+		' -----------------------
+		'  Exception handling...
+		' -----------------------
+		
+		' A value of 10 or more passed to CheckAndPrint will throw a CustomException,
+		' which we 'catch' here:
+		
+		Catch err:CustomException
+			Print err.message
+		
+		' Program flow now exits the Try block...
+		
+	End
+	
+	Print "We still got to the end!"
+	
+End
+</pre>
+
+This example demonstrates the use of multiple exception classes to catch different types of error; it allows different errors to be handled in different ways.
+
+Note that this example is largely the same as the previous example but modified to use two custom exception types.
+
+Note also that the For loop in the Main function deliberately starts from zero here; you can try changing it back to one to verify that the code no longer throws a HissyFit.
+
+<pre>
+
+' A custom exception class:
+
+Class CustomException Extends Throwable
+
+	Field message:String
+	
+	Method New (msg:String)
+		Self.message = msg
+	End
+
+End
+
+' A second custom exception class:
+
+Class HissyFit Extends Throwable
+
+	Field message:String
+	
+	Method New (msg:String)
+		Self.message = "HUGE ERROR!!! " + msg + " AAAAAAAAAAAAAAAHHHHH!!!"
+	End
+
+End
+
+' A test function that throws a CustomException if 'a' is 10 or greater;
+' or throw a HissyFit if 'a' is zero:
+
+Function CheckAndPrint (a:Int)
+	If a = 0 Then Throw New HissyFit ("The value of 'a' cannot be 0!")
+	If a < 10 Then Print a Else Throw New CustomException ("The value of 'a' must be less than 10!")
+End
+
+Function Main:Int ()
+
+	Try
+	
+		For Local value:Int = 0 To 20
+			CheckAndPrint value
+		Next
+		
+		' -----------------------
+		'  Exception handling...
+		' -----------------------
+		
+		' A value of 10 or more passed to CheckAndPrint will throw a CustomException,
+		' which we 'catch' here:
+		
+		Catch err:CustomException
+			Print err.message
+		
+		' A value of zero passed to CheckAndPrint will throw a HissyFit,
+		' which we catch here:
+		
+		Catch bigerror:HissyFit
+			Print bigerror.message
+	
+	End
+	
+	Print "We still got to the end!"
+	
+End
+</pre>
