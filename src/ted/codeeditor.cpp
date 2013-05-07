@@ -458,7 +458,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
         "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;"
         "And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"
         "Try;Catch;Throw;Throwable;"
-        "Print;Error";
+        "Print;Error;Alias";
 
     QStringList bits=kws.split( ";" );
 
