@@ -653,23 +653,38 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 -(BOOL)textFieldShouldEndEditing:(UITextField*)textField{
 
-	if( textFieldState ){	//still active?
-		game->KeyEvent( BBGameEvent::KeyChar,27 );	//generate ESC
-		return NO;
-	}
+	if( textFieldState ) game->KeyEvent( BBGameEvent::KeyChar,27 );	//generate ESC
 	
-	return YES;
+	return NO;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField*)textField{
+
+	if( textFieldState ) game->KeyEvent( BBGameEvent::KeyChar,13 );	//generate Return
+	
+	return NO;
+}
+
+-(BOOL)textFieldShouldClear:(UITextField*)textField{
+
+	return NO;
 }
 
 -(BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)str{
-	
+
+	if( !textFieldState ) return NO;
+		
 	int n=[str length];
 	
 	if( n==0 && range.length==1 ){
-		game->KeyEvent( BBGameEvent::KeyChar,8 );	//generate BACKSPC
+		game->KeyEvent( BBGameEvent::KeyChar,8 );						//generate Backspace
 	}else if( n==1 && range.length==0 ){
 		int chr=[str characterAtIndex:0];
-		game->KeyEvent( BBGameEvent::KeyChar,chr==10 ? 13 : chr );
+		if( chr>=32 ){
+			game->KeyEvent( BBGameEvent::KeyChar,chr );
+			textField.text=@"";											//so textfield only contains last char typed.
+			return YES;
+		}
 	}
 	return NO;
 }
