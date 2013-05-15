@@ -27,10 +27,10 @@
 | Module					| Contains																|Availability
 | [[brl.filestream]]		| The [[FileStream]] class for reading and writing files				|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.filesystem]]		| Functions for examining and modifying the filesystem					|Android, iOS, Win8, Glfw, Stdcpp
-| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data						|All
+| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data					|All
 | [[brl.datastream]]		| The [[DataStream]] class for reading and writing databuffers			|All
-| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously			|All
-
+| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously		|All
+| [[brl.process]]			| The [[Process]] class for executing processes						|Glfw, Stdcpp
 
 >> Math and Numeric
 

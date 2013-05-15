@@ -1,0 +1,38 @@
+> Keyword Not
+
+The logical *Not* operator.  
+
+>> Syntax
+
+[If] Not *expression*~n
+
+>> Description
+
+Not is a logical operator whose result is the boolean (True/False) opposite of the following expression's boolean evaluation.  
+
+Where the expression to be evaluated is True, applying Not to the expression will evaluate as False.  
+
+Where the expression to be evaluated is False, applying Not to the expression will evaluate as True.  
+
+Not is often used as a shorthand to check for False expression evaluation results.
+
+>> See also
+
+[[And]] | [[Or]]~n
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+This examples checks for the non-existence of bullets before firing. Because *Not bullets* evaluates as True, we execute the 'no bullets' line.  
+
+If bullets were any non-zero value, the expression *Not bullets* would evaluate as False and the Else statement would be executed.
+
+<pre>
+Local bullets:Int = 0
+
+If Not bullets
+	Print "Splut... no bullets"
+Else
+	Print "BOOM!"
+Endif
+</pre>

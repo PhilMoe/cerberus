@@ -1,0 +1,48 @@
+> Keyword Mod
+
+Mod is a mathematical operator which performs the modulo (aka. modulus) function, returning the remainder of a division operation.  
+
+>> Syntax
+
+*numerator* Mod *denominator*~n
+
+>> Description
+
+Mod performs the modulo operation on two numeric values, dividing a numerator (or dividend) by a denominator or (divisor) and returns the remainder of the division rather than the usual quotient.
+
+>> See also
+
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+This example shows that ten apples split between seven people results in each person receiving one apple with three left over. (You can't split 3 whole apples between 7 people!)
+
+Play with the numbers to see the effect Mod has, eg. change the number of people to 2.
+
+<pre>
+Function Main ()
+
+	Local apples:Int = 10
+	Local people:Int = 7
+	
+	Print "Each person gets " + (apples / people) + " apple(s);"
+	
+	Local leftover:Int = apples Mod people
+	
+	Print leftover + " apple(s) are left over."
+
+End
+</pre>
+
+This example shows how Mod can be used to limit a range of values, such as keeping an angle between 0 and 360 degrees. As it passes through 360 degrees and beyond, the angle will always be displayed in the range 0 - 360:
+
+<pre>
+Function Main ()
+
+	For Local angle:Int = 350 To 370
+		Print angle Mod 360
+	Next
+	
+End
+</pre>

@@ -1,0 +1,66 @@
+> Keyword And
+
+The logical *And* operator.  
+
+>> Syntax
+
+[If] *expression* And *expression* [... ]~n
+
+>> Description
+
+And is a logical operator which compares two expressions, or operands, and evaluates as True only if both expressions are True.  
+
+Multiple And comparisons may be performed on a single line to compare more than two expressions.  
+
+Evaluation is performed from left to right and the operation immediately returns False (a behaviour known as 'early out') on encountering a False comparison; this means that no further comparisons on the line will be evaluated.  
+
+>> See also
+
+[[Or]] | [[Not]]~n
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+The example below demonstrates a simple comparison of two values. Because b is 0, the expression a And b evaluates as False, so the Else statement is executed. If b were non-zero, the comparison would evaluate as True.
+
+<pre>
+Local a:Int = 1
+Local b:Int = 0
+
+If a And b
+	Print "Both operands evaluate as True"
+Else
+	Print "One operand evaluated as False"
+Endif
+</pre>
+
+The runnable example below demonstrates the early-out behaviour of And, showing how a complex operation -- represented here by the BakeCake function -- can be avoided if any previous expression on the line evaluates as False.  
+
+Because *sugar* is zero, the evaluation will 'early out' on reaching that stage of the comparison and evaluate as False. This means that neither eggs, nor the result of executing the BakeCake function, are evaluated and the expression is effectively "If flour and sugar" as long as sugar is zero.
+
+<pre>
+Function Main ()
+
+	Local flour:Float = 0.5
+	Local sugar:Float = 0.0
+	Local eggs:Int = 2
+
+	' Check that ingredients are all non-zero, baking cake if true...
+	
+	If flour And sugar And eggs And BakeCake (flour, sugar, eggs)
+		Print "We have flour, sugar and eggs, so we can bake a cake!"
+	Else
+		Print "Missing sugar, so not checking eggs or attempting to bake cake; sugar must be greater than zero!"
+	Endif
+
+End
+
+Function BakeCake (flour_kg:Float, sugar_kg:Float, eggs:Int)
+	Print "Mixing flour and sugar..."
+	Print "Adding eggs..."
+	Print "Not sure if this is actually how you make a cake..."
+	Print "Licking spoon..."
+	Print "Placing in oven..."
+	Print "Done!"
+End
+</pre>

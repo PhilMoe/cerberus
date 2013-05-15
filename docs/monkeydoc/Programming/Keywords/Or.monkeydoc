@@ -1,0 +1,62 @@
+> Keyword Or
+
+The logical *Or* operator.  
+
+>> Syntax
+
+[If] *expression* Or *expression* [... ]~n
+
+>> Description
+
+Or is a logical operator which compares two expressions, or operands, and evaluates as True if either expression is True.  
+
+Multiple Or comparisons may be performed on a single line to compare more than two expressions.  
+
+Evaluation is performed from left to right and the operation immediately returns True (a behaviour known as 'early out') on encountering a True comparison; this means that no further comparisons on the line will be evaluated.  
+
+>> See also
+
+[[And]] | [[Not]]~n
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+The example below demonstrates a simple comparison of two values.
+
+<pre>
+Local a:Int = 0
+Local b:Int = 1
+
+If a Or b
+	Print "At least one of the operands evaluates as True"
+Else
+	Print "Neither operand evaluates as True"
+Endif
+</pre>
+
+The runnable example below demonstrates that although apples and pears are both zero, the line as a whole evaluates as True because the function ComplexOperation returns True; as long as one expression is True, the entire line is considered True. 
+
+Note that if you change apples or pears to a non-zero value, ComplexOperation is not called; this is due to the 'early-out' behaviour of the Or operator, which considers the entire line to be True as soon as any of the individual expressions evaluates as True.
+
+<pre>
+Function Main ()
+
+	Local apples:Int = 0
+	Local pears:Int = 0
+	
+	If apples Or pears Or ComplexOperation ()
+		Print "One or more expression was True"
+	Else
+		Print "None of the expressions were True"
+	Endif
+
+End
+
+Function ComplexOperation ()
+	Print "Performing complex operation..."
+	Print "Ooh, this is really difficult..."
+	Print "Processor about to catch fire..."
+	Print "Etc..."
+	Return True
+End
+</pre>

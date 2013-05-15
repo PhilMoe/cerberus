@@ -44,17 +44,17 @@ The [[Eof]] method can be used detect end-of-file status when reading a stream. 
 Some types of streams are also seekable, meaning they support an internal 'position' variable that controls where data is read/written and may be manually modified.
 
 
-# Method Eof:Int()
+# Method Eof:Int() Property
 
 Returns 1 if end-of-file has been reached, -1 if an IO error has occurred or 0 if the stream can be read.
 
 
-# Method Length:Int()
+# Method Length:Int() Property
 
 Returns the stream length if the stream is seekable, else 0.
 
 
-# Method Position:Int()
+# Method Position:Int() Property
 
 Returns the read/write position within the stream if the stream is seekable, else 0.
 
