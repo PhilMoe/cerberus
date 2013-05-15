@@ -4,7 +4,7 @@
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${MONKEYDIR}/modules"
+MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '--------------------
 
 '--------------------
