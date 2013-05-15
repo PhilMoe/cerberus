@@ -28,6 +28,7 @@ Class GraphicsDevice="gxtkGraphics"
 	Method DrawLine( x1#,y1#,x2#,y2# )
 	Method DrawOval( x#,y#,w#,h# )
 	Method DrawPoly( verts#[] )
+	Method DrawPoly2( verts#[],surface:Surface,srcx,srcy )
 	Method DrawSurface( surface:Surface,x#,y# )
 	Method DrawSurface2( surface:Surface,x#,y#,srcx,srcy,srcw,srch )
 	

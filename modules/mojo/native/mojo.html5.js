@@ -217,10 +217,21 @@ gxtkGraphics.prototype.DrawOval=function( x,y,w,h ){
 }
 
 gxtkGraphics.prototype.DrawPoly=function( verts ){
-	if( verts.length<6 ) return;
+	if( verts.length<2 ) return;
 	this.gc.beginPath();
 	this.gc.moveTo( verts[0],verts[1] );
 	for( var i=2;i<verts.length;i+=2 ){
+		this.gc.lineTo( verts[i],verts[i+1] );
+	}
+	this.gc.fill();
+	this.gc.closePath();
+}
+
+gxtkGraphics.prototype.DrawPoly2=function( verts,surface,srx,srcy ){
+	if( verts.length<4 ) return;
+	this.gc.beginPath();
+	this.gc.moveTo( verts[0],verts[1] );
+	for( var i=4;i<verts.length;i+=4 ){
 		this.gc.lineTo( verts[i],verts[i+1] );
 	}
 	this.gc.fill();
