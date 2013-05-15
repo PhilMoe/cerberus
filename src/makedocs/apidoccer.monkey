@@ -211,7 +211,7 @@ Class ClassDecl Extends ScopeDecl
 					New AliasDecl( decl,Self )
 				Next
 			Next
-			Exit
+'			Exit
 			supr=supr.exts
 		Wend
 	End

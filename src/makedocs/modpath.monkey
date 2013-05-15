@@ -38,7 +38,7 @@ Function LoadModpath:String()
 			i+=t.Length
 		Forever
 
-		Return val
+		Return val[1..-1]
 	Next
 	
 	Return ""
