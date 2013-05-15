@@ -1513,9 +1513,6 @@ Class Parser
 		Local func_attrs=decl_attrs
 		If attrs & CLASS_INTERFACE func_attrs|=DECL_ABSTRACT
 		
-'		Local method_attrs=decl_attrs|FUNC_METHOD
-'		If attrs & CLASS_INTERFACE method_attrs|=DECL_ABSTRACT
-		
 		Repeat
 			SkipEols
 			Select _toke

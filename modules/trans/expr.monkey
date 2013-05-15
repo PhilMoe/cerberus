@@ -12,7 +12,7 @@ Class Expr
 	Method ToString$()
 		Return "<Expr>"
 	End
-	
+
 	Method Copy:Expr()
 		InternalErr
 	End
@@ -808,6 +808,9 @@ Class BinaryMathExpr Extends BinaryExpr
 				If Not y Err "Divide by zero error."
 				Return x / y
 			Case "*" Return x * y
+			Case "mod"
+				If Not y Err "Divide by zero error."
+				Return x Mod y
 			Case "+" Return x + y
 			Case "-" Return x - y
 			End

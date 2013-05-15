@@ -226,7 +226,7 @@ Class CppTranslator Extends CTranslator
 		Local t_lhs$=TransSubExpr( expr.lhs,pri )
 		Local t_rhs$=TransSubExpr( expr.rhs,pri-1 )
 		If expr.op="mod" And FloatType( expr.exprType )
-			Return "fmod("+t_lhs+","+t_rhs+")"
+			Return "(Float)fmod("+t_lhs+","+t_rhs+")"
 		Endif
 		Return t_lhs+TransBinaryOp( expr.op,t_rhs )+t_rhs
 	End
@@ -405,8 +405,12 @@ Class CppTranslator Extends CTranslator
 		If decl.IsAbstract() t+="=0"
 		
 		Local q$
-		If decl.IsMethod() q+="virtual "
-		If decl.IsStatic() And decl.ClassScope() q+="static "
+		
+		If decl.IsMethod() And decl.IsVirtual() And Not decl.overrides
+			q+="virtual "
+		Else If decl.IsStatic() And decl.ClassScope()
+			q+="static "
+		Endif
 		
 		Emit q+t+";"
 	End
