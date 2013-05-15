@@ -1,9 +1,33 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** V71 *****
+***** V71a *****
 
-Ted - fixed win32 proc killer hanging on proc cycles - not that proc cycles should be possible in the first place!
+Mojo: Added experimental DrawPoly overload with textured image (vertex format is x,y,u,v) only available on glfw, ios, android, win8.
+
+Trans: Improved detection of virtual/final etc methods for C++, C# and Java translators.
+
+Trans: Fixed float Mod op bugs.
+
+FileStream: Fixed c++ "u" mode, added "a" for append.
+
+IosGame: Fixed weird virtual keyboard bug.
+
+Ted/Makedocs: Added Alias keyword.
+
+Mojo: Fixed flash LoadState bug.
+
+Mojo: Added Siread's magic ios code for mixing game audio with user music.
+
+Trans: Fixed String(0)<>"0" bug.
+
+Mojo: Fixed win8 DrawLine bug.
+
+Makedocs: Fixed issue with camelcase module names.
+
+Makedocs: Now searches all modules in MODPATH in bin/config.blah.txt files.
+
+Ted: Tweaked win32 proc killer to detect cycles in procs.
 
 
 ***** V70e *****
