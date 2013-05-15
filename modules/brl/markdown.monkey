@@ -227,9 +227,9 @@ Class Markdown
 			Endif
 			_blk=blk
 			If _blk="pre" And _prettifier
-				t=_prettifier.BeginPrettyBlock()
+				t+=_prettifier.BeginPrettyBlock()
 			Else If _blk
-				t="<"+_blk+">"
+				t+="<"+_blk+">"
 			Endif
 		Endif
 		Return t
@@ -339,8 +339,6 @@ Class Markdown
 		If i<>-1 src=src[..-2]+"<br>"
 		
 		src=SpanToHtml( src )
-		
-'		If src.EndsWith( "  " ) src=src[..-2]+"<br>"
 		
 		Return t+src
 	End

@@ -30,13 +30,13 @@ Public
 
 Class Stream
 
-	Method Eof:Int() Abstract
-	
 	Method Close:Void() Abstract
 	
-	Method Length:Int() Abstract
+	Method Eof:Int() Property Abstract
 	
-	Method Position:Int() Abstract
+	Method Length:Int() Property Abstract
+	
+	Method Position:Int() Property Abstract
 	
 	Method Seek:Int( position:Int ) Abstract
 	
