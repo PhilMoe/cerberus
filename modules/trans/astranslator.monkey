@@ -193,6 +193,7 @@ Class AsTranslator Extends CTranslator
 		Local t_expr:=TransSubExpr( expr.expr )
 		If StringType( expr.expr.exprType ) 
 			Local t_index:=expr.index.Trans()
+			If ENV_CONFIG="debug" Return "dbg_charCodeAt("+t_expr+","+t_index+")"
 			Return t_expr+".charCodeAt("+t_index+")"
 		Else If ENV_CONFIG="debug"
 			Local t_index:=expr.index.Trans()

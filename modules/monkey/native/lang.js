@@ -64,6 +64,11 @@ function dbg_object( obj ){
 	error( "Null object access" );
 }
 
+function dbg_charCodeAt( str,index ){
+	if( index<0 || index>=str.length ) error( "Character index out of range" );
+	return str.charCodeAt( index );
+}
+
 function dbg_array( arr,index ){
 	if( index<0 || index>=arr.length ) error( "Array index out of range" );
 	dbg_index=index;

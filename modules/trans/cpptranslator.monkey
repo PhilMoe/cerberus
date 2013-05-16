@@ -236,10 +236,12 @@ Class CppTranslator Extends CTranslator
 		Local t_expr:=TransSubExpr( expr.expr )
 		Local t_index:=expr.index.Trans()
 		
-		If StringType( expr.expr.exprType ) Return "(int)"+t_expr+"["+t_index+"]"
+		If StringType( expr.expr.exprType )
+			If ENV_CONFIG="debug" Return "(int)"+t_expr+".At("+t_index+")"
+			Return "(int)"+t_expr+"["+t_index+"]"
+		Endif
 		
 		If ENV_CONFIG="debug" Return t_expr+".At("+t_index+")"
-		
 		Return t_expr+"["+t_index+"]"
 	End
 	

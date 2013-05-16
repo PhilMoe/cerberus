@@ -619,6 +619,11 @@ public:
 		return rep->data;
 	}
 	
+	Char At( int index )const{
+		if( index<0 || index>=rep->length ) dbg_error( "Character index out of range" );
+		return rep->data[index]; 
+	}
+	
 	Char operator[]( int index )const{
 		return rep->data[index];
 	}
