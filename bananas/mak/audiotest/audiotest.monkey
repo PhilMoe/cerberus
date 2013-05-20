@@ -2,6 +2,10 @@
 
 Import mojo
 
+Extern
+Global UserAgent:String="navigator.userAgent"
+Public
+
 Class MyApp Extends App
 
 	Field tkey,soundFmt$,musicFmt$
@@ -23,12 +27,14 @@ Class MyApp Extends App
 		'HTML5 supports WAV, OGG, MP3, M4A. However...
 		'
 		'IE wont play WAV/OGG
-		'FF wont play MP3/M4A
-		'
-		'So this wont work on IE...
+		'FF wont play MP3/M4A/WAV
 		'
 		soundFmt="wav"
 		musicFmt="ogg"
+		If UserAgent.Contains( "MSIE " )
+			soundFmt="mp3"
+			musicFmt="mp3"
+		Endif
 		'
 #Elseif TARGET="flash"
 		'
