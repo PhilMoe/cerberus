@@ -1,4 +1,6 @@
 
+#If TARGET <> "html5"
+
 Import brl.asynctcpstream
 
 Private
@@ -6,12 +8,6 @@ Private
 Import brl.url
 
 Public
-
-Interface IOnHttpRequestComplete
-
-	Method OnHttpRequestComplete:Void( req:HttpRequest )
-	
-End
 
 Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 
@@ -196,7 +192,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 				Endif
 			Endif
 		Next
-#endif
+#end
 		_stream.ReadAll _rbuf,0,_rbuf.Length,Self
 	End
 	
@@ -206,5 +202,82 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_dataLength=0
 	End
 
+End
+
+#Else
+
+Private
+
+Import brl.thread
+Import brl.asyncevent
+Import brl.url
+
+Import "native/httprequestthread.${LANG}"
+
+Extern Private
+
+Class BBHttpRequestThread Extends BBThread = "BBHttpRequestThread"
+		
+	Method Discard:Void()
+	
+	Method SetHeader:Void(name:String, value:String)
+	
+	Method Status:Int()
+	
+	Method ResponseText:String()
+	
+	Method BytesReceived:Int()
+	
+	Private
+	
+	Method Init:Void(req:String, url:String)
+	
+	Method SendRequest:Void(data:String, mimeType:String)
+End
+
+Public
+
+Class HttpRequest Extends BBHttpRequestThread Implements IAsyncEventSource
+
+	Method New(req:String, url:String, onComplete:IOnHttpRequestComplete)
+		Open(req, url, onComplete)
+	End
+	
+	Method Open:Void(req:String, url:String, onComplete:IOnHttpRequestComplete)
+		_onComplete = onComplete
+		Init(req, New Url(url, "http", 80))
+	End Method
+	
+	Method Send:Void()
+		SendRequest("", "")
+	End Method
+	
+	Method Send:Void(data:String, mimeType:String = "text/plain;charset=UTF-8", encoding:String = "utf8")
+		SendRequest(data, mimeType)
+	End Method
+	
+	Method UpdateAsyncEvents:Void()	
+		If IsRunning() Return
+		RemoveAsyncEventSource Self
+		_onComplete.OnHttpRequestComplete(Self)
+	End Method
+	
+	Private
+	
+	Field _onComplete:IOnHttpRequestComplete
+	
+	Method SendRequest:Void(data:String, mimeType:String)
+		AddAsyncEventSource Self
+		Super.SendRequest(data, mimeType)
+	End Method
+
+End Class
+
+#End
+
+Interface IOnHttpRequestComplete
+
+	Method OnHttpRequestComplete:Void( req:HttpRequest )
+	
 End
 
