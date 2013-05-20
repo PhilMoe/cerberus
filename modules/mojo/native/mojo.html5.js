@@ -390,7 +390,6 @@ function gxtkChannel(){
 function gxtkAudio(){
 	this.game=BBHtml5Game.Html5Game();
 	this.okay=typeof(Audio)!="undefined";
-	this.nextchan=0;
 	this.music=null;
 	this.channels=new Array(33);
 	for( var i=0;i<33;++i ){
@@ -426,7 +425,7 @@ gxtkAudio.prototype.LoadSample=function( path ){
 
 gxtkAudio.prototype.PlaySample=function( sample,channel,flags ){
 	if( !this.okay ) return;
-
+	
 	var chan=this.channels[channel];
 
 	if( chan.state>0 ){
@@ -446,7 +445,7 @@ gxtkAudio.prototype.PlaySample=function( sample,channel,flags ){
 
 	var audio=sample.AllocAudio();
 	if( !audio ) return;
-	
+
 	audio.loop=(flags&1)!=0;
 	audio.volume=chan.volume;
 	audio.play();
