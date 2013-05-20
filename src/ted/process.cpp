@@ -404,7 +404,6 @@ int LineReader::readChar(){
 #else
     if( read( _fd,&c,1 )==1 ) return c;
 #endif
-//    printf( "recv EOF\n" );fflush( stdout );
     return -1;
 }
 

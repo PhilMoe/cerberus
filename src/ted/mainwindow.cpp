@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.18"
+#define TED_VERSION "1.17"
 
 #define SETTINGS_VERSION 2
 
@@ -48,6 +48,8 @@ void cdebug( const QString &q ){
 MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::MainWindow ){
 
     mainWindow=this;
+
+    QTextCodec::setCodecForCStrings( QTextCodec::codecForName( "UTF-8" ) );
 
 #ifdef Q_OS_MAC
     QCoreApplication::instance()->setAttribute( Qt::AA_DontShowIconsInMenus );
