@@ -116,7 +116,7 @@ Function Enquote$( str$,lang$ )
 			If Not t t="0"
 			Select lang
 			Case "cpp"
-				t="~qL~q\x"+t+"~qL~q"
+				t="~q L~q\x"+t+"~q L~q"
 			Default
 				t="\u"+("0000"+t)[-4..]
 			End
