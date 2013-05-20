@@ -37,8 +37,10 @@ Function LoadModpath:String()
 			val=val[..i]+t+val[e+1..]
 			i+=t.Length
 		Forever
-
-		Return val[1..-1]
+		
+		If val.StartsWith( "~q" ) And val.EndsWith( "~q" ) val=val[1..-1]
+		
+		Return val
 	Next
 	
 	Return ""

@@ -265,7 +265,6 @@ Class ApiDoccer Implements ILinkResolver
 	
 		Local modpath:=LoadModpath()
 
-		modpath=modpath[1..-1]		
 		modpath=modpath.Replace( "\","/" )
 		modpath=modpath.Replace( "|",";" )
 		
