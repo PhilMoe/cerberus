@@ -7,21 +7,17 @@
 
 /src/rebuildall
 /src/rebuildall.exe
-
 /src/createrelease
-
 /src/ted-build-*
 /src/ted/ted.pro.user*
 
 /docs/html
 
 /modules/brlx
-
 /modules/brl/native/GoogleAdMobAdsSdk*
-
-/targets/glfw/oalinst.exe
-
 /modules/mojo/native/*
 !/modules/mojo/native/mojo.html5.js
 !/modules/mojo/native/asyncimageloader.js
 !/modules/mojo/native/asyncsoundloader.js
+
+/targets/glfw/oalinst.exe
