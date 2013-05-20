@@ -9,7 +9,7 @@ Import brl.eventqueue
 
 Import maxgui.drivers
 
-Const Version:String = "0.2"
+Const Version:String = "0.3"
 
 Global mserverPort=50607
 Global localhostIp=HostIp( "localhost" )
@@ -458,70 +458,56 @@ Function HTTPDecode$( t$ )
 End Function
 
 Function WriteDataType(documentRequest:String, stream:TStream)
+
 	Local content:String = "text/plain"
 	Local i:Int = documentRequest.FindLast(".")
 	Local ext:String = ""
 	If i >= 0 And i < documentRequest.Length - 1 Then ext = documentRequest[i + 1..]
 
 	Select ext
-		Case "wav", "wave"
-			content = "audio/vnd.wave"
-		Case "webm"
-			content = "audio/webm"
-		Case "ra"
-			content = "audio/vnd.rn-realaudio"
-		Case "ogg"
-			content = "audio/ogg"
-		Case "mp3", "m4a"
-			content = "audio/mpeg"
-		
-		Case "gif"
-			content = "image/gif"
-			
-		Case "jpeg", "jpg", "jfif", "pjpeg"
-			content = "image/jpeg"
-			
-		Case "png"
-			content = "image/png"
-			
-		Case "svg"
-			content = "image/svg+xml"
-			
-		Case "tiff", "tff"
-			content = "image/tiff"
-			
-		Case "ico", "icon", "icn"
-			content = "image/vnd.microsoft.icon"
-			
-		Case "js"
-		 	content = "application/javascript"
-		
-		Case "xml"
-			content = "text/xml"
-			
-		Case "pdf"
-			content = "application/pdf"
-			
-		Case "zip"
-			content = "application/zip"
-			
-		Case "gzip"
-			content = "application/gzip"
-			
-		Case "cmd"
-			content = "text/cmd"
-			
-		Case "csv"
-			content = "text/csv"
-		
-		Case "css"
-			content = "text/css"
-		
-		Case "txt"
-			content = "text/plain"
-			
-		Case "html", "htm"
-			content = "text/html"
+	Case "wav", "wave"
+'		content = "audio/vnd.wave"
+		content = "audio/wav"
+	Case "webm"
+		content = "audio/webm"
+	Case "ra"
+		content = "audio/vnd.rn-realaudio"
+	Case "ogg"
+		content = "audio/ogg"
+	Case "mp3", "m4a"
+		content = "audio/mpeg"
+	Case "gif"
+		content = "image/gif"
+	Case "jpeg", "jpg", "jfif", "pjpeg"
+		content = "image/jpeg"
+	Case "png"
+		content = "image/png"
+	Case "svg"
+		content = "image/svg+xml"
+	Case "tiff", "tff"
+		content = "image/tiff"
+	Case "ico", "icon", "icn"
+		content = "image/vnd.microsoft.icon"
+	Case "js"
+	 	content = "application/javascript"
+	Case "xml"
+		content = "text/xml"
+	Case "pdf"
+		content = "application/pdf"
+	Case "zip"
+		content = "application/zip"
+	Case "gzip"
+		content = "application/gzip"
+	Case "cmd"
+		content = "text/cmd"
+	Case "csv"
+		content = "text/csv"
+	Case "css"
+		content = "text/css"
+	Case "txt"
+		content = "text/plain"
+	Case "html", "htm"
+		content = "text/html"
 	End Select
 	
 	WriteLine(stream, "Content-Type: " + content + ";")
