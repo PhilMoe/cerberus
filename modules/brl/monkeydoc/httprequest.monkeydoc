@@ -5,7 +5,7 @@ The httprequest module allows you to perform http requests such as GET and POST.
 
 Please see the [[HttpRequest]] class for more information.
 
-(Note: The httprequest module is only available on the android, ios and glfw targets.)
+Note: The httprequest module is only available on the glfw, android, ios and html5 targets. In addition, on html5 the server must be correctly configured to accept http requests.
 
 
 # Interface brl.httprequest.IOnHttpRequestComplete

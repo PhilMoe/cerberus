@@ -5,7 +5,7 @@ Creates and initialises object of given class.
 >> Syntax
 
 Local *Identifier:Class* [ = New *Class* ]
-  
+
 Local *Identifier:*= New *Class*
 
 >> Description
@@ -24,7 +24,7 @@ See the Classes section of the monkey language reference for more details on the
 
 <pre>
 Class MyObject
-&nbsp;&nbsp;Field whatever:Int = 1
+  Field whatever:Int = 1
 End
 
 Local thing:MyObject = New MyObject
