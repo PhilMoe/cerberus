@@ -1,9 +1,25 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** V71a *****
+***** V70f *****
 
-Mojo: Added experimental DrawPoly overload with textured image (vertex format is x,y,u,v) only available on glfw, ios, android, win8.
+HttpRequest: Merged devolonter's html5 version addition.
+
+Ted: Console utf8 friendlier.
+
+C++ lang: Print outputs utf8.
+
+Url: Fixed default scheme/port issue.
+
+ios target: Fixed admob not building problem.
+
+MServer: Fixed content type for wav files confusing Firefox.
+
+Android: Fixed ANDRIOD_VERSON_NAME in target config.txt.
+
+Trans: Added debug index checking for String[blah] exprs to cpp/js/as.
+
+Mojo: Added experimental DrawPoly overload with textured image (vertex format is x,y,u,v) - undocced and only available on glfw, ios, android, win8.
 
 Trans: Improved detection of virtual/final etc methods for C++, C# and Java translators.
 
@@ -23,7 +39,7 @@ Trans: Fixed String(0)<>"0" bug.
 
 Mojo: Fixed win8 DrawLine bug.
 
-Makedocs: Fixed issue with camelcase module names.
+Makedocs: Fixed issue with camelCase module names.
 
 Makedocs: Now searches all modules in MODPATH in bin/config.blah.txt files.
 
