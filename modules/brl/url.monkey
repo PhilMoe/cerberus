@@ -1,20 +1,29 @@
 
 Class Url
-	Method New(url:String, scheme:String = "", port:Int = 0)
-		Set(url)
+	Method New( url:String,scheme:String="",port:Int=0 )
+	
+		If scheme 
+			_defaultScheme=scheme
+		Else
+			_defaultScheme="http"
+		Endif
 		
-		'now override with passed in variables
-		If scheme.Length _scheme = scheme
-		If port > 0 _port = port
+		If port
+			_defaultPort=port
+		Else
+			_defaultPort=80
+		Endif
+		
+		Set( url )
 	End
 	
 	Method Set:Void(url:String)
 		_url = url
-		_scheme = "http"
+		_scheme = _defaultScheme
 		_username = ""
 		_password = ""
 		_domain = ""
-		_port = 80
+		_port = _defaultPort
 		_path = "/"
 		_query = ""
 		_fragment = ""
@@ -178,6 +187,8 @@ Class Url
 	Field _path:String
 	Field _query:String
 	Field _fragment:String
+	Field _defaultScheme:String
+	Field _defaultPort:Int
 End
 
 #rem
