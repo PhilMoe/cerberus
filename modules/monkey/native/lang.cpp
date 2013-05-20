@@ -619,6 +619,11 @@ public:
 		return rep->data;
 	}
 	
+	Char At( int index )const{
+		if( index<0 || index>=rep->length ) dbg_error( "Character index out of range" );
+		return rep->data[index]; 
+	}
+	
 	Char operator[]( int index )const{
 		return rep->data[index];
 	}
@@ -1357,6 +1362,22 @@ Float D2R=0.017453292519943295f;
 Float R2D=57.29577951308232f;
 
 int Print( String t ){
+	static std::vector<unsigned char> buf;
+	buf.clear();
+	t.Save( buf );
+	buf.push_back( '\n' );
+	buf.push_back( 0 );
+
+#if __cplusplus_winrt
+#if CFG_WIN8_PRINT_ENABLED
+	OutputDebugStringA( (const char*)&buf[0] );
+#endif
+#else
+	fputs( (const char*)&buf[0],stdout );
+	fflush( stdout );
+#endif
+	
+/*	
 	static char *buf;
 	static int len;
 	int n=t.Length();
@@ -1379,7 +1400,7 @@ int Print( String t ){
 	fputs( buf,stdout );
 	fflush( stdout );
 #endif
-
+*/
 	return 0;
 }
 

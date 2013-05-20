@@ -1,0 +1,35 @@
+> Keyword Shr
+
+Shr is a binary operator that performs the (signed) shift to right function.
+
+>> Syntax
+
+*value* Shr *shift amount*~n
+
+>> Description
+
+Shr shifts the bits within the binary representation of an integer value to the right by the given integer amount.
+
+The effect of shifting bits to the right is to exponentially halve the value of an integer for each shift amount.
+
+Note that Shr is a signed operator, which means that results will never be less than zero.
+
+>> See also
+
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+This example shows the effect of shifting a value right (up to 10 times):
+
+<pre>
+Function Main ()
+
+	Local a:Int = 1024
+	
+	For Local loop:Int = 1 To 10
+		Print a + " shifted right by " + loop + " = " + (a Shr loop)
+	Next
+
+End
+</pre>

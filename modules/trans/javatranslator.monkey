@@ -360,15 +360,20 @@ Class JavaTranslator Extends CTranslator
 			args+=TransType( arg.type )+" "+arg.munged
 		Next
 		
-		Local t$="public "+TransType( decl.retType )+" "+decl.munged+Bra( args )
+		Local t$=TransType( decl.retType )+" "+decl.munged+Bra( args )
 		
 		If decl.ClassScope() And decl.ClassScope().IsInterface()
-			Emit t+";"
+			Emit "public "+t+";"
 		Else If decl.IsAbstract()
-			Emit "abstract "+t+";"
+			Emit "public abstract "+t+";"
 		Else
-			Local q$
-			If decl.IsStatic() q+="static "
+			Local q$="public "
+			If decl.IsStatic()
+				q+="static "
+			Else If Not decl.IsVirtual()
+				q+="final "
+			Endif
+			
 			Emit q+t+"{"
 			EmitBlock decl
 			Emit "}"
@@ -410,7 +415,7 @@ Class JavaTranslator Extends CTranslator
 		Next
 		
 		Local q$
-		If classDecl.IsAbstract() q="abstract "
+		If classDecl.IsAbstract() q="abstract " Else If classDecl.IsFinal() q="final "
 		
 		Emit q+"class "+classid+" extends "+superid+bases+"{"
 		
@@ -456,6 +461,11 @@ Class JavaTranslator Extends CTranslator
 			If Not cdecl Continue
 			
 			For Local decl:=Eachin cdecl.Semanted
+			
+				If FuncDecl( decl ) And FuncDecl( decl ).IsCtor()
+					decl.ident=cdecl.ident+"_"+decl.ident
+				Endif
+			
 				MungDecl decl
 			Next
 		Next

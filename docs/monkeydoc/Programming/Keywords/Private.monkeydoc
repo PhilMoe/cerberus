@@ -14,7 +14,7 @@ If the Private directive is used in the main body of a module, all subsequent de
 
 >> See also
 
-[[Public]]  
+[[Public]]~n
 [Language reference](Language reference#visibility)
 
 >> Example

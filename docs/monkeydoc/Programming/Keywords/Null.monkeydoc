@@ -18,16 +18,16 @@ An object's handle may also be set to Null, thereby freeing the object and marki
 
 <pre>
 Class Example
-		Field something:Int
+&nbsp;&nbsp;&nbsp;&nbsp;Field something:Int
 End
 
 Function Main ()
 
-		Local e:Example
+&nbsp;&nbsp;&nbsp;&nbsp;Local e:Example
 
-		' e = New Example ' Uncomment this line to change the outcome...
+&nbsp;&nbsp;&nbsp;&nbsp;' e = New Example ' Uncomment this line to change the outcome...
 
-		If e = Null Then Print "Object doesn't exist!" Else Print "Object exists!"
+&nbsp;&nbsp;&nbsp;&nbsp;If e = Null Then Print "Object doesn't exist!" Else Print "Object exists!"
 
 End
 </pre>

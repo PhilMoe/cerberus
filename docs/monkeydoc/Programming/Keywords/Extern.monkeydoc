@@ -15,15 +15,15 @@ The optional Private modifier can be used to prevent external declarations from 
 For further information on Extern, please see the Extern section of the monkey language reference.
 
 >> See also
-[[Public]]  
+[[Public]]~n
 [Language reference](Language reference#extern)
 
 >> Example
 
 <pre>
 Extern
-	' External declarations
+&nbsp;&nbsp;' External declarations
 
 Public
-	' Return to public declarations
+&nbsp;&nbsp;' Return to public declarations
 </pre>

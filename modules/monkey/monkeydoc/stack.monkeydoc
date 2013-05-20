@@ -54,6 +54,11 @@ By default, this methods simply generates a runtime error. Extending classes sho
 Removes all items from the stack.
 
 
+# Method Length:Void( length:Int ) Property
+
+Sets the number of items in the stack.
+
+
 # Method Length:Int() Property
 
 Returns the number of items in the stack.
@@ -161,6 +166,37 @@ An index of 0 represents the bottom of the stack, and an index of length-1 repre
 Params: 
 
 index - valid integer index. Must be>=0 and <length.
+
+
+# Method Find:Int(value:T,start:Int=0)
+
+Finds the index of the first element in the statch equal to @value. The stack is searched starting at index @start.
+
+If not matching element is found, -1 is returned.
+
+
+# Method FindLast:Int(value:T)
+
+Finds the index of the last element in the statch equal to @value.
+
+If not matching element is found, -1 is returned.
+
+
+# Method FindLast:Int(value:T,start:Int)
+
+Finds the index of the last element in the statch equal to @value. The stack is searched starting at index @start.
+
+If not matching element is found, -1 is returned.
+
+
+# Method RemoveFirst:Void(value:T)
+
+Finds and removes the first element in the stack equal to @value.
+
+
+# Method RemoveLast:Void(value:T)
+
+Finds and removes the last element in the stack equal to @value.
 
 
 # Method RemoveEach:Void(value:T)

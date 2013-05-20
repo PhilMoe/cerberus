@@ -52,16 +52,21 @@ function error( err ){
 }
 
 function debugLog( str ){
-	print( str );
+	if( window.console!=undefined ) window.console.log( str );
 }
 
 function debugStop(){
-	error( "STOP" );
+	debugger;	//	error( "STOP" );
 }
 
 function dbg_object( obj ){
 	if( obj ) return obj;
 	error( "Null object access" );
+}
+
+function dbg_charCodeAt( str,index ){
+	if( index<0 || index>=str.length ) error( "Character index out of range" );
+	return str.charCodeAt( index );
 }
 
 function dbg_array( arr,index ){

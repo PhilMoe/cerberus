@@ -15,6 +15,7 @@ End may also be combined with a space followed by the block opening keyword. For
 Some examples are listed below.
 
 *Class-block closing options:*
+
 <pre>
 Class
 	' Contents...

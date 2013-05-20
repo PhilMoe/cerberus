@@ -1,0 +1,72 @@
+
+# Module brl.process
+
+# Import brl.databuffer
+
+
+# Class Process
+
+
+
+# Method Start:Void(cmd:String)
+
+Starts process.
+
+Returns true if process started successfully.
+
+
+# Method IsRunning:Bool() Property
+
+Returns true is process is currently running.
+
+
+# Method Wait:Int()
+
+Waits for process to finish and returns process exit code.
+
+
+# Method Kill:Void( exitCode:Int )
+
+Kills process.
+
+
+# Method StdoutAvail:Int()
+
+Returns the number of bytes available to be read from process stdout.
+
+
+# Method ReadStdout:Int(buffer:DataBuffer,offset:Int,count:Int )
+
+Reads bytes from process stdout into @buffer.
+
+Returns the number of bytes read.
+
+If the process is running and no bytes are available to be read, this method will block until at least 1 byte has been read.
+
+If the process has finished and no bytes are available to be read, this method will return 0.
+
+
+# Method StderrAvail:Int()
+
+Returns the number of bytes available to be read from process stderr.
+
+
+# Method ReadStderr:Int( buffer:DataBuffer,offset:Int,count:Int )
+
+Reads bytes from process stderr into @buffer.
+
+Returns the number of bytes read.
+
+If the process is running and no bytes are available to be read, this method will block until at least 1 byte has been read.
+
+If the process has finished and no bytes are available to be read, this method will return 0.
+
+
+# Method WriteStdin:Int( buffer:DataBuffer,offset:Int,count:Int )
+
+Writes bytes from @buffer to process stdin.
+
+
+# Function Execute:String( cmd:String )
+
+Runs a process, waits for it to finish, and returns the process stdout output.

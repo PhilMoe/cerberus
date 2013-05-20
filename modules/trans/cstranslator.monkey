@@ -347,9 +347,10 @@ Class CsTranslator Extends CTranslator
 			Local q$="public "
 			If decl.IsStatic()
 				q+="static "
-			Else If decl.overrides And Not decl.IsCtor()
+			Else If decl.overrides
 				q+="override "
-			Else
+				If Not decl.IsVirtual() q+="sealed "
+			Else If decl.IsVirtual()
 				q+="virtual "
 			Endif
 			
@@ -392,7 +393,7 @@ Class CsTranslator Extends CTranslator
 		Next
 		
 		Local q$
-		If classDecl.IsAbstract() q+="abstract "
+		If classDecl.IsAbstract() q+="abstract " Else If classDecl.IsFinal() q+="sealed "
 		
 		Emit q+"class "+classid+bases+"{"
 		

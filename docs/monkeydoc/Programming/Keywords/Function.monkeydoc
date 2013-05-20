@@ -16,8 +16,8 @@ Please see the Functions section of the monkey language reference for more infor
 
 >> See also
 
-[[End]]  
-[Language reference (Functions)](Language reference#functions)  
+[[End]]~n
+[Language reference (Functions)](Language reference#functions)~n
 [Language reference (Strict mode)](Language reference#strict)
 
 >> Examples
@@ -26,7 +26,7 @@ The Main function, required by all monkey programs.
 
 <pre>
 Function Main ()
-	Print "Hello"
+&nbsp;&nbsp;Print "Hello"
 End
 </pre>
 
@@ -34,7 +34,7 @@ The closing keyword End may be replaced with End Function if preferred:
 
 <pre>
 Function Main ()
-	Print "Hello"
+&nbsp;&nbsp;Print "Hello"
 End Function
 </pre>
 
@@ -44,8 +44,8 @@ The Main function in Strict mode; requires Int return type and Return statement.
 Strict
 
 Function Main:Int ()
-	Print "Hello"
-	Return 0
+&nbsp;&nbsp;Print "Hello"
+&nbsp;&nbsp;Return 0
 End
 </pre>
 
@@ -53,7 +53,7 @@ A function that returns the result of adding two floating-point values.
 
 <pre>
 Function AddFloats:Float (value1:Float, value2:Float)
-	Return value1 + value2
+&nbsp;&nbsp;Return value1 + value2
 End
 
 Print AddFloats (1, 2)
@@ -65,6 +65,6 @@ For functions that don't return a value in Strict mode, the Void return type mus
 Strict
 
 Function PrintMessage:Void (message:String)
-	Print message
+&nbsp;&nbsp;Print message
 End
 </pre>

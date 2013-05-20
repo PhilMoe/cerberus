@@ -18,7 +18,7 @@ Else can also be used in the single-line variant of If; the expression to be tes
 
 >> See also
 
-[[If]] [[Elseif]] [[Endif]]  
+[[If]] | [[Elseif]] | [[Endif]]~n
 [Language reference](Language reference#statements)  
 
 >> Examples
@@ -26,14 +26,14 @@ Else can also be used in the single-line variant of If; the expression to be tes
 <pre>
 ' Simple If check with alternative program flow following Else:
 
-		If a = 1
-				Print "a equals one"
-		Else
-				Print "a equals zero"
-		Endif
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
+&nbsp;&nbsp;&nbsp;&nbsp;Else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals zero"
+&nbsp;&nbsp;&nbsp;&nbsp;Endif
 
 ' Single-line variant:
 
-		If a = 1 Then Print "a equals one" Else Print "a equals zero"
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Then Print "a equals one" Else Print "a equals zero"
 
 </pre>

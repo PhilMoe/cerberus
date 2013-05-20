@@ -33,7 +33,7 @@ Class George Implements ILinkResolver,IPrettifier
 		"Const;Local;Global;Field;Method;Function;Class;Interface;Implements;"+
 		"And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"+
 		"Try;Catch;Throw;Throwable;"+
-		"Print;Error;").ToLower()
+		"Print;Error;Alias;").ToLower()
 	
 	Method New( styledir:String )
 		Self.styledir=styledir

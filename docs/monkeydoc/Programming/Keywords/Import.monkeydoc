@@ -17,7 +17,7 @@ To import another module, the Import keyword must be placed at the top of your s
 Monkey also supports cyclic imports, whereby modules can import each other, gaining access to each other's declarations.
 
 >> See also
-[[Strict]]  
+[[Strict]]~n
 [Language reference](Language reference#modules)
 
 >> Example
@@ -28,7 +28,7 @@ A common use case: importing the mojo module in a game application.
 Import mojo
 
 Function Main ()
-	' Game goes here!
+&nbsp;&nbsp;' Game goes here!
 End
 </pre>
 
@@ -40,8 +40,8 @@ Strict
 Import mojo
 
 Function Main:Int ()
-	' Game goes here!
-	Return 0
+&nbsp;&nbsp;' Game goes here!
+&nbsp;&nbsp;Return 0
 End
 </pre>
 
@@ -54,7 +54,7 @@ This runnable two-part example shows a main module followed by a module to be im
 ' Main module, save as, eg. mygame.monkey  
 Import hello  
 Function Main ()
-	SayHello
+&nbsp;&nbsp;SayHello
 End
 </pre>
 
@@ -62,7 +62,7 @@ End
 <pre>
 ' Save as hello.monkey  
 Function SayHello ()
-	Print "Hello"
+&nbsp;&nbsp;Print "Hello"
 End
 </pre>
 
@@ -79,7 +79,7 @@ Import player
 Import rocket
 Import bullet  
 Function Main ()
-	' Game goes here!
+&nbsp;&nbsp;' Game goes here!
 End
 </pre>
 

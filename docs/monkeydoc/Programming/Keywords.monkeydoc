@@ -18,7 +18,10 @@ The identifiers below are language keywords and are reserved for use by the Monk
 [[If]] | [[Then]] | [[Else]] | [[Elseif]] | [[Endif]] | [[While]] | [[Wend]] | [[Repeat]] | [[Until]] | [[Forever]] | [[For]] | [[To]] | [[Step]] | [[Eachin]] | [[Next]] | [[Select]] | [[Case]] | [[Default]] | [[End]] | [[Continue]] | [[Return]] | [[Exit]]
 
 >> Logic/misc
-And | Or | Shl | Shr | Not | Mod | [[True]] | [[False]]
+[[And]] | [[Or]] | [[Shl]] | [[Shr]] | [[Not]] | [[Mod]] | [[True]] | [[False]]
+
+>> Exceptions
+[[Try]] | [[Catch]] | [[Throw]]
 
 >> Reserved
 Module | Inline

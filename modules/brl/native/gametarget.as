@@ -110,14 +110,14 @@ class BBGame{
 	}
 	
 	public function SaveState( state:String ):int{
-		var file:SharedObject=SharedObject.getLocal( ".monkeystate" );
+		var file:SharedObject=SharedObject.getLocal( "monkeystate" );
 		file.data.state=state;
 		file.close();
 		return 0;
 	}
 	
 	public function LoadState():String{
-		var file:SharedObject=SharedObject.getLocal( ".monkeystate" );
+		var file:SharedObject=SharedObject.getLocal( "monkeystate" );
 		var state:String=file.data.state;
 		file.close();
 		if( state ) return state;

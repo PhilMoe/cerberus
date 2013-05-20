@@ -17,11 +17,11 @@ A filestream allows you to read/write data from/to a file.
 
 Opens a new filestream. The @mode parameter should be one of the following:
 
-+ "r" - open a filestream for reading. 
-
-+ "w" - open a filestream for writing. If the file does not already exist, it will be created. If the file already exists, it will be deleted first.
-
-+ "u" - open a filestream for updating. If the file does not already exist, it will be created.
+| Mode	| Description
+| "r"	| Open a filestream for reading. 
+| "w"	| Open a filestream for writing. If the file does not already exist, it will be created. If the file already exists, it will be emptied.
+| "u"	| Open a filestream for read/write updating. If the file does not already exist, it will be created.
+| "a"	| Open a filestream for read/write appending. This is the same as opening a filestream for updating and seeking to the end.
 
 Links:
 

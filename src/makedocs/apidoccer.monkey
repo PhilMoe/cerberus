@@ -1,7 +1,7 @@
 
 Import makedocs
-
 Import parser
+Import modpath
 
 Class Decl
 
@@ -15,6 +15,7 @@ Class Decl
 	Field uident:String								'unique identifier, eg: DrawImage(2)
 	Field docs:=New StringMap<String>				'maps sections to docs
 	Field egdir:String								'example data dir
+	Field srcinfo:String
 	
 	Method Init:Void( kind:String,ident:String,type:String,texts:String,timpls:String,scope:ScopeDecl )
 		'
@@ -34,7 +35,7 @@ Class Decl
 				i+=1
 				uident=ident+"("+i+")"
 			Wend
-			path=scope.path+"."+uident
+			path=scope.path+"."+ident
 			scope.decls.Push Self
 			scope.declsByUident.Set uident,Self
 			
@@ -210,7 +211,7 @@ Class ClassDecl Extends ScopeDecl
 					New AliasDecl( decl,Self )
 				Next
 			Next
-			Exit
+'			Exit
 			supr=supr.exts
 		Wend
 	End
@@ -261,8 +262,15 @@ Class ApiDoccer Implements ILinkResolver
 	End
 	
 	Method ParseDocs:Void()
+	
+		Local modpath:=LoadModpath()
 
-		ParseModules "modules",""
+		modpath=modpath.Replace( "\","/" )
+		modpath=modpath.Replace( "|",";" )
+		
+		For Local p:=Eachin modpath.Split( ";" )
+			If FileType( p )=FILETYPE_DIR ParseModules p,""
+		Next
 	End
 	
 	Method MakeDocs:Void()
@@ -272,6 +280,8 @@ Class ApiDoccer Implements ILinkResolver
 		Local template:=LoadString( george.styledir+"/scope_template.html" )
 		
 		Local maker:=New PageMaker( template )
+		
+		Local decls_txt:=New StringStack
 		
 		For Local decl:=Eachin scopes.Values
 		
@@ -285,7 +295,25 @@ Class ApiDoccer Implements ILinkResolver
 			Endif
 			
 			george.SetPageContent decl.PagePath(),page
+			
+			'update decls.txt
+			decls_txt.Push Capitalize( decl.kind )+" "+decl.path+StripLinks( decl.type.Replace( " ","" ) )+";"+george.GetPageUrl( decl.PagePath() )+";"+decl.srcinfo
+			For Local it:=Eachin decl.declsByKind
+				Local kind:=it.Key,tysep:=":"
+				Select kind
+				Case "ctor"
+					kind="method"
+					tysep=""
+				Case "import","class","interface"
+					Continue
+				End
+				For Local decl:=Eachin it.Value
+					decls_txt.Push Capitalize( kind )+" "+decl.path+tysep+StripLinks( decl.type.Replace( " ","" ) )+";"+george.GetPageUrl( decl.PagePath() )+";"+decl.srcinfo
+				Next
+			Next
 		Next
+		
+		SaveString decls_txt.Join( "~n" ),"docs/html/decls.txt"
 		
 	End
 	
@@ -323,7 +351,6 @@ Class ApiDoccer Implements ILinkResolver
 		maker.SetString "IDENT",decl.ident
 		maker.SetString "UIDENT",decl.uident
 		maker.SetString "URL",george.GetPageUrl( decl.PagePath() )
-'		maker.SetString "PATH",decl.path
 		maker.SetString "TYPE",StripLinks( HtmlEsc( decl.type ) )
 		maker.SetString "XTYPE",markdown.ToHtml( HtmlEsc( decl.type ) )
 		maker.SetString "EXTENDS",StripLinks( HtmlEsc( decl.texts ) )
@@ -499,8 +526,12 @@ Class ApiDoccer Implements ILinkResolver
 
 		Local src:=LoadString( srcpath ).Replace( "~r","" )
 		
+		Local srcline:=0
+		
 		For Local line:=Eachin src.Split( "~n" )
 		
+			srcline+=1
+			
 			parser.SetText line
 
 			If parser.Toke="#"
@@ -509,7 +540,8 @@ Class ApiDoccer Implements ILinkResolver
 					If parser.Bump()="monkeydoc"
 						If Not mdecl 
 							If parser.Bump()<>"module" Return
-							Local id:=parser.Bump()
+							parser.Bump()
+							Local id:=parser.ParseIdent()
 							If id<>modpath
 								george.Err "Modpath ("+modpath+") does not match module ident ("+id+")"
 								Return
@@ -525,12 +557,12 @@ Class ApiDoccer Implements ILinkResolver
 					If sect
 						If Not mdecl
 							mdecl=New ModuleDecl( New parser.Decl( "module",modpath ),Self )
+							mdecl.srcinfo=srcpath+":1"
 							scopes.Set mdecl.path,mdecl
 							george.AddPage mdecl.PagePath()
 							docscope=mdecl
 							AddDocsToDecl docs,mdecl
 							docs=Null
-							
 							LoadExample mdecl,egdir
 						Endif
 						sect=""
@@ -575,6 +607,7 @@ Class ApiDoccer Implements ILinkResolver
 				If pub Or docs
 				
 					Local cdecl:=New ClassDecl( parser.ParseDecl(),mdecl )
+					cdecl.srcinfo=srcpath+":"+srcline
 					scopes.Set cdecl.path,cdecl
 					AddDocsToDecl docs,cdecl
 					docscope=cdecl
@@ -590,6 +623,7 @@ Class ApiDoccer Implements ILinkResolver
 				If pub Or docs
 				
 					Local decl:=New Decl( parser.ParseDecl(),docscope )
+					decl.srcinfo=srcpath+":"+srcline
 					AddDocsToDecl docs,decl
 					
 					george.AddPage decl.PagePath()
@@ -618,7 +652,6 @@ Class ApiDoccer Implements ILinkResolver
 		scopes.Set mdecl.path,mdecl
 		
 		george.AddPage mdecl.PagePath()
-'		george.AddToIndex "Index",mdecl.path,mdecl.PagePath()
 		
 		Local scope:ScopeDecl=mdecl
 		Local sect:="description"

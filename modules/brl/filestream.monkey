@@ -28,26 +28,25 @@ Public
 Class FileStream Extends Stream
 
 	Method New( path:String,mode:String )
-		_stream=New BBFileStream
-		If Not _stream.Open( path,mode ) Error "Failed to open stream"
+		_stream=OpenStream( path,mode )
+		If Not _stream Error "Failed to open stream"
 	End
 	
 	Method Close:Void()
-		If _stream 
-			_stream.Close
-			_stream=Null
-		Endif
+		If Not _stream Return
+		_stream.Close
+		_stream=Null
 	End
 	
-	Method Eof:Int()
+	Method Eof:Int() Property
 		Return _stream.Eof()
 	End
 	
-	Method Length:Int()
+	Method Length:Int() Property
 		Return _stream.Length()
 	End
 	
-	Method Position:Int()
+	Method Position:Int() Property
 		Return _stream.Position()
 	End
 	
@@ -64,18 +63,26 @@ Class FileStream Extends Stream
 	End
 	
 	Function Open:FileStream( path:String,mode:String )
-		Local stream:=New BBFileStream
-		If stream.Open( path,mode ) Return New FileStream( stream )
+		Local stream:=OpenStream( path,mode )
+		If stream Return New FileStream( stream )
 		Return Null
 	End
 	
-	'***** INTERNAL *****
+	Private
+	
 	Method New( stream:BBFileStream )
 		_stream=stream
 	End
-
-	Private
 	
+	Function OpenStream:BBFileStream( path:String,mode:String )
+		Local stream:=New BBFileStream
+		Local fmode:=mode
+		If fmode="a" fmode="u"
+		If Not stream.Open( path,fmode ) Return Null
+		If mode="a" stream.Seek stream.Length()
+		Return stream
+	End
+
 	Field _stream:BBFileStream
 	
 End

@@ -177,8 +177,8 @@ ${ENDIF}
 			<td class="span1 name">Inherited Properties:</td>
 			<td>
 				<ul class="unstyled">
-					${FOR PROPERTIES}
-						<li><a href='#${UIDENT}'>${IDENT}</a> : ${TYPE}</li>
+					${FOR INHERITED_PROPERTIES}
+						<li><a href='${URL}'>${IDENT}</a> : ${TYPE}</li>
 					${NEXT}
 				</ul>
 			</td>
@@ -203,8 +203,8 @@ ${ENDIF}
 			<td class="span1 name">Inherited Functions:</td>
 			<td>
 				<ul class="unstyled">
-					${FOR FUNCTIONS}
-						<li><a href='#${UIDENT}'>${IDENT}</a> : ${TYPE}</li>
+					${FOR INHERITED_FUNCTIONS}
+						<li><a href='${URL}'>${IDENT}</a> : ${TYPE}</li>
 					${NEXT}
 				</ul>
 			</td>

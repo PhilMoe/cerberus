@@ -14,7 +14,7 @@ Endif marks the end of a conditional block. Optionally, the variant End If can b
 
 >> See also
 
-[[If]] [[Else]] [[Elseif]]  
+[[If]] | [[Else]] | [[Elseif]]~n
 [Language reference](Language reference#statements)  
 
 >> Examples
@@ -22,13 +22,13 @@ Endif marks the end of a conditional block. Optionally, the variant End If can b
 <pre>
 ' Simple variable check:
 
-		If a = 1
-				Print "a equals one"
-		Endif
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
+&nbsp;&nbsp;&nbsp;&nbsp;Endif
 
 ' Same, using End If instead of Endif:
 
-		If a = 1
-				Print "a equals one"
-		End If
+&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
+&nbsp;&nbsp;&nbsp;&nbsp;End If
 </pre>

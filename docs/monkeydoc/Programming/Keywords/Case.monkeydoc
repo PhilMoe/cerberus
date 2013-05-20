@@ -1,0 +1,41 @@
+> Keyword Case
+
+Case is part of the conditional Select block.  
+
+Program flow goes to the Case statement whose expression matches that of the Select statement; most Select blocks contain multiple Case statements.  
+
+>> Syntax
+
+Case *expression*~n
+
+>> Description
+
+See Select for more information on Case usage.  
+
+Note that a range of comma-separated values can be handled in a single Case statement to avoid duplication of code.  
+
+>> See also
+
+[[Select]] | [[Default]]~n
+[Language reference](Language reference#statements)  
+
+>> Example
+
+<pre>
+
+Print "Counting apples..."
+
+Local apples:Int = 1
+
+Select apples  
+	Case 1
+		Print "You have one apple!"
+	Case 2
+		Print "You have two apples!"
+	Case 3
+		Print "You have three apples!"
+End Select
+
+Print "Done counting!"
+
+</pre>

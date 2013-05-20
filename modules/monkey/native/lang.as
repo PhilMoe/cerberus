@@ -67,6 +67,11 @@ function dbg_array( arr:Array,index:int ):Array{
 	return arr;
 }
 
+function dbg_charCodeAt( str:String,index:int ):int{
+	if( index<0 || index>=str.length ) error( "Character index out of range" );
+	return str.charCodeAt( index );
+}
+
 function new_bool_array( len:int ):Array{
 	var arr:Array=new Array( len )
 	for( var i:int=0;i<len;++i ) arr[i]=false;

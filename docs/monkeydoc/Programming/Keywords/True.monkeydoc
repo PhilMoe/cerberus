@@ -7,5 +7,5 @@ Represents boolean true value.
 Boolean expressions evaluate to either true or false. In Monkey the operators True and False represent these two states.
 
 >> See also
-[[False]]  
+[[False]]~n
 [Language reference](Language reference#expressions)

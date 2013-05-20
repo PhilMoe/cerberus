@@ -12,6 +12,7 @@
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 #import <AVFoundation/AVAudioPlayer.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 #include <cmath>
 #include <cctype>

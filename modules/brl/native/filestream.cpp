@@ -41,18 +41,19 @@ bool BBFileStream::Open( String path,String mode ){
 	}else if( mode=="w" ){
 		fmode="wb";
 	}else if( mode=="u" ){
-		fmode="wb+";
+		fmode="rb+";
 	}else{
 		return false;
 	}
 
 	_file=BBGame::Game()->OpenFile( path,fmode );
+	if( !_file && mode=="u" ) _file=BBGame::Game()->OpenFile( path,"wb+" );
 	if( !_file ) return false;
 	
 	fseek( _file,0,SEEK_END );
-	_position=0;
 	_length=ftell( _file );
 	fseek( _file,0,SEEK_SET );
+	_position=0;
 	
 	return true;
 }
@@ -83,7 +84,7 @@ int BBFileStream::Position(){
 int BBFileStream::Seek( int position ){
 	if( !_file ) return 0;
 	
-	fseek( _file,0,SEEK_SET );
+	fseek( _file,position,SEEK_SET );
 	_position=ftell( _file );
 	return _position;
 }

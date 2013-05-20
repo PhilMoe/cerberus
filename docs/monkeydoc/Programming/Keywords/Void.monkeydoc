@@ -10,7 +10,7 @@ The Void return type is only required in Strict mode where no value is being ret
 
 >> See also
 
-[[Int]] [[Float]] [[String]] [[Bool]] [[Strict]]  
+[[Int]] | [[Float]] | [[String]] | [[Bool]] | [[Strict]]~n
 [Language reference](Language reference#functions)
 
 >> Example
@@ -23,6 +23,6 @@ Strict
 ' Void return type.
 
 Function SayHi:Void ()
-	Print "Hi"
+&nbsp;&nbsp;Print "Hi"
 End
 </pre>

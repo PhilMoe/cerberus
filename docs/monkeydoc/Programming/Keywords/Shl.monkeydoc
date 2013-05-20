@@ -1,0 +1,33 @@
+> Keyword Shl
+
+Shl is a binary operator that performs the shift to left function.
+
+>> Syntax
+
+*value* Shl *shift amount*~n
+
+>> Description
+
+Shl shifts the bits within the binary representation of an integer value to the left by the given integer amount.
+
+The effect of shifting bits to the left is to exponentially double the value of an integer for each shift amount.
+
+>> See also
+
+[Language reference](Language reference#expressions)  
+
+>> Example
+
+This example shows the effect of shifting a value left (up to 10 times):
+
+<pre>
+Function Main ()
+
+	Local a:Int = 1
+	
+	For Local loop:Int = 1 To 10
+		Print a + " shifted left by " + loop + " = " + (a Shl loop)
+	Next
+
+End
+</pre>

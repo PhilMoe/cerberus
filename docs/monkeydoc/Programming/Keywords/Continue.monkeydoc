@@ -1,0 +1,34 @@
+> Keyword Continue
+
+The Continue keyword causes program flow to jump immediately to the start of the next iteration of an enclosing For, While or Repeat loop.  
+
+>> Syntax
+
+Continue~n
+
+>> Description
+
+Continue can be used to jump directly to the next iteration of a loop without executing any further code within the loop.  
+
+>> See also
+
+[[For]] | [[While]] | [[Repeat]]~n
+[Language reference](Language reference#statements)  
+
+>> Example
+
+In this example, the remainder of the code within the loop (the Print statement in this case) is ignored if the value of *loop* is greater than 3.
+
+On reaching the Continue statement, program flow effectively skips the remainder of the code within the loop and moves on to the next iteration.
+
+<pre>
+
+For Local loop:Int = 1 To 10
+
+	If loop > 3 Then Continue
+	
+	Print loop
+
+Next
+
+</pre>

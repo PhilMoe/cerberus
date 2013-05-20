@@ -36,6 +36,17 @@ Class Stack<T>
 		Next
 		length=0
 	End
+	
+	Method Length:Void( newlength:Int ) Property
+		If newlength<length
+			For Local i:=newlength Until length
+				data[i]=NIL
+			Next
+		Else If newlength>data.Length
+			data=data.Resize( Max( length*2+10,newlength ) )
+		Endif
+		length=newlength
+	End
 
 	Method Length:Int() Property
 		Return length
@@ -88,7 +99,25 @@ Class Stack<T>
 	Method Get:T( index )
 		Return data[index]
 	End
-
+	
+	Method Find:Int( value:T,start:Int=0 )
+		For Local i:=start Until length
+			If Equals( data[i],value ) Return i
+		Next
+		Return -1
+	End
+	
+	Method FindLast:Int( value:T )
+		Return FindLast( value,length-1 )
+	End
+	
+	Method FindLast:Int( value:T,start:Int )
+		For Local i:=start To 0 Step -1
+			If Equals( data[i],value ) Return i
+		Next
+		Return -1
+	End
+	
 	Method Insert:Void( index,value:T )
 		If length=data.Length
 			data=data.Resize( length*2+10 )
@@ -106,6 +135,16 @@ Class Stack<T>
 		Next
 		length-=1
 		data[length]=NIL
+	End
+	
+	Method RemoveFirst:Void( value:T )
+		Local i:=Find( value )
+		If i<>-1 Remove i
+	End
+	
+	Method RemoveLast:Void( value:T )
+		Local i:=FindLast( value )
+		If i<>-1 Remove i
 	End
 	
 	Method RemoveEach:Void( value:T )

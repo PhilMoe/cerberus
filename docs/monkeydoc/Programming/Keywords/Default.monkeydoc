@@ -1,0 +1,36 @@
+> Keyword Default
+
+Default is part of the conditional Select block.  
+
+Program flow goes to the Default statement when none of the supplied Case expressions matches the Select statement. It is therefore very useful for handling 'unexpected' situations.  
+
+>> Syntax
+
+Default~n
+&nbsp;&nbsp;&nbsp;&nbsp;*statement*  
+
+>> Description
+
+See Select for more information on using Default.  
+
+>> See also
+
+[[Select]] | [[Case]]~n
+[Language reference](Language reference#statements)  
+
+>> Example  
+
+<pre>
+
+Local bananas:Int = 2
+
+Select bananas
+	Case 0
+		Print "No bananas? I feel bad for you."
+	Case 1, 2, 3
+		Print "You have between one and three bananas. That's reasonable."
+	Default
+		Print "You have too many bananas! Nobody can eat " + bananas + " bananas!"
+End
+
+</pre>

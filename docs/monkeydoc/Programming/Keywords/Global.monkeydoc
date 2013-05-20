@@ -16,7 +16,7 @@ The alternative syntax provided allows the variable's type to be deduced from th
 
 >> See also
 
-[[Const]] [[Local]] [[Field]]  
+[[Const]] | [[Local]] | [[Field]]~n
 [Language reference](Language reference#variables)
 
 >> Example

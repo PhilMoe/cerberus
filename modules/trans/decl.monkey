@@ -641,6 +641,7 @@ Const FUNC_METHOD=1		'mutually exclusive with ctor
 Const FUNC_CTOR=2
 Const FUNC_PROPERTY=4
 Const FUNC_CALLSCTOR=8
+Const FUNC_OVERRIDDEN=16
 
 'Fix! A func is NOT a block/scope!
 '
@@ -676,7 +677,7 @@ Class FuncDecl Extends BlockDecl
 		Local cdecl:=ClassScope(),sclass:ClassDecl
 		
 		If cdecl sclass=ClassDecl( cdecl.superClass )
-
+		
 		'semant ret type
 		If IsCtor()
 			retType=cdecl.objectType
@@ -714,6 +715,7 @@ Class FuncDecl Extends BlockDecl
 					decl.Semant
 					If EqualsFunc( decl ) 
 						overrides=decl
+						decl.attrs|=FUNC_OVERRIDDEN
 						Exit
 					Endif
 				Next
@@ -760,12 +762,17 @@ Class FuncDecl Extends BlockDecl
 		Return (attrs & FUNC_METHOD)<>0
 	End
 	
-	Method IsStatic?()
-		Return (attrs & (FUNC_METHOD|FUNC_CTOR))=0
-	End
-	
 	Method IsProperty?()
 		Return (attrs & FUNC_PROPERTY)<>0
+	End
+
+	Method IsVirtual?()	
+		Return (attrs & (DECL_ABSTRACT|FUNC_OVERRIDDEN))<>0
+	End
+
+	'Not a method AND not a ctor
+	Method IsStatic?()
+		Return (attrs & (FUNC_METHOD|FUNC_CTOR))=0
 	End
 	
 	Method EqualsArgs?( decl:FuncDecl )
