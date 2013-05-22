@@ -13,10 +13,11 @@
 | Module					| Contains																|Availability
 | [[brl.filestream]]		| The [[FileStream]] class for reading and writing files				|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.filesystem]]		| Functions for examining and modifying the filesystem					|Android, iOS, Win8, Glfw, Stdcpp
-| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data					|All
+| [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data						|All
 | [[brl.datastream]]		| The [[DataStream]] class for reading and writing databuffers			|All
-| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously		|All
-| [[brl.process]]			| The [[Process]] class for executing processes						|Glfw, Stdcpp
+| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously			|All
+| [[brl.asyncstream]]		| The [[AsyncStream]] class for asynchronous data transfers			|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.process]]			| The [[Process]] class for executing processes							|Glfw, Stdcpp
 
 >> Networking
 
@@ -24,6 +25,7 @@
 | [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp transfers					|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.asynctcpstream]]	| The [[AsyncTcpStream]] class for asynchronous tcp transfers			|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.tcpserver]]			| The [[TcpServer]] class for creating tcp servers						|Glfw, Stdcpp
 | [[brl.url]]				| The [[Url]] class for manipulating urls								|All
 
 >> Math and Numeric
