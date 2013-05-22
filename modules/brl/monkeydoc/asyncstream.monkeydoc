@@ -52,6 +52,14 @@ To begin writing data asynchronously to an async stream, use the [[Write]] or [[
 
 (Note: async streams are only currently available on the stdcpp, glfw, android and ios targets.)
 
+
+# Method New( stream:Stream )
+
+Creates a new async stream from an existing stream.
+
+The given @stream must support async operations. Currently, only [[FileStream]] and [[TcpStream]] streams support async operations.
+
+
 # Method Read:Void( data:DataBuffer,offset:Int,count:Int,onComplete:IOnReadComplete )
 
 Begins reading from the async stream and returns immediately. 

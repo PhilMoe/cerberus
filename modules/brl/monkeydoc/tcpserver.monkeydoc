@@ -1,0 +1,39 @@
+
+# Module brl.tcpserver
+
+
+# Class TcpServer
+
+
+# Method Port:Int() Property
+
+Returns the local port the server is bound to.
+
+
+# Method Listen:Void( backlog:Int )
+
+Starts listening for incoming connections.
+
+
+# Method Accept:TcpStream()
+
+Accepts a new connection.
+
+If no connection is available, Null is returned.
+
+If you want to perform asynchronous operations with the stream, you can use it to create a new [[AsyncStream]] object.
+
+
+# Method Close:Void()
+
+Closes the server.
+
+
+# Function Create:TcpServer( port:Int )
+
+Creates a new TcpServer bound to @port.
+
+If @port if 0, a port is allocated for the server.
+
+If an error occurs, Null is returned.
+

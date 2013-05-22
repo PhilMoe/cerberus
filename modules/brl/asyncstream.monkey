@@ -155,6 +155,13 @@ End
 
 Class AsyncStream Implements IAsyncEventSource
 
+	Method New()
+	End
+	
+	Method New( stream:Stream )
+		Start stream.GetNativeStream()
+	End
+
 	Method Read:Void( data:DataBuffer,offset:Int,count:Int,onComplete:IOnReadComplete )
 		If Not _rthread Error "Not started"
 		Local op:=_readOpPool.Allocate()

@@ -16,7 +16,7 @@ Class AsyncTcpConnector Extends Thread Implements IAsyncEventSource
 
 	Method Connect:Void( stream:TcpStream,host:String,port:Int,onComplete:IOnConnectComplete )
 		AddAsyncEventSource Self
-		_stream=stream.GetBBTcpStream()
+		_stream=stream.GetNativeTcpStream()
 		_onComplete=onComplete
 		_host=host
 		_port=port

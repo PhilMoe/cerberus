@@ -17,7 +17,7 @@ Class AsyncTcpStream Extends AsyncStream Implements IOnConnectComplete
 	Field _onConnect:IOnConnectComplete
 	
 	Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
-		If connected Super.Start _tcpStream.GetBBTcpStream()
+		If connected Super.Start _tcpStream.GetNativeStream()
 		_onConnect.OnConnectComplete connected,Self
 	End
 

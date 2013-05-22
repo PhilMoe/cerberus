@@ -26,6 +26,7 @@ class BBTcpStream : public BBStream{
 public:
 
 	BBTcpStream();
+	BBTcpStream( int sock );
 	~BBTcpStream();
 	
 	bool Connect( String addr,int port );
@@ -37,14 +38,18 @@ public:
 	int Read( BBDataBuffer *buffer,int offset,int count );
 	int Write( BBDataBuffer *buffer,int offset,int count );
 	
+	static void InitSockets();
+	
 private:
 	int _sock;
 	int _state;	//0=INIT, 1=CONNECTED, 2=CLOSED, -1=ERROR
+	
+	void SetSockOpts();
 };
 
 // ***** tcpstream.cpp *****
 
-BBTcpStream::BBTcpStream():_sock(-1),_state(0){
+void BBTcpStream::InitSockets(){
 #if _WIN32
 	static bool started;
 	if( !started ){
@@ -55,12 +60,20 @@ BBTcpStream::BBTcpStream():_sock(-1),_state(0){
 #endif
 }
 
+BBTcpStream::BBTcpStream():_sock( -1 ),_state( 0 ){
+	InitSockets();
+}
+
+BBTcpStream::BBTcpStream( int sock ):_sock( sock ),_state( 1 ){
+	int nodelay=1;
+	setsockopt( _sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&nodelay,sizeof(nodelay) );
+}
+
 BBTcpStream::~BBTcpStream(){
 	if( _sock>=0 ) closesocket( _sock );
 }
 
 bool BBTcpStream::Connect( String addr,int port ){
-
 	if( _state ) return false;
 
 	if( addr.Length()>1023 ) return false;
@@ -78,18 +91,8 @@ bool BBTcpStream::Connect( String addr,int port ){
 				sa.sin_addr.s_addr=inet_addr( hostip );
 				sa.sin_port=htons( port );
 				if( connect( _sock,(const sockaddr*)&sa,sizeof(sa) )>=0 ){
-/*				
-					int rcvbuf=16384;
-					if( setsockopt( _sock,SOL_SOCKET,SO_RCVBUF,(const char*)&rcvbuf,sizeof(rcvbuf) )<0 ){
-						puts( "setsockopt failed!" );
-					}
-*/
-				
 					int nodelay=1;
-					if( setsockopt( _sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&nodelay,sizeof(nodelay) )<0 ){
-						puts( "setsockopt failed!" );
-					}
-
+					setsockopt( _sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&nodelay,sizeof(nodelay) );
 					_state=1;
 					return true;
 				}

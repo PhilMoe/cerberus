@@ -74,7 +74,15 @@ Class TcpStream Extends Stream
 	End
 	
 	'***** INTERNAL *****
-	Method GetBBTcpStream:BBTcpStream()
+	Method New( stream:BBTcpStream )
+		_stream=stream
+	End
+	
+	Method GetNativeStream:BBStream()
+		Return _stream
+	End
+	
+	Method GetNativeTcpStream:BBTcpStream()
 		Return _stream
 	End
 	
