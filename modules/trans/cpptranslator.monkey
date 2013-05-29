@@ -10,9 +10,10 @@ Const PROFILE?=True
 
 Class CppTranslator Extends CTranslator
 
-	Field unsafe
-	Field lastDbgInfo$
+	Field unsafe:=True
+	Field lastDbgInfo:=""
 	Field dbgLocals:=New Stack<LocalDecl>
+	Field gc_mode=0
 
 	Method TransType$( ty:Type )
 		If VoidType( ty ) Return "void"
@@ -49,15 +50,63 @@ Class CppTranslator Extends CTranslator
 		Local t$
 		For Local arg:=Eachin args
 			If t t+=","
-			t+=arg.Trans()
+			Local targ:=arg.Trans()
+			If IsGcObject( arg ) And (IsHeapVal( arg ) Or IsInvoke( arg )) targ=Retain( targ )
+			t+=targ
 		Next
 		Return Bra(t)
 	End
 	
 	'***** Utility *****
 	
+	Method Retain$( str:String )
+		If unsafe Or gc_mode<>2 Return str
+		Return "gc_retain("+str+")"
+	End
+	
+	Method Uncast:Expr( expr:Expr )
+		Repeat
+			Local cexpr:=CastExpr( expr )
+			If Not cexpr Return expr
+			expr=cexpr.expr
+		Forever
+	End
+	
+	Method IsGcObject?( expr:Expr )
+		expr=Uncast( expr )
+		If ConstExpr( expr ) Return False
+		If Not ObjectType( expr.exprType ) And Not ArrayType( expr.exprType ) Return False
+		If ObjectType( expr.exprType ) And Not expr.exprType.GetClass().ExtendsObject() Return False
+		Return True
+	End
+	
+	Method IsInvoke?( expr:Expr )
+		expr=Uncast( expr )
+		Return InvokeExpr( expr ) Or InvokeMemberExpr( expr ) Or InvokeSuperExpr( expr )
+	End
+	
+	Method IsLocalVar?( expr:Expr )
+		expr=Uncast( expr )
+		Local vexpr:=VarExpr( expr )
+		Return vexpr And LocalDecl( vexpr.decl )
+	End
+	
+	Method IsHeapVal?( expr:Expr )
+		expr=Uncast( expr )
+		If IndexExpr( expr ) Return True
+		Local decl:Decl
+		If VarExpr( expr ) 
+			decl=VarExpr( expr ).decl
+		Else If MemberVarExpr( expr )
+			decl=MemberVarExpr( expr ).decl
+		End
+		Return FieldDecl( decl ) Or GlobalDecl( decl )
+	End
+		
 	Method TransLocalDecl$( munged$,init:Expr )
-		Return TransType( init.exprType )+" "+munged+"="+init.Trans()
+		Local tinit:=init.Trans()
+		If IsGcObject( init ) And (IsHeapVal( init ) Or IsInvoke( init )) tinit=Retain(tinit)
+		Return TransType( init.exprType )+" "+munged+"="+tinit
 	End
 	
 	Method BeginLocalScope()
@@ -152,20 +201,21 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	'***** Expressions *****
-
+	
 	Method TransConstExpr$( expr:ConstExpr )
 		Return TransValue( expr.exprType,expr.value )
 	End
 	
 	Method TransNewObjectExpr$( expr:NewObjectExpr )
+	
 		Local t$="(new "+expr.classDecl.munged+")"
 		If expr.ctor t+="->"+expr.ctor.munged+TransArgs( expr.args,expr.ctor )
 		Return t
 	End
 	
 	Method TransNewArrayExpr$( expr:NewArrayExpr )
+	
 		Local texpr$=expr.expr.Trans()
-		'
 		Return "Array<"+TransRefType( expr.ty )+" >"+Bra( expr.expr.Trans() )
 	End
 		
@@ -246,6 +296,9 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	Method TransSliceExpr$( expr:SliceExpr )
+	
+'		If ArrayType( expr.expr.exprType ) GcEnter
+		
 		Local t_expr:=TransSubExpr( expr.expr )
 		Local t_args:="0"
 		If expr.from t_args=expr.from.Trans()
@@ -254,7 +307,7 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	Method TransArrayExpr$( expr:ArrayExpr )
-
+	
 		Local elemType:=ArrayType( expr.exprType ).elemType
 
 		Local t$
@@ -337,6 +390,13 @@ Class CppTranslator Extends CTranslator
 
 	'***** Statements *****
 	
+	Method BeginLoop()
+		If gc_mode=2 Emit "GC_ENTER"
+	End
+	
+	Method EndLoop()
+	End
+	
 	Method TransTryStmt$( stmt:TryStmt )
 		Emit "try{"
 		Local unr:=EmitBlock( stmt.block )
@@ -364,34 +424,24 @@ Class CppTranslator Extends CTranslator
 	End
 
 	Method TransAssignStmt2$( stmt:AssignStmt )
-		'
-		Local ty:=stmt.lhs.exprType
-		
-		If ObjectType( ty ) Or ArrayType( ty )
-		
-			'Ignore Object null assignments, ie: =Null
-			If ObjectType( ty ) And ConstExpr( stmt.rhs )
-				Return Super.TransAssignStmt2( stmt )
-			Endif
-
-			'Ignore 'unmanaged' objects...
-			If ObjectType( ty ) And Not ty.GetClass().ExtendsObject()
-				Return Super.TransAssignStmt2( stmt )
-			Endif
-			
-			'Ignore local var assignments
-			Local varExpr:=VarExpr( stmt.lhs )
-			If varExpr And LocalDecl( varExpr.decl )
-				Return Super.TransAssignStmt2( stmt )
-			Endif
-			
-			Local t_lhs:=stmt.lhs.TransVar()
-			Local t_rhs:=stmt.rhs.Trans()
-
-			Return "gc_assign("+t_lhs+","+t_rhs+")"
-			
+	
+		If gc_mode=0 Or stmt.op<>"=" Or Not IsGcObject( stmt.rhs ) 
+			Return Super.TransAssignStmt2( stmt )
 		Endif
-		Return Super.TransAssignStmt2( stmt )
+		
+		Local tlhs:=stmt.lhs.TransVar()
+		Local trhs:=stmt.rhs.Trans()
+		
+		If IsLocalVar( stmt.lhs )
+			If IsHeapVal( stmt.rhs ) Or IsInvoke( stmt.rhs ) trhs=Retain( trhs )
+			Return tlhs+"="+trhs
+		Endif
+		
+		If gc_mode=2 And IsLocalVar( stmt.rhs )
+			Return tlhs+"="+trhs
+		End
+		
+		Return "gc_assign("+tlhs+","+trhs+")"
 	End
 	
 	'***** Declarations *****
@@ -437,13 +487,17 @@ Class CppTranslator Extends CTranslator
 		
 		Emit TransType( decl.retType )+" "+id+Bra( args )+"{"
 		
+		BeginLoop
+		
 		EmitBlock decl
-
+		
+		EndLoop
+		
 		Emit "}"
 		
 		EndLocalScope
 		
-		unsafe=false
+		unsafe=True
 	End
 	
 	Method EmitClassProto( classDecl:ClassDecl )
@@ -539,16 +593,16 @@ Class CppTranslator Extends CTranslator
 	
 	Method EmitMark( id$,ty:Type,queue? )
 	
-		If ObjectType( ty ) Or ArrayType( ty )
+		If gc_mode=0 Return
+		
+		If Not ObjectType( ty ) And Not ArrayType( ty ) Return
 
-			'Ignore 'unmanaged' objects...
-			If ObjectType( ty ) And Not ty.GetClass().ExtendsObject() Return
-
-			If queue
-				Emit "gc_mark_q("+id+");"
-			Else
-				Emit "gc_mark("+id+");"
-			Endif
+		If ObjectType( ty ) And Not ty.GetClass().ExtendsObject() Return
+	
+		If queue
+			Emit "gc_mark_q("+id+");"
+		Else
+			Emit "gc_mark("+id+");"
 		Endif
 
 	End
@@ -565,6 +619,7 @@ Class CppTranslator Extends CTranslator
 		'fields ctor
 		BeginLocalScope
 		Emit classid+"::"+classid+"(){"
+		If gc_mode=2 Emit "GC_CTOR"
 		For Local decl:=Eachin classDecl.Semanted
 			Local fdecl:=FieldDecl( decl )
 			If Not fdecl Continue
@@ -632,6 +687,11 @@ Class CppTranslator Extends CTranslator
 	
 	Method TransApp$( app:AppDecl )
 	
+		If Not _cfgVars.Contains( "CPP_GC_MODE" ) _cfgVars.Set "CPP_GC_MODE","1"
+		
+		gc_mode=Int( _cfgVars.Get( "CPP_GC_MODE" ) )
+'		Print "gc_mode="+gc_mode
+	
 		app.mainFunc.munged="bbMain"
 		
 		For Local decl:=Eachin app.imported.Values()
@@ -698,6 +758,7 @@ Class CppTranslator Extends CTranslator
 		
 		BeginLocalScope
 		Emit "int bbInit(){"
+		Emit "GC_CTOR"
 		For Local decl:=Eachin app.semantedGlobals
 			Local munged:=TransGlobal( decl )
 			Emit munged+"="+decl.init.Trans()+";"

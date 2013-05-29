@@ -19,6 +19,14 @@ typedef float Float;
 #define FLOAT(X) X##f
 #endif
 
+#ifndef INT64
+#if _WIN32
+typedef __int64 INT64;
+#else
+typedef long long INT64;
+#endif
+#endif
+
 void dbg_error( const char *p );
 
 #if !_MSC_VER
@@ -30,22 +38,25 @@ void dbg_error( const char *p );
 
 #define DEBUG_GC 0
 
-//How many objects to mark per collect
+// GC mode:
 //
-#ifndef CFG_CPP_GC_MARK_RATE
-#define CFG_CPP_GC_MARK_RATE 2500
+// 0 = disabled
+// 1 = Full GC every OnUpdate
+// 2 = Incremental GC every OnUpdate
+// 3 = Incremental GC every allocation
+//
+#ifndef CFG_CPP_GC_MODE
+#define CFG_CPP_GC_MODE 1
 #endif
 
-//How much to alloc (since last sweep) before a sweep can occur
+//How many bytes alloced to trigger GC
 //
 #ifndef CFG_CPP_GC_TRIGGER
-#define CFG_CPP_GC_TRIGGER 4*1024*1024
+#define CFG_CPP_GC_TRIGGER 8*1024*1024
 #endif
 
-//How much to alloc (since last sweep ) before a sweep is forced
-//
-#ifndef CFG_CPP_GC_PANIC
-#define CFG_CPP_GC_PANIC 64*1024*1024
+#ifndef CFG_CPP_GC_MAX_LOCALS
+#define CFG_CPP_GC_MAX_LOCALS 8192
 #endif
 
 // ***** GC *****
@@ -94,8 +105,6 @@ int gc_micros(){
 
 #endif
 
-//***** New GC *****
-
 #define gc_mark_roots gc_mark
 
 void gc_mark_roots();
@@ -133,15 +142,19 @@ gc_object gc_queued_list;	//doesn't really need to be doubly linked...
 bool gc_force_sweep;
 
 int gc_free_bytes;
-int gc_marked_objs;
 int gc_marked_bytes;
 int gc_alloced_bytes;
 int gc_max_alloced_bytes;
+int gc_new_bytes;
 int gc_markbit=1;
 
-int gc_alloced_objs;
-
 gc_object *gc_cache[8];
+
+int gc_ctor_nest;
+gc_object *gc_locals[CFG_CPP_GC_MAX_LOCALS],**gc_locals_sp=gc_locals;
+
+void gc_collect_all();
+void gc_mark_queued( int n );
 
 #define GC_CLEAR_LIST( LIST ) ((LIST).succ=(LIST).pred=&(LIST))
 
@@ -168,6 +181,45 @@ void gc_init2(){
 	gc_mark_roots();
 }
 
+#if CFG_CPP_GC_MODE==2
+
+struct gc_ctor{
+	gc_ctor(){ ++gc_ctor_nest; }
+	~gc_ctor(){ --gc_ctor_nest; }
+};
+
+struct gc_enter{
+	gc_object **sp;
+	gc_enter():sp(gc_locals_sp){
+	}
+	~gc_enter(){
+	/*
+		static int max_locals;
+		int n=gc_locals_sp-gc_locals;
+		if( n>max_locals ){
+			max_locals=n;
+			printf( "max_locals=%i\n",n );
+		}
+	*/
+		gc_locals_sp=sp;
+	}
+};
+
+#define GC_CTOR gc_ctor _c;
+#define GC_ENTER gc_enter _e;
+
+#else
+
+struct gc_ctor{
+};
+struct gc_enter{
+};
+
+#define GC_CTOR
+#define GC_ENTER
+
+#endif
+
 void gc_flush_free( int size ){
 
 	int t=gc_free_bytes-size;
@@ -190,8 +242,34 @@ gc_object *gc_object_alloc( int size ){
 
 	size=(size+7)&~7;
 	
-	gc_flush_free( size );
+#if CFG_CPP_GC_MODE==1
+
+	gc_new_bytes+=size;
 	
+#elif CFG_CPP_GC_MODE==2
+
+	if( !gc_ctor_nest ){
+#if DEBUG_GC
+		int ms=gc_micros();
+#endif
+		if( gc_new_bytes+size>(CFG_CPP_GC_TRIGGER) ){
+			gc_collect_all();
+			gc_new_bytes=size;
+		}else{
+			gc_new_bytes+=size;
+			gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
+		}
+		
+#if DEBUG_GC
+		ms=gc_micros()-ms;
+		if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
+#endif
+	}
+
+#endif
+
+	gc_flush_free( size );
+
 	gc_object *p;
 	if( size<64 && (p=gc_cache[size>>3]) ){
 		gc_cache[size>>3]=p->succ;
@@ -200,15 +278,15 @@ gc_object *gc_object_alloc( int size ){
 	}
 	
 	p->flags=size|gc_markbit;
-	
 	GC_INSERT_NODE( p,&gc_unmarked_list );
-	
+
 	gc_alloced_bytes+=size;
-	
 	if( gc_alloced_bytes>gc_max_alloced_bytes ) gc_max_alloced_bytes=gc_alloced_bytes;
 	
-	gc_alloced_objs+=1;
-	
+#if CFG_CPP_GC_MODE==2
+	*gc_locals_sp++=p;
+#endif
+
 	return p;
 }
 
@@ -234,7 +312,6 @@ template<class T> void gc_mark( T *t ){
 		GC_REMOVE_NODE( p );
 		GC_INSERT_NODE( p,&gc_marked_list );
 		gc_marked_bytes+=(p->flags & ~7);
-		++gc_marked_objs;
 		p->mark();
 	}
 }
@@ -250,99 +327,127 @@ template<class T> void gc_mark_q( T *t ){
 	}
 }
 
+template<class T> T *gc_retain( T *t ){
+#if CFG_CPP_GC_MODE==2
+	*gc_locals_sp++=dynamic_cast<gc_object*>( t );
+#endif	
+	return t;
+}
+
 template<class T,class V> void gc_assign( T *&lhs,V *rhs ){
-
 	gc_object *p=dynamic_cast<gc_object*>(rhs);
-
 	if( p && (p->flags & 3)==gc_markbit ){
 		p->flags^=1;
 		GC_REMOVE_NODE( p );
 		GC_INSERT_NODE( p,&gc_queued_list );
 	}
-
 	lhs=rhs;
 }
 
-void gc_collect(){
+void gc_mark_locals(){
+	for( gc_object **pp=gc_locals;pp!=gc_locals_sp;++pp ){
+		gc_object *p=*pp;
+		if( p && (p->flags & 3)==gc_markbit ){
+			p->flags^=1;
+			GC_REMOVE_NODE( p );
+			GC_INSERT_NODE( p,&gc_marked_list );
+			gc_marked_bytes+=(p->flags & ~7);
+			p->mark();
+		}
+	}
+}
 
-#if DEBUG_GC
-	int us=gc_micros();
-#endif
-
-	static int last_alloced;
-	
-	int alloced=gc_alloced_bytes-last_alloced;
-	
-	bool sweep=gc_force_sweep || alloced>CFG_CPP_GC_PANIC;
-	
-	int mark=sweep ? 0x7fffffff : gc_marked_objs+CFG_CPP_GC_MARK_RATE;
-
-	while( !GC_LIST_IS_EMPTY( gc_queued_list ) && gc_marked_objs<mark ){
+void gc_mark_queued( int n ){
+	while( gc_marked_bytes<n && !GC_LIST_IS_EMPTY( gc_queued_list ) ){
 		gc_object *p=gc_queued_list.succ;
 		GC_REMOVE_NODE( p );
 		GC_INSERT_NODE( p,&gc_marked_list );
 		gc_marked_bytes+=(p->flags & ~7);
-		++gc_marked_objs;
 		p->mark();
 	}
+}
 
-	if( alloced>CFG_CPP_GC_TRIGGER && GC_LIST_IS_EMPTY( gc_queued_list ) ){
-		sweep=true;
+//returns reclaimed bytes
+int gc_sweep(){
+
+	int reclaimed_bytes=gc_alloced_bytes-gc_marked_bytes;
+	
+	if( reclaimed_bytes ){
+	
+		//append unmarked list to end of free list
+		gc_object *head=gc_unmarked_list.succ;
+		gc_object *tail=gc_unmarked_list.pred;
+		gc_object *succ=&gc_free_list;
+		gc_object *pred=succ->pred;
+		head->pred=pred;
+		tail->succ=succ;
+		pred->succ=head;
+		succ->pred=tail;
+		
+		gc_free_bytes+=reclaimed_bytes;
 	}
 	
-	int reclaimed_bytes=-1;
+	//move marked to unmarked.
+	gc_unmarked_list=gc_marked_list;
+	gc_unmarked_list.succ->pred=gc_unmarked_list.pred->succ=&gc_unmarked_list;
 	
-	if( sweep ){
+	//clear marked.
+	GC_CLEAR_LIST( gc_marked_list );
 	
-		reclaimed_bytes=gc_alloced_bytes-gc_marked_bytes;
-		
-		if( reclaimed_bytes ){ 	
-		
-			//ASSERT( !GC_LIST_IS_EMPTY( gc_unamrked_list ) );
-			
-			//append unmarked list to end of free list
-			gc_object *head=gc_unmarked_list.succ;
-			gc_object *tail=gc_unmarked_list.pred;
-			gc_object *succ=&gc_free_list;
-			gc_object *pred=succ->pred;
-			head->pred=pred;
-			tail->succ=succ;
-			pred->succ=head;
-			succ->pred=tail;
-			
-			gc_free_bytes+=reclaimed_bytes;
-		}
-		
-		//move marked to unmarked.
-		gc_unmarked_list=gc_marked_list;
-		gc_unmarked_list.succ->pred=gc_unmarked_list.pred->succ=&gc_unmarked_list;
-		
-		//clear marked.
-		GC_CLEAR_LIST( gc_marked_list );
-		
-		//adjust sizes
-		gc_alloced_bytes=gc_marked_bytes;
-		gc_marked_bytes=0;
-		gc_marked_objs=0;
-		gc_markbit^=1;
-		
-		gc_mark_roots();
+	//adjust sizes
+	gc_alloced_bytes=gc_marked_bytes;
+	gc_marked_bytes=0;
+	gc_markbit^=1;
+	
+	return reclaimed_bytes;
+}
 
-		if( gc_force_sweep ){
-			gc_flush_free( gc_free_bytes );
-			gc_force_sweep=false;
-		}
-		
-		last_alloced=gc_alloced_bytes;
+void gc_collect_all(){
+
+//	printf( "Mark locals\n" );fflush( stdout );
+	gc_mark_locals();
+
+//	printf( "Mark queued\n" );fflush( stdout );
+	gc_mark_queued( 0x7fffffff );
+
+//	printf( "sweep\n" );fflush( stdout );	
+	int reclaimed=gc_sweep();
+
+//	printf( "Mark roots\n" );fflush( stdout );
+	gc_mark_roots();
+
+#if DEBUG_GC	
+	printf( "gc collected:%i\n",reclaimed );fflush( stdout );
+#endif
+}
+
+void gc_collect(){
+
+	if( gc_locals_sp!=gc_locals ){
+//		printf( "GC_LOCALS error\n" );fflush( stdout );
+		gc_locals_sp=gc_locals;
+	}
+	
+#if CFG_CPP_GC_MODE==1
+
+#if DEBUG_GC
+	int ms=gc_micros();
+#endif
+
+	if( gc_new_bytes>(CFG_CPP_GC_TRIGGER) ){
+		gc_collect_all();
+		gc_new_bytes=0;
+	}else{
+		gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
 	}
 
 #if DEBUG_GC
-	int us2=gc_micros(),us3=us2-us;
-	if( reclaimed_bytes>=0 || us3>=500 ){
-		printf("gc_collect :: us:%i reclaimed:%i alloced_bytes:%i max_alloced_bytes:%i free_bytes:%i\n",us2-us,reclaimed_bytes,gc_alloced_bytes,gc_max_alloced_bytes,gc_free_bytes );
-	}		
-	fflush(stdout);
+	ms=gc_micros()-ms;
+	if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
 #endif
+
+#endif
+
 }
 
 // ***** Array *****
@@ -494,8 +599,9 @@ private:
 	
 	static Rep nullRep;
 	
-	template<class C> friend void gc_mark( Array<C> &t );
-	template<class C> friend void gc_mark_q( Array<C> &t );
+	template<class C> friend void gc_mark( Array<C> t );
+	template<class C> friend void gc_mark_q( Array<C> t );
+	template<class C> friend Array<C> gc_retain( Array<C> t );
 	template<class C> friend void gc_assign( Array<C> &lhs,Array<C> rhs );
 	template<class C> friend void gc_mark_elements( int n,Array<C> *p );
 	
@@ -515,12 +621,19 @@ template<class T> Array<T> *t_create( int n,Array<T> *p,const Array<T> *q ){
 	return p;
 }
 
-template<class T> void gc_mark( Array<T> &t ){
+template<class T> void gc_mark( Array<T> t ){
 	gc_mark( t.rep );
 }
 
-template<class T> void gc_mark_q( Array<T> &t ){
+template<class T> void gc_mark_q( Array<T> t ){
 	gc_mark_q( t.rep );
+}
+
+template<class T> Array<T> gc_retain( Array<T> t ){
+#if CFG_CPP_GC_MODE==2
+	gc_retain( t.rep );
+#endif
+	return t;
 }
 
 template<class T> void gc_assign( Array<T> &lhs,Array<T> rhs ){

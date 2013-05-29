@@ -79,7 +79,7 @@ Class CTranslator Extends Translator
 
 	Field emitDebugInfo?
 	Field indent$
-	Field lines:=New StringList
+	Field lines:=New StringStack
 	Field unreachable,broken
 	Field mungedScopes:=New StringMap<StringSet>
 	Field funcMungs:=New StringMap<FuncDeclList>
@@ -471,12 +471,18 @@ Class CTranslator Extends Translator
 	
 	'***** Block statements - all very C like! *****
 	
+	Method BeginLoop()
+	End
+	
+	Method EndLoop()
+	End
+	
 	Method Emit( t$ )
 		If Not t Return
 		If t.StartsWith( "}" )
 			indent=indent[..indent.Length-1]
 		Endif
-		lines.AddLast indent+t
+		lines.Push indent+t
 		If t.EndsWith( "{" )
 			indent+="~t"
 		Endif
@@ -627,7 +633,9 @@ Class CTranslator Extends Translator
 		Local nbroken=broken
 		
 		Emit "while"+Bra( stmt.expr.Trans() )+"{"
+		BeginLoop
 		Local unr=EmitBlock( stmt.block )
+		EndLoop
 		Emit "}"
 		
 		If broken=nbroken And ConstExpr( stmt.expr ) And ConstExpr( stmt.expr ).value unreachable=True
@@ -638,7 +646,9 @@ Class CTranslator Extends Translator
 		Local nbroken=broken
 
 		Emit "do{"
+		BeginLoop
 		Local unr=EmitBlock( stmt.block )
+		EndLoop
 		Emit "}while(!"+Bra( stmt.expr.Trans() )+");"
 
 		If broken=nbroken And ConstExpr( stmt.expr ) And Not ConstExpr( stmt.expr ).value unreachable=True
@@ -653,7 +663,9 @@ Class CTranslator Extends Translator
 		Local incr$=stmt.incr.Trans()
 
 		Emit "for("+init+";"+expr+";"+incr+"){"
+		BeginLoop
 		Local unr=EmitBlock( stmt.block )
+		EndLoop
 		Emit "}"
 		
 		If broken=nbroken And ConstExpr( stmt.expr ) And ConstExpr( stmt.expr ).value unreachable=True
