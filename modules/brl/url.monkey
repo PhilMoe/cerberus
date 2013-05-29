@@ -1,23 +1,14 @@
 
 Class Url
-	Method New( url:String,scheme:String="",port:Int=0 )
+	Method New( url:String,defaultScheme:String="http",defaultPort:Int=80 )
 	
-		If scheme 
-			_defaultScheme=scheme
-		Else
-			_defaultScheme="http"
-		Endif
-		
-		If port
-			_defaultPort=port
-		Else
-			_defaultPort=80
-		Endif
+		_defaultScheme=defaultScheme
+		_defaultPort=defaultPort
 		
 		Set( url )
 	End
 	
-	Method Set:Void(url:String)
+	Method Set:Void( url:String )
 		_url = url
 		_scheme = _defaultScheme
 		_username = ""
