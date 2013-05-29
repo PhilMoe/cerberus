@@ -130,6 +130,11 @@ Class List<T>
 		Return Null
 	End
 	
+	'***** DEPRECATED *****
+	Method Remove:Void( value:T )
+		RemoveEach value
+	End
+	
 	Method RemoveFirst:Void( value:T )
 		Local node:=Find( value )
 		If node node.Remove
