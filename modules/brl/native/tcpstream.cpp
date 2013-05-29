@@ -1,13 +1,17 @@
 
 // ***** tcpstream.h *****
 
-#if WINDOWS_PHONE_8
+#if WINDOWS_8
 
-#include <Winsock2.h>
+#else
 
-#elif _WIN32
+#if _WIN32
 
 #include <winsock.h>
+
+#elif WINDOWS_PHONE_8
+
+#include <Winsock2.h>
 
 #else
 
@@ -159,7 +163,9 @@ int BBTcpStream::Write( BBDataBuffer *buffer,int offset,int count ){
 	return 0;
 }
 
-/* TODO!!!!!
+#endif
+
+#if WINDOWS_8
 
 // ***** Windows Store app are a PITA *****
 
@@ -178,19 +184,52 @@ public:
 	int Read( BBDataBuffer *buffer,int offset,int count );
 	int Write( BBDataBuffer *buffer,int offset,int count );
 
+private:
+
+	friend struct ConnectHandler;
+	friend struct LoadHandler;
+	friend struct StoreHandler;
+	
+	struct ConnectHandler{
+		BBTcpStream *_stream;
+		ConnectHandler( BBTcpStream *stream ):_stream( stream ){}
+		void operator()( IAsyncAction ^info,AsyncStatus status ){
+			_stream->OnConnect( info,status );
+		}
+	};
+	
+	struct LoadHandler{
+		BBTcpStream *_stream;
+		LoadHandler( BBTcpStream *stream ):_stream( stream ){}
+		void operator()( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
+			_stream->OnLoad( info,status );
+		}
+	};
+	
+	struct StoreHandler{
+		BBTcpStream *_stream;
+		StoreHandler( BBTcpStream *stream ):_stream( stream ){}
+		void operator()( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
+			_stream->OnStore( info,status );
+		}
+	};
+
+	//0=INIT, 1=CONNECTED, 2=CLOSED, -1=ERROR
+	int _state;	
+	HANDLE _revent,_wevent;
+	
+	Windows::Networking::Sockets::StreamSocket ^_sock;
+	Windows::Storage::Streams::DataReader ^_reader;
+	Windows::Storage::Streams::DataWriter ^_writer;
+	Windows::Foundation::AsyncOperationCompletedHandler<unsigned int> ^_rhandler;
+	Windows::Foundation::AsyncOperationCompletedHandler<unsigned int> ^_whandler;
+	
+	bool Error();
+	
 	//async handling
 	void OnConnect( IAsyncAction ^info,AsyncStatus status );
 	void OnLoad( IAsyncOperation<unsigned int> ^info,AsyncStatus status );
 	void OnStore( IAsyncOperation<unsigned int> ^info,AsyncStatus status );
-	
-private:
-
-	int _state;	//0=INIT, 1=CONNECTED, 2=CLOSED, -1=ERROR
-
-	Windows::Networking::Sockets::StreamSocket ^_sock;
-	HANDLE _event;
-	Windows::Storage::Streams::DataReader ^_reader;
-	Windows::Storage::Streams::DataWriter ^_writer;
 };
 
 // ***** tcpstream.cpp *****
@@ -199,86 +238,50 @@ using namespace Windows::Networking;
 using namespace Windows::Networking::Sockets;
 using namespace Windows::Storage::Streams;
 
-struct ConnectHandler{
-	BBTcpStream *_stream;
-	ConnectHandler( BBTcpStream *stream ):_stream( stream ){}
-	void operator()( IAsyncAction ^info,AsyncStatus status ){
-		_stream->OnConnect( info,status );
-	}
-};
-
-struct LoadHandler{
-	BBTcpStream *_stream;
-	LoadHandler( BBTcpStream *stream ):_stream( stream ){}
-	void operator()( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
-		_stream->OnLoad( info,status );
-	}
-};
-
-struct StoreHandler{
-	BBTcpStream *_stream;
-	StoreHandler( BBTcpStream *stream ):_stream( stream ){}
-	void operator()( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
-		_stream->OnStore( info,status );
-	}
-};
-
-BBTcpStream::BBTcpStream():_state(0),_sock(nullptr),_event(nullptr),_reader(nullptr),_writer(nullptr){
+BBTcpStream::BBTcpStream():_state(0),_sock( nullptr ),_reader( nullptr ),_writer( nullptr ){
+	_revent=CreateEventEx( 0,0,0,EVENT_ALL_ACCESS );
+	_wevent=CreateEventEx( 0,0,0,EVENT_ALL_ACCESS );
+	_rhandler=ref new AsyncOperationCompletedHandler<unsigned int>( LoadHandler( this ) );	
+	_whandler=ref new AsyncOperationCompletedHandler<unsigned int>( StoreHandler( this ) );	
 }
 
 BBTcpStream::~BBTcpStream(){
-	Close();
+	CloseHandle( _revent );
+	CloseHandle( _wevent );
 }
 
 bool BBTcpStream::Connect( String addr,int port ){
-
 	if( _state ) return false;
 
 	_sock=ref new StreamSocket();
-	_event=CreateEventEx( 0,0,CREATE_EVENT_MANUAL_RESET,EVENT_ALL_ACCESS );
-	
+
 	auto host=ref new HostName( addr.ToWinRTString() );
 	auto service=String( port ).ToWinRTString();
 
 	auto action=_sock->ConnectAsync( host,service );
-	
 	action->Completed=ref new AsyncActionCompletedHandler( ConnectHandler( this ) );
 	
-	Print( "Connecting..." );
-	if( WaitForSingleObjectEx( _event,INFINITE,FALSE )!=WAIT_OBJECT_0 ){
-		_state=-1;
-		Close();
-		return false;
-	}
-	ResetEvent( _event );
-	Print( "Connect done" );
+	if( WaitForSingleObjectEx( _revent,INFINITE,FALSE )!=WAIT_OBJECT_0 ) return Error();
 	
-	if( _state==1 ){
-		_reader=ref new DataReader( _sock->InputStream );
-		_writer=ref new DataWriter( _sock->OutputStream );
-		return true;
-	}
+	if( _state!=1 ) return Error();
+
+	_reader=ref new DataReader( _sock->InputStream );
+	_writer=ref new DataWriter( _sock->OutputStream );
 	
-	_state=-1;
-	Close();
-	return false;
+	return true;
 }
 
 void BBTcpStream::OnConnect( IAsyncAction ^info,AsyncStatus status ){
-	if( status==Windows::Foundation::AsyncStatus::Completed ){
-		_state=1;
-	}else{
-		_state=-1;
-	}
-	SetEvent( _event );
+	_state=(status==Windows::Foundation::AsyncStatus::Completed) ? 1 : -1;
+	SetEvent( _revent );
 }
 
 void BBTcpStream::OnLoad( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
-	SetEvent( _event );
+	SetEvent( _revent );
 }
 
 void BBTcpStream::OnStore( IAsyncOperation<unsigned int> ^info,AsyncStatus status ){
-	SetEvent( _event );
+	SetEvent( _wevent );
 }
 
 int BBTcpStream::ReadAvail(){
@@ -297,50 +300,45 @@ int BBTcpStream::Eof(){
 }
 
 void BBTcpStream::Close(){
-	if( !_sock ) return;
-	if( _state==1 ) _state=2;
-	CloseHandle( _event );
-	_reader=nullptr;
-	_writer=nullptr;
-	_event=nullptr;
-	_sock=nullptr;
+	if( _sock ){
+		if( _state==1 ) _state=2;
+		_sock=nullptr;
+		_reader=nullptr;
+		_writer=nullptr;
+	}
+}
+
+bool BBTcpStream::Error(){
+	Close();
+	_state=-1;
+	return false;
 }
 
 int BBTcpStream::Read( BBDataBuffer *buffer,int offset,int count ){
 	if( _state!=1 ) return 0;
 
-//	if( _reader->UnconsumedBufferLength<count ){
-
-		auto loadop=_reader->LoadAsync( count );	//-_reader->UnconsumedBufferLength );
-		
-		loadop->Completed=ref new AsyncOperationCompletedHandler<unsigned int>( LoadHandler( this ) );
-		
-		Print( "Reading..." );
-		if( WaitForSingleObjectEx( _event,INFINITE,FALSE )!=WAIT_OBJECT_0 ){
-			_state=-1;
-			Close();
-			return 0;
-		}
-		ResetEvent( _event );
-		Print( "Read done" );
-//	}
+	auto loadop=_reader->LoadAsync( count );
+	
+	loadop->Completed=_rhandler;
+	
+	if( WaitForSingleObjectEx( _revent,INFINITE,FALSE )!=WAIT_OBJECT_0 ) return Error();
 	
 	int n=_reader->UnconsumedBufferLength;
+	
+	if( !n && count ){
+		Close();
+		return 0;
+	}
+	
 	if( n>count ){
 		Print( "Too many bytes to read!" );
 		n=count;
 	}
 		
 	unsigned char *p=(unsigned char*)buffer->WritePointer( offset );
-		
-	for( int i=0;i<n;++i ){
-		*p++=_reader->ReadByte();
-	}
 	
-	if( n>0 || !count ) return n;
-	
-	Close();
-	
+	_reader->ReadBytes( Platform::ArrayReference<uint8>( (uint8*)p,n ) );
+
 	return n;
 }
 
@@ -349,24 +347,16 @@ int BBTcpStream::Write( BBDataBuffer *buffer,int offset,int count ){
 	
 	const unsigned char *p=(const unsigned char*)buffer->ReadPointer( offset );
 	
-	for( int i=0;i<count;++i ){
-		_writer->WriteByte( *p++ );
-	}
-	
+	_writer->WriteBytes( Platform::ArrayReference<uint8>( (uint8*)p,count ) );
+
 	auto storeop=_writer->StoreAsync();
 	
-	storeop->Completed=ref new AsyncOperationCompletedHandler<unsigned int>( StoreHandler( this ) );
+	storeop->Completed=_whandler;
 	
-	Print( "Writing..." );
-	if( WaitForSingleObjectEx( _event,INFINITE,FALSE )!=WAIT_OBJECT_0 ){
-		Print( "Here!" );
-		_state=-1;
-		Close();
-		return 0;
-	}
-	ResetEvent( _event );
-	Print( "Write done" );
+	if( WaitForSingleObjectEx( _wevent,INFINITE,FALSE )!=WAIT_OBJECT_0 ) return Error();
 	
 	return count;
 }
-*/
+
+#endif
+
