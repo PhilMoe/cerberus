@@ -1,6 +1,23 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V71a *****
+
+Fixed win8 tcpstream.
+
+Added CPP_GC_MODE app config setting, one of:
+
+#CPP_GC_MODE=0	'Disable GC
+#CPP_GC_MODE=1	'Incremental collect every OnWhatever (default)
+#CPP_GC_MODE=2	'Incremental collect every GC allocation (adds some runtime overhead).
+
+CPP_GC_TRIGGER now controls how much memory is allocated before a GC 'sweep' occurs. Increase this for faster GC at the cost of more 'wasted' memory. Defaults to 8M.
+
+Added CPP_GC_MAX_LOCALS app config settings. This is used with GC_MODE 2 to track local object vars and defaults to 8192. Trans uses 445 locals to build itself, so this should be plenty for most apps but if you're doing something very recursive you might want to bump this.
+
+Tweaked makedocs.
+
+
 ***** V70f *****
 
 HttpRequest: Merged devolonter's html5 version addition.
