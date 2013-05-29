@@ -10,7 +10,7 @@
 Returns the local port the server is bound to.
 
 
-# Method Listen:Void( backlog:Int )
+# Method Listen:Void( backlog:Int=1 )
 
 Starts listening for incoming connections.
 
