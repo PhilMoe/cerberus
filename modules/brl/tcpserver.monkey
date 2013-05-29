@@ -30,7 +30,7 @@ Class TcpServer
 		Return _server.Port()
 	End
 
-	Method Listen:Void( backlog:Int )
+	Method Listen:Void( backlog:Int=1 )
 		_server.Listen( backlog )
 	End
 	
