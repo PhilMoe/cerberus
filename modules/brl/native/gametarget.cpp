@@ -85,6 +85,10 @@ protected:
 
 //***** game.cpp *****
 
+String BBPathToFilePath( String path ){
+	return BBGame::Game()->PathToFilePath( path );
+}
+
 BBGame *BBGame::_game;
 
 BBGame::BBGame():
@@ -192,64 +196,18 @@ void BBGame::OpenUrl( String url ){
 void BBGame::SetMouseVisible( bool visible ){
 }
 
+//***** C++ Game *****
+
 String BBGame::PathToFilePath( String path ){
 	return "";
 }
 
-//***** C++ Game *****
-
 FILE *BBGame::OpenFile( String path,String mode ){
-
-	path=PathToFilePath( path );
-	if( path=="" ) return 0;
-	
-#if __cplusplus_winrt
-	path=path.Replace( "/","\\" );
-	FILE *f;
-	if( _wfopen_s( &f,path.ToCString<wchar_t>(),mode.ToCString<wchar_t>() ) ) return 0;
-	return f;
-#elif _WIN32
-	return _wfopen( path.ToCString<wchar_t>(),mode.ToCString<wchar_t>() );
-#else
-	return fopen( path.ToCString<char>(),mode.ToCString<char>() );
-#endif
+	return BBOpenFile( path,mode );
 }
 
 unsigned char *BBGame::LoadData( String path,int *plength ){
-
-	FILE *f=OpenFile( path,"rb" );
-	if( !f ) return 0;
-
-	const int BUF_SZ=4096;
-	std::vector<void*> tmps;
-	int length=0;
-	
-	for(;;){
-		void *p=malloc( BUF_SZ );
-		int n=fread( p,1,BUF_SZ,f );
-		tmps.push_back( p );
-		length+=n;
-		if( n!=BUF_SZ ) break;
-	}
-	fclose( f );
-	
-	unsigned char *data=(unsigned char*)malloc( length );
-	unsigned char *p=data;
-	
-	int sz=length;
-	for( int i=0;i<tmps.size();++i ){
-		int n=sz>BUF_SZ ? BUF_SZ : sz;
-		memcpy( p,tmps[i],n );
-		free( tmps[i] );
-		sz-=n;
-		p+=n;
-	}
-	
-	*plength=length;
-	
-	gc_force_sweep=true;
-	
-	return data;
+	return BBLoadData( path,plength );
 }
 
 //***** INTERNAL *****

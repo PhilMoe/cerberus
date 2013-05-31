@@ -6,18 +6,19 @@ Import stream
 Import asyncevent
 Import datastream
 Import asyncdataloader
+#Endif
 
-#If LANG="cpp" Or LANG="java" Or LANG="cs"
-Import filestream
-
-#If (LANG="cpp" Or LANG="java") 'And TARGET<>"win8"
+#If LANG="cpp" Or LANG="java"
 Import tcpstream
 Import asyncstream
 Import asynctcpstream
 Import asynctcpconnector
 Import httprequest
+Import filestream
 #Endif
 
+#If LANG="cs"
+Import filestream
 #Endif
 
 #Endif

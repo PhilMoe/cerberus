@@ -6,6 +6,10 @@ class BBFileSystem{
 	static File file( String path ){
 		return new File( path );
 	}
+	
+	static String FixPath( String path ){
+		return BBGame.Game().PathToFilePath( path );
+	}
 
 	static int FileType( String path ){
 		File f=file( path );
