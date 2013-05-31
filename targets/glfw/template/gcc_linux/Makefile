@@ -5,11 +5,18 @@ CFLAGS=
 CXX=g++
 CXXFLAGS=
 
-CPPFLAGS=$(CCOPTS) -I../glfw/include -I../glfw/lib -I../glfw/lib/x11 -I../openal/include -I../stb -D_GLFW_HAS_GLXGETPROCADDRESS -D_GLFW_USE_LINUX_JOYSTICKS
+CPPFLAGS=$(CCOPTS) \
+ -I../glfw/include \
+ -I../glfw/lib \
+ -I../glfw/lib/x11 \
+ -I../openal/include -I../stb \
+ -D_GLFW_HAS_GLXGETPROCADDRESS \
+ -D_GLFW_USE_LINUX_JOYSTICKS \
+ -pthread
 
 LD=g++
 LDFLAGS=
-LDLIBS=-lGL -lopenal
+LDLIBS=-lGL -lopenal -lX11 -lpthread
 
 OBJS=../glfw/lib/enable.o ../glfw/lib/fullscreen.o ../glfw/lib/glext.o ../glfw/lib/image.o ../glfw/lib/init.o ../glfw/lib/input.o \
 ../glfw/lib/joystick.o ../glfw/lib/stream.o ../glfw/lib/tga.o ../glfw/lib/thread.o ../glfw/lib/time.o ../glfw/lib/window.o \
