@@ -1195,7 +1195,7 @@ A generic class is declared in a similar way to a normal class, only with an add
 For example:
 
 <pre>
-Class Pointer&lt;T&gt;
+Class Pointer<T>
     Method Set( data:T )
         _data=data
     End
@@ -1224,8 +1224,8 @@ Class Actor
 End
 
 Function Main()
-    Local pointer:Pointer&lt;Actor&gt;
-    pointer=New Pointer&lt;Actor&gt;
+    Local pointer:Pointer<Actor>
+    pointer=New Pointer<Actor>
     pointer.Set New Actor
     Local actor:=pointer.Get()
 End
@@ -1637,9 +1637,9 @@ The following built in constants may be used in preprocessor expressions:
 
 <table class="c">
 <tr><th>Constant</th><th>Possible values</th></tr>
-<tr><td>HOST</td><td>winnt macos</td></tr>
+<tr><td>HOST</td><td>winnt macos linux</td></tr>
 <tr><td>LANG</td><td>js as cs java cpp</td></tr>
-<tr><td>TARGET</td><td>html5 flash xna android ios glfw stdcpp</td></tr>
+<tr><td>TARGET</td><td>html5 flash xna android ios glfw stdcpp win8</td></tr>
 <tr><td>CONFIG</td><td>debug release</td></tr>
 </table>
 

@@ -52,7 +52,7 @@ We also add a List container to manage the Points that we store each time the us
 The := syntax is a shortcut for a standard equate that infers the type of the Left Hand Side (LHS) from the type on the Right Hand Side (RHS). In this case the Field named points of type List&LT;Point&GT; could have also been declared and initialized using the longer winded:
 
 <pre>
-	Field points.List<Point>=New List<Point>
+	Field points:List<Point>=New List<Point>
 </pre>
 
 The type List&LT;Point&GT; is an example of a monkey template. A List&LT;Point&GT; supports the standard List interface but specifically for objects of type Point.
