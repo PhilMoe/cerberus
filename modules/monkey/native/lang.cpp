@@ -19,14 +19,6 @@ typedef float Float;
 #define FLOAT(X) X##f
 #endif
 
-#ifndef INT64
-#if _WIN32
-typedef __int64 INT64;
-#else
-typedef long long INT64;
-#endif
-#endif
-
 void dbg_error( const char *p );
 
 #if !_MSC_VER
@@ -257,7 +249,8 @@ gc_object *gc_object_alloc( int size ){
 			gc_new_bytes=size;
 		}else{
 			gc_new_bytes+=size;
-			gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
+			gc_mark_queued( (long long)(gc_new_bytes)*(gc_alloced_bytes-gc_new_bytes)/(CFG_CPP_GC_TRIGGER)+gc_new_bytes );
+//			gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
 		}
 		
 #if DEBUG_GC
@@ -438,7 +431,8 @@ void gc_collect(){
 		gc_collect_all();
 		gc_new_bytes=0;
 	}else{
-		gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
+		gc_mark_queued( (long long)(gc_new_bytes)*(gc_alloced_bytes-gc_new_bytes)/(CFG_CPP_GC_TRIGGER)+gc_new_bytes );
+//		gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
 	}
 
 #if DEBUG_GC
