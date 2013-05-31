@@ -1,5 +1,6 @@
 
 //Lang/OS...
+#include <ctime>
 #include <cmath>
 #include <cctype>
 #include <cstdio>

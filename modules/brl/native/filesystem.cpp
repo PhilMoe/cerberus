@@ -40,7 +40,7 @@ class BBFileSystem{
 	public:
 	
 	static String FixPath( String path ){
-		return BBPathToFilePath( path );
+		return BBGame::Game()->PathToFilePath( path );
 	}
 	
 	static int FileType( String path ){

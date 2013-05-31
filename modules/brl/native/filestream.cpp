@@ -46,8 +46,8 @@ bool BBFileStream::Open( String path,String mode ){
 		return false;
 	}
 
-	_file=BBOpenFile( path,fmode );
-	if( !_file && mode=="u" ) _file=BBOpenFile( path,"wb+" );
+	_file=BBGame::Game()->OpenFile( path,fmode );
+	if( !_file && mode=="u" ) _file=BBGame::Game()->OpenFile( path,"wb+" );
 	if( !_file ) return false;
 	
 	fseek( _file,0,SEEK_END );

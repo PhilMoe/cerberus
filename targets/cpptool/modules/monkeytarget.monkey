@@ -1,2 +1,2 @@
 
-Import brl.cpptarget
+Import brl.gametarget

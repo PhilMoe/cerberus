@@ -51,7 +51,7 @@ bool BBDataBuffer::_New( int length ){
 bool BBDataBuffer::_Load( String path ){
 	if( _data ) return false;
 	
-	_data=(signed char*)BBLoadData( path,&_length );
+	_data=(signed char*)BBGame::Game()->LoadData( path,&_length );
 	if( !_data ) return false;
 	
 	return true;

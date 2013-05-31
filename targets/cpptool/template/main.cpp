@@ -13,6 +13,8 @@ String BBPathToFilePath( String path ){
 
 int main( int argc,const char **argv ){
 
+	new BBGame();
+
 	try{
 	
 		bb_std_main( argc,argv );
