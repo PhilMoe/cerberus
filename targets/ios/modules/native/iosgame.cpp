@@ -662,7 +662,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 -(BOOL)textFieldShouldReturn:(UITextField*)textField{
 
-	if( textFieldState ) game->KeyEvent( BBGameEvent::KeyChar,13 );
+	if( textFieldState ) game->KeyEvent( BBGameEvent::KeyChar,13 );	//generate Return
 	
 	return NO;
 }
