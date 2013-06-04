@@ -655,7 +655,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 	if( !textFieldState ) return YES;
 
-	game->KeyEvent( BBGameEvent::KeyChar,27 );
+	game->KeyEvent( BBGameEvent::KeyChar,27 );							//generate Escape
 	
 	return NO;
 }
