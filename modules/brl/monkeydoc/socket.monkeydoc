@@ -1,0 +1,296 @@
+
+# Module brl.socket
+
+
+# Interface IOnConnectComplete
+
+# Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+
+This method is called when a asynchronous socket connect operation completes.
+
+@connected will be true if the connection was successful.
+
+Links: [[Socket.ConnectAsync]]
+
+
+# Interface IOnBindComplete
+
+# Method OnBindComplete:Void( bound:Bool,source:IAsyncEventSource )
+
+This method is called when a asynchronous socket bind operation completes.
+
+@bound will be true if the operation was successful.
+
+Links: [[Socket.BindAsync]]
+
+
+# Interface IOnAcceptComplete
+
+# Method OnAcceptComplete:Void( socket:Socket,source:IAsyncEventSource )
+
+This method is called when an asynchronous socket accept operation completes.
+
+@socket contains the incoming connection.
+
+Links: [[Socket.AcceptAsync]]
+
+
+# Interface IOnSendComplete
+
+# Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+
+This method is called when an asynchronous socket Send operation completes.
+
+@counts contains the number of bytes sent, and will either be the same as the number of bytes requested by SendAsync, or 0 if not all bytes could be sent.
+
+Links: [[Socket.SendAsync]]
+
+
+# Interface IOnSendToComplete
+
+# Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+
+This method is called when an asynchronous socket SendTo operation completes.
+
+@counts contains the number of bytes sent.
+
+Links: [[Socket.SendToAsync]]
+
+
+
+# Interface IOnReceiveComplete
+
+# Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+
+This method is called when an asynchronous socket Receive operation completes.
+
+@count contains the number of bytes received, and may be less than the number of bytes requested by ReadAysnc.
+
+If @count is 0, then the socket has been remotely closed.
+
+Links: [[Socket.ReceiveAsync]]
+
+
+# Interface IOnReceiveFromComplete
+
+# Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+
+This method is called when an asynchronous socket ReceiveFrom operation completes.
+
+@count contains the number of bytes received.
+
+Links: [[Socket.ReceiveFromAsync]]
+
+
+# Class SocketAddress
+
+# Method New()
+
+Creates a new empty socket adress.
+
+
+# Method New( host:String,port:int )
+
+Creates a new socket address with the given @host and @port.
+
+
+# Method New( address:SocketAddress )
+
+Creates a new socket address that is a copy of the given @address.
+
+
+# Method Host:String() Property
+
+Returns the socket address host.
+
+
+# Method Port:Int() Property
+
+Returns the socket address port.
+
+
+# Method ToString:String() Property
+
+Returns a string representation of the socket address.
+
+
+# Class Socket
+
+# Method New( protocol:String="stream" )
+
+Creates a new socket.
+
+The supported protocols are:
+
+| Protocol	| Description
+| stream	| TCP stream
+| server	| TCP server
+| datagram	| UDP datagram 
+
+
+# Method Bind:Bool( host:String,port:Int )
+
+Binds the socket to a local host and port.
+
+If @host is "", the socket will be bound to a system allocated host address, generally "localhost" or "127.0.0.1".
+
+If @port is 0, the socket will be bound to a system allocated port number.
+
+Returns true if successful. This method will fail if the socket is already bound to a port, or the binding failed, for example if @port is already in use.
+
+In the case of server sockets, Bind will cause the server to start listening.
+
+Links: [[LocalAddress]]
+
+
+# Method BindAsync:Void( host:String,port:Int,onComplete:IOnBindComplete )
+
+Binds the socket to a local host and port asynchronously.
+
+The method returns immediately. Once the bind operation is complete, the [[OnBindComplete]] method of the @onComplete object is called.
+
+
+# Method Connect:Bool( host:String,port:Int )
+
+Connects the socket to a remote host.
+
+The method will block until the connection completes.
+
+Returns true if the connection was successful.
+
+The socket must be a stream or datagram socket.
+
+Links: [[RemoteAddress]]
+
+
+# Method ConnectAsync:Void( host:String,port:Int,onComplete:IOnConnectComplete )
+
+Connects a socket to a remote host asynchronously.
+
+The method returns immediately. Once the connection is complete, the [[OnConnectComplete]] method of the @onComplete object is called.
+
+The socket must be a stream or datagram socket.
+
+
+# Method Accept:Socket()
+
+Accepts a new connection from a remote host.
+
+The method will block until a new connection is accepted.
+
+The socket must be a server socket. If the socket has not been bound, it will first be bound to a system generated host address and port number.
+
+Links: [[Bind]]
+
+
+# Method AcceptAsync:Void( onComplete:IOnAcceptComplete )
+
+Accepts a new connection from a remote host asynchronously.
+
+The method returns immediately. Once a new connection is accepted, the [[OnAcceptComplete]] method of the @onComplete object is called.
+
+The socket must be a server socket.
+
+
+# Method Send:Int( data:DataBuffer,offset:Int,count:Int )
+
+Sends data to a remote host and returns the number of bytes sent.
+
+The method blocks until either all bytes have been sent or the socket is closed.
+
+The socket must be a connected stream or connected datagram socket.
+
+Links: [[Receive]]
+
+
+# Method SendAsync:Int( data:DataBuffer,offset:Int,count:Int,onComplete:IOnSendComplete )
+
+Sends data to a remote host asynchronously.
+
+The method returns immediately. Once the data has been sent, the [[OnSendComplete]] method of the @onComplete object is called.
+
+The socket must be a connected stream or connected datagram socket.
+
+Note: Be careful not to modify @data while the operation is in progress.
+
+
+# Method SendTo:Int( data:DataBuffer,offset:Int,count:Int,address:SocketAddress )
+
+Sends data to the remote host specified by @address and returns the number of bytes sent.
+
+The method blocks until either all bytes have been sent or the socket is closed.
+
+The socket must be an unconnected datagram socket.
+
+Links: [[ReceiveFrom]]
+
+
+# Method SendToAsync:Int( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,onComplete:IOnSendToComplete )
+
+Sends data to the remote host specified by @address asynchronously.
+
+The method returns immediately. Once the data has been sent, the [[OnSendToComplete]] method of the @onComplete object is called.
+
+The socket must be an unconnected datagram socket.
+
+Note: Be careful not to modify @data or @address while the operation is in progress.
+
+
+# Method Receive:Int( data:DataBuffer,offset:Int,count:Int )
+
+Receives data from a remote host and returns the number of bytes received.
+
+The method blocks until either at least 1 byte has been received or the socket is closed.
+
+The socket must be a connected stream or connected datagram socket.
+
+Links: [[Send]]
+
+
+# Method ReceiveAsync:Int( data:DataBuffer,offset:Int,count:Int,onComplete:IOnReceiveComplete )
+
+Receives data from a remote host asynchronously.
+
+The method returns immediately. Once data has been received, the [[OnReceiveComplete]] method of the @onComplete object is called.
+
+The socket must be a connected stream or connected datagram socket.
+
+Note: Be careful not to modify @data or @address while the operation is in progress.
+
+
+# Method ReceiveFrom:Int( data:DataBuffer,offset:Int,count:Int,address:SocketAddress )
+
+Receives data from a remote host and returns the number of bytes received.
+
+The address of the remote host that sent the data is written to @address.
+
+The method blocks until data is available.
+
+The socket must be an unconnected datagram socket.
+
+
+# Method ReceiveFromAsync:Int( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,onComplete:IOnReceiveFromComplete )
+
+Receives data from a remote host asynchronously.
+
+The method returns immediately. Once data has been received, the [[OnReceiveFromComplete]] method of the @onComplete object is called.
+
+The socket must be an unconnected datagram socket.
+
+Note: Be careful not to modify @data or @address while the operation is in progress.
+
+
+# Method Protocol:String() Property
+
+Returns the socket protocol, either "stream", "server", or "datagram".
+
+
+# Method LocalAddress:SocketAddress() Property
+
+Returns the local address of the socket.
+
+
+# Method RemoteAddress:SocketAddress() Property
+
+Returns the remote address of the socket.
+
