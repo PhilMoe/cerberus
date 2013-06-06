@@ -82,9 +82,25 @@ Function Main()
 End
 
 
-# Method New(requestMethod:String,url:String,onComplete:IOnHttpRequestComplete)
+# Method New()
 
 Creates a new HttpRequest object.
+
+
+# Method New(requestMethod:String,url:String,onComplete:IOnHttpRequestComplete)
+
+Creates a new http request object and opens it.
+
+The @requestMethod parameter should be GET, HEAD, POST, PUT, DELETE or any http method recognized by the server.
+
+Links: [[Open]]
+
+
+# Method Open:Void(requestMethod:String,url:String,onComplete:IOnHttpRequestComplete)
+
+Opens an http request.
+
+This effectively 'resets' the internal state of the http request.
 
 The @requestMethod parameter should be GET, HEAD, POST, PUT, DELETE or any http method recognized by the server.
 

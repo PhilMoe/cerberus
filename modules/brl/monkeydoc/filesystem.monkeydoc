@@ -3,7 +3,7 @@
 
 The filesystem module allows you to inspect and modify files on the filesystem.
 
-IMPORTANT: The filesystem module is currently only available for the android,ios, win8, glfw and stdcpp targets.
+The filesystem module is currently only available for the android, ios, win8, glfw and stdcpp targets.
 
 Example:
 <pre>

@@ -4,7 +4,7 @@
 
 # Interface IOnConnectComplete
 
-# Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+# Method OnConnectComplete:Void( connected:Bool,source:Socket )
 
 This method is called when a asynchronous socket connect operation completes.
 
@@ -15,7 +15,7 @@ Links: [[Socket.ConnectAsync]]
 
 # Interface IOnBindComplete
 
-# Method OnBindComplete:Void( bound:Bool,source:IAsyncEventSource )
+# Method OnBindComplete:Void( bound:Bool,source:Socket )
 
 This method is called when a asynchronous socket bind operation completes.
 
@@ -26,7 +26,7 @@ Links: [[Socket.BindAsync]]
 
 # Interface IOnAcceptComplete
 
-# Method OnAcceptComplete:Void( socket:Socket,source:IAsyncEventSource )
+# Method OnAcceptComplete:Void( socket:Socket,source:Socket )
 
 This method is called when an asynchronous socket accept operation completes.
 
@@ -37,7 +37,7 @@ Links: [[Socket.AcceptAsync]]
 
 # Interface IOnSendComplete
 
-# Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+# Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 
 This method is called when an asynchronous socket Send operation completes.
 
@@ -48,7 +48,7 @@ Links: [[Socket.SendAsync]]
 
 # Interface IOnSendToComplete
 
-# Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+# Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 
 This method is called when an asynchronous socket SendTo operation completes.
 
@@ -60,7 +60,7 @@ Links: [[Socket.SendToAsync]]
 
 # Interface IOnReceiveComplete
 
-# Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+# Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 
 This method is called when an asynchronous socket Receive operation completes.
 
@@ -73,7 +73,7 @@ Links: [[Socket.ReceiveAsync]]
 
 # Interface IOnReceiveFromComplete
 
-# Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+# Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 
 This method is called when an asynchronous socket ReceiveFrom operation completes.
 
@@ -294,3 +294,16 @@ Returns the local address of the socket.
 
 Returns the remote address of the socket.
 
+
+# Method IsBound:Bool() Property
+
+Returns true if the socket is currently bound to a local address.
+
+Links: [[Bind]]
+
+
+# Method IsConnected:Bool() Property
+
+Return true id the socket is currently connected to a remote host.
+
+Links: [[Connect]]
