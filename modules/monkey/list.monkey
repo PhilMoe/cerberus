@@ -173,7 +173,7 @@ Class List<T>
 	End
 
 	Method InsertAfterEach:Void( where:T,data:T )
-		Local node:=FindNode( where )
+		Local node:=Find( where )
 		While node
 			node=New Node<T>( node._succ,node,data )
 			node=Find( where,node._succ )
