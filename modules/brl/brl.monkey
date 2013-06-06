@@ -5,16 +5,14 @@ Import ringbuffer
 Import stream
 Import asyncevent
 Import datastream
-Import asyncdataloader
+Import url
 #Endif
 
 #If LANG="cpp" Or LANG="java"
-Import tcpstream
-Import asyncstream
-Import asynctcpstream
-Import asynctcpconnector
-Import httprequest
 Import filestream
+Import socket
+Import httprequest
+Import tcpstream
 #Endif
 
 #If LANG="cs"
