@@ -7,7 +7,7 @@
 
 Import "native/admob.android.java"
 
-#LIBS+="${CD}/native/GoogleAdMobAdsSdk-6.2.1.jar"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdk-6.4.1.jar"
 
 #ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.ads.AdActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
 
@@ -15,14 +15,14 @@ Import "native/admob.android.java"
 
 Import "native/admob.ios.cpp"
 
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/libGoogleAdMobAds.a"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADBannerView.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADBannerViewDelegate.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADAdSize.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADRequest.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADRequestError.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADInterstitial.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.2.1/GADInterstitialDelegate.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/libGoogleAdMobAds.a"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADBannerView.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADBannerViewDelegate.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADAdSize.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADRequest.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADRequestError.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADInterstitial.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADInterstitialDelegate.h"
 
 #LIBS+="StoreKit.framework"
 #LIBS+="MessageUI.framework"
