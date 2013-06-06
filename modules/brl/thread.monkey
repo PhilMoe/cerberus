@@ -23,6 +23,7 @@ Class BBThread
 
 	Method Start:Void()
 	Method IsRunning:Bool()
+	Method Result:Object()
 
 	Private
 

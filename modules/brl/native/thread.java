@@ -1,6 +1,7 @@
 
 class BBThread implements Runnable{
 
+	Object _result;
 	boolean _running;
 	Thread _thread;
 	
@@ -10,9 +11,18 @@ class BBThread implements Runnable{
 	
 	void Start(){
 		if( _running ) return;
+		_result=null;
 		_running=true;
 		_thread=new Thread( this );
 		_thread.start();
+	}
+	
+	void SetResult( Object result ){
+		_result=result;
+	}
+	
+	Object Result(){
+		return _result;
 	}
 	
 	void Wait(){

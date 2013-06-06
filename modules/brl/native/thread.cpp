@@ -9,14 +9,19 @@ using namespace Windows::System::Threading;
 
 class BBThread : public Object{
 public:
+	Object *result;
+	
 	BBThread();
 	~BBThread();
 	
 	virtual void Start();
 	virtual bool IsRunning();
-	virtual void Wait();
+	virtual Object *Result();
+	virtual void SetResult( Object *result );
 	
 	virtual void Run__UNSAFE__();
+	
+	virtual void Wait();
 	
 private:
 
@@ -26,7 +31,9 @@ private:
 		FINISHED=2
 	};
 
+	
 	int _state;
+	Object *_result;
 	
 #if __cplusplus_winrt
 
@@ -66,7 +73,7 @@ private:
 
 // ***** thread.cpp *****
 
-BBThread::BBThread():_state( INIT ){
+BBThread::BBThread():_result( 0 ),_state( INIT ){
 }
 
 BBThread::~BBThread(){
@@ -75,6 +82,14 @@ BBThread::~BBThread(){
 
 bool BBThread::IsRunning(){
 	return _state==RUNNING;
+}
+
+void BBThread::SetResult( Object *result ){
+	_result=result;
+}
+
+Object *BBThread::Result(){
+	return _result;
 }
 
 void BBThread::Run__UNSAFE__(){
@@ -87,6 +102,8 @@ void BBThread::Start(){
 	
 	if( _state==FINISHED ) {}
 
+	_result=0;
+	
 	_state=RUNNING;
 	
 	Launcher launcher( this );
@@ -140,7 +157,9 @@ void BBThread::Start(){
 	if( _state==RUNNING ) return;
 	
 	if( _state==FINISHED ) pthread_join( _handle,0 );
-	
+
+	_result=0;
+		
 	_state=RUNNING;
 	
 	pthread_create( &_handle,0,run,this );
