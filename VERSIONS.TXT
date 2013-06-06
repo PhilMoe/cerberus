@@ -3,6 +3,18 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V71a *****
 
+Update admob SDKs to android=6.4.1, ios=6.4.2.
+
+Removed modules: brl.asyncdataloader, brl.asyncstream, brl.asynctcpstream, brl.asynctcpconnector.
+
+Added DataBuffer.LoadAsync.
+
+Changed brl.httprequest to use a brl.socket under the hood.
+
+Changed brl.tcpstream to use a brl.socket under the hood. 
+
+Added brl.socket for all your tcp/udp needs.
+
 Fixed filestream on stdcpp target.
 
 Fixed win8 tcpstream.
