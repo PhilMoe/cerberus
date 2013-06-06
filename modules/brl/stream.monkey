@@ -180,8 +180,3 @@ Class StreamWriteError Extends StreamError
 	End
 	
 End
-
-Class NativeStream Extends Stream
-
-End
-
