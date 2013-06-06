@@ -1,4 +1,8 @@
 
+Private
+
+Import brl.thread
+
 #If LANG="cpp" Or LANG="java" Or LANG="cs" Or LANG="js" Or LANG="as"
 #BRL_DATABUFFER_IMPLEMENTED=True
 Import "native/databuffer.${LANG}"
@@ -31,10 +35,48 @@ Private
 	
 	Method _New:Bool( length:Int )
 	Method _Load:Bool( path:String )
+	Method _LoadAsync:Void( path:String,thread:BBThread )
 
 End
 
+Private
+
+Class AsyncDataLoader Extends Thread
+
+	Method New( data:DataBuffer,path:String,onComplete:IOnLoadDataComplete )
+		_data=data
+		_path=path
+		_onComplete=onComplete
+	End
+	
+	Method Start:Void()
+		AddAsyncEventSource Self
+		Super.Start
+	End
+	
+	Private
+	
+	Field _data:DataBuffer
+	Field _path:String
+	Field _onComplete:IOnLoadDataComplete
+
+	Method Run__UNSAFE__:Void()
+		_data._LoadAsync( _path,Self )
+	End
+		
+	Method UpdateAsyncEvents:Void()
+		If IsRunning() Return
+		RemoveAsyncEventSource Self
+		_onComplete.OnLoadDataComplete( DataBuffer( Result() ),_path )
+	End		
+	
+End
+
 Public
+
+Interface IOnLoadDataComplete
+	Method OnLoadDataComplete:Void( data:DataBuffer,path:String )
+End
 
 'OK, for now no error checking of count/address/offset params. These should probably be:
 '
@@ -218,6 +260,12 @@ Class DataBuffer Extends BBDataBuffer
 		Local buf:=New DataBuffer
 		If buf._Load( path ) Return buf
 		Return Null
+	End
+	
+	Function LoadAsync:Void( path:String,onComplete:IOnLoadDataComplete )
+		Local data:=New DataBuffer
+		Local loader:=New AsyncDataLoader( data,path,onComplete )
+		loader.Start()
 	End
 	
 	'***** INTERNAL *****

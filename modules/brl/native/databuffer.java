@@ -23,6 +23,10 @@ class BBDataBuffer{
 		System.arraycopy( data,0,_data.array(),0,data.length );
 		return true;
 	}
+	
+	void _LoadAsync( String path,BBThread thread ){
+		if( _Load( path ) ) thread.SetResult( this );
+	}
 
 	ByteBuffer GetByteBuffer(){
 		return _data;
