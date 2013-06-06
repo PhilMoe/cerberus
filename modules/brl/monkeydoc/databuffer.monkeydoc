@@ -6,6 +6,16 @@ Databuffer objects provide storage for arbitrary data.
 For more information on databuffers, please refer to the [[DataBuffer]] class reference.
 
 
+# Interface IOnLoadDataComplete
+
+
+# Method OnLoadDataComplete:Void( data:DataBuffer,path:String )
+
+This method is called by [[DataBuffer.LoadAsync]] when data has finished loading.
+
+If @data is Null, the data load failed.
+
+
 # Class brl.databuffer.DataBuffer
 
 Databuffer objects provide storage for arbitrary data.
@@ -234,10 +244,13 @@ Creates and returns a databuffer containing the binary contents of the specified
 
 If the file does not exist or cannot be read, null is returned instead.
 
-Params: 
+Links: [[Resource paths]]
 
-@path - path of file to load.
 
-Links: 
+# Function LoadAsync:Void( path:String,onComplete:IOnLoadDataComplete )
 
-[[Resource paths]]
+Loads a databuffer asynchronously.
+
+When data has finished loading, the [[OnLoadDataComplete]] method of the @onComplete object is called.
+
+Links: [[Resource paths]]
