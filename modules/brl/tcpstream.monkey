@@ -1,93 +1,62 @@
 
 Import brl.stream
-
-#If (LANG="cpp" Or LANG="java")
-#BRL_TCPSTREAM_IMPLEMENTED=True
-Import "native/tcpstream.${LANG}"
-#Endif
-
-#BRL_TCPSTREAM_IMPLEMENTED=False
-#If BRL_TCPSTREAM_IMPLEMENTED="0"
-#Error "Native TcpStream class not found."
-#Endif
-
-Extern
-
-Class BBTcpStream Extends BBStream
-
-	Method Connect:Bool( host:String,port:Int )
-	Method ReadAvail:Int()
-	Method WriteAvail:Int()
-
-End
-
-Public
+Import brl.socket
 
 Class TcpStream Extends Stream
 
 	Method New()
-		_stream=New BBTcpStream
+		_socket=New Socket( "stream" )
+	End
+	
+	Method New( socket:Socket )
+		If socket.Protocol<>"stream" Error "Socket must be a stream socket"
+		_socket=socket
+	End
+	
+	Method Connect:Bool( host:String,port:Int )
+		Return _socket.Connect( host,port )
+	End
+	
+	Method Close:Void()
+		If Not _socket Return
+		_socket.Close
+		_socket=Null
+		_eof=0
+	End
+	
+	Method Eof:Int() Property
+		Return _eof
+	End
+	
+	Method Length:Int() Property
+		Return 0
+	End
+	
+	Method Position:Int() Property
+		Return 0
 	End
 
-	Method Connect:Bool( host:String,port:Int )
-		Return _stream.Connect( host,port )
-	End
-	
-	Method ReadAvail:Int()
-		Return _stream.ReadAvail()
-	End
-	
-	Method WriteAvail:Int()
-		Return _stream.WriteAvail()
-	End
-	
-	'Stream
-	Method Close:Void()
-		If _stream 
-			_stream.Close
-			_stream=Null
-		Endif
-	End
-	
-	Method Eof:Int()
-		Return _stream.Eof()
-	End
-	
-	Method Length:Int()
-		Return _stream.Length()
-	End
-	
-	Method Position:Int()
-		Return _stream.Position()
-	End
-	
 	Method Seek:Int( position:Int )
-		Return _stream.Seek( position )
+		Return 0
 	End
 	
-	Method Read:Int( buffer:DataBuffer,offset:Int,count:Int )
-		Return _stream.Read( buffer,offset,count )
+	Method Read:Int( data:DataBuffer,offset:Int,count:Int )
+		If _eof Or Not _socket Return 0
+		Local n:=_socket.Receive( data,offset,count )
+		If count And Not n _eof=1
+		Return n
 	End
 	
-	Method Write:Int( buffer:DataBuffer,offset:Int,count:Int )
-		Return _stream.Write( buffer,offset,count )
-	End
-	
-	'***** INTERNAL *****
-	Method New( stream:BBTcpStream )
-		_stream=stream
-	End
-	
-	Method GetNativeStream:BBStream()
-		Return _stream
-	End
-	
-	Method GetNativeTcpStream:BBTcpStream()
-		Return _stream
+	Method Write:Int( data:DataBuffer,offset:Int,count:Int )
+		If _eof Or Not _socket Return 0
+		Local n:=_socket.Send( data,offset,count )
+		If count And Not n _eof=1
+		Return n
 	End
 	
 	Private
 	
-	Field _stream:BBTcpStream
+	Field _socket:Socket
+	Field _eof:Int
 	
 End
