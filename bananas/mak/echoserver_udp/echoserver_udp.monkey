@@ -17,11 +17,11 @@ Class UdpEchoServer Implements IOnSendToComplete,IOnReceiveFromComplete
 	Field _data:=New DataBuffer( 1024 )
 	Field _address:=New SocketAddress
 	
-	Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+	Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 		_socket.ReceiveFromAsync data,0,data.Length,address,Self
 	End
 	
-	Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+	Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 		_socket.SendToAsync data,offset,count,address,Self
 	End
 	
@@ -70,16 +70,16 @@ Class MyApp Extends App Implements IOnConnectComplete,IOnSendComplete,IOnReceive
 		_socket.SendAsync _data,0,n,Self
 	End
 	
-	Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+	Method OnConnectComplete:Void( connected:Bool,source:Socket )
 		If Not connected Error "Connect error"
 		SendMore
 	End
 
-	Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 		_socket.ReceiveAsync _data,0,_data.Length,Self
 	End
 	
-	Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 		Print "Received response:"+data.PeekString( offset,count )
 		SendMore
 	End
