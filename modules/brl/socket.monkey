@@ -1,21 +1,23 @@
 
-#If LANG<>"cpp" And LANG<>"java"
-#Error "Invalid target"
-#Endif
-
 Import brl.databuffer
 Import brl.asyncevent
+
+#If LANG="cpp" Or LANG="java"
+#BRL_SOCKET_IMPLEMENTED=True
+Import "native/socket.${LANG}"
+#If LANG="cpp"
+Import "native/socket_win8.cpp"
+#Endif
+#Endif
+
+#BRL_SOCKET_IMPLEMENTED=False
+#If BRL_SOCKET_IMPLEMENTED="0"
+#Error "Native Socket class not found."
+#Endif
 
 Private
 
 Import brl.thread
-
-#If LANG="cpp"
-Import "native/socket.cpp"
-Import "native/socket_win8.cpp"
-#Elseif LANG="java"
-Import "native/socket.java"
-#Endif
 
 Extern Private
 
@@ -55,16 +57,16 @@ Private
 Class AsyncOp
 
 	'Careful...called by background thread
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource ) Abstract
+	Method Execute__UNSAFE__:Void( source:Socket ) Abstract
 
 	'Relax...called by main thread	
-	Method Complete:Void( source:IAsyncEventSource ) Abstract
+	Method Complete:Void( source:Socket ) Abstract
 
 End
 
-Class AsyncThread Extends Thread
+Class AsyncQueue Extends Thread Implements IAsyncEventSource
 
-	Method New( source:IAsyncEventSource )
+	Method New( source:Socket )
 		Self.source=source
 	End
 	
@@ -75,11 +77,11 @@ Class AsyncThread Extends Thread
 	Method Enqueue:Void( op:AsyncOp )
 		queue[put]=op
 		put=(put+1) Mod QUEUE_SIZE
-		If put=get Error "AsyncThread queue overflow!"
+		If put=get Error "AsyncQueue queue overflow!"
 		Start						'NOP if already running. Race condition alert! This will fail if thread is in the process of exiting!
 	End
 	
-	Method Update:Void()
+	Method UpdateAsyncEvents:Void()
 		If nxt<>put
 			If Not IsRunning() Print "RACE!"
 			Start					'NOP if already running. This is a kludge for the above race condition...
@@ -105,7 +107,7 @@ Class AsyncThread Extends Thread
 	Const QUEUE_SIZE:=256			'how many ops can be queued. Overflow this and yer hosed.
 	Const QUEUE_MASK:=QUEUE_SIZE-1
 
-	Field source:IAsyncEventSource
+	Field source:Socket
 	Field queue:AsyncOp[QUEUE_SIZE]
 	Field put:Int	'only written by Enqueue
 	Field get:Int	'only written by Update
@@ -130,11 +132,11 @@ Class AsyncConnectOp Extends AsyncOp
 	Field _onComplete:IOnConnectComplete
 	Field _result:Bool
 
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_result=_socket.Connect( _host,_port )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		If _result Socket( source ).OnConnectComplete()
 		_onComplete.OnConnectComplete( _result,source )
 	End
@@ -158,11 +160,11 @@ Class AsyncBindOp Extends AsyncOp
 	Field _onComplete:IOnBindComplete
 	Field _result:Bool
 
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_result=_socket.Bind( _host,_port )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		If _result Socket( source ).OnBindComplete()
 		_onComplete.OnBindComplete( _result,source )
 	End
@@ -182,11 +184,11 @@ Class AsyncAcceptOp Extends AsyncOp
 	Field _onComplete:IOnAcceptComplete
 	Field _result:Bool
 	
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_result=_socket.Accept()
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		Local sock:Socket
 		If _result sock=Socket( source ).OnAcceptComplete()
 		_onComplete.OnAcceptComplete( sock,source )
@@ -222,11 +224,11 @@ Class AsyncSendOp Extends AsyncSocketIoOp
 	
 	Field _onComplete:IOnSendComplete
 	
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_count=_socket.Send( _data,_offset,_count )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		_onComplete.OnSendComplete( _data,_offset,_count,source )
 	End
 
@@ -245,11 +247,11 @@ Class AsyncSendToOp Extends AsyncSocketIoOp
 	Field _address:SocketAddress
 	Field _onComplete:IOnSendToComplete
 	
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_count=_socket.SendTo( _data,_offset,_count,_address )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		_onComplete.OnSendToComplete( _data,_offset,_count,_address,source )
 	End
 
@@ -266,11 +268,11 @@ Class AsyncReceiveOp Extends AsyncSocketIoOp
 	
 	Field _onComplete:IOnReceiveComplete
 	
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_count=_socket.Receive( _data,_offset,_count )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		_onComplete.OnReceiveComplete( _data,_offset,_count,source )
 	End
 End
@@ -288,11 +290,11 @@ Class AsyncReceiveFromOp Extends AsyncSocketIoOp
 	Field _address:SocketAddress
 	Field _onComplete:IOnReceiveFromComplete
 	
-	Method Execute__UNSAFE__:Void( source:IAsyncEventSource )
+	Method Execute__UNSAFE__:Void( source:Socket )
 		_count=_socket.ReceiveFrom( _data,_offset,_count,_address )
 	End
 	
-	Method Complete:Void( source:IAsyncEventSource )
+	Method Complete:Void( source:Socket )
 		_onComplete.OnReceiveFromComplete( _data,_offset,_count,_address,source )
 	End
 End
@@ -300,31 +302,31 @@ End
 Public
 
 Interface IOnConnectComplete
-	Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+	Method OnConnectComplete:Void( connected:Bool,source:Socket )
 End
 
 Interface IOnBindComplete
-	Method OnBindComplete:Void( bound:Bool,source:IAsyncEventSource )
+	Method OnBindComplete:Void( bound:Bool,source:Socket )
 End
 
 Interface IOnAcceptComplete
-	Method OnAcceptComplete:Void( socket:Socket,source:IAsyncEventSource )
+	Method OnAcceptComplete:Void( socket:Socket,source:Socket )
 End
 
 Interface IOnSendComplete
-	Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 End
 
 Interface IOnSendToComplete
-	Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+	Method OnSendToComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 End
 
 Interface IOnReceiveComplete
-	Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 End
 
 Interface IOnReceiveFromComplete
-	Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:IAsyncEventSource )
+	Method OnReceiveFromComplete:Void( data:DataBuffer,offset:Int,count:Int,address:SocketAddress,source:Socket )
 End
 
 Class SocketAddress Extends BBSocketAddress
@@ -506,8 +508,8 @@ Class Socket Implements IAsyncEventSource
 	Field _sock:BBSocket
 	Field _proto:Int
 	Field _state:Int
-	Field _rthread:AsyncThread
-	Field _wthread:AsyncThread
+	Field _rthread:AsyncQueue
+	Field _wthread:AsyncQueue
 	Field _localAddress:=New SocketAddress
 	Field _remoteAddress:=New SocketAddress
 	
@@ -519,18 +521,14 @@ Class Socket Implements IAsyncEventSource
 	End
 	
 	Method Start:Void()
-		_rthread=New AsyncThread( Self )
-		_wthread=New AsyncThread( Self )
+		_rthread=New AsyncQueue( Self )
+		_wthread=New AsyncQueue( Self )
 		AddAsyncEventSource Self
 	End
 	
 	Method UpdateAsyncEvents:Void()
-		If _rthread 
-			_rthread.Update
-		Endif
-		If _wthread
-			_wthread.Update
-		Endif
+		If _rthread _rthread.UpdateAsyncEvents
+		If _wthread	_wthread.UpdateAsyncEvents
 	End
 	
 	Method OnConnectComplete:Void()
