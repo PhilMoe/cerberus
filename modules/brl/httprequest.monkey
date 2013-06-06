@@ -10,6 +10,9 @@ Public
 
 Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComplete
 
+	Method New()
+	End
+
 	Method New( req:String,url:String,onComplete:IOnHttpRequestComplete )
 		Open req,url,onComplete
 	End
@@ -90,7 +93,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 		_onComplete.OnHttpRequestComplete Self
 	End
 	
-	Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+	Method OnConnectComplete:Void( connected:Bool,source:Socket )
 		If Not connected
 			Finish
 			Return
@@ -107,7 +110,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 		_sock.ReceiveAsync _rbuf,0,_rbuf.Length,Self
 	End
 	
-	Method OnReceiveComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnReceiveComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:Socket )
 
 		If Not count
 			Finish
@@ -162,7 +165,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 	End
 	
 	
-	Method OnSendComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnSendComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:Socket )
 		If Not _dataLength Return
 		_sock.SendAsync _data,0,_dataLength,Self
 		_dataLength=0
