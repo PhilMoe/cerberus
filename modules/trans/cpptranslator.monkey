@@ -10,7 +10,7 @@ Const PROFILE?=True
 
 Class CppTranslator Extends CTranslator
 
-	Field unsafe:=True
+	Field unsafe:=False
 	Field lastDbgInfo:=""
 	Field dbgLocals:=New Stack<LocalDecl>
 	Field gc_mode=0
@@ -497,7 +497,7 @@ Class CppTranslator Extends CTranslator
 		
 		EndLocalScope
 		
-		unsafe=True
+		unsafe=False
 	End
 	
 	Method EmitClassProto( classDecl:ClassDecl )
