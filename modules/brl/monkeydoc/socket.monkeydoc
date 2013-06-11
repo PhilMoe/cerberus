@@ -62,13 +62,11 @@ Links: [[Socket.SendToAsync]]
 
 # Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,source:Socket )
 
-This method is called when an asynchronous socket Receive operation completes.
+This method is called when an asynchronous socket Receive or ReceiveAll operation completes.
 
-@count contains the number of bytes received, and may be less than the number of bytes requested by ReadAysnc.
+@count contains the number of bytes received.
 
-If @count is 0, then the socket has been remotely closed.
-
-Links: [[Socket.ReceiveAsync]]
+Links: [[Socket.ReceiveAsync]], [[Socket.ReceiveAllAsync]]
 
 
 # Interface IOnReceiveFromComplete
@@ -196,7 +194,7 @@ The socket must be a server socket.
 
 Sends data to a remote host and returns the number of bytes sent.
 
-The method blocks until either all bytes have been sent or the socket is closed.
+The method blocks until either all bytes of data have been sent or the socket is closed.
 
 The socket must be a connected stream or connected datagram socket.
 
@@ -207,7 +205,7 @@ Links: [[Receive]]
 
 Sends data to a remote host asynchronously.
 
-The method returns immediately. Once the data has been sent, the [[OnSendComplete]] method of the @onComplete object is called.
+The method returns immediately. Once all bytes of data have bben been sent or the socket is closed, the [[OnSendComplete]] method of the @onComplete object is called.
 
 The socket must be a connected stream or connected datagram socket.
 
@@ -229,7 +227,7 @@ Links: [[ReceiveFrom]]
 
 Sends data to the remote host specified by @address asynchronously.
 
-The method returns immediately. Once the data has been sent, the [[OnSendToComplete]] method of the @onComplete object is called.
+The method returns immediately. Once all bytes of data have been sent or the socket is closed, the [[OnSendToComplete]] method of the @onComplete object is called.
 
 The socket must be an unconnected datagram socket.
 
@@ -240,7 +238,7 @@ Note: Be careful not to modify @data or @address while the operation is in progr
 
 Receives data from a remote host and returns the number of bytes received.
 
-The method blocks until either at least 1 byte has been received or the socket is closed.
+The method blocks until either at least 1 byte of data has been received or the socket is closed.
 
 The socket must be a connected stream or connected datagram socket.
 
@@ -251,7 +249,29 @@ Links: [[Send]]
 
 Receives data from a remote host asynchronously.
 
-The method returns immediately. Once data has been received, the [[OnReceiveComplete]] method of the @onComplete object is called.
+The method returns immediately. Once at least 1 byte of data has been received or the socket is closed, the [[OnReceiveComplete]] method of the @onComplete object is called.
+
+The socket must be a connected stream or connected datagram socket.
+
+Note: Be careful not to modify @data or @address while the operation is in progress.
+
+
+# Method ReceiveAll:Int( data:DataBuffer,offset:Int,count:Int )
+
+Receives data from a remote host and returns the number of bytes received.
+
+The method blocks until either @count bytes of data have been received or the socket is closed.
+
+The socket must be a connected stream or connected datagram socket.
+
+Links: [[Send]]
+
+
+# Method ReceiveAllAsync:Int( data:DataBuffer,offset:Int,count:Int,onComplete:IOnReceiveComplete )
+
+Receives data from a remote host asynchronously.
+
+The method returns immediately. Once either @count bytes of data have been received or the socket is closed, the [[OnReceiveComplete]] method of the @onComplete object is called.
 
 The socket must be a connected stream or connected datagram socket.
 
@@ -262,9 +282,9 @@ Note: Be careful not to modify @data or @address while the operation is in progr
 
 Receives data from a remote host and returns the number of bytes received.
 
-The address of the remote host that sent the data is written to @address.
+The method blocks until at least 1 byte of data is available or the socket is closed.
 
-The method blocks until data is available.
+The address of the remote host that the data was sent from is written to @address.
 
 The socket must be an unconnected datagram socket.
 
@@ -273,7 +293,7 @@ The socket must be an unconnected datagram socket.
 
 Receives data from a remote host asynchronously.
 
-The method returns immediately. Once data has been received, the [[OnReceiveFromComplete]] method of the @onComplete object is called.
+The method returns immediately. Once at least 1 byte of data has been received or the socket is closed, the [[OnReceiveFromComplete]] method of the @onComplete object is called.
 
 The socket must be an unconnected datagram socket.
 
