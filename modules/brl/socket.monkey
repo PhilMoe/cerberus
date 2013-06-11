@@ -277,6 +277,31 @@ Class AsyncReceiveOp Extends AsyncSocketIoOp
 	End
 End
 
+Class AsyncReceiveAllOp Extends AsyncSocketIoOp
+
+	Method New( socket:BBSocket,data:DataBuffer,offset:Int,count:Int,onComplete:IOnReceiveComplete )
+		Super.New( socket,data,offset,count )
+		_onComplete=onComplete
+	End
+	
+	Private
+	
+	Field _onComplete:IOnReceiveComplete
+	
+	Method Execute__UNSAFE__:Void( source:Socket )
+		Local i:=0
+		While i<_count
+			Local n:=_socket.Receive( _data,_offset+i,_count-i )
+			If n>0 i+=n Else Exit
+		Wend
+		_count=i
+	End
+	
+	Method Complete:Void( source:Socket )
+		_onComplete.OnReceiveComplete( _data,_offset,_count,source )
+	End
+End
+
 Class AsyncReceiveFromOp Extends AsyncSocketIoOp
 
 	Method New( socket:BBSocket,data:DataBuffer,offset:Int,count:Int,address:SocketAddress,onComplete:IOnReceiveFromComplete )
@@ -446,7 +471,22 @@ Class Socket Implements IAsyncEventSource
 		If Not IsConnected Return
 		_rthread.Enqueue New AsyncReceiveOp( _sock,buf,offset,count,onComplete )
 	End
+	
+	Method ReceiveAll:Int( buf:DataBuffer,offset:Int,count:Int )
+		If Not IsConnected Return 0
+		Local i:=0
+		While i<count
+			Local n:=_sock.Receive( buf,offset+i,count-i )
+			If n>0 i+=n Else Exit
+		Wend
+		Return i
+	End
 
+	Method ReceiveAllAsync:Void( buf:DataBuffer,offset:Int,count:Int,onComplete:IOnReceiveComplete )
+		If Not IsConnected Return
+		_rthread.Enqueue New AsyncReceiveAllOp( _sock,buf,offset,count,onComplete )
+	End
+	
 	Method ReceiveFrom:Int( buf:DataBuffer,offset:Int,count:Int,address:SocketAddress )
 		If _proto<>DATAGRAM Or IsConnected Return 0
 		Local n:=_sock.ReceiveFrom( buf,offset,count,address )
