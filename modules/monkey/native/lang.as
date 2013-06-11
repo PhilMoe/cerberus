@@ -37,7 +37,10 @@ function stackTrace():String{
 }
 
 function print( str:String ):int{
-	if( ExternalInterface.available ) ExternalInterface.call( "monkey_print",str );
+	try{
+		if( ExternalInterface.available ) ExternalInterface.call( "monkey_print",str );
+	}catch( ex:Error ){
+	}
 	return 0;
 }
 
