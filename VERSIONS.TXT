@@ -1,6 +1,17 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V71b *****
+
+Added ReceiveAll and ReceiveAllAsync to Socket for receiving known length messages. ReceiveFrom, Send and SendTo are already implictly 'all'...
+
+Version 1 of WinRT UDP sockets implemented - nasty stuff, may not be 100% right!
+
+Fixed flash Print security exception.
+
+Fixed trans "Unsafe call!!!!!" bug.
+
+
 ***** V71a *****
 
 Update admob SDKs to android=6.4.1, ios=6.4.2.
@@ -29,7 +40,13 @@ CPP_GC_TRIGGER now controls how much memory is allocated before a GC 'sweep' occ
 
 Added CPP_GC_MAX_LOCALS app config settings. This is used with GC_MODE 2 to track local object vars and defaults to 8192. Trans uses 445 locals to build itself, so this should be plenty for most apps but if you're doing something very recursive you might want to bump this.
 
-Tweaked makedocs.
+Tweaked makedocs. Can now handle 'relative' imports in .monkey files and added #Rem monkeydoc on/off.
+
+
+***** V70g *****
+
+Fixed iOS DisableKeyboard not working bug.
+
 
 
 ***** V70f *****
