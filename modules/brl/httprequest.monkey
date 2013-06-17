@@ -22,7 +22,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 		_rbuf.Discard
 		If _data _data.Discard
 		_wbuf=Null
-		_rebuf=Null
+		_rbuf=Null
 		_data=Null
 	End
 

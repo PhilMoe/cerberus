@@ -427,7 +427,7 @@ Class Socket Implements IAsyncEventSource
 	End
 	
 	Method Accept:Socket()
-		If Not IsListening And (Not IsOpen Or _proto<>SERVER Or Not Bind( 0 )) Return Null
+		If Not IsListening And (Not IsOpen Or _proto<>SERVER Or Not Bind( "",0 )) Return Null
 		If Not _sock.Accept() Return Null
 		Return OnAcceptComplete()
 	End

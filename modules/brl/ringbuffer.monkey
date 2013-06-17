@@ -92,7 +92,7 @@ Class RingBuffer
 		Local n:=_buf.Length-get
 		If cnt>=n
 			_buf.CopyBytes get,dst,off,n
-			offt+=n
+			off+=n
 			cnt-=n
 			get=0
 		Endif
