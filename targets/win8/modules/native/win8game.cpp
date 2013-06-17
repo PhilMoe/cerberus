@@ -22,9 +22,12 @@ public:
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 
 	virtual void UpdateGame();
+	virtual void RotateCoords( float &x,float &y );
 	virtual void MouseEvent( int event,int data,float x,float y );
+	virtual void TouchEvent( int event,int data,float x,float y );
 	
-	virtual int GetDeviceRotation(){ return _deviceRotation; }
+	virtual void ValidateOrientation();
+	virtual int  GetDeviceRotation(){ return _deviceRotation; }
 	
 	virtual ID3D11Device1 *GetD3dDevice(){ return _d3dDevice; }
 	virtual ID3D11DeviceContext1 *GetD3dContext(){ return _d3dContext; }
@@ -41,10 +44,8 @@ private:
 	double _updatePeriod;
 	
 	int _deviceRotation;
+	int _inputRotation;
 	
-	Windows::Foundation::Rect _windowBounds;
-	Windows::Foundation::Size _renderTargetSize;
-
 	ID3D11Device1 *_d3dDevice;
 	ID3D11DeviceContext1 *_d3dContext;
 	IDXGISwapChain1 *_swapChain;
@@ -64,7 +65,6 @@ private:
 	void WaitEvents();
 
 	void CreateD3dDevice();
-	void ValidateOrientation();
 };
 
 //***** win8game.cpp *****
@@ -83,6 +83,35 @@ static float DipsToPixels( float dips ){
 	return floor( dips*DisplayProperties::LogicalDpi/dipsPerInch+0.5f ); // Round to nearest integer.
 }
 
+static int DeviceOrientation(){
+	switch( DisplayProperties::CurrentOrientation ){
+	case DisplayOrientations::Portrait:return 0;
+	case DisplayOrientations::Landscape:return 1;
+	case DisplayOrientations::PortraitFlipped:return 2;
+	case DisplayOrientations::LandscapeFlipped:return 3;
+	}
+	return 1;
+}
+
+static int DeviceRotation(){
+	int rot=DeviceOrientation();
+#if WINDOWS_8
+	return (rot-1)&3;
+#else
+	return rot;
+#endif
+}
+
+static DXGI_MODE_ROTATION SwapChainRotation(){
+	switch( DeviceRotation() ){
+	case 0:return DXGI_MODE_ROTATION_IDENTITY;
+	case 1:return DXGI_MODE_ROTATION_ROTATE90;
+	case 2:return DXGI_MODE_ROTATION_ROTATE180;
+	case 3:return DXGI_MODE_ROTATION_ROTATE270;
+	}
+	return DXGI_MODE_ROTATION_UNSPECIFIED;
+}
+
 BBWin8Game *BBWin8Game::_win8Game;
 
 BBWin8Game::BBWin8Game():
@@ -98,9 +127,6 @@ _depthStencilView( 0 )
 #endif
 {
 	_win8Game=this;
-	
-	ZEROMEM( _windowBounds );
-	ZEROMEM( _renderTargetSize );
 	
 	CreateD3dDevice();
 }
@@ -401,26 +427,22 @@ unsigned char *BBWin8Game::LoadAudioData( String path,int *length,int *channels,
 #endif
 
 void BBWin8Game::ValidateOrientation(){
-	switch( DisplayProperties::NativeOrientation ){
-	case DisplayOrientations::Portrait:
-		switch( DisplayProperties::CurrentOrientation ){
-		case DisplayOrientations::Portrait:
-			if( CFG_WIN8_SCREEN_ORIENTATION & 1 ) _deviceRotation=0;
-			break;
-		case DisplayOrientations::Landscape:
-			if( CFG_WIN8_SCREEN_ORIENTATION & 2 ) _deviceRotation=1;
-			break;
-		case DisplayOrientations::PortraitFlipped:
-			if( CFG_WIN8_SCREEN_ORIENTATION & 4 ) _deviceRotation=2;
-			break;
-		case DisplayOrientations::LandscapeFlipped:
-			if( CFG_WIN8_SCREEN_ORIENTATION & 8 ) _deviceRotation=3;
-			break;
-		}
-		break;
-	case DisplayOrientations::Landscape:	//The mythical 'surface', I presume...
-		break;
-	}
+
+	int devrot=DeviceRotation();
+	if( CFG_WIN8_SCREEN_ORIENTATION & (1<<DeviceOrientation()) ) _deviceRotation=devrot;
+
+#if WINDOWS_8
+
+	_inputRotation=(4-devrot+_deviceRotation)&3;
+	if( _swapChain ) _swapChain->SetRotation( SwapChainRotation() );
+	Windows::UI::Core::CoreWindowResizeManager::GetForCurrentView()->NotifyLayoutCompleted();
+
+#elif WINDOWS_PHONE_8
+
+	_inputRotation=_deviceRotation;
+
+#endif
+
 }
 
 void BBWin8Game::UpdateGame(){
@@ -439,38 +461,60 @@ void BBWin8Game::UpdateGame(){
 	BBGame::UpdateGame();
 }
 
-void BBWin8Game::MouseEvent( int event,int data,float x,float y ){
+void BBWin8Game::RotateCoords( float &x,float &y ){
+
+	CoreWindow ^window=CoreWindow::GetForCurrentThread();
+	
+	int width=DipsToPixels( window->Bounds.Width );
+	int height=DipsToPixels( window->Bounds.Height );
+
 	float t;
-	switch( _deviceRotation ){
+	switch( _inputRotation ){
 	case 1:
-		t=x;x=y;y=_renderTargetSize.Width-t-1;
+		t=x;x=y;y=width-t-1;
 		break;
 	case 2:
-		x=_renderTargetSize.Width-x-1;y=_renderTargetSize.Height-y-1;
+		x=width-x-1;y=height-y-1;
 		break;
 	case 3:
-		t=x;x=_renderTargetSize.Height-y-1;y=t;
+		t=x;x=height-y-1;y=t;
 		break;
 	}
+}
+
+void BBWin8Game::MouseEvent( int event,int data,float x,float y ){
+	RotateCoords( x,y );
 	BBGame::MouseEvent( event,data,x,y );
+}
+
+void BBWin8Game::TouchEvent( int event,int data,float x,float y ){
+	RotateCoords( x,y );
+	BBGame::TouchEvent( event,data,x,y );
 }
 
 void BBWin8Game::Run(){
 
-	if( CFG_WIN8_SCREEN_ORIENTATION & 1 ){
-		_deviceRotation=0;
-	}else if( CFG_WIN8_SCREEN_ORIENTATION & 2 ){
-		_deviceRotation=1;		
-	}else if( CFG_WIN8_SCREEN_ORIENTATION & 4 ){
-		_deviceRotation=2;		
-	}else if( CFG_WIN8_SCREEN_ORIENTATION & 8 ){
-		_deviceRotation=3;
-	}else{
-		_deviceRotation=0;
-	}
+	DisplayOrientations prefs=DisplayOrientations::None;
+	if( CFG_WIN8_SCREEN_ORIENTATION & 1 ) prefs=prefs|DisplayOrientations::Portrait;
+	if( CFG_WIN8_SCREEN_ORIENTATION & 2 ) prefs=prefs|DisplayOrientations::Landscape;
+	if( CFG_WIN8_SCREEN_ORIENTATION & 4 ) prefs=prefs|DisplayOrientations::PortraitFlipped;
+	if( CFG_WIN8_SCREEN_ORIENTATION & 8 ) prefs=prefs|DisplayOrientations::LandscapeFlipped;
+	if( prefs==DisplayOrientations::None ) prefs=DisplayProperties::CurrentOrientation;
+	
+	Windows::Graphics::Display::DisplayProperties::AutoRotationPreferences=prefs;
+
+	int orientation;
+	for( orientation=0;orientation<4 && !(CFG_WIN8_SCREEN_ORIENTATION & (1<<orientation));++orientation ) {}
+	if( orientation==4 ) orientation=DeviceOrientation();
+
+#if WINDOWS_8
+	_deviceRotation=(orientation-1)&3;
+#elif WINDOWS_PHONE_8
+	_deviceRotation=orientation;
+#endif	
 
 	ValidateOrientation();
-
+	
 	StartGame();
 	
 	for(;;){
@@ -553,13 +597,17 @@ void BBWin8Game::CreateD3dDevice(){
 
 	CoreWindow ^window=CoreWindow::GetForCurrentThread();
 
-	_windowBounds=window->Bounds;
-	
-	_renderTargetSize.Width=DipsToPixels( _windowBounds.Width );
-	_renderTargetSize.Height=DipsToPixels( _windowBounds.Height );
-	
-	int width=_renderTargetSize.Width;
-	int height=_renderTargetSize.Height;
+	int width=DipsToPixels( window->Bounds.Width );
+	int height=DipsToPixels( window->Bounds.Height );
+
+#if WINDOWS_8
+	switch( DisplayProperties::CurrentOrientation ){
+	case DisplayOrientations::Portrait:
+	case DisplayOrientations::PortraitFlipped:
+		std::swap( width,height );
+		break;
+	}
+#endif
 
 	UINT creationFlags=D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 	
@@ -747,7 +795,6 @@ void Win8Game::SetWindow( CoreWindow ^window ){
 	auto inputPane=Windows::UI::ViewManagement::InputPane::GetForCurrentView();
 	inputPane->Showing+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneShowing );
 	inputPane->Hiding+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneHiding );
-	
 	Windows::Phone::UI::Input::HardwareButtons::BackPressed+=ref new EventHandler<Windows::Phone::UI::Input::BackPressedEventArgs^>( this,&Win8Game::OnBackButtonPressed );
 #endif
 }
@@ -765,6 +812,8 @@ void Win8Game::Uninitialize(){
 
 void Win8Game::OnWindowSizeChanged( CoreWindow ^sender,WindowSizeChangedEventArgs ^args ){
 //	Print( "Window Size Changed" );
+
+	BBWin8Game::Win8Game()->ValidateOrientation();
 }
 
 void Win8Game::OnVisibilityChanged( CoreWindow ^sender,VisibilityChangedEventArgs ^args ){
@@ -809,38 +858,145 @@ void Win8Game::OnCharacterReceived( CoreWindow ^sender,CharacterReceivedEventArg
 }
 
 void Win8Game::OnPointerPressed( CoreWindow ^sender,PointerEventArgs ^args ){
+
 	auto p=args->CurrentPoint;
-	int id=0;
-	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
-	if( id<32 ) return;		//Error! Pointer ID already in use!
-	id=0;
-	while( id<32 && _pointerIds[id] ) ++id;
-	if( id==32 ) return;	//Error! Too many fingers!
-	_pointerIds[id]=p->PointerId;
-	float x=DipsToPixels( p->Position.X );
-	float y=DipsToPixels( p->Position.Y );
-	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchDown,id,x,y );
+	
+#if WINDOWS_8
+	auto t=p->PointerDevice->PointerDeviceType;
+#elif WINDOWS_PHONE_8
+	auto t=Windows::Devices::Input::PointerDeviceType::Touch;
+#endif
+	
+	switch( t ){
+	case Windows::Devices::Input::PointerDeviceType::Touch:
+		{
+			int id=0;
+			while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+			if( id<32 ) return;		//Error! Pointer ID already in use!
+			id=0;
+			while( id<32 && _pointerIds[id] ) ++id;
+			if( id==32 ) return;	//Error! Too many fingers!
+			_pointerIds[id]=p->PointerId;
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchDown,id,x,y );
+		}
+		break;
+	case Windows::Devices::Input::PointerDeviceType::Mouse:
+		{
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			switch( p->Properties->PointerUpdateKind ){
+			case Windows::UI::Input::PointerUpdateKind::LeftButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,0,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::RightButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,1,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::MiddleButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,2,x,y );
+				break;
+			}
+		}
+		break;
+	}
 }
 
 void Win8Game::OnPointerReleased( CoreWindow ^sender,PointerEventArgs ^args ){
+
 	auto p=args->CurrentPoint;
-	int id=0;
-	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
-	if( id==32 ) return; 	//Pointer ID not found!
-	_pointerIds[id]=0;
-	float x=DipsToPixels( p->Position.X );
-	float y=DipsToPixels( p->Position.Y );
-	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchUp,id,x,y );
+	
+#if WINDOWS_8
+	auto t=p->PointerDevice->PointerDeviceType;
+#elif WINDOWS_PHONE_8
+	auto t=Windows::Devices::Input::PointerDeviceType::Touch;
+#endif
+	
+	switch( t ){
+	case Windows::Devices::Input::PointerDeviceType::Touch:
+		{
+			int id=0;
+			while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+			if( id==32 ) return; 	//Pointer ID not found!
+			_pointerIds[id]=0;
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchUp,id,x,y );
+		}
+		break;
+	case Windows::Devices::Input::PointerDeviceType::Mouse:
+		{
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			switch( p->Properties->PointerUpdateKind ){
+			case Windows::UI::Input::PointerUpdateKind::LeftButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,0,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::RightButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,1,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::MiddleButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,2,x,y );
+				break;
+			}
+		}
+		break;
+	}
 }
 
 void Win8Game::OnPointerMoved( CoreWindow ^sender,PointerEventArgs ^args ){
+
 	auto p=args->CurrentPoint;
-	int id=0;
-	while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
-	if( id==32 ) return;	 //Pointer ID not found!
-	float x=DipsToPixels( p->Position.X );
-	float y=DipsToPixels( p->Position.Y );
-	BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchMove,id,x,y );
+	
+#if WINDOWS_8
+	auto t=p->PointerDevice->PointerDeviceType;
+#elif WINDOWS_PHONE_8
+	auto t=Windows::Devices::Input::PointerDeviceType::Touch;
+#endif
+	
+	switch( t ){
+	case Windows::Devices::Input::PointerDeviceType::Touch:
+		{
+			int id=0;
+			while( id<32 && _pointerIds[id]!=p->PointerId ) ++id;
+			if( id==32 ) return;	 //Pointer ID not found!
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			BBWin8Game::Win8Game()->TouchEvent( BBGameEvent::TouchMove,id,x,y );
+		}
+		break;
+	case Windows::Devices::Input::PointerDeviceType::Mouse:
+		{
+			float x=DipsToPixels( p->Position.X );
+			float y=DipsToPixels( p->Position.Y );
+			switch( p->Properties->PointerUpdateKind ){
+			case Windows::UI::Input::PointerUpdateKind::LeftButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,0,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::RightButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,1,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::MiddleButtonPressed:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseDown,2,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::LeftButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,0,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::RightButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,1,x,y );
+				break;
+			case Windows::UI::Input::PointerUpdateKind::MiddleButtonReleased:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseUp,2,x,y );
+				break;
+			default:
+				BBWin8Game::Win8Game()->MouseEvent( BBGameEvent::MouseMove,-1,x,y );
+			}
+		}
+		break;
+	case Windows::Devices::Input::PointerDeviceType::Pen:{
+		}
+		break;
+	}
 }
 
 void Win8Game::OnActivated( CoreApplicationView ^applicationView,IActivatedEventArgs ^args ){
@@ -860,7 +1016,7 @@ void Win8Game::OnResuming( Platform::Object ^sender,Platform::Object ^args ){
 
 void Win8Game::OnAccelerometerReadingChanged( Accelerometer ^sender,AccelerometerReadingChangedEventArgs ^args ){
 	AccelerometerReading ^reading=args->Reading;
-	
+
 	float x=reading->AccelerationX;
 	float y=reading->AccelerationY;
 	float z=reading->AccelerationZ;
