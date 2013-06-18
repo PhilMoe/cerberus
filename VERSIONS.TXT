@@ -3,8 +3,6 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** V71c
 
-Fixed some ziggybugs.
-
 Fixed Win8 mouse event handling.
 
 Fixed Win8 device orientation issues.
