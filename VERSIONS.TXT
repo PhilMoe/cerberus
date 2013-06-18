@@ -1,6 +1,17 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V71c
+
+Fixed some ziggybugs.
+
+Fixed Win8 mouse event handling.
+
+Fixed Win8 device orientation issues.
+
+Added PeekShorts, PokeShorts, PeekInts, PokeInts, PeekFloats, PokeFloats to DataBuffer.
+
+
 ***** V71b *****
 
 Added ReceiveAll and ReceiveAllAsync to Socket for receiving known length messages. ReceiveFrom, Send and SendTo are already implictly 'all'...
