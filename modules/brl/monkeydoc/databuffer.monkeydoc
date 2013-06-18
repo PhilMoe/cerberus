@@ -31,12 +31,9 @@ Creates a new data buffer of the specified byte length.
 
 Values can be written into the databuffer using the various 'poke' methods, or read using the 'peek' methods.
 
-Params: 
-
-length - buffer size, in bytes.
 
 
-# Method Length:Int()
+# Method Length:Int() Property
 
 Returns the length, in bytes, of the data buffer.
 
@@ -52,57 +49,23 @@ Once discarded, a data buffer should not be used again.
 
 Writes an 8 bit byte into the data buffer at @address.
 
-Params: 
-
-addr - byte address to poke
-
-value - value to poke
-
-# Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int=0)
-
-Copies bytes from the @bytes array to the databuffer.
-
-Copying starts at @offset within the array and @address within the databuffer, and continues until eith the end of the array or the end of the databuffer is reached.
-
-
-# Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int,count:Int )
-
-Copies bytes from the @bytes array to the databuffer.
-
-Copying starts at @offset within the array and @address within the databuffer, and continues until eith the end of array is reached, the end of the databuffer is reached, or @count bytes have been transferred.
-
 
 # Method PokeShort:Void(address:Int,value:Int)
 
 Writes a 16 bit int value into the data buffer at @address.
 
-Params: 
-
-addr - byte address to poke
-
-value - value to poke
 
 
 # Method PokeInt:Void(address:Int,value:Int)
 
 Writes a 32 bit int value into the data buffer at @address.
 
-Params: 
-
-addr - byte address to poke
-
-value - value to poke
 
 
 # Method PokeFloat:Void(address:Int,value:Float)
 
 Writes a 32 bit float value into the data buffer at @address.
 
-Params: 
-
-@address - byte address to poke
-
-@value - value to poke
 
 
 # Method PokeString:Int(address:Int,value:String,encoding:String="utf8")
@@ -111,98 +74,57 @@ Pokes @value into the data buffer at location @address.
 
 The @encoding parameter should be one of:
 
-<pre>
-utf8
-ascii
-</pre>
+| Encoding	| Description
+| "utf8"	| Unicode
+| "ascii"	| 8 bit ascii
+
+
+# Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int,count:Int )
+
+Copies @count 8 bit bytes from the @bytes array to the databuffer.
+
+@offset is the starting index within the source array, and @address is the starting byte address within the databuffer.
+
+
+# Method PokeShorts:Void(address:Int,shorts:Int[],offset:Int,count:Int )
+
+Copies @count 16 bit shorts from the @shorts array to the databuffer.
+
+@offset is the starting index within the source array, and @address is the starting byte address within the databuffer.
+
+
+# Method PokeInts:Void(address:Int,ints:Int[],offset:Int,count:Int )
+
+Copies @count 32 bit ints from the @ints array to the databuffer.
+
+@offset is the starting index within the source array, and @address is the starting byte address within the databuffer.
+
+
+# Method PokeFloats:Void(address:Int,floats:Int[],offset:Int,count:Int )
+
+Copies @count 32 bit floats from the @floats array to the databuffer.
+
+@offset is the starting index within the source array, and @address is the starting byte address within the databuffer.
 
 
 # Method PeekByte:Int(address:Int)
 
 Returns the 8 bit byte contained in the databuffer at @address.
 
-Params: 
-
-@address - byte address to peek.
-
-
-# Method PeekBytes:Int[](address:Int)
-
-Peeks and returns bytes from @address until the end of the databuffer in an int array.
-
-Params: 
-
-@address - byte address to staring peeking.
-
-
-# Method PeekBytes:Int[](address:Int,count:Int)
-
-Peeks and returns @count bytes starting at @address in an int array.
-
-Params: 
-
-@address - byte address to staring peeking.
-
-@count - number of bytes to peek.
-
-# Method PeekBytes:Void( address:Int,bytes:int[],offset:Int=0 )
-
-Copies bytes from @address until the end of the databuffer to @bytes.
-
-Data is written to @bytes starting at index @offset.
-
-Params: 
-
-@address - byte address to staring peeking.
-
-@bytes - array to write bgytes to.
-
-@count - number of bytes to peek.
-
-
-# Method PeekBytes:Void( address:Int,bytes:int[],offset:Int,count:Int )
-
-Copies @count bytes starting at @address from the data to @bytes.
-
-Data is written to @bytes starting at index @offset.
-
-Params: 
-
-@address - byte address to staring peeking.
-
-@bytes - array to write bgytes to.
-
-@count - number of bytes to peek.
-
-
 
 # Method PeekShort:Int(address:Int)
 
 Returns the 16 bit int value contained in the data buffer at @address.
-
-Params: 
-
-@address - byte address to peek
 
 
 # Method PeekInt:Int(address:Int)
 
 Returns the 32 bit int value contained in the data buffer at @address.
 
-Params: 
-
-@address - byte address to peek
-
 
 # Method PeekFloat:Float(address:Int)
 
 Returns the 32 bit float value stored in the data buffer at @address.
-
-Params: 
-
-@address - byte address to poke
-
-@value - value to poke
 
 
 # Method PeekString:String(address:Int,encoding:String="utf8")
@@ -213,10 +135,9 @@ Data is read from @address up until the end of the data buffer.
 
 The @encoding parameter should be one of:
 
-<pre>
-utf8
-ascii
-</pre>
+| Encoding	| Description
+| "utf8"	| Unicode
+| "ascii"	| 8 bit ascii
 
 
 # Method PeekString:String(address:Int,count:Int,encoding:String="utf8")
@@ -227,10 +148,37 @@ Up to @count bytes are read from the data buffer starting from @address.
 
 The @encoding parameter should be one of:
 
-<pre>
-utf8
-ascii
-</pre>
+| Encoding	| Description
+| "utf8"	| Unicode
+| "ascii"	| 8 bit ascii
+
+
+# Method PeekBytes:Void( address:Int,bytes:Int[],offset:Int,count:Int )
+
+Copies @count bytes starting at @address from the databuffer to @bytes.
+
+Data is written to @bytes starting at index @offset.
+
+
+# Method PeekShorts:Void( address:Int,shorts:Int[],offset:Int,count:Int )
+
+Copies @count 16 bit shorts starting at @address from the databuffer to @bytes.
+
+Data is written to @shorts starting at index @offset.
+
+
+# Method PeekInts:Void( address:Int,ints:Int[],offset:Int,count:Int )
+
+Copies @count 32 bit ints starting at @address from the databuffer to @bytes.
+
+Data is written to @ints starting at index @offset.
+
+
+# Method PeekFloats:Void( address:Int,floats:Float[],offset:Int,count:Int )
+
+Copies @count 32 bit floats starting at @address from the databuffer to @bytes.
+
+Data is written to @data starting at index @offset.
 
 
 # Method CopyBytes:Void( srcAddress:Int,dst:DataBuffer,dstAddress:Int,count:Int )
