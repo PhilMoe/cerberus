@@ -13,6 +13,22 @@ Class MyApp Extends App
 		
 	End
 	
+	Field fullscreen:=False
+	
+	Method OnUpdate()
+	
+#If TARGET="glfw"
+		If KeyHit( KEY_SPACE )
+			fullscreen=Not fullscreen
+			If fullscreen
+				GlfwGame.GetGlfwGame().SetGlfwWindow( 1024,768,8,8,8,0,0,0,True )
+			Else
+				GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
+			Endif
+		End
+#Endif
+	end
+	
 	Method OnRender()
 	
 		If Not img

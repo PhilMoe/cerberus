@@ -1,9 +1,17 @@
 
+'setting these to 0 prevents creation of initial graphics window - with no window you can load graphics, but don't draw!
+'#GLFW_WINDOW_WIDTH=0
+'#GLFW_WINDOW_HEIGHT=0
+#GLFW_WINDOW_WIDTH=640
+#GLFW_WINDOW_HEIGHT=480
+
 #ANDROID_SCREEN_ORIENTATION="user"'"landscape"
 
 #MOJO_AUTO_SUSPEND_ENABLED=True
 
 Import mojo
+
+Public
 
 Const WIDTH#=320
 Const HEIGHT#=240
@@ -45,6 +53,10 @@ Class MyApp Extends App
 	Field ums
 
 	Method OnCreate()
+
+#If GLFW_WINDOW_WIDTH=0 And GLFW_WINDOW_HEIGHT=0
+		GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
+#Endif
 	
 		image1=LoadImage( "alien1.png",8,Image.MidHandle )
 		image2=LoadImage( "alien2.png",8,Image.MidHandle )
@@ -59,7 +71,23 @@ Class MyApp Extends App
 		SetUpdateRate 60
 	End
 	
+	Field fullscreen:=False
+	
+	Method ToggleFullscreen:Void()
+#If TARGET="glfw"
+		fullscreen=Not fullscreen
+		If fullscreen
+			GlfwGame.GetGlfwGame().SetGlfwWindow( 1024,768,8,8,8,0,0,0,True )
+			ShowMouse
+		Else
+			GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
+		Endif
+#Endif
+	End
+	
 	Method OnUpdate()
+	
+		If KeyHit( KEY_SPACE ) ToggleFullscreen
 	
 		ums=Millisecs
 
@@ -82,9 +110,8 @@ Class MyApp Extends App
 					sprites.Push New Sprite
 				Next
 			Else
-'				Error ""
+				ToggleFullscreen			
 				OpenUrl "http://www.blitzbasic.com"
-'				DebugStop
 			Endif
 		Endif
 	
@@ -146,6 +173,16 @@ Class MyApp Extends App
 End
 
 Function Main()
+
+#If TARGET="glfw"
+	For Local mode:=Eachin GlfwGame.GetGlfwGame().GetGlfwVideoModes()
+		Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
+	Next
+
+	Print "Desktop:"
+	Local mode:=GlfwGame.GetGlfwGame().GetGlfwDesktopMode()
+	Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
+#Endif
 
 	New MyApp
 	
