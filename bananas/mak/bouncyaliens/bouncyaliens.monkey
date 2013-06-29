@@ -110,7 +110,7 @@ Class MyApp Extends App
 					sprites.Push New Sprite
 				Next
 			Else
-				ToggleFullscreen			
+				If fullscreen ToggleFullscreen			
 				OpenUrl "http://www.blitzbasic.com"
 			Endif
 		Endif
