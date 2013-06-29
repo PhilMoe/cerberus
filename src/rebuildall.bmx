@@ -4,7 +4,7 @@ Strict
 RebuildTrans 
 RebuildMakedocs
 RebuildMServer
-RebuildMonkey
+'RebuildMonkey
 
 End
 
@@ -54,7 +54,7 @@ Function RebuildTrans()
 	Const trans_mk$=trans+" -target=C++_Tool"
 	Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
 	
-	system trans_mk+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 transcc/transcc.monkey"
+	system trans_mk+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0 transcc/transcc.monkey"
 	
 	Delay 100
 	

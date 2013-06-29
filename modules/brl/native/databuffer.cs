@@ -33,6 +33,10 @@ public class BBDataBuffer{
     	_length=_data.Length;
     	return true;
     }
+    
+    public virtual bool _LoadAsync( String path,BBThread thread ){
+    	if( _Load( path ) ) thread.SetResult( this );
+    }
 
     public virtual byte[] GetByteArray(){
     	return _data;

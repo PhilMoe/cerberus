@@ -1,4 +1,10 @@
 
+Import brl.asyncevent
+
+Private
+
+Import brl.thread
+
 #If LANG="cpp" Or LANG="java" Or LANG="cs" Or LANG="js" Or LANG="as"
 #BRL_DATABUFFER_IMPLEMENTED=True
 Import "native/databuffer.${LANG}"
@@ -31,10 +37,48 @@ Private
 	
 	Method _New:Bool( length:Int )
 	Method _Load:Bool( path:String )
+	Method _LoadAsync:Void( path:String,thread:BBThread )
 
 End
 
+Private
+
+Class AsyncDataLoader Extends Thread Implements IAsyncEventSource
+
+	Method New( data:DataBuffer,path:String,onComplete:IOnLoadDataComplete )
+		_data=data
+		_path=path
+		_onComplete=onComplete
+	End
+	
+	Method Start:Void()
+		AddAsyncEventSource Self
+		Super.Start
+	End
+	
+	Private
+	
+	Field _data:DataBuffer
+	Field _path:String
+	Field _onComplete:IOnLoadDataComplete
+
+	Method Run__UNSAFE__:Void()
+		_data._LoadAsync( _path,Self )
+	End
+		
+	Method UpdateAsyncEvents:Void()
+		If IsRunning() Return
+		RemoveAsyncEventSource Self
+		_onComplete.OnLoadDataComplete( DataBuffer( Result() ),_path )
+	End		
+	
+End
+
 Public
+
+Interface IOnLoadDataComplete
+	Method OnLoadDataComplete:Void( data:DataBuffer,path:String )
+End
 
 'OK, for now no error checking of count/address/offset params. These should probably be:
 '
@@ -80,49 +124,75 @@ Class DataBuffer Extends BBDataBuffer
 		Endif
 	End
 	
-	Method PeekBytes:Int[]( address:Int )
-	
-		Return PeekBytes( address,Length )
-
-	End
-	
-	Method PeekBytes:Int[]( address:Int,count:Int )
-	
+	'Deprecated!
+	Method PeekBytes:Int[]( address:Int,count:Int=$1fffffff )
 		If address+count>Length count=Length-address
-		
 		Local bytes:=New Int[count]
 		PeekBytes address,bytes,0,count
 		Return bytes
 	End
 	
-	Method PeekBytes:Void( address:Int,bytes:Int[],offset:Int=0 )
-	
-		PeekBytes address,bytes,offset,Length
-
-	End
-	
-	Method PeekBytes:Void( address:Int,bytes:Int[],offset:Int,count:Int )
-
+	Method PeekBytes:Void( address:Int,bytes:Int[],offset:Int=0,count:Int=$1fffffff )
 		If address+count>Length count=Length-address
 		If offset+count>bytes.Length count=bytes.Length-offset
-		
 		For Local i:=0 Until count
 			bytes[offset+i]=PeekByte( address+i )
 		Next
 	End
 	
-	Method PokeBytes:Void( address:Int,bytes:Int[],offset:Int=0 )
-
-		PokeBytes address,bytes,offset,Length
-	End
-
-	Method PokeBytes:Void( address:Int,bytes:Int[],offset:Int,count:Int )
-
+	Method PokeBytes:Void( address:Int,bytes:Int[],offset:Int=0,count:Int=$1fffffff )
 		If address+count>Length count=Length-address
 		If offset+count>bytes.Length count=bytes.Length-offset
-
 		For Local i:=0 Until count
 			PokeByte address+i,bytes[offset+i]
+		Next
+	End
+	
+	Method PeekShorts:Void( address:Int,shorts:Int[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*2>Length count=(Length-address)/2
+		If offset+count>shorts.Length count=shorts.Length-offset
+		For Local i:=0 Until count
+			shorts[offset+i]=PeekShort( address+i*2 )
+		Next
+	End
+	
+	Method PokeShorts:Void( address:Int,shorts:Int[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*2>Length count=(Length-address)/2
+		If offset+count>shorts.Length count=shorts.Length-offset
+		For Local i:=0 Until count
+			PokeShort address+i*2,shorts[offset+i]
+		Next
+	End
+	
+	Method PeekInts:Void( address:Int,ints:Int[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*4>Length count=(Length-address)/4
+		If offset+count>ints.Length count=ints.Length-offset
+		For Local i:=0 Until count
+			ints[offset+i]=PeekInt( address+i*4 )
+		Next
+	End
+	
+	Method PokeInts:Void( address:Int,ints:Int[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*4>Length count=(Length-address)/4
+		If offset+count>ints.Length count=ints.Length-offset
+		For Local i:=0 Until count
+			PokeInt address+i*4,ints[offset+i]
+		Next
+	End
+	
+	Method PeekFloats:Void( address:Int,floats:Float[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*4>Length count=(Length-address)/4
+		If offset+count>floats.Length count=floats.Length-offset
+		For Local i:=0 Until count
+			floats[offset+i]=PeekFloat( address+i*4 )
+		Next
+	End
+	
+	Method PokeFloats:Void( address:Int,floats:Float[],offset:Int=0,count:Int=$1fffffff )
+		If address+count*4>Length count=(Length-address)/4
+		If offset+count>floats.Length count=floats.Length-offset
+		For Local i:=0 Until count
+			PokeFloat address+i*4,floats[offset+i]
 		Next
 	End
 	
@@ -218,6 +288,12 @@ Class DataBuffer Extends BBDataBuffer
 		Local buf:=New DataBuffer
 		If buf._Load( path ) Return buf
 		Return Null
+	End
+	
+	Function LoadAsync:Void( path:String,onComplete:IOnLoadDataComplete )
+		Local data:=New DataBuffer
+		Local loader:=New AsyncDataLoader( data,path,onComplete )
+		loader.Start()
 	End
 	
 	'***** INTERNAL *****

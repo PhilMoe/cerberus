@@ -39,6 +39,30 @@ BBDataBuffer.prototype._Load=function( path ){
 	return true;
 }
 
+BBDataBuffer.prototype._LoadAsync=function( path,thread ){
+
+	var buf=this;
+	
+	var xhr=new XMLHttpRequest();
+	xhr.open( "GET",BBGame.Game().PathToUrl( path ),true );
+	xhr.responseType="arraybuffer";
+	
+	xhr.onload=function(e){
+		if( this.status==200 || this.status==0 ){
+			buf._Init( xhr.response );
+			thread.result=buf;
+		}
+		thread.running=false;
+	}
+	
+	xhr.onerror=function(e){
+		thread.running=false;
+	}
+	
+	xhr.send();
+}
+
+
 BBDataBuffer.prototype.GetArrayBuffer=function(){
 	return this.arrayBuffer;
 }

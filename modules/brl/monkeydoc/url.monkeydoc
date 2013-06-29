@@ -13,14 +13,18 @@ Please see the [[Url]] class for more information.
 # Class Url
 
 
-# Method New( url:String )
+# Method New( url:String,defaultScheme:String="http",defaultPort:Int=80 )
 
 Creates a new url object.
+
+If the url does not contain a scheme or port, the appropriate @defaultScheme and/or @defaultPort value is used.
 
 
 # Method Set:Void( url:String )
 
 Changes the url.
+
+If the url does not contain a scheme or port, the appropriate default scheme and/or port value provided to the constructor is used.
 
 
 # Method ToString:String()

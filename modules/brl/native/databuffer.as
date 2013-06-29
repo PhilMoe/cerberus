@@ -24,6 +24,28 @@ class BBDataBuffer{
 		_Init( data );
 		return true;
 	}
+	
+	public function _LoadAsync( path:String,thread:BBThread ):void{
+
+		var buf:BBDataBuffer=this;
+		
+		var loader:URLLoader=new URLLoader();
+		loader.dataFormat=URLLoaderDataFormat.BINARY;
+		loader.addEventListener( Event.COMPLETE,onLoaded );
+		loader.addEventListener( IOErrorEvent.IO_ERROR,onError );
+		
+		function onLoaded( e:Event ):void{
+			buf._Init( loader.data );
+			thread.result=buf;
+			thread.running=false;
+		}
+		
+		function onError( e:IOErrorEvent ):void{
+			thread.running=false;
+		}
+		
+		loader.load( new URLRequest( BBGame.Game().PathToUrl( path ) ) );
+	}
 
 	public function GetByteArray():ByteArray{
 		return _data;

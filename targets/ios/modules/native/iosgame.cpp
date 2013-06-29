@@ -653,7 +653,9 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 -(BOOL)textFieldShouldEndEditing:(UITextField*)textField{
 
-	if( textFieldState ) game->KeyEvent( BBGameEvent::KeyChar,27 );	//generate ESC
+	if( !textFieldState ) return YES;
+
+	game->KeyEvent( BBGameEvent::KeyChar,27 );							//generate Escape
 	
 	return NO;
 }

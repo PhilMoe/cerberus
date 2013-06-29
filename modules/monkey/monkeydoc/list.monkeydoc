@@ -39,7 +39,7 @@ Converts the list to an array of values.
 
 # Method Equals:Bool(lhs:T,rhs:T)
 
-This method is used by the [[Contains]] and [[RemoveEach]] methods to determine element equality.
+This method is used by the [[Contains]], [[RemoveFirst(2)|RemoveFirst]], [[RemoveLast(2)|RemoveLast]] and [[RemoveEach]] methods to determine element equality.
 
 By default, this method compares @lhs and @rhs using the '=' operator. Extending classes may override this method to provide their own equality test.
 
@@ -48,7 +48,9 @@ By default, this method compares @lhs and @rhs using the '=' operator. Extending
 
 This method is used by the [[Sort]] method to compare elements.
 
-By default, this methods simply generates a runtime error. Extending classes should implement this method if they want to support [[Sort]].
+This method must return a negative value if @lhs \< @rhs, a positive value if @lhs \> @rhs, or 0 if @lhs = @rhs.
+
+By default, this method simply generates a runtime error. Extending classes should implement this method if they want to support [[Sort]].
 
 
 # Method Clear:Int()
@@ -70,7 +72,9 @@ Return True if the list is empty, else False.
 
 # Method Contains:Bool(value:T)
 
-Returns true if list contains value.
+Returns true if list contains @value.
+
+Links: [[Equals]]
 
 
 # Method FirstNode:Node<T>()
@@ -128,15 +132,21 @@ If no matching node is found, Null is returned.
 
 Finds and removes the first element in the list equal to @value.
 
+Links: [[Equals]]
+
 
 # Method RemoveLast:Void(value:T)
 
 Finds and removes the last element in the list equal to @value.
 
+Links: [[Equals]]
+
 
 # Method RemoveEach:Int(value:T)
 
 Finds and removes each element in the list equal to @value.
+
+Links: [[Equals]]
 
 
 # Method AddFirst:Node<T>(data:T)

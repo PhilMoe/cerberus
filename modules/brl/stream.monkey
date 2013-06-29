@@ -113,7 +113,12 @@ Class Stream
 		WriteByte 13
 		WriteByte 10
 	End
-
+	
+	'***** INTERNAL *****
+	Method GetNativeStream:BBStream()
+		Return Null
+	End
+	
 	Private
 	
 	Const BUF_SZ=4096

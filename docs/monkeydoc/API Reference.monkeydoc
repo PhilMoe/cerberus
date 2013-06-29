@@ -2,7 +2,7 @@
 >> The Mojo framework
 
 | Module 					| Contains																|Availability
-| [[mojo.app]]				| The base [[App]] class and functions for controlling app behavior		|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
+| [[mojo.app]]				| The base [[App]] class and functions for controlling app behavior	|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
 | [[mojo.graphics]]			| 2D Rendering functions and the [[Image]] class						|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
 | [[mojo.audio]]			| Sound and music playback functions									|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
 | [[mojo.input]]			| User input functions													|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
@@ -15,16 +15,16 @@
 | [[brl.filesystem]]		| Functions for examining and modifying the filesystem					|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.databuffer]]		| The [[DataBuffer]] class for managing binary data					|All
 | [[brl.datastream]]		| The [[DataStream]] class for reading and writing databuffers			|All
-| [[brl.asyncdataloader]]	| The [[AsyncDataLoader]] class for loading data asynchronously		|All
 | [[brl.process]]			| The [[Process]] class for executing processes						|Glfw, Stdcpp
 
 >> Networking
 
 | Module					| Contains																|Availability
-| [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp transfers					|Android, iOS, Win8, Glfw, Stdcpp
-| [[brl.asynctcpstream]]	| The [[AsyncTcpStream]] class for asynchronous tcp transfers			|Android, iOS, Win8, Glfw, Stdcpp
-| [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.url]]				| The [[Url]] class for manipulating urls								|All
+| [[brl.socket]]			| The [[Socket]] class for low level socket access						|Android, iOS, Glfw, Stdcpp
+| [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Win8, Glfw, Stdcpp
+| [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp I/O						|Android, iOS, Win8, Glfw, Stdcpp
+
 
 >> Math and Numeric
 
@@ -36,7 +36,7 @@
 
 | Module					| Contains																|Availability
 | [[brl.markdown]]			| The [[Markdown]] class for generating html from simple markdown		|All
-| [[brl.filepath]]			| Functions for manipulating file paths									|All
+| [[brl.filepath]]			| Functions for manipulating file paths								|All
 
 >> Collections
 

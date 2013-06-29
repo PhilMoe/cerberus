@@ -10,6 +10,7 @@ public:
 	
 	bool _New( int length );
 	bool _Load( String path );
+	void _LoadAsync( String path,BBThread *thread );
 
 	const void *ReadPointer( int offset=0 );
 	void *WritePointer( int offset=0 );
@@ -55,6 +56,10 @@ bool BBDataBuffer::_Load( String path ){
 	if( !_data ) return false;
 	
 	return true;
+}
+
+void BBDataBuffer::_LoadAsync( String path,BBThread *thread ){
+	if( _Load( path ) ) thread->SetResult( this );
 }
 
 const void *BBDataBuffer::ReadPointer( int offset ){

@@ -39,6 +39,10 @@ class BBFileSystem{
 	
 	public:
 	
+	static String FixPath( String path ){
+		return BBGame::Game()->PathToFilePath( path );
+	}
+	
 	static int FileType( String path ){
 		stat_t st;
 		if( stat( OS_STR(path),&st ) ) return 0;
@@ -105,7 +109,7 @@ class BBFileSystem{
 	}
 	
 	static bool CreateFile( String path ){
-		if( FILE *f=fopen( OS_STR( path ),"wb" ) ){
+		if( FILE *f=_fopen( OS_STR( path ),OS_STR( "wb" ) ) ){
 			fclose( f );
 			return true;
 		}

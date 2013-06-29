@@ -9,6 +9,7 @@ Extern
 
 Class BBFileSystem
 
+	Function FixPath:String( path:String )
 	Function FileType:Int( path:String )
 	Function FileSize:Int( path:String )
 	Function FileTime:Int( path:String )
@@ -23,15 +24,8 @@ End
 
 Private
 
-'A bit icky...
-#BRL_GAMETARGET_IMPLEMENTED=False
-
 Function FixPath:String( path:String )
-#If BRL_GAMETARGET_IMPLEMENTED="0"
-	Return path
-#Else
-	Return BBGame.Game().PathToFilePath( path )
-#Endif
+	Return BBFileSystem.FixPath( path )
 End
 
 Function _DeleteDir:Bool( path:String )

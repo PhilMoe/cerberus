@@ -509,6 +509,8 @@ Class ApiDoccer Implements ILinkResolver
 	
 	Method ParseMonkeyFile:Void( srcpath:String,modpath:String )
 	
+'		Print "doccing:"+srcpath+" "+modpath
+		
 		george.SetErrInfo srcpath
 		
 		Local parser:=New Parser( "" )
@@ -519,7 +521,7 @@ Class ApiDoccer Implements ILinkResolver
 		Local docs:StringMap<StringStack>
 		Local sect:String
 		
-		Local pub:=True
+		Local pub:=True,mdoc:=true
 		
 		Local egdir:=ExtractDir( srcpath )+"/examples"
 		If FileType( egdir )<>FILETYPE_DIR egdir=""
@@ -538,20 +540,28 @@ Class ApiDoccer Implements ILinkResolver
 				Select parser.Bump()
 				Case "rem"
 					If parser.Bump()="monkeydoc"
-						If Not mdecl 
-							If parser.Bump()<>"module" Return
-							parser.Bump()
-							Local id:=parser.ParseIdent()
-							If id<>modpath
-								george.Err "Modpath ("+modpath+") does not match module ident ("+id+")"
-								Return
+						Local opt:=parser.Bump()
+						If opt="on"
+							mdoc=True
+						Else If opt="off"
+							mdoc=False
+						Else
+							mdoc=True
+							If Not mdecl 
+								If opt<>"module" Return
+								parser.Bump()
+								Local id:=parser.ParseIdent()
+								If id<>modpath
+									george.Err "Modpath ("+modpath+") does not match module ident ("+id+")"
+									Return
+								Endif
 							Endif
+							docs=New StringMap<StringStack>
+							sect="description"
+							docs.Set sect,New StringStack
+							Local text:=parser.GetText().Trim()
+							If text docs.Get( sect ).Push text
 						Endif
-						docs=New StringMap<StringStack>
-						sect="description"
-						docs.Set sect,New StringStack
-						Local text:=parser.GetText().Trim()
-						If text docs.Get( sect ).Push text
 					Endif
 				Case "end"
 					If sect
@@ -599,12 +609,19 @@ Class ApiDoccer Implements ILinkResolver
 			Case "extern"
 				pub=parser.Bump()<>"private"
 			Case "import"
-				If pub
+				If pub And mdoc
 					Local pdecl:=parser.ParseDecl()
-					If pdecl New ImportDecl( pdecl,mdecl )
+					If pdecl
+						Local ident:=pdecl.ident
+						Local p:=ExtractDir( srcpath )+"/"+ident.Replace( ".","/" )
+						If FileType( p+".monkey" )=FILETYPE_FILE Or FileType( p+"/"+p+".monkey" )=FILETYPE_FILE
+							pdecl.ident=modpath+"."+ident
+						Endif
+						New ImportDecl( pdecl,mdecl )
+					Endif
 				Endif
 			Case "class","interface"
-				If pub Or docs
+				If (pub Or docs) And mdoc
 				
 					Local cdecl:=New ClassDecl( parser.ParseDecl(),mdecl )
 					cdecl.srcinfo=srcpath+":"+srcline
@@ -620,7 +637,7 @@ Class ApiDoccer Implements ILinkResolver
 				Endif
 				docs=Null
 			Case "function","method","global","field","const","property","ctor"
-				If pub Or docs
+				If (pub Or docs) And mdoc
 				
 					Local decl:=New Decl( parser.ParseDecl(),docscope )
 					decl.srcinfo=srcpath+":"+srcline

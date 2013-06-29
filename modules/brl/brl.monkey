@@ -5,19 +5,16 @@ Import ringbuffer
 Import stream
 Import asyncevent
 Import datastream
-Import asyncdataloader
+Import url
+#Endif
 
-#If LANG="cpp" Or LANG="java" Or LANG="cs"
+#If LANG="cpp" Or LANG="java"
 Import filestream
-
-#If (LANG="cpp" Or LANG="java") 'And TARGET<>"win8"
-Import tcpstream
-Import asyncstream
-Import asynctcpstream
-Import asynctcpconnector
+Import socket
 Import httprequest
+Import tcpstream
 #Endif
 
-#Endif
-
+#If LANG="cs"
+Import filestream
 #Endif

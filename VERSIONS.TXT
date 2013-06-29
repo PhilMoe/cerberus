@@ -1,6 +1,63 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V71c
+
+Fixed Win8 mouse event handling.
+
+Fixed Win8 device orientation issues.
+
+Added PeekShorts, PokeShorts, PeekInts, PokeInts, PeekFloats, PokeFloats to DataBuffer.
+
+
+***** V71b *****
+
+Added ReceiveAll and ReceiveAllAsync to Socket for receiving known length messages. ReceiveFrom, Send and SendTo are already implictly 'all'...
+
+Version 1 of WinRT UDP sockets implemented - nasty stuff, may not be 100% right!
+
+Fixed flash Print security exception.
+
+Fixed trans "Unsafe call!!!!!" bug.
+
+
+***** V71a *****
+
+Update admob SDKs to android=6.4.1, ios=6.4.2.
+
+Removed modules: brl.asyncdataloader, brl.asyncstream, brl.asynctcpstream, brl.asynctcpconnector.
+
+Added DataBuffer.LoadAsync.
+
+Changed brl.httprequest to use a brl.socket under the hood.
+
+Changed brl.tcpstream to use a brl.socket under the hood. 
+
+Added brl.socket for all your tcp/udp needs.
+
+Fixed filestream on stdcpp target.
+
+Fixed win8 tcpstream.
+
+Added CPP_GC_MODE app config setting, one of:
+
+#CPP_GC_MODE=0	'Disable GC
+#CPP_GC_MODE=1	'Incremental collect every OnWhatever (default)
+#CPP_GC_MODE=2	'Incremental collect every GC allocation (adds some runtime overhead).
+
+CPP_GC_TRIGGER now controls how much memory is allocated before a GC 'sweep' occurs. Increase this for faster GC at the cost of more 'wasted' memory. Defaults to 8M.
+
+Added CPP_GC_MAX_LOCALS app config settings. This is used with GC_MODE 2 to track local object vars and defaults to 8192. Trans uses 445 locals to build itself, so this should be plenty for most apps but if you're doing something very recursive you might want to bump this.
+
+Tweaked makedocs. Can now handle 'relative' imports in .monkey files and added #Rem monkeydoc on/off.
+
+
+***** V70g *****
+
+Fixed iOS DisableKeyboard not working bug.
+
+
+
 ***** V70f *****
 
 HttpRequest: Merged devolonter's html5 version addition.

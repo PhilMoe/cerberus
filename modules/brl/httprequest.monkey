@@ -1,15 +1,17 @@
 
-#If TARGET <> "html5"
-
-Import brl.asynctcpstream
+#If TARGET<>"html5"
 
 Private
 
+Import brl.socket
 Import brl.url
 
 Public
 
-Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
+Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComplete
+
+	Method New()
+	End
 
 	Method New( req:String,url:String,onComplete:IOnHttpRequestComplete )
 		Open req,url,onComplete
@@ -20,7 +22,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_rbuf.Discard
 		If _data _data.Discard
 		_wbuf=Null
-		_rebuf=Null
+		_rbuf=Null
 		_data=Null
 	End
 
@@ -37,7 +39,6 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_header=New StringStack
 		_header.Push _req+" /"+_url.FullPath()+" HTTP/1.0"
 		_header.Push "Host: "+_url.Domain()
-		_state=1
 	End
 	
 	Method SetHeader:Void( name:String,value:String )
@@ -45,9 +46,8 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 	End
 	
 	Method Send:Void()
-		_stream=New AsyncTcpStream
-		_stream.Connect _url.Domain(),_url.Port(),Self
-		_state=2
+		_sock=New Socket( "stream" )
+		_sock.ConnectAsync _url.Domain(),_url.Port(),Self
 	End
 	
 	Method Send:Void( data:String,mimeType:String="text/plain;charset=UTF-8",encoding:String="utf8" )
@@ -72,7 +72,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 	
 	Private
 	
-	Field _wbuf:=New DataBuffer( 1024 )
+	Field _wbuf:=New DataBuffer( 4096 )
 	Field _rbuf:=New DataBuffer( 16384 )
 
 	Field _req:String
@@ -81,22 +81,19 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 	Field _header:StringStack
 	Field _data:DataBuffer
 	Field _dataLength:Int
-	Field _stream:AsyncTcpStream
-	Field _state:Int	'0=idle, 1=open, 2=busy
+	Field _sock:Socket
 	Field _status:Int
 	Field _bytesReceived:Int
 	Field _response:StringStack
 	Field _responseText:String
-	Field _rem:String
 	
 	Method Finish:Void()
+		_sock.Close
 		If _response _responseText=_response.Join( "~n" )
-		_stream.Close
-		_state=0
 		_onComplete.OnHttpRequestComplete Self
 	End
 	
-	Method OnConnectComplete:Void( connected:Bool,source:IAsyncEventSource )
+	Method OnConnectComplete:Void( connected:Bool,source:Socket )
 		If Not connected
 			Finish
 			Return
@@ -106,18 +103,15 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_header.Push ""
 		
 		Local t:=_header.Join( "~r~n" )
-		Local n:=_wbuf.PokeString( 0,t )
+		Local n:=_wbuf.PokeString( 0,t,"ascii" )
 		
-'		Print "== Header =="
-'		Print t+"== Header =="
-
-		_rem=""
 		_header.Clear
-		_stream.WriteAll _wbuf,0,n,Self
-		_stream.ReadAll _rbuf,0,_rbuf.Length,Self
+		_sock.SendAsync _wbuf,0,n,Self
+		_sock.ReceiveAsync _rbuf,0,_rbuf.Length,Self
 	End
 	
-	Method OnReadComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	Method OnReceiveComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:Socket )
+
 		If Not count
 			Finish
 			Return
@@ -126,85 +120,60 @@ Class HttpRequest Implements IOnConnectComplete,IOnReadComplete,IOnWriteComplete
 		_bytesReceived+=count
 		
 		If _response
-
 			_response.Push buf.PeekString( offset,count,"utf8" )
-
-		Else
-		
-			Local i:=0
-			
-			For Local e:=0 Until count
-
-				If buf.PeekByte( offset+e )<>10 Continue
-				
-				Local t:=buf.PeekString( offset+i,e-i,"ascii" )
-				i=e+1
-				
-				t=(_rem+t).Trim()
-				_rem=""
-				
-				If t
-					_header.Push t
-					Continue
-				Endif
-				
-				If _header.Length>0
-					Local bits:=_header.Get( 0 ).ToUpper().Split( " " )
-					If bits.Length>2 And bits[0].StartsWith( "HTTP/" ) ' And bits[2]="OK"
-						_status=Int( bits[1] )
-						_response=New StringStack
-						If i<count
-							_response.Push buf.PeekString( offset+i,count-i,"utf8" )
-							i=count
-						Endif
-						Exit
-					Endif
-				Endif
-				
-				'BAD header
-				Finish
-				Return
-				
-			Next
-			
-			If i<count _rem=buf.PeekString( offset+i,count-i,"ascii" )
-			
+			_sock.ReceiveAsync( buf,0,buf.Length,Self )
+			Return
 		Endif
-#rem			
-		For Local line:=Eachin str.Split( "~n" )
-			If _response
-				_response.Push line
-			Else If _header
-				line=line.Trim()
-				If line
-					_header.Push line
-				Else
-					_response=New StringStack
-				Endif
-			Else
-				Local bits:=line.Trim().ToUpper().Split( " " )
-				If bits.Length>2 And bits[0].StartsWith( "HTTP/" ) And bits[2]="OK"
+		
+		Local start:=0
+		Local i:=offset
+		Local term:=i+count
+		
+		While i<term
+		
+			i+=1
+			If buf.PeekByte( i-1 )<>10 Continue
+			
+			Local t:=buf.PeekString( start,i-start-1,"ascii" ).Trim()
+			start=i
+			
+			If t
+				_header.Push t
+				Continue
+			Endif
+			
+			If _header.Length
+				Local bits:=_header.Get( 0 ).ToUpper().Split( " " )
+				If bits.Length>2 And bits[0].StartsWith( "HTTP/" )
 					_status=Int( bits[1] )
-					_header=New StringStack
-				Else
-					Finish
+					_response=New StringStack
+					If start<term _response.Push buf.PeekString( start,term-start,"utf8" )
+					_sock.ReceiveAsync( buf,0,buf.Length,Self )
 					Return
 				Endif
 			Endif
-		Next
-#end
-		_stream.ReadAll _rbuf,0,_rbuf.Length,Self
+			
+			'ERROR!
+			Finish
+			Return
+			
+		Wend
+		
+		Local n:=term-start
+		If start buf.CopyBytes start,buf,0,n
+		_sock.ReceiveAsync( buf,n,buf.Length-n,Self )
 	End
 	
-	Method OnWriteComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:IAsyncEventSource )
+	
+	Method OnSendComplete:Void( buf:DataBuffer,offset:Int,count:Int,source:Socket )
 		If Not _dataLength Return
-		_stream.WriteAll _data,0,_dataLength,Self
+		_sock.SendAsync _data,0,_dataLength,Self
 		_dataLength=0
 	End
 
 End
 
-#Else
+#Else If TARGET="html5"
 
 Private
 
@@ -278,6 +247,5 @@ End Class
 Interface IOnHttpRequestComplete
 
 	Method OnHttpRequestComplete:Void( req:HttpRequest )
-	
-End
 
+End

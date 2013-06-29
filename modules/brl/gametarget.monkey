@@ -1,12 +1,10 @@
 
-#BRL_GAMETARGET_IMPLEMENTED=False
-#If BRL_GAMETARGET_IMPLEMENTED="0"
-#Error "Native Game class not found."
-#Endif
-
 #If LANG="cpp" Or LANG="java" Or LANG="cs" Or LANG="js" Or LANG="as"
 Import "native/gametarget.${LANG}"
 #Endif
+
+#BRL_GAMETARGET_IMPLEMENTED=False
+#If BRL_GAMETARGET_IMPLEMENTED<>"0"
 
 Extern
 
@@ -57,3 +55,5 @@ Class BBGameEvent
 	Const TouchMove:=9
 	Const MotionMove:=10
 End
+
+#Endif

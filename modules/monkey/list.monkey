@@ -130,6 +130,11 @@ Class List<T>
 		Return Null
 	End
 	
+	'***** DEPRECATED *****
+	Method Remove:Void( value:T )
+		RemoveEach value
+	End
+	
 	Method RemoveFirst:Void( value:T )
 		Local node:=Find( value )
 		If node node.Remove
@@ -168,7 +173,7 @@ Class List<T>
 	End
 
 	Method InsertAfterEach:Void( where:T,data:T )
-		Local node:=FindNode( where )
+		Local node:=Find( where )
 		While node
 			node=New Node<T>( node._succ,node,data )
 			node=Find( where,node._succ )
