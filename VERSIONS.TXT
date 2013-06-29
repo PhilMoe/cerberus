@@ -1,7 +1,38 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** V71c
+***** V72a *****
+
+Added GlfwGame and GlfwVideoMode classes to glfw target:
+
+Class GlfwGame
+
+	Function GetGlfwGame:GlfwGame()
+	
+	Method GetGlfwDesktopMode:GlfwVideoMode()
+	
+	Method GetGlfwVideoModes:GlfwVideoMode[]()
+	
+	Method SetGlfwWindow:Void( width:Int,height:Int,red:Int,green:Int,blue:Int,alpha:Int,depth:Int,stencil:Int,fullscreen:Bool )
+	
+End
+
+Class GlfwVideoMode
+	Field Width:Int
+	Field Height:Int
+	Field RedBits:Int
+	Field GreenBits:Int
+	Field BlueBits:Int
+End
+
+eg: GlfwGame.GetGlfwGame().SetGlfwWindow 1024,768,8,8,8,0,0,0,True
+
+Glfw mojo images now surive GL context changes.
+
+Set app config settings GLFW_WINDOW_WIDTH and GLFW_WINDOW_HEIGHT to 0 to disable initial graphics window - but make sure to create one using SetGlfwWindow above before OnCreate finishes!
+
+
+***** V71c *****
 
 Fixed Win8 mouse event handling.
 
