@@ -144,6 +144,7 @@ Class TransCC
 	
 	'config file
 	Field ANDROID_PATH:String
+	Field ANDROID_NDK_PATH:String
 	Field ANT_PATH:String
 	Field JDK_PATH:String
 	Field FLEX_PATH:String
@@ -326,6 +327,10 @@ Class TransCC
 			Case "ANDROID_PATH"
 				If Not ANDROID_PATH And FileType( path )=FILETYPE_DIR
 					ANDROID_PATH=path
+				Endif
+			Case "ANDROID_NDK_PATH"
+				If Not ANDROID_NDK_PATH And FileType( path )=FILETYPE_DIR
+					ANDROID_NDK_PATH=path
 				Endif
 			Case "JDK_PATH" 
 				If Not JDK_PATH And FileType( path )=FILETYPE_DIR

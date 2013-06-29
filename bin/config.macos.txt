@@ -36,3 +36,12 @@ FLEX_PATH="${HOME}/flex_sdk_4.6"
 'Android SDK
 ANDROID_PATH="${HOME}/android-sdk-macosx"
 '--------------------
+
+'--------------------
+'Android NDK
+'
+'Must be set to a valid dir for ANDROID NDK target support
+'
+ANDROID_NDK_PATH="${HOME}/android-ndk-r8e"
+'--------------------
+

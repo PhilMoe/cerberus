@@ -2,6 +2,7 @@
 Import transcc
 
 Import android
+Import android_ndk
 Import flash
 Import glfw
 Import html5
@@ -15,6 +16,7 @@ Function Builders:StringMap<Builder>( tcc:TransCC )
 	Local builders:=New StringMap<Builder>
 
 	builders.Set "android",New AndroidBuilder( tcc )
+	builders.Set "android_ndk",New AndroidNdkBuilder( tcc )
 	builders.Set "glfw",New GlfwBuilder( tcc )
 	builders.Set "html5",New Html5Builder( tcc )
 	builders.Set "ios",New IosBuilder( tcc )

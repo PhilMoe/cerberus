@@ -220,8 +220,8 @@ void gc_flush_free( int size ){
 	while( gc_free_bytes>t ){
 		gc_object *p=gc_free_list.succ;
 		if( !p || p==&gc_free_list ){
-			printf("ERROR:p=%p gc_free_bytes=%i\n",p,gc_free_bytes);
-			fflush(stdout);
+//			printf("ERROR:p=%p gc_free_bytes=%i\n",p,gc_free_bytes);
+//			fflush(stdout);
 			gc_free_bytes=0;
 			break;
 		}
@@ -1474,40 +1474,15 @@ int Print( String t ){
 	t.Save( buf );
 	buf.push_back( '\n' );
 	buf.push_back( 0 );
-
-#if __cplusplus_winrt
+	
 #if CFG_WIN8_PRINT_ENABLED
 	OutputDebugStringA( (const char*)&buf[0] );
-#endif
+#elif CFG_ANDROID_PRINT_ENABLED
+	LOGI( (const char*)&buf[0] );
 #else
 	fputs( (const char*)&buf[0],stdout );
 	fflush( stdout );
 #endif
-	
-/*	
-	static char *buf;
-	static int len;
-	int n=t.Length();
-	if( n+100>len ){
-		len=n+100;
-		free( buf );
-		buf=(char*)malloc( len );
-	}
-	for( int i=0;i<n;++i ) buf[i]=t[i];
-	buf[n++]=10;
-	buf[n]=0;
-	
-#if __cplusplus_winrt
-
-#if CFG_WIN8_PRINT_ENABLED
-	OutputDebugStringA( buf );
-#endif
-
-#else
-	fputs( buf,stdout );
-	fflush( stdout );
-#endif
-*/
 	return 0;
 }
 
@@ -1518,7 +1493,6 @@ int Error( String err ){
 	if( !err.Length() ){
 #if __cplusplus_winrt
 		throw BBExitApp();
-//		System::Windows::Application::Current->Terminate();
 #else
 		exit( 0 );
 #endif

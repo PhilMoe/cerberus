@@ -64,10 +64,18 @@ JDK_PATH="${PROGRAMFILES}\Java\jdk1.6.0_19"
 '--------------------
 'Android SDK and tool paths.
 '
-'Must be set to a valid for for ANDROID target support
+'Must be set to a valid dir for ANDROID target support
 '
 ANDROID_PATH="${SYSTEMDRIVE}\monkey_sdks\android-sdk-windows"
 ANDROID_PATH="${SYSTEMDRIVE}\android-sdk-windows"
+'--------------------
+
+'--------------------
+'Android NDK
+'
+'Must be set to a valid dir for ANDROID NDK target support
+'
+ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r8e"
 '--------------------
 
 '--------------------
