@@ -1,6 +1,15 @@
 
 //***** glfwgame.h *****
 
+struct BBGlfwVideoMode : public Object{
+	int Width;
+	int Height;
+	int RedBits;
+	int GreenBits;
+	int BlueBits;
+	BBGlfwVideoMode( int w,int h,int r,int g,int b ):Width(w),Height(h),RedBits(r),GreenBits(g),BlueBits(b){}
+};
+
 class BBGlfwGame : public BBGame{
 public:
 	BBGlfwGame();
@@ -18,6 +27,9 @@ public:
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *depth );
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
+	BBGlfwVideoMode *GetGlfwDesktopMode();
+	Array<BBGlfwVideoMode*> GetGlfwVideoModes();
+	virtual void SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen );
 	virtual void Run();
 	
 private:
@@ -87,6 +99,10 @@ _iconified( false ){
 }
 
 //***** BBGame *****
+
+void Init_GL_Exts();
+
+int glfwGraphicsSeq=0;
 
 void BBGlfwGame::SetUpdateRate( int updateRate ){
 	BBGame::SetUpdateRate( updateRate );
@@ -232,11 +248,14 @@ int BBGlfwGame::TransKey( int key ){
 	
 	case '`':return VKEY_TILDE;
 	case '\'':return VKEY_QUOTES;
+
+	case GLFW_KEY_LSHIFT:case GLFW_KEY_RSHIFT:return VKEY_SHIFT;
+	case GLFW_KEY_LCTRL:case GLFW_KEY_RCTRL:return VKEY_CONTROL;
 	
-	case GLFW_KEY_LSHIFT:return VKEY_LSHIFT;
-	case GLFW_KEY_RSHIFT:return VKEY_RSHIFT;
-	case GLFW_KEY_LCTRL:return VKEY_LCONTROL;
-	case GLFW_KEY_RCTRL:return VKEY_RCONTROL;
+//	case GLFW_KEY_LSHIFT:return VKEY_LSHIFT;
+//	case GLFW_KEY_RSHIFT:return VKEY_RSHIFT;
+//	case GLFW_KEY_LCTRL:return VKEY_LCONTROL;
+//	case GLFW_KEY_RCTRL:return VKEY_RCONTROL;
 	
 	case GLFW_KEY_BACKSPACE:return VKEY_BACKSPACE;
 	case GLFW_KEY_TAB:return VKEY_TAB;
@@ -324,15 +343,7 @@ int BBGlfwGame::OnWindowClose(){
 
 void BBGlfwGame::OnKey( int key,int action ){
 
-	switch( key ){
-	case GLFW_KEY_LSHIFT:case GLFW_KEY_RSHIFT:
-		key=VKEY_SHIFT;break;
-	case GLFW_KEY_LCTRL:case GLFW_KEY_RCTRL:
-		key=VKEY_CONTROL;break;
-	default:
-		key=TransKey( key );
-	}
-
+	key=TransKey( key );
 	if( !key ) return;
 	
 	switch( action ){
@@ -355,17 +366,68 @@ void BBGlfwGame::OnChar( int chr,int action ){
 	}
 }
 
-void BBGlfwGame::Run(){
+BBGlfwVideoMode *BBGlfwGame::GetGlfwDesktopMode(){
+
+	GLFWvidmode mode;
+	glfwGetDesktopMode( &mode );
+	
+	return new BBGlfwVideoMode( mode.Width,mode.Height,mode.RedBits,mode.GreenBits,mode.BlueBits );
+}
+
+Array<BBGlfwVideoMode*> BBGlfwGame::GetGlfwVideoModes(){
+	GLFWvidmode modes[1024];
+	int n=glfwGetVideoModes( modes,1024 );
+	Array<BBGlfwVideoMode*> bbmodes( n );
+	for( int i=0;i<n;++i ){
+		bbmodes[i]=new BBGlfwVideoMode( modes[i].Width,modes[i].Height,modes[i].RedBits,modes[i].GreenBits,modes[i].BlueBits );
+	}
+	return bbmodes;
+}
+
+void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen ){
+
+	for( int i=0;i<=GLFW_KEY_LAST;++i ){
+		int key=TransKey( i );
+		if( key && glfwGetKey( i )==GLFW_PRESS ) KeyEvent( BBGameEvent::KeyUp,key );
+	}
+
+	GLFWvidmode desktopMode;
+	glfwGetDesktopMode( &desktopMode );
+
+	glfwCloseWindow();
+	
+	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE,CFG_GLFW_WINDOW_RESIZABLE ? GL_FALSE : GL_TRUE );
+
+	glfwOpenWindow( width,height,red,green,blue,alpha,depth,stencil,fullscreen ? GLFW_FULLSCREEN : GLFW_WINDOW );
+
+	++glfwGraphicsSeq;
+
+	if( !fullscreen ){	
+		glfwSetWindowPos( (desktopMode.Width-width)/2,(desktopMode.Height-height)/2 );
+		glfwSetWindowTitle( _STRINGIZE(CFG_GLFW_WINDOW_TITLE) );
+	}
+
+#if CFG_OPENGL_INIT_EXTENSIONS
+	Init_GL_Exts();
+#endif
 
 	glfwEnable( GLFW_KEY_REPEAT );
 	glfwDisable( GLFW_AUTO_POLL_EVENTS );
-
 	glfwSetKeyCallback( OnKey );
 	glfwSetCharCallback( OnChar );
 	glfwSetMouseButtonCallback( OnMouseButton );
 	glfwSetMousePosCallback( OnMousePos );
 	glfwSetWindowCloseCallback(	OnWindowClose );
-	
+}
+
+void BBGlfwGame::Run(){
+
+#if	CFG_GLFW_WINDOW_WIDTH && CFG_GLFW_WINDOW_HEIGHT
+
+	SetGlfwWindow( CFG_GLFW_WINDOW_WIDTH,CFG_GLFW_WINDOW_HEIGHT,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,CFG_GLFW_WINDOW_FULLSCREEN );
+
+#endif
+
 	StartGame();
 
 	RenderGame();
@@ -373,6 +435,7 @@ void BBGlfwGame::Run(){
 	for( ;; ){
 	
 		glfwPollEvents();
+		
 		if( !glfwGetWindowParam( GLFW_OPENED ) ) break;
 	
 		if( glfwGetWindowParam( GLFW_ICONIFIED ) ){
