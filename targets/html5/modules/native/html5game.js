@@ -320,6 +320,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	canvas.onblur=function( e ){
+		for( var i=0;i<256;++i ) game.KeyEvent( BBGameEvent.KeyUp,i );
 		if( CFG_MOJO_AUTO_SUSPEND_ENABLED=="1" ){
 			game.SuspendGame();
 		}
