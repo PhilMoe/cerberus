@@ -1,4 +1,6 @@
 
+#OPENGL_DEPTH_BUFFER_ENABLED=True
+
 Import opengl.gles11
 
 Import mojo
