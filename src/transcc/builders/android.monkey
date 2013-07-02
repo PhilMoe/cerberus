@@ -50,6 +50,21 @@ Class AndroidBuilder Extends Builder
 		
 		'template files
 		For Local file:=Eachin LoadDir( "templates",True )
+	
+			'Recursive CreateDir...	
+			Local i:=0
+			Repeat
+				i=file.Find( "/",i )
+				If i=-1 Exit
+				CreateDir file[..i]
+				If FileType( file[..i] )<>FILETYPE_DIR
+					file=""
+					Exit
+				Endif
+				i+=1
+			Forever
+			If Not file Continue
+			
 			Select ExtractExt( file ).ToLower()
 			Case "xml","properties","java"
 				Local str:=LoadString( "templates/"+file )
