@@ -1,6 +1,4 @@
 
-#OPENGL_DEPTH_BUFFER_ENABLED=True
-
 '#ANDROID_NATIVE_GL_ENABLED=True	'to run on android 2.2 - WARNING: uses native code.
 
 Import opengl.gles20
