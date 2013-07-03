@@ -15,8 +15,21 @@ import android.opengl.*;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
-interface IActivityResultCallback{
-	public void Update( int requestCode,int resultCode,Intent data );
+class ActivityDelegate{
+	public void onStart(){
+	}
+	public void onRestart(){
+	}
+	public void onResume(){
+	}
+	public void onPause(){
+	}
+	public void onStop(){
+	}
+	public void onDestroy(){
+	}
+	public void onActivityResult( int requestCode,int resultCode,Intent data ){
+	}
 }
 
 class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEventListener{
@@ -25,7 +38,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 	Activity _activity;
 	GameView _view;
-	IActivityResultCallback _activityResultCallback;
+	
+	List<ActivityDelegate> _activityDelegates=new LinkedList<ActivityDelegate>();
 	
 	Display _display;
 
@@ -453,8 +467,13 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		return _view;
 	}
 	
-	public void SetActivityResultCallback( IActivityResultCallback callback) {
-		_activityResultCallback = callback;
+	public void AddActivityDelegate( ActivityDelegate delegate ){
+		if( _activityDelegates.contains( delegate ) ) return;
+		_activityDelegates.add( delegate );
+	}
+	
+	public void RemoveActivityDelegate( ActivityDelegate delegate ){
+		_activityDelegates.remove( delegate );
 	}
 
 	public Bitmap LoadBitmap( String path ){
@@ -649,21 +668,6 @@ class AndroidGame extends Activity{
 	}
 	
 	//***** Activity *****
-/*
-	@Override
-	public void onResume(){
-		super.onResume();
-		_view.onResume();
-		_game.ResumeGame();
-	}
-	
-	@Override 
-	public void onPause(){
-		super.onPause();
-		_game.SuspendGame();
-		_view.onPause();
-	}
-*/
 	public void onWindowFocusChanged( boolean hasFocus ){
 		if( hasFocus ){
 			_view.onResume();
@@ -684,11 +688,58 @@ class AndroidGame extends Activity{
 		_game.KeyEvent( BBGameEvent.KeyDown,0x1a0 );
 		_game.KeyEvent( BBGameEvent.KeyUp,0x1a0 );
 	}
+
+	@Override
+	public void onStart(){
+		super.onResume();
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onStart();
+		}
+	}
+	
+	@Override
+	public void onRestart(){
+		super.onResume();
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onRestart();
+		}
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onResume();
+		}
+	}
+	
+	@Override 
+	public void onPause(){
+		super.onPause();
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onPause();
+		}
+	}
+
+	@Override
+	public void onStop(){
+		super.onResume();
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onStop();
+		}
+	}
+	
+	@Override
+	protected void onDestroy(){
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onDestroy();
+		}
+	}
 	
 	@Override
 	protected void onActivityResult( int requestCode,int resultCode,Intent data ){
-		if( _game._activityResultCallback!=null ){
-			_game._activityResultCallback.Update( requestCode,resultCode,data );
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onActivityResult( requestCode,resultCode,data );
 		}
 	}
 }
