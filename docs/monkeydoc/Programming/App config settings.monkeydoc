@@ -1,4 +1,3 @@
-
 > App config settings
 
 App config settings are settings that affect how a project is built.
@@ -83,6 +82,9 @@ The following app config settings are currently supported, shown with example va
 'C++ settings - valid for glfw, ios, stdcpp
 '
 #CPP_DOUBLE_PRECISION_FLOATS=False
+#CPP_GC_MODE=1  '0 disable GC, 1 Collect on Mojo after every OnWhatever, 2 Incremental collect on every GC allocation
+#CPP_GC_TRIGGER=8388608 'Allocated memory (in bytes) before a GC 'sweep' occurs. Defaults to 8 MiB
+#CPP_GC_MAX_LOCALS=8192 'This is used with GC_MODE 2 to track local object vars and defaults to 8192
 </pre>
 
 Not all settings are supported by all targets, and when not supported they will silently fail.
