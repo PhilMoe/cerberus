@@ -495,9 +495,8 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 }
 
 -(void)drawView:(id)sender{
-	printf( "drawView\n" );fflush( stdout );
 	if( BBIosGame *game=BBIosGame::IosGame() ){
-		game->StartGame();	//NOP if game already started
+		game->StartGame();
 		game->RenderGame();
 	}
 }
