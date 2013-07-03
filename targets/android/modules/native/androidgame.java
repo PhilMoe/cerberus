@@ -15,8 +15,8 @@ import android.opengl.*;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
-interface IActivityResultCallback {
-	public void Update(int requestCode, int resultCode, Intent data);
+interface IActivityResultCallback{
+	public void Update( int requestCode,int resultCode,Intent data );
 }
 
 class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEventListener{
@@ -686,9 +686,9 @@ class AndroidGame extends Activity{
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (_game._activityResultCallback != null) {
-			_game._activityResultCallback.Update(requestCode, resultCode, data);
+	protected void onActivityResult( int requestCode,int resultCode,Intent data ){
+		if( _game._activityResultCallback!=null ){
+			_game._activityResultCallback.Update( requestCode,resultCode,data );
 		}
 	}
 }
