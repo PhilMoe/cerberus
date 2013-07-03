@@ -22,9 +22,7 @@ Returns the width of the graphics device, in pixels.
 
 Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
 
-Links: 
-
-[[DeviceHeight]]
+Links: [[DeviceHeight]]
 
 
 # Function DeviceHeight:Int()
@@ -33,9 +31,7 @@ Returns the height of the graphics device, in pixels.
 
 Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
 
-Links: 
-
-[[DeviceWidth]]
+Links: [[DeviceWidth]]
 
 
 # Function LoadImage:Image(path:String,frameCount:Int=1,flags:Int=Image.DefaultFlags)
@@ -52,17 +48,7 @@ If your images contain edge padding, you will need to use one of the padding fla
 
 See DefaultFlags for a list of valid image flags.
 
-Params: 
-
-path - the data file path of the image to load, relative to your applications .data folder.
-
-frameCount - the number of frames contained in the image.
-
-flags - image flags.
-
-Links: 
-
-[[Resource paths]], [[File formats]], [[Image.DefaultFlags]], [[Image.GrabImage]]
+Links: [[Resource paths]], [[File formats]], [[CreateImage]], [[Image.DefaultFlags]], [[Image.GrabImage]]
 
 
 # Function LoadImage:Image(path:String,frameWidth:Int,frameHeight:Int,frameCount:Int,flags:Int=Image.DefaultFlags)
@@ -79,22 +65,7 @@ If your images contain edge padding, you will need to use one of the padding fla
 
 See DefaultFlags for a list of valid image flags.
 
-Params: 
-
-path - the data file path of the image to load, relative to your applications .data folder.
-
-frames - the number of frames contained in the image.
-
-frameWidth - width of each frame.
-
-frameHeight - height of each frame.
-
-flags - image flags.
-
-
-Links: 
-
-[[Resource paths]], [[Image.DefaultFlags]], [[Image.GrabImage]]
+Links: [[Resource paths]], [[File formats]], [[CreateImage]], [[Image.DefaultFlags]], [[Image.GrabImage]]
 
 
 # Function SetColor:Int(r:Float,g:Float,b:Float)
@@ -105,22 +76,14 @@ The current color is used by all drawing operations except Cls.
 
 Note: Drawing images in any color other than 255,255,255 on the HTML5 target will incur a major runtime overhead. For best results on the HTML5 target, either use colored images sparingly, or consider using 'pre-colored' images stored in multiple image files.
 
-Params: 
-
-red, green, blue - color components in the range 0 to 255.
-
-Links: 
-
-[[GetColor]]
+Links: [[GetColor]]
 
 
 # Function GetColor:Float[]()
 
 Returns the current color as a 3 component float array containg the current color's red, green and blue components respectively.
 
-Links: 
-
-[[SetColor]]
+Links: [[SetColor]]
 
 
 # Function GetColor:Int(color:Float[])
@@ -129,9 +92,7 @@ Copies the current color to @color.
 
 The length of @color must be at least 3.
 
-Links: 
-
-[[SetColor]]
+Links: [[SetColor]]
 
 
 # Function SetAlpha:Int(alpha:Float)
@@ -144,22 +105,14 @@ In the case of images which contain alpha, the alpha used for rendering is the p
 
 Global alpha affects all drawing operations except for Cls.
 
-Params: 
-
-alpha - alpha value in the range 0 to 1.
-
-Links: 
-
-[[GetAlpha]]
+Links: [[GetAlpha]]
 
 
 # Function GetAlpha:Float()
 
 Returns the current alpha level in the range 0 to 1 inclusive.
 
-Links: 
-
-[[SetAlpha]]
+Links: [[SetAlpha]]
 
 
 # Function SetBlend:Int(blend:Int)
@@ -174,22 +127,14 @@ The @blend parameter can be one of the following:
 | AlphaBlend		| Rendering operations are alpha blended with existing graphics
 | AdditiveBlend		| Rendering operations are additively blended with existing graphics
 
-Params: 
-
-mode - the blend mode to set.
-
-Links: 
-
-[[GetBlend]]
+Links: [[GetBlend]]
 
 
 # Function GetBlend:Int()
 
 Returns the current blend mode. See [[SetBlend]] for possible return values.
 
-Links: 
-
-[[SetBlend]]
+Links: [[SetBlend]]
 
 
 # Function SetScissor:Int(x:Float,y:Float,width:Float,height:Float)
@@ -200,24 +145,14 @@ All drawing commands are 'clipped' to the current scissor rectangle. To disable 
 
 The rectangle coordinates used with SetScissor are device coordinates, and are not affected by the current matrix.
 
-Params: 
-
-x, y - coordinates of the upper left of the scissor rectangle.
-
-width, height - width and height of the scissor rectangle.
-
-Links: 
-
-[[GetScissor]]
+Links: [[GetScissor]]
 
 
 # Function GetScissor:Float[]()
 
 Returns the current scissor rectangle as a 4 component float array containg the scissor rectangle's x,y, width and height coordinates respectively.
 
-Links: 
-
-[[SetScissor]]
+Links: [[SetScissor]]
 
 
 # Function GetScissor:Int(scissor:Float[])
@@ -226,48 +161,28 @@ Copies the current scissor rectangle to @scissor.
 
 The length of @scissor must be at least 4.
 
-Links: 
-
-[[SetScissor]]
+Links: [[SetScissor]]
 
 
 # Function SetMatrix:Int(m:Float[])
 
 Sets the current matrix.
 
-Params: 
-
-matrix - a float array containing matrix components.
-
-ix, iy, jx, jy, tx, ty - matrix components.
-
-Links: 
-
-[[GetMatrix]]
+Links: [[GetMatrix]]
 
 
 # Function SetMatrix:Int(ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float)
 
 Sets the current matrix.
 
-Params: 
-
-matrix - a float array containing matrix components.
-
-ix, iy, jx, jy, tx, ty - matrix components.
-
-Links: 
-
-[[GetMatrix]]
+Links: [[GetMatrix]]
 
 
 # Function GetMatrix:Float[]()
 
 Returns the current transformation matrix as an array of 6 floats.
 
-Links: 
-
-[[SetMatrix]]
+Links: [[SetMatrix]]
 
 
 # Function GetMatrix:Int( matrix:Float[] )
@@ -276,9 +191,7 @@ Copies the current transformation matrix to @matrix.
 
 The length of @matrix must be at least 6.
 
-Links: 
-
-[[SetMatrix]]
+Links: [[SetMatrix]]
 
 
 # Function PushMatrix:Int()
@@ -287,18 +200,14 @@ Pushes the current matrix onto the internal matrix stack.
 
 The matrix can be restored at a later time using PopMatrix.
 
-Links: 
-
-[[PopMatrix]]
+Links: [[PopMatrix]]
 
 
 # Function PopMatrix:Int()
 
 Pops a matrix from the internal matrix stack and makes it the current matrix.
 
-Links: 
-
-[[PushMatrix]]
+Links: [[PushMatrix]]
 
 
 
@@ -306,49 +215,25 @@ Links:
 
 Multiplies the current matrix by the specified matrix.
 
-Params: 
-
-matrix - a float array containing matrix components.
-
-ix, iy, jx, jy, tx, ty - matrix components.
-
 
 # Function Transform:Int(ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float)
 
 Multiplies the current matrix by the specified matrix.
-
-Params: 
-
-matrix - a float array containing matrix components.
-
-ix, iy, jx, jy, tx, ty - matrix components.
 
 
 # Function Translate:Int(x:Float,y:Float)
 
 Multiplies the current matrix by a matrix representing the specified translation.
 
-Params: 
-
-x, y - translation offsets.
-
 
 # Function Scale:Int(x:Float,y:Float)
 
 Multiplies the current matrix by a matrix representing the specified scale.
 
-Params: 
-
-x, y - scale factors.
-
 
 # Function Rotate:Int(angle:Float)
 
 Multiplies the current matrix by a matrix representing the specified rotation.
-
-Params: 
-
-angle - rotation angle in degrees.
 
 
 # Function Cls:Int(r:Float=0,g:Float=0,b:Float=0)
@@ -357,20 +242,12 @@ Clears the graphics device to the specified color.
 
 The current color, alpha and blend mode are ignored by Cls. However, the scissor rect is still used so only the area inside the scissor rect is cleared.
 
-Params: 
-
-red, green, blue - color components in the range 0 to 255.
-
 
 # Function DrawPoint:Int(x:Float,y:Float)
 
 Draws a point at the coordinates x, y.
 
 The point is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
-
-Params: 
-
-x, y - coordinates of the point.
 
 
 # Function DrawRect:Int(x:Float,y:Float,w:Float,h:Float)
@@ -379,24 +256,12 @@ Draws a rectangle of size width, height at the coordinates x, y.
 
 The rectangle is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-x, y - coordinates of the top-left of the rectangle.
-
-width, height - width and height of the rectangle.
-
 
 # Function DrawLine:Int(x1:Float,y1:Float,x2:Float,y2:Float)
 
 Draws a line from x1, y1 to x2, y2.
 
 The line is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
-
-Params: 
-
-x1, y1 - the start coordinates of the line.
-
-x2, y2 - the end coordinates of the line.
 
 
 # Function DrawOval:Int(x:Float,y:Float,w:Float,h:Float)
@@ -405,15 +270,7 @@ Draws an oval of size width, height at coordinates x, y.
 
 The oval is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-x, y - coordinates of the top-left of the oval.
-
-width, height - width and height of the oval.
-
-Links: 
-
-[[DrawEllipse]]
+Links: [[DrawEllipse]]
 
 
 # Function DrawCircle:Int(x:Float,y:Float,r:Float)
@@ -422,12 +279,6 @@ Draws a circle of the given radius at coordinates x, y.
 
 The circle is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-x, y - coordinates of the center of the circle.
-
-radius - radius of the circle.
-
 
 # Function DrawEllipse:Int(x:Float,y:Float,xr:Float,yr:Float)
 
@@ -435,15 +286,7 @@ Draws an ellipse of radii xRadius, yRadius at coordinates x, y.
 
 The ellipse is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-x, y - coordinates of the center of the ellipse.
-
-xRadius, yRadius - horizontal and vertical radii of the ellipse.
-
-Links: 
-
-[[DrawOval]]
+Links: [[DrawOval]]
 
 
 # Function DrawPoly:Int(verts:Float[])
@@ -456,10 +299,6 @@ If the polygon described by vertices is not convex, the results are undefined.
 
 The vertices array must contain at least 3 x,y pairs.
 
-Params: 
-
-vertices - an array of x,y pairs describing the polygon.
-
 
 # Function DrawImage:Int(image:Image,x:Float,y:Float,frame:Int=0)
 
@@ -467,17 +306,7 @@ Draws an image at coordinates x, y, offset by the image's handle.
 
 The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-image - image to draw.
-
-x, y - coordinates to draw image at.
-
-frame - image frame to draw.
-
-Links: 
-
-[[LoadImage]], [[DrawImageRect]]
+Links: [[LoadImage]], [[DrawImageRect]]
 
 
 # Function DrawImage:Int(image:Image,x:Float,y:Float,rotation:Float,scaleX:Float,scaleY:Float,frame:Int=0)
@@ -488,22 +317,7 @@ The image is drawn using the current color, alpha, blend mode and matrix, and is
 
 The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
 
-Params: 
-
-image - image to draw.
-
-x, y - coordinates to draw image at.
-
-rotation - local image rotation in degrees.
-
-scaleX, scaleY - local image scale.
-
-frame - image frame to draw.
-
-
-Links: 
-
-[[LoadImage]], [[DrawImageRect]]
+Links: [[LoadImage]], [[DrawImageRect]]
 
 
 # Function DrawImageRect:Int(image:Image,x:Float,y:Float,srcX:Int,srcY:Int,srcWidth:Int,srcHeight:Int,frame:Int=0)
@@ -512,19 +326,7 @@ Draws a sub-rectangle of an image at coordinates x, y, offset by the image's han
 
 The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Params: 
-
-image - image to draw.
-
-x, y - coordinates to draw image at.
-
-srcX, srcY, srcWidth, srcHeight - source rectangle.
-
-frame - image frame to draw.
-
-Links: 
-
-[[LoadImage]], [[DrawImage]]
+Links: [[LoadImage]], [[DrawImage]]
 
 
 # Function DrawImageRect:Int(image:Image,x:Float,y:Float,srcX:Int,srcY:Int,srcWidth:Int,srcHeight:Int,rotation:Float,scaleX:Float,scaleY:Float,frame:Int=0)
@@ -535,21 +337,7 @@ The image is drawn using the current color, alpha, blend mode and matrix, and is
 
 The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
 
-Params: 
-
-image - image to draw.
-
-x, y - coordinates to draw image at.
-
-srcX, srcY, srcWidth, srcHeight - source rectangle.
-
-rotation - local image rotation in degrees.
-
-scaleX, scaleY - local image scale.
-
-Links: 
-
-[[LoadImage]], [[DrawImage]]
+Links: [[LoadImage]], [[DrawImage]]
 
 
 # Function SetFont:Int(font:Image,firstChar:Int=32)
@@ -560,15 +348,7 @@ The font parameter may be Null, in which case an internal 7x11 white-on-black fo
 
 Note: The font functionality in mojo is very limited and intended mainly for debugging purposes
 
-Params: 
-
-font - an image describing the font. Each image frame represents a single character in the font.
-
-firstChar - the character code that frame 0 in the font represents.
-
-Links: 
-
-[[GetFont]]
+Links: [[GetFont]]
 
 
 # Function GetFont:Image()
@@ -602,28 +382,16 @@ The text is drawn using the current color, alpha, blend mode and matrix, and is 
 
 Note: The font functionality in mojo is very limited and intended mainly for debugging purposes.
 
-Params: 
-
-text - the text to draw.
-
-x, y - coordinates to draw the text at.
-
-xalign, yalign - how to align the text.
-
 
 '# Function InvTransform:Float[](coords:Float[])
 
-# Function CreateImage:Image(width:Int,height:Int,flags:Int=Image.DefaultFlags)
+# Function CreateImage:Image(width:Int,height:Int,frameCount:Int=1,flags:Int=Image.DefaultFlags)
 
 Creates an empty image for use with [[Image.WritePixels]].
 
 The contents of the image are initially undefined.
 
-Params: 
-
-@width, @height - dimensions of the image.
-
-@flags - image flags.
+Links: [[LoadImage]]
 
 
 # Function ReadPixels:Void(pixels:Int[],x:Int,y:Int,width:Int,height:Int,arrayOffset:Int=0,arrayPitch:Int=0)
@@ -635,17 +403,6 @@ The pixel data is stored in int-per-pixel ARGB format, with the alpha component 
 The optional @arrayOffset parameter allows you to specify an index into the array at which to start writing pixel values.
 
 The optional @arrayPitch parameter allows you to specify a 'pitch'. This is the number of array elements between successive rows in the array. If this is 0, then @width is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
-
-
-Params: 
-
-@pixels - an int array to receive pixel data.
-
-@x, @y, @width, @height - coords of rectangle to read.
-
-@arrayOffset - optional array offset.
-
-@arrayPitch - optional array pitch.
 
 
 # Class mojo.graphics.Image
@@ -691,9 +448,7 @@ Image flags can be one of:
 
 DefaultFlags is initially 0.
 
-Links: 
-
-[[LoadImage]], [[GrabImage]]
+Links: [[LoadImage]], [[GrabImage]]
 
 
 # Method Width:Int()
@@ -786,14 +541,3 @@ The pixel data must be stored in int-per-pixel ARGB format, with the alpha compo
 The optional @arrayOffset parameter allows you to specify an index into the array from which to start reading pixel values.
 
 The optional @arrayPitch parameter allows you to specify a 'pitch' - the number of array elements between successive rows in the array. If this is 0, then @width is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
-
-
-Params: 
-
-@pixels - an int array containing pixel data.
-
-@x, @y, @width, @height - coords of rectangle to write.
-
-@arrayOffset - optional array offset.
-
-@arrayPitch - optional array pitch.
