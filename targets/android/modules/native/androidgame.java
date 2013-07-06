@@ -439,7 +439,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			File f=_activity.getFilesDir();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}else if( path.startsWith( "monkey://external/" ) ){
-			File f=_activity.getExternalFilesDir(null);
+//			File f=_activity.getExternalFilesDir(null);
+			File f=Environment.getExternalStorageDirectory();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}
 		return "";
@@ -496,7 +497,11 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 
 	public int LoadSound( String path,SoundPool pool ){
 		try{
-			return pool.load( _activity.getAssets().openFd( PathToAssetPath( path ) ),1 );
+			if( path.startsWith( "monkey://data/" ) ){
+				return pool.load( _activity.getAssets().openFd( PathToAssetPath( path ) ),1 );
+			}else{
+				return pool.load( PathToFilePath( path ),1 );
+			}
 		}catch( IOException ex ){
 		}
 		return 0;
