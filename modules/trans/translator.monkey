@@ -186,40 +186,14 @@ Class CTranslator Extends Translator
 			InternalErr
 		Endif
 		
-		#rem
-		If LocalDecl( decl )
-			scope="$"
-			munged="t_"+id
-		Else If FieldDecl( decl )
-			scope=cscope
-			munged="f_"+id
-		Else If GlobalDecl( decl ) Or FuncDecl( decl )
-			If cscope And ENV_LANG<>"js"
-				scope=cscope
-				munged="g_"+id
-			Else If cscope
-				munged=cscope+"_"+id
-			Else
-				munged=mscope+"_"+id
-			Endif
-		Else If ClassDecl( decl )
-			munged=mscope+"_"+id
-		Else If ModuleDecl( decl )
-			munged="bb_"+id
-		Else
-			Print "OOPS1"
-			InternalErr
-		Endif
-		#end
-		
 		Local set:=mungedScopes.Get( scope )
 		If set
-			If set.Contains( munged )
+			If set.Contains( munged.ToLower() )
 				Local id=1
 				Repeat
 					id+=1
 					Local t$=munged+String(id)
-					If set.Contains(t) Continue
+					If set.Contains( t.ToLower() ) Continue
 					munged=t
 					Exit
 				Forever
@@ -232,7 +206,7 @@ Class CTranslator Extends Translator
 			set=New StringSet
 			mungedScopes.Set scope,set
 		Endif
-		set.Insert munged
+		set.Insert munged.ToLower()
 		decl.munged=munged
 	End
 	
