@@ -967,10 +967,20 @@ public:
 		return atof( ToCString<char>() );
 	}
 	
-	template<class C> C *ToCString()const{
-
-		C *p=(C*)malloc( (rep->length+1)*sizeof(C) );	//&Array<C>( rep->length+1 )[0];
-		
+	template<class C> class CString{
+	public:
+		~CString(){ free(_p); }
+		operator C*()const{ return _p; }
+	private:
+		friend class String;
+		C *_p;
+		CString( C *p ):_p(p){}
+		CString( const CString& );
+		CString &operator=( const CString& );
+	};
+	
+	template<class C> CString<C> ToCString()const{
+		C *p=(C*)malloc( (rep->length+1)*sizeof(C) );
 		for( int i=0;i<rep->length;++i ) p[i]=rep->data[i];
 		p[rep->length]=0;
 		return p;
