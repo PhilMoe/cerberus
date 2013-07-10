@@ -1,6 +1,15 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V72b *****
+
+Fixed c++ String::ToCString<> mem leak.
+
+Implemented custom HttpRequest for android, ios, win8, html5, flash for https support.
+
+Fixed trans munging of symbols to ignore case so Java doesn't generate clashing class file on case insensitive file systems.
+
+
 ***** V72a *****
 
 Added GlfwGame and GlfwVideoMode classes to glfw target:
