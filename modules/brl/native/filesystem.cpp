@@ -29,11 +29,11 @@ class BBFileSystem{
 	typedef struct stat stat_t;
 #endif
 
-	static char *C_STR( const String &t ){
+	static String::CString<char> C_STR( const String &t ){
 		return t.ToCString<char>();
 	}
 	
-	static OS_CHAR *OS_STR( const String &t ){
+	static String::CString<OS_CHAR> OS_STR( const String &t ){
 		return t.ToCString<OS_CHAR>();
 	}
 	
@@ -83,9 +83,9 @@ class BBFileSystem{
 		return copyfile( OS_STR(srcpath),OS_STR(dstpath),0,COPYFILE_DATA )>=0;
 #else
 		int err=-1;
-		if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR( "rb" ) ) ){
+		if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR("rb") ) ){
 			err=-2;
-			if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR( "wb" ) ) ){
+			if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR("wb") ) ){
 				err=0;
 				char buf[1024];
 				while( int n=fread( buf,1,1024,srcp ) ){
@@ -96,12 +96,12 @@ class BBFileSystem{
 				}
 				fclose( dstp );
 			}else{
-				printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+//				printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
 				fflush( stdout );
 			}
 			fclose( srcp );
 		}else{
-			printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+//			printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
 			fflush( stdout );
 		}
 		return err==0;

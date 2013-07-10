@@ -139,7 +139,7 @@ bool BBProcess::Start( String cmd ){
 
     PROCESS_INFORMATION pi={0};
     
-    int res=CreateProcessW( 0,(LPWSTR)cmd.ToCString<wchar_t>(),0,0,-1,CREATE_NEW_PROCESS_GROUP,0,0,&si,&pi );
+    int res=CreateProcessW( 0,(LPWSTR)(const char*)cmd.ToCString<wchar_t>(),0,0,-1,CREATE_NEW_PROCESS_GROUP,0,0,&si,&pi );
 
     CloseHandle( in[0] );
     CloseHandle( out[1] );

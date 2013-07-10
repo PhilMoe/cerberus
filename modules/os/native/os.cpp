@@ -15,7 +15,7 @@
 #define PATH_MAX MAX_PATH
 #endif
 
-typedef wchar_t OS_CHAR;
+typedef WCHAR OS_CHAR;
 typedef struct _stat stat_t;
 
 #define mkdir( X,Y ) _wmkdir( X )
@@ -68,11 +68,11 @@ typedef struct stat stat_t;
 static String _appPath;
 static Array<String> _appArgs;
 
-static char *C_STR( const String &t ){
+static String::CString<char> C_STR( const String &t ){
 	return t.ToCString<char>();
 }
 
-static OS_CHAR *OS_STR( const String &t ){
+static String::CString<OS_CHAR> OS_STR( const String &t ){
 	return t.ToCString<OS_CHAR>();
 }
 
@@ -175,7 +175,6 @@ String LoadString( String path ){
 		fclose( fp );
 		return str;
 	}
-//	printf( "FOPEN 'rb' for LoadString '%s' failed\n",C_STR( path ) );fflush( stdout );
 	return "";
 }
 	
@@ -185,7 +184,7 @@ int SaveString( String str,String path ){
 		fclose( fp );
 		return ok ? 0 : -2;
 	}else{
-		printf( "FOPEN 'wb' for SaveString '%s' failed\n",C_STR( path ) );
+//		printf( "FOPEN 'wb' for SaveString '%s' failed\n",C_STR( path ) );
 		fflush( stdout );
 	}
 	return -1;
@@ -206,7 +205,7 @@ Array<String> LoadDir( String path ){
 		}while( FindNextFileW( handle,&filedata ) );
 		FindClose( handle );
 	}else{
-		printf( "FindFirstFileW for LoadDir(%s) failed\n",C_STR(path) );
+//		printf( "FindFirstFileW for LoadDir(%s) failed\n",C_STR(path) );
 		fflush( stdout );
 	}
 	
@@ -220,7 +219,7 @@ Array<String> LoadDir( String path ){
 		}
 		closedir( dir );
 	}else{
-		printf( "opendir for LoadDir(%s) failed\n",C_STR(path) );
+//		printf( "opendir for LoadDir(%s) failed\n",C_STR(path) );
 		fflush( stdout );
 	}
 
@@ -261,12 +260,12 @@ int CopyFile( String srcpath,String dstpath ){
 			}
 			fclose( dstp );
 		}else{
-			printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+//			printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
 			fflush( stdout );
 		}
 		fclose( srcp );
 	}else{
-		printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+//		printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
 		fflush( stdout );
 	}
 	return err==0;
@@ -301,7 +300,13 @@ int DeleteFile( String path ){
 }
 
 int SetEnv( String name,String value ){
-	return putenv( OS_STR( String(name)+"="+value ) );
+#if _WIN32
+	return putenv( OS_STR( name+"="+value ) );
+#else
+	if( value.Length() ) return setenv( OS_STR( name ),OS_STR( value ),1 );
+	unsetenv( OS_STR( name ) );
+	return 0;
+#endif
 }
 
 String GetEnv( String name ){
@@ -318,7 +323,7 @@ int Execute( String cmd ){
 	PROCESS_INFORMATION pi={0};
 	STARTUPINFOW si={sizeof(si)};
 
-	if( !CreateProcessW( 0,(WCHAR*)OS_STR(cmd),0,0,1,CREATE_DEFAULT_ERROR_MODE,0,0,&si,&pi ) ) return -1;
+	if( !CreateProcessW( 0,(WCHAR*)(const OS_CHAR*)OS_STR(cmd),0,0,1,CREATE_DEFAULT_ERROR_MODE,0,0,&si,&pi ) ) return -1;
 
 	WaitForSingleObject( pi.hProcess,INFINITE );
 

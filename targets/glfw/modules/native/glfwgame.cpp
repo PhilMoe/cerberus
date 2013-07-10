@@ -158,17 +158,14 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 
 void BBGlfwGame::OpenUrl( String url ){
 #if _WIN32
-	char *cstr=url.ToCString<char>();
-	ShellExecute( HWND_DESKTOP,"open",cstr,0,0,SW_SHOWNORMAL );
+	ShellExecute( HWND_DESKTOP,"open",url.ToCString<char>(),0,0,SW_SHOWNORMAL );
 #elif __APPLE__
-	UInt8 *cstr=url.ToCString<UInt8>();
-	if( CFURLRef cfurl=CFURLCreateWithBytes( 0,cstr,url.Length(),kCFStringEncodingASCII,0 ) ){
+	if( CFURLRef cfurl=CFURLCreateWithBytes( 0,url.ToCString<UInt8>(),url.Length(),kCFStringEncodingASCII,0 ) ){
 		LSOpenCFURLRef( cfurl,0 );
 		CFRelease( cfurl );
 	}
 #elif __linux
-	char *cstr=( String( "xdg-open \"" )+url+"\"" ).ToCString<char>();
-	system( cstr );
+	system( ( String( "xdg-open \"" )+url+"\"" ).ToCString<char>() );
 #endif
 }
 

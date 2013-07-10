@@ -234,8 +234,9 @@ void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataB
 }
 
 void _glShaderSource( int shader, String source ){
-	char *buf[1];
-	buf[0]=source.ToCString<char>();
+	String::CString<char> cstr=source.ToCString<char>();
+	const char *buf[1];
+	buf[0]=cstr;
 	glShaderSource( shader,1,(const GLchar**)buf,0 );
 }
 
