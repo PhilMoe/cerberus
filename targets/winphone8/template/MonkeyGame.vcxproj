@@ -65,7 +65,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib;msxml6.lib</AdditionalDependencies>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <IgnoreSpecificDefaultLibraries>ole32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -80,7 +80,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib;msxml6.lib</AdditionalDependencies>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <IgnoreSpecificDefaultLibraries>ole32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -94,7 +94,7 @@
       <CompileAsWinRT>true</CompileAsWinRT>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib;msxml6.lib</AdditionalDependencies>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <IgnoreSpecificDefaultLibraries>ole32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -108,7 +108,7 @@
       <CompileAsWinRT>true</CompileAsWinRT>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;xaudio2.lib;mfplat.lib;Ws2_32.lib;msxml6.lib</AdditionalDependencies>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
       <IgnoreSpecificDefaultLibraries>ole32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
