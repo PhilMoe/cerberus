@@ -119,13 +119,29 @@ Class AndroidBuilder Extends Builder
 			CreateDir "src/com/monkey"
 			CopyFile "nativegl/NativeGL.java","src/com/monkey/NativeGL.java"
 		Endif
-		
+
 		If tcc.opt_build
-		
-			Local r:=Execute( "ant clean",False ) And Execute( "ant debug install",False )
-			
-			If Not r
+
+		#rem		
+			If Not (Execute( "ant clean",False ) And Execute( "ant "+ENV_CONFIG+" install",False ))
+
 				Die "Android build failed."
+				
+			Else If tcc.opt_run
+			
+				Execute "adb logcat -c",False
+				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
+				Execute "adb logcat [Monkey]:I *:E",False
+				'
+				'NOTE: This leaves ADB server running which can LOCK the .build dir making it undeletable...
+				'
+			Endif
+		#end
+		
+			If Not (Execute( "ant clean",False ) And Execute( "ant debug install",False ))
+	
+				Die "Android build failed."
+				
 			Else If tcc.opt_run
 			
 				Execute "adb logcat -c",False
