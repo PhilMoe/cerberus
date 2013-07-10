@@ -736,6 +736,7 @@ class AndroidGame extends Activity{
 	
 	@Override
 	protected void onDestroy(){
+		super.onDestroy();
 		for( ActivityDelegate delegate : _game._activityDelegates ){
 			delegate.onDestroy();
 		}
