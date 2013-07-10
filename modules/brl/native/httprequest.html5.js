@@ -1,7 +1,5 @@
 
-function BBHttpRequestThread(){
-	BBThread.call(this);
-
+function BBHttpRequest(){
 	this.response = {
 		text: '',
 		status: -1,
@@ -9,9 +7,7 @@ function BBHttpRequestThread(){
 	}
 }
 
-BBHttpRequestThread.prototype=extend_class( BBThread );
-
-BBHttpRequestThread.prototype.Init=function( requestMethod, url ){
+BBHttpRequest.prototype.Open=function( requestMethod, url ){
 	if ( !this.xhr ) this.xhr=new XMLHttpRequest();
 
 	//IE9
@@ -63,40 +59,46 @@ BBHttpRequestThread.prototype.Init=function( requestMethod, url ){
 	this.xhr.open( requestMethod, url );
 }
 
-BBHttpRequestThread.prototype.Discard=function(){
+BBHttpRequest.prototype.Discard=function(){
 	if ( this.xhr ) this.xhr.abort();
 	this.response=null;
 	this.xhr=null;
 }
 
-BBHttpRequestThread.prototype.SendRequest=function( data, mimeType  ){
-	if ( data.length===0 ) data=null;
-	if ( mimeType.length!==0 ) this.SetHeader( 'Content-Type', mimeType );
-
-	this.data=data;
-	this.Start();
-}
-
-BBHttpRequestThread.prototype.Run__UNSAFE__=function(){
-	if ( this.xhr ){
-		this.xhr.send( this.data );
-	} else{
-		this.running = false;
-	}
-}
-
-BBHttpRequestThread.prototype.SetHeader=function( name, value ){
+BBHttpRequest.prototype.SetHeader=function( name, value ){
 	if ( this.xhr && this.xhr.setRequestHeader ) this.xhr.setRequestHeader( name, value );
 }
 
-BBHttpRequestThread.prototype.BytesReceived=function(){
+BBHttpRequest.prototype.Send=function(){
+	this.data=this.encoding=null;
+	this.Start();
+}
+
+BBHttpRequest.prototype.SendText=function( data, encoding ){
+	this.data=data;
+	this.encoding=encoding;
+	this.Start();
+}
+
+BBHttpRequest.prototype.Start=function(){
+	if ( this.xhr ){
+		this.running=true;
+		this.xhr.send( this.data );
+	}
+}
+
+BBHttpRequest.prototype.BytesReceived=function(){
 	return this.response.length;
 }
 
-BBHttpRequestThread.prototype.ResponseText=function(){
+BBHttpRequest.prototype.ResponseText=function(){
 	return this.response.text;
 }
 
-BBHttpRequestThread.prototype.Status=function(){
+BBHttpRequest.prototype.Status=function(){
 	return this.response.status;
+}
+
+BBHttpRequest.prototype.IsRunning=function(){
+	return this.running;
 }

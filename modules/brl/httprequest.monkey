@@ -1,5 +1,99 @@
 
-#If TARGET<>"html5"
+Import brl.asyncevent
+
+#If TARGET="android" Or TARGET="ios" Or TARGET="win8" Or TARGET="html5" Or TARGET="flash"
+
+Private
+
+Import "native/httprequest.${TARGET}.${LANG}"
+
+Extern Private
+
+Class BBHttpRequest
+	Method Open:Void( req:String,url:String )
+	Method SetHeader:Void( name:String,value:String )
+	Method Send:Void()
+	Method SendText:Void( data:String,encoding:String )
+	Method ResponseText:String()
+	Method Status:Int()
+	Method BytesReceived:Int()
+	Method IsRunning:Bool()
+End
+
+Public
+
+Class HttpRequest Implements IAsyncEventSource
+
+	Method New()
+	End
+
+	Method New( req:String,url:String,onComplete:IOnHttpRequestComplete )
+		Open req,url,onComplete
+	End
+	
+	Method Open:Void( req:String,url:String,onComplete:IOnHttpRequestComplete )
+		If _req And _req.IsRunning() Error "HttpRequest in progress"
+
+		_req=New BBHttpRequest
+		_onComplete=onComplete
+
+		_req.Open( req,url )
+	End
+	
+	Method SetHeader:Void( name:String,value:String )
+		If Not _req Error "HttpRequest not open"
+		If _req.IsRunning() Error "HttpRequest in progress"
+
+		_req.SetHeader( name,value )
+	End
+	
+	Method Send:Void()
+		If Not _req Error "HttpRequest not open"
+		If _req.IsRunning() Error "HttpRequest in progress"
+
+		AddAsyncEventSource Self
+		_req.Send()
+	End
+	
+	Method Send:Void( data:String,mimeType:String="text/plain;charset=UTF-8",encoding:String="utf8" )
+		If Not _req Error "HttpRequest not open"
+		If _req.IsRunning() Error "HttpRequest in progress"
+
+		If mimeType _req.SetHeader( "Content-Type",mimeType )
+
+		AddAsyncEventSource Self
+		_req.SendText( data,encoding )
+	End
+	
+	Method Status:Int()
+		If Not _req Error "HttpRequest not open"
+		Return _req.Status()
+	End
+	
+	Method ResponseText:String()
+		If Not _req Error "HttpRequest not open"
+		Return _req.ResponseText()
+	End
+	
+	Method BytesReceived:Int()
+		If Not _req Error "HttpRequest not open"
+		Return _req.BytesReceived()
+	End
+	
+	Private
+	
+	Field _req:BBHttpRequest
+	Field _onComplete:IOnHttpRequestComplete
+	
+	Method UpdateAsyncEvents:Void()	
+		If _req.IsRunning() Return
+		RemoveAsyncEventSource Self
+		_onComplete.OnHttpRequestComplete( Self )
+	End Method
+
+End
+
+#Else
 
 Private
 
@@ -117,9 +211,9 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 			Return
 		Endif
 		
-		_bytesReceived+=count
 		
 		If _response
+			_bytesReceived+=count
 			_response.Push buf.PeekString( offset,count,"utf8" )
 			_sock.ReceiveAsync( buf,0,buf.Length,Self )
 			Return
@@ -134,7 +228,8 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 			i+=1
 			If buf.PeekByte( i-1 )<>10 Continue
 			
-			Local t:=buf.PeekString( start,i-start-1,"ascii" ).Trim()
+			Local len:=i-start-1
+			Local t:=buf.PeekString( start,len,"ascii" ).Trim()
 			start=i
 			
 			If t
@@ -147,7 +242,10 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 				If bits.Length>2 And bits[0].StartsWith( "HTTP/" )
 					_status=Int( bits[1] )
 					_response=New StringStack
-					If start<term _response.Push buf.PeekString( start,term-start,"utf8" )
+					If start<term
+						_bytesReceived+=term-start
+						_response.Push buf.PeekString( start,term-start,"utf8" )
+					Endif
 					_sock.ReceiveAsync( buf,0,buf.Length,Self )
 					Return
 				Endif
@@ -173,75 +271,6 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 
 End
 
-#Else If TARGET="html5"
-
-Private
-
-Import brl.thread
-Import brl.asyncevent
-Import brl.url
-
-Import "native/httprequestthread.${LANG}"
-
-Extern Private
-
-Class BBHttpRequestThread Extends BBThread = "BBHttpRequestThread"
-		
-	Method Discard:Void()
-	
-	Method SetHeader:Void(name:String, value:String)
-	
-	Method Status:Int()
-	
-	Method ResponseText:String()
-	
-	Method BytesReceived:Int()
-	
-	Private
-	
-	Method Init:Void(req:String, url:String)
-	
-	Method SendRequest:Void(data:String, mimeType:String)
-End
-
-Public
-
-Class HttpRequest Extends BBHttpRequestThread Implements IAsyncEventSource
-
-	Method New(req:String, url:String, onComplete:IOnHttpRequestComplete)
-		Open(req, url, onComplete)
-	End
-	
-	Method Open:Void(req:String, url:String, onComplete:IOnHttpRequestComplete)
-		_onComplete = onComplete
-		Init(req, New Url(url, "http", 80))
-	End Method
-	
-	Method Send:Void()
-		SendRequest("", "")
-	End Method
-	
-	Method Send:Void(data:String, mimeType:String = "text/plain;charset=UTF-8", encoding:String = "utf8")
-		SendRequest(data, mimeType)
-	End Method
-	
-	Method UpdateAsyncEvents:Void()	
-		If IsRunning() Return
-		RemoveAsyncEventSource Self
-		_onComplete.OnHttpRequestComplete(Self)
-	End Method
-	
-	Private
-	
-	Field _onComplete:IOnHttpRequestComplete
-	
-	Method SendRequest:Void(data:String, mimeType:String)
-		AddAsyncEventSource Self
-		Super.SendRequest(data, mimeType)
-	End Method
-
-End Class
-
 #End
 
 Interface IOnHttpRequestComplete
@@ -249,3 +278,4 @@ Interface IOnHttpRequestComplete
 	Method OnHttpRequestComplete:Void( req:HttpRequest )
 
 End
+
