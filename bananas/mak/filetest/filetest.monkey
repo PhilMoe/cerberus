@@ -38,9 +38,9 @@ Class MyApp Extends App
 		
 		Local y:=0
 		While Not file.Eof()
+			y+=12
 			Local i:=file.ReadInt()
 			DrawText i,0,y
-			y+=12
 		Wend
 		
 		file.Close
