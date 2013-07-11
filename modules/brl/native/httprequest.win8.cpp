@@ -5,8 +5,8 @@
 #include <wrl/client.h>
 #include <wrl/implements.h>
 
-//Ugh - seems to be how you're supposed to send strings?...
-//
+class BBHttpRequest;
+
 class CXMLHTTPRequestData : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::RuntimeClassType::ClassicCom>,ISequentialStream>{
 
 public:
@@ -36,20 +36,21 @@ public:
 	STDMETHODIMP OnRedirect( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_string const WCHAR *pwszRedirectUrl );
 	STDMETHODIMP OnResponseReceived( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pResponseStream );
 	
-	bool Wait();
+	void Start();
 	
 	String ResponseText(){ return _response; }
 	int Status(){ return _status; }
 	int BytesReceived(){ return _recv; }
+	bool IsRunning(){ return _running; }
 	
 private:
 
     friend HRESULT Microsoft::WRL::Details::MakeAndInitialize<CXMLHTTPRequest2Callback,CXMLHTTPRequest2Callback>( CXMLHTTPRequest2Callback** );
 
-	HANDLE _event;
 	String _response;
 	int _status;
 	int _recv;
+	bool _running;
 	
 	CXMLHTTPRequest2Callback();
 	~CXMLHTTPRequest2Callback();
@@ -57,7 +58,7 @@ private:
     STDMETHODIMP RuntimeClassInitialize();
 };
 
-class BBHttpRequest : public BBThread{
+class BBHttpRequest : public Object{
 
 public:
 
@@ -67,20 +68,20 @@ public:
 	void SetHeader( String name,String value );
 	void Send();
 	void SendText( String text,String encoding );
-	String ResponseText();
-	int Status();
-	int BytesReceived();
+	
+	String ResponseText(){ return _cb->ResponseText(); }
+	int Status(){ return _cb->Status(); }
+	int BytesReceived(){ return _cb->BytesReceived(); }
+	bool IsRunning(){ return _cb->IsRunning(); }
 	
 private:
 	
 	Microsoft::WRL::ComPtr<IXMLHTTPRequest2> _req;
 	Microsoft::WRL::ComPtr<CXMLHTTPRequestData> _data;
 	Microsoft::WRL::ComPtr<CXMLHTTPRequest2Callback> _cb;
-	
-	void Run__UNSAFE__();
 };
 
-// ***** HttpRequest.cpp *****
+// ***** XMLHttpRequestData.cpp *****
 
 CXMLHTTPRequestData::CXMLHTTPRequestData():_ptr(0){
 }
@@ -108,44 +109,39 @@ int CXMLHTTPRequestData::SetText( String data ){
 	return _buf.size();
 }
 
-CXMLHTTPRequest2Callback::CXMLHTTPRequest2Callback():_event( 0 ),_response( "" ),_status( -1 ),_recv( 0 ){
+
+// ***** XMLHttpRequest2Callback.cpp *****
+
+CXMLHTTPRequest2Callback::CXMLHTTPRequest2Callback():_response( "" ),_status( -1 ),_recv( 0 ),_running( false ){
 }
 
 CXMLHTTPRequest2Callback::~CXMLHTTPRequest2Callback(){
-
-	if( _event ) CloseHandle( _event );
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::RuntimeClassInitialize(){
+//	Print( "RuntimeClassInitialize" );
 
-	Print( "RuntimeClassInitialize" );
-
-	_event=CreateEventEx( 0,0,CREATE_EVENT_MANUAL_RESET,EVENT_ALL_ACCESS );
-	
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnDataAvailable( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pResponseStream ){
-
-	Print( "Data" );
+//	Print( "Data" );
 
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnError( __RPC__in_opt IXMLHTTPRequest2 *pXHR,HRESULT hrError ){
-
-	Print( "Error" );
+//	Print( "Error" );
 	
 	_status=-1;
-
-	SetEvent( _event );
+	
+	_running=false;
 
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnHeadersAvailable( __RPC__in_opt IXMLHTTPRequest2 *pXHR,DWORD dwStatus,__RPC__in_string const WCHAR *pwszStatus ){
-
-	Print( "Headers" );
+//	Print( "Headers" );
 	
 	_status=dwStatus;
 
@@ -153,15 +149,13 @@ STDMETHODIMP CXMLHTTPRequest2Callback::OnHeadersAvailable( __RPC__in_opt IXMLHTT
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnRedirect( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_string const WCHAR *pwszRedirectUrl ){
-
-	Print( "Redirect" );
+//	Print( "Redirect" );
 	
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnResponseReceived( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pStream ){
-
-	Print( "Response" );
+//	Print( "Response" );
 
 	if( pStream ){
 
@@ -197,19 +191,20 @@ STDMETHODIMP CXMLHTTPRequest2Callback::OnResponseReceived( __RPC__in_opt IXMLHTT
 		free( data );
 	}
 	
-	SetEvent( _event );
-
+	_running=false;
+	
 	return 0;
 }
 
-bool CXMLHTTPRequest2Callback::Wait(){
+void CXMLHTTPRequest2Callback::Start(){
 
-	Print( "Callback::Wait!" );
-
-	return WaitForSingleObjectEx( _event,INFINITE,FALSE )==WAIT_OBJECT_0;
+	_running=true;
 }
 
+// ***** HttpRequest.cpp *****
+
 BBHttpRequest::BBHttpRequest(){
+	Microsoft::WRL::Details::MakeAndInitialize<CXMLHTTPRequest2Callback>( &_cb );
 }
 
 void BBHttpRequest::Open( String req,String url ){
@@ -217,8 +212,6 @@ void BBHttpRequest::Open( String req,String url ){
 	if( FAILED( CoCreateInstance( CLSID_FreeThreadedXMLHTTP60,NULL,CLSCTX_INPROC_SERVER,IID_PPV_ARGS( &_req ) ) ) ){
 		return;
 	}
-
-	Microsoft::WRL::Details::MakeAndInitialize<CXMLHTTPRequest2Callback>( &_cb );
 
 	if( FAILED( _req->Open( req.ToCString<WCHAR>(),url.ToCString<WCHAR>(),_cb.Get(),0,0,0,0 ) ) ){
 		Print( "Failed to open HttpRequest" );
@@ -236,7 +229,7 @@ void BBHttpRequest::Send(){
 		Print( "Send failed" );
 	}
 	
-	Start();
+	_cb->Start();
 }
 
 void BBHttpRequest::SendText( String text,String encoding ){
@@ -249,24 +242,5 @@ void BBHttpRequest::SendText( String text,String encoding ){
 		Print( "Send failed" );
 	}
 
-	Start();
-}
-
-void BBHttpRequest::Run__UNSAFE__(){
-
-	Print( "Thread starting!" );
-
-	_cb->Wait();
-}
-
-String BBHttpRequest::ResponseText(){
-	return _cb ? _cb->ResponseText() : "";
-}
-
-int BBHttpRequest::Status(){
-	return _cb ? _cb->Status() : -1;
-}
-
-int BBHttpRequest::BytesReceived(){
-	return _cb ? _cb->BytesReceived() : 0;
+	_cb->Start();
 }
