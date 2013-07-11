@@ -5,7 +5,7 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 Fixed c++ String::ToCString<> mem leak.
 
-Implemented custom HttpRequest for android, ios, win8, html5, flash for https support.
+Implemented custom https friendly HttpRequest for android, ios, win8, html5, flash.
 
 Fixed trans munging of symbols to ignore case so Java doesn't generate clashing class file on case insensitive file systems.
 
