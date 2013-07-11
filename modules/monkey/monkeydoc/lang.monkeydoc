@@ -82,7 +82,7 @@ Params:
 @str - string to compare this string with.
 
 
-# Method Find:Int(str:String,start:Int)
+# Method Find:Int(str:String,start:Int=0)
 
 Returns the offset of the first occurrence of @str within this string, starting at the specified start offset.
 
@@ -97,7 +97,7 @@ Params:
 
 # Method FindLast:Int(str:String)
 
-Returns the offset of the last occurrence of @str within this string, starting at the optional offset specified by @start.
+Returns the offset of the last occurrence of @str within this string.
 
 Returns -1 if @str is not found.
 
