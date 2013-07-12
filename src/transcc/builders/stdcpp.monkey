@@ -65,6 +65,9 @@ Class StdcppBuilder Extends Builder
 				OPTS+=" -O3 -DNDEBUG"
 			End
 			
+			Local cc_opts:=GetCfgVar( "CC_OPTS" )
+			If cc_opts OPTS+=" "+cc_opts.Replace( ";"," " )
+			
 			Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS
 			
 			If tcc.opt_run
