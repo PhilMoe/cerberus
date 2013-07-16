@@ -33,7 +33,7 @@ class bb_opengl_gles20{
 		}
 	}
 
-	static BBDataBuffer _LoadImageData( BBDataBuffer buf,String path,int[] info ){
+	static BBDataBuffer LoadImageData( BBDataBuffer buf,String path,int[] info ){
 		Bitmap bitmap=null;
 		try{
 			bitmap=BBAndroidGame.AndroidGame().LoadBitmap( path );
