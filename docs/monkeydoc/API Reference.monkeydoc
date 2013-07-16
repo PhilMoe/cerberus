@@ -21,7 +21,7 @@
 
 | Module					| Contains																|Availability
 | [[brl.url]]				| The [[Url]] class for manipulating urls								|All
-| [[brl.socket]]			| The [[Socket]] class for low level socket access						|Android, iOS, Glfw, Stdcpp
+| [[brl.socket]]			| The [[Socket]] class for low level socket access						|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.httprequest]]		| The [[HttpRequest]] class for making http requests					|Android, iOS, Win8, Glfw, Stdcpp
 | [[brl.tcpstream]]			| The [[TcpStream]] class for synchronous tcp I/O						|Android, iOS, Win8, Glfw, Stdcpp
 
