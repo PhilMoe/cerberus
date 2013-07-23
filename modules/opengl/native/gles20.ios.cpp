@@ -1,37 +1,17 @@
 
 BBDataBuffer *LoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
-	path=String( "data/" )+path;
-	NSString *nspath=path.ToNSString();
 
-	//This was apparently buggy in iOS2.x, but NO MORE?
-	UIImage *uiimage=[ UIImage imageNamed:nspath ];
-	if( !uiimage ) return 0;
-	
-	CGImageRef cgimage=uiimage.CGImage;
-	
-	int width=CGImageGetWidth( cgimage );
-	int height=CGImageGetHeight( cgimage );
-	int pitch=CGImageGetBytesPerRow( cgimage );
-	int bpp=CGImageGetBitsPerPixel( cgimage );
-	
-	printf( "LoadImageData: width=%i,height=%i, pitch=%i, bpp=%i\n",width,height,pitch,bpp );
-	
-	if( bpp!=24 && bpp!=32 ) return 0;
-	
-	CFDataRef cfdata=CGDataProviderCopyData( CGImageGetDataProvider( cgimage ) );
-	unsigned char *src=(unsigned char*)CFDataGetBytePtr( cfdata );
-	int srclen=(int)CFDataGetLength( cfdata );
-	
-	printf( "LoadImageData: srclen=%i\n",srclen );
+	int width=0,height=0,format=0;
+	unsigned char *src=BBIosGame::IosGame()->LoadImageData( path,&width,&height,&format );
+	if( !src ) return 0;
 	
 	if( !buf->_New( width*height*4 ) ) return 0;
-
 	unsigned char *dst=(unsigned char*)buf->WritePointer();
 
-	int y;
+	int y=0,pitch=width*format;
 		
-	switch( bpp ){
-	case 24:
+	switch( format ){
+	case 3:
 		for( y=0;y<height;++y ){
 			for( int x=0;x<width;++x ){
 				*dst++=*src++;
@@ -39,10 +19,10 @@ BBDataBuffer *LoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 				*dst++=*src++;
 				*dst++=255;
 			}
-			src+=pitch-width*3;
+			src+=pitch;
 		}
 		break;
-	case 32:
+	case 4:
 		for( y=0;y<height;++y ){
 			memcpy( dst,src,width*4 );
 			dst+=width*4;
@@ -51,10 +31,10 @@ BBDataBuffer *LoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 		break;
 	}
 	
+	free( src );
+	
 	if( info.Length()>0 ) info[0]=width;
 	if( info.Length()>1 ) info[1]=height;
-	
-	CFRelease( cfdata );
 	
 	return buf;
 }
@@ -259,7 +239,7 @@ void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataB
 
 void _glShaderSource( int shader, String source ){
 	String::CString<char> cstr=source.ToCString<char>();
-	char *buf[1];
+	const char *buf[1];
 	buf[0]=cstr;
 	glShaderSource( shader,1,(const GLchar**)buf,0 );
 }
