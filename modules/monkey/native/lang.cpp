@@ -404,7 +404,7 @@ void gc_collect_all(){
 	gc_mark_queued( 0x7fffffff );
 
 //	printf( "sweep\n" );fflush( stdout );	
-	int reclaimed=gc_sweep();
+	gc_sweep();
 
 //	printf( "Mark roots\n" );fflush( stdout );
 	gc_mark_roots();
