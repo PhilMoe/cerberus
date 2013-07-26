@@ -54,10 +54,9 @@ Class MyApp Extends App
 
 	Method OnCreate()
 
-#If GLFW_WINDOW_WIDTH=0 And GLFW_WINDOW_HEIGHT=0
+#If TARGET="glfw" And GLFW_WINDOW_WIDTH=0 And GLFW_WINDOW_HEIGHT=0
 		GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
 #Endif
-	
 		image1=LoadImage( "alien1.png",8,Image.MidHandle )
 		image2=LoadImage( "alien2.png",8,Image.MidHandle )
 		
@@ -81,6 +80,14 @@ Class MyApp Extends App
 			ShowMouse
 		Else
 			GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
+		Endif
+#Elseif TARGET="xna"
+		fullscreen=Not fullscreen
+		If fullscreen
+			XnaGame.GetXnaGame().SetXnaDisplayMode( 1024,768,1,True )
+			ShowMouse
+		Else
+			XnaGame.GetXnaGame().SetXnaDisplayMode( 640,480,1,False )
 		Endif
 #Endif
 	End
@@ -175,6 +182,7 @@ End
 Function Main()
 
 #If TARGET="glfw"
+
 	For Local mode:=Eachin GlfwGame.GetGlfwGame().GetGlfwVideoModes()
 		Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
 	Next
@@ -182,6 +190,17 @@ Function Main()
 	Print "Desktop:"
 	Local mode:=GlfwGame.GetGlfwGame().GetGlfwDesktopMode()
 	Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
+	
+#Else If TARGET="xna"
+
+	For Local mode:=Eachin XnaGame.GetXnaGame().GetXnaDisplayModes()
+		Print mode.Width+","+mode.Height+","+mode.Format
+	Next
+
+	Print "Desktop:"
+	Local mode:=XnaGame.GetXnaGame().GetXnaDesktopMode()
+	Print mode.Width+","+mode.Height+","+mode.Format
+
 #Endif
 
 	New MyApp
