@@ -35,6 +35,7 @@
 >> Text and Strings
 
 | Module					| Contains																|Availability
+| [[brl.json]]				| The [[JsonObject]] class for using JSON data							|All
 | [[brl.markdown]]			| The [[Markdown]] class for generating html from simple markdown		|All
 | [[brl.filepath]]			| Functions for manipulating file paths								|All
 

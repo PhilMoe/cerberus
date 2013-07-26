@@ -8,14 +8,14 @@ There are 2 ways to specify app config settings:
 
 * With [[Trans]] using the command line.
 
-* In Monkey source code using the preprocessor, eg: `#OPENGL_GLES20_ENABLED=true`. Settings made this way will not overwrite settings passed to Trans.
+* In Monkey source code using the preprocessor, eg: `#OPENGL_GLES20_ENABLED=True`. Settings made this way will not overwrite settings passed to Trans.
 
 * By editing the CONFIG.MONKEY text file in your apps .build/target folder. Settings in CONFIG.MONKEY will not overwrite any settings passed to Trans or in Monkey source code, so this provides a mechanism for defining 'default' settings.
 
-The following app config settings are currently supported, shown with example values.
+The following app config settings are currently supported:
 
 <pre>
-'Data file filters - note: actual allowable values depends on target
+'Data file filters, examples shown, actual allowable values depend on target
 '
 #TEXT_FILES="*.txt|*.xml|*.json"
 #IMAGE_FILES="*.png|*.jpg"
@@ -23,22 +23,22 @@ The following app config settings are currently supported, shown with example va
 #MUSIC_FILES="*.wav|*.ogg"
 #BINARY_FILES="*.bin|*.dat"
 
-'Mojo settings
+'Mojo settings, defaults shown
 '
-#MOJO_AUTO_SUSPEND_ENABLED=false
-#MOJO_HICOLOR_TEXTURES=true
-#MOJO_IMAGE_FILTERING_ENABLED=true
+#MOJO_AUTO_SUSPEND_ENABLED=True			'Set to True to cause app to suspend when desktop window loses focus
+#MOJO_HICOLOR_TEXTURES=True	
+#MOJO_IMAGE_FILTERING_ENABLED=True
 
-'GLFW settings
+'GLFW settings, defaults shown
 '
 #GLFW_USE_MINGW=False					'Set to true on Windows to use Mingw instead of msvc2010 to build glfw apps
 #GLFW_WINDOW_TITLE="Monkey Game"
 #GLFW_WINDOW_WIDTH=640					'Set this and HEIGHT to 0 for a 'windowless' glfw app
 #GLFW_WINDOW_HEIGHT=480					
-#GLFW_WINDOW_RESIZABLE=false
-#GLFW_WINDOW_FULLSCREEN=false
+#GLFW_WINDOW_RESIZABLE=False
+#GLFW_WINDOW_FULLSCREEN=False
 
-'XNA settings
+'XNA settings, defaults shown
 '
 #XNA_WINDOW_WIDTH=640
 #XNA_WINDOW_HEIGHT=480
@@ -46,32 +46,38 @@ The following app config settings are currently supported, shown with example va
 #XNA_WINDOW_HEIGHT_XBOX=480
 #XNA_WINDOW_WIDTH_PHONE=320
 #XNA_WINDOW_HEIGHT_PHONE=480
-#XNA_WINDOW_RESIZABLE=false
-#XNA_WINDOW_FULLSCREEN=false
+#XNA_WINDOW_RESIZABLE=False
+#XNA_WINDOW_FULLSCREEN=False
 
-'IOS settings
+'IOS settings, defaults shown
 '
-#IOS_RETINA_ENABLED=true
-#IOS_ACCELEROMETER_ENABLED=true
-#IOS_DISPLAY_LINK_ENABLED=false
+#IOS_RETINA_ENABLED=True
+#IOS_ACCELEROMETER_ENABLED=True
+#IOS_DISPLAY_LINK_ENABLED=False
 
-'Android settings
+'Android settings, defaults shown
 '
 #ANDROID_APP_LABEL="Monkey Game"
-#ANDROID_APP_PACKAGE="com.monkey"
-#ANDROID_SCREEN_ORIENTATION="portrait"  	'one of: user, portrait, landscape, behind, sensor, nosensor, unspecified
-#ANDROID_NATIVE_GL_ENABLED=false
+#ANDROID_APP_PACKAGE="com.monkeycoder.monkeygame"
+#ANDROID_SCREEN_ORIENTATION="portrait"  			'one of: user, portrait, landscape
+#ANDROID_VERSION_CODE="1"
+#ANDROID_VERSION_NAME="1.0"
+#ANDROID_NATIVE_GL_ENABLED=False					'for use with the opengl modules
+#ANDROID_KEY_STORE="../../release-key.keystore"
+#ANDROID_KEY_ALIAS="release-key-alias"
+#ANDROID_KEY_STORE_PASSWORD="password"
+#ANDROID_KEY_ALIAS_PASSWORD="password"
+#ANDROID_SIGN_APP=False
 
-'OpenGL settings - valid for html5, glfw, android, ios targets
+'OpenGL settings. To override, set these in your code BEFORE importing opengl.gles112 or opengl.gles20
 '
-#OPENGL_GLES20_ENABLED=false
-#OPENGL_DEPTH_BUFFER_ENABLED=false
+#OPENGL_DEPTH_BUFFER_ENABLED=True
 
 'Reflection settings
 '
-#REFLECTION_FILTER="mymodule*|mojo*"
+#REFLECTION_FILTER=""
 
-'Admob settings
+'Admob settings, defaults shown
 '
 #ADMOB_PUBLISHER_ID="abcdabcdabcdabc"							'from your admob account
 #ADMOB_ANDROID_TEST_DEVICE1="TEST_EMULATOR"
@@ -79,16 +85,16 @@ The following app config settings are currently supported, shown with example va
 #ADMOB_ANDROID_TEST_DEVICE3=""
 #ADMOB_ANDROID_TEST_DEVICE4=""
 
-'C++ settings - valid for glfw, ios, stdcpp
+'C++ settings, defaults shown
 '
-#CPP_DOUBLE_PRECISION_FLOATS=False
-#CPP_GC_MODE=1  '0 disable GC, 1 Collect on Mojo after every OnWhatever, 2 Incremental collect on every GC allocation
-#CPP_GC_TRIGGER=8388608 'Allocated memory (in bytes) before a GC 'sweep' occurs. Defaults to 8 MiB
-#CPP_GC_MAX_LOCALS=8192 'This is used with GC_MODE 2 to track local object vars and defaults to 8192
+#CPP_DOUBLE_PRECISION_FLOATS=False	'Set to True to enable 64 bit floats.
+#CPP_GC_MODE=1  					'0 disable GC, 1=incremental collect after every OnWhatever, 2=Incremental collect every GC allocation
+#CPP_GC_TRIGGER=8388608 			'Allocated memory (in bytes) before a GC 'sweep' occurs. Defaults to 8 MiB
+#CPP_GC_MAX_LOCALS=8192 			'This is used with GC_MODE 2 to track local object vars and defaults to 8192
 
 'Misc
 '
-#CC_OPTS="-DMyDefine"	'additional gcc options for stdcpp target
+#CC_OPTS							'additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 
 </pre>
 

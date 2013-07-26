@@ -204,6 +204,3 @@ path - a file system path.
 recursive - a flag indicating whether subdirectories should also be loaded.
 
 hidden - a flag indicating whether hidden files should also be loaded.
-
-
-

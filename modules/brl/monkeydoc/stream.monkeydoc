@@ -70,37 +70,41 @@ Params:
 
 # Method Read:Int( buffer:DataBuffer,offset:Int,count:Int )
 
-Reads data from the stream into a databuffer, starting at address @offset within the databuffer.
+Reads @count bytes from the stream into @databuffer, starting at address @offset within the databuffer.
 
 Returns the number of bytes actually read. This may be less than @count if an IO error occurs or end-of-file has been reached.
 
 If @count is non-zero, this method will block until either at least 1 byte is available to be read, an IO error occurs or end-of-file has been reached.
 
-Params: 
 
-@buffer - destination of stream data.
+# Method ReadAll:Void( buffer:DataBuffer,offset:int,count:int )
 
-@offset - start address within @buffer.
+Reads @count bytes from the stream into @databuffer, starting at address @offset within the databuffer.
 
-@count - number of bytes to transfer.
+If @count is non-zero, this method will block until all bytes have been read.
 
+A [[StreamReadError]] is thrown if not all bytes could be read.
+
+
+# Method ReadAll:DataBuffer()
+
+Reads all remaining bytes from the stream into a databuffer.
 
 
 # Method Write:Int( buffer:DataBuffer,offset:Int,count:Int )
 
-Writes data from a databuffer to the stream, starting at address @offset within the databuffer.
+Writes @count bytes from @databuffer to the stream, starting at address @offset within the databuffer.
 
 Returns the number of bytes actually written. This will be the same as @count unless an IO error has occured.
 
 This method may block if the underlying stream is full.
 
-Params: 
 
-@buffer - source of stream data.
+# Method WriteAll:Void( buffer:DataBuffer,offset:Int,count:Int )
 
-@offset - start address within @buffer.
+Writes @count bytes from @databuffer to the stream, starting at address @offset within the databuffer.
 
-@count - number of bytes to transfer.
+A [[StreamWriteError]] is thrown if not all bytes could be written.
 
 
 # Method Close:Void()
