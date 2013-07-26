@@ -24,6 +24,21 @@ Class AndroidBuilder Extends Builder
 		_trans=New JavaTranslator
 	End
 	
+	Method CreateDirRecursive:Bool( path:String )
+		Local i:=0
+		Repeat
+			i=path.Find( "/",i )
+			If i=-1
+				CreateDir( path )
+				Return FileType( path )=FILETYPE_DIR
+			Endif
+			Local t:=path[..i]
+			CreateDir( t )
+			If FileType( t )<>FILETYPE_DIR Return False
+			i+=1
+		Forever
+	End
+	
 	Method MakeTarget:Void()
 		
 		SetCfgVar "ANDROID_MAINFEST_MAIN",GetCfgVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
@@ -112,6 +127,20 @@ Class AndroidBuilder Extends Builder
 				CopyFile lib,"libs/"+StripDir( lib )
 			End
 		Next
+
+		'copy src files
+		For Local src:=Eachin GetCfgVar( "SRCS" ).Split( ";" )
+			Select ExtractExt( src )
+			Case "java","aidl"
+				Local i:=src.FindLast( "/src/" )
+				If i<>-1
+					Local dst:=src[i+1..]
+					If CreateDirRecursive( ExtractDir( dst ) )
+						CopyFile src,dst
+					Endif
+				Endif
+			End
+		Next
 		
 		If GetCfgVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
 			CopyDir "nativegl/libs","libs",True
@@ -121,25 +150,13 @@ Class AndroidBuilder Extends Builder
 		Endif
 
 		If tcc.opt_build
-
-		#rem		
-			If Not (Execute( "ant clean",False ) And Execute( "ant "+ENV_CONFIG+" install",False ))
-
-				Die "Android build failed."
-				
-			Else If tcc.opt_run
-			
-				Execute "adb logcat -c",False
-				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
-				Execute "adb logcat [Monkey]:I *:E",False
-				'
-				'NOTE: This leaves ADB server running which can LOCK the .build dir making it undeletable...
-				'
-			Endif
-		#end
 		
-			If Not (Execute( "ant clean",False ) And Execute( "ant debug install",False ))
-	
+			Local antcfg:="debug"
+			
+			If GetCfgVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
+
+			If Not (Execute( "ant clean",False ) And Execute( "ant "+antcfg+" install",False ))
+
 				Die "Android build failed."
 				
 			Else If tcc.opt_run
@@ -151,6 +168,7 @@ Class AndroidBuilder Extends Builder
 				'NOTE: This leaves ADB server running which can LOCK the .build dir making it undeletable...
 				'
 			Endif
+		
 		Endif
 	End
 End

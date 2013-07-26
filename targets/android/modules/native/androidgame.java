@@ -41,6 +41,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 	List<ActivityDelegate> _activityDelegates=new LinkedList<ActivityDelegate>();
 	
+	int _reqCode;
+	
 	Display _display;
 
 	GameTimer _timer;
@@ -471,6 +473,10 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	public void AddActivityDelegate( ActivityDelegate delegate ){
 		if( _activityDelegates.contains( delegate ) ) return;
 		_activityDelegates.add( delegate );
+	}
+	
+	public int AllocateActivityResultRequestCode(){
+		return ++_reqCode;
 	}
 	
 	public void RemoveActivityDelegate( ActivityDelegate delegate ){
