@@ -3,6 +3,9 @@
 #Error "The opengl module is not avaiable for the ${TARGET} target."
 #Endif
 
+#OPENGL_GLES20_ENABLED=False
+#OPENGL_DEPTH_BUFFER_ENABLED=True
+
 Import monkeytarget
 
 Import brl.databuffer
