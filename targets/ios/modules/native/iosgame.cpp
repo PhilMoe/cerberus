@@ -592,6 +592,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 @implementation BBMonkeyViewController
 
+//ios 4,5
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
 
 	CFArrayRef array=(CFArrayRef)CFBundleGetValueForInfoDictionaryKey( CFBundleGetMainBundle(),CFSTR("UISupportedInterfaceOrientations") );
@@ -600,16 +601,17 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 	CFRange range={ 0,CFArrayGetCount( array ) };
 
 	switch( interfaceOrientation ){
-	case UIInterfaceOrientationPortrait:
-		return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationPortrait") );
-	case UIInterfaceOrientationPortraitUpsideDown:
-		return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationPortraitUpsideDown") );
-	case UIInterfaceOrientationLandscapeLeft:
-		return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationLandscapeLeft") );
-	case UIInterfaceOrientationLandscapeRight:
-		return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationLandscapeRight") );
+	case UIInterfaceOrientationPortrait:return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationPortrait") );
+	case UIInterfaceOrientationPortraitUpsideDown:return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationPortraitUpsideDown") );
+	case UIInterfaceOrientationLandscapeLeft:return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationLandscapeLeft") );
+	case UIInterfaceOrientationLandscapeRight:return CFArrayContainsValue( array,range,CFSTR("UIInterfaceOrientationLandscapeRight") );
 	}
 	return NO;
+}
+
+//ios 6
+-(BOOL)shouldAutoRotate{
+	return YES;
 }
 
 -(NSUInteger)supportedInterfaceOrientations{
@@ -671,7 +673,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 	return NO;
 }
 
--(BOOL)textField:(UITextField*)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)str{
+-(BOOL)textField:(UITextField*)_textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)str{
 
 	if( !textFieldState ) return NO;
 		
@@ -683,7 +685,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 		int chr=[str characterAtIndex:0];
 		if( chr>=32 ){
 			game->KeyEvent( BBGameEvent::KeyChar,chr );
-			textField.text=@"";											//so textfield only contains last char typed.
+			_textField.text=@"";											//so textfield only contains last char typed.
 			return YES;
 		}
 	}

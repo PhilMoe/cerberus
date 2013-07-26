@@ -73,7 +73,11 @@ class BBIosGame;
 @public
 }
 
+//ios 4,5
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
+
+//iOS 6
+-(BOOL)shouldAutorotate;
 -(NSUInteger)supportedInterfaceOrientations;
 
 @end
