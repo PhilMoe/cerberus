@@ -140,7 +140,7 @@ class BBFileSystem{
 			}while( FindNextFileW( handle,&filedata ) );
 			FindClose( handle );
 		}else{
-			printf( "FindFirstFileW for LoadDir(%s) failed\n",C_STR(path) );
+//			printf( "FindFirstFileW for LoadDir(%s) failed\n",C_STR(path) );
 			fflush( stdout );
 		}
 #else
@@ -152,7 +152,7 @@ class BBFileSystem{
 			}
 			closedir( dir );
 		}else{
-			printf( "opendir for LoadDir(%s) failed\n",C_STR(path) );
+//			printf( "opendir for LoadDir(%s) failed\n",C_STR(path) );
 			fflush( stdout );
 		}
 #endif
