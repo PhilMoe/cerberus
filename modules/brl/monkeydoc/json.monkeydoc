@@ -1,0 +1,241 @@
+
+# Module brl.jon
+
+
+# Class JsonError Extends Throwable
+
+
+# Class JsonValue Abstract
+
+# Method BoolValue:Bool()
+
+Throws a [[JsonError]] is object is not a [[JsonBool]].
+
+
+# Method IntValue:Int()
+
+Throws a [[JsonError]] is object is not a [[JsonNumber]].
+
+
+# Method FloatValue:Int()
+
+Throws a [[JsonError]] is object is not a [[JsonNumber]].
+
+
+# Method StringValue:String()
+
+Throws a [[JsonError]] is object is not a [[JsonString]].
+
+	
+# Method ToJson:String()
+
+
+# Method PushJson:Void( buf:StringStack )
+
+
+# Class JsonObject Extends JsonValue
+
+# Method New()
+
+Creates a new empty json object.
+
+
+# Method New( json:String )
+
+Creates a new json object from the given JSON string.
+
+Throws a [[JsonError]] if @json is invalid.
+
+
+# Method New( data:StringMap<JsonValue> )
+
+Creates a new json object with the given data.
+
+
+# Method Contains:Bool( key:String )
+
+Returns true if the json object contains @key.
+
+
+# Method Set:Void( key:String,value:JsonValue )
+
+
+# Method SetBool:Void( key:String,value:Bool )
+
+	
+# Method SetInt:Void( key:String,value:Int )
+
+	
+# Method SetFloat:Void( key:String,value:Float )
+
+
+# Method SetString:Void( key:String,value:String )
+
+
+# Method Get:JsonValue( key:String,defval:JsonValue=null )
+
+Returns @defval if @key doesn't exist.
+
+Returns a [[JsonNull]] object if @key is mapped to null.
+
+	
+# Method GetBool:Int( key:String,defval:Bool=False )
+
+Returns @defval if @key doesn't exist.
+
+Throws a [[JsonError]] if value mapped to @key is not a [[JsonBool]].
+
+
+# Method GetInt:Int( key:String,defval:Int=0 )
+
+Returns @defval if @key doesn't exist.
+
+Throws a [[JsonError]] if value mapped to @key is not a [[JsonNumber]].
+
+		
+# Method GetFloat:Float( key:String,defval:Float=0 )
+
+Returns @defval if @key doesn't exist.
+
+Throws a [[JsonError]] if value mapped to @key is not a [[JsonNumber]].
+
+
+# Method GetString:String( key:String,defval:String="" )
+
+Returns @defval if @key doesn't exist.
+
+Throws a [[JsonError]] if value mapped to @key is not a [[JsonString]].
+		
+
+# Method GetData:StringMap<JsonValue>()
+
+Gets the internal map used to represent the object.
+
+
+# Method PushJson:Void( buf:StringStack )
+
+
+# Class JsonArray Extends JsonValue
+
+# Method New( length:Int )
+
+Creates a new array of the given length.
+
+
+# Method New( data:JsonValue[] )
+
+Creates a new array with the given data.
+
+
+# Method Length:Int() Property
+
+Returns length of the array.
+
+	
+# Method Set:Void( index:Int,value:JsonValue )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+	
+# Method SetBool:Void( index:Int,value:Bool )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+	
+# Method SetInt:Void( index:Int,value:Int )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+	
+# Method SetFloat:Void( index:Int,value:Float )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+	
+# Method SetString:Void( index:Int,value:String )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+	
+# Method Get:JsonValue( index:Int )
+
+Throws a [[JsonError]] if @index is out of bounds.
+
+Returns a [[JsonNull]] object if element at @index is null.
+
+	
+# Method GetBool:Bool( index:Int )
+
+Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonBool]].
+
+	
+# Method GetInt:Int( index:Int )
+
+Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
+
+	
+# Method GetFloat:Int( index:Int )
+
+Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
+
+	
+# Method GetString:String( index:Int )
+
+Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonString]].
+
+
+# Method GetData:JsonValue[]()
+
+Gets internal array used to contain values.
+
+
+# Method PushJson:Void( buf:StringStack )
+
+
+# Class JsonNull Extends JsonValue
+
+# Method ToJson:String()
+
+# Function Instance:JsonNull()
+
+
+# Class JsonBool Extends JsonValue
+
+# Method New( value:Bool )
+
+# Method BoolValue:Bool()
+
+# Method ToJson:String()
+
+# Function Instance:JsonBool( value:Bool )
+
+
+# Class JsonString Extends JsonValue
+
+# Method New( value:String )
+
+# Method StringValue:String()
+
+# Method ToJson:String()
+
+# Function Instance:JsonString( value:String )
+	
+
+# Class JsonNumber Extends JsonValue
+
+# Method New( value:String )
+	
+# Method IntValue:Int()
+	
+# Method FloatValue:Float()
+	
+# Method ToJson:String()
+
+# Function Instance:JsonNumber( value:String )
+	
+
+# Class JsonParser
+
+# Method New( json:String )
+
+# Method ParseValue:JsonValue()
