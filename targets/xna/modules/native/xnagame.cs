@@ -1,7 +1,22 @@
 
+public class BBXnaDisplayMode{
+
+	public int Width;
+	public int Height;
+	public int Format;
+		
+	public BBXnaDisplayMode( int width,int height,int format ){
+		Width=width;
+		Height=height;
+		Format=format;
+	}
+};
+
 public class BBXnaGame : BBGame{
 
 	static BBXnaGame _xnaGame;
+	
+	GraphicsDeviceManager _devman;
 
 	Game _app;
 	bool _exit;
@@ -34,6 +49,8 @@ public class BBXnaGame : BBGame{
 
 	PlayerIndex _gamePadIndex=PlayerIndex.One;
 	
+	DisplayMode _desktop;
+	
 	public const int KEY_SHIFT=0x10;
 	public const int KEY_CONTROL=0x11;
 	public const int KEY_JOY0_A=0x100;
@@ -53,23 +70,24 @@ public class BBXnaGame : BBGame{
 		_app=app;
 		_xnaGame=this;
 		
-		GraphicsDeviceManager devman=new GraphicsDeviceManager( _app );
+		_desktop=GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
 		
-		devman.PreparingDeviceSettings+=new EventHandler<PreparingDeviceSettingsEventArgs>( PreparingDeviceSettings );
+		_devman=new GraphicsDeviceManager( _app );
+		_devman.PreparingDeviceSettings+=new EventHandler<PreparingDeviceSettingsEventArgs>( PreparingDeviceSettings );
 		
 #if WINDOWS
-		devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN=="1";
-		devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH );
-		devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT );
+		_devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN=="1";
+		_devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH );
+		_devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT );
 		_app.Window.AllowUserResizing=MonkeyConfig.XNA_WINDOW_RESIZABLE=="1";
 #elif XBOX
-		devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN_XBOX=="1";
-		devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH_XBOX );
-		devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT_XBOX );
+		_devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN_XBOX=="1";
+		_devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH_XBOX );
+		_devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT_XBOX );
 #elif WINDOWS_PHONE
-		devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN_PHONE=="1";
-		devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH_PHONE );
-		devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT_PHONE );
+		_devman.IsFullScreen=MonkeyConfig.XNA_WINDOW_FULLSCREEN_PHONE=="1";
+		_devman.PreferredBackBufferWidth=int.Parse( MonkeyConfig.XNA_WINDOW_WIDTH_PHONE );
+		_devman.PreferredBackBufferHeight=int.Parse( MonkeyConfig.XNA_WINDOW_HEIGHT_PHONE );
 #endif
 	}
 	
@@ -82,6 +100,27 @@ public class BBXnaGame : BBGame{
 			PresentationParameters pp=e.GraphicsDeviceInformation.PresentationParameters;
 			pp.PresentationInterval=PresentInterval.One;
 		}
+	}
+	
+	public BBXnaDisplayMode GetXnaDesktopMode(){
+		return new BBXnaDisplayMode( _desktop.Width,_desktop.Height,1 );
+	}
+	
+	public BBXnaDisplayMode[] GetXnaDisplayModes(){
+		List<BBXnaDisplayMode> modes=new List<BBXnaDisplayMode>();
+		foreach( DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes ){
+			if( mode.Format==SurfaceFormat.Color ){
+				modes.Add( new BBXnaDisplayMode( mode.Width,mode.Height,1 ) );
+			}
+		}
+		return modes.ToArray();
+	}
+	
+	public void SetXnaDisplayMode( int width,int height,int format,bool fullscreen ){
+		_devman.IsFullScreen=fullscreen;
+		_devman.PreferredBackBufferWidth=width;
+		_devman.PreferredBackBufferHeight=height;
+		_devman.ApplyChanges();
 	}
 	
 	int KeyToChar( int key ){
