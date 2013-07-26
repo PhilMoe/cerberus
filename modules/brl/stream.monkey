@@ -44,42 +44,95 @@ Class Stream
 	
 	Method Write:Int( buffer:DataBuffer,offset:Int,count:Int ) Abstract
 	
-	Method Skip:Int( count:Int )
-		Local n:=0
-		While n<count
-			Local t:=Read( _tmpbuf,0,Min( count-n,BUF_SZ ) )
-			If Not t And Eof() Throw New StreamReadError( Self )
-			n+=t
+	Method ReadAll:Void( buffer:DataBuffer,offset:Int,count:Int )
+		While count>0
+			Local n:=Read( buffer,offset,count )
+			If n<=0 ReadError
+			offset+=n
+			count-=n
 		Wend
-		Return n
+	End
+	
+	Method ReadAll:DataBuffer()
+		Local bufs:=New Stack<DataBuffer>
+		Local buf:=New DataBuffer( 4096 ),off:=0,len:=0
+		Repeat
+			Local n:=Read( buf,off,4096-off )
+			If n<=0 Exit
+			off+=n
+			len+=n
+			If off=4096
+				off=0
+				bufs.Push buf
+				buf=New DataBuffer( 4096 )
+			Endif
+		Forever
+		Local data:=New DataBuffer( len )
+		off=0
+		For Local tbuf:=Eachin bufs
+			tbuf.CopyBytes 0,data,off,4096
+			tbuf.Discard()
+			off+=4096
+		Next
+		buf.CopyBytes 0,data,off,len-off
+		buf.Discard()
+		Return data
+	End
+	
+	Method WriteAll:Void( buffer:DataBuffer,offset:Int,count:Int )
+		While count>0
+			Local n:=Write( buffer,offset,count )
+			If n<=0 WriteError
+			offset+=n
+			count-=n
+		Wend
+	End
+	
+	Method Skip:Void( count:Int )
+		While count>0
+			Local n:=Read( _tmp,0,Min( count,BUF_SZ ) )
+			If n<=0 ReadError
+			count-=n
+		Wend
 	End
 	
 	Method ReadByte:Int()
-		_Read 1
-		Return _tmpbuf.PeekByte( 0 )
+		ReadAll _tmp,0,1
+		Return _tmp.PeekByte( 0 )
 	End
 	
 	Method ReadShort:Int()
-		_Read 2
-		Return _tmpbuf.PeekShort( 0 )
+		ReadAll _tmp,0,2
+		Return _tmp.PeekShort( 0 )
 	End
 	
 	Method ReadInt:Int()
-		_Read 4
-		Return _tmpbuf.PeekInt( 0 )
+		ReadAll _tmp,0,4
+		Return _tmp.PeekInt( 0 )
 	End
 	
 	Method ReadFloat:Float()
-		_Read 4
-		Return _tmpbuf.PeekFloat( 0 )
+		ReadAll _tmp,0,4
+		Return _tmp.PeekFloat( 0 )
+	End
+	
+	Method ReadString:String( count:Int,encoding:String="utf8" )
+		Local buf:=New DataBuffer( count )
+		ReadAll( buf,0,count )
+		Return buf.PeekString( 0,encoding )
+	End
+	
+	Method ReadString:String( encoding:String="utf8" )
+		Local buf:=ReadAll()
+		Return buf.PeekString( 0,encoding )
 	End
 	
 	Method ReadLine:String()
 		Local buf:=New Stack<Int>
 		While Not Eof()
-			Local n:=Read( _tmpbuf,0,1 )
+			Local n:=Read( _tmp,0,1 )
 			If Not n Exit
-			Local ch:=_tmpbuf.PeekByte( 0 )
+			Local ch:=_tmp.PeekByte( 0 )
 			If Not ch Or ch=10 Exit
 			If ch<>13 buf.Push ch
 		Wend
@@ -87,23 +140,29 @@ Class Stream
 	End
 	
 	Method WriteByte:Void( value:Int )
-		_tmpbuf.PokeByte 0,value
-		_Write 1
+		_tmp.PokeByte 0,value
+		WriteAll _tmp,0,1
 	End
 	
 	Method WriteShort:Void( value:Int )
-		_tmpbuf.PokeShort 0,value
-		_Write 2
+		_tmp.PokeShort 0,value
+		WriteAll _tmp,0,2
 	End
 	
 	Method WriteInt:Void( value:Int )
-		_tmpbuf.PokeInt 0,value
-		_Write 4
+		_tmp.PokeInt 0,value
+		WriteAll _tmp,0,4
 	End
 	
 	Method WriteFloat:Void( value:Float )
-		_tmpbuf.PokeFloat 0,value
-		_Write 4
+		_tmp.PokeFloat 0,value
+		WriteAll _tmp,0,4
+	End
+	
+	Method WriteString:Void( value:String,encoding:String="utf8" )
+		Local buf:=New DataBuffer( value.Length*3 )
+		Local len:=buf.PokeString( 0,value )
+		WriteAll buf,0,len
 	End
 	
 	Method WriteLine:Void( str:String )
@@ -123,19 +182,14 @@ Class Stream
 	
 	Const BUF_SZ=4096
 
-	Global _tmpbuf:=New DataBuffer( BUF_SZ )
+	Global _tmp:=New DataBuffer( BUF_SZ )
 	
-	Method _Read:Void( n:Int )
-		Local i:=0
-		Repeat
-			i+=Read( _tmpbuf,i,n-i )
-			If i=n Return
-			If Eof() Throw New StreamReadError( Self )
-		Forever
+	Method ReadError:Void()
+		Throw New StreamReadError( Self )
 	End
 	
-	Method _Write:Void( n:Int )
-		If Write( _tmpbuf,0,n )<>n Throw New StreamWriteError( Self )
+	Method WriteError:Void()
+		Throw New StreamWriteError( Self )
 	End
 	
 End
