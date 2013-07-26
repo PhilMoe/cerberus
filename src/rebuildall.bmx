@@ -2,8 +2,8 @@
 Strict
 
 RebuildTrans 
-RebuildMakedocs
-RebuildMServer
+'RebuildMakedocs
+'RebuildMServer
 'RebuildMonkey
 
 End
