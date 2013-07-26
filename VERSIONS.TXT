@@ -1,6 +1,47 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** V73a *****
+
+Added iaptest to bananas/mak.
+
+Changed default MOJO_AUTO_SUSPEND_ENABLED to true for relevant targets.
+
+Added brl.json module.
+
+Added methods ReadString and WriteString to Stream.
+
+Added methods ReadAll and WriteAll to Stream.
+
+Added brl.monkeystore module.
+
+Added CC_OPTS app config setting for stdcpp target only.
+
+Added XnaGame and XnaDisplayMode classes to xna target:
+
+Class XnaGame
+
+	Function GetXnaGame:XnaGame()
+	
+	Method GetXnaDesktopMode:XnaDisplayMode()
+	Method GetXnaDisplayModes:XnaDisplayMode[]()
+	Method SetXnaDisplayMode:Void( width:Int,height:Int,format:Int,fullscreen:Bool )
+
+End
+
+Class XnaDisplayMode
+	Field Width:Int
+	Field Height:Int
+	Field Format:Int	'currently unused, always '1'.
+End
+
+eg: XnaGame.GetXnaGame().SetXnaDisplayMode( 1024,768,1,True )	'always use '1' for format for now...
+
+No 'window-less startup' support in XNA.
+
+See bouncyaliens for a demo.
+
+
 ***** V72b *****
 
 Fixed c++ String::ToCString<> mem leak.
@@ -19,9 +60,7 @@ Class GlfwGame
 	Function GetGlfwGame:GlfwGame()
 	
 	Method GetGlfwDesktopMode:GlfwVideoMode()
-	
 	Method GetGlfwVideoModes:GlfwVideoMode[]()
-	
 	Method SetGlfwWindow:Void( width:Int,height:Int,red:Int,green:Int,blue:Int,alpha:Int,depth:Int,stencil:Int,fullscreen:Bool )
 	
 End
@@ -34,7 +73,7 @@ Class GlfwVideoMode
 	Field BlueBits:Int
 End
 
-eg: GlfwGame.GetGlfwGame().SetGlfwWindow 1024,768,8,8,8,0,0,0,True
+eg: GlfwGame.GetGlfwGame().SetGlfwWindow( 1024,768,8,8,8,0,0,0,True )
 
 Glfw mojo images now surive GL context changes.
 
