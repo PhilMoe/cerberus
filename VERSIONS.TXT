@@ -1,6 +1,19 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v73b *****
+
+Fixed win8 image loader throwing exception if image not found.
+
+transcc added support for mxmlc debug builds to flasher builder.
+
+Fixed some flash audio issues - added flash support for ChannelState and MusicState.
+
+Fixed win8 async image/sound loaders.
+
+Fixed some compile errors in thread.cs and databuffer.cs
+
+
 ***** V73a *****
 
 Added iaptest to bananas/mak.
