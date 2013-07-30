@@ -63,10 +63,6 @@ Returns the read/write position within the stream if the stream is seekable, els
 
 If the stream is seekable, adjusts the read/write position within the stream and returns the new read/write position.
 
-Params: 
-
-@position - position to seek to.
-
 
 # Method Read:Int( buffer:DataBuffer,offset:Int,count:Int )
 
@@ -142,16 +138,25 @@ Reads a 32 bit float value from the stream.
 A [[StreamReadError]] will be thrown if a value could not be read.
 
 
+# Method ReadString:String( count:Int,encoding:String="utf8" )
+
+Reads @count bytes from the stream and converts them to a string using the given @encoding.
+
+@encoding should be `utf8` or `ascii`.
+
+	
+# Method ReadString:String( encoding:String="utf8" )
+
+Reads all bytes from the stream until end-of-file and converts them to a string using the given @encoding.
+
+@encoding should be `utf8` or `ascii`.
+
+
 # Method WriteByte:Void( value:Int )
 
 Writes an 8 bit byte to the stream.
 
 A [[StreamWriteError]] will be thrown if @value could not be written.
-
-
-Params: 
-
-@value - value to write.
 
 
 # Method WriteShort:Void( value:Int )
@@ -161,21 +166,11 @@ Write a 16 bit int value to the stream.
 A [[StreamWriteError]] will be thrown if @value could not be written.
 
 
-Params: 
-
-@value - value to write.
-
-
 # Method WriteInt:Void( value:Int )
 
 Writes a 32 bit int value to the stream.
 
 A [[StreamWriteError]] will be thrown if @value could not be written.
-
-
-Params: 
-
-@value - value to write.
 
 
 # Method WriteFloat:Void( value:Float )
@@ -185,6 +180,8 @@ Writes a 32 bit float value to the stream.
 A [[StreamWriteError]] will be thrown if @value could not be written.
 
 
-Params: 
+# Method WriteString:Void( value:String,encoding:String="utf8" )
 
-@value - value to write.
+Writes a string to the stream using the given @encoding.
+
+@encoding should be `utf8` or `ascii`.
