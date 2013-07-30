@@ -293,8 +293,11 @@ unsigned char *BBWin8Game::LoadAudioData( String path,int *length,int *channels,
 	DXASS( attrs->SetUINT32( MF_LOW_LATENCY,TRUE ) );
 	
 	IMFSourceReader *reader;
-	DXASS( MFCreateSourceReaderFromURL( url.ToCString<wchar_t>(),attrs,&reader ) );
-	
+	if( FAILED( MFCreateSourceReaderFromURL( url.ToCString<wchar_t>(),attrs,&reader ) ) ){
+		attrs->Release();
+		return 0;
+	}
+
 	attrs->Release();
 
 	IMFMediaType *mediaType;
