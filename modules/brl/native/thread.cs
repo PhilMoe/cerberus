@@ -1,5 +1,5 @@
 
-class BBThread{
+public class BBThread{
 
 	private Object _result;
 	private bool _running;

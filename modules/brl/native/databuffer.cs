@@ -34,7 +34,7 @@ public class BBDataBuffer{
     	return true;
     }
     
-    public virtual bool _LoadAsync( String path,BBThread thread ){
+    public virtual void _LoadAsync( String path,BBThread thread ){
     	if( _Load( path ) ) thread.SetResult( this );
     }
 
