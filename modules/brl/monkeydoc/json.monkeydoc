@@ -174,7 +174,7 @@ Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
 
 	
-# Method GetFloat:Int( index:Int )
+# Method GetFloat:Float( index:Int )
 
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
 

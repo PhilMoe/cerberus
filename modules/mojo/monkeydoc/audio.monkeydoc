@@ -13,9 +13,9 @@ The music commands use a single internal channel, so it is not currently possibl
 
 Note that not all targets have equivalent audio capabilities. In particular:
 
-HTML5 : ChannelPan and ChannelRate do nothing.
+HTML5 : ChannelPan and ChannelRate have no effect.
 
-Flash : ChannelRate does nothing. ChannelState and MusicState always returns -1, ie: 'unknown'.
+Flash : ChannelRate has no effect.
 
 Android : ChannelState always returns -1, ie: 'unknown'. Sounds to be used with PlaySound must be less than 1MB in length. Longer sounds can be played using the music commands.
 
@@ -96,7 +96,7 @@ channel - an audio channel in the range 0 to 31.
 
 Returns the state of the specified audio channel: 0 if the channel is currently stopped, 1 if the channel is currently playing, 2 if the channel is currently paused or -1 if the channel state cannot be determined.
 
-Note: This function currently returns -1 on the android and flash targets.
+Note: This function currently returns -1 on the android target.
 
 Params: 
 

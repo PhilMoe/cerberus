@@ -58,6 +58,7 @@
 
 | Module					| Contains																|Availability
 | [[brl.admob]]				| The [[Admob]] class for using Google's admob service					|Android, iOS
+| [[brl.monkeystore]]		| The [[MonkeyStore]] class for making in-app purchases				|Android, iOS
 | [[brl.gamecenter]]		| The [[GameCenter]] class for using Apple's Game Center service		|iOS
 
 >> Misecellaneous
