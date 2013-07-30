@@ -116,10 +116,13 @@ void BBIosGame::ValidateUpdateTimer(){
 				[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 			}
 		}
+		
 		if( !_displayLink ){
 			NSTimeInterval interval=(NSTimeInterval)(1.0/_updateRate);
 			_updateTimer=[NSTimer scheduledTimerWithTimeInterval:interval target:_appDelegate selector:@selector(updateTimerFired) userInfo:nil repeats:TRUE];
+			[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];		
 		}
+		
 	}else{
 	
 		if( _accelerometer ){
