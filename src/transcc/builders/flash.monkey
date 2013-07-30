@@ -68,9 +68,13 @@ Class FlashBuilder Extends Builder
 		
 		If tcc.opt_build
 		
+			Local cc_opts:=" -static-link-runtime-shared-libraries=true"
+			
+			If ENV_CONFIG="debug" cc_opts+=" -debug=true"
+
 			DeleteFile "main.swf"
 
-			Execute "mxmlc -static-link-runtime-shared-libraries=true MonkeyGame.as"
+			Execute "mxmlc"+cc_opts+" MonkeyGame.as"
 			
 			If tcc.opt_run
 				If tcc.FLASH_PLAYER

@@ -8,7 +8,7 @@ Import os
 Import trans
 Import builders
 
-Const VERSION:="1.50"
+Const VERSION:="1.51"
 
 Function Main()
 	Local tcc:=New TransCC
