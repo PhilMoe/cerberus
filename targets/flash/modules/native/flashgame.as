@@ -19,12 +19,9 @@ class BBFlashGame extends BBGame{
 	
 	internal function KeyToChar( key:int ):int{
 		switch( key ){
-		case 8:case 9:case 13:case 27:
-			return key;
-		case 33:case 34:case 35:case 36:case 37:case 38:case 39:case 40:case 45:
-			return key | 0x10000;
-		case 46:
-			return 127;
+		case 8:case 9:case 13:case 27:return key;
+		case 33:case 34:case 35:case 36:case 37:case 38:case 39:case 40:case 45:return key | 0x10000;
+		case 46:return 127;
 		}
 		return 0;
 	}
@@ -103,6 +100,7 @@ class BBFlashGame extends BBGame{
 	
 	public override function SuspendGame():void{
 		super.SuspendGame();
+		super.RenderGame();
 		ValidateUpdateTimer();
 	}
 	

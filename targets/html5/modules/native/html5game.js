@@ -134,6 +134,8 @@ BBHtml5Game.prototype.SuspendGame=function(){
 
 	BBGame.prototype.SuspendGame.call( this );
 	
+	BBGame.prototype.RenderGame.call( this );
+	
 	this.ValidateUpdateTimer();
 }
 

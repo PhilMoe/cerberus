@@ -27,6 +27,7 @@ public class BBXnaGame : BBGame{
 	
 	bool _activated;
 	bool _autoSuspend;
+	bool _drawSuspended;
 	
 	double _nextUpdate;
 	double _updatePeriod;
@@ -160,6 +161,9 @@ public class BBXnaGame : BBGame{
 		if( suspended!=_suspended ){
 			if( suspended ){
 				SuspendGame();
+#if WINDOWS
+				_drawSuspended=!_devman.IsFullScreen;
+#endif
 			}else{
 				ResumeGame();
 			}
@@ -524,8 +528,12 @@ public class BBXnaGame : BBGame{
 	
 	public virtual bool BeginDraw(){
 		if( _exit ) return false;
+		
+		if( PollSuspended() && !_drawSuspended ) return false;
 
-		return !PollSuspended();
+		_drawSuspended=false;
+		
+		return true;
 	}
 
 	public virtual void Draw( GameTime gameTime ){
