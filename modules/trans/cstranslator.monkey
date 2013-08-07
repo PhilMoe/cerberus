@@ -145,6 +145,7 @@ Class CsTranslator Extends CTranslator
 	End
 	
 	Method TransCastExpr$( expr:CastExpr )
+	
 		Local dst:=expr.exprType
 		Local src:=expr.expr.exprType
 		Local uexpr$=expr.expr.Trans()
@@ -182,10 +183,11 @@ Class CsTranslator Extends CTranslator
 				Return texpr
 			Else 
 				'downcast
-				Local tmp:=New LocalDecl( "",0,src,Null )
-				MungDecl tmp
-				Emit TransType( src )+" "+tmp.munged+"="+uexpr+";"
-				Return "($t is $c ? ($c)$t : null)".Replace( "$t",tmp.munged ).Replace( "$c",TransType(dst) )
+				Return "("+texpr+" as "+TransType(dst)+")"
+				'Local tmp:=New LocalDecl( "",0,src,Null )
+				'MungDecl tmp
+				'Emit TransType( src )+" "+tmp.munged+"="+uexpr+";"
+				'Return "($t is $c ? ($c)$t : null)".Replace( "$t",tmp.munged ).Replace( "$c",TransType(dst) )
 			Endif
 		Endif
 		Err "CS translator can't convert "+src.ToString()+" to "+dst.ToString()

@@ -220,6 +220,10 @@ class bb_std_lang{
 		if( rhslen>0 ) System.arraycopy( rhs,0,res,lhslen,rhslen );
 		return res;
 	}
+	
+	public static <T> T as( Class<T> t,Object o ){
+		return t.isInstance( o ) ? t.cast( o ) : null;
+	}
 }
 
 class ThrowableObject extends RuntimeException{

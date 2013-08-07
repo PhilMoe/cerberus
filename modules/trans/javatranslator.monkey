@@ -193,10 +193,11 @@ Class JavaTranslator Extends CTranslator
 			If src.GetClass().ExtendsClass( dst.GetClass() )
 				Return texpr
 			Else
-				Local tmp:=New LocalDecl( "",0,src,Null )
-				MungDecl tmp
-				Emit TransType( src )+" "+tmp.munged+"="+expr.expr.Trans()+";"
-				Return "($t instanceof $c ? ($c)$t : null)".Replace( "$t",tmp.munged ).Replace( "$c",TransType(dst) )
+				Return "bb_std_lang.as("+TransType(dst)+".class,"+texpr+")"
+'				Local tmp:=New LocalDecl( "",0,src,Null )
+'				MungDecl tmp
+'				Emit TransType( src )+" "+tmp.munged+"="+expr.expr.Trans()+";"
+'				Return "($t instanceof $c ? ($c)$t : null)".Replace( "$t",tmp.munged ).Replace( "$c",TransType(dst) )
 			Endif
 		Endif
 		Err "Java translator can't convert "+src.ToString()+" to "+dst.ToString()
