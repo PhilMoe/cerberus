@@ -1505,20 +1505,37 @@ Float D2R=0.017453292519943295f;
 Float R2D=57.29577951308232f;
 
 int Print( String t ){
+
 	static std::vector<unsigned char> buf;
 	buf.clear();
 	t.Save( buf );
 	buf.push_back( '\n' );
 	buf.push_back( 0 );
 	
-#if CFG_WIN8_PRINT_ENABLED
-	OutputDebugStringA( (const char*)&buf[0] );
-#elif CFG_ANDROID_PRINT_ENABLED
-	LOGI( (const char*)&buf[0] );
-#else
+#if _WIN32				//windows?
+
 	fputs( (const char*)&buf[0],stdout );
 	fflush( stdout );
+
+#elif __APPLE__			//macos/ios?
+
+	fputs( (const char*)&buf[0],stdout );
+	fflush( stdout );
+
+#elif __cplusplus_winrt	//winrt?
+
+#if CFG_WIN8_PRINT_ENABLED
+	OutputDebugStringA( (const char*)&buf[0] );
 #endif
+
+#else					//ndk?
+
+#if CFG_ANDROID_PRINT_ENABLED
+	LOGI( (const char*)&buf[0] );
+#endif
+
+#endif
+
 	return 0;
 }
 
