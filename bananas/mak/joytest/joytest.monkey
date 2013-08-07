@@ -1,4 +1,6 @@
 
+#ANDROID_GAMEPAD_ENABLED=True
+
 Import mojo
 
 Class MyApp Extends App

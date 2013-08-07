@@ -5,10 +5,6 @@
 #GLFW_WINDOW_WIDTH=640
 #GLFW_WINDOW_HEIGHT=480
 
-#ANDROID_SCREEN_ORIENTATION="user"'"landscape"
-
-#MOJO_AUTO_SUSPEND_ENABLED=True
-
 Import mojo
 
 Public
@@ -131,6 +127,8 @@ Class MyApp Extends App
 		ums=Millisecs-ums;
 
  	End
+ 	
+ 	Field paused:Bool
 	
 	Method OnRender()
 	
@@ -162,19 +160,31 @@ Class MyApp Extends App
 		Next
 		
 		PopMatrix
-		
+				
 		DrawText "[<<]",0,8,0,.5
 		DrawText "imgs="+sprites.Length()+", ufps="+ufps+", rfps="+rfps+", last update="+ums,DeviceWidth/2,8,.5,.5
 		DrawText "[>>]",DeviceWidth,8,1,.5
+		
+		If paused
+
+			SetAlpha .5
+			SetColor 0,0,0
+			DrawRect 0,0,DeviceWidth,DeviceHeight
+			SetAlpha 1
+			SetColor 255,255,255
+			DrawText "Suspended",DeviceWidth/2,DeviceHeight/2,.5,.5
+		Endif
 
 	End
 	
 	Method OnSuspend()
 		Print "BouncyAliens: OnSuspend"
+		paused=True
 	End
 
 	Method OnResume()
 		Print "BouncyAliens: OnResume"
+		paused=False
 	End
 
 End
