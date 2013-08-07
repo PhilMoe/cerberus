@@ -209,6 +209,10 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 				case 102:button=4;break;	//LB
 				case 103:button=5;break;	//RB
 				case 108:button=7;break;	//START
+				case 21: button=8;break;	//LEFT
+				case 19: button=9;break;	//UP
+				case 22: button=10;break;	//RIGHT
+				case 20: button=11;break;	//DOWN
 				}
 				if( button!=-1 ){
 					_androidGame._buttons[button]=(event.getAction()==KeyEvent.ACTION_DOWN);
@@ -216,9 +220,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 				}
 			}
 			
-			if( !_androidGame._keyboardEnabled ) return false;
-			
-			//Convert back button to ESC is soft keyboard mode...
+			//Convert back button to ESC in soft keyboard mode...
 			//
 			if( _androidGame._keyboardEnabled ){
 				if( event.getKeyCode()==KeyEvent.KEYCODE_BACK ){
@@ -338,7 +340,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 						_androidGame.TouchEvent( BBGameEvent.TouchMove,pid,x,y );
 					}
 				}
-			}catch( Exception e ){
+			}catch( Exception ex ){
 			}
 	
 			return true;
