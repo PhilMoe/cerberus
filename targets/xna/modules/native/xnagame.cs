@@ -487,6 +487,15 @@ public class BBXnaGame : BBGame{
 		_app.IsMouseVisible=true;
 
 		_autoSuspend=MonkeyConfig.MOJO_AUTO_SUSPEND_ENABLED=="1";
+
+#if WINDOWS
+		if( MonkeyConfig.XNA_WINDOW_FULLSCREEN!="1" ){
+			_form=System.Windows.Forms.Form.FromHandle( _app.Window.Handle ) as System.Windows.Forms.Form;
+			_form.FormClosing+=FormClosing;
+		}
+#endif		
+
+		StartGame();
 	
 #if WINDOWS_PHONE
 		if( MonkeyConfig.XNA_ACCELEROMETER_ENABLED=="1" ){
@@ -497,14 +506,6 @@ public class BBXnaGame : BBGame{
 			}
         }
 #endif
-
-#if WINDOWS
-		if( MonkeyConfig.XNA_WINDOW_FULLSCREEN!="1" ){
-			_form=System.Windows.Forms.Form.FromHandle( _app.Window.Handle ) as System.Windows.Forms.Form;
-			_form.FormClosing+=FormClosing;
-		}
-#endif		
-		StartGame();
 	}
 	
 	public virtual void Update( GameTime gameTime ){
