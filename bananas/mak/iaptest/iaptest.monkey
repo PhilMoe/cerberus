@@ -3,7 +3,17 @@
 
 IMPORTANT!
 
-This wont work 'as is' - you'll need to generate a keystore file, and have added your app/products to GooglePlay/iTunes Connect.
+This wont work 'as is'! You'll need to set up a bunch of stuff on GooglePlay/iTunes Connect/Ouya developer portal such as app/products etc.
+
+Quick Ouya notes:
+
+Besides creating an account and products etc in Ouya developer console (very easy) you will need to:
+
+* Install Android 4.1.2 (API16) SDK via SDK manager. 
+
+* Set ANDROID_OUYA_DEVELOPER_UUID to your developer UUID. This can be found on the developer portal home page.
+
+* Download/copy your app's 'key.der' file into the iaptest.data dir. This can be found on the developer portal 'My Games' page under 'signing key'.
 
 #end
 
@@ -15,13 +25,16 @@ Import brl.monkeystore
 #ANDROID_APP_TITLE="Bouncy Aliens"
 #ANDROID_APP_PACKAGE="com.monkeycoder.bouncyaliens"
 #ANDROID_SIGN_APP=True
-
 #rem
 #ANDROID_KEY_STORE="../../release-key.keystore"
 #ANDROID_KEY_ALIAS="release-key-alias"
 #ANDROID_KEY_STORE_PASSWORD="password"
 #ANDROID_KEY_ALIAS_PASSWORD="password"
 #end
+
+'For OUYA!
+Const USE_JOYSTICK:=True
+'#ANDROID_OUYA_DEVELOPER_UUID="xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx"	'from the main developer portal page
 
 Global CONSUMABLES:=["bulletboost","speedboost"]
 
@@ -89,12 +102,27 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 		SetUpdateRate 60
 	End
 	
+	Field mousex:Float
+	Field mousey:Float
+	
 	Method OnUpdate()
 	
 		UpdateAsyncEvents
 		
-		If store.IsOpen() And Not store.IsBusy() And MouseHit( 0 )
-			Local my:=MouseY*(480.0/DeviceHeight)
+		Local hit:=0
+		
+		If USE_JOYSTICK
+			mousex=Clamp( mousex+JoyX(0)*10,0.0,Float( DeviceWidth ) )
+			mousey=Clamp( mousey+JoyY(0)*10,0.0,Float( DeviceHeight ) )
+			hit=JoyHit( 0 )
+		Else
+			mousex=MouseX
+			mousey=MouseY
+			hit=MouseHit( 0 )
+		Endif		
+		
+		If store.IsOpen() And Not store.IsBusy() And hit
+			Local my:=mousey*(480.0/DeviceHeight)
 			
 			If my>=440-6 And my<440+6
 				store.GetOwnedProductsAsync( Self )
@@ -115,8 +143,12 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 	
 	Method OnRender()
 
-		Scale DeviceWidth/320.0,DeviceHeight/480.0
 		Cls
+
+		PushMatrix
+		
+		Scale DeviceWidth/320.0,DeviceHeight/480.0
+		
 		DrawText Millisecs,0,0
 		
 		If store.IsOpen()
@@ -138,6 +170,11 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 		Else
 			DrawText "Opening store...",160,40,.5,.5
 		Endif
+		
+		PopMatrix
+		
+		SetColor 255,255,255
+		DrawCircle mousex-8,mousey-8,16
 	End
 
 End
