@@ -16,6 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
 class ActivityDelegate{
+
 	public void onStart(){
 	}
 	public void onRestart(){
@@ -443,7 +444,6 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			File f=_activity.getFilesDir();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}else if( path.startsWith( "monkey://external/" ) ){
-//			File f=_activity.getExternalFilesDir(null);
 			File f=Environment.getExternalStorageDirectory();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}
