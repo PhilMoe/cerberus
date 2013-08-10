@@ -25,6 +25,8 @@
 
 #ANDROID_NATIVE_GL_ENABLED=False
 
+#ANDROID_OUYA_DEVELOPER_UUID="xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx"	'from the main developer portal page
+
 #TEXT_FILES="*.txt|*.xml|*.json"
 #IMAGE_FILES="*.png|*.jpg|*.gif|*.bmp"
 #SOUND_FILES="*.wav|*.ogg|*.mp3|*.m4a"
