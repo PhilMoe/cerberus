@@ -5,10 +5,12 @@
 
 Import brl.asyncevent
 
+#BRL_MONKEYSTORE_IMPLEMENTED=False
+#If BRL_MONKEYSTORE_IMPLEMENTED="0"
+
 #If TARGET="ios"
 
 #LIBS+="StoreKit.framework"
-
 Import "native/monkeystore.ios.cpp"
 
 #Elseif TARGET="android"
@@ -19,6 +21,9 @@ Import "native/monkeystore.ios.cpp"
 Import "native/monkeystore.android.java"
 
 #Endif
+
+#Endif
+
 
 Extern Private
 

@@ -1,5 +1,4 @@
 
-
 import org.json.*;//JSONObject;
 
 import com.android.vending.billing.*;
@@ -12,7 +11,7 @@ class BBProduct{
 	public String price;
 	public int type;
 	public boolean owned;
-};
+}
 
 class BBMonkeyStore extends ActivityDelegate implements ServiceConnection{
 
