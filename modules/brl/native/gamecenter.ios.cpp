@@ -117,8 +117,10 @@ void BBGameCenter::ShowLeaderboard( String leaderboard_ID ){
 	vc.category=leaderboard_ID.ToNSString();
 	
 	_state=3;
-	
-	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentViewController:vc animated:YES completion:nil];
+
+	// Keep it ios<6 friendly for now...	
+	// [BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentViewController:vc animated:YES completion:nil];
+	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentModalViewController:vc animated:YES];
 }	
     
 void BBGameCenter::ReportScore( int value,String leaderboard_ID ){
@@ -142,7 +144,9 @@ void BBGameCenter::ShowAchievements(){
 	
 	_state=4;
 
-	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentViewController:vc animated:YES completion:nil];
+	// Keep it ios<6 friendly for now...	
+	// [BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentViewController:vc animated:YES completion:nil];
+	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentModalViewController:vc animated:YES];
 }
     
 void BBGameCenter::ReportAchievement( float percent,String achievement_ID ){
@@ -157,7 +161,9 @@ void BBGameCenter::ReportAchievement( float percent,String achievement_ID ){
     
 void BBGameCenter::GameCenterViewControllerDidFinish( UIViewController *vc ){
     
-    	_state=2;
+	_state=2;
     	
-	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController dismissViewControllerAnimated:YES completion:nil];
+   	// Keep it ios<6 friendly for now...	
+	// [BBIosGame::IosGame()->GetUIAppDelegate()->viewController dismissViewControllerAnimated:YES completion:nil];
+	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController dismissModalViewControllerAnimated:YES];
 }
