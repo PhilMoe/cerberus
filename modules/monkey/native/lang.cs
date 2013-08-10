@@ -35,7 +35,11 @@ public class bb_std_lang{
 	}
 	
 	public static int Print( String str ){
+#if WINDOWS_PHONE
+		System.Diagnostics.Debug.WriteLine( str );
+#else	
 		Console.WriteLine( str );
+#endif		
 		return 0;
 	}
 	
