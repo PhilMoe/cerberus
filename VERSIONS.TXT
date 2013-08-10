@@ -1,6 +1,25 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v74a *****
+
+Fixed xna WP7 bug where accelerometer was sending events to app before OnCreate, causing app crash.
+
+Added 'smart' admob banner sizes.
+
+Added a Ouya target! Mainly just for fun, but joystick/IAP is in - see iaptest banana for more...
+
+Fixed ios<5 autorotation - tested on: ios4.3.5 iPod; ios5.1.1 iPad1; ios6.1.3 iPod.
+
+Clean up lang.cpp so #WIN8_PRINT_ENABLED doesn't confuse other targets.
+
+Implemented Devolonters fix so data file filters can be used (successfully) with += eg: #TEXT_FILES+="*.xml"
+
+Tweaked html5/flash/windowed-xna targets so they get at least one 'OnRender' after being suspended, allowing you to set a flag in OnSuspend and render a 'paused' image in OnRender. See bouncyaliens...
+
+Fixed cs/java downcast bug when downcast appears in a 'while'. Should be faster too (on cs anyway).
+
+
 ***** v73b *****
 
 Fixed win8 image loader throwing exception if image not found.
