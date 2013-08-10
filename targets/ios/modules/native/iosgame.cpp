@@ -613,7 +613,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 }
 
 //ios 6
--(BOOL)shouldAutoRotate{
+-(BOOL)shouldAutorotate{
 	return YES;
 }
 
