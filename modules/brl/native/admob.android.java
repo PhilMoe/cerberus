@@ -67,8 +67,14 @@ class BBAdmob implements Runnable{
 		
 		if( !_adVisible ) return;
 		
-		_adView=new AdView( activity,AdSize.BANNER,MonkeyConfig.ADMOB_PUBLISHER_ID );
+		AdSize sz=AdSize.BANNER;
+		switch( _adStyle ){
+		case 2:sz=AdSize.SMART_BANNER;break;
+		case 3:sz=AdSize.SMART_BANNER;break;
+		}
 		
+		_adView=new AdView( activity,sz,MonkeyConfig.ADMOB_PUBLISHER_ID );
+				
 		RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT );
 		
 		int rule1=RelativeLayout.CENTER_HORIZONTAL,rule2=RelativeLayout.CENTER_VERTICAL;

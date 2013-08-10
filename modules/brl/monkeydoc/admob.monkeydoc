@@ -80,8 +80,11 @@ Get the global Admob object.
 
 Shows the ad view and enables ads. The @style and @layout parameters should be one of the following:
 
-| Style  | Meaning
-| 1      | 32x50 Banner ad
+| Style	| Meaning
+| 1		| Standard banner
+| 2		| Smart banner portrait
+| 3		| Smart banner landscape
+
 
 | Layout | Meaning
 | 1      | Top left

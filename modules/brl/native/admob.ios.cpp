@@ -42,7 +42,13 @@ void BBAdmob::ShowAdView( int style,int layout ){
 		[_view release];
 	}
 	
-	_view=[[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+	GADAdSize sz=kGADAdSizeBanner;
+	switch( style ){
+	case 2:sz=kGADAdSizeSmartBannerPortrait;break;
+	case 3:sz=kGADAdSizeSmartBannerLandscape;break;
+	}
+	
+	_view=[[GADBannerView alloc] initWithAdSize:sz];
 	if( !_view ) return;
     
 	_view.adUnitID=@_STRINGIZE(CFG_ADMOB_PUBLISHER_ID);
