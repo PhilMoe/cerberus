@@ -4,6 +4,10 @@ class BBMonkeyGame extends BBAndroidGame{
 	public BBMonkeyGame( AndroidGame game,AndroidGame.GameView view ){
 		super( game,view );
 	}
+	
+	int eventJoystickPort( InputEvent event ){
+		return OuyaController.getPlayerNumByDeviceId( event.getDeviceId() );
+	}
 }
 
 public class MonkeyGame extends AndroidGame{
@@ -23,6 +27,8 @@ public class MonkeyGame extends AndroidGame{
 	public void onCreate( Bundle savedInstanceState ){
 		super.onCreate( savedInstanceState );
 		
+		OuyaController.init( this );
+
 		setContentView( R.layout.main );
 		
 		_view=(GameView)findViewById( R.id.gameView );
@@ -45,4 +51,5 @@ public class MonkeyGame extends AndroidGame{
 		
 		_game.Run();
 	}
+
 };

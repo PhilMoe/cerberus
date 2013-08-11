@@ -49,10 +49,14 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 	boolean _canRender;
 	
-	float[] _joyx=new float[2];
-	float[] _joyy=new float[2];
-	float[] _joyz=new float[2];
-	boolean[] _buttons=new boolean[32];
+	static class JoyState{
+		float[] joyx=new float[2];
+		float[] joyy=new float[2];
+		float[] joyz=new float[2];
+		boolean[] buttons=new boolean[32];
+	}
+	
+	JoyState _joyStates[]=new JoyState[4];
 	
 	public BBAndroidGame( Activity activity,GameView view ){
 		_androidGame=this;
@@ -63,11 +67,19 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		_display=_activity.getWindowManager().getDefaultDisplay();
 		
 		System.setOut( new PrintStream( new LogTool() ) );
+		
+		for( int i=0;i<4;++i ){
+			_joyStates[i]=new JoyState();
+		}
 	}
 	
 	public static BBAndroidGame AndroidGame(){
 
 		return _androidGame;
+	}
+	
+	int eventJoystickPort( InputEvent event ){
+		return 0;
 	}
 	
 	//***** LogTool ******	
@@ -215,8 +227,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 				case 20: button=11;break;	//DOWN
 				}
 				if( button!=-1 ){
-					_androidGame._buttons[button]=(event.getAction()==KeyEvent.ACTION_DOWN);
-					return true;
+					int port=_androidGame.eventJoystickPort( event );
+					if( port>=0 && port<4 ){
+						JoyState js=_androidGame._joyStates[port];
+						js.buttons[button]=(event.getAction()==KeyEvent.ACTION_DOWN);
+						return true;
+					}
 				}
 			}
 			
@@ -353,20 +369,22 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			
 			try{
 				int source=((Integer)_getSource.invoke( event )).intValue();
-
 				if( (source&16)==0 ) return false;
-			
-				BBAndroidGame g=_androidGame;
-			
-				args1[0]=Integer.valueOf( 0  );g._joyx[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
-				args1[0]=Integer.valueOf( 1  );g._joyy[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
-				args1[0]=Integer.valueOf( 17 );g._joyz[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					
+				int port=_androidGame.eventJoystickPort( event );
+				if( port>=0 && port<4 ){
+					JoyState js=_androidGame._joyStates[port];
 				
-				args1[0]=Integer.valueOf( 11 );g._joyx[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
-				args1[0]=Integer.valueOf( 14 );g._joyy[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
-				args1[0]=Integer.valueOf( 18 );g._joyz[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
-				
-				return true;
+					args1[0]=Integer.valueOf( 0  );js.joyx[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					args1[0]=Integer.valueOf( 1  );js.joyy[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					args1[0]=Integer.valueOf( 17 );js.joyz[0]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					
+					args1[0]=Integer.valueOf( 11 );js.joyx[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					args1[0]=Integer.valueOf( 14 );js.joyy[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+					args1[0]=Integer.valueOf( 18 );js.joyz[1]=((Float)_getAxisValue.invoke( event,args1 )).floatValue();
+
+					return true;
+				}
 				
 			}catch( Exception ex ){
 			}
@@ -424,10 +442,15 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 	
 	public boolean PollJoystick( int port,float[] joyx,float[] joyy,float[] joyz,boolean[] buttons ){
-		if( port!=0 ) return false;
-		joyx[0]=_joyx[0];joyy[0]=_joyy[0];joyz[0]=_joyz[0];
-		joyx[1]=_joyx[1];joyy[1]=_joyy[1];joyz[1]=_joyz[1];
-		for( int i=0;i<32;++i ) buttons[i]=_buttons[i];
+		if( port<0 || port>=4 ) return false;
+		
+		JoyState js=_joyStates[port];
+
+		joyx[0]=js.joyx[0];joyy[0]=js.joyy[0];joyz[0]=js.joyz[0];
+		joyx[1]=js.joyx[1];joyy[1]=js.joyy[1];joyz[1]=js.joyz[1];
+		
+		for( int i=0;i<32;++i ) buttons[i]=js.buttons[i];
+		
 		return true;
 	}
 	
@@ -564,7 +587,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 	
 	public void Run(){
-
+	
 		//touch input handling	
 		SensorManager sensorManager=(SensorManager)_activity.getSystemService( Context.SENSOR_SERVICE );
 		List<Sensor> sensorList=sensorManager.getSensorList( Sensor.TYPE_ACCELEROMETER );
@@ -680,6 +703,7 @@ class AndroidGame extends Activity{
 	}
 	
 	//***** Activity *****
+	
 	public void onWindowFocusChanged( boolean hasFocus ){
 		if( hasFocus ){
 			_view.onResume();
@@ -741,6 +765,7 @@ class AndroidGame extends Activity{
 		}
 	}
 	
+	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
@@ -756,4 +781,3 @@ class AndroidGame extends Activity{
 		}
 	}
 }
-
