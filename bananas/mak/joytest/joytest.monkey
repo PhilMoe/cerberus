@@ -12,26 +12,43 @@ Class MyApp Extends App
 	Method OnUpdate()
 	End
 	
+	Method Format:String( n:Float )
+		Local i:=Int( n*100 )
+		If i=0 Return " 0.00"
+		If i>99 Return  "+1.00"
+		If i<-99 Return "-1.00"
+		If i>9 Return "+0."+i
+		If i<-9 Return "-0."+(-i)
+	 	If i>0 Return "+0.0"+i
+	 	If i<0 Return "-0.0"+(-i)
+	 	Return "!"
+	End
+	
 	Method OnRender()
+		Scale DeviceWidth/400.0,DeviceHeight/400.0
 		Cls
-		DrawText "JoyX(0)            "+JoyX(0),0,0
-		DrawText "JoyY(0)            "+JoyY(0),0,20
-		DrawText "JoyZ(0)            "+JoyZ(0),0,40
-		DrawText "JoyX(1)            "+JoyX(1),0,60
-		DrawText "JoyY(1)            "+JoyY(1),0,80
-		DrawText "JoyZ(1)            "+JoyZ(1),0,100
-		DrawText "JoyDown(JOY_A)     "+JoyDown(JOY_A),0,120
-		DrawText "JoyDown(JOY_B)     "+JoyDown(JOY_B),0,140
-		DrawText "JoyDown(JOY_X)     "+JoyDown(JOY_X),0,160
-		DrawText "JoyDown(JOY_Y)     "+JoyDown(JOY_Y),0,180
-		DrawText "JoyDown(JOY_LB)    "+JoyDown(JOY_LB),0,200
-		DrawText "JoyDown(JOY_RB)    "+JoyDown(JOY_RB),0,220
-		DrawText "JoyDown(JOY_BACK)  "+JoyDown(JOY_BACK),0,240
-		DrawText "JoyDown(JOY_START) "+JoyDown(JOY_START),0,260
-		DrawText "JoyDown(JOY_LEFT)  "+JoyDown(JOY_LEFT),0,280
-		DrawText "JoyDown(JOY_UP)    "+JoyDown(JOY_UP),0,300
-		DrawText "JoyDown(JOY_RIGHT) "+JoyDown(JOY_RIGHT),0,320
-		DrawText "JoyDown(JOY_DOWN)  "+JoyDown(JOY_DOWN),0,340
+		For Local port:=0 Until 4
+			Local x:=port*100,y:=20
+			DrawText "Port "+port,x,0
+			DrawText "JoyX(0) "+Format( JoyX(0,port) ),x,y+0
+			DrawText "JoyY(0) "+Format( JoyY(0,port) ),x,y+20
+			DrawText "JoyZ(0) "+Format( JoyZ(0,port) ),x,y+40
+			DrawText "JoyX(1) "+Format( JoyX(1,port) ),x,y+60
+			DrawText "JoyY(1) "+Format( JoyY(1,port) ),x,y+80
+			DrawText "JoyZ(1) "+Format( JoyZ(1,port) ),x,y+100
+			DrawText "JOY_A       "+JoyDown(JOY_A,port),x,y+120
+			DrawText "JOY_B       "+JoyDown(JOY_B,port),x,y+140
+			DrawText "JOY_X       "+JoyDown(JOY_X,port),x,y+160
+			DrawText "JOY_Y       "+JoyDown(JOY_Y,port),x,y+180
+			DrawText "JOY_LB      "+JoyDown(JOY_LB,port),x,y+200
+			DrawText "JOY_RB      "+JoyDown(JOY_RB,port),x,y+220
+			DrawText "JOY_BACK    "+JoyDown(JOY_BACK,port),x,y+240
+			DrawText "JOY_START   "+JoyDown(JOY_START,port),x,y+260
+			DrawText "JOY_LEFT    "+JoyDown(JOY_LEFT,port),x,y+280
+			DrawText "JOY_UP      "+JoyDown(JOY_UP,port),x,y+300
+			DrawText "JOY_RIGHT   "+JoyDown(JOY_RIGHT,port),x,y+320
+			DrawText "JOY_DOWN    "+JoyDown(JOY_DOWN,port),x,y+340
+		Next
 		
 	End
 	
