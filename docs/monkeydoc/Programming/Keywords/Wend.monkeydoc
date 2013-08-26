@@ -5,15 +5,15 @@ Wend, short for *While [loop] End*, marks the end of a While loop. See [[While]]
 >> Syntax
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Wend
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End While
 
 >> Description

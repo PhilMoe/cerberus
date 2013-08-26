@@ -5,11 +5,11 @@ Marks the start of a Repeat loop.
 >> Syntax
 
 Repeat~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Until *expression*
 
 Repeat~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Forever
 
 >> Description

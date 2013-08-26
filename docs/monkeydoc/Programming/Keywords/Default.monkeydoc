@@ -7,7 +7,7 @@ Program flow goes to the Default statement when none of the supplied Case expres
 >> Syntax
 
 Default~n
-&nbsp;&nbsp;&nbsp;&nbsp;*statement*  
+		*statement*  
 
 >> Description
 

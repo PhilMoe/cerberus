@@ -5,15 +5,15 @@ Marks the start of a While loop.
 >> Syntax
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Wend
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End
 
 While *expression*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End While
 
 >> Description
@@ -36,7 +36,7 @@ The Exit keyword can be used to 'jump out' of a While loop, continuing execution
 Local a = 1
 
 While a < 10
-&nbsp;&nbsp;&nbsp;&nbsp;a = a + 1
-&nbsp;&nbsp;&nbsp;&nbsp;Print a
+		a = a + 1
+		Print a
 Wend
 </pre>

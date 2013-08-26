@@ -5,7 +5,7 @@ Declares the beginning of a class method.
 >> Syntax
 
 Method *Identifier*: *ReturnType* ( *Parameters* ) [ Property ] [ Abstract ] [ Final ]~n 
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End [ Method ]
 
 >> Description
@@ -27,16 +27,16 @@ An example of methods as statements.
 <pre>
 Class GameObject
 
-&nbsp;&nbsp;Field x:Float
-&nbsp;&nbsp;Field y:Float
+	Field x:Float
+	Field y:Float
 
-&nbsp;&nbsp;Method PrintX ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print x
-&nbsp;&nbsp;End
+	Method PrintX ()
+		Print x
+	End
 
-&nbsp;&nbsp;Method PrintY ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print y
-&nbsp;&nbsp;End
+	Method PrintY ()
+		Print y
+	End
 
 End
 
@@ -56,16 +56,16 @@ Strict mode version of above GameObject class. (Note use of Void return type.)
 <pre>
 Class GameObject
 
-&nbsp;&nbsp;Field x:Float
-&nbsp;&nbsp;Field y:Float
+	Field x:Float
+	Field y:Float
 
-&nbsp;&nbsp;Method PrintX:Void ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print x
-&nbsp;&nbsp;End
+	Method PrintX:Void ()
+		Print x
+	End
 
-&nbsp;&nbsp;Method PrintY:Void ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print y
-&nbsp;&nbsp;End
+	Method PrintY:Void ()
+		Print y
+	End
 
 End
 </pre>
@@ -75,9 +75,9 @@ Method returning value of Float type.
 <pre>
 Class GameObject
 
-&nbsp;&nbsp;Method AddFloats:Float (value1:Float, value2:Float)
-&nbsp;&nbsp;&nbsp;&nbsp;Return value1 + value2
-&nbsp;&nbsp;End
+	Method AddFloats:Float (value1:Float, value2:Float)
+		Return value1 + value2
+	End
 
 End
 

@@ -4,9 +4,9 @@ Declares the start of a Try/Catch block.
 
 >> Syntax
 Try~n
-&nbsp;&nbsp;&nbsp;&nbsp;*code*~n
+		*code*~n
 Catch *exception*~n
-&nbsp;&nbsp;&nbsp;&nbsp;*error handling code*~n
+		*error handling code*~n
 End [Try]~n
 
 >> Description

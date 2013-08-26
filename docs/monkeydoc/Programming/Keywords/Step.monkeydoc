@@ -5,7 +5,7 @@ Optional For/Next loop modifier specifying size of iteration step. See [[For]] f
 >> Syntax
 
 For Local *IndexVar* := *start_value* To *end_value* [ Step *constant_value* ]~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Next
 
 >> Description
@@ -20,6 +20,6 @@ The optional Step keyword, followed by a constant value, allows control over the
 
 <pre>
 For k=1 To 1000 Step 100
-&nbsp;&nbsp;Print k
+	Print k
 Next
 </pre>

@@ -5,11 +5,11 @@ Declares that a class may not be extended or that a method may not be overridden
 >> Syntax
 
 Class *Identifier* [ < *Parameters* > ] [ Extends *Class* ] [ Implements *Interfaces* ] [ `Final` ]~n
-&nbsp;&nbsp;' Declarations...~n
+	' Declarations...~n
 End [ Class ]
 
 Method *Identifier*: *ReturnType* ( *Parameters* ) [ Property ] [ Abstract ] [ `Final` ]~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 End [ Method ]
 
 >> Description
@@ -37,21 +37,21 @@ The examples below should help to clarify these cases.
 
 Class Dog Final
 
-&nbsp;&nbsp;Method Bark ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof!"
-&nbsp;&nbsp;End
+	Method Bark ()
+		Print "Woof!"
+	End
 
 End
 
 Class Doberman Extends Dog
 
-&nbsp;&nbsp;' Think I'll make my own Dog!
+	' Think I'll make my own Dog!
 
 End
 
 Function Main ()
 
-&nbsp;&nbsp;Local d:Doberman = New Doberman
+	Local d:Doberman = New Doberman
 
 End
 </pre>
@@ -65,24 +65,24 @@ End
 
 Class Dog
 
-&nbsp;&nbsp;Method Bark () Final
-&nbsp;&nbsp;&nbsp;&nbsp;Print "Woof!"
-&nbsp;&nbsp;End
+	Method Bark () Final
+		Print "Woof!"
+	End
 
 End
 
 Class Doberman Extends Dog
 
-&nbsp;&nbsp;Method Bark ()
-&nbsp;&nbsp;&nbsp;&nbsp;Print "RRGGGHHHRRRGHGHWWRRRRR!!!"
-&nbsp;&nbsp;End
+	Method Bark ()
+		Print "RRGGGHHHRRRGHGHWWRRRRR!!!"
+	End
 
 End
 
 Function Main ()
 
-&nbsp;&nbsp;Local d:Doberman = New Doberman
-&nbsp;&nbsp;d.Bark
+	Local d:Doberman = New Doberman
+	d.Bark
 
 End
 </pre>

@@ -22,8 +22,8 @@ For further information on Extern, please see the Extern section of the monkey l
 
 <pre>
 Extern
-&nbsp;&nbsp;' External declarations
+	' External declarations
 
 Public
-&nbsp;&nbsp;' Return to public declarations
+	' Return to public declarations
 </pre>

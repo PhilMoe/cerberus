@@ -5,15 +5,15 @@ Marks the start of a conditional If block.
 >> Syntax
 
 If *expression* [Then]~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*~n
+		*Statements...*~n
 Endif~n
 
 If *expression* [Then]~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*~n
+		*Statements...*~n
 End If~n
 
 If *expression* [Then]~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*~n
+		*Statements...*~n
 End~n
 
 If *expression* [Then] *Statements...*~n
@@ -38,27 +38,27 @@ Program flow can be modified within an If block using [[Else]] and [[Elseif]].
 <pre>
 ' Simple variable check:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
-&nbsp;&nbsp;&nbsp;&nbsp;Endif
+		If a = 1
+				Print "a equals one"
+		Endif
 
 ' Same, using End If instead of Endif:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
-&nbsp;&nbsp;&nbsp;&nbsp;End If
+		If a = 1
+				Print "a equals one"
+		End If
 
 ' Same again, but using End:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
-&nbsp;&nbsp;&nbsp;&nbsp;End
+		If a = 1
+				Print "a equals one"
+		End
 
 ' Single-line example, using Then:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Then Print "a equals one"
+		If a = 1 Then Print "a equals one"
 
 ' The 'Then' separator is optional:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1 Print "a equals one"
+		If a = 1 Print "a equals one"
 </pre>

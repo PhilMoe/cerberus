@@ -5,7 +5,7 @@ Marks the end of a Repeat/Forever loop. See [[Repeat]] for details and examples.
 >> Syntax
 
 Repeat~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Forever
 
 >> Description

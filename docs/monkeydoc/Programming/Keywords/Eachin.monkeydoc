@@ -5,7 +5,7 @@ Defines the set of objects or values to be assigned to the index variable in a F
 >> Syntax
 
 For Local *IndexVar* := Eachin *value_set*~n 
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Next
 
 >> Description

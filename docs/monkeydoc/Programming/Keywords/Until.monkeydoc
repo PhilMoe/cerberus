@@ -7,7 +7,7 @@ Marks the end of a Repeat/Until loop. See [[Repeat]] for details and examples.
 >> Syntax
 
 Repeat~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Until *expression*
 
 >> Description

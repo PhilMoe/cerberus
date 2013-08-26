@@ -5,15 +5,15 @@ Declares the end of a For/Next loop. See [[For]] for details and examples.
 >> Syntax
 
 For Local *IndexVar* := *start_value* To *end_value* [ Step *constant_value* ]~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Next
 
 For Local *IndexVar* := *start_value* Until *end_value* [ Step *constant_value* ]~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Next
 
 For Local *IndexVar* := Eachin *value_set*~n
-&nbsp;&nbsp;*Statements...*~n
+	*Statements...*~n
 Next
 
 >> Description

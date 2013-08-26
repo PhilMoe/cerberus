@@ -5,11 +5,11 @@ Marks the start of a conditional Select block.
 >> Syntax
 
 Select *expression*~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Case statements...*~n
+		*Case statements...*~n
 End Select~n
 
 Select *expression*~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Case statements...*~n
+		*Case statements...*~n
 End~n
 
 >> Description

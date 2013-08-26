@@ -5,9 +5,9 @@ Where the initial expression in a conditional block proves False, ElseIf allows 
 >> Syntax
 
 If *expression* [Then]~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*~n
+		*Statements...*~n
 Elseif *expression* [Then]~n
-&nbsp;&nbsp;&nbsp;&nbsp;*Statements...*~n
+		*Statements...*~n
 Endif  
 
 >> Description
@@ -24,9 +24,9 @@ Where the initial expression in a conditional block proves False, Elseif (or, op
 <pre>
 ' Simple If check with alternative program flow dependent on a positive Elseif test:
 
-&nbsp;&nbsp;&nbsp;&nbsp;If a = 1
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals one"
-&nbsp;&nbsp;&nbsp;&nbsp;Elseif a = 0
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print "a equals zero"
-&nbsp;&nbsp;&nbsp;&nbsp;Endif
+		If a = 1
+				Print "a equals one"
+		Elseif a = 0
+				Print "a equals zero"
+		Endif
 </pre>

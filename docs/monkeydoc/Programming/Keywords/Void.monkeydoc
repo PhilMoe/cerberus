@@ -23,6 +23,6 @@ Strict
 ' Void return type.
 
 Function SayHi:Void ()
-&nbsp;&nbsp;Print "Hi"
+	Print "Hi"
 End
 </pre>
