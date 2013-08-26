@@ -21,7 +21,7 @@ int main( int argc,const char **argv ){
 		
 	}catch( ThrowableObject *ex ){
 	
-		Print( "Monkey Runtime Error : Uncaught Monkey Exception" );
+		bbPrint( "Monkey Runtime Error : Uncaught Monkey Exception" );
 	
 	}catch( const char *err ){
 	
