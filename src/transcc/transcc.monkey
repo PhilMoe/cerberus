@@ -8,7 +8,7 @@ Import os
 Import trans
 Import builders
 
-Const VERSION:="1.53"
+Const VERSION:="1.54"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -79,35 +79,42 @@ Function ReplaceBlock:String( text:String,tag:String,repText:String,mark:String=
 	Return text[..i]+repText+text[i2..]
 End
 
+Function MatchPathAlt:Bool( text:String,alt:String )
+
+	If Not alt.Contains( "*" ) Return alt=text
+	
+	Local bits:=alt.Split( "*" )
+	If Not text.StartsWith( bits[0] ) Return False
+
+	Local n:=bits.Length-1
+	Local i:=bits[0].Length
+	For Local j:=1 Until n
+		Local bit:=bits[j]
+		i=text.Find( bit,i )
+		If i=-1 Return False
+		i+=bit.Length
+	Next
+
+	Return text[i..].EndsWith( bits[n] )
+End
+
 Function MatchPath:Bool( text:String,pattern:String )
 
 	text="/"+text
 	Local alts:=pattern.Split( "|" )
+	Local match:=False
 
 	For Local alt:=Eachin alts
 		If Not alt Continue
 		
-		Local bits:=alt.Split( "*" )
-		
-		If bits.Length=1
-			If bits[0]=text Return True
-			Continue
+		If alt.StartsWith( "!" )
+			If MatchPathAlt( text,alt[1..] ) Return False
+		Else
+			If MatchPathAlt( text,alt ) match=True
 		Endif
-		
-		If Not text.StartsWith( bits[0] ) Continue
-
-		Local i:=bits[0].Length
-		For Local j=1 Until bits.Length-1
-			Local bit:=bits[j]
-			i=text.Find( bit,i )
-			If i=-1 Exit
-			i+=bit.Length
-		Next
-
-		If i<>-1 And text[i..].EndsWith( bits[bits.Length-1] ) Return True
 	Next
-
-	Return False
+	
+	Return match
 End
 
 Class Target
@@ -121,7 +128,7 @@ Class Target
 		Self.name=name
 		Self.system=system
 		Self.builder=builder
-	end
+	End
 End
 
 Class TransCC
