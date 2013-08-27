@@ -76,16 +76,17 @@ Class AssignStmt Extends Stmt
 	End
 	
 	Method FixSideEffects()
-	
+		'
 		'Ok, this is ugly stuff...but we need to be able to expand
-		'x op= y to x=x op y without evaualting any bits of x that have side effects
+		'x op= y to x=x op y without evaluating any bits of x that have side effects
 		'twice.
 		'
 		Local e1:=MemberVarExpr( lhs )
 		If e1
 			If e1.expr.SideEffects()
 				tmp1=New LocalDecl( "",0,e1.expr.exprType,e1.expr )
-				lhs=New MemberVarExpr( New VarExpr(tmp1),e1.decl ).Semant()
+				tmp1.Semant()
+				lhs=New MemberVarExpr( New VarExpr(tmp1),e1.decl )
 			Endif
 		Endif
 
@@ -96,10 +97,12 @@ Class AssignStmt Extends Stmt
 			If expr.SideEffects() Or index.SideEffects()
 				If expr.SideEffects()
 					tmp1=New LocalDecl( "",0,expr.exprType,expr )
+					tmp1.Semant()
 					expr=New VarExpr( tmp1 )
 				Endif
 				If index.SideEffects()
 					tmp2=New LocalDecl( "",0,index.exprType,index )
+					tmp2.Semant()
 					index=New VarExpr( tmp2 )
 				Endif
 				lhs=New IndexExpr( expr,index ).Semant()
@@ -118,7 +121,7 @@ Class AssignStmt Extends Stmt
 			Return
 		Endif
 		
-		Local kludge
+		Local kludge:=True	'use x=x op y
 		
 		Select op
 		Case "="
@@ -137,17 +140,12 @@ Class AssignStmt Extends Stmt
 					Endif
 				Endif
 				'
-			Else
-				'Use x=x op y form
-				kludge=True
 			Endif
 		Case "&=","|=","~~=","shl=","shr=","mod="
 			If IntType( lhs.exprType ) And lhs.exprType.EqualsType( rhs.exprType )
 				'Ok to use x op= y form
 				kludge=False
-			Else
-				'Use x=x op y form
-				kludge=True
+				'
 			Endif
 		Default
 			InternalErr
@@ -166,8 +164,6 @@ Class AssignStmt Extends Stmt
 	
 	Method Trans$()
 		_errInfo=errInfo
-		If tmp1 tmp1.Semant
-		If tmp2 tmp2.Semant
 		Return _trans.TransAssignStmt( Self )
 	End
 		

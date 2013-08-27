@@ -139,7 +139,6 @@ Class StmtExpr Extends Expr
 		
 	Method Semant:Expr()
 		If exprType Return Self
-		
 		stmt.Semant()
 		expr=expr.Semant()
 		exprType=expr.exprType
@@ -192,7 +191,6 @@ Class ConstExpr Extends Expr
 	
 	Method Semant:Expr()
 		If exprType Return Self
-		
 		exprType=ty.Semant()
 		Return Self
 	End
@@ -228,7 +226,7 @@ Class VarExpr Extends Expr
 	
 	Method Semant:Expr()
 		If exprType Return Self
-		If Not decl.IsSemanted() Err "Internal error - decl not semanted: "+decl.ident
+		If Not decl.IsSemanted() InternalErr
 		exprType=decl.type
 		Return Self
 	End
@@ -960,7 +958,8 @@ Class IndexExpr Extends Expr
 	End
 	
 	Method SideEffects?()
-		Return ENV_CONFIG="debug"
+'		If ENV_CONFIG="debug" Return True	'?!?
+		Return expr.SideEffects() Or index.SideEffects()
 	End
 	
 	Method Semant:Expr()

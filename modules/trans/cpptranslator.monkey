@@ -340,10 +340,10 @@ Class CppTranslator Extends CTranslator
 		Select id
 
 		'global functions
-		Case "print" Return "Print"+Bra( arg0 )
-		Case "error" Return "Error"+Bra( arg0 )
-		Case "debuglog" Return "DebugLog"+Bra( arg0 )
-		Case "debugstop" Return "DebugStop()"
+		Case "print" Return "bbPrint"+Bra( arg0 )
+		Case "error" Return "bbError"+Bra( arg0 )
+		Case "debuglog" Return "bbDebugLog"+Bra( arg0 )
+		Case "debugstop" Return "bbDebugStop()"
 
 		'string/array methods
 		Case "length" Return texpr+".Length()"
