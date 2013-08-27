@@ -17,16 +17,20 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	
+	virtual void RenderGame();
+	
 	virtual String PathToFilePath( String path );
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format );
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 
-	virtual void UpdateGame();
 	virtual void RotateCoords( float &x,float &y );
 	virtual void MouseEvent( int event,int data,float x,float y );
 	virtual void TouchEvent( int event,int data,float x,float y );
 	
 	virtual void ValidateOrientation();
+	
+	virtual int  GetDeviceWidth(){ return _deviceWidth; }
+	virtual int  GetDeviceHeight(){ return _deviceHeight; }
 	virtual int  GetDeviceRotation(){ return _deviceRotation; }
 	
 	virtual ID3D11Device1 *GetD3dDevice(){ return _d3dDevice; }
@@ -43,6 +47,8 @@ private:
 	double _nextUpdate;
 	double _updatePeriod;
 	
+	int _deviceWidth;
+	int _deviceHeight;
 	int _deviceRotation;
 	int _inputRotation;
 	
@@ -128,6 +134,20 @@ _depthStencilView( 0 )
 {
 	_win8Game=this;
 	
+	CoreWindow ^window=CoreWindow::GetForCurrentThread();
+
+	_deviceWidth=DipsToPixels( window->Bounds.Width );
+	_deviceHeight=DipsToPixels( window->Bounds.Height );
+
+#if WINDOWS_8
+	switch( DisplayProperties::CurrentOrientation ){
+	case DisplayOrientations::Portrait:
+	case DisplayOrientations::PortraitFlipped:
+		std::swap( _deviceWidth,_deviceHeight );
+		break;
+	}
+#endif
+	
 	CreateD3dDevice();
 }
 
@@ -196,6 +216,13 @@ void BBWin8Game::OpenUrl( String url ){
 	auto str=ref new Platform::String( url.ToCString<char16>(),url.Length() );
 	auto uri=ref new Windows::Foundation::Uri( str );
 	Windows::System::Launcher::LaunchUriAsync( uri );
+}
+
+void BBWin8Game::RenderGame(){
+	if( !_started ) return;
+	BBGame::RenderGame();
+	DXASS( BBWin8Game::Win8Game()->GetSwapChain()->Present( 1,0 ) );
+	_d3dContext->DiscardView( BBWin8Game::Win8Game()->GetRenderTargetView() );
 }
 
 String BBWin8Game::PathToFilePath( String path ){
@@ -448,22 +475,6 @@ void BBWin8Game::ValidateOrientation(){
 
 }
 
-void BBWin8Game::UpdateGame(){
-/*
-#if WINDOWS_PHONE_8
-	Accelerometer ^accel=Accelerometer::GetDefault();
-	if( accel ){	
-		AccelerometerReading ^reading=accel->GetCurrentReading();
-		float x=reading->AccelerationX;
-		float y=reading->AccelerationY;
-		float z=reading->AccelerationZ;
-		MotionEvent( BBGameEvent::MotionAccel,0,x,-y,z );
-	}
-#endif
-*/
-	BBGame::UpdateGame();
-}
-
 void BBWin8Game::RotateCoords( float &x,float &y ){
 
 	CoreWindow ^window=CoreWindow::GetForCurrentThread();
@@ -600,17 +611,8 @@ void BBWin8Game::CreateD3dDevice(){
 
 	CoreWindow ^window=CoreWindow::GetForCurrentThread();
 
-	int width=DipsToPixels( window->Bounds.Width );
-	int height=DipsToPixels( window->Bounds.Height );
-
-#if WINDOWS_8
-	switch( DisplayProperties::CurrentOrientation ){
-	case DisplayOrientations::Portrait:
-	case DisplayOrientations::PortraitFlipped:
-		std::swap( width,height );
-		break;
-	}
-#endif
+	int width=_deviceWidth;
+	int height=_deviceHeight;
 
 	UINT creationFlags=D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 	
@@ -781,19 +783,6 @@ void Win8Game::SetWindow( CoreWindow ^window ){
 	window->PointerReleased+=ref new TypedEventHandler<CoreWindow^,PointerEventArgs^>( this,&Win8Game::OnPointerReleased );
 	window->PointerMoved+=ref new TypedEventHandler<CoreWindow^,PointerEventArgs^>( this,&Win8Game::OnPointerMoved );
 	
-/*	
-#if WINDOWS_PHONE_8	
-	Accelerometer ^accel=Accelerometer::GetDefault();
-	if( accel ){
-		int minint=accel->MinimumReportInterval;
-		accel->ReportInterval=minint;//( minint );
-		
-		//Can't get this working...poll in UpdateGame instead?
-		//accel->ReadingChanged+=ref new TypedEventHandler<Accelerometer^,AccelerometerReadingChangedEventArgs^>( this,&Win8Game::OnAccelerometerReadingChanged );
-	}
-#endif
-*/
-
 #if WINDOWS_PHONE_8
 	auto inputPane=Windows::UI::ViewManagement::InputPane::GetForCurrentView();
 	inputPane->Showing+=ref new TypedEventHandler<Windows::UI::ViewManagement::InputPane^,Windows::UI::ViewManagement::InputPaneVisibilityEventArgs^>( this,&Win8Game::OnInputPaneShowing );

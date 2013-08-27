@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "MonkeyGame.h"
 
+using namespace Microsoft::WRL;
 using namespace Windows::ApplicationModel;
 using namespace Windows::ApplicationModel::Core;
 using namespace Windows::ApplicationModel::Activation;

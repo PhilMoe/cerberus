@@ -15,12 +15,18 @@ Class Win8Builder Extends Builder
 		Return config.Join( "~n" )
 	End
 	
-	Method Content:String()
+	Method Content:String( csharp:Bool )
 		Local cont:=New StringStack
 		For Local kv:=Eachin dataFiles
-			cont.Push "    <None Include=~qAssets\monkey\"+kv.Value+"~q>"
-			cont.Push "      <DeploymentContent>true</DeploymentContent>"
-			cont.Push "    </None>"
+			If csharp
+				cont.Push "    <Content Include=~qAssets\monkey\"+kv.Value+"~q>"
+				cont.Push "      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>"
+				cont.Push "    </Content>"
+			Else
+				cont.Push "    <None Include=~qAssets\monkey\"+kv.Value+"~q>"
+				cont.Push "      <DeploymentContent>true</DeploymentContent>"
+				cont.Push "    </None>"
+			Endif
 		Next
 		Return cont.Join( "~n" )
 	End
@@ -42,11 +48,17 @@ Class Win8Builder Extends Builder
 
 		CreateDataDir "Assets/monkey"
 
-		'proj file		
+		'proj file
 		Local proj:=LoadString( "MonkeyGame.vcxproj" )
-		proj=ReplaceBlock( proj,"CONTENT",Content(),"~n    <!-- " )
-		SaveString proj,"MonkeyGame.vcxproj"
-
+		If proj
+			proj=ReplaceBlock( proj,"CONTENT",Content( False ),"~n    <!-- " )
+			SaveString proj,"MonkeyGame.vcxproj"
+		Else
+			Local proj:=LoadString( "MonkeyGame.csproj" )
+			proj=ReplaceBlock( proj,"CONTENT",Content( True ),"~n    <!-- " )
+			SaveString proj,"MonkeyGame.csproj"
+		Endif
+		
 		'app code
 		Local main:=LoadString( "MonkeyGame.cpp" )
 		
