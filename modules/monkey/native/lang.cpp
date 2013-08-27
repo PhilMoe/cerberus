@@ -700,6 +700,7 @@ public:
 		free( buf );
 	}
 #endif
+
 #if __cplusplus_winrt
 	String( Platform::String ^str ):rep( Rep::alloc(str->Length()) ){
 		for( int i=0;i<rep->length;++i ) rep->data[i]=str->Data()[i];
@@ -1214,7 +1215,10 @@ struct gc_interface{
 
 //***** Debugger *****
 
-int Print( String t );
+//#define Error bbError
+//#define Print bbPrint
+
+int bbPrint( String t );
 
 #define dbg_stream stderr
 
@@ -1477,8 +1481,8 @@ void dbg_error( const char *err ){
 #endif
 
 	for(;;){
-		Print( String("Monkey Runtime Error : ")+err );
-		Print( dbg_stacktrace() );
+		bbPrint( String("Monkey Runtime Error : ")+err );
+		bbPrint( dbg_stacktrace() );
 		dbg_stop();
 	}
 }
@@ -1504,7 +1508,7 @@ const char **argv;
 Float D2R=0.017453292519943295f;
 Float R2D=57.29577951308232f;
 
-int Print( String t ){
+int bbPrint( String t ){
 
 	static std::vector<unsigned char> buf;
 	buf.clear();
@@ -1512,7 +1516,13 @@ int Print( String t ){
 	buf.push_back( '\n' );
 	buf.push_back( 0 );
 	
-#if _WIN32				//windows?
+#if __cplusplus_winrt	//win8?
+
+#if CFG_WIN8_PRINT_ENABLED
+	OutputDebugStringA( (const char*)&buf[0] );
+#endif
+
+#elif _WIN32			//windows?
 
 	fputs( (const char*)&buf[0],stdout );
 	fflush( stdout );
@@ -1521,12 +1531,11 @@ int Print( String t ){
 
 	fputs( (const char*)&buf[0],stdout );
 	fflush( stdout );
+	
+#elif __linux			//linux?
 
-#elif __cplusplus_winrt	//winrt?
-
-#if CFG_WIN8_PRINT_ENABLED
-	OutputDebugStringA( (const char*)&buf[0] );
-#endif
+	fputs( (const char*)&buf[0],stdout );
+	fflush( stdout );
 
 #else					//ndk?
 
@@ -1542,7 +1551,7 @@ int Print( String t ){
 class BBExitApp{
 };
 
-int Error( String err ){
+int bbError( String err ){
 	if( !err.Length() ){
 #if __cplusplus_winrt
 		throw BBExitApp();
@@ -1554,12 +1563,12 @@ int Error( String err ){
 	return 0;
 }
 
-int DebugLog( String t ){
-	Print( t );
+int bbDebugLog( String t ){
+	bbPrint( t );
 	return 0;
 }
 
-int DebugStop(){
+int bbDebugStop(){
 	dbg_stop();
 	return 0;
 }

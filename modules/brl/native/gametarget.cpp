@@ -254,9 +254,9 @@ unsigned char *BBGame::LoadData( String path,int *plength ){
 //***** INTERNAL *****
 
 void BBGame::Die( ThrowableObject *ex ){
-	Print( "Monkey Runtime Error : Uncaught Monkey Exception" );
+	bbPrint( "Monkey Runtime Error : Uncaught Monkey Exception" );
 #ifndef NDEBUG
-	Print( ex->stackTrace );
+	bbPrint( ex->stackTrace );
 #endif
 	exit( -1 );
 }
@@ -308,7 +308,7 @@ void BBGame::ResumeGame(){
 void BBGame::UpdateGame(){
 
 	if( !_started || _suspended ) return;
-
+	
 	try{
 		_delegate->UpdateGame();
 	}catch( ThrowableObject *ex ){
