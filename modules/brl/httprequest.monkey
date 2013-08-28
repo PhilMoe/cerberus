@@ -1,7 +1,7 @@
 
 Import brl.asyncevent
 
-#If TARGET="android" Or TARGET="ios" Or TARGET="win8" Or TARGET="html5" Or TARGET="flash"
+#If TARGET="android" Or TARGET="ios" Or TARGET="winrt" Or TARGET="html5" Or TARGET="flash"
 
 Private
 

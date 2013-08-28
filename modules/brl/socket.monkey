@@ -6,7 +6,7 @@ Import brl.asyncevent
 #BRL_SOCKET_IMPLEMENTED=True
 Import "native/socket.${LANG}"
 #If LANG="cpp"
-Import "native/socket_win8.cpp"
+Import "native/socket_winrt.cpp"
 #Endif
 #Endif
 

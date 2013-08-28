@@ -1,6 +1,4 @@
 
-#WIN8_PRINT_ENABLED=True
-
 Import mojo
 
 Class MyApp Extends App

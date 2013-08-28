@@ -71,7 +71,7 @@ Class MyApp Extends App
 		soundFmt="wav"
 		musicFmt="mp3"
 		'
-#Elseif TARGET="win8"
+#Elseif TARGET="winrt"
 		'
 		soundFmt="wav"
 		musicFmt="wav"

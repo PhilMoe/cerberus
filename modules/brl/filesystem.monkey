@@ -1,5 +1,5 @@
 
-#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"win8" And TARGET<>"glfw" And TARGET<>"stdcpp"
+#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"winrt" And TARGET<>"glfw" And TARGET<>"stdcpp"
 #Error "The brl.filesystem module is not available for the current target"
 #Endif
 

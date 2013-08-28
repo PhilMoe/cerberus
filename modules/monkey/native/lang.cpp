@@ -1516,9 +1516,9 @@ int bbPrint( String t ){
 	buf.push_back( '\n' );
 	buf.push_back( 0 );
 	
-#if __cplusplus_winrt	//win8?
+#if __cplusplus_winrt	//winrt?
 
-#if CFG_WIN8_PRINT_ENABLED
+#if CFG_WINRT_PRINT_ENABLED
 	OutputDebugStringA( (const char*)&buf[0] );
 #endif
 

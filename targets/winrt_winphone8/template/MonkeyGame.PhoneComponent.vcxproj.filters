@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>5fd0e509-b6ae-4f29-bd2a-4d2cc10f3aa0</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MonkeyGame.PhoneComponent.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Direct3DContentProvider.cpp" />
+    <ClCompile Include="stb\stb_image.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MonkeyGame.PhoneComponent.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Direct3DContentProvider.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="SimplePixelShader.hlsl" />
+    <FxCompile Include="SimpleVertexShader.hlsl" />
+    <FxCompile Include="TexturePixelShader.hlsl" />
+    <FxCompile Include="TextureVertexShader.hlsl" />
+  </ItemGroup>
+</Project>
