@@ -20,7 +20,7 @@
 !/modules/mojo/native/asyncimageloader.js
 !/modules/mojo/native/asyncsoundloader.js
 
-#/targets/glfw/oalinst.exe
+/targets/glfw/oalinst.exe
 
 /targets
 !/targets/android

@@ -1,6 +1,25 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v75a *****
+
+Since I'm breaking win8 stuff, renamed "win8" target/builder to "winrt" - ie: #If TARGET="winrt" for win8/winphone8 apps now. Also renamed a bunch of *win8* files to winrt.
+
+After much hair pulling and gnashing of teeth, win8 and winphone8 targets are now xaml/d3d style apps. Both with a smidgen of c# thrown in, although Monkey translated code is still c++. Win8/winphone8 app orientation must now be set via manifest. 'SetUpdateRate 60' recommended on winphone8 due to OS 'timing anomolies'.
+
+Added support for ! to data path filters.
+
+Fixed brl.process string cast bug preventing modman compiling.
+
+Fixed a += side effects issue again.
+
+Updated win8 mojo for potential xaml-ification.
+
+Updated win8 transcc builder so it can handle C# projects too.
+
+Renamed native c++ Print() to bbPrint() and Error() to bbError().
+
+
 ***** v74a *****
 
 Fixed xna WP7 bug where accelerometer was sending events to app before OnCreate, causing app crash.
