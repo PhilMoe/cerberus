@@ -10,6 +10,7 @@ namespace MonkeyGame
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        int _rot = 0;
         Direct3DBackground _background = null;
 
         // Constructor
@@ -28,6 +29,7 @@ namespace MonkeyGame
             if (_background == null)
             {
                 _background = new Direct3DBackground();
+                _background.DeviceRotation = _rot;
 
                 // Set window bounds in dips
                 _background.WindowBounds = new Windows.Foundation.Size(
@@ -55,17 +57,20 @@ namespace MonkeyGame
             e.Cancel=_background.OnBackKeyPress();
         }
 
+        //Can be called before Loaded!
         protected override void OnOrientationChanged(OrientationChangedEventArgs e)
         {
-            int rot = 0;
             switch (this.Orientation)
             {
-                case PageOrientation.PortraitUp: rot = 0; break;
-                case PageOrientation.LandscapeLeft: rot = 1; break;
-                case PageOrientation.PortraitDown: rot = 2; break;
-                case PageOrientation.LandscapeRight: rot = 3; break;
+                case PageOrientation.PortraitUp: _rot = 0; break;
+                case PageOrientation.LandscapeLeft: _rot = 1; break;
+                case PageOrientation.PortraitDown: _rot = 2; break;
+                case PageOrientation.LandscapeRight: _rot = 3; break;
             }
-            _background.DeviceRotation = rot;
+            if (_background!=null )
+            {
+                _background.DeviceRotation = _rot;
+            }
         } 
     }
 }
