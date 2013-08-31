@@ -119,19 +119,19 @@ CXMLHTTPRequest2Callback::~CXMLHTTPRequest2Callback(){
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::RuntimeClassInitialize(){
-//	Print( "RuntimeClassInitialize" );
+//	bbPrint( "RuntimeClassInitialize" );
 
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnDataAvailable( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pResponseStream ){
-//	Print( "Data" );
+//	bbPrint( "Data" );
 
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnError( __RPC__in_opt IXMLHTTPRequest2 *pXHR,HRESULT hrError ){
-//	Print( "Error" );
+//	bbPrint( "Error" );
 	
 	_status=-1;
 	
@@ -141,7 +141,7 @@ STDMETHODIMP CXMLHTTPRequest2Callback::OnError( __RPC__in_opt IXMLHTTPRequest2 *
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnHeadersAvailable( __RPC__in_opt IXMLHTTPRequest2 *pXHR,DWORD dwStatus,__RPC__in_string const WCHAR *pwszStatus ){
-//	Print( "Headers" );
+//	bbPrint( "Headers" );
 	
 	_status=dwStatus;
 
@@ -149,13 +149,13 @@ STDMETHODIMP CXMLHTTPRequest2Callback::OnHeadersAvailable( __RPC__in_opt IXMLHTT
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnRedirect( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_string const WCHAR *pwszRedirectUrl ){
-//	Print( "Redirect" );
+//	bbPrint( "Redirect" );
 	
 	return 0;
 }
 
 STDMETHODIMP CXMLHTTPRequest2Callback::OnResponseReceived( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pStream ){
-//	Print( "Response" );
+//	bbPrint( "Response" );
 
 	if( pStream ){
 
@@ -214,7 +214,7 @@ void BBHttpRequest::Open( String req,String url ){
 	}
 
 	if( FAILED( _req->Open( req.ToCString<WCHAR>(),url.ToCString<WCHAR>(),_cb.Get(),0,0,0,0 ) ) ){
-		Print( "Failed to open HttpRequest" );
+	//	bbPrint( "Failed to open HttpRequest" );
 	}
 }
 
@@ -226,7 +226,7 @@ void BBHttpRequest::SetHeader( String name,String value ){
 void BBHttpRequest::Send(){
 
 	if( FAILED( _req->Send( 0,0 ) ) ){
-		Print( "Send failed" );
+	//	bbPrint( "Send failed" );
 	}
 	
 	_cb->Start();
@@ -239,7 +239,7 @@ void BBHttpRequest::SendText( String text,String encoding ){
 	int length=_data->SetText( text );
 	
 	if( FAILED( _req->Send( _data.Get(),length ) ) ){
-		Print( "Send failed" );
+	//	bbPrint( "Send failed" );
 	}
 
 	_cb->Start();
