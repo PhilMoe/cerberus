@@ -9,7 +9,7 @@ Class StdcppBuilder Extends Builder
 
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "#define CFG_"+kv.Key+" "+kv.Value
 		Next
 		Return config.Join( "~n" )
@@ -33,9 +33,9 @@ Class StdcppBuilder Extends Builder
 	Method MakeTarget:Void()
 	
 		Select ENV_CONFIG
-		Case "debug" SetCfgVar "DEBUG","1"
-		Case "release" SetCfgVar "RELEASE","1"
-		Case "profile" SetCfgVar "PROFILE","1"
+		Case "debug" SetConfigVar "DEBUG","1"
+		Case "release" SetConfigVar "RELEASE","1"
+		Case "profile" SetConfigVar "PROFILE","1"
 		End
 		
 		Local main:=LoadString( "main.cpp" )
@@ -65,7 +65,7 @@ Class StdcppBuilder Extends Builder
 				OPTS+=" -O3 -DNDEBUG"
 			End
 			
-			Local cc_opts:=GetCfgVar( "CC_OPTS" )
+			Local cc_opts:=GetConfigVar( "CC_OPTS" )
 			If cc_opts OPTS+=" "+cc_opts.Replace( ";"," " )
 			
 			Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS

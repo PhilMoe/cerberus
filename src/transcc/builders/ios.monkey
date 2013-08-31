@@ -14,7 +14,7 @@ Class IosBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "#define CFG_"+kv.Key+" "+kv.Value
 		Next
 		Return config.Join( "~n" )
@@ -218,7 +218,7 @@ Class IosBuilder Extends Builder
 		SaveString main,"main.mm"
 		
 		'mung xcode project
-		Local libs:=GetCfgVar( "LIBS" )
+		Local libs:=GetConfigVar( "LIBS" )
 		If libs
 			For Local lib:=Eachin libs.Split( ";" )
 				If Not lib Continue

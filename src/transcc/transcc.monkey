@@ -8,7 +8,7 @@ Import os
 Import trans
 Import builders
 
-Const VERSION:="1.54"
+Const VERSION:="1.55"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -43,7 +43,7 @@ Function ReplaceEnv:String( str:String )
 		
 		Local t:=str[i+2..e]
 		
-		Local v:=GetCfgVar(t)
+		Local v:=GetConfigVar(t)
 		If Not v v=GetEnv(t)
 		
 '		v=v.Replace( "~q","" )
@@ -210,26 +210,31 @@ Class TransCC
 	End
 	
 	Method EnumTargets:Void( dir:String )
-		Local t:=_cfgVars
+	
 		Local p:=monkeydir+"/"+dir	'"/targets"
+		
 		For Local f:=Eachin LoadDir( p )
 			Local t:=p+"/"+f+"/TARGET.MONKEY"
 			If FileType(t)<>FILETYPE_FILE Continue
-			_cfgVars=New StringMap<String>
+			
+			PushConfigScope
+			
 			PreProcess t
 			
-			Local name:=GetCfgVar( "TARGET_NAME" )
+			Local name:=GetConfigVar( "TARGET_NAME" )
 			If Not name Continue
 			
-			Local system:=GetCfgVar( "TARGET_SYSTEM" )
+			Local system:=GetConfigVar( "TARGET_SYSTEM" )
 			If Not system Continue
 			
-			Local builder:=_builders.Get( GetCfgVar( "TARGET_BUILDER" ) )
+			Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
 			If Not builder Continue
 			
 			_targets.Set name,New Target( f,name,system,builder )
+			
+			PopConfigScope
+			
 		Next
-		_cfgVars=t
 	End
 	
 	Method ParseArgs:Void()
@@ -284,7 +289,7 @@ Class TransCC
 					Die "Unrecognized command line option: "+arg
 				End
 			Else If arg.StartsWith( "+" )
-				SetCfgVar arg[1..],rhs
+				SetConfigVar arg[1..],rhs
 			Else
 				Die "Command line arg error: "+arg
 			End
@@ -304,8 +309,8 @@ Class TransCC
 	
 		Local cfg:=LoadString( cfgpath )
 		
-		SetCfgVar "MONKEYDIR",monkeydir
-		SetCfgVar "TRANSDIR",monkeydir+"/bin"
+		SetConfigVar "MONKEYDIR",monkeydir
+		SetConfigVar "TRANSDIR",monkeydir+"/bin"
 	
 		For Local line:=Eachin cfg.Split( "~n" )
 		
@@ -410,8 +415,8 @@ Class TransCC
 			
 		End
 		
-		SetCfgVar "TRANSDIR",""
-		SetCfgVar "MONKEYDIR",""
+		SetConfigVar "TRANSDIR",""
+		SetConfigVar "MONKEYDIR",""
 	End
 	
 	Method Execute:Bool( cmd:String,failHard:Bool=True )

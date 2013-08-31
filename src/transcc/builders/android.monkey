@@ -9,7 +9,7 @@ Class AndroidBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
 		Next
 		Return config.Join( "~n" )
@@ -41,17 +41,17 @@ Class AndroidBuilder Extends Builder
 	
 	Method MakeTarget:Void()
 		
-		SetCfgVar "ANDROID_MAINFEST_MAIN",GetCfgVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
 
-		SetCfgVar "ANDROID_MAINFEST_APPLICATION",GetCfgVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
 	
 		'create data dir
 		CreateDataDir "assets/monkey"
 
-		Local app_label:=GetCfgVar( "ANDROID_APP_LABEL" )
-		Local app_package:=GetCfgVar( "ANDROID_APP_PACKAGE" )
+		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
+		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		
-		SetCfgVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+		SetConfigVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
 		
 		'create package
 		Local jpath:="src"
@@ -121,7 +121,7 @@ Class AndroidBuilder Extends Builder
 		SaveString main,jpath
 
 		'create 'libs' dir		
-		For Local lib:=Eachin GetCfgVar( "LIBS" ).Split( ";" )
+		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( ";" )
 			Select ExtractExt( lib )
 			Case "jar","so"
 				CopyFile lib,"libs/"+StripDir( lib )
@@ -129,7 +129,7 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		'copy src files
-		For Local src:=Eachin GetCfgVar( "SRCS" ).Split( ";" )
+		For Local src:=Eachin GetConfigVar( "SRCS" ).Split( ";" )
 			Select ExtractExt( src )
 			Case "java","aidl"
 				Local i:=src.FindLast( "/src/" )
@@ -142,7 +142,7 @@ Class AndroidBuilder Extends Builder
 			End
 		Next
 		
-		If GetCfgVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
+		If GetConfigVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
 			CopyDir "nativegl/libs","libs",True
 			CreateDir "src/com"
 			CreateDir "src/com/monkey"
@@ -153,7 +153,7 @@ Class AndroidBuilder Extends Builder
 		
 			Local antcfg:="debug"
 			
-			If GetCfgVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
+			If GetConfigVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
 
 			If Not (Execute( "ant clean",False ) And Execute( "ant "+antcfg+" install",False ))
 

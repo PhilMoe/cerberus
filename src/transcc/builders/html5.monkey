@@ -22,7 +22,7 @@ Class Html5Builder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "CFG_"+kv.Key+"="+Enquote( kv.Value,"js" )+";"
 		Next
 		Return config.Join( "~n" )

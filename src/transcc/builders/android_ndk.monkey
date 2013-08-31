@@ -9,7 +9,7 @@ Class AndroidNdkBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "#define CFG_"+kv.Key+" "+kv.Value
 		Next
 		Return config.Join( "~n" )
@@ -26,16 +26,16 @@ Class AndroidNdkBuilder Extends Builder
 	
 	Method MakeTarget:Void()
 		
-		SetCfgVar "ANDROID_MAINFEST_MAIN",GetCfgVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
-		SetCfgVar "ANDROID_MAINFEST_APPLICATION",GetCfgVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
 	
 		'create data dir
 		CreateDataDir "assets/monkey"
 
-		Local app_label:=GetCfgVar( "ANDROID_APP_LABEL" )
-		Local app_package:=GetCfgVar( "ANDROID_APP_PACKAGE" )
+		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
+		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		
-		SetCfgVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+		SetConfigVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
 		
 		'create package
 		Local jpath:="src"
@@ -81,7 +81,7 @@ Class AndroidNdkBuilder Extends Builder
 		SaveString main,"jni/main.cpp"
 
 		'create 'libs' dir		
-		For Local lib:=Eachin GetCfgVar( "LIBS" ).Split( ";" )
+		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( ";" )
 			Select ExtractExt( lib )
 			Case "jar","so"
 				CopyFile lib,"libs/"+StripDir( lib )

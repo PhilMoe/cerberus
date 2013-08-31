@@ -9,7 +9,7 @@ Class XnaBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "public const String "+kv.Key+"="+Enquote( kv.Value,"cs" )+";"
 		Next
 		Return config.Join( "~n" )

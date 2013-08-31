@@ -42,6 +42,7 @@ Class Builder
 		ENV_HOST=HostOS
 		ENV_CONFIG=tcc.opt_config
 		ENV_SAFEMODE=tcc.opt_safe
+		ENV_MODPATH=tcc.opt_modpath
 		ENV_TARGET=tcc.target.system
 			
 		Self.Begin
@@ -51,17 +52,16 @@ Class Builder
 
 		Print "Parsing..."
 		
-		SetCfgVar "HOST",ENV_HOST
-		SetCfgVar "LANG",ENV_LANG
-		SetCfgVar "TARGET",ENV_TARGET
-		SetCfgVar "CONFIG",ENV_CONFIG
-		SetCfgVar "SAFEMODE",ENV_SAFEMODE
-		SetCfgVar "MODPATH",tcc.opt_modpath
+		SetConfigVar "HOST",ENV_HOST
+		SetConfigVar "LANG",ENV_LANG
+		SetConfigVar "TARGET",ENV_TARGET
+		SetConfigVar "CONFIG",ENV_CONFIG
+		SetConfigVar "SAFEMODE",ENV_SAFEMODE
 		
 		app=ParseApp( tcc.opt_srcpath )
 
 		Print "Semanting..."
-		If GetCfgVar("REFLECTION_FILTER")
+		If GetConfigVar("REFLECTION_FILTER")
 			Local r:=New Reflector
 			r.Semant app
 		Else
@@ -103,11 +103,11 @@ Class Builder
 		Local cfgPath:=targetPath+"/CONFIG.MONKEY"
 		If FileType( cfgPath )=FILETYPE_FILE PreProcess cfgPath
 		
-		TEXT_FILES=GetCfgVar( "TEXT_FILES" )
-		IMAGE_FILES=GetCfgVar( "IMAGE_FILES" )
-		SOUND_FILES=GetCfgVar( "SOUND_FILES" )
-		MUSIC_FILES=GetCfgVar( "MUSIC_FILES" )
-		BINARY_FILES=GetCfgVar( "BINARY_FILES" )
+		TEXT_FILES=GetConfigVar( "TEXT_FILES" )
+		IMAGE_FILES=GetConfigVar( "IMAGE_FILES" )
+		SOUND_FILES=GetConfigVar( "SOUND_FILES" )
+		MUSIC_FILES=GetConfigVar( "MUSIC_FILES" )
+		BINARY_FILES=GetConfigVar( "BINARY_FILES" )
 		
 		DATA_FILES=TEXT_FILES
 		If IMAGE_FILES DATA_FILES+="|"+IMAGE_FILES

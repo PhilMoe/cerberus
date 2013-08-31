@@ -9,7 +9,7 @@ Class FlashBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin _cfgVars
+		For Local kv:=Eachin GetConfigVars()
 			config.Push "internal static var "+kv.Key+":String="+Enquote( kv.Value,"as" )
 		Next
 		Return config.Join( "~n" )
