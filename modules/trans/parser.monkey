@@ -1582,7 +1582,7 @@ Class Parser
 		Local cd$=CurrentDir
 		ChangeDir ExtractDir( _toker.Path )
 		
-		For Local dir:=Eachin GetCfgVar("MODPATH").Split( ";" )
+		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
 			If Not dir Continue
 		
 			filepath=RealPath( dir )+"/"+modpath.Replace( ".","/" )+"."+FILE_EXT			'/blah/etc.monkey
@@ -1682,7 +1682,7 @@ Class Parser
 			Case "import"
 				NextToke
 				If _tokeType=TOKE_STRINGLIT
-					ImportFile EvalCfgTags( ParseStringLit() )
+					ImportFile EvalConfigTags( ParseStringLit() )
 				Else
 					ImportModule ParseModPath(),attrs
 				Endif

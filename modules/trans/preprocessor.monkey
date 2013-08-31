@@ -1,49 +1,37 @@
 
 Import parser
 
-'Urgh, lost the plot a bit here...
+Function EvalExpr:Expr( toker:Toker )
 
-Function Eval$( source$,ty:Type )
-
-	Local env:=New ScopeDecl
-	
-	For Local kv:=Eachin _cfgVars
-		env.InsertDecl New ConstDecl( kv.Key,0,Type.stringType,New ConstExpr( Type.stringType,kv.Value ) )
-	Next
-
-	PushEnv env
-	
-	Local toker:=New Toker( "",source )
-	
-	Local parser:=New Parser( toker,Null )
-
-	Local expr:=parser.ParseExpr().Semant()
-	
-	Local val$
-	
-	If StringType( ty ) And BoolType( expr.exprType )
-		val=expr.Eval()
-		If val val="1" Else val="0"
-	Else If BoolType( ty ) And StringType( expr.exprType )
-		val=expr.Eval()
-		If val And val<>"0" val="1" Else val="0"
-	Else
-		If ty expr=expr.Cast( ty )
-		val=expr.Eval()
-	Endif
-	
-	PopEnv
-	
-	Return val
-End
-
-Function Eval$( toker:Toker,type:Type )
 	Local buf:=New StringStack
 	While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
 		buf.Push toker.Toke
 		toker.NextToke
 	Wend
-	Return Eval( buf.Join(""),type )
+	Local source:=buf.Join( "" )
+	
+	toker=New Toker( "",source )
+	Local parser:=New Parser( toker,Null )
+	Local expr:=parser.ParseExpr().Semant()
+	
+	Return expr
+End
+
+Function EvalBool:Bool( toker:Toker )
+	Local expr:=EvalExpr( toker )
+	If Not BoolType( expr.exprType ) expr=expr.Cast( Type.boolType,CAST_EXPLICIT )
+	If expr.Eval() Return True
+	Return False
+End
+
+Function EvalText:String( toker:Toker )
+	Local expr:=EvalExpr( toker )
+	Local val:=expr.Eval()
+	If BoolType( expr.exprType )
+		If val Return "True"
+		Return "False"
+	End
+	Return val
 End
 
 Function PreProcess$( path$ )
@@ -53,7 +41,9 @@ Function PreProcess$( path$ )
 	Local toker:=New Toker( path,LoadString( path ) )
 	toker.NextToke
 	
-	SetCfgVar "CD",ExtractDir( RealPath( path ) )
+	PushEnv GetConfigScope()
+	
+	SetConfigVar "CD",ExtractDir( RealPath( path ) )
 	
 	Repeat
 
@@ -110,7 +100,7 @@ Function PreProcess$( path$ )
 			ifnest+=1
 		
 			If cnest=ifnest-1
-				If Eval( toker,Type.boolType ) cnest=ifnest
+				If EvalBool( toker ) cnest=ifnest
 			Endif
 			
 		Case "else"
@@ -130,7 +120,7 @@ Function PreProcess$( path$ )
 			If cnest=ifnest
 				cnest|=$10000
 			Else If cnest=ifnest-1
-				If Eval( toker,Type.boolType ) cnest=ifnest
+				If EvalBool( toker ) cnest=ifnest
 			Endif
 			
 		Case "end","endif"
@@ -144,13 +134,13 @@ Function PreProcess$( path$ )
 		Case "print"
 		
 			If cnest=ifnest
-				Print EvalCfgTags( Eval( toker,Type.stringType ) )
+				Print EvalText( toker )
 			Endif
 			
 		Case "error"
 		
 			If cnest=ifnest
-				Err EvalCfgTags( Eval( toker,Type.stringType ) )
+				Err EvalText( toker )
 			Endif
 
 		Default
@@ -161,7 +151,8 @@ Function PreProcess$( path$ )
 					If toker.TokeType=TOKE_SPACE toker.NextToke
 					Local op:=toker.Toke()
 					
-					If op="=" Or op="+="
+					Select op
+					Case "=","+="
 					
 						Select toke
 						Case "HOST","LANG","CONFIG","TARGET","SAFEMODE"
@@ -170,18 +161,24 @@ Function PreProcess$( path$ )
 						
 						toker.NextToke
 						
-						Local val:=EvalCfgTags( Eval( toker,Type.stringType ) )
-						
-						If op="="
-							If Not GetCfgVar( toke ) SetCfgVar toke,val
-						Else If op="+="
-							Local var:=GetCfgVar( toke )
+						Select op
+						Case "="
+							Local expr:=EvalExpr( toker )
+							Local val:=EvalConfigTags( expr.Eval() )
+							If Not GetConfigVars().Contains( toke ) SetConfigVar toke,val,expr.exprType
+						Case "+="
+							Local val:=EvalText( toker )
+							Local var:=GetConfigVar( toke )
+							If BoolType( GetConfigVarType( toke ) )
+								If var="1" var="True" Else var="False"
+							Endif
 							If var And Not val.StartsWith( ";" ) val=";"+val
-							SetCfgVar toke,var+val
-						Endif
-					Else
-						Err "Syntax error - expecting assignment"
-					Endif
+							SetConfigVar toke,var+val
+						End
+						
+					Default
+						Err "Expecting assignment operator."
+					End
 				Else
 					Err "Unrecognized preprocessor directive '"+toke+"'"
 				Endif
@@ -191,7 +188,9 @@ Function PreProcess$( path$ )
 
 	Forever
 	
-	SetCfgVar "CD",""
-	
+	RemoveConfigVar "CD"
+
+	PopEnv
+		
 	Return source.Join( "" )
 End

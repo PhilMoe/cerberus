@@ -687,10 +687,9 @@ Class CppTranslator Extends CTranslator
 	
 	Method TransApp$( app:AppDecl )
 	
-		If Not _cfgVars.Contains( "CPP_GC_MODE" ) _cfgVars.Set "CPP_GC_MODE","1"
+		If Not GetConfigVar( "CPP_GC_MODE" ) SetConfigVar "CPP_GC_MODE","1",Type.boolType
 		
-		gc_mode=Int( _cfgVars.Get( "CPP_GC_MODE" ) )
-'		Print "gc_mode="+gc_mode
+		gc_mode=Int( GetConfigVar( "CPP_GC_MODE" ) )
 	
 		app.mainFunc.munged="bbMain"
 		

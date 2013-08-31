@@ -10,19 +10,80 @@ Global ENV_HOST$
 Global ENV_LANG$
 Global ENV_CONFIG$
 Global ENV_TARGET$
-Global ENV_SAFEMODE	'True for safe mode!
+Global ENV_MODPATH$
+Global ENV_SAFEMODE
 
-Global _cfgVars:=New StringMap<String>
+Private
 
-Function SetCfgVar( key$,val$ )
-	_cfgVars.Set key,val
+Class ConfigScope Extends ScopeDecl
+
+	Field vars:=New StringMap<String>
+	Field cdecls:=New StringMap<ConstDecl>
+	
+	Method FindValDecl:ValDecl( ident$ )
+		If cdecls.Contains( ident ) Return cdecls.Get( ident )
+		Return New ConstDecl( ident,DECL_SEMANTED,Type.boolType,Null )
+	End
+
 End
 
-Function GetCfgVar$( key$ )
-	Return _cfgVars.Get( key )
+Global _cfgScope:=New ConfigScope
+Global _cfgScopeStack:=New Stack<ConfigScope>
+
+Public
+
+Function PushConfigScope:Void()
+	_cfgScopeStack.Push _cfgScope
+	_cfgScope=New ConfigScope
 End
 
-Function EvalCfgTags$( cfg$ )
+Function PopConfigScope:Void()
+	_cfgScope=_cfgScopeStack.Pop()
+End
+
+Function GetConfigScope:ScopeDecl()
+	Return _cfgScope
+End
+
+Function SetConfigVar( key$,val$ )
+	SetConfigVar( key,val,Type.stringType )
+End
+
+Function SetConfigVar( key$,val$,type:Type )
+	Local decl:=_cfgScope.cdecls.Get( key )
+	If decl
+		decl.type=type
+	Else
+		decl=New ConstDecl( key,DECL_SEMANTED,type,Null )
+		_cfgScope.cdecls.Set key,decl
+	Endif
+	decl.value=val
+	If BoolType( type )
+		If val val="1" Else val="0"
+	Endif
+	_cfgScope.vars.Set key,val
+End
+
+Function GetConfigVar$( key$ )
+	Return _cfgScope.vars.Get( key )
+End
+
+Function GetConfigVarType:Type( key$ )
+	Local decl:=_cfgScope.cdecls.Get( key )
+	If decl Return decl.type
+	Return Null
+End
+
+Function GetConfigVars:StringMap<String>()
+	Return _cfgScope.vars
+End
+
+Function RemoveConfigVar( key$ )
+	_cfgScope.cdecls.Remove key
+	_cfgScope.vars.Remove key
+End
+
+Function EvalConfigTags$( cfg$ )
 	Local i:=0
 	Repeat
 		i=cfg.Find( "${" )
@@ -32,15 +93,15 @@ Function EvalCfgTags$( cfg$ )
 		If e=-1 Return cfg
 		
 		Local key:=cfg[i+2..e]
-		If Not _cfgVars.Contains( key )
+		If Not GetConfigVars().Contains( key )
 			i=e+1
 			Continue
 		Endif
 		
-		Local t:=_cfgVars.Get( key )
-		_cfgVars.Set key,""	'prevent recursion!
-		Local v:=EvalCfgTags( t )
-		_cfgVars.Set key,t
+		Local t:=_cfgScope.vars.Get( key )
+		_cfgScope.vars.Set key,""	'prevent recursion!
+		Local v:=EvalConfigTags( t )
+		_cfgScope.vars.Set key,t
 		
 		cfg=cfg[..i]+v+cfg[e+1..]
 		i+=v.Length
