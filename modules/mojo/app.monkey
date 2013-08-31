@@ -6,8 +6,6 @@
 
 Private
 
-Import brl.gametarget
-
 Import graphicsdevice
 Import audiodevice
 Import inputdevice
@@ -17,10 +15,6 @@ Import audio
 Import input
 
 Import data
-
-#If TARGET="android" Or TARGET="flash" Or TARGET="glfw" Or TARGET="html5" Or TARGET="ios" Or TARGET="psm" Or TARGET="winrt" Or TARGET="xna"
-Import "native/mojo.${TARGET}.${LANG}"
-#Endif
 
 Global _app:App
 Global _game:=BBGame.Game()

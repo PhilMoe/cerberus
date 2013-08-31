@@ -2,6 +2,7 @@
 Import brl.databuffer
 Import brl.asyncevent
 
+#If Not BRL_SOCKET_IMPLEMENTED
 #If LANG="cpp" Or LANG="java"
 #BRL_SOCKET_IMPLEMENTED=True
 Import "native/socket.${LANG}"
@@ -10,9 +11,8 @@ Import "native/socket_winrt.cpp"
 #Endif
 #Endif
 
-#BRL_SOCKET_IMPLEMENTED=False
-#If BRL_SOCKET_IMPLEMENTED="0"
-#Error "Native Socket class not found."
+#If Not BRL_SOCKET_IMPLEMENTED
+#Error "Native Socket class not implemented."
 #Endif
 
 Private

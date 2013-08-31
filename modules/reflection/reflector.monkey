@@ -78,7 +78,7 @@ Class Reflector
 		If Not p.EndsWith( ".monkey" ) InternalErr
 		p=p[..-7]		
 		
-		For Local dir:=Eachin GetCfgVar( "MODPATH" ).Split( ";" )
+		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
 			If Not dir or dir="." Continue
 			
 			dir=dir.Replace( "\","/" )
@@ -99,7 +99,7 @@ Class Reflector
 
 			Return p
 		Next
-		Print "MODPATH="+GetCfgVar( "MODPATH" )
+		Print "MODPATH="+ENV_MODPATH
 		Error "Invalid module path for module:"+mdecl.filepath
 	End
 	
@@ -507,11 +507,11 @@ Class Reflector
 
 	Method Semant( app:AppDecl )
 
-		Local filter:=GetCfgVar( "REFLECTION_FILTER" )
+		Local filter:=GetConfigVar( "REFLECTION_FILTER" )
 		If Not filter Return
 		filter=filter.Replace( ";","|" )
 		
-		debug=GetCfgVar( "DEBUG_REFLECTION" )="1"
+		debug=GetConfigVar( "DEBUG_REFLECTION" )="1"
 		
 		For Local mdecl:=Eachin app.imported.Values()
 			Local path:=ModPath( mdecl )

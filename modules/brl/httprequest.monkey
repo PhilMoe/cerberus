@@ -1,11 +1,14 @@
 
 Import brl.asyncevent
 
+#If Not BRL_HTTPREQUEST_IMPLEMENTED
 #If TARGET="android" Or TARGET="ios" Or TARGET="winrt" Or TARGET="html5" Or TARGET="flash"
-
-Private
-
+#BRL_HTTPREQUEST_IMPLEMENTED=True
 Import "native/httprequest.${TARGET}.${LANG}"
+#Endif
+#Endif
+
+#If BRL_HTTPREQUEST_IMPLEMENTED
 
 Extern Private
 

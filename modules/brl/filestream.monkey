@@ -1,14 +1,15 @@
 
 Import brl.stream
 
+#If Not BRL_FILESTREAM_IMPLEMENTED
 #If LANG="cpp" Or LANG="java" Or LANG="cs"
 #BRL_FILESTREAM_IMPLEMENTED=True
 Import "native/filestream.${LANG}"
 #Endif
+#Endif
 
-#BRL_FILESTREAM_IMPLEMENTED=False
-#If BRL_FILESTREAM_IMPLEMENTED="0"
-#Error "Native FileStream class not found."
+#If Not BRL_FILESTREAM_IMPLEMENTED
+#Error "Native FileStream class not implemented."
 #Endif
 
 Extern

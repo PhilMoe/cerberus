@@ -1,11 +1,16 @@
 
-#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"winrt" And TARGET<>"glfw" And TARGET<>"stdcpp"
-#Error "The brl.filesystem module is not available for the current target"
+#If Not BRL_FILESYSTEM_IMPLEMENTED
+#If TARGET="android" Or TARGET="ios" Or TARGET="winrt" Or TARGET="glfw" Or TARGET="stdcpp"
+#BRL_FILESYSTEM_IMPLEMENTED=True
+Import "native/filesystem.${LANG}"
+#Endif
 #Endif
 
-Import "native/filesystem.${LANG}"
+#If Not BRL_FILESYSTEM_IMPLEMENTED
+#Error "Native FileSystem class not implemented"
+#Endif
 
-Extern
+Extern Private
 
 Class BBFileSystem
 

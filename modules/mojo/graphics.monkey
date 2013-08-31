@@ -8,6 +8,7 @@ Private
 Import "data/mojo_font.png"
 
 Import graphicsdevice
+
 Import data
 
 Class Frame

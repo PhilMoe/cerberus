@@ -7,17 +7,18 @@
 '
 ' This is undocced, as it's mainly intended for use only by native code, but might be fun to play with in monkey...good for testing anyway!
 
+#If Not BRL_THREAD_IMPLEMENTED
 #If LANG="cpp" Or LANG="java" Or LANG="cs" Or LANG="js" Or LANG="as"
 #BRL_THREAD_IMPLEMENTED=True
 Import "native/thread.${LANG}"
 #Endif
-
-#BRL_THREAD_IMPLEMENTED=False
-#If BRL_THREAD_IMPLEMENTED="0"
-#Error "Native Thread class not found."
 #Endif
 
-Extern
+#If Not BRL_THREAD_IMPLEMENTED
+#Error "Native Thread class not implemented."
+#Endif
+
+Extern Private
 
 Class BBThread
 

@@ -1,10 +1,9 @@
 
 Class Url
+
 	Method New( url:String,defaultScheme:String="http",defaultPort:Int=80 )
-	
 		_defaultScheme=defaultScheme
 		_defaultPort=defaultPort
-		
 		Set( url )
 	End
 	

@@ -5,14 +5,15 @@ Private
 
 Import brl.thread
 
+#If Not BRL_DATABUFFER_IMPLEMENTED
 #If LANG="cpp" Or LANG="java" Or LANG="cs" Or LANG="js" Or LANG="as"
 #BRL_DATABUFFER_IMPLEMENTED=True
 Import "native/databuffer.${LANG}"
 #Endif
+#Endif
 
-#BRL_DATABUFFER_IMPLEMENTED=False
-#If BRL_DATABUFFER_IMPLEMENTED="0"
-#Error "Native DataBuffer class not found."
+#If Not BRL_DATABUFFER_IMPLEMENTED
+#Error "Native DataBuffer class not implemented"
 #Endif
 
 Extern

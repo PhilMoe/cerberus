@@ -1,15 +1,18 @@
 
-#If TARGET<>"glfw" And TARGET<>"stdcpp"
-#Error "Invalid target"
-#Endif
-
 Import brl.databuffer
 
-Private
-
+#If Not BRL_PROCESS_IMPLEMENTED
+#If TARGET="glfw" Or TARGET="stdcpp"
+#BRL_PROCESS_IMPLEMENTED=True
 Import "native/process.cpp"
+#Endif
+#Endif
 
-Extern
+#If Not BRL_PROCESS_IMPLEMENTED
+#Error "Native Process class not implemented"
+#Endif
+
+Extern Private
 
 Class BBProcess
 

@@ -1,4 +1,8 @@
 
+Private
+
+Import driver
+
 Extern
 
 Class AudioDevice="gxtkAudio"
