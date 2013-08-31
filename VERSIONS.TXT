@@ -1,6 +1,21 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v75b *****
+
+Restored anrdroid_ouya target to release!
+
+Fixed XNA music not suspending/resuming correctly.
+
+Fixed XNA app resume causing last played sound to replay.
+
+Updated reflection docs.
+
+Tidied up lots of BLAH_IMPLEMENTED stuff.
+
+Tidied up preprocessor a bit: Preprocessor vars are now strongly typed, and non-existant vars now return a 'False' value instead of generating an error. Note: Some global funcs in trans/config.monkey have changed, which may affect target authors.
+
+
 ***** v75a *****
 
 Since I'm breaking win8 stuff, renamed "win8" target/builder to "winrt" - ie: #If TARGET="winrt" for win8/winphone8 apps now. Also renamed a bunch of *win8* files to winrt.
