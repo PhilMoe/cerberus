@@ -42,11 +42,10 @@ Function ReplaceEnv:String( str:String )
 		Endif
 		
 		Local t:=str[i+2..e]
-		
-		Local v:=GetConfigVar(t)
-		If Not v v=GetEnv(t)
-		
-'		v=v.Replace( "~q","" )
+
+		Local v:=GetEnv( t )		
+'		Local v:=GetConfigVar(t)
+'		If Not v v=GetEnv(t)
 		
 		bits.Push str[..i]
 		bits.Push v
@@ -173,9 +172,12 @@ Class TransCC
 
 		Self.args=args
 	
-		monkeydir=RealPath( ExtractDir( AppPath )+"/.." )
-	
 		Print "TRANS monkey compiler V"+VERSION
+	
+		monkeydir=RealPath( ExtractDir( AppPath )+"/.." )
+
+		SetEnv "MONKEYDIR",monkeydir
+		SetEnv "TRANSDIR",monkeydir+"/bin"
 	
 		ParseArgs
 		
@@ -184,7 +186,6 @@ Class TransCC
 		EnumBuilders
 		
 		EnumTargets "targets"
-		If _targets.IsEmpty() EnumTargets "targets2"	'delete me...
 		
 		If args.Length<2
 			Local valid:=""
@@ -211,7 +212,7 @@ Class TransCC
 	
 	Method EnumTargets:Void( dir:String )
 	
-		Local p:=monkeydir+"/"+dir	'"/targets"
+		Local p:=monkeydir+"/"+dir
 		
 		For Local f:=Eachin LoadDir( p )
 			Local t:=p+"/"+f+"/TARGET.MONKEY"
@@ -222,15 +223,15 @@ Class TransCC
 			PreProcess t
 			
 			Local name:=GetConfigVar( "TARGET_NAME" )
-			If Not name Continue
-			
-			Local system:=GetConfigVar( "TARGET_SYSTEM" )
-			If Not system Continue
-			
-			Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
-			If Not builder Continue
-			
-			_targets.Set name,New Target( f,name,system,builder )
+			If name
+				Local system:=GetConfigVar( "TARGET_SYSTEM" )
+				If system
+					Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
+					If builder
+						_targets.Set name,New Target( f,name,system,builder )
+					Endif
+				Endif
+			Endif
 			
 			PopConfigScope
 			
@@ -308,10 +309,7 @@ Class TransCC
 		If FileType( cfgpath )<>FILETYPE_FILE Die "Failed to open config file"
 	
 		Local cfg:=LoadString( cfgpath )
-		
-		SetConfigVar "MONKEYDIR",monkeydir
-		SetConfigVar "TRANSDIR",monkeydir+"/bin"
-	
+			
 		For Local line:=Eachin cfg.Split( "~n" )
 		
 			line=line.Trim()
@@ -415,8 +413,6 @@ Class TransCC
 			
 		End
 		
-		SetConfigVar "TRANSDIR",""
-		SetConfigVar "MONKEYDIR",""
 	End
 	
 	Method Execute:Bool( cmd:String,failHard:Bool=True )
