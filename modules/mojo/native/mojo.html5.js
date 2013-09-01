@@ -402,7 +402,14 @@ gxtkAudio.prototype.Suspend=function(){
 	var i;
 	for( i=0;i<33;++i ){
 		var chan=this.channels[i];
-		if( chan.state==1 ) chan.audio.pause();
+		if( chan.state==1 ){
+			if( chan.audio.ended && !chan.audio.loop ){
+				chan.state=0;
+			}else{
+				chan.audio.pause();
+				chan.state=3;
+			}
+		}
 	}
 }
 
@@ -410,7 +417,10 @@ gxtkAudio.prototype.Resume=function(){
 	var i;
 	for( i=0;i<33;++i ){
 		var chan=this.channels[i];
-		if( chan.state==1 ) chan.audio.play();
+		if( chan.state==3 ){
+			chan.audio.play();
+			chan.state=1;
+		}
 	}
 }
 
@@ -490,6 +500,7 @@ gxtkAudio.prototype.ResumeChannel=function( channel ){
 gxtkAudio.prototype.ChannelState=function( channel ){
 	var chan=this.channels[channel];
 	if( chan.state==1 && chan.audio.ended && !chan.audio.loop ) chan.state=0;
+	if( chan.state==3 ) return 1;
 	return chan.state;
 }
 
