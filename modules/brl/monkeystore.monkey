@@ -1,4 +1,6 @@
 
+Import asyncevent
+
 #If Not BRL_MONKEYSTORE_IMPLEMENTED
 #If TARGET="ios" Or TARGET="android"
 #BRL_MONKEYSTORE_IMPLEMENTED=True

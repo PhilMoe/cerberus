@@ -8,7 +8,7 @@ Import os
 Import trans
 Import builders
 
-Const VERSION:="1.55"
+Const VERSION:="1.56"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -43,9 +43,8 @@ Function ReplaceEnv:String( str:String )
 		
 		Local t:=str[i+2..e]
 
-		Local v:=GetEnv( t )		
-'		Local v:=GetConfigVar(t)
-'		If Not v v=GetEnv(t)
+		Local v:=GetConfigVar(t)
+		If Not v v=GetEnv(t)
 		
 		bits.Push str[..i]
 		bits.Push v

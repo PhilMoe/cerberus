@@ -86,6 +86,7 @@ End
 Function EvalConfigTags$( cfg$ )
 	Local i:=0
 	Repeat
+	
 		i=cfg.Find( "${" )
 		If i=-1 Return cfg
 
@@ -93,18 +94,11 @@ Function EvalConfigTags$( cfg$ )
 		If e=-1 Return cfg
 		
 		Local key:=cfg[i+2..e]
-		If Not GetConfigVars().Contains( key )
-			i=e+1
-			Continue
-		Endif
+		Local val:=_cfgScope.vars.Get( key )
 		
-		Local t:=_cfgScope.vars.Get( key )
-		_cfgScope.vars.Set key,""	'prevent recursion!
-		Local v:=EvalConfigTags( t )
-		_cfgScope.vars.Set key,t
+		cfg=cfg[..i]+val+cfg[e+1..]
+		i+=val.Length
 		
-		cfg=cfg[..i]+v+cfg[e+1..]
-		i+=v.Length
 	Forever
 End
 

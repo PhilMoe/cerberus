@@ -25,12 +25,19 @@ Function EvalBool:Bool( toker:Toker )
 End
 
 Function EvalText:String( toker:Toker )
+
 	Local expr:=EvalExpr( toker )
 	Local val:=expr.Eval()
+	
+	If StringType( expr.exprType ) 
+		Return EvalConfigTags( val )
+	Endif
+	
 	If BoolType( expr.exprType )
 		If val Return "True"
 		Return "False"
 	End
+	
 	Return val
 End
 
@@ -164,7 +171,7 @@ Function PreProcess$( path$ )
 						Select op
 						Case "="
 							Local expr:=EvalExpr( toker )
-							Local val:=EvalConfigTags( expr.Eval() )
+							Local val:=expr.Eval()
 							If Not GetConfigVars().Contains( toke ) SetConfigVar toke,val,expr.exprType
 						Case "+="
 							Local val:=EvalText( toker )

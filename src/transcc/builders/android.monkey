@@ -40,18 +40,17 @@ Class AndroidBuilder Extends Builder
 	End
 	
 	Method MakeTarget:Void()
-		
-		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
 
-		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
-	
 		'create data dir
 		CreateDataDir "assets/monkey"
 
 		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		
-		SetConfigVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+		
+		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
 		
 		'create package
 		Local jpath:="src"
