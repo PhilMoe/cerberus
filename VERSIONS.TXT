@@ -1,6 +1,23 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v75c *****
+
+Added support for more Ouya buttons - all buttons supported on my Ouya and Ps3 controllers now. Xbox360 controller a bit weird - always appears on port 3, and dpad not generating any button presses.
+
+Added JOY_LSB (LSB='Left Stick Button'), JOY_RSB and JOY_MENU keycodes (only used on Ouya right now).
+
+Fixed Android build issues.
+
+Added GL_GLEXT_PROTOTYPES to linux target main.h
+
+Fixed ${CD}, ${TARGET} etc in preprocessor strings.
+
+Fixed html5 app resume causing last played sound to replay.
+
+Fixed transcc +VAR=BLAH.
+
+
 ***** v75b *****
 
 Fixed winphone 8 orientation bug.
