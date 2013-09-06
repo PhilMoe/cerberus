@@ -444,6 +444,7 @@ Class JsonParser
 	Method ParseObject:StringMap<JsonValue>()
 		Parse( "{" )
 		Local map:=New StringMap<JsonValue>
+		If CParse( "}" ) Return map
 		Repeat
 			Local name:=ParseString()
 			Parse( ":" )
@@ -456,6 +457,7 @@ Class JsonParser
 	
 	Method ParseArray:JsonValue[]()
 		Parse( "[" )
+		If CParse( "]" ) Return []
 		Local stack:=New Stack<JsonValue>
 		Repeat
 			Local value:=ParseValue()
