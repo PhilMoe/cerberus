@@ -1225,7 +1225,7 @@ void MainWindow::build( QString mode ){
     QString filePath=editor->path();
     if( filePath.isEmpty() ) return;
 
-    QString cmd,msg="Buillding: "+filePath+"...";
+    QString cmd,msg="Building: "+filePath+"...";
 
     if( editor->fileType()=="monkey" ){
         if( mode=="run" ){
