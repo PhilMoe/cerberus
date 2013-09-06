@@ -66,9 +66,8 @@ Const KEY_BACKSLASH=220
 Const KEY_CLOSEBRACKET=221
 Const KEY_QUOTES=222
 
-Const KEY_JOY0=$100
-
-Const KEY_JOY0_A=$100		'32 joy0 states
+Const KEY_JOY0=$100			'32 joy0 states: (KEY_JOY0+JOY_BLAH)
+Const KEY_JOY0_A=$100
 Const KEY_JOY0_B=$101
 Const KEY_JOY0_X=$102
 Const KEY_JOY0_Y=$103
@@ -80,14 +79,62 @@ Const KEY_JOY0_LEFT=$108
 Const KEY_JOY0_UP=$109
 Const KEY_JOY0_RIGHT=$10a
 Const KEY_JOY0_DOWN=$10b
+Const KEY_JOY0_LSB=$10c
+Const KEY_JOY0_RSB=$10d
+Const KEY_JOY0_MENU=$10e
 
-Const KEY_JOY1_A=$120		'32 joy1 states
+Const KEY_JOY1=$120			'32 joy1 states: (KEY_JOY1+JOY_BLAH)
+Const KEY_JOY1_A=$120
+Const KEY_JOY1_B=$121
+Const KEY_JOY1_X=$122
+Const KEY_JOY1_Y=$123
+Const KEY_JOY1_LB=$124
+Const KEY_JOY1_RB=$125
+Const KEY_JOY1_BACK=$126
+Const KEY_JOY1_START=$127
+Const KEY_JOY1_LEFT=$128
+Const KEY_JOY1_UP=$129
+Const KEY_JOY1_RIGHT=$12a
+Const KEY_JOY1_DOWN=$12b
+Const KEY_JOY1_LSB=$12c
+Const KEY_JOY1_RSB=$12d
+Const KEY_JOY1_MENU=$12e
 
-Const KEY_JOY2_A=$140		'32 joy2 states
+Const KEY_JOY2=$140			'32 joy2 states: (KEY_JOY2+JOY_BLAH)
+Const KEY_JOY2_A=$140
+Const KEY_JOY2_B=$141
+Const KEY_JOY2_X=$142
+Const KEY_JOY2_Y=$143
+Const KEY_JOY2_LB=$144
+Const KEY_JOY2_RB=$145
+Const KEY_JOY2_BACK=$146
+Const KEY_JOY2_START=$147
+Const KEY_JOY2_LEFT=$148
+Const KEY_JOY2_UP=$149
+Const KEY_JOY2_RIGHT=$14a
+Const KEY_JOY2_DOWN=$14b
+Const KEY_JOY2_LSB=$14c
+Const KEY_JOY2_RSB=$14d
+Const KEY_JOY2_MENU=$14e
 
-Const KEY_JOY3_A=$160		'32 joy3 states
+Const KEY_JOY3=$160			'32 joy3 states: (KEY_JOY3+JOY_BLAH)
+Const KEY_JOY3_A=$160
+Const KEY_JOY3_B=$161
+Const KEY_JOY3_X=$162
+Const KEY_JOY3_Y=$163
+Const KEY_JOY3_LB=$164
+Const KEY_JOY3_RB=$165
+Const KEY_JOY3_BACK=$166
+Const KEY_JOY3_START=$167
+Const KEY_JOY3_LEFT=$168
+Const KEY_JOY3_UP=$169
+Const KEY_JOY3_RIGHT=$16a
+Const KEY_JOY3_DOWN=$16b
+Const KEY_JOY3_LSB=$16c
+Const KEY_JOY3_RSB=$16d
+Const KEY_JOY3_MENU=$16e
 
-Const KEY_TOUCH0=$180		'32 touch states
+Const KEY_TOUCH0=$180		'32 touch states: (KEY_TOUCH0+finger)
 
 Const KEY_BACK=$1a0			'back button (android/winphone8)
 Const KEY_MENU=$1a1			'menu button (android/winphone8)
@@ -98,6 +145,7 @@ Const KEY_CLOSE=$1b0		'close button (glfw/desktop xna)
 '***** GetChar constants *****
 
 'Special char codes for 'unprintable' keys
+'
 'ascii-ish
 '
 Const CHAR_BACKSPACE=8
@@ -131,10 +179,12 @@ Const JOY_LEFT=8
 Const JOY_UP=9
 Const JOY_RIGHT=10
 Const JOY_DOWN=11
+Const JOY_LSB=12
+Const JOY_RSB=13
+Const JOY_MENU=14
 
 '***** MouseDown/MouseHit constants *****
 
 Const MOUSE_LEFT=0
 Const MOUSE_RIGHT=1
 Const MOUSE_MIDDLE=2
-

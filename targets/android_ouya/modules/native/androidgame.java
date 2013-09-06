@@ -209,50 +209,63 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 		public boolean dispatchKeyEventPreIme( KeyEvent event ){
 
+			int key=event.getKeyCode();
+					
 			//New! Experimental gamepad support...
 			//
 			if( _useGamepad ){
+			
 				int button=-1;
-				switch( event.getKeyCode() ){
+				switch( key ){
 				case 96: button=0;break;	//A
 				case 97: button=1;break;	//B
 				case 99: button=2;break;	//X
 				case 100:button=3;break;	//Y
 				case 102:button=4;break;	//LB
 				case 103:button=5;break;	//RB
+				case 4:  button=6;break;	//BACK
 				case 108:button=7;break;	//START
 				case 21: button=8;break;	//LEFT
 				case 19: button=9;break;	//UP
 				case 22: button=10;break;	//RIGHT
 				case 20: button=11;break;	//DOWN
+ 				case 106:button=12;break;   //LSB
+				case 107:button=13;break;   //RSB
+				case 82: button=14;break;	//MENU
 				}
 				if( button!=-1 ){
 					int port=_androidGame.eventJoystickPort( event );
 					if( port>=0 && port<4 ){
 						JoyState js=_androidGame._joyStates[port];
-						js.buttons[button]=(event.getAction()==KeyEvent.ACTION_DOWN);
+						if( button==14 ){
+							if( event.getAction()==KeyEvent.ACTION_DOWN ) js.buttons[button]=!js.buttons[button];
+						}else{
+							js.buttons[button]=(event.getAction()==KeyEvent.ACTION_DOWN);
+						}
 						return true;
 					}
+					return false;
 				}
 			}
 			
 			//Convert back button to ESC in soft keyboard mode...
 			//
 			if( _androidGame._keyboardEnabled ){
-				if( event.getKeyCode()==KeyEvent.KEYCODE_BACK ){
+				if( key==KeyEvent.KEYCODE_BACK ){
 					if( event.getAction()==KeyEvent.ACTION_DOWN ){
 						_androidGame.KeyEvent( BBGameEvent.KeyChar,27 );
 					}
 					return true;
 				}
 			}
+
 			return false;
 		}
 		
 		public boolean onKeyDown( int key,KeyEvent event ){
 		
 			int vkey=-1;
-			switch( event.getKeyCode() ){
+			switch( key ){
 			case KeyEvent.KEYCODE_MENU:vkey=0x1a1;break;
 			case KeyEvent.KEYCODE_SEARCH:vkey=0x1a3;break;
 			}
@@ -264,7 +277,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			
 			if( !_androidGame._keyboardEnabled ) return false;
 			
-			if( event.getKeyCode()==KeyEvent.KEYCODE_DEL ){
+			if( key==KeyEvent.KEYCODE_DEL ){
 				_androidGame.KeyEvent( BBGameEvent.KeyChar,8 );
 			}else{
 				int chr=event.getUnicodeChar();
@@ -274,7 +287,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			}
 			return true;
 		}
-		
+
 		public boolean onKeyMultiple( int keyCode,int repeatCount,KeyEvent event ){
 			if( !_androidGame._keyboardEnabled ) return false;
 		

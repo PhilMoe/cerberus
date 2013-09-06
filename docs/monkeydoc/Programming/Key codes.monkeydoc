@@ -119,6 +119,9 @@ JOY_LEFT
 JOY_UP
 JOY_RIGHT
 JOY_DOWN
+JOY_LSB
+JOY_RSB
+JOY_MENU
 </pre>
 
 The following constants are for use with GetChar:
