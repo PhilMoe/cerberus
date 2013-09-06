@@ -40,13 +40,7 @@ Links:
 
 Returns 1 if the specified key is currently held down, otherwise 0.
 
-Params: 
-
-key - key code of key to check.
-
-Links: 
-
-[[Key codes]], [[KeyHit]]
+Links: [[Key codes]], [[KeyHit]]
 
 
 # Function KeyHit:Int(key:Int)
@@ -55,13 +49,7 @@ Returns the number of times the specified key has been hit since the last OnUpda
 
 Note that any on/off style 'buttons' on any device can be read using the KeyDown and KeyHit commands. For example, to read the state of the left mouse button you can use KeyDown( KEY_LMB ) in addition to MouseDown( MOUSE_LEFT ).
 
-Params: 
-
-key - keycode of the key to check.
-
-Links: 
-
-[[Key codes]], [[KeyDown]]
+Links: [[Key codes]], [[KeyDown]]
 
 Example: 
 
@@ -117,22 +105,7 @@ The mapping from key codes to character codes is controlled by the underlying OS
 
 The input module also provides special character code mappings for a number of unprintable keys: 
 
-<pre>
-CHAR_TAB
-CHAR_BACKSPACE
-CHAR_ENTER
-CHAR_ESCAPE
-CHAR_PAGEUP
-CHAR_PAGEDOWN
-CHAR_END
-CHAR_HOME
-CHAR_LEFT
-CHAR_UP
-CHAR_RIGHT
-CHAR_DOWN
-CHAR_INSERT
-CHAR_DELETE
-</pre>
+CHAR_TAB, CHAR_BACKSPACE, CHAR_ENTER, CHAR_ESCAPE, CHAR_PAGEUP, CHAR_PAGEDOWN, CHAR_END, CHAR_HOME, CHAR_LEFT, CHAR_UP, CHAR_RIGHT, CHAR_DOWN, CHAR_INSERT, CHAR_DELETE
 
 Example: 
 
@@ -223,19 +196,12 @@ Returns 1 if the specified mouse button is currently held down, otherwise 0.
 
 The button parameter should be one of:
 
-<pre>
-MOUSE_LEFT
-MOUSE_RIGHT
-MOUSE_MIDDLE
-</pre>
+| Mouse button	| Description
+| MOUSE_LEFT	| Left mouse button
+| MOUSE_RIGHT	| Right mouse button
+| MOUSE_MIDDLE	| Middle mouse button
 
-Params: 
-
-button - mouse button to check.
-
-Links: 
-
-[[MouseHit]]
+Links: [[MouseHit]]
 
 
 # Function MouseHit:Int(button:Int)
@@ -244,19 +210,12 @@ Returns the number of times the specified mouse button has been pressed since th
 
 The button parameter should be one of:
 
-<pre>
-MOUSE_LEFT
-MOUSE_RIGHT
-MOUSE_MIDDLE
-</pre>
+| Mouse button	| Description
+| MOUSE_LEFT	| Left mouse button
+| MOUSE_RIGHT	| Right mouse button
+| MOUSE_MIDDLE	| Middle mouse button
 
-Params: 
-
-button - mouse button to check.
-
-Links: 
-
-[[MouseDown]]
+Links: [[MouseDown]]
 
 
 # Function TouchX:Float(index:Int)
@@ -295,13 +254,7 @@ If a finger is touching, you can get its x and y coordinates using the TouchX an
 
 On devices with a mouse but no touch screen, TouchDown( 0 ) will instead return MouseDown( MOUSE_LEFT ).
 
-Params: 
-
-index - finger index in the range 0 to 31.
-
-Links: 
-
-[[TouchX]], [[TouchY]], [[TouchHit]], [[MouseDown]]
+Links: [[TouchX]], [[TouchY]], [[TouchHit]], [[MouseDown]]
 
 Example: 
 
@@ -345,13 +298,7 @@ If a finger is touching, you can get its x and y coordinates using the TouchX an
 
 On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return MouseHit( MOUSE_LEFT ).
 
-Params: 
-
-index - finger index in the range 0 to 31.
-
-Links: 
-
-[[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
+Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
 
 
 # Function JoyX:Float(index:Int=0,unit:Int=0)
@@ -364,10 +311,6 @@ In the case of controllers with 2 joysticks, the index parameter should be 0 for
 
 Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
 
-Params: 
-
-index - 0 or 1.
-
 
 # Function JoyY:Float(index:Int=0,unit:Int=0)
 
@@ -378,10 +321,6 @@ The return value will be in the range -1 to +1, with -1 representing 'down' and 
 In the case of controllers with 2 joysticks, the index parameter should be 0 for the left hand joystick, or 1 for the right hand joystick.
 
 Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
-
-Params: 
-
-index - 0 or 1.
 
 
 # Function JoyZ:Float(index:Int=0,unit:Int=0)
@@ -394,10 +333,6 @@ The index parameter should be 0 for the left handler shoulder control, or 1 for 
 
 Note: On the XNA target, JoyX, JoyY and JoyZ will all return 0 until a joystick button is pressed. This is to comply with xbox live publishing guidelines that state that it must be possible to use any of the 4 controllers to play a game. Mojo will therefore wait until a controller button is pressed (usually in response to a 'press button to start' style message on the title page) before deciding which controller is in use.
 
-Params: 
-
-index - 0 or 1.
-
 
 # Function JoyDown:Int(button:Int,unit:Int=0)
 
@@ -405,28 +340,24 @@ Return 1 if the specified joystick button is currently held down, else 0.
 
 The button parameter should be one of the following constants:
 
-<pre>
-JOY_A
-JOY_B
-JOY_X
-JOY_Y
-JOY_LB
-JOY_RB
-JOY_BACK
-JOY_START
-JOY_LEFT
-JOY_UP
-JOY_RIGHT
-JOY_DOWN
-</pre>
+| Joystick button	| Description
+| JOY_A				| 'A' on Xbox 360 controller, 'Cross' on PS3
+| JOY_B				| 'B' on Xbox 360 controller, 'Circle' on PS3
+| JOY_X				| 'X' on XBox 360 controller, 'Square' on PS3
+| JOY_Y				| 'Y' on XBox 360 controller, 'Triangle' on PS3
+| JOY_LB			| Left shoulder button
+| JOY_RB			| Right Shoulder button
+| JOY_BACK			| 'Back' on Xbox 360 controller, 'Select' on PS3
+| JOY_START			| Start button
+| JOY_LEFT			| Directional pad Left button
+| JOY_UP			| Directional pad Up button
+| JOY_RIGHT			| Directional pad Right button
+| JOY_DOWN			| Directional pad Down button
+| JOY_LSB			| Left stick button
+| JOY_RSB			| Right stick button
+| JOY_MENU			| Menu button
 
-Params: 
-
-button - joystick button to test.
-
-Links: 
-
-[[JoyHit]]
+Links: [[JoyHit]]
 
 
 # Function JoyHit:Int(button:Int,unit:Int=0)
@@ -435,28 +366,25 @@ Return the number of times the specified joystick button has been pressed since 
 
 The button parameter should be one of the following constants:
 
-<pre>
-JOY_A
-JOY_B
-JOY_X
-JOY_Y
-JOY_LB
-JOY_RB
-JOY_BACK
-JOY_START
-JOY_LEFT
-JOY_UP
-JOY_RIGHT
-JOY_DOWN
-</pre>
+| Joystick button	| Description
+| JOY_A				| 'A' on Xbox 360 controller, 'Cross' on PS3
+| JOY_B				| 'B' on Xbox 360 controller, 'Circle' on PS3
+| JOY_X				| 'X' on XBox 360 controller, 'Square' on PS3
+| JOY_Y				| 'Y' on XBox 360 controller, 'Triangle' on PS3
+| JOY_LB			| Left shoulder button
+| JOY_RB			| Right Shoulder button
+| JOY_BACK			| 'Back' on Xbox 360 controller, 'Select' on PS3
+| JOY_START			| Start button
+| JOY_LEFT			| Directional pad Left button
+| JOY_UP			| Directional pad Up button
+| JOY_RIGHT			| Directional pad Right button
+| JOY_DOWN			| Directional pad Down button
+| JOY_LSB			| Left stick button
+| JOY_RSB			| Right stick button
+| JOY_MENU			| Menu button
 
-Params: 
 
-button - joystick button to test.
-
-Links: 
-
-[[JoyDown]]
+Links: [[JoyDown]]
 
 
 # Function AccelX:Float()
