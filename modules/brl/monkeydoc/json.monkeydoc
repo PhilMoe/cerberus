@@ -9,28 +9,27 @@
 
 # Method BoolValue:Bool()
 
-Throws a [[JsonError]] is object is not a [[JsonBool]].
+Throws a [[JsonError]] if object is not a [[JsonBool]].
 
 
 # Method IntValue:Int()
 
-Throws a [[JsonError]] is object is not a [[JsonNumber]].
+Throws a [[JsonError]] if object is not a [[JsonNumber]].
 
 
 # Method FloatValue:Int()
 
-Throws a [[JsonError]] is object is not a [[JsonNumber]].
+Throws a [[JsonError]] if object is not a [[JsonNumber]].
 
 
 # Method StringValue:String()
 
-Throws a [[JsonError]] is object is not a [[JsonString]].
+Throws a [[JsonError]] if object is not a [[JsonString]].
 
 	
 # Method ToJson:String()
 
-
-# Method PushJson:Void( buf:StringStack )
+Converts value to a JSON string.
 
 
 # Class JsonObject Extends JsonValue
