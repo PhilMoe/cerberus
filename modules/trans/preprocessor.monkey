@@ -172,7 +172,10 @@ Function PreProcess$( path$ )
 						Case "="
 							Local expr:=EvalExpr( toker )
 							Local val:=expr.Eval()
-							If Not GetConfigVars().Contains( toke ) SetConfigVar toke,val,expr.exprType
+							If Not GetConfigVars().Contains( toke )
+								If StringType( expr.exprType )  val=EvalConfigTags( val )
+								SetConfigVar toke,val,expr.exprType
+							Endif
 						Case "+="
 							Local val:=EvalText( toker )
 							Local var:=GetConfigVar( toke )
