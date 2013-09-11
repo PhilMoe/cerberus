@@ -1,6 +1,13 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v75d *****
+
+Fixed glfw WritePixels issue.
+
+Fixed json parsing bug with empty objects/arrays.
+
+
 ***** v75c *****
 
 Added support for more Ouya buttons - all buttons supported on my Ouya and Ps3 controllers now. Xbox360 controller a bit weird - always appears on port 3, and dpad not generating any button presses.
