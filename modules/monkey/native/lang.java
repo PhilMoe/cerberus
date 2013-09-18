@@ -162,6 +162,10 @@ class bb_std_lang{
 	
 	//***** Array Stuff *****
 	
+	static int length( Object arr ){
+		return arr!=null ? Array.getLength( arr ) : 0;
+	}
+	
 	static Object sliceArray( Object arr,int from ){
 		return sliceArray( arr,from,Array.getLength( arr ) );
 	}
