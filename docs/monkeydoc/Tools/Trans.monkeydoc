@@ -2,7 +2,7 @@
 
 Trans is the command line tool used to build Monkey apps.
 
-If you are using an IDE such as [[Ted]] or [[Jungle]], you will not need to use trans yourself.
+If you are using an IDE such as [[Ted]] or [[http://www.jungleide.com|Jungle]], you will not need to use trans yourself.
 
 Trans works with Monkey projects and ultimately converts them into target projects. A Monkey project consists of:
 
