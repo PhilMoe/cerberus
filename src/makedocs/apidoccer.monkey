@@ -3,6 +3,8 @@ Import makedocs
 Import parser
 Import modpath
 
+Global ignore_mods:=New StringSet
+
 Class Decl
 
 	Field kind:String
@@ -785,7 +787,7 @@ Class ApiDoccer Implements ILinkResolver
 			Local p:=dir+"/"+f
 			Select FileType( p )
 			Case FILETYPE_DIR
-				If f="brlx" Continue
+				If ignore_mods.Contains( f ) Continue
 				If modpath
 					ParseModules p,modpath+"."+f
 				Else

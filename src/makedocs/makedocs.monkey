@@ -337,6 +337,19 @@ Function Main:Int()
 		ChangeDir ".."
 	Wend
 	
+	Local i:=1
+	While i<AppArgs.Length
+		Local arg:=AppArgs[i]
+		i+=1
+		Select arg
+		Case "-ignore"
+			If i<AppArgs.Length
+				ignore_mods.Insert AppArgs[i]
+				i+=1
+			Endif
+		End
+	Wend
+	
 	DeleteDir "docs/html",True
 	CreateDir "docs/html"
 	CreateDir "docs/html/data"
