@@ -131,11 +131,17 @@ public class bb_std_lang{
 	
 	//***** Array stuff *****
 	
+	static public int length( Array arr ){
+		return arr!=null ? arr.Length : 0;
+	}
+	
 	static public Array slice( Array arr,int from ){
+		if( arr==null ) return null;
 		return slice( arr,from,arr.Length );
 	}
 	
 	static public Array slice( Array arr,int from,int term ){
+		if( arr==null ) return null;
 		int len=arr.Length;
 		if( from<0 ){
 			from+=len;
@@ -154,43 +160,26 @@ public class bb_std_lang{
 		if( newlen>0 ) Array.Copy( arr,from,res,0,newlen );
 		return res;
 	}
-
-	static public Array resizeArray( Array arr,int len ){
-		Type ty=arr.GetType().GetElementType();
-		Array res=Array.CreateInstance( ty,len );
-		int n=Math.Min( arr.Length,len );
+	
+	static public String[] resize( String[] arr,int newlen ){
+		if( arr==null ) return stringArray( newlen );
+		int len=arr.Length;
+		int n=Math.Min( len,newlen );
+		String[] res=new String[newlen];
+		if( n>0 ) Array.Copy( arr,res,n );
+		while( len<newlen ) res[len++]="";
+		return res;		
+	}
+	
+	static public Array resize( Array arr,int newlen,Type elemTy ){
+		Array res=Array.CreateInstance( elemTy,newlen );
+		if( arr==null ) return res;
+		int len=arr.Length;
+		int n=Math.Min( len,newlen );
 		if( n>0 ) Array.Copy( arr,res,n );
 		return res;
-   }
-
-	static public Array[] resizeArrayArray( Array[] arr,int len ){
-		int i=arr.Length;
-		arr=(Array[])resizeArray( arr,len );
-		if( i<len ){
-			Array empty=Array.CreateInstance( arr.GetType().GetElementType().GetElementType(),0 );
-			while( i<len ) arr[i++]=empty;
-		}
-		return arr;
 	}
 
-	static public String[] resizeStringArray( String[] arr,int len ){
-		int i=arr.Length;
-		arr=(String[])resizeArray( arr,len );
-		while( i<len ) arr[i++]="";
-		return arr;
-	}
-	
-	static public Array concat( Array lhs,Array rhs ){
-		Array res=Array.CreateInstance( lhs.GetType().GetElementType(),lhs.Length+rhs.Length );
-		Array.Copy( lhs,0,res,0,lhs.Length );
-		Array.Copy( rhs,0,res,lhs.Length,rhs.Length );
-		return res;
-	}
-	
-	static public int length( Array arr ){
-		return arr!=null ? arr.Length : 0;
-	}
-	
 	static public int[] toChars( String str ){
 		int[] arr=new int[str.Length];
 		for( int i=0;i<str.Length;++i ) arr[i]=(int)str[i];

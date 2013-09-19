@@ -30,7 +30,7 @@ Class CsTranslator Extends CTranslator
 			If BoolType( ty ) Return "false"
 			If NumericType( ty ) Return "0"
 			If StringType( ty ) Return "~q~q"
-			If ArrayType( ty ) 
+			If ArrayType( ty )
 				Local elemTy:=ArrayType( ty ).elemType
 				Local t$="[0]"
 				While ArrayType( elemTy )
@@ -261,6 +261,11 @@ Class CsTranslator Extends CTranslator
 		
 		'array methods
 		Case "resize" 
+			Local ty:=ArrayType( expr.exprType ).elemType
+			If StringType( ty ) Return "bb_std_lang.resize("+texpr+","+arg0+")"
+			Local ety:=TransType( ty )
+			Return "("+ety+"[])bb_std_lang.resize("+texpr+","+arg0+",typeof("+ety+"))"
+#rem			
 			Local fn$="resizeArray"
 			Local ty:=ArrayType( expr.exprType ).elemType
 			If StringType( ty )
@@ -269,7 +274,7 @@ Class CsTranslator Extends CTranslator
 				fn="resizeArrayArray"
 			Endif
 			Return "("+TransType( expr.exprType )+")bb_std_lang."+fn+Bra( texpr+","+arg0 )
-
+#end
 		'string methods
 		Case "compare" Return texpr+".CompareTo"+Bra( arg0 )
 		Case "find" Return texpr+".IndexOf"+Bra( arg0+","+arg1 )

@@ -167,10 +167,12 @@ class bb_std_lang{
 	}
 	
 	static Object sliceArray( Object arr,int from ){
+		if( arr==null ) return null;
 		return sliceArray( arr,from,Array.getLength( arr ) );
 	}
 	
 	static Object sliceArray( Object arr,int from,int term ){
+		if( arr==null ) return null;
 		int len=Array.getLength( arr );
 		if( from<0 ){
 			from+=len;
@@ -190,38 +192,22 @@ class bb_std_lang{
 		return res;
 	}
 	
-	static Object resizeArray( Object arr,int newlen ){
-		int len=Array.getLength( arr );
-		Object res=Array.newInstance( arr.getClass().getComponentType(),newlen );
+	static String[] resize( String[] arr,int newlen ){
+		if( arr==null ) return stringArray( newlen );
+		int len=arr.length;
+		String[] res=new String[newlen];
 		int n=Math.min( len,newlen );
 		if( n>0 ) System.arraycopy( arr,0,res,0,n );
-		return res;
+		while( len<newlen ) res[len++]="";
+		return res;		
 	}
 	
-	static Object[] resizeArrayArray( Object[] arr,int newlen ){
-		int i=arr.length;
-		arr=(Object[])resizeArray( arr,newlen );
-		if( i<newlen ){
-			Object empty=Array.newInstance( arr.getClass().getComponentType().getComponentType(),0 );
-			while( i<newlen ) arr[i++]=empty;
-		}
-		return arr;
-	}
-	
-	static String[] resizeStringArray( String[] arr,int newlen ){
-		int i=arr.length;
-		arr=(String[])resizeArray( arr,newlen );
-		while( i<newlen ) arr[i++]="";
-		return arr;
-	}
-	
-	static Object concatArrays( Object lhs,Object rhs ){
-		int lhslen=Array.getLength( lhs );
-		int rhslen=Array.getLength( rhs );
-		int len=lhslen+rhslen;
-		Object res=Array.newInstance( lhs.getClass().getComponentType(),len );
-		if( lhslen>0 ) System.arraycopy( lhs,0,res,0,lhslen );
-		if( rhslen>0 ) System.arraycopy( rhs,0,res,lhslen,rhslen );
+	static Object resize( Object arr,int newlen,Class elemTy ){
+		if( arr==null ) return Array.newInstance( elemTy,newlen );
+		int len=Array.getLength( arr );
+		Object res=Array.newInstance( elemTy,newlen );
+		int n=Math.min( len,newlen );
+		if( n>0 ) System.arraycopy( arr,0,res,0,n );
 		return res;
 	}
 	
