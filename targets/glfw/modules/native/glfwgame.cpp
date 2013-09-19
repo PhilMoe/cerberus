@@ -408,6 +408,12 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	Init_GL_Exts();
 #endif
 
+#if CFG_GLFW_VSYNC_ENABLED
+	glfwSwapInterval( 1 );
+#else
+	glfwSwapInterval( 0 );
+#endif
+
 	glfwEnable( GLFW_KEY_REPEAT );
 	glfwDisable( GLFW_AUTO_POLL_EVENTS );
 	glfwSetKeyCallback( OnKey );
@@ -474,6 +480,7 @@ void BBGlfwGame::Run(){
 		}
 		
 		RenderGame();
+		
 		if( !_updateRate ) continue;
 		
 		if( updates==4 ) _nextUpdate=glfwGetTime();
