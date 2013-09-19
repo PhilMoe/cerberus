@@ -105,8 +105,8 @@ Class AndroidNdkBuilder Extends Builder
 '				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
 				Execute "adb shell am start -n "+app_package+"/android.app.NativeActivity",False
 
-'				Execute "adb logcat [Monkey]:I *:E",False	'?!?!?
-				Execute "adb logcat",False
+				Execute "adb logcat [Monkey]:I *:E",False	'?!?!?
+'				Execute "adb logcat",False
 				'
 				'NOTE: This leaves ADB server running which can LOCK the .build dir making it undeletable...
 				'
