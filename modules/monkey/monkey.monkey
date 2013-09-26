@@ -12,4 +12,5 @@ Import math
 Import random
 Import set
 Import stack
+Import deque
 Import monkeytarget

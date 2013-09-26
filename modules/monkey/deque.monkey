@@ -11,6 +11,18 @@ Class Deque<T>
 	End
 
 	Method Clear:Void()
+		If _first<=_last
+			For Local i:=_first Until _last
+				_data[i]=NIL
+			Next
+		Else
+			For Local i:=0 Until _last
+				_data[i]=NIL
+			Next
+			For Local i:=_first Until _capacity
+				_data[i]=NIL
+			Next
+		Endif
 		_first=0
 		_last=0
 	End
@@ -26,17 +38,17 @@ Class Deque<T>
 	
 	Method ToArray:T[]()
 		Local data:T[Length]
-		If _first<_last
+		If _first<=_last
 			For Local i:=_first Until _last
 				data[i-_first]=_data[i]
 			Next
 		Else
 			Local n:=_capacity-_first
 			For Local i:=0 Until n
-				data[i]=_data[_first+n]
+				data[i]=_data[_first+i]
 			Next
 			For Local i:=0 Until _last
-				data[i+n]=_data[i]
+				data[n+i]=_data[i]
 			Next
 		Endif
 		Return data
@@ -76,7 +88,7 @@ Class Deque<T>
 	
 	Method PopFirst:T()
 #If CONFIG="debug"
-		If IsEmpty() Error "Illegal operation on empty deque"
+		If IsEmpty Error "Illegal operation on empty deque"
 #Endif
 		Local v:=_data[_first]
 		_data[_first]=NIL
@@ -87,7 +99,7 @@ Class Deque<T>
 	
 	Method PopLast:T()
 #If CONFIG="debug"
-		If IsEmpty() Error "Illegal operation on empty deque"
+		If IsEmpty Error "Illegal operation on empty deque"
 #Endif
 		If _last=0 _last=_capacity
 		_last-=1
@@ -98,23 +110,23 @@ Class Deque<T>
 	
 	Method First:T()
 #If CONFIG="debug"
-		If IsEmpty() Error "Illegal operation on empty deque"
+		If IsEmpty Error "Illegal operation on empty deque"
 #Endif
 		Return _data[_first]
 	End
 	
 	Method Last:T()
 #If CONFIG="debug"
-		If IsEmpty() Error "Illegal operation on empty deque"
+		If IsEmpty Error "Illegal operation on empty deque"
 #Endif
-		Return _data[_last]
+		Return _data[(_last-1)Mod _capacity]
 	End
 	
 	Private
 	
 	Global NIL:T
 	
-	Field _data:T[]
+	Field _data:T[4]
 	Field _capacity
 	Field _first:Int
 	Field _last:Int
@@ -133,7 +145,7 @@ Class Deque<T>
 				data[i]=_data[_first+i]
 			Next
 			For Local i:=0 Until _last
-				data[i+n]=_data[i]
+				data[n+i]=_data[i]
 			Next
 			_last+=n
 			_first=0
@@ -201,36 +213,29 @@ End
 
 Function Main()
 
-	Local deque:=New IntDeque
+	Local q:=New Deque<Int>
 	
-	For Local i:=0 Until 15
-		deque.PushLast i
-'		Print "after add:"+deque.Length+","+deque._first+","+deque._last+","+deque._capacity
+	For Local i:=1 To 20
+		q.PushLast i
+'		Print q.PopFirst()
 	Next
 	
-	For Local i:=0 Until 5
-		deque.PopFirst()
+	For Local i:=1 To 20
+		q.PopFirst
+'		Print q.PopFirst()
 	Next
 	
-	For Local n:=Eachin deque.ToArray()
-		Print n
+	For Local i:=1 To 100
+		q.PushLast i
+'		Print q.PopFirst()
 	Next
 	
-	#rem
+	For Local i:=Eachin q.ToArray()
+		Print i
+	Next
+	
+	Print "Length="+q._data.Length
 
-	For Local i:=0 Until 5
-		deque.PopFirst()
-	Next
-	
-	Print deque.PopFirst()
-
-	For Local i:=0 Until 10
-'		deque.PopFirst()
-'		Print "after pop:"+deque.Length+","+deque._first+","+deque._last+","+deque._capacity
-	Next
-	
-'	Print "ERR="+deque.PopFirst()
-
-	#end
+	Return 0
 		
 End
