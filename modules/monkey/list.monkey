@@ -59,32 +59,34 @@ Class List<T>
 	End Method
 	
 	Method FirstNode:Node<T>()
-		Return _head.NextNode()
+		If _head._succ<>_head Return _head._succ
+		Return Null
 	End
 	
 	Method LastNode:Node<T>()
-		Return _head.PrevNode()
+		If _head._pred<>_head Return _head._pred
+		Return Null
 	End
 	
 	Method First:T()
 #If CONFIG="debug"
 		If IsEmpty() Error "Illegal operation on empty list"
 #Endif
-		Return _head.NextNode()._data
+		Return _head._succ._data
 	End
 
 	Method Last:T()
 #If CONFIG="debug"
 		If IsEmpty() Error "Illegal operation on empty list"
 #Endif
-		Return _head.PrevNode()._data
+		Return _head._pred._data
 	End
 	
 	Method RemoveFirst:T()
 #If CONFIG="debug"
 		If IsEmpty() Error "Illegal operation on empty list"
 #Endif
-		Local data:=_head.NextNode()._data
+		Local data:=_head._succ._data
 		_head._succ.Remove
 		Return data
 	End
@@ -93,7 +95,7 @@ Class List<T>
 #If CONFIG="debug"
 		If IsEmpty() Error "Illegal operation on empty list"
 #Endif
-		Local data:=_head.PrevNode()._data
+		Local data:=_head._pred._data
 		_head._pred.Remove
 		Return data
 	End
