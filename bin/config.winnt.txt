@@ -75,7 +75,7 @@ ANDROID_PATH="${SYSTEMDRIVE}\android-sdk-windows"
 '
 'Must be set to a valid dir for ANDROID NDK target support
 '
-ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r8e"
+ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r9"
 '--------------------
 
 '--------------------

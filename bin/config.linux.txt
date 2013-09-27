@@ -29,14 +29,6 @@ JDK_PATH="${HOME}/jdk1.7.0_09"
 '--------------------
 
 '--------------------
-'Android SDK and tool paths.
-'
-'Must be set to a valid for for ANDROID target support.
-'
-ANDROID_PATH="${HOME}/android-sdk-linux"
-'--------------------
-
-'--------------------
 'Flex SDK and flash player path.
 '
 'FLEX_PATH Must be set for FLASH target support.
@@ -47,3 +39,18 @@ FLEX_PATH="${HOME}/flex_sdk_4.6"
 'FLASH_PLAYER="...?..."
 '--------------------
 
+'--------------------
+'Android SDK and tool paths.
+'
+'Must be set to a valid for for ANDROID target support.
+'
+ANDROID_PATH="${HOME}/android-sdk-linux"
+'--------------------
+
+'--------------------
+'Android NDK
+'
+'Must be set to a valid dir for ANDROID NDK target support
+'
+ANDROID_NDK_PATH="${HOME}/android-ndk-r9"
+'--------------------

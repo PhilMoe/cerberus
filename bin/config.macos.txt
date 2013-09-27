@@ -42,6 +42,6 @@ ANDROID_PATH="${HOME}/android-sdk-macosx"
 '
 'Must be set to a valid dir for ANDROID NDK target support
 '
-ANDROID_NDK_PATH="${HOME}/android-ndk-r8e"
+ANDROID_NDK_PATH="${HOME}/android-ndk-r9"
 '--------------------
 
