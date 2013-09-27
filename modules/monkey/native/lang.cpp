@@ -1534,13 +1534,11 @@ int bbPrint( String t ){
 	
 #elif __linux			//linux?
 
-	fputs( (const char*)&buf[0],stdout );
-	fflush( stdout );
-
-#else					//ndk?
-
 #if CFG_ANDROID_PRINT_ENABLED
 	LOGI( (const char*)&buf[0] );
+#else
+	fputs( (const char*)&buf[0],stdout );
+	fflush( stdout );
 #endif
 
 #endif
