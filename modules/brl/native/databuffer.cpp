@@ -8,7 +8,7 @@ public:
 	BBDataBuffer();
 	~BBDataBuffer();
 	
-	bool _New( int length );
+	bool _New( int length,void *data=0 );
 	bool _Load( String path );
 	void _LoadAsync( String path,BBThread *thread );
 
@@ -42,9 +42,10 @@ BBDataBuffer::~BBDataBuffer(){
 	if( _data ) free( _data );
 }
 
-bool BBDataBuffer::_New( int length ){
+bool BBDataBuffer::_New( int length,void *data ){
 	if( _data ) return false;
-	_data=(signed char*)malloc( length );
+	if( !data ) data=malloc( length );
+	_data=(signed char*)data;
 	_length=length;
 	return true;
 }
