@@ -37,7 +37,7 @@
 | Module					| Contains																|Availability
 | [[brl.json]]				| The [[JsonObject]] class for using JSON data							|All
 | [[brl.markdown]]			| The [[Markdown]] class for generating html from simple markdown		|All
-| [[brl.filepath]]			| Functions for manipulating file paths								|All
+| [[brl.filepath]]			| Functions for manipulating file paths									|All
 
 >> Collections
 
@@ -46,6 +46,7 @@
 | [[monkey.stack]]			| The [[Stack]] class for managing stacks and dynamic arrays			|All
 | [[monkey.map]]			| The [[Map]] class for managing associative maps						|All
 | [[monkey.set]]			| The [[Set]] class for managing sets									|All
+| [[monkey.deque]]			| The [[Deque]] class for managing queues								|All
 | [[brl.pool]]				| The [[Pool]] class for managing preallocated objects					|All
 
 >> Language

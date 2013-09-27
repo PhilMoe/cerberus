@@ -210,32 +210,3 @@ Class StringDeque Extends Deque<String>
 	End
 
 End
-
-Function Main()
-
-	Local q:=New Deque<Int>
-	
-	For Local i:=1 To 20
-		q.PushLast i
-'		Print q.PopFirst()
-	Next
-	
-	For Local i:=1 To 20
-		q.PopFirst
-'		Print q.PopFirst()
-	Next
-	
-	For Local i:=1 To 100
-		q.PushLast i
-'		Print q.PopFirst()
-	Next
-	
-	For Local i:=Eachin q.ToArray()
-		Print i
-	Next
-	
-	Print "Length="+q._data.Length
-
-	Return 0
-		
-End
