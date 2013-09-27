@@ -24,8 +24,24 @@ Class AndroidNdkBuilder Extends Builder
 		_trans=New CppTranslator
 	End
 	
+	Method CreateDirRecursive:Bool( path:String )
+		Local i:=0
+		Repeat
+			i=path.Find( "/",i )
+			If i=-1
+				CreateDir( path )
+				Return FileType( path )=FILETYPE_DIR
+			Endif
+			Local t:=path[..i]
+			CreateDir( t )
+			If FileType( t )<>FILETYPE_DIR Return False
+			i+=1
+		Forever
+	End
+	
 	Method MakeTarget:Void()
 		
+		SetConfigVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
 		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
 		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
 	
@@ -35,19 +51,43 @@ Class AndroidNdkBuilder Extends Builder
 		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		
-		SetConfigVar "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+		'translated code
+		Local main:=LoadString( "jni/main.cpp" )
+		main=ReplaceBlock( main,"TRANSCODE",transCode )
+		main=ReplaceBlock( main,"CONFIG",Config() )
+		SaveString main,"jni/main.cpp"
 		
-		'create package
-		Local jpath:="src"
-		DeleteDir jpath,True
-		CreateDir jpath
-		For Local t:=Eachin app_package.Split(".")
-			jpath+="/"+t
-			CreateDir jpath
+		DeleteDir "src",True
+
+		'main java file
+		Local jmain:=LoadString( "MonkeyGame.java" )
+		jmain=ReplaceBlock( jmain,"PACKAGE","package "+app_package+";" )
+		Local dir:="src/"+app_package.Replace( ".","/" )
+		If Not CreateDirRecursive( dir ) Error "Failed to create dir:"+dir
+		SaveString jmain,dir+"/MonkeyGame.java"
+		
+		'SRCS...
+		For Local src:=Eachin GetConfigVar( "SRCS" ).Split( ";" )
+			Select ExtractExt( src )
+			Case "java","aidl"
+				Local i:=src.FindLast( "/src/" )
+				If i<>-1
+					Local dst:=src[i+1..]
+					If Not CreateDirRecursive( ExtractDir( dst ) ) Error "Failed to create dir:"+ExtractDir( dst )
+					CopyFile src,dst
+				Endif
+			End
 		Next
-		jpath+="/MonkeyGame.java"
 		
-		'template files
+		'LIBS...
+		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( ";" )
+			Select ExtractExt( lib )
+			Case "jar","so"
+				CopyFile lib,"libs/"+StripDir( lib )
+			End
+		Next
+		
+		'templates/
 		For Local file:=Eachin LoadDir( "templates",True )
 		
 			'Recursive CreateDir...	
@@ -74,20 +114,6 @@ Class AndroidNdkBuilder Extends Builder
 			End
 		Next
 		
-		'create main source file
-		Local main:=LoadString( "jni/main.cpp" )
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-		SaveString main,"jni/main.cpp"
-
-		'create 'libs' dir		
-		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( ";" )
-			Select ExtractExt( lib )
-			Case "jar","so"
-				CopyFile lib,"libs/"+StripDir( lib )
-			End
-		Next
-		
 		If tcc.opt_build
 		
 			If Not Execute( tcc.ANDROID_NDK_PATH+"/ndk-build" )
@@ -102,8 +128,8 @@ Class AndroidNdkBuilder Extends Builder
 			
 				Execute "adb logcat -c",False
 
-'				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
-				Execute "adb shell am start -n "+app_package+"/android.app.NativeActivity",False
+				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
+'				Execute "adb shell am start -n "+app_package+"/com.monkey.AppHelper",False
 
 				Execute "adb logcat [Monkey]:I *:E",False	'?!?!?
 '				Execute "adb logcat",False
