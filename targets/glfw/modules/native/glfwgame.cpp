@@ -408,10 +408,8 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	Init_GL_Exts();
 #endif
 
-#if CFG_GLFW_VSYNC_ENABLED
-	glfwSwapInterval( 1 );
-#else
-	glfwSwapInterval( 0 );
+#if CFG_GLFW_SWAP_INTERVAL>=0
+	glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
 #endif
 
 	glfwEnable( GLFW_KEY_REPEAT );
