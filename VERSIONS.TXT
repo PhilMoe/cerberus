@@ -3,13 +3,13 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v76a *****
 
+Fixed flash audio bug where SetMusicVolume on paused music crashed.
+
+Added minimal monkey.deque.Deque class.
+
 Change iOS deployment target to 4.3 for xcode5 compatibility.
 
-Added minimal Deque class.
-
-Ios target 'deployment target' changed to 4.3
-
-Added GLFW_VSYNC_ENABLED app config setting, defaults to true.
+Added GLFW_SWAP_INTERVAL app config setting for glfw target, set to -1 to not set swap interval at all (ie: use driver default). Defaults to -1 for BW compatiblity.
 
 Fixed some bugs with arrays of arrays in c#/java.
 
