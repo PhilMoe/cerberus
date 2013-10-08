@@ -1,6 +1,4 @@
 
-Import os
-
 Class PageMaker
 
 	Method New( template:String )
