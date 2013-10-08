@@ -106,7 +106,7 @@ Function Main()
 	Local intArray:Int[]=[1,2,3,4,5]
 
 	'box it...	
-	Local boxedArray:=ArrayBoxer&lt;Int&gt;.Box( intArray )
+	Local boxedArray:=ArrayBoxer<Int>.Box( intArray )
 	
 	'set value of MyGlobal
 	GetGlobal( "MyGlobal" ).SetValue( boxedArray )
@@ -123,7 +123,7 @@ Function Main()
 	boxedArray=GetGlobal( "MyGlobal" ).GetValue()
 	
 	'Unbox it...
-	intArray=ArrayBoxer&lt;Int&gt;.Unbox( boxedArray )
+	intArray=ArrayBoxer<Int>.Unbox( boxedArray )
 	
 	'dump unboxed array
 	For Local i:=Eachin intArray
