@@ -14,13 +14,14 @@ Import "native/asyncsoundloader.${LANG}"
 
 Extern Private
 
-Class AsyncSoundLoaderThread Extends BBThread="BBAsyncSoundLoaderThread"
+Class AsyncSoundLoaderThread="BBAsyncSoundLoaderThread"
 
 	Field _device:AudioDevice
 	Field _path:String
 	Field _sample:Sample
 	
 	Method Start:Void()
+	Method IsRunning:Bool()
 
 End
 

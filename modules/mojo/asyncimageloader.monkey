@@ -16,14 +16,15 @@ Import "native/asyncimageloader.${LANG}"
 
 Extern Private
 
-Class AsyncImageLoaderThread Extends BBThread="BBAsyncImageLoaderThread"
+Class AsyncImageLoaderThread="BBAsyncImageLoaderThread"
 
 	Field _device:GraphicsDevice
 	Field _path:String
 	Field _surface:Surface
 	
 	Method Start:Void()
-
+	Method IsRunning:Bool()
+	
 End
 
 #Else
