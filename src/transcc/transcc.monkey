@@ -4,11 +4,10 @@
 ' Placed into the public domain 24/02/2011.
 ' No warranty implied; use at your own risk.
 
-Import os
 Import trans
 Import builders
 
-Const VERSION:="1.57"
+Const VERSION:="1.58"
 
 Function Main()
 	Local tcc:=New TransCC
