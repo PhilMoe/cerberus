@@ -144,7 +144,7 @@ Class JsonArray Extends JsonValue
 	
 	Method Set:Void( index:Int,value:JsonValue )
 		If index<0 Or index>=_data.Length ThrowError
-		_data.Set( index,value )
+		_data[index]=value
 	End
 	
 	Method SetBool:Void( index:Int,value:Bool )
@@ -165,9 +165,9 @@ Class JsonArray Extends JsonValue
 	
 	Method Get:JsonValue( index:Int )
 		If index<0 Or index>=_data.Length ThrowError
-		Local val:=_data.Get( index )
+		Local val:=_data[index]
 		If val Return val
-		Return JsonNull.GetInstance()
+		Return JsonNull.Instance()
 	End
 	
 	Method GetBool:Bool( index:Int )
