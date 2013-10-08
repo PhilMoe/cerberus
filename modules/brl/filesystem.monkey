@@ -24,7 +24,7 @@ Class BBFileSystem
 	Function CreateDir:Bool( path:String )
 	Function DeleteDir:Bool( path:String )
 	Function LoadDir:String[]( path:String )
- 
+
 End
 
 Private
@@ -132,15 +132,16 @@ End
 
 Function LoadDir:String[]( path:String,recursive:Bool=False,hidden:Bool=False )
 
-	Local dirs:=New StringList,files:=New StringList
+	Local dirs:=New StringDeque
+	Local files:=New StringStack
 
 	If Not path.EndsWith( "/" ) path+="/"
 	
-	dirs.AddLast ""
+	dirs.PushLast ""
 	
 	While Not dirs.IsEmpty()
 
-		Local dir:String=dirs.RemoveFirst()
+		Local dir:String=dirs.PopFirst()
 
 		For Local f:String=Eachin _LoadDir( path+dir )
 		
@@ -148,12 +149,11 @@ Function LoadDir:String[]( path:String,recursive:Bool=False,hidden:Bool=False )
 			
 			Local p:=dir+f
 			
-			files.AddLast p
+			files.Push p
 			
-			If recursive And FileType( path+p )=FILETYPE_DIR dirs.AddLast p+"/"
+			If recursive And FileType( path+p )=FILETYPE_DIR dirs.PushLast p+"/"
 		Next
 	Wend
 
 	Return files.ToArray()
 End
-
