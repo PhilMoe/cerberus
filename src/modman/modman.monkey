@@ -11,10 +11,9 @@
 #GLFW_WINDOW_RESIZABLE=False
 #GLFW_WINDOW_FULLSCREEN=False
 
-Import os
 Import mojo
+Import os
 Import brl.process
-
 Import modpath
 Import microgui
 
@@ -167,7 +166,7 @@ Class Repos
 	Method BeginUpdate_hg:Void()
 		Select state
 		Case UNINSTALLED
-			StartProc( "hg identity "+url )
+			StartProc( "hg identify "+url )
 		Case INSTALLABLE
 			StartProc( "hg clone "+url+" "+ident )
 		Case INSTALLED
