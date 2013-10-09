@@ -53,11 +53,13 @@ Class StdcppBuilder Extends Builder
 			Local OPTS:="",LIBS:=""
 			
 			Select ENV_HOST
-			Case "macos"
-				OPTS+=" -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3"
 			Case "winnt"
 				OPTS+=" -Wno-free-nonheap-object"
 				LIBS+=" -lwinmm -lws2_32"
+			Case "macos"
+				OPTS+=" -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3"
+			Case "linux"
+				LIBS+=" -lpthread"
 			End
 			
 			Select ENV_CONFIG
