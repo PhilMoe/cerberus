@@ -21,7 +21,7 @@ Class JsonValue Abstract
 		ThrowError
 	End
 	
-	Method FloatValue:Int()
+	Method FloatValue:Float()
 		ThrowError
 	End
 	
