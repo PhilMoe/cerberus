@@ -74,31 +74,9 @@ Class Reflector
 	'
 	Method ModPath$( mdecl:ModuleDecl )
 	
-		Local p:=mdecl.filepath.Replace( "\","/" )
-		If Not p.EndsWith( ".monkey" ) InternalErr
-		p=p[..-7]		
-		
-		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
-			If Not dir or dir="." Continue
-			
-			dir=dir.Replace( "\","/" )
-			If Not dir.EndsWith("/") dir+="/"
-			If Not p.StartsWith( dir ) Continue
-			
-			p=p[dir.Length-1..]
-			
-			Local i=p.FindLast( "/" )
-			If i<>-1
-				Local e:=p[i..]
-				If p.EndsWith( e+e )	'eg: ends with /mojo/mojo
-					p=p[..i]
-				Endif
-			Endif
-			
-			p=p[1..].Replace( "/","." )
+		Local p:=ModuleDecl.ModPath( mdecl.filepath )
+		If p Return p
 
-			Return p
-		Next
 		Print "MODPATH="+ENV_MODPATH
 		Error "Invalid module path for module:"+mdecl.filepath
 	End

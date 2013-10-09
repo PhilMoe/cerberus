@@ -1229,7 +1229,7 @@ Class ModuleDecl Extends ScopeDecl
 	Field filepath$
 	Field imported:=New StringMap<ModuleDecl>		'Maps filepath to modules
 	Field pubImported:=New StringMap<ModuleDecl>	'Ditto for publicly imported modules
-
+	
 	Method ToString$()
 		Return "Module "+munged
 	End
@@ -1321,6 +1321,38 @@ Class ModuleDecl Extends ScopeDecl
 			Endif
 		Next
 		attrs|=MODULE_SEMANTALL
+	End
+	
+	'convert a filepath->modpath
+	'
+	Function ModPath:String( filepath:String )
+	
+		Local p:=filepath.Replace( "\","/" )
+		If Not p.EndsWith( ".monkey" ) Return ""' InternalErr
+		p=p[..-7]		
+		
+		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
+			If Not dir Or dir="." Continue
+			
+			dir=dir.Replace( "\","/" )
+			If Not dir.EndsWith("/") dir+="/"
+			If Not p.StartsWith( dir ) Continue
+			
+			p=p[dir.Length-1..]
+			
+			Local i=p.FindLast( "/" )
+			If i<>-1
+				Local e:=p[i..]
+				If p.EndsWith( e+e )	'eg: ends with /mojo/mojo
+					p=p[..i]
+				Endif
+			Endif
+			
+			p=p[1..].Replace( "/","." )
+
+			Return p
+		Next
+		Return ""
 	End
 	
 End

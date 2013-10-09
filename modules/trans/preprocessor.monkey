@@ -51,6 +51,7 @@ Function PreProcess$( path$ )
 	PushEnv GetConfigScope()
 	
 	SetConfigVar "CD",ExtractDir( RealPath( path ) )
+	SetConfigVar "MODPATH",ModuleDecl.ModPath( path )
 	
 	Repeat
 
@@ -199,6 +200,7 @@ Function PreProcess$( path$ )
 	Forever
 	
 	RemoveConfigVar "CD"
+	RemoveConfigVar "MODPATH"
 
 	PopEnv
 		
