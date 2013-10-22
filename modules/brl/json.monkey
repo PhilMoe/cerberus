@@ -86,7 +86,7 @@ Class JsonObject Extends JsonValue
 		Return JsonNull.Instance()
 	End
 	
-	Method GetBool:Int( key:String,defval:Bool=False )
+	Method GetBool:Bool( key:String,defval:Bool=False )
 		If Not _data.Contains( key ) Return defval
 		Return Get( key ).BoolValue()
 	End
