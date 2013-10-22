@@ -1226,18 +1226,20 @@ Const MODULE_SEMANTALL=2
 
 Class ModuleDecl Extends ScopeDecl
 
-	Field filepath$
+	Field modpath$,filepath$
 	Field imported:=New StringMap<ModuleDecl>		'Maps filepath to modules
 	Field pubImported:=New StringMap<ModuleDecl>	'Ditto for publicly imported modules
 	
 	Method ToString$()
-		Return "Module "+munged
+		Return "Module "+modpath
 	End
 	
-	Method New( ident$,attrs,munged$,filepath$ )
+	Method New( ident$,attrs,munged$,modpath$,filepath$ )
+'		Print "Created module: ident="+ident+", modpath="+modpath+", filepath="+filepath
 		Self.ident=ident
 		Self.attrs=attrs
 		Self.munged=munged
+		Self.modpath=modpath
 		Self.filepath=filepath
 	End
 	
@@ -1299,7 +1301,6 @@ Class ModuleDecl Extends ScopeDecl
 
 			Local cdecl:=ClassDecl( decl )
 			
-'			Print decl.ident
 			If cdecl
 				If cdecl.args
 					For Local inst:=Eachin cdecl.instances
@@ -1312,7 +1313,6 @@ Class ModuleDecl Extends ScopeDecl
 					decl.Semant
 					For Local decl:=Eachin cdecl.Decls()
 						If AliasDecl( decl ) Continue
-	'					Print " "+decl.ident
 						decl.Semant
 					Next
 				Endif
@@ -1321,38 +1321,6 @@ Class ModuleDecl Extends ScopeDecl
 			Endif
 		Next
 		attrs|=MODULE_SEMANTALL
-	End
-	
-	'convert a filepath->modpath
-	'
-	Function ModPath:String( filepath:String )
-	
-		Local p:=filepath.Replace( "\","/" )
-		If Not p.EndsWith( ".monkey" ) Return ""' InternalErr
-		p=p[..-7]		
-		
-		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
-			If Not dir Or dir="." Continue
-			
-			dir=dir.Replace( "\","/" )
-			If Not dir.EndsWith("/") dir+="/"
-			If Not p.StartsWith( dir ) Continue
-			
-			p=p[dir.Length-1..]
-			
-			Local i=p.FindLast( "/" )
-			If i<>-1
-				Local e:=p[i..]
-				If p.EndsWith( e+e )	'eg: ends with /mojo/mojo
-					p=p[..i]
-				Endif
-			Endif
-			
-			p=p[1..].Replace( "/","." )
-
-			Return p
-		Next
-		Return ""
 	End
 	
 End
@@ -1373,9 +1341,7 @@ Class AppDecl Extends ScopeDecl
 	Method InsertModule( mdecl:ModuleDecl )
 		mdecl.scope=Self
 		imported.Insert mdecl.filepath,mdecl
-		If Not mainModule
-			mainModule=mdecl
-		Endif
+		If Not mainModule mainModule=mdecl
 	End
 	
 	Method OnSemant()

@@ -15,7 +15,6 @@ Class Reflector
 	Field munged:=New StringMap<Int>
 	
 	Field refmods:=New StringSet			'mods to reflect
-	Field modpaths:=New StringMap<String>
 	Field modexprs:=New StringMap<String>
 	
 	Field classids:=New StringMap<Int>		'Maps DeclExpr->classes[] index
@@ -74,7 +73,8 @@ Class Reflector
 	'
 	Method ModPath$( mdecl:ModuleDecl )
 	
-		Local p:=ModuleDecl.ModPath( mdecl.filepath )
+		Local p:=mdecl.modpath
+'		Local p:=ModuleDecl.ModPath( mdecl.filepath )
 		If p Return p
 
 		Print "MODPATH="+ENV_MODPATH
@@ -154,7 +154,7 @@ Class Reflector
 			
 		Local mdecl:=ModuleDecl( decl )
 		If mdecl
-			If path Return modpaths.Get( mdecl.filepath )
+			If path Return mdecl.modpath
 			Return modexprs.Get( mdecl.filepath )
 		Endif
 		
@@ -492,7 +492,7 @@ Class Reflector
 		debug=GetConfigVar( "DEBUG_REFLECTION" )="1"
 		
 		For Local mdecl:=Eachin app.imported.Values()
-			Local path:=ModPath( mdecl )
+			Local path:=mdecl.modpath
 			If path="reflection"
 				refmod=mdecl
 			Else If path="monkey.lang"
@@ -506,14 +506,12 @@ Class Reflector
 		If debug Print "Semanting all"
 
 		For Local mdecl:=Eachin app.imported.Values()
-			Local path:=ModPath( mdecl )
+			Local path:=mdecl.modpath
 			
 			If mdecl<>boxesmod And mdecl<>langmod And Not MatchPath( path,filter ) Continue
-'			If mdecl<>boxesmod And Not MatchPath( path,filter ) Continue
 			
 			Local expr:=Mung( path )
 			refmod.InsertDecl New AliasDecl( expr,0,mdecl )
-			modpaths.Set mdecl.filepath,path
 			modexprs.Set mdecl.filepath,expr
 			
 			refmods.Insert mdecl.filepath

@@ -11,7 +11,7 @@ Function EvalExpr:Expr( toker:Toker )
 	Local source:=buf.Join( "" )
 	
 	toker=New Toker( "",source )
-	Local parser:=New Parser( toker,Null )
+	Local parser:=New Parser( toker,Null,"" )
 	Local expr:=parser.ParseExpr().Semant()
 	
 	Return expr
@@ -41,7 +41,7 @@ Function EvalText:String( toker:Toker )
 	Return val
 End
 
-Function PreProcess$( path$ )
+Function PreProcess$( path$,modpath$="" )
 
 	Local cnest,ifnest,line,source:=New StringStack
 	
@@ -51,7 +51,7 @@ Function PreProcess$( path$ )
 	PushEnv GetConfigScope()
 	
 	SetConfigVar "CD",ExtractDir( RealPath( path ) )
-	SetConfigVar "MODPATH",ModuleDecl.ModPath( path )
+	If modpath SetConfigVar "MODPATH",modpath
 	
 	Repeat
 
@@ -200,7 +200,7 @@ Function PreProcess$( path$ )
 	Forever
 	
 	RemoveConfigVar "CD"
-	RemoveConfigVar "MODPATH"
+	If modpath RemoveConfigVar "MODPATH"
 
 	PopEnv
 		

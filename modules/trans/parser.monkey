@@ -353,6 +353,7 @@ Class Parser
 	Field _selTmpId
 		
 	Field _app:AppDecl
+	Field _modpath:String
 	Field _module:ModuleDecl
 	Field _defattrs
 	
@@ -1577,16 +1578,19 @@ Class Parser
 	
 	Method ImportModule( modpath$,attrs )
 	
-		Local filepath$
+		Local tpath:=RealPath( ExtractDir( _toker.Path ) )
+		Local dir:="",filepath:="",mpath:=modpath.Replace( ".","/" )+"."+FILE_EXT			'blah/etc.monkey
 		
-		Local cd$=CurrentDir
-		ChangeDir ExtractDir( _toker.Path )
-		
-		For Local dir:=Eachin ENV_MODPATH.Split( ";" )
+		For dir=Eachin ENV_MODPATH.Split( ";" )
 			If Not dir Continue
-		
-			filepath=RealPath( dir )+"/"+modpath.Replace( ".","/" )+"."+FILE_EXT			'/blah/etc.monkey
-			Local filepath2$=StripExt( filepath )+"/"+StripDir( filepath )					'/blah/etc/etc.monkey
+			
+			If dir="."
+				filepath=tpath+"/"+mpath
+			Else
+				filepath=RealPath( dir )+"/"+mpath
+			Endif
+			
+			Local filepath2:=StripExt( filepath )+"/"+StripDir( filepath )
 			
 			If FileType( filepath )=FILETYPE_FILE
 				If FileType( filepath2 )<>FILETYPE_FILE Exit
@@ -1599,23 +1603,45 @@ Class Parser
 			filepath=""
 		Next
 		
-		ChangeDir cd
-		
 		If Not filepath Err "Module '"+modpath+"' not found."
 		
-		'Note: filepath needs to be an *exact* match.
-		'
-		'Would be nice to have a version of realpath that fixed case and normalized separators for this.
-		'
-		'Currently, frontend is assumed to have done this with main src path, proj dir and mod dir.
-
+		If dir="."
+			'
+			'CLEAN ME UP!
+			'
+			'Converts relative modpath to absolute...
+			'
+			Local p:=""
+			'
+			For Local t:=Eachin ENV_MODPATH.Split( ";" )
+				If t And t<>"." And RealPath( t )=tpath
+					tpath=""
+					Exit
+				Endif
+			Next
+			'
+			If StripDir( tpath )=_module.ident
+				p=_module.modpath
+			Else If _module.modpath.Contains( "." )
+				p=StripExt( _module.modpath )
+			Endif
+			'
+			If p
+				Local id:=p
+				If id.Contains( "." ) id=StripExt( id )
+				If id<>modpath modpath=p+"."+modpath
+			Endif
+			'
+		Endif
+	
+		Local mdecl:=_app.imported.Get( filepath )
+		If mdecl And mdecl.modpath<>modpath
+			Print "Modpath error - import="+modpath+", existing="+mdecl.modpath
+		Endif
+		
 		If _module.imported.Contains( filepath ) Return
 		
-		Local mdecl:=_app.imported.ValueForKey( filepath )
-
-		If Not mdecl 
-			mdecl=ParseModule( filepath,_app )
-		Endif
+		If Not mdecl mdecl=ParseModule( modpath,filepath,_app )
 		
 		_module.imported.Insert mdecl.filepath,mdecl
 		
@@ -1644,18 +1670,18 @@ Class Parser
 	
 		SkipEols
 
-		If Not _module
+		If _modpath And Not _module
 		
-			Local attrs
+			Local attrs:=0
 			If CParse( "strict" ) attrs|=MODULE_STRICT
 			
-			Local path$=_toker.Path()
-			Local ident$=StripAll( path )
-			Local munged$	'="bb_"+ident
+			Local path:=_toker.Path()
+			Local ident:=StripAll( path )
+			Local munged:=""
 	
 			ValidateModIdent ident
 			
-			_module=New ModuleDecl( ident,attrs,munged,path )
+			_module=New ModuleDecl( ident,attrs,munged,_modpath,_toker.Path() )
 			
 			_module.imported.Insert path,_module
 	
@@ -1771,10 +1797,11 @@ Class Parser
 		
 	End
 	
-	Method New( toker:Toker,app:AppDecl,mdecl:ModuleDecl=Null,defattrs=0 )
+	Method New( toker:Toker,app:AppDecl,modpath:String,mdecl:ModuleDecl=Null,defattrs=0 )
 		_toke="~n"
 		_toker=toker
 		_app=app
+		_modpath=modpath
 		_module=mdecl
 		_defattrs=defattrs
 		SetErr
@@ -1790,39 +1817,36 @@ Function ParseSource( source$,app:AppDecl,mdecl:ModuleDecl,defattrs=0 )
 
 	Local toker:=New Toker( "$SOURCE",source )
 	
-	Local parser:=New Parser( toker,app,mdecl,defattrs )
+	Local parser:=New Parser( toker,app,"",mdecl,defattrs )
 	
 	parser.ParseMain
 	
 End
 
-Function ParseModule:ModuleDecl( path$,app:AppDecl )
+Function ParseModule:ModuleDecl( modpath$,filepath$,app:AppDecl )
 
-	Local source:=PreProcess( path )
+	Local source:=PreProcess( filepath,modpath )
 	
-	Local toker:=New Toker( path,source )
+	Local toker:=New Toker( filepath,source )
 
-	Local parser:=New Parser( toker,app )
+	Local parser:=New Parser( toker,app,modpath )
 	
 	parser.ParseMain
 	
 	Return parser._module
 End
 
-Function ParseApp:AppDecl( path$ )
+Function ParseApp:AppDecl( filepath$ )
 
-	_errInfo=path+"<1>"
-
+	_errInfo=filepath+"<1>"
+	
 	Local app:AppDecl=New AppDecl
 	
-	Local source:=PreProcess( path )
-	
-	Local toker:=New Toker( path,source )
-	
-	Local parser:=New Parser( toker,app )
-	
-	parser.ParseMain
+	Local modpath:=StripAll( filepath )
+
+	ParseModule modpath,filepath,app
 	
 	Return app
+
 End
 
