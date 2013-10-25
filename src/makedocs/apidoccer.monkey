@@ -616,8 +616,16 @@ Class ApiDoccer Implements ILinkResolver
 					If pdecl
 						Local ident:=pdecl.ident
 						Local p:=ExtractDir( srcpath )+"/"+ident.Replace( ".","/" )
+'						Print "Looking for relative module:"+p
 						If FileType( p+".monkey" )=FILETYPE_FILE Or FileType( p+"/"+p+".monkey" )=FILETYPE_FILE
-							pdecl.ident=modpath+"."+ident
+							If StripDir( ExtractDir( srcpath ) )=StripAll( srcpath )
+								pdecl.ident=modpath+"."+ident
+							Else If srcpath.Contains( "." )
+								pdecl.ident=StripExt( modpath )+"."+ident
+							Endif
+'							Print "Found! module="+pdecl.ident
+						Else
+'							Print "Not found..."
 						Endif
 						New ImportDecl( pdecl,mdecl )
 					Endif
