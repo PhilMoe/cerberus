@@ -511,7 +511,7 @@ Class ApiDoccer Implements ILinkResolver
 	
 	Method ParseMonkeyFile:Void( srcpath:String,modpath:String )
 	
-'		Print "doccing:"+srcpath+" "+modpath
+		Print "doccing:"+srcpath+" "+modpath
 		
 		george.SetErrInfo srcpath
 		
@@ -616,16 +616,19 @@ Class ApiDoccer Implements ILinkResolver
 					If pdecl
 						Local ident:=pdecl.ident
 						Local p:=ExtractDir( srcpath )+"/"+ident.Replace( ".","/" )
-'						Print "Looking for relative module:"+p
+						Print "Looking for relative module:"+p
 						If FileType( p+".monkey" )=FILETYPE_FILE Or FileType( p+"/"+p+".monkey" )=FILETYPE_FILE
 							If StripDir( ExtractDir( srcpath ) )=StripAll( srcpath )
 								pdecl.ident=modpath+"."+ident
 							Else If srcpath.Contains( "." )
-								pdecl.ident=StripExt( modpath )+"."+ident
+								Local id:=StripExt( modpath )
+								If id.Contains( "." ) id=ExtractExt( id )
+								If id<>ident pdecl.ident=id+"."+ident
+'								pdecl.ident=StripExt( modpath )+"."+ident
 							Endif
-'							Print "Found! module="+pdecl.ident
+							Print "Found! module="+pdecl.ident
 						Else
-'							Print "Not found..."
+							Print "Not found..."
 						Endif
 						New ImportDecl( pdecl,mdecl )
 					Endif
