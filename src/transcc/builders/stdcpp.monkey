@@ -58,6 +58,7 @@ Class StdcppBuilder Extends Builder
 				LIBS+=" -lwinmm -lws2_32"
 			Case "macos"
 				OPTS+=" -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3"
+				OPTS+=" -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses"
 			Case "linux"
 				LIBS+=" -lpthread"
 			End
