@@ -101,9 +101,9 @@ Class Image
 		Return ty
 	End
 	
-	Method GrabImage:Image( x,y,width,height,frames=1,flags=DefaultFlags )
-		If Self.frames.Length<>1 Return
-		Return (New Image).Grab( x,y,width,height,frames,flags,Self )
+	Method GrabImage:Image( x,y,width,height,nframes=1,flags=DefaultFlags )
+		If frames.Length<>1 Return
+		Return (New Image).Init( surface,x,y,width,height,nframes,flags,Self,frames[0].x,frames[0].y,Self.width,Self.height )
 	End
 	
 	Method SetHandle( tx#,ty# )
@@ -134,7 +134,7 @@ Class Image
 	End
 	
 Private
-	Const FullFrame=65536	'$10000
+	Const FullFrame=65536
 
 	Field source:Image
 	Field surface:Surface
@@ -157,9 +157,9 @@ Private
 		Return Self
 	End
 	
-	Method Grab:Image( x,y,iwidth,iheight,nframes,iflags,source:Image )
-		Self.source=source
-		surface=source.surface
+	Method Init:Image( surf:Surface,x,y,iwidth,iheight,nframes,iflags,src:Image,srcx,srcy,srcw,srch )
+		surface=surf
+		source=src
 
 		width=iwidth
 		height=iheight
@@ -169,14 +169,14 @@ Private
 		Local ix:=x,iy:=y
 		
 		For Local i=0 Until nframes
-			If ix+width>source.width
+			If ix+width>srcw
 				ix=0
 				iy+=height
 			Endif
-			If ix+width>source.width Or iy+height>source.height
+			If ix+width>srcw Or iy+height>srch
 				Error "Image frame outside surface"
 			Endif
-			frames[i]=New Frame( ix+source.frames[0].x,iy+source.frames[0].y )
+			frames[i]=New Frame( ix+srcx,iy+srcy )
 			ix+=width
 		Next
 		
@@ -240,8 +240,8 @@ Function LoadImage:Image( path$,frameCount=1,flags=Image.DefaultFlags )
 End
 
 Function LoadImage:Image( path$,frameWidth,frameHeight,frameCount,flags=Image.DefaultFlags )
-	Local atlas:Image=LoadImage( path,1,0 )
-	If atlas Return atlas.GrabImage( 0,0,frameWidth,frameHeight,frameCount,flags )
+	Local surf:=device.LoadSurface( FixDataPath(path) )
+	If surf Return (New Image).Init( surf,0,0,frameWidth,frameHeight,frameCount,flags,Null,0,0,surf.Width,surf.Height )
 End
 
 Function CreateImage:Image( width,height,frameCount=1,flags=Image.DefaultFlags )
