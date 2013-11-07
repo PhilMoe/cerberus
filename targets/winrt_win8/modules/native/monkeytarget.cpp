@@ -62,7 +62,8 @@ void BBMonkeyGame::CreateD3dResources(){
 	UINT creationFlags=D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 	
 #ifdef _DEBUG
-	creationFlags|=D3D11_CREATE_DEVICE_DEBUG;
+//	Not on 8.1, thank you very much!
+//	creationFlags|=D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
 	D3D_FEATURE_LEVEL featureLevels[]={
