@@ -383,7 +383,8 @@ Class TransCC
 			If JDK_PATH path+=";"+JDK_PATH+"/bin"
 			If ANT_PATH path+=";"+ANT_PATH+"/bin"
 			If FLEX_PATH path+=";"+FLEX_PATH+"/bin"
-			If MINGW_PATH path=MINGW_PATH+"/bin;"+path
+			
+			If MINGW_PATH path=MINGW_PATH+"/bin;"+path	'override existing mingw path if any...
 	
 			SetEnv "PATH",path
 			
@@ -395,6 +396,7 @@ Class TransCC
 			
 			If ANDROID_PATH path+=":"+ANDROID_PATH+"/tools"
 			If ANDROID_PATH path+=":"+ANDROID_PATH+"/platform-tools"
+			If ANT_PATH path+=":"+ANT_PATH+"/bin"
 			If FLEX_PATH path+=":"+FLEX_PATH+"/bin"
 			
 			SetEnv "PATH",path
