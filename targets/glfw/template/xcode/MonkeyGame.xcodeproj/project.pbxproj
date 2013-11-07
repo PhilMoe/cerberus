@@ -321,6 +321,10 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wno-logical-op-parentheses",
+					"-Wno-bitwise-op-parentheses",
+				);
 			};
 			name = Debug;
 		};
@@ -337,6 +341,10 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wno-logical-op-parentheses",
+					"-Wno-bitwise-op-parentheses",
+				);
 			};
 			name = Release;
 		};
