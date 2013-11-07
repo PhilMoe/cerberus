@@ -261,8 +261,23 @@ BBHtml5Game.prototype.Run=function(){
 		game.MouseEvent( BBGameEvent.MouseUp,2,mouseX(e),mouseY(e) );
 		eatEvent( e );
 	}
-
+	
+	canvas.onclick=function( e ){
+		if( game.Suspended() ){
+			canvas.focus();
+		}
+		eatEvent( e );
+		return;
+	}
+	
+	canvas.oncontextmenu=function( e ){
+		return false;
+	}
+	
 	canvas.ontouchstart=function( e ){
+		if( game.Suspended() ){
+			canvas.focus();
+		}
 		for( var i=0;i<e.changedTouches.length;++i ){
 			var touch=e.changedTouches[i];
 			for( var j=0;j<32;++j ){
