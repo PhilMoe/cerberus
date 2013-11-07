@@ -14,7 +14,7 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '
 'for opening .html files...
 '
-HTML_PLAYER="${TRANSDIR}\mserver_winnt.exe"
+HTML_PLAYER="${MONKEYDIR}\bin\mserver_winnt.exe"
 '--------------------
 
 '--------------------
@@ -25,7 +25,7 @@ HTML_PLAYER="${TRANSDIR}\mserver_winnt.exe"
 'Ant is currently available here: 
 '	http://ant.apache.org/bindownload.cgi
 '
-ANT_PATH="${SYSTEMDRIVE}\monkey_sdks\apache-ant-1.8.4"
+ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.9.2"
 ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.8.4"
 ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.8.2"
 ANT_PATH="${SYSTEMDRIVE}\ant"
@@ -39,7 +39,7 @@ ANT_PATH="${SYSTEMDRIVE}\ant"
 'MinGW is currently available here:
 '	http://tdm-gcc.tdragon.net/download
 '
-MINGW_PATH="${SYSTEMDRIVE}\monkey_sdks\MinGW"
+MINGW_PATH="${MONKEYDIR}\MinGW"
 MINGW_PATH="${SYSTEMDRIVE}\MinGW32"
 MINGW_PATH="${SYSTEMDRIVE}\MinGW"
 '--------------------
@@ -66,7 +66,6 @@ JDK_PATH="${PROGRAMFILES}\Java\jdk1.6.0_19"
 '
 'Must be set to a valid dir for ANDROID target support
 '
-ANDROID_PATH="${SYSTEMDRIVE}\monkey_sdks\android-sdk-windows"
 ANDROID_PATH="${SYSTEMDRIVE}\android-sdk-windows"
 '--------------------
 
@@ -85,7 +84,7 @@ ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r9"
 '
 'Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
 '
-FLEX_PATH="${SYSTEMDRIVE}\monkey_sdks\flex_sdk_4.6"
+FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.9.1"
 FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.6"
 FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.5"
 FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.1.0.16076"

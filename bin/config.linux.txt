@@ -12,7 +12,7 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '
 'Must be set for HTML5 target support.
 '
-HTML_PLAYER="${TRANSDIR}/mserver_linux"
+HTML_PLAYER="${MONKEYDIR}/bin/mserver_linux"
 '--------------------
 
 '--------------------
