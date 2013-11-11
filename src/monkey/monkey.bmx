@@ -117,6 +117,7 @@ system_ "bin\Ted.exe"+args
 Local cmd$="bin/Ted.app"
 If args cmd="open -n "+cmd+" --args"+args Else cmd="open "+cmd
 system_ cmd
+Delay 100
 
 ?Linux
 
