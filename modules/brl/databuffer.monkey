@@ -275,7 +275,7 @@ Class DataBuffer Extends BBDataBuffer
 					j+=3
 				Endif
 			Wend
-			PokeBytes address,p,0,j
+			PokeBytes address,q,0,j
 			Return j
 		Case "ascii"
 			PokeBytes address,str.ToChars(),0,str.Length
