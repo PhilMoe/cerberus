@@ -14,6 +14,10 @@ int main( int argc,char *argv[] ){
 
     QApplication app( argc,argv );
 
+#ifdef Q_OS_MACX
+     QDir::setCurrent( QCoreApplication::applicationDirPath()+"/../../.." );
+#endif
+
     MainWindow window;
     window.show();
 
