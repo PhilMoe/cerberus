@@ -8,11 +8,11 @@ Android is Google's hugely popular cellphone and tablet OS.
 
 * The [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html). On Windows, make sure to grab the 32bit version even if you're running a 64bit OS.
 
-* On Windows, you will also need [ANT](http://ant.apache.org/bindownload.cgi).
+* On Windows and MacOS, you will also need [ANT](http://ant.apache.org/bindownload.cgi).
 
 >> Getting started
 
-The `ANDROID_PATH` (Windows/MacOs), `JDK_PATH` (Windows) and `ANT_PATH` (Windows) vars in your [[Trans]] config file must be correctly set to use the android target.
+The `ANDROID_PATH` (Windows/MacOS), `JDK_PATH` (Windows) and `ANT_PATH` (Windows/MacOS) vars in your [[Trans]] config file must be correctly set to use the android target.
 
 The Android download is just a 'setup' app - after installation you will prompted to run the SDK manager, which you will need to do to install the actual android SDKs. Make sure to install at least "Android SDK Platform-tools" and "Android 3.2 (API 13) SDK Platform".
 
