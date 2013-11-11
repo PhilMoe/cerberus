@@ -322,8 +322,8 @@
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
-					"-Wno-logical-op-parentheses",
-					"-Wno-bitwise-op-parentheses",
+					"-Wno-parentheses",
+					"-Wno-dangling-else",
 				);
 			};
 			name = Debug;
@@ -342,8 +342,8 @@
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
-					"-Wno-logical-op-parentheses",
-					"-Wno-bitwise-op-parentheses",
+					"-Wno-parentheses",
+					"-Wno-dangling-else",
 				);
 			};
 			name = Release;

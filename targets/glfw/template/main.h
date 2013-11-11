@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <copyfile.h>
+#include <pthread.h>
 
 #elif __linux
 #define GL_GLEXT_PROTOTYPES

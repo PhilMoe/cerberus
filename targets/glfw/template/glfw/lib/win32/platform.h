@@ -52,12 +52,16 @@
 
 // Some old versions of w32api (used by MinGW and Cygwin) define
 // WH_KEYBOARD_LL without typedef:ing KBDLLHOOKSTRUCT (!)
+
+// Removed by Mark Sibly
+/*
 #if defined(__MINGW32__) || defined(__CYGWIN__)
 #include <w32api.h>
 #if defined(WH_KEYBOARD_LL) && (__W32API_MAJOR_VERSION == 1) && (__W32API_MINOR_VERSION <= 2)
 #undef WH_KEYBOARD_LL
 #endif
 #endif
+*/
 
 //------------------------------------------------------------------------
 // ** NOTE **  If this gives you compiler errors and you are using MinGW
