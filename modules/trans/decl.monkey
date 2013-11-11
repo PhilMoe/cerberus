@@ -1226,7 +1226,7 @@ Const MODULE_SEMANTALL=2
 
 Class ModuleDecl Extends ScopeDecl
 
-	Field modpath$,filepath$
+	Field modpath$,rmodpath$,filepath$
 	Field imported:=New StringMap<ModuleDecl>		'Maps filepath to modules
 	Field pubImported:=New StringMap<ModuleDecl>	'Ditto for publicly imported modules
 	
@@ -1235,12 +1235,20 @@ Class ModuleDecl Extends ScopeDecl
 	End
 	
 	Method New( ident$,attrs,munged$,modpath$,filepath$ )
-'		Print "Created module: ident="+ident+", modpath="+modpath+", filepath="+filepath
+	
 		Self.ident=ident
 		Self.attrs=attrs
 		Self.munged=munged
 		Self.modpath=modpath
+		Self.rmodpath=modpath
 		Self.filepath=filepath
+		
+		If modpath.Contains( "." )
+			Local bits:=modpath.Split( "." ),n:=bits.Length
+			If n>1 And bits[n-2]=bits[n-1] Self.rmodpath=StripExt( modpath )
+		Endif
+		
+'		Print "Created module: ident="+Self.ident+", modpath="+Self.rmodpath+", filepath="+Self.filepath
 	End
 	
 	Method IsStrict()

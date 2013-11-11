@@ -11,7 +11,7 @@ Function EvalExpr:Expr( toker:Toker )
 	Local source:=buf.Join( "" )
 	
 	toker=New Toker( "",source )
-	Local parser:=New Parser( toker,Null,"" )
+	Local parser:=New Parser( toker,Null )
 	Local expr:=parser.ParseExpr().Semant()
 	
 	Return expr

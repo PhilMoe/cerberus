@@ -353,7 +353,6 @@ Class Parser
 	Field _selTmpId
 		
 	Field _app:AppDecl
-	Field _modpath:String
 	Field _module:ModuleDecl
 	Field _defattrs
 	
@@ -1578,18 +1577,21 @@ Class Parser
 	
 	Method ImportModule( modpath$,attrs )
 	
-		Local tpath:=RealPath( ExtractDir( _toker.Path ) )
+		Local cdir:=RealPath( ExtractDir( _toker.Path ) )
+		
 		Local dir:="",filepath:="",mpath:=modpath.Replace( ".","/" )+"."+FILE_EXT			'blah/etc.monkey
 		
 		For dir=Eachin ENV_MODPATH.Split( ";" )
 			If Not dir Continue
 			
+			'blah.monkey path
 			If dir="."
-				filepath=tpath+"/"+mpath
+				filepath=cdir+"/"+mpath
 			Else
 				filepath=RealPath( dir )+"/"+mpath
 			Endif
 			
+			'blah/blah.monkey path			
 			Local filepath2:=StripExt( filepath )+"/"+StripDir( filepath )
 			
 			If FileType( filepath )=FILETYPE_FILE
@@ -1598,40 +1600,16 @@ Class Parser
 			Endif
 			
 			filepath=filepath2
-			If FileType( filepath )=FILETYPE_FILE Exit
+			If FileType( filepath )=FILETYPE_FILE 
+				modpath+="."+StripAll( modpath )
+				Exit
+			Endif
 			
 			filepath=""
 		Next
 		
-		If Not filepath Err "Module '"+modpath+"' not found."
-		
-		If dir="."
-			'
-			'CLEAN ME UP!
-			'
-			'Converts relative modpath to absolute...
-			'
-			Local p:=""
-			'
-			For Local t:=Eachin ENV_MODPATH.Split( ";" )
-				If t And t<>"." And RealPath( t )=tpath
-					tpath=""
-					Exit
-				Endif
-			Next
-			'
-			If StripDir( tpath )=_module.ident
-				p=_module.modpath
-			Else If _module.modpath.Contains( "." )
-				p=StripExt( _module.modpath )
-			Endif
-			'
-			If p
-				Local id:=p
-				If id.Contains( "." ) id=StripExt( id )
-				If id<>modpath modpath=p+"."+modpath
-			Endif
-			'
+		If dir="." And _module.modpath.Contains( "." )
+			modpath=StripExt( _module.modpath )+"."+modpath
 		Endif
 	
 		Local mdecl:=_app.imported.Get( filepath )
@@ -1651,44 +1629,20 @@ Class Parser
 
 	End
 	
-	Method ValidateModIdent( id$ )
-		If id.Length
-			If IsAlpha( id[0] ) Or id[0]="_"[0]
-				Local err
-				For Local i=1 Until id.Length
-					If IsAlpha( id[i] ) Or IsDigit( id[i] ) Or id[i]="_"[0] Continue
-					err=1
-					Exit
-				Next
-				If Not err Return
-			Endif
-		Endif
-		Err "Invalid module identifier '"+id+"'."
-	End
-	
 	Method ParseMain()
 	
 		SkipEols
-
-		If _modpath And Not _module
 		
-			Local attrs:=0
-			If CParse( "strict" ) attrs|=MODULE_STRICT
+		If _module
+		
+			If CParse( "strict" ) _module.attrs|=MODULE_STRICT
+		
+			_module.imported.Set _module.filepath,_module
 			
-			Local path:=_toker.Path()
-			Local ident:=StripAll( path )
-			Local munged:=""
-	
-			ValidateModIdent ident
-			
-			_module=New ModuleDecl( ident,attrs,munged,_modpath,_toker.Path() )
-			
-			_module.imported.Insert path,_module
-	
 			_app.InsertModule _module
 			
 			ImportModule "monkey",0
-						
+			
 		Endif
 			
 		Local attrs
@@ -1797,11 +1751,10 @@ Class Parser
 		
 	End
 	
-	Method New( toker:Toker,app:AppDecl,modpath:String,mdecl:ModuleDecl=Null,defattrs=0 )
+	Method New( toker:Toker,app:AppDecl,mdecl:ModuleDecl=Null,defattrs=0 )
 		_toke="~n"
 		_toker=toker
 		_app=app
-		_modpath=modpath
 		_module=mdecl
 		_defattrs=defattrs
 		SetErr
@@ -1817,7 +1770,7 @@ Function ParseSource( source$,app:AppDecl,mdecl:ModuleDecl,defattrs=0 )
 
 	Local toker:=New Toker( "$SOURCE",source )
 	
-	Local parser:=New Parser( toker,app,"",mdecl,defattrs )
+	Local parser:=New Parser( toker,app,mdecl,defattrs )
 	
 	parser.ParseMain
 	
@@ -1825,11 +1778,16 @@ End
 
 Function ParseModule:ModuleDecl( modpath$,filepath$,app:AppDecl )
 
-	Local source:=PreProcess( filepath,modpath )
+	Local ident:=modpath
+	If ident.Contains( "." ) ident=ExtractExt( ident )
+	
+	Local mdecl:=New ModuleDecl( ident,0,"",modpath,filepath )
+
+	Local source:=PreProcess( filepath,mdecl.rmodpath )
 	
 	Local toker:=New Toker( filepath,source )
 
-	Local parser:=New Parser( toker,app,modpath )
+	Local parser:=New Parser( toker,app,mdecl )
 	
 	parser.ParseMain
 	
