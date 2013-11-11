@@ -380,6 +380,6 @@ Function Main:Int()
 	
 	george.MakeDocs
 	
-	Print "Finished!"
+	Print "Makedocs finished!"
 	Return 0
 End
