@@ -69,18 +69,6 @@ Class Reflector
 		Return ident
 	End
 	
-	'Return full module path, eg: monkey.lang or mojo.graphics
-	'
-	Method ModPath$( mdecl:ModuleDecl )
-	
-		Local p:=mdecl.modpath
-'		Local p:=ModuleDecl.ModPath( mdecl.filepath )
-		If p Return p
-
-		Print "MODPATH="+ENV_MODPATH
-		Error "Invalid module path for module:"+mdecl.filepath
-	End
-	
 	Function MatchPath?( text$,pattern$ )
 	
 		Local alts:=pattern.Split( "|" )
@@ -154,7 +142,7 @@ Class Reflector
 			
 		Local mdecl:=ModuleDecl( decl )
 		If mdecl
-			If path Return mdecl.modpath
+			If path Return mdecl.rmodpath
 			Return modexprs.Get( mdecl.filepath )
 		Endif
 		
@@ -492,7 +480,7 @@ Class Reflector
 		debug=GetConfigVar( "DEBUG_REFLECTION" )="1"
 		
 		For Local mdecl:=Eachin app.imported.Values()
-			Local path:=mdecl.modpath
+			Local path:=mdecl.rmodpath
 			If path="reflection"
 				refmod=mdecl
 			Else If path="monkey.lang"
@@ -506,7 +494,7 @@ Class Reflector
 		If debug Print "Semanting all"
 
 		For Local mdecl:=Eachin app.imported.Values()
-			Local path:=mdecl.modpath
+			Local path:=mdecl.rmodpath
 			
 			If mdecl<>boxesmod And mdecl<>langmod And Not MatchPath( path,filter ) Continue
 			
