@@ -1,6 +1,43 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v76b *****
+
+#GLFW_USE_MINGW now defaults to True.
+
+Added #include <pthread.h> to macos glfw target for Mavericks.
+
+Minimized some compiler warnings on macos glfw/stdcpp targets (only for monkey translated code - stb/glfw still generate some warnings but these are only built 'first time').
+
+Fixed DataBuffer PokeString bug.
+
+Fixed Image.Discard not discarding image immediately with some multiframe images.
+
+Added MacOS support for ANT_PATH to transcc for Mavericks - defaults to "${HOME}/apache-ant-1.9.2" in config.macos.txt
+
+Fixed Ted/Qt/Mavericks issue ala: http://successfulsoftware.net/2013/10/23/fixing-qt-4-for-mac-os-x-10-9-mavericks/
+
+Turned on bitmap smoothing for main 'drawing surface' bitmap in flash mojo.graphics if MOJO_IMAGE_FILTERING_ENABLED is True.
+
+Removed GL_DEPTH_BUFFER_BIT from glClear in android mojo.graphics.
+
+Tweaked winrt_win8 target for windows 8.1
+
+Moved html5 onclick/oncontextmenu handlers from html to js - added canvas.focus() to onclick/ontouchstart handlers.
+
+Fixed some modpath/reflection issues with files 'above' module dirs. I hope.
+
+Added MODPATH builtin containing module path of current module, mainly for use with RELFECTION_FILTER - probably not the best name...
+
+Added pthread support to linux stdcpp builder.
+
+Fixed some more brl.json bugs.
+
+Transcc 'makemeta' code for html5 builder converted from cpp->monkey.
+
+Fixed html5/flash async image/sound loader bugs.
+
+
 ***** v76a *****
 
 Fixed flash audio bug where SetMusicVolume on paused music crashed.
