@@ -46,11 +46,6 @@ Function RebuildTrans()
 		Return
 	EndIf
 	
-	'To rebuild with v66
-	'Const trans_mk$=bin+"trans"+ext+" -target=stdcpp"
-	'Const trans_tmp$="transcc/transcc.build/stdcpp/main"+ext
-
-	'To rebuild with current trans
 	Const trans_mk$=trans+" -target=C++_Tool"
 	Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
 	
