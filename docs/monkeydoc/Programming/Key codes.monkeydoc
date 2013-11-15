@@ -78,6 +78,22 @@ KEY_QUOTES
 KEY_COMMA
 KEY_PERIOD
 KEY_SLASH
+KEY_NUM0
+KEY_NUM1
+KEY_NUM2
+KEY_NUM3
+KEY_NUM4
+KEY_NUM5
+KEY_NUM6
+KEY_NUM7
+KEY_NUM8
+KEY_NUM9
+KEY_NUMMULTIPLY
+KEY_NUMADD
+KEY_NUMSLASH
+KEY_NUMSUBTRACT
+KEY_NUMDECIMAL
+KEY_NUMDIVIDE
 </pre>
 
 As a convenience, the commands KeyDown and KeyHit can also be used to test non-keyboard devices using these additional constants:

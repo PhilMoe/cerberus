@@ -246,8 +246,10 @@ int BBGlfwGame::TransKey( int key ){
 	case '`':return VKEY_TILDE;
 	case '\'':return VKEY_QUOTES;
 
-	case GLFW_KEY_LSHIFT:case GLFW_KEY_RSHIFT:return VKEY_SHIFT;
-	case GLFW_KEY_LCTRL:case GLFW_KEY_RCTRL:return VKEY_CONTROL;
+	case GLFW_KEY_LSHIFT:
+	case GLFW_KEY_RSHIFT:return VKEY_SHIFT;
+	case GLFW_KEY_LCTRL:
+	case GLFW_KEY_RCTRL:return VKEY_CONTROL;
 	
 //	case GLFW_KEY_LSHIFT:return VKEY_LSHIFT;
 //	case GLFW_KEY_RSHIFT:return VKEY_RSHIFT;
@@ -269,6 +271,22 @@ int BBGlfwGame::TransKey( int key ){
 	case GLFW_KEY_LEFT:return VKEY_LEFT;
 	case GLFW_KEY_RIGHT:return VKEY_RIGHT;
 	
+	case GLFW_KEY_KP_0:return VKEY_NUM0;
+	case GLFW_KEY_KP_1:return VKEY_NUM1;
+	case GLFW_KEY_KP_2:return VKEY_NUM2;
+	case GLFW_KEY_KP_3:return VKEY_NUM3;
+	case GLFW_KEY_KP_4:return VKEY_NUM4;
+	case GLFW_KEY_KP_5:return VKEY_NUM5;
+	case GLFW_KEY_KP_6:return VKEY_NUM6;
+	case GLFW_KEY_KP_7:return VKEY_NUM7;
+	case GLFW_KEY_KP_8:return VKEY_NUM8;
+	case GLFW_KEY_KP_9:return VKEY_NUM9;
+	case GLFW_KEY_KP_DIVIDE:return VKEY_NUMDIVIDE;
+	case GLFW_KEY_KP_MULTIPLY:return VKEY_NUMMULTIPLY;
+	case GLFW_KEY_KP_SUBTRACT:return VKEY_NUMSUBTRACT;
+	case GLFW_KEY_KP_ADD:return VKEY_NUMADD;
+	case GLFW_KEY_KP_DECIMAL:return VKEY_NUMDECIMAL;
+    	
 	case GLFW_KEY_F1:return VKEY_F1;
 	case GLFW_KEY_F2:return VKEY_F2;
 	case GLFW_KEY_F3:return VKEY_F3;
