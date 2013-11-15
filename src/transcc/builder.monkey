@@ -73,6 +73,7 @@ Class Builder
 		For Local file$=Eachin app.fileImports
 			If ExtractExt( file ).ToLower()=ENV_LANG
 				transbuf.Push LoadString( file )
+				transbuf.Push "~n"
 			Endif
 		Next
 		transbuf.Push _trans.TransApp( app )
@@ -82,7 +83,7 @@ Class Builder
 		
 		Print "Building..."
 
-		transCode=transbuf.Join("")
+		transCode=transbuf.Join()
 		
 		Local buildPath:=StripExt( tcc.opt_srcpath )+".build"
 		
