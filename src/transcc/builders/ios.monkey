@@ -257,8 +257,11 @@ Class IosBuilder Extends Builder
 			Local dst:=""
 			
 			For Local f:=Eachin LoadDir( home+"/Library/Application Support/iPhone Simulator" )
+
+				If f.Length>2 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Not f.Contains( "-64" ) And f>dst dst=f
+				
 				'X.Y?
-				If f.Length=3 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Float(f)>Float(dst) dst=f
+				'If f.Length=3 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Float(f)>Float(dst) dst=f
 			Next
 			If Not dst Die "Can't find iPhone simulator app version dir"
 			
