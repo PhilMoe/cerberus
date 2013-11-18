@@ -1600,8 +1600,8 @@ Class Parser
 			Endif
 			
 			filepath=filepath2
-			If FileType( filepath )=FILETYPE_FILE 
-				modpath+="."+StripAll( modpath )
+			If FileType( filepath )=FILETYPE_FILE
+				If modpath.Contains( "." ) 	modpath+="."+ExtractExt( modpath ) Else modpath+="."+modpath
 				Exit
 			Endif
 			
