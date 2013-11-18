@@ -1,7 +1,16 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v76c *****
+
+Fixed an import modpath bug.
+
+Added #CC_LIBS app config var for stdcpp target.
+
+
 ***** v76b *****
+
+Fixed ios issue where app didn't appear on latest simulator.
 
 Added keypad support to glfw and KEY_NUM0 etc to keycodes.monkey and docs.
 
