@@ -71,6 +71,9 @@ Class StdcppBuilder Extends Builder
 			Local cc_opts:=GetConfigVar( "CC_OPTS" )
 			If cc_opts OPTS+=" "+cc_opts.Replace( ";"," " )
 			
+			Local cc_libs:=GetConfigVar( "CC_LIBS" )
+			If cc_libs LIBS+=" "+cc_libs.Replace( ";"," " )
+			
 			Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS
 			
 			If tcc.opt_run
