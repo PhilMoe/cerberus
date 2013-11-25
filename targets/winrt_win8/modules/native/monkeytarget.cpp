@@ -187,51 +187,32 @@ unsigned char *BBMonkeyGame::LoadImageData( String path,int *pwidth,int *pheight
 	if( !SUCCEEDED( _wicFactory->CreateDecoderFromFilename( path.ToCString<wchar_t>(),NULL,GENERIC_READ,WICDecodeMetadataCacheOnDemand,&decoder ) ) ){
 		return 0;
 	}
-	
-	unsigned char *data=0;
 
+	unsigned char *data=0;
+	UINT width,height,format=0;
+	
 	IWICBitmapFrameDecode *bitmapFrame;
 	DXASS( decoder->GetFrame( 0,&bitmapFrame ) );
 	
-	UINT width,height;
 	WICPixelFormatGUID pixelFormat;
 	DXASS( bitmapFrame->GetSize( &width,&height ) );
 	DXASS( bitmapFrame->GetPixelFormat( &pixelFormat ) );
 			
 	if( pixelFormat==GUID_WICPixelFormat24bppBGR ){
-		unsigned char *t=(unsigned char*)malloc( width*3*height );
-		DXASS( bitmapFrame->CopyPixels( 0,width*3,width*3*height,t ) );
-		data=(unsigned char*)malloc( width*4*height );
-		unsigned char *s=t,*d=data;
-		int n=width*height;
-		while( n-- ){
-			*d++=s[2];
-			*d++=s[1];
-			*d++=s[0];
-			*d++=0xff;
-			s+=3;
-		}
-		free( t );
+		format=3;
 	}else if( pixelFormat==GUID_WICPixelFormat32bppBGRA ){
-		unsigned char *t=(unsigned char*)malloc( width*4*height );
-		DXASS( bitmapFrame->CopyPixels( 0,width*4,width*4*height,t ) );
-		data=t;
-		int n=width*height;
-		while( n-- ){	//premultiply alpha
-			unsigned char r=t[0];
-			t[0]=t[2]*t[3]/255;
-			t[1]=t[1]*t[3]/255;
-			t[2]=r*t[3]/255;
-			t+=4;
-		}
+		format=4;
 	}
 	
-	if( data ){
+	if( format ){
+		data=(unsigned char*)malloc( width*height*format );
+		DXASS( bitmapFrame->CopyPixels( 0,width*format,width*height*format,data ) );
+		for( unsigned char *t=data;t<data+width*height*format;t+=format ) std::swap( t[0],t[2] );
 		*pwidth=width;
 		*pheight=height;
-		*pformat=4;
+		*pformat=format;
 	}
-	
+
 	bitmapFrame->Release();
 	decoder->Release();
 	
