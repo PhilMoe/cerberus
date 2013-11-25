@@ -57,6 +57,7 @@ protected:
 //***** iosgame.cpp *****
 
 #include <AudioToolbox/ExtendedAudioFile.h>
+#include <AVFoundation/AVAudioSession.h>
 #include <AVFoundation/AVAudioPlayer.h>
 
 unsigned char *LoadWAV( FILE *f,int *length,int *channels,int *format,int *hertz );

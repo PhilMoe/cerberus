@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v76d *****
+
+Fixed some ios audio issues where audio crapped out after a clock 'alarm' fired.
+
+
 ***** v76c *****
 
 Fixed an import modpath bug.
