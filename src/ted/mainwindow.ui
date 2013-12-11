@@ -616,6 +616,11 @@
     <string>Open on Desktop</string>
    </property>
   </action>
+  <action name="actionOpen_in_Help">
+  <property name="text">
+   <string>Open in Help View</string>
+  </property>
+  </action>
   <action name="actionHelpQuickHelp">
    <property name="text">
     <string>Quick Help</string>

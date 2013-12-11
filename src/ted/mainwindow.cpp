@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.17"
+#define TED_VERSION "1.18"
 
 #define SETTINGS_VERSION 2
 
@@ -185,6 +185,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
 
     _filePopupMenu=new QMenu;
     _filePopupMenu->addAction( _ui->actionOpen_on_Desktop );
+    _filePopupMenu->addAction( _ui->actionOpen_in_Help );
     _filePopupMenu->addSeparator();
     _filePopupMenu->addAction( _ui->actionRenameFile );
     _filePopupMenu->addAction( _ui->actionDeleteFile );
@@ -328,7 +329,15 @@ QWidget *MainWindow::newFile( const QString &cpath ){
 
 QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
-    if( isUrl( cpath ) ){
+    QString path=cpath;
+
+    if( isUrl( path ) ){
+
+        if( path.startsWith( "file:" ) && path.endsWith( "/docs/html/Home.html" ) ){
+            QString path2=_monkeyPath+"/docs/html/Home2.html";
+            if( QFile::exists( path2 ) ) path="file:///"+path2;
+        }
+
         QWebView *webView=0;
         for( int i=0;i<_mainTabWidget->count();++i ){
             if( webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) ) ) break;
@@ -340,7 +349,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
             _mainTabWidget->addTab( webView,"Help" );
         }
 
-        webView->setUrl( cpath );
+        webView->setUrl( path );
 
         if( webView!=_mainTabWidget->currentWidget() ){
             _mainTabWidget->setCurrentWidget( webView );
@@ -350,8 +359,6 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
         return webView;
     }
-
-    QString path=cpath;
 
     if( path.isEmpty() ){
 
@@ -903,6 +910,9 @@ void MainWindow::onProjectMenu( const QPoint &pos ){
         menu=_projectPopupMenu;
     }else if( info.isFile() ){
         menu=_filePopupMenu;
+        QString suffix=info.suffix().toLower();
+        bool browsable=(suffix=="txt" || suffix=="htm" || suffix=="html");
+        _ui->actionOpen_in_Help->setEnabled( browsable );
     }else{
         menu=_dirPopupMenu;
     }
@@ -956,6 +966,12 @@ void MainWindow::onProjectMenu( const QPoint &pos ){
 
         QDesktopServices::openUrl( "file:/"+info.filePath() );
 
+    }else if( action==_ui->actionOpen_in_Help ){
+#ifdef Q_OS_WIN
+        openFile( "file:/"+info.filePath(),false );
+#else
+        openFile( "file://"+info.filePath(),false );
+#endif
     }else if( action==_ui->actionDeleteFile ){
 
         QString path=info.filePath();
@@ -1628,14 +1644,9 @@ void MainWindow::onBuildAddProject(){
 //***** Help menu *****
 
 void MainWindow::onHelpHome(){
-
-    QString htmlDocs=_monkeyPath+"/docs/html/Home.html";
-
-    if( QFile::exists( htmlDocs ) ){
-        openFile( "file:///"+htmlDocs,false );
-    }else{
-        openFile( "file:///"+_monkeyPath+"/docs/blitz-wiki.appspot.com/index4d8a.html",false );
-    }
+    QString home=_monkeyPath+"/docs/html/Home.html";
+    if( !QFile::exists( home ) ) return;
+    openFile( "file:///"+home,false );
 }
 
 void MainWindow::onHelpBack(){
@@ -1694,11 +1705,6 @@ void MainWindow::onLinkClicked( const QUrl &url ){
     }
 
     QDesktopServices::openUrl( str );
-/*
-    qDebug()<<"Opening:"<<str;
-
-    openFile( str,false );
-*/
 }
 
 void MainWindow::onHelpRebuild(){
