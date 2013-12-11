@@ -216,7 +216,7 @@ unsigned char *BBMonkeyGame::LoadImageData( String path,int *pwidth,int *pheight
 	bitmapFrame->Release();
 	decoder->Release();
 	
-	gc_force_sweep=true;
+	if( data ) gc_ext_malloced( (*pwidth)*(*pheight)*(*pformat) );
 
 	return data;
 }
@@ -318,7 +318,7 @@ unsigned char *BBMonkeyGame::LoadAudioData( String path,int *length,int *channel
 		p+=lens[i];
 	}
 	
-	gc_force_sweep=true;
+	if( data ) gc_ext_malloced( (*length)*(*channels)*(*format) );
 	
 	return data;
 }	

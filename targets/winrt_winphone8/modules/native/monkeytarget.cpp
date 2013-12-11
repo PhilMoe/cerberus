@@ -109,9 +109,10 @@ unsigned char *BBMonkeyGame::LoadImageData( String path,int *width,int *height,i
 	if( !f ) return 0;
 	
 	unsigned char *data=stbi_load_from_file( f,width,height,format,0 );
+
 	fclose( f );
 	
-	gc_force_sweep=true;
+	if( data ) gc_ext_malloced( (*width)*(*height)*(*format) );
 
 	return data;
 }
@@ -134,7 +135,7 @@ unsigned char *BBMonkeyGame::LoadAudioData( String path,int *length,int *channel
 	
 	fclose( f );
 	
-	gc_force_sweep=true;
+	if( data ) gc_ext_malloced( (*length)*(*channels)*(*format) );
 	
 	return data;
 }

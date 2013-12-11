@@ -243,8 +243,8 @@ unsigned char *BBIosGame::LoadImageData( String path,int *width,int *height,int 
 	*format=4;
 	
 	[pool release];
-
-	gc_force_sweep=true;
+	
+	gc_ext_malloced( (*width)*(*height)*(*format) );
 	
 	return data;
 }
@@ -260,8 +260,8 @@ unsigned char *BBIosGame::LoadAudioData( String path,int *length,int *channels,i
 			fclose( f );
 		}
 		[pool release];
-
-		gc_force_sweep=true;	
+		
+		if( data ) gc_ext_malloced( (*length)*(*channels)*(*format) );
 
 		return data;
 	}
@@ -316,9 +316,9 @@ unsigned char *BBIosGame::LoadAudioData( String path,int *length,int *channels,i
 						*hertz=outputFormat.mSampleRate;
 						
 						ExtAudioFileDispose( fileRef );		
-						[pool release];		
+						[pool release];	
 						
-						gc_force_sweep=true;
+						gc_ext_malloced( (*length)*(*channels)*(*format) );
 		
 						return data;
 					}

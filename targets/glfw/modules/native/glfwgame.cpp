@@ -198,7 +198,7 @@ unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int
 	unsigned char *data=stbi_load_from_file( f,width,height,depth,0 );
 	fclose( f );
 	
-	gc_force_sweep=true;
+	if( data ) gc_ext_malloced( (*width)*(*height)*(*depth) );
 	
 	return data;
 }
@@ -216,8 +216,8 @@ unsigned char *BBGlfwGame::LoadAudioData( String path,int *length,int *channels,
 		data=LoadOGG( f,length,channels,format,hertz );
 	}
 	fclose( f );
-
-	gc_force_sweep=true;
+	
+	if( data ) gc_ext_malloced( (*length)*(*channels)*(*format) );
 	
 	return data;
 }

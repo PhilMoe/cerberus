@@ -12,30 +12,31 @@ unsigned char *LoadOGG( FILE *f,int *length,int *channels,int *format,int *hertz
 	stb_vorbis_info info=stb_vorbis_get_info( v );
 	
 	int limit=info.channels*4096;
-	int offset=0,data_len=0,total=limit;
+	int offset=0,total=limit;
 
-	short *data=(short*)malloc( total*sizeof(short) );
+	short *data=(short*)malloc( total*2 );
 	
 	for(;;){
 		int n=stb_vorbis_get_frame_short_interleaved( v,info.channels,data+offset,total-offset );
 		if( !n ) break;
 	
-		data_len+=n;
 		offset+=n*info.channels;
 		
 		if( offset+limit>total ){
 			total*=2;
-			data=(short*)realloc( data,total*sizeof(short) );
+			data=(short*)realloc( data,total*2 );
 		}
 	}
 	
-	*length=data_len;
+	data=(short*)realloc( data,offset*2 );
+	
+	*length=offset/info.channels;
 	*channels=info.channels;
 	*format=2;
 	*hertz=info.sample_rate;
 	
 	stb_vorbis_close(v);
-
+	
 	return (unsigned char*)data;
 }
 

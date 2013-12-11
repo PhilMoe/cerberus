@@ -27,7 +27,7 @@ static int readShort( FILE *f ){
 static void skipBytes( int n,FILE *f ){
 	char *p=(char*)malloc( n );
 	fread( p,n,1,f );
-	free(p);
+	free( p );
 }
 
 unsigned char *LoadWAV( FILE *f,int *plength,int *pchannels,int *pformat,int *phertz ){
