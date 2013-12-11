@@ -227,7 +227,7 @@ Class George Implements ILinkResolver,IPrettifier
 			maker.Clear
 			maker.SetString "CONTENT",page
 		
-			If path<>"Home"
+			If path<>"Home" And path<>"Home2"
 				maker.BeginList "NAVLINKS"
 				Local tpath:=""
 				For Local bit:=Eachin path.Split( "/" )

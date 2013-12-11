@@ -1,0 +1,20 @@
+> The Desktop target
+
+The desktop target (formerly the Glfw target) allows you to create apps for Windows, MacOS and Linux desktop environments.
+
+Desktop apps use the OpenGL API for graphics rendering and the OpenAL API for audio.
+
+>> Windows Requirements
+
+* [MinGW 4.8.1](http://www.monkeycoder.co.nz/downloads/tdm-gcc-4.8.1-3.exe) or [Microsoft Visual C++ Express 2010 (MSVC)](http://www.microsoft.com/visualstudio/eng/downloads).
+
+* [OpenAL Windows Drivers](http://www.monkeycoder.co.nz/downloads/oalinst.zip).
+
+>> MacOS Requirements
+
+* [XCode](http://developer.apple.com/xcode) developer tools. XCode is also available via the Mac 'App Store' app.
+
+>> Notes
+
+On Windows, either MinGW or MSVC may be used to build desktop apps. If you are using MinGW, the `MINGW_PATH` var in your [[Trans]] config file must be set correctly. If you are using MSVC, the `MSBUILD_PATH` var in your [[Trans]] config file must be set correctly. Note that some releases of Monkey may also include a minimal install of MinGW in the root monkey directory, in which case you will not need to install anything.
+

@@ -4,7 +4,7 @@ App config settings are settings that affect how a project is built.
 
 These are used for features that are highly target specific, or that somehow affect the build process in some way and can't be implemented using plain Monkey code.
 
-There are 2 ways to specify app config settings:
+There are 3 ways to specify app config settings:
 
 * With [[Trans]] using the command line.
 

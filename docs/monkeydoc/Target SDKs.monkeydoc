@@ -8,13 +8,11 @@ This config file is named "config.winnt.txt" or "config.macos.txt" and is locate
 
 Please refer to the following installation guides: 
 
+* [[The Desktop target]]
 * [[The Android target]]
 * [[The iOS target]]
 * [[The WinRT target]]
-* [[The GLFW target]]
-* [[The HTML5 target]]
-* [[The Flash target]]
 * [[The XNA target]]
+* [[The Flash target]]
+* [[The HTML5 target]]
 * [[The Stdcpp target]]
-
-Please also see: [[App config settings]].
