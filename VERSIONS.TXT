@@ -1,6 +1,19 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v76e *****
+
+Fixed transcc html5 builder makemeta bug where width/height were swapped for jpgs!
+
+Added 'Open in Help View' to Ted.
+
+Improved handling of non-gc memory allocation.
+
+Added -Wno-free-nonheap-object to glfw mingw ccopts for less warnings.
+
+Fixed winrt alpha bug.
+
+
 ***** v76d *****
 
 Fixed some ios audio issues where audio crapped out after a clock 'alarm' fired.
