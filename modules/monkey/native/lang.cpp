@@ -33,9 +33,8 @@ void dbg_error( const char *p );
 // GC mode:
 //
 // 0 = disabled
-// 1 = Full GC every OnUpdate
-// 2 = Incremental GC every OnUpdate
-// 3 = Incremental GC every allocation
+// 1 = Incremental GC every OnWhatever
+// 2 = Incremental GC every allocation
 //
 #ifndef CFG_CPP_GC_MODE
 #define CFG_CPP_GC_MODE 1
@@ -47,6 +46,8 @@ void dbg_error( const char *p );
 #define CFG_CPP_GC_TRIGGER 8*1024*1024
 #endif
 
+//GC_MODE 2 needs to track locals on a stack - this may need to be bumped if your app uses a LOT of locals, eg: is heavily recursive...
+//
 #ifndef CFG_CPP_GC_MAX_LOCALS
 #define CFG_CPP_GC_MAX_LOCALS 8192
 #endif
@@ -130,8 +131,6 @@ gc_object gc_free_list;
 gc_object gc_marked_list;
 gc_object gc_unmarked_list;
 gc_object gc_queued_list;	//doesn't really need to be doubly linked...
-
-bool gc_force_sweep;
 
 int gc_free_bytes;
 int gc_marked_bytes;
@@ -230,6 +229,22 @@ void gc_flush_free( int size ){
 	}
 }
 
+void *gc_ext_malloc( int size ){
+
+	gc_new_bytes+=size;
+	
+	gc_flush_free( size );
+	
+	return malloc( size );
+}
+
+void gc_ext_malloced( int size ){
+
+	gc_new_bytes+=size;
+	
+	gc_flush_free( size );
+}
+
 gc_object *gc_object_alloc( int size ){
 
 	size=(size+7)&~7;
@@ -250,7 +265,6 @@ gc_object *gc_object_alloc( int size ){
 		}else{
 			gc_new_bytes+=size;
 			gc_mark_queued( (long long)(gc_new_bytes)*(gc_alloced_bytes-gc_new_bytes)/(CFG_CPP_GC_TRIGGER)+gc_new_bytes );
-//			gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
 		}
 		
 #if DEBUG_GC
@@ -432,7 +446,6 @@ void gc_collect(){
 		gc_new_bytes=0;
 	}else{
 		gc_mark_queued( (long long)(gc_new_bytes)*(gc_alloced_bytes-gc_new_bytes)/(CFG_CPP_GC_TRIGGER)+gc_new_bytes );
-//		gc_mark_queued( double(gc_new_bytes)/(CFG_CPP_GC_TRIGGER)*(gc_alloced_bytes-gc_new_bytes)+gc_new_bytes );
 	}
 
 #if DEBUG_GC

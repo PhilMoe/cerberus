@@ -246,7 +246,7 @@ unsigned char *BBGame::LoadData( String path,int *plength ){
 	
 	*plength=length;
 	
-	gc_force_sweep=true;
+	gc_ext_malloced( length );
 	
 	return data;
 }
