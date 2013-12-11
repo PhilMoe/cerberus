@@ -67,8 +67,8 @@ Function GetInfo_JPG:Int( path:String )
 				Case $c0,$c1,$c2,$c3
 					If datalen And f.Read( buf,0,5 )=5
 						Local bpp:=buf.PeekByte(0)&255
-						Info_Width=(buf.PeekByte(1)&255) Shl 8 | (buf.PeekByte(2)&255)
-						Info_Height=(buf.PeekByte(3)&255) Shl 8 | (buf.PeekByte(4)&255)
+						Info_Width=(buf.PeekByte(3)&255) Shl 8 | (buf.PeekByte(4)&255)
+						Info_Height=(buf.PeekByte(1)&255) Shl 8 | (buf.PeekByte(2)&255)
 						f.Close
 						Return 0
 					Endif

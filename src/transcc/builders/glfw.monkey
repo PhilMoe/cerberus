@@ -39,10 +39,10 @@ Class GlfwBuilder Extends Builder
 			CreateDir "build"
 			CreateDir "build/"+ENV_CONFIG
 	
-			Local ccopts:=""
+			Local ccopts:="-Wno-free-nonheap-object"	'Grrr....
 			Select ENV_CONFIG
 			Case "release"
-				ccopts="-O3 -DNDEBUG"
+				ccopts+=" -O3 -DNDEBUG"
 			End
 
 			Local cmd:="make"
