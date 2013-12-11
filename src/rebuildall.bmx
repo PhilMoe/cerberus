@@ -65,7 +65,7 @@ Function RebuildTrans()
 		End
 	EndIf
 
-?Not win32
+?Not Win32
 	system "chmod +x "+trans
 ?
 	Print "transcc built OK!"
@@ -101,7 +101,9 @@ Function RebuildMServer()
 End Function
 
 Function RebuildMonkey()
-	'windres resource.rc resource.o
+?Win32
+	system "windres monkey/resource.rc monkey/resource.o"
+?
 	system "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -t gui -a -r -o ../Monkey monkey/monkey.bmx"
 ?MacOS
 	system "cp monkey/info.plist ../Monkey.app/Contents"
