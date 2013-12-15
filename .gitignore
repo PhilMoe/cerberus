@@ -22,7 +22,7 @@
 
 /targets/glfw/oalinst.exe
 
-/targets
+/targets/*
 !/targets/android
 !/targets/cpptool
 !/targets/flash
