@@ -3,6 +3,10 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v76e *****
 
+Had a stab at fixing android softkeyboard predictive text bug.
+
+glfw xcode project now builds main.mm instead of main.cpp so you can use objective C in glfw projects.
+
 Fixed transcc html5 builder makemeta bug where width/height were swapped for jpgs!
 
 Added 'Open in Help View' to Ted.
