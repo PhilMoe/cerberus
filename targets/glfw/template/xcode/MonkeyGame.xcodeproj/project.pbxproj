@@ -28,7 +28,7 @@
 		7C17EE3E12BACFDC007B72A6 /* cocoa_time.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C17EE3512BACFDC007B72A6 /* cocoa_time.m */; };
 		7C17EE3F12BACFDC007B72A6 /* cocoa_window.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C17EE3612BACFDC007B72A6 /* cocoa_window.m */; };
 		7C17EE5212BAD553007B72A6 /* stb_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C17EE5112BAD553007B72A6 /* stb_image.c */; };
-		7C72C3141315BB8C00BC53BB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C72C3131315BB8C00BC53BB /* main.cpp */; };
+		7C793CD3185BB4DE005EC3DF /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7C793CD2185BB4DE005EC3DF /* main.mm */; };
 		7C83FECA15730D2B007D5B80 /* stb_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C83FEC915730D2B007D5B80 /* stb_vorbis.c */; };
 		7C8DB52F12AF2C210090FC6E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8DB52E12AF2C210090FC6E /* OpenGL.framework */; };
 		7CACF7FC12B5BBD4002E52F2 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CACF7FB12B5BBD4002E52F2 /* OpenAL.framework */; };
@@ -70,7 +70,7 @@
 		7C17EE3612BACFDC007B72A6 /* cocoa_window.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cocoa_window.m; path = ../glfw/lib/cocoa/cocoa_window.m; sourceTree = SOURCE_ROOT; };
 		7C17EE3712BACFDC007B72A6 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = ../glfw/lib/cocoa/platform.h; sourceTree = SOURCE_ROOT; };
 		7C17EE5112BAD553007B72A6 /* stb_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stb_image.c; path = ../stb/stb_image.c; sourceTree = SOURCE_ROOT; };
-		7C72C3131315BB8C00BC53BB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = SOURCE_ROOT; };
+		7C793CD2185BB4DE005EC3DF /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = ../main.mm; sourceTree = "<group>"; };
 		7C83FEC915730D2B007D5B80 /* stb_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stb_vorbis.c; path = ../stb/stb_vorbis.c; sourceTree = SOURCE_ROOT; };
 		7C8DB52E12AF2C210090FC6E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7CACF7FB12B5BBD4002E52F2 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -145,7 +145,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				7C72C3131315BB8C00BC53BB /* main.cpp */,
+				7C793CD2185BB4DE005EC3DF /* main.mm */,
 				7C17EE5112BAD553007B72A6 /* stb_image.c */,
 				7C83FEC915730D2B007D5B80 /* stb_vorbis.c */,
 				7C17EE2F12BACFDC007B72A6 /* cocoa_enable.m */,
@@ -278,6 +278,7 @@
 				7C17EE2C12BACFBF007B72A6 /* thread.c in Sources */,
 				7C17EE2D12BACFBF007B72A6 /* time.c in Sources */,
 				7C17EE2E12BACFBF007B72A6 /* window.c in Sources */,
+				7C793CD3185BB4DE005EC3DF /* main.mm in Sources */,
 				7C17EE3812BACFDC007B72A6 /* cocoa_enable.m in Sources */,
 				7C17EE3912BACFDC007B72A6 /* cocoa_fullscreen.m in Sources */,
 				7C17EE3A12BACFDC007B72A6 /* cocoa_glext.m in Sources */,
@@ -287,7 +288,6 @@
 				7C17EE3E12BACFDC007B72A6 /* cocoa_time.m in Sources */,
 				7C17EE3F12BACFDC007B72A6 /* cocoa_window.m in Sources */,
 				7C17EE5212BAD553007B72A6 /* stb_image.c in Sources */,
-				7C72C3141315BB8C00BC53BB /* main.cpp in Sources */,
 				7C83FECA15730D2B007D5B80 /* stb_vorbis.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
