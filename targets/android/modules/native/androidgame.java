@@ -11,6 +11,7 @@ import android.widget.*;
 import android.view.inputmethod.*;
 import android.content.res.*;
 import android.opengl.*;
+import android.text.*;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -192,6 +193,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		public GameView( Context context,AttributeSet attrs ){
 			super( context,attrs );
 			init();
+		}
+		
+		//Voodoo to disable predictive text on soft keyboard
+		public InputConnection onCreateInputConnection( EditorInfo outAttrs ){
+			outAttrs.inputType=InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+			return null;
 		}
 		
 		//View event handling
