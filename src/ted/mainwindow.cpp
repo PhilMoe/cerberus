@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.18"
+#define TED_VERSION "1.19"
 
 #define SETTINGS_VERSION 2
 
@@ -205,6 +205,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
 
     readSettings();
 
+    QString home2=_monkeyPath+"/docs/html/Home2.html";
+    if( QFile::exists( home2 ) ) openFile( "file:///"+home2,false );
+
     _prefsDialog=new PrefsDialog( this );
     _prefsDialog->readSettings();
 
@@ -332,12 +335,12 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
     QString path=cpath;
 
     if( isUrl( path ) ){
-
+/*
         if( path.startsWith( "file:" ) && path.endsWith( "/docs/html/Home.html" ) ){
             QString path2=_monkeyPath+"/docs/html/Home2.html";
             if( QFile::exists( path2 ) ) path="file:///"+path2;
         }
-
+*/
         QWebView *webView=0;
         for( int i=0;i<_mainTabWidget->count();++i ){
             if( webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) ) ) break;
@@ -1671,8 +1674,32 @@ void MainWindow::onHelpQuickHelp(){
 }
 
 void MainWindow::onHelpAbout(){
+
+    QString MONKEY_VERSION="?????";
+
+    QFile file( _monkeyPath+"/VERSIONS.TXT" );
+    if( file.open( QIODevice::ReadOnly ) ){
+        QTextStream stream( &file );
+        stream.setCodec( "UTF-8" );
+        QString text=stream.readAll();
+        file.close();
+        QStringList lines=text.split('\n');
+        for( int i=0;i<lines.count();++i ){
+            QString line=lines.at( i ).trimmed();
+            if( line.startsWith( "***** v") ){
+                QString v=line.mid( 7 );
+                int j=v.indexOf( " *****" );
+                if( j+6==v.length() ){
+                    MONKEY_VERSION=v.left( j );
+                    break;
+                }
+            }
+        }
+    }
+
     QString ABOUT=
-            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Trans V"+_transVersion+")\n\n"
+//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Monkey V"+MONKEY_VERSION+"; Trans V"+_transVersion+")\n\n"
+            "Ted V"TED_VERSION"  (Monkey V"+MONKEY_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
             "Copyright Blitz Research Ltd.\n\n"
             "A simple editor/IDE for the Monkey programming language.\n\n"
             "Please visit www.monkeycoder.co.nz for more information on Monkey."
