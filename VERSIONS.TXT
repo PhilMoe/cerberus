@@ -1,7 +1,9 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
-***** v76e *****
+***** v77a *****
+
+Ted now reads version info from VERSIONS.TXT for about dialog - NOTE TO SELF! DON'T CHANGE FORMAT OF VERSION HEADER!!!! ie: ***** vBLAH *****
 
 Had a stab at fixing android softkeyboard predictive text bug.
 
