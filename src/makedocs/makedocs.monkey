@@ -354,6 +354,7 @@ Function Main:Int()
 	CreateDir "docs/html"
 	CreateDir "docs/html/data"
 	CreateDir "docs/html/examples"
+	CopyDir   "docs/htmldoc","docs/html",True
 	
 	Local style:=LoadString( "bin/docstyle.txt" ).Trim()
 	If Not style Or FileType( "docs/templates/"+style )<>FILETYPE_DIR style="devolonter"
