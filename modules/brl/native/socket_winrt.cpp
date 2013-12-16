@@ -378,7 +378,7 @@ int BBSocket::SendTo( BBDataBuffer *data,int offset,int count,BBSocketAddress *a
 		op->Completed=_getouthandler;
 		
 		if( WaitForSingleObjectEx( _wevent,INFINITE,FALSE )!=WAIT_OBJECT_0 || op->Status!=AsyncStatus::Completed ){
-			Print( "GetOutputStream failed" );
+			bbPrint( "GetOutputStream failed" );
 			return 0;
 		}	
 		it=_sendToMap.insert( std::make_pair( *address,ref new DataWriter( op->GetResults() ) ) ).first;

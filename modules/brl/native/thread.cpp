@@ -114,7 +114,7 @@ void BBThread::Start(){
 }
 
 void BBThread::Wait(){
-	exit( -1 );
+//	exit( -1 );
 }
 
 #elif _WIN32
