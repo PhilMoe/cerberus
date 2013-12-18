@@ -1,4 +1,7 @@
 
+#include <wctype.h>
+#include <locale.h>
+
 // C++ Monkey runtime.
 //
 // Placed into the public domain 24/02/2011.
@@ -911,7 +914,7 @@ public:
 			Char *q=p->data;
 			t_memcpy( q,rep->data,i );
 			for( q[i++]=t;i<rep->length;++i ){
-				q[i]=tolower( rep->data[i] );
+				q[i]=towlower( rep->data[i] );
 			}
 			return String( p );
 		}
@@ -926,7 +929,7 @@ public:
 			Char *q=p->data;
 			t_memcpy( q,rep->data,i );
 			for( q[i++]=t;i<rep->length;++i ){
-				q[i]=toupper( rep->data[i] );
+				q[i]=towupper( rep->data[i] );
 			}
 			return String( p );
 		}
@@ -1638,7 +1641,9 @@ int bb_std_main( int argc,const char **argv ){
 
 #endif
 
-	setlocale( LC_CTYPE,"en_US.UTF-8" );	
+	if( !setlocale( LC_CTYPE,"en_US.UTF-8" ) ){
+		setlocale( LC_CTYPE,"" );
+	}
 
 	gc_init1();
 
