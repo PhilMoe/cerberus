@@ -905,7 +905,7 @@ public:
 
 	String ToLower()const{
 		for( int i=0;i<rep->length;++i ){
-			Char t=tolower( rep->data[i] );
+			Char t=towlower( rep->data[i] );
 			if( t==rep->data[i] ) continue;
 			Rep *p=Rep::alloc( rep->length );
 			Char *q=p->data;
@@ -920,7 +920,7 @@ public:
 
 	String ToUpper()const{
 		for( int i=0;i<rep->length;++i ){
-			Char t=toupper( rep->data[i] );
+			Char t=towupper( rep->data[i] );
 			if( t==rep->data[i] ) continue;
 			Rep *p=Rep::alloc( rep->length );
 			Char *q=p->data;
@@ -1637,6 +1637,8 @@ int bb_std_main( int argc,const char **argv ){
 #endif
 
 #endif
+
+	setlocale( LC_CTYPE,"en_US.UTF-8" );	
 
 	gc_init1();
 
