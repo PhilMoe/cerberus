@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v77b *****
+
+Added fix for c++ String.ToLower/ToUpper and unicode.
+
+
 ***** v77a *****
 
 Ted now reads version info from VERSIONS.TXT for about dialog - NOTE TO SELF! DON'T CHANGE FORMAT OF VERSION HEADER!!!! ie: ***** vBLAH *****
