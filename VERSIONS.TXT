@@ -1,6 +1,15 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v77c *****
+
+Souped up html5 target template - moved resize handling code to html.
+
+Fixed XNA PlayMusic paused flag bug.
+
+Fixed transcc debug mode array indexing bug in js/as translators.
+
+
 ***** v77b *****
 
 Added fix for c++ String.ToLower/ToUpper and unicode.
