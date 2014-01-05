@@ -1,4 +1,8 @@
 
+#If MOJO_VERSION_X
+#Error "Mojo version error"
+#Endif
+
 '***** KeyDown/KeyHit Constants *****
 
 Const KEY_LMB=1

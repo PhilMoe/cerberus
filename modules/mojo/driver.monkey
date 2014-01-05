@@ -1,4 +1,8 @@
 
+#If MOJO_VERSION_X
+#Error "Mojo version error"
+#Endif
+
 Import brl.gametarget
 
 #If Not BRL_GAMETARGET_IMPLEMENTED

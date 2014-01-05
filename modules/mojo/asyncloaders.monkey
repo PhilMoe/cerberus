@@ -1,4 +1,8 @@
 
+#If MOJO_VERSION_X
+#Error "Mojo version error"
+#Endif
+
 Import mojo.graphics
 Import mojo.audio
 

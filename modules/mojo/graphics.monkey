@@ -3,6 +3,10 @@
 ' Copyright 2011 Mark Sibly, all rights reserved.
 ' No warranty implied; use at your own risk.
 
+#If MOJO_VERSION_X
+Import mojox.graphics
+#Else
+
 Private
 
 Import "data/mojo_font.png"
@@ -615,3 +619,5 @@ Function InvTransform#[]( coords#[] )
 	Next
 	Return out
 End
+
+#Endif

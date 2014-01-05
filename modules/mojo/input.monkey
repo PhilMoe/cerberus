@@ -4,6 +4,10 @@
 ' Copyright 2011 Mark Sibly, all rights reserved.
 ' No warranty implied; use at your own risk.
 
+#If MOJO_VERSION_X
+Import mojox.input
+#Else
+
 Import keycodes
 
 Private
@@ -117,3 +121,5 @@ End
 Function AccelZ#()
 	Return device.AccelZ()
 End
+
+#Endif

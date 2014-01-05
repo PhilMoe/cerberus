@@ -4,6 +4,10 @@
 ' Copyright 2011 Mark Sibly, all rights reserved.
 ' No warranty implied; use at your own risk.
 
+#If MOJO_VERSION_X
+Import mojox.audio
+#Else
+
 Private
 
 Import audiodevice
@@ -100,3 +104,5 @@ End
 Function SetMusicVolume( volume# )
 	device.SetMusicVolume volume
 End
+
+#Endif
