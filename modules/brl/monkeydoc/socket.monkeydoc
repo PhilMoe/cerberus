@@ -209,6 +209,8 @@ The method returns immediately. Once all bytes of data have bben been sent or th
 
 The socket must be a connected stream or connected datagram socket.
 
+
+
 Note: Be careful not to modify @data while the operation is in progress.
 
 
@@ -217,6 +219,8 @@ Note: Be careful not to modify @data while the operation is in progress.
 Sends data to the remote host specified by @address and returns the number of bytes sent.
 
 The method blocks until either all bytes have been sent or the socket is closed.
+
+The @address parameter must contain a valid socket address.
 
 The socket must be an unconnected datagram socket.
 
@@ -228,6 +232,8 @@ Links: [[ReceiveFrom]]
 Sends data to the remote host specified by @address asynchronously.
 
 The method returns immediately. Once all bytes of data have been sent or the socket is closed, the [[OnSendToComplete]] method of the @onComplete object is called.
+
+The @address parameter must contain a valid socket address.
 
 The socket must be an unconnected datagram socket.
 
@@ -294,6 +300,8 @@ The socket must be an unconnected datagram socket.
 Receives data from a remote host asynchronously.
 
 The method returns immediately. Once at least 1 byte of data has been received or the socket is closed, the [[OnReceiveFromComplete]] method of the @onComplete object is called.
+
+The address of the remote host that the data was sent from is written to @address.
 
 The socket must be an unconnected datagram socket.
 

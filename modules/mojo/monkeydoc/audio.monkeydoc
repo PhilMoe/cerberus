@@ -54,42 +54,22 @@ Links:
 
 Plays a sound through the specified channel.
 
-flags should be 1 to loop the sound, 0 to play it just once.
-
-Params: 
-
-sound - a sound object.
-
-channel - an audio channel in the range 0 to 31.
-
-flags - looping flags.
+@flags should be 1 to loop the sound, 0 to play it just once.
 
 
 # Function StopChannel:Int(channel:Int)
 
 Stops the specified audio channel.
 
-Params: 
-
-channel - an audio channel in the range 0 to 31.
-
 
 # Function PauseChannel:Int(channel:Int)
 
 Pauses the specified audio channel. Has no effect if the audio channel is already paused or stopped.
 
-Params: 
-
-channel - an audio channel in the range 0 to 31.
-
 
 # Function ResumeChannel:Int(channel:Int)
 
 Resumes the specified audio channel. Has no effect if the audio channel is not currently paused.
-
-Params: 
-
-channel - an audio channel in the range 0 to 31.
 
 
 # Function ChannelState:Int(channel:Int)
@@ -98,31 +78,19 @@ Returns the state of the specified audio channel: 0 if the channel is currently 
 
 Note: This function currently returns -1 on the android target.
 
-Params: 
-
-channel - an audio channel in the range 0 to 31.
-
 
 # Function SetChannelVolume:Int(channel:Int,volume:Float)
 
 Sets the volume of the specified audio channel.
 
-Params: 
-
-channel - an audio channel in the range 0 to 31.
-
-volume - a volume setting in the range 0 to 1, with 0 being silent and 1 being full volume.
+@volume should be in the range 0 (silence) to 1 (full volume).
 
 
 # Function SetChannelPan:Int(channel:Int,pan:Float)
 
 Sets the pan of the specified audio channel.
 
-Params: 
-
-channel - an audio channel in the range 0 to 31.
-
-pan - a pan setting in the range -1 to +1, with -1 begin 'full left' and +1 being 'full right'.
+@pan should be in the range -1 (full left) to +1 (full right).
 
 
 # Function SetChannelRate:Int(channel:Int,rate:Float)
@@ -131,11 +99,8 @@ Sets the playback rate of the specified audio channel.
 
 This will affect the pitch of the sound being played.
 
-Params: 
+@rate should be in the 0.5 (an octave lower) to 2 (an octave higher).
 
-channel - an audio channel in the range 0 to 31.
-
-rate - a playback rate in the range .5 to 2, with .5 being an octave lower and 2 being an octave higher.
 
 
 # Function PlayMusic:Int(path:String,flags:Int=1)
@@ -146,15 +111,7 @@ Since there is only one music channel, any music currently play will first be st
 
 flags should be 1 to loop the music, 0 to play it just once.
 
-Params: 
-
-path - path of audio file to play.
-
-flags - playback flags, 1 to loop music, 0 to play once.
-
-Links: 
-
-[[Resource paths]], [[File formats]]
+Links: [[Resource paths]], [[File formats]]
 
 
 # Function StopMusic:Int()
@@ -185,10 +142,7 @@ If music is currently playing, this will set the music volume immediately.
 
 Whether or not music is playing, this will set the volume to be used the next time PlayMusic is called.
 
-Params: 
-
-volume - a volume setting in the range 0 to 1, with 0 being silent and 1 being full volume.
-
+@volume should be in the range 0 (silence) to 1 (full volume).
 
 
 # Class mojo.audio.Sound
