@@ -23,43 +23,54 @@ BBHtml5Game.Html5Game=function(){
 BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 
 	++this._timerSeq;
-
-	if( !this._updateRate || this._suspended ) return;
+	if( this._suspended ) return;
 	
 	var game=this;
-	var updatePeriod=1000.0/this._updateRate;
-	var nextUpdate=Date.now()+updatePeriod;
 	var seq=game._timerSeq;
 	
+	if( !this._updateRate ){
+	
+		function animate(){
+			if( seq!=game._timerSeq ) return;
+
+			game.UpdateGame();
+			if( seq!=game._timerSeq ) return;
+
+			requestAnimationFrame( animate );
+			game.RenderGame();
+		}
+		requestAnimationFrame( animate );
+		return;
+	}
+
+	var updatePeriod=1000.0/this._updateRate;
+	var nextUpdate=0;
+
 	function timeElapsed(){
 		if( seq!=game._timerSeq ) return;
-
-		var time;		
-		var updates;
 		
-		for( updates=0;updates<4;++updates ){
+		if( !nextUpdate ) nextUpdate=Date.now();
 		
-			nextUpdate+=updatePeriod;
-			
+		for( var i=0;i<4;++i ){
+		
 			game.UpdateGame();
 			if( seq!=game._timerSeq ) return;
 			
-			if( nextUpdate-Date.now()>0 ) break;
-		}
-		
-		game.RenderGame();
-		if( seq!=game._timerSeq ) return;
-		
-		if( updates==4 ){
-			nextUpdate=Date.now();
-			setTimeout( timeElapsed,0 );
-		}else{
+			nextUpdate+=updatePeriod;
 			var delay=nextUpdate-Date.now();
-			setTimeout( timeElapsed,delay>0 ? delay : 0 );
+			
+			if( delay>0 ){
+				setTimeout( timeElapsed,delay );
+				game.RenderGame();
+				return;
+			}
 		}
+		nextUpdate=0;
+		setTimeout( timeElapsed,0 );
+		game.RenderGame();
 	}
 
-	setTimeout( timeElapsed,updatePeriod );
+	setTimeout( timeElapsed,0 );
 }
 
 //***** BBGame methods *****
@@ -151,6 +162,9 @@ BBHtml5Game.prototype.Run=function(){
 	var game=this;
 	var canvas=game._canvas;
 	
+	var xscale=1;
+	var yscale=1;
+	
 	var touchIds=new Array( 32 );
 	for( i=0;i<32;++i ) touchIds[i]=-1;
 	
@@ -180,7 +194,7 @@ BBHtml5Game.prototype.Run=function(){
 			x-=c.offsetLeft;
 			c=c.offsetParent;
 		}
-		return x;
+		return x*xscale;
 	}
 	
 	function mouseY( e ){
@@ -190,7 +204,7 @@ BBHtml5Game.prototype.Run=function(){
 			y-=c.offsetTop;
 			c=c.offsetParent;
 		}
-		return y;
+		return y*yscale;
 	}
 
 	function touchX( touch ){
@@ -342,6 +356,14 @@ BBHtml5Game.prototype.Run=function(){
 			game.SuspendGame();
 		}
 	}
+	
+	canvas.updateSize=function(){
+		xscale=canvas.width/canvas.clientWidth;
+		yscale=canvas.height/canvas.clientHeight;
+		game.RenderGame();
+	}
+	
+	canvas.updateSize();
 	
 	canvas.focus();
 	
