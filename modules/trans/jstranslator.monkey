@@ -239,20 +239,6 @@ Class JsTranslator Extends CTranslator
 		Emit "}"
 	End
 	
-	Method TransAssignStmt$( stmt:AssignStmt )
-		If ENV_CONFIG="debug"
-			Local ie:=IndexExpr( stmt.lhs )
-			If ie
-				Local t_rhs:=stmt.rhs.Trans()
-				Local t_expr:=ie.expr.Trans()
-				Local t_index:=ie.index.Trans()
-				Emit "dbg_array("+t_expr+","+t_index+")[dbg_index]"+TransAssignOp(stmt.op)+t_rhs
-				Return
-			Endif
-		Endif
-		Return Super.TransAssignStmt( stmt )
-	End
-	
 	Method TransIntrinsicExpr$( decl:Decl,expr:Expr,args:Expr[] )
 
 		Local texpr$,arg0$,arg1$,arg2$
@@ -362,7 +348,6 @@ Class JsTranslator Extends CTranslator
 		Local superid$=classDecl.superClass.munged
 		
 		'JS constructor - initializes fields
-		'
 		Emit "function "+classid+"(){"
 		
 		Emit superid+".call(this);"
@@ -373,7 +358,6 @@ Class JsTranslator Extends CTranslator
 		Next
 		
 		'Create 'implments' set for each class - possibly not optimal...?
-		'
 		Local impls$
 		Local tdecl:=classDecl
 		Local iset:=New StringSet
@@ -411,7 +395,6 @@ Class JsTranslator Extends CTranslator
 			Local gdecl:GlobalDecl=GlobalDecl( decl )
 			If gdecl
 				Emit TransGlobal( gdecl )+"="+TransValue( gdecl.type,"")+";"
-'				Emit "var "+gdecl.munged+";"
 				Continue
 			Endif
 
@@ -445,7 +428,6 @@ Class JsTranslator Extends CTranslator
 			Local gdecl:=GlobalDecl( decl )
 			If gdecl
 				Emit "var "+TransGlobal( gdecl )+"="+TransValue( gdecl.type,"")+";"
-'				Emit "var "+gdecl.munged+";"
 				Continue
 			Endif
 			
@@ -465,7 +447,6 @@ Class JsTranslator Extends CTranslator
 		Emit "function bbInit(){"
 		For Local decl:=Eachin app.semantedGlobals
 			Emit TransGlobal( decl )+"="+decl.init.Trans()+";"
-'			Emit decl.munged+"="+decl.init.Trans()+";"
 		Next
 		Emit "}"
 		

@@ -306,21 +306,6 @@ Class AsTranslator Extends CTranslator
 		Emit "}"
 	End
 
-	Method TransAssignStmt$( stmt:AssignStmt )
-		If ENV_CONFIG="debug"
-			Local ie:=IndexExpr( stmt.lhs )
-			If ie
-				Local t_rhs:=stmt.rhs.Trans()
-				Local t_expr:=ie.expr.Trans()
-				Local t_index:=ie.index.Trans()
-				Emit "dbg_array("+t_expr+","+t_index+")[dbg_index]"+TransAssignOp(stmt.op)+t_rhs
-				Return
-			Endif
-		Endif
-		Return Super.TransAssignStmt( stmt )
-	End
-	
-	
 	'***** Declarations *****
 	
 	Method EmitFuncDecl( decl:FuncDecl )
