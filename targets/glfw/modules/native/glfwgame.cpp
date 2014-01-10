@@ -21,6 +21,9 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
+	
+	virtual int GetDeviceWidth();
+	virtual int GetDeviceHeight();
 
 	virtual String PathToFilePath( String path );
 
@@ -35,10 +38,10 @@ public:
 private:
 	static BBGlfwGame *_glfwGame;
 
-	bool _iconified;
-	
-	double _nextUpdate;
 	double _updatePeriod;
+	double _nextUpdate;
+	
+	void UpdateEvents();
 		
 protected:
 	static int TransKey( int key );
@@ -93,8 +96,7 @@ enum{
 
 BBGlfwGame *BBGlfwGame::_glfwGame;
 
-BBGlfwGame::BBGlfwGame():
-_iconified( false ){
+BBGlfwGame::BBGlfwGame():_updatePeriod(0),_nextUpdate(0){
 	_glfwGame=this;
 }
 
@@ -106,10 +108,8 @@ int glfwGraphicsSeq=0;
 
 void BBGlfwGame::SetUpdateRate( int updateRate ){
 	BBGame::SetUpdateRate( updateRate );
-	if( _updateRate ){
-		_updatePeriod=1.0/_updateRate;
-		_nextUpdate=glfwGetTime()+_updatePeriod;
-	}
+	if( _updateRate ) _updatePeriod=1.0/_updateRate;
+	_nextUpdate=0;
 }
 
 int BBGlfwGame::Millisecs(){
@@ -122,8 +122,11 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 	if( !glfwGetJoystickParam( joy,GLFW_PRESENT ) ) return false;
 
 	int n_axes=glfwGetJoystickParam( joy,GLFW_AXES );
-	int n_buttons=glfwGetJoystickParam( joy,GLFW_BUTTONS );
+	if( n_axes>6 ) n_axes=6;
 
+	int n_buttons=glfwGetJoystickParam( joy,GLFW_BUTTONS );
+	if( n_buttons>32 ) n_buttons=32;
+		
 	float pos[6];
 	memset( pos,0,sizeof(pos) );	
 	glfwGetJoystickPos( joy,pos,n_axes );
@@ -381,24 +384,6 @@ void BBGlfwGame::OnChar( int chr,int action ){
 	}
 }
 
-BBGlfwVideoMode *BBGlfwGame::GetGlfwDesktopMode(){
-
-	GLFWvidmode mode;
-	glfwGetDesktopMode( &mode );
-	
-	return new BBGlfwVideoMode( mode.Width,mode.Height,mode.RedBits,mode.GreenBits,mode.BlueBits );
-}
-
-Array<BBGlfwVideoMode*> BBGlfwGame::GetGlfwVideoModes(){
-	GLFWvidmode modes[1024];
-	int n=glfwGetVideoModes( modes,1024 );
-	Array<BBGlfwVideoMode*> bbmodes( n );
-	for( int i=0;i<n;++i ){
-		bbmodes[i]=new BBGlfwVideoMode( modes[i].Width,modes[i].Height,modes[i].RedBits,modes[i].GreenBits,modes[i].BlueBits );
-	}
-	return bbmodes;
-}
-
 void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen ){
 
 	for( int i=0;i<=GLFW_KEY_LAST;++i ){
@@ -439,6 +424,55 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	glfwSetWindowCloseCallback(	OnWindowClose );
 }
 
+Array<BBGlfwVideoMode*> BBGlfwGame::GetGlfwVideoModes(){
+	GLFWvidmode modes[1024];
+	int n=glfwGetVideoModes( modes,1024 );
+	Array<BBGlfwVideoMode*> bbmodes( n );
+	for( int i=0;i<n;++i ){
+		bbmodes[i]=new BBGlfwVideoMode( modes[i].Width,modes[i].Height,modes[i].RedBits,modes[i].GreenBits,modes[i].BlueBits );
+	}
+	return bbmodes;
+}
+
+BBGlfwVideoMode *BBGlfwGame::GetGlfwDesktopMode(){
+
+	GLFWvidmode mode;
+	glfwGetDesktopMode( &mode );
+	
+	return new BBGlfwVideoMode( mode.Width,mode.Height,mode.RedBits,mode.GreenBits,mode.BlueBits );
+}
+
+int BBGlfwGame::GetDeviceWidth(){
+	int width,height;
+	glfwGetWindowSize( &width,&height );
+	return width;
+}
+
+int BBGlfwGame::GetDeviceHeight(){
+	int width,height;
+	glfwGetWindowSize( &width,&height );
+	return height;
+}
+
+void BBGlfwGame::UpdateEvents(){
+	if( _suspended ){
+		glfwWaitEvents();
+	}else{
+		glfwPollEvents();
+	}
+	if( glfwGetWindowParam( GLFW_ACTIVE ) ){
+		if( _suspended ){
+			ResumeGame();
+			_nextUpdate=0;
+		}
+	}else if( glfwGetWindowParam( GLFW_ICONIFIED ) || CFG_MOJO_AUTO_SUSPEND_ENABLED ){
+		if( !_suspended ){
+			SuspendGame();
+			_nextUpdate=0;
+		}
+	}
+}
+
 void BBGlfwGame::Run(){
 
 #if	CFG_GLFW_WINDOW_WIDTH && CFG_GLFW_WINDOW_HEIGHT
@@ -448,58 +482,49 @@ void BBGlfwGame::Run(){
 #endif
 
 	StartGame();
-
-	RenderGame();
 	
-	for( ;; ){
+	while( glfwGetWindowParam( GLFW_OPENED ) ){
 	
-		glfwPollEvents();
-		
-		if( !glfwGetWindowParam( GLFW_OPENED ) ) break;
-	
-		if( glfwGetWindowParam( GLFW_ICONIFIED ) ){
-			if( !_suspended ){
-				_iconified=true;
-				SuspendGame();
-			}
-		}else if( glfwGetWindowParam( GLFW_ACTIVE ) ){
-			if( _suspended ){
-				_iconified=false;
-				ResumeGame();
-				_nextUpdate=glfwGetTime();
-			}
-		}else if( CFG_MOJO_AUTO_SUSPEND_ENABLED ){
-			if( !_suspended ){
-				SuspendGame();
-			}
-		}
-	
-		if( !_updateRate || _suspended ){
-			if( !_iconified ) RenderGame();
-			glfwWaitEvents();
-			continue;
-		}
-		
-		double delay=_nextUpdate-glfwGetTime();
-		if( delay>0 ){
-			glfwSleep( delay );
-			continue;
-		}
-
-		int updates;
-		for( updates=0;updates<4;++updates ){
-			_nextUpdate+=_updatePeriod;
-			UpdateGame();
-			if( !_updateRate ) break;
-			delay=_nextUpdate-glfwGetTime();
-			if( delay>0 ) break;
-		}
-		
 		RenderGame();
+		glfwSwapBuffers();
 		
-		if( !_updateRate ) continue;
+		if( _nextUpdate ){
+			double delay=_nextUpdate-glfwGetTime();
+			if( delay>0 ) glfwSleep( delay );
+		}
 		
-		if( updates==4 ) _nextUpdate=glfwGetTime();
+		//Update user events
+		UpdateEvents();
+
+		//App suspended?		
+		if( _suspended ){
+			continue;
+		}
+
+		//'Go nuts' mode!
+		if( !_updateRate ){
+			UpdateGame();
+			continue;
+		}
+		
+		//Reset update timer?
+		if( !_nextUpdate ){
+			_nextUpdate=glfwGetTime();
+		}
+		
+		//Catch up updates...
+		int i=0;
+		for( ;i<4;++i ){
+		
+			UpdateGame();
+			if( !_nextUpdate ) break;
+			
+			_nextUpdate+=_updatePeriod;
+			
+			if( _nextUpdate>glfwGetTime() ) break;
+		}
+		
+		if( i==4 ) _nextUpdate=0;
 	}
 }
 
