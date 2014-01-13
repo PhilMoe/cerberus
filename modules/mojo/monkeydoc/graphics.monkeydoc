@@ -18,20 +18,12 @@ The graphics module is state based, and commands that 'set' various states will 
 
 # Function DeviceWidth:Int()
 
-Returns the width of the graphics device, in pixels.
-
-Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
-
-Links: [[DeviceHeight]]
+***** Moved to [[Modules/mojo.app#DeviceWidth|mojo.app.DeviceWidth]] *****
 
 
 # Function DeviceHeight:Int()
 
-Returns the height of the graphics device, in pixels.
-
-Please note that you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
-
-Links: [[DeviceWidth]]
+***** Moved to [[Modules/mojo.app#DeviceHeight|mojo.app.DeviceHeight]] *****
 
 
 # Function LoadImage:Image(path:String,frameCount:Int=1,flags:Int=Image.DefaultFlags)
