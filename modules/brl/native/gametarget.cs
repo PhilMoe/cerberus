@@ -26,6 +26,22 @@ public class BBGameDelegate{
 	public virtual void DiscardGraphics(){}
 }
 
+public class BBDisplayMode{
+	public int width;
+	public int height;
+	public int format;
+	public int hertz;
+	public int flags;
+	
+	public BBDisplayMode( int width=0,int height=0,int format=0,int hertz=0,int flags=0 ){
+		this.width=width;
+		this.height=height;
+		this.format=format;
+		this.hertz=hertz;
+		this.flags=flags;
+	}
+}
+
 public class BBGame{
 
 	protected static BBGame _game;
@@ -131,6 +147,28 @@ public class BBGame{
 	}
 	
 	public virtual void SetMouseVisible( bool visible ){
+	}
+	
+	public virtual int GetDeviceWidth(){
+		return 0;
+	}
+	
+	public virtual int GetDeviceHeight(){
+		return 0;
+	}
+	
+	public virtual void SetDeviceWindow( int width,int height,int flags ){
+	}
+	
+	public virtual BBDisplayMode[] GetDisplayModes(){
+		return new BBDisplayMode[0];
+	}
+	
+	public virtual BBDisplayMode GetDesktopMode(){
+		return null;
+	}
+	
+	public virtual void SetSwapInterval( int interval ){
 	}
 	
 	public virtual String PathToFilePath( String path ){

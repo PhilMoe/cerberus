@@ -32,6 +32,15 @@ class BBGameDelegate{
 	void DiscardGraphics(){}
 }
 
+class BBDisplayMode{
+
+	public int width;
+	public int height;
+	
+	BBDisplayMode(){ width=0;height=0; }
+	BBDisplayMode( int width,int height ){ this.width=width;this.height=height; }
+}
+
 abstract class BBGame{
 
 	protected static BBGame _game;
@@ -137,6 +146,28 @@ abstract class BBGame{
 	public void SetMouseVisible( boolean visible ){
 	}
 
+	int GetDeviceWidth(){
+		return 0;
+	}
+	
+	int GetDeviceHeight(){
+		return 0;
+	}
+	
+	void SetDeviceWindow( int width,int height ){
+	}
+	
+	BBDisplayMode[] GetDisplayModes(){
+		return new BBDisplayMode[0];
+	}
+	
+	BBDisplayMode GetDesktopMode(){
+		return null;
+	}
+	
+	void SetSwapInterval( int interval ){
+	}
+	
 	public void OpenUrl( String url ){	
 	}
 	

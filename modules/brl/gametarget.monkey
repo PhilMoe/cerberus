@@ -5,7 +5,17 @@ Import "native/gametarget.${LANG}"
 
 Extern
 
+Class BBDisplayMode
+	Field width:Int
+	Field height:Int
+	Field format:Int
+	Field hertz:Int
+	Field flags:Int
+End
+
 Class BBGame Extends Null
+
+	Function Game:BBGame()
 
 	Method SetDelegate:Void( delegate:BBGameDelegate )
 	Method SetUpdateRate:Void( hertz:Int )
@@ -20,9 +30,15 @@ Class BBGame Extends Null
 	Method PollJoystick:Bool( port:Int,joyx:Float[],joyy:Float[],joyz:Float[],buttons:Bool[] )
 	Method OpenUrl:Void( url:String )
 	Method SetMouseVisible( visible:Bool )
-	Method PathToFilePath:String( path:String )
+	
+	Method GetDeviceWidth:Int()
+	Method GetDeviceHeight:Int()
+	Method SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
+	Method GetDisplayModes:BBDisplayMode[]()
+	Method GetDesktopMode:BBDisplayMode()
+	Method SetSwapInterval:Void( interval:Int )
 
-	Function Game:BBGame()
+	Method PathToFilePath:String( path:String )
 End
 
 Class BBGameDelegate Abstract

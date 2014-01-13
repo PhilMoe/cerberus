@@ -25,11 +25,21 @@ public:
 	virtual void DiscardGraphics(){}
 };
 
+struct BBDisplayMode : public Object{
+	int width;
+	int height;
+	int format;
+	int hertz;
+	int flags;
+	BBDisplayMode( int width=0,int height=0,int format=0,int hertz=0,int flags=0 ):width(width),height(height),format(format),hertz(hertz),flags(flags){}
+};
+
 class BBGame{
 public:
 	BBGame();
 	virtual ~BBGame(){}
 	
+	// ***** Extern *****
 	static BBGame *Game(){ return _game; }
 	
 	virtual void SetDelegate( BBGameDelegate *delegate );
@@ -53,12 +63,21 @@ public:
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
 	
-	//***** cpp extensions *****
+	virtual int GetDeviceWidth(){ return 0; }
+	virtual int GetDeviceHeight(){ return 0; }
+	virtual void SetDeviceWindow( int width,int height,int flags ){}
+	virtual Array<BBDisplayMode*> GetDisplayModes(){ return Array<BBDisplayMode*>(); }
+	virtual BBDisplayMode *GetDesktopMode(){ return 0; }
+	virtual void SetSwapInterval( int interval ){}
+
+	// ***** Native *****	
 	virtual String PathToFilePath( String path );
 	virtual FILE *OpenFile( String path,String mode );
 	virtual unsigned char *LoadData( String path,int *plength );
+	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *depth ){ return 0; }
+	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz ){ return 0; }
 	
-	//***** INTERNAL *****
+	//***** Internal *****
 	virtual void Die( ThrowableObject *ex );
 	virtual void gc_collect();
 	virtual void StartGame();
@@ -71,7 +90,7 @@ public:
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
-
+	
 protected:
 
 	static BBGame *_game;

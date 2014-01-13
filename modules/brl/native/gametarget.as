@@ -33,6 +33,11 @@ class BBGameDelegate{
 	public function DiscardGraphics():void{}
 }
 
+class BBDisplayMode{
+	public var width:int;
+	public var height:int;
+}
+
 class BBGame{
 
 	internal static var _game:BBGame;
@@ -144,6 +149,28 @@ class BBGame{
 		}else{
 			Mouse.hide();
 		}
+	}
+	
+	public function GetDeviceWidth():int{
+		return 0;
+	}
+	
+	public function GetDeviceHeight():int{
+		return 0;
+	}
+	
+	public function SetDeviceWindow( width:int,height:int,flags:int ):void{
+	}
+	
+	public function GetDisplayModes():Array{
+		return new Array();
+	}
+	
+	public function GetDesktopMode():BBDisplayMode{
+		return null;
+	}
+	
+	public function SetSwapInterval( interval:int ):void{
 	}
 	
 	public function PathToFilePath( path:String ):String{
