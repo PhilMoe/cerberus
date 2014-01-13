@@ -706,11 +706,11 @@ int  _glfwPlatformOpenWindow( int width, int height,
     CFDictionaryRef fullscreenMode = NULL;
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
-        fullscreenMode =
+        	/*
             // I think it's safe to pass 0 to the refresh rate for this function
             // rather than conditionalizing the code to call the version which
             // doesn't specify refresh...
-            CGDisplayBestModeForParametersAndRefreshRateWithProperty(
+	        fullscreenMode = CGDisplayBestModeForParametersAndRefreshRateWithProperty(
             CGMainDisplayID(),
             colorBits + fbconfig->alphaBits,
             width,
@@ -719,6 +719,16 @@ int  _glfwPlatformOpenWindow( int width, int height,
             // Controversial, see macosx_fullscreen.m for discussion
             kCGDisplayModeIsSafeForHardware,
             NULL);
+            */
+            
+	        fullscreenMode = CGDisplayBestModeForParametersAndRefreshRate(
+            CGMainDisplayID(),
+            colorBits + fbconfig->alphaBits,
+            width,
+            height,
+            wndconfig->refreshRate ? wndconfig->refreshRate : 60,
+            NULL);
+           
 
         width = [[(id)fullscreenMode objectForKey:(id)kCGDisplayWidth] intValue];
         height = [[(id)fullscreenMode objectForKey:(id)kCGDisplayHeight] intValue];
