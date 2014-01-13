@@ -992,6 +992,7 @@ public:
 			C data[1];
 		};
 		Rep *_rep;
+		static Rep _nul;
 	public:
 		template<class T> CString( const T *data,int length ){
 			_rep=(Rep*)malloc( length*sizeof(C)+sizeof(Rep) );
@@ -1000,6 +1001,9 @@ public:
 			for( int i=0;i<length;++i ){
 				_rep->data[i]=(C)data[i];
 			}
+		}
+		CString():_rep( new Rep ){
+			_rep->refs=1;
 		}
 		CString( const CString &c ):_rep(c._rep){
 			++_rep->refs;
@@ -1028,7 +1032,7 @@ public:
 		p[length]=0;
 		return p;
 	}
-
+	
 #if __OBJC__	
 	NSString *ToNSString()const{
 		return [NSString stringWithCharacters:ToCString<unichar>() length:rep->length];
@@ -1550,7 +1554,7 @@ int bbPrint( String t ){
 	
 #elif __linux			//linux?
 
-#if CFG_ANDROID_PRINT_ENABLED
+#if CFG_ANDROID_NDK_PRINT_ENABLED
 	LOGI( (const char*)&buf[0] );
 #else
 	fputs( (const char*)&buf[0],stdout );
