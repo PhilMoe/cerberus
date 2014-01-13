@@ -7,6 +7,8 @@ public:
 
 	static BBIosGame *IosGame(){ return _iosGame; }
 	
+	virtual int GetDeviceWidth();
+	virtual int GetDeviceHeight();
 	virtual void SetKeyboardEnabled( bool enabled );
 	virtual void SetUpdateRate( int updateRate );
 	virtual int Millisecs();
@@ -98,44 +100,56 @@ void BBIosGame::ValidateUpdateTimer(){
 		_displayLink=0;
 	}
 	
-	if( _updateRate && !_suspended ){
+	_nextUpdate=0;
 	
-		if( !_accelerometer && CFG_IOS_ACCELEROMETER_ENABLED ){
-			_accelerometer=[UIAccelerometer sharedAccelerometer];
-			[_accelerometer setUpdateInterval:1.0/_updateRate];
-			[_accelerometer setDelegate:_appDelegate];
-			[_app setIdleTimerDisabled:YES];
-		}
-		
-		_updatePeriod=1.0/_updateRate;
-		_nextUpdate=GetTime()+_updatePeriod;
-	
-		if( CFG_IOS_DISPLAY_LINK_ENABLED ){
-			if( _updateRate==60 && _displayLinkAvail ){
-				_displayLink=[NSClassFromString(@"CADisplayLink") displayLinkWithTarget:_appDelegate selector:@selector(updateTimerFired)];
-				[_displayLink setFrameInterval:1];
-				[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-			}
-		}
-		
-		if( !_displayLink ){
-			NSTimeInterval interval=(NSTimeInterval)(1.0/_updateRate);
-			_updateTimer=[NSTimer scheduledTimerWithTimeInterval:interval target:_appDelegate selector:@selector(updateTimerFired) userInfo:nil repeats:TRUE];
-			[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];		
-		}
-		
-	}else{
-	
+	if( _suspended ){
 		if( _accelerometer ){
 			[_accelerometer setUpdateInterval:0.0];
 			[_accelerometer setDelegate:0];
 			[_app setIdleTimerDisabled:NO];
 			_accelerometer=0;
 		}
+		return;
+	}
+	
+	if( !_accelerometer && CFG_IOS_ACCELEROMETER_ENABLED ){
+		_accelerometer=[UIAccelerometer sharedAccelerometer];
+		[_accelerometer setUpdateInterval:1.0/_updateRate];
+		[_accelerometer setDelegate:_appDelegate];
+		[_app setIdleTimerDisabled:YES];
+	}
+	
+	if( _updateRate==0 || (_updateRate==60 && _displayLinkAvail && CFG_IOS_DISPLAY_LINK_ENABLED) ){
+	
+		puts( "Using display link" );fflush(stdout);
+
+		_updatePeriod=1.0/60.0;
+				
+		_displayLink=[NSClassFromString(@"CADisplayLink") displayLinkWithTarget:_appDelegate selector:@selector(updateTimerFired)];
+		[_displayLink setFrameInterval:1];
+		[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		
+	}else{
+
+		puts( "NOT using display link" );fflush(stdout);
+	
+		_updatePeriod=1.0/_updateRate;
+		
+		NSTimeInterval interval=(NSTimeInterval)( _updatePeriod );
+		_updateTimer=[NSTimer scheduledTimerWithTimeInterval:interval target:_appDelegate selector:@selector(updateTimerFired) userInfo:nil repeats:TRUE];
+		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];		
 	}
 }
 
 //***** BBGame *****
+
+int BBIosGame::GetDeviceWidth(){
+	return _appDelegate->view->backingWidth;
+}
+
+int BBIosGame::GetDeviceHeight(){
+	return _appDelegate->view->backingHeight;
+}
 
 void BBIosGame::SetKeyboardEnabled( bool enabled ){
 	BBGame::SetKeyboardEnabled( enabled );
@@ -151,6 +165,7 @@ void BBIosGame::SetKeyboardEnabled( bool enabled ){
 }
 
 void BBIosGame::SetUpdateRate( int hertz ){
+	if( !hertz && !_displayLinkAvail ) hertz=60;
 	BBGame::SetUpdateRate( hertz );
 	ValidateUpdateTimer();
 }
@@ -360,22 +375,28 @@ void BBIosGame::ResumeGame(){
 }
 
 void BBIosGame::UpdateTimerFired(){
-	if( !_updateRate || _suspended ) return;
-
-	int updates=0;
-	for( updates=0;updates<4;++updates ){
-		_nextUpdate+=_updatePeriod;
-		
+	if( _suspended ) return;
+	
+	if( !_updateRate ){
 		UpdateGame();
-		if( !_updateRate || _suspended ) return;
-		
-		if( _nextUpdate-GetTime()>0 ) break;
+		RenderGame();
+		return;
 	}
 	
-	RenderGame();
-	if( !_updateRate || _suspended ) return;
+	if( !_nextUpdate ) _nextUpdate=GetTime();
 	
-	if( updates==4 ) _nextUpdate=GetTime();
+	int i=0;
+	for( ;i<4;++i ){
+	
+		UpdateGame();
+		if( !_nextUpdate ) break;
+		
+		_nextUpdate+=_updatePeriod;
+		if( GetTime()<_nextUpdate ) break;
+
+	}
+	if( i==4 ) _nextUpdate=0;
+	RenderGame();
 }
 
 void BBIosGame::TouchesEvent( UIEvent *event ){

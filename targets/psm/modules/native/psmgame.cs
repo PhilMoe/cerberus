@@ -71,6 +71,14 @@ public class BBPsmGame : BBGame{
 	}	
 	
 	//***** BBGame *****
+
+	public override int GetDeviceWidth(){
+		return _gc.GetViewport().Width;
+	}
+	
+	public override int GetDeviceHeight(){
+		return _gc.GetViewport().Height;
+	}	
 	
 	public override int SaveState( String state ){
 		try{

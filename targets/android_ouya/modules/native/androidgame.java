@@ -408,6 +408,14 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 	//***** BBGame ******
 	
+	public int GetDeviceWidth(){
+		return _view.getWidth();
+	}
+	
+	public int GetDeviceHeight(){
+		return _view.getHeight();
+	}
+	
 	public void SetKeyboardEnabled( boolean enabled ){
 		super.SetKeyboardEnabled( enabled );
 

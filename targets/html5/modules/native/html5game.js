@@ -134,6 +134,14 @@ BBHtml5Game.prototype.GetWebGL=function(){
 	return this._gl;
 }
 
+BBHtml5Game.prototype.GetDeviceWidth=function(){
+	return this._canvas.width;
+}
+
+BBHtml5Game.prototype.GetDeviceHeight=function(){
+	return this._canvas.height;
+}
+
 //***** INTERNAL *****
 
 BBHtml5Game.prototype.UpdateGame=function(){

@@ -5,21 +5,23 @@ class BBWinrtGame : public BBGame{
 public:
 	BBWinrtGame();
 	
-	virtual int GetDeviceWidth()=0;
-	virtual int GetDeviceHeight()=0;
-	virtual int GetDeviceRotation()=0;
+	static BBWinrtGame *WinrtGame(){ return _winrtGame; }
+	
+	virtual int GetDeviceWidthX()=0;
+	virtual int GetDeviceHeightX()=0;
+	virtual int GetDeviceRotationX()=0;
 	
 	virtual ID3D11Device1 *GetD3dDevice()=0;
 	virtual ID3D11DeviceContext1 *GetD3dContext()=0;
 	virtual ID3D11RenderTargetView *GetRenderTargetView()=0;
 
+	virtual void ValidateUpdateTimer()=0;
+
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format )=0;
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz )=0;
 
-	virtual void ValidateUpdateTimer()=0;
-
-	static BBWinrtGame *WinrtGame(){ return _winrtGame; }
-	
+	virtual int GetDeviceWidth();
+	virtual int GetDeviceHeight();
 	virtual void SetUpdateRate( int updateRate );
 	virtual int Millisecs();
 	virtual int SaveState( String state );
@@ -68,6 +70,14 @@ BBWinrtGame::BBWinrtGame(){
 	_winrtGame=this;
 	
 	memset( _pointerIds,0,sizeof( _pointerIds ) );
+}
+
+int BBWinrtGame::GetDeviceWidth(){
+	return (GetDeviceRotationX() & 1) ? GetDeviceHeightX() : GetDeviceWidthX();
+}
+
+int BBWinrtGame::GetDeviceHeight(){
+	return (GetDeviceRotationX() & 1) ? GetDeviceWidthX() : GetDeviceHeightX();
 }
 
 void BBWinrtGame::SetUpdateRate( int hertz ){

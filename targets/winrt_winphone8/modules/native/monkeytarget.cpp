@@ -9,13 +9,13 @@ public:
 	
 	//BBMonkeyGame
 	void UpdateD3dDevice( ID3D11Device1 *device,ID3D11DeviceContext1 *context,ID3D11RenderTargetView *view );
-	bool UpdateGameEx();
+	void UpdateGameEx();
 	void RotateCoords( float &x,float &y );
 	
 	//BBWinrtGame implementations...
-	virtual int GetDeviceWidth(){ return _background->RenderResolution.Width; }
-	virtual int GetDeviceHeight(){ return _background->RenderResolution.Height; }
-	virtual int GetDeviceRotation(){ return _background->DeviceRotation; }
+	virtual int GetDeviceWidthX(){ return _background->RenderResolution.Width; }
+	virtual int GetDeviceHeightX(){ return _background->RenderResolution.Height; }
+	virtual int GetDeviceRotationX(){ return _background->DeviceRotation; }
 	
 	virtual ID3D11Device1 *GetD3dDevice(){ return _device.Get(); }
 	virtual ID3D11DeviceContext1 *GetD3dContext(){ return _context.Get(); }
@@ -33,7 +33,7 @@ private:
 
 	Direct3DBackground ^_background;
 	
-	double _updateTime,_updatePeriod;
+	double _updatePeriod,_nextUpdate;
 	
 	ComPtr<ID3D11Device1> _device;
 	ComPtr<ID3D11DeviceContext1> _context;
@@ -42,7 +42,7 @@ private:
 };
 
 // ***** monkeygame.cpp *****
-BBMonkeyGame::BBMonkeyGame( Direct3DBackground ^d3dBackground ):_background( d3dBackground ),_updateTime( 0 ),_updatePeriod( 0 ){
+BBMonkeyGame::BBMonkeyGame( Direct3DBackground ^d3dBackground ):_background( d3dBackground ),_updatePeriod( 0 ),_nextUpdate( 0 ){
 }
 
 void BBMonkeyGame::UpdateD3dDevice( ID3D11Device1 *device,ID3D11DeviceContext1 *context,ID3D11RenderTargetView *view ){
@@ -52,40 +52,38 @@ void BBMonkeyGame::UpdateD3dDevice( ID3D11Device1 *device,ID3D11DeviceContext1 *
 }
 
 void BBMonkeyGame::ValidateUpdateTimer(){
-	if( _updateRate && !_suspended ){
-		_updatePeriod=1.0/_updateRate;
-		_updateTime=GetTime()+_updatePeriod;
-	}else{
-		_updatePeriod=_updateTime=0;
-	}
+	if( _updateRate ) _updatePeriod=1.0/_updateRate;
+	_nextUpdate=0;
 }
 
-bool BBMonkeyGame::UpdateGameEx(){
-	double time=GetTime();
-
-	if( _suspended || !_updateRate || _updateTime>time ) return false;
+void BBMonkeyGame::UpdateGameEx(){
+	if( _suspended ) return;
 	
-	for( int i=0;i<4;++i ){
-	
-		_updateTime+=_updatePeriod;
-		
-		this->UpdateGame();
-		
-		if( _suspended || !_updateRate || _updateTime>time ) return true;
+	if( !_updateRate ){
+		UpdateGame();
+		return;
 	}
 	
-	_updateTime=GetTime()+_updatePeriod;
+	if( !_nextUpdate ) _nextUpdate=GetTime();
 	
-	return true;
+	for( int i=0;i<4;++i ){
+
+		UpdateGame();
+		if( !_nextUpdate ) return;
+		
+		_nextUpdate+=_updatePeriod;
+		if( GetTime()<_nextUpdate ) return;
+	}
+	_nextUpdate=0;
 }
 
 void BBMonkeyGame::RotateCoords( float &x,float &y ){
 	
-	float w=GetDeviceWidth();
-	float h=GetDeviceHeight();
+	float w=GetDeviceWidthX();
+	float h=GetDeviceHeightX();
 	float tx=x,ty=y;
 	
-	switch( GetDeviceRotation() ){
+	switch( GetDeviceRotationX() ){
 	case 0:
 		break;
 	case 1:

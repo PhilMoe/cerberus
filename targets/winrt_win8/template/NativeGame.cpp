@@ -86,10 +86,9 @@ void NativeGame::OnPointerReleased( CoreWindow ^sender,PointerEventArgs ^args ){
 
 void NativeGame::OnCompositionTargetRendering( Platform::Object ^sender,Object ^e ){
 
-	if( _game->UpdateGameEx() ){
-		_game->RenderGame();
-		_game->SwapBuffers();
-	}
+	_game->UpdateGameEx();
+	_game->RenderGame();
+	_game->SwapBuffers();
 }
 
 void NativeGame::OnOrientationChanged( Platform::Object ^sender ){

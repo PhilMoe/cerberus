@@ -27,16 +27,26 @@ class BBFlashGame extends BBGame{
 	}
 	
 	internal function ValidateUpdateTimer():void{
-		if( _updateRate && !_suspended ){
+		if( _suspended ){
+			_root.stage.frameRate=24;
+		}else if( _updateRate ){
 			_updatePeriod=1000.0/_updateRate;
-			_nextUpdate=(new Date).getTime()+_updatePeriod;
+			_nextUpdate=0;
 			_root.stage.frameRate=_updateRate;
 		}else{
-			_root.stage.frameRate=24;
+			_root.stage.frameRate=60;
 		}
 	}
 	
 	//***** BBGame *****	
+	
+	public override function GetDeviceWidth():int{
+		return _root.stage.stageWidth;
+	}
+	
+	public override function GetDeviceHeight():int{
+		return _root.stage.stageHeight;
+	}
 	
 	public override function SetUpdateRate( hertz:int ):void{
 		super.SetUpdateRate( hertz );
@@ -132,24 +142,30 @@ class BBFlashGame extends BBGame{
 	}
 	
 	public function OnEnterFrame( e:Event ):void{
-		if( !_updateRate || _suspended ){
+		if( _suspended ){
 			if( Config.FLASH_RENDER_WHILE_SUSPENDED=="1" ) RenderGame();
 			return;
 		}
-		var updates:int;
-		for( updates=0;updates<4;++updates ){
-			_nextUpdate+=_updatePeriod;
-			
+		
+		if( !_updateRate ){
 			UpdateGame();
-			if( !_updateRate  || _suspended ) break;
-			
-			if( _nextUpdate-((new Date).getTime())>0 ) break;
+			RenderGame();
+			return;
 		}
 		
-		RenderGame();
-		if( !_updateRate  || _suspended ) return;
+		if( !_nextUpdate ) _nextUpdate=(new Date).getTime();
 		
-		if( updates==4 ) _nextUpdate=(new Date).getTime();
+		var i:int;
+		for( i=0;i<4;++i ){
+		
+			UpdateGame();
+			if( !_nextUpdate ) break;
+			
+			_nextUpdate+=_updatePeriod;
+			if( (new Date).getTime()<_nextUpdate ) break;
+		}
+		if( i==4 ) _nextUpdate=0;
+		RenderGame();
 	}
 	
 	public function OnKeyDown( e:KeyboardEvent ):void{

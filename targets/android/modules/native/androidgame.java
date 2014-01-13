@@ -99,8 +99,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 		public GameTimer( int fps ){
 			updatePeriod=1000000000/fps;
-			nextUpdate=System.nanoTime();
-			_androidGame._view.postDelayed( this,updatePeriod/1000000 );
+			nextUpdate=0;
+			_androidGame._view.postDelayed( this,0 );
 		}
 	
 		public void cancel(){
@@ -109,38 +109,42 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		
 		public void run(){
 			if( cancelled ) return;
+
+			if( nextUpdate==0 ) nextUpdate=System.nanoTime();
 			
-			int updates;
-			for( updates=0;updates<4;++updates ){
-				nextUpdate+=updatePeriod;
-				
+			int updates=0;
+			for( ;updates<4;++updates ){
+			
 				_androidGame.UpdateGame();
 				if( cancelled ) return;
 				
-				if( nextUpdate-System.nanoTime()>0 ) break;
-			}
-			
-			_androidGame._view.requestRender();
-			
-			if( cancelled ) return;
-			
-			if( updates==4 ){
-				nextUpdate=System.nanoTime();
-				_androidGame._view.postDelayed( this,0 );
-			}else{
+				nextUpdate+=updatePeriod;
 				long delay=nextUpdate-System.nanoTime();
-				_androidGame._view.postDelayed( this,delay>0 ? delay/1000000 : 0 );
+				if( delay>0 ){
+					_androidGame._view.postDelayed( this,delay/1000000 );
+					_androidGame._view.requestRender();
+					return;
+				}
 			}
+			nextUpdate=0;
+			_androidGame._view.postDelayed( this,0 );
+			_androidGame._view.requestRender();
 		}
 	}
 	
 	void ValidateUpdateTimer(){
+	
 		if( _timer!=null ){
 			_timer.cancel();
 			_timer=null;
 		}
-		if( _updateRate!=0 && !_suspended ){
+
+		if( _suspended ) return;
+		
+		if( _updateRate!=0 ){
 			_timer=new GameTimer( _updateRate );
+		}else{
+			_view.requestRender();
 		}
 	}
 	
@@ -385,6 +389,14 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	
 	//***** BBGame ******
 	
+	public int GetDeviceWidth(){
+		return _view.getWidth();
+	}
+	
+	public int GetDeviceHeight(){
+		return _view.getHeight();
+	}
+	
 	public void SetKeyboardEnabled( boolean enabled ){
 		super.SetKeyboardEnabled( enabled );
 
@@ -613,7 +625,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	public void onDrawFrame( GL10 gl ){
 		if( !_canRender ) return;
 		
-		if( !Started() ) StartGame();
+		StartGame();
+		
+		if( _updateRate==0 && !_suspended ){
+			UpdateGame();
+			_view.requestRender();
+		}
 		
 		RenderGame();
 	}

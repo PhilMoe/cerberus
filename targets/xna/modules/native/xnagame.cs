@@ -124,6 +124,24 @@ public class BBXnaGame : BBGame{
 		_devman.ApplyChanges();
 	}
 	
+	override public void SetDeviceWindow( int width,int height,int flags ){
+		SetXnaDisplayMode( width,height,0,(flags&1)!=0 );
+	}
+	
+	override public BBDisplayMode[] GetDisplayModes(){
+		List<BBDisplayMode> modes=new List<BBDisplayMode>();
+		foreach( DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes ){
+			if( mode.Format==SurfaceFormat.Color ){
+				modes.Add( new BBDisplayMode( mode.Width,mode.Height ) );
+			}
+		}
+		return modes.ToArray();
+	}
+	
+	override public BBDisplayMode GetDesktopMode(){
+		return new BBDisplayMode( _desktop.Width,_desktop.Height );
+	}
+	
 	int KeyToChar( int key ){
 		if( key>=48 && key<=57 && !_shift ) return key;
 		if( key>=65 && key<=90 &&  _shift ) return key;
@@ -172,14 +190,19 @@ public class BBXnaGame : BBGame{
 	}
 	
 	void ValidateUpdateTimer(){
-		if( _updateRate!=0 && !_suspended ){
-			_updatePeriod=1000.0/(double)_updateRate;
-			_nextUpdate=(double)Millisecs()+_updatePeriod;
-			_app.TargetElapsedTime=TimeSpan.FromTicks( (long)(10000000.0/(double)_updateRate+.5) );
-			_app.IsFixedTimeStep=(MonkeyConfig.XNA_VSYNC_ENABLED!="1");
-		}else{
+		if( _suspended ){
 			_app.TargetElapsedTime=TimeSpan.FromSeconds( 1.0/10.0 );
 			_app.IsFixedTimeStep=true;
+		}else if( _updateRate==0 ){
+			_updatePeriod=0;
+			_nextUpdate=0;
+			_app.TargetElapsedTime=TimeSpan.FromSeconds( 1.0/60.0 );
+			_app.IsFixedTimeStep=(MonkeyConfig.XNA_VSYNC_ENABLED!="1");
+		}else{
+			_updatePeriod=1.0/(double)_updateRate;
+			_nextUpdate=0;
+			_app.TargetElapsedTime=TimeSpan.FromTicks( (long)(10000000.0/(double)_updateRate+.5) );
+			_app.IsFixedTimeStep=(MonkeyConfig.XNA_VSYNC_ENABLED!="1");
 		}
 	}
 	
@@ -291,6 +314,14 @@ public class BBXnaGame : BBGame{
 #endif
 	
 	//***** BBGame *****
+	
+	public override int GetDeviceWidth(){
+		return _app.GraphicsDevice.PresentationParameters.BackBufferWidth;
+	}
+	
+	public override int GetDeviceHeight(){
+		return _app.GraphicsDevice.PresentationParameters.BackBufferHeight;
+	}
 	
 	public override void SetUpdateRate( int hertz ){
 		base.SetUpdateRate( hertz );
@@ -424,16 +455,20 @@ public class BBXnaGame : BBGame{
 		return null;
 	}
 	
-	public virtual Game GetXNAGame(){
+	public Game GetXNAGame(){
 		return _app;
 	}
 	
-	public virtual String PathToContentPath( String path ){
+	public double GetTime(){
+		return _stopwatch.Elapsed.TotalSeconds;
+	}
+	
+	public String PathToContentPath( String path ){
 		if( path.StartsWith("monkey://data/") ) return "Content/monkey/"+path.Substring( 14 );
 		return "";
 	}
 	
-	public virtual Texture2D LoadTexture2D( String path ){
+	public Texture2D LoadTexture2D( String path ){
 		try{
 			return _app.Content.Load<Texture2D>( PathToContentPath( path ) );
 		}catch( Exception ){
@@ -441,7 +476,7 @@ public class BBXnaGame : BBGame{
 		return null;
 	}
 
-	public virtual SoundEffect LoadSoundEffect( String path ){
+	public SoundEffect LoadSoundEffect( String path ){
 		try{
 			return _app.Content.Load<SoundEffect>( PathToContentPath( path ) );
 		}catch( Exception ){
@@ -449,7 +484,7 @@ public class BBXnaGame : BBGame{
 		return null;
 	}
 	
-	public virtual Song LoadSong( String path ){
+	public Song LoadSong( String path ){
 		try{
 			return _app.Content.Load<Song>( PathToContentPath( path ) );
 		}catch( Exception ){
@@ -482,7 +517,7 @@ public class BBXnaGame : BBGame{
 		base.UpdateGame();
 	}
 	
-	public virtual void Run(){
+	public void Run(){
 
 		_app.IsMouseVisible=true;
 
@@ -508,26 +543,32 @@ public class BBXnaGame : BBGame{
 #endif
 	}
 	
-	public virtual void Update( GameTime gameTime ){
+	public void Update( GameTime gameTime ){
 		if( _exit ) return;
 	
 		if( PollSuspended() ) return;
-
-		int updates;
 		
-		for( updates=0;updates<4;++updates ){
-			_nextUpdate+=_updatePeriod;
-			
+		if( _updateRate==0 ){
 			UpdateGame();
-			if( !_app.IsFixedTimeStep || _updateRate==0 || _exit ) break;
-			
-			if( _nextUpdate-(double)Millisecs()>0 ) break;
+			return;
 		}
 		
-		if( updates==4 ) _nextUpdate=(double)Millisecs();
+		if( _nextUpdate==0 ) _nextUpdate=GetTime();
+
+		int i=0;
+		for( ;i<4;++i ){
+		
+			UpdateGame();
+			if( _nextUpdate==0 ) break;
+			
+			_nextUpdate+=_updatePeriod
+			;
+			if( GetTime()<_nextUpdate ) break;
+		}
+		if( i==4 ) _nextUpdate=0;
 	}
 	
-	public virtual bool BeginDraw(){
+	public bool BeginDraw(){
 		if( _exit ) return false;
 		
 		if( PollSuspended() && !_drawSuspended ) return false;
@@ -537,14 +578,14 @@ public class BBXnaGame : BBGame{
 		return true;
 	}
 
-	public virtual void Draw( GameTime gameTime ){
+	public void Draw( GameTime gameTime ){
 		if( _exit ) return;
 	
 		RenderGame();
 	}
 	
 #if WINDOWS	
-	public virtual void FormClosing( object sender,System.Windows.Forms.FormClosingEventArgs e ){
+	public void FormClosing( object sender,System.Windows.Forms.FormClosingEventArgs e ){
 		if( _exit ) return;
 		
 		KeyEvent( BBGameEvent.KeyDown,0x1b0 );

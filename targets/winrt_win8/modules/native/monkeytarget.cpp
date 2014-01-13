@@ -9,13 +9,13 @@ public:
 	
 	//BBMonkeyGame...
 	IDXGISwapChain1 *GetSwapChain(){ return _swapChain.Get(); }
-	bool UpdateGameEx();
+	void UpdateGameEx();
 	void SwapBuffers();
 	
 	//BBWinrtGame implementations...
-	virtual int GetDeviceWidth(){ return _devWidth; }
-	virtual int GetDeviceHeight(){ return _devHeight; }
-	virtual int GetDeviceRotation();
+	virtual int GetDeviceWidthX(){ return _devWidth; }
+	virtual int GetDeviceHeightX(){ return _devHeight; }
+	virtual int GetDeviceRotationX();
 	
 	virtual ID3D11Device1 *GetD3dDevice(){ return _device.Get(); }
 	virtual ID3D11DeviceContext1 *GetD3dContext(){ return _context.Get(); }
@@ -30,7 +30,7 @@ private:
 
 	int _devWidth,_devHeight;
 	
-	double _updateTime,_updatePeriod;
+	double _updatePeriod,_nextUpdate;
 	
 	void CreateD3dResources();
 	D3D_FEATURE_LEVEL _featureLevel;
@@ -44,7 +44,7 @@ private:
 };
 
 // ***** monkeygame.cpp *****
-BBMonkeyGame::BBMonkeyGame():_updateTime( 0 ),_updatePeriod( 0 ),_wicFactory( 0 ){
+BBMonkeyGame::BBMonkeyGame():_updatePeriod( 0 ),_nextUpdate( 0 ),_wicFactory( 0 ){
 
 	_devWidth=DipsToPixels( CoreWindow::GetForCurrentThread()->Bounds.Width );
 	_devHeight=DipsToPixels( CoreWindow::GetForCurrentThread()->Bounds.Height );
@@ -136,36 +136,38 @@ void BBMonkeyGame::CreateD3dResources(){
 }
 
 void BBMonkeyGame::ValidateUpdateTimer(){
-	if( _updateRate && !_suspended ){
+	if( _updateRate ){
 		_updatePeriod=1.0/_updateRate;
-		_updateTime=GetTime()+_updatePeriod;
-	}else{
-		_updatePeriod=0;
+		_nextUpdate=0;
 	}
 }
 
-bool BBMonkeyGame::UpdateGameEx(){
-	double time=GetTime();
-
-	for( int i=0;i<4;++i ){
+void BBMonkeyGame::UpdateGameEx(){
+	if( _suspended ) return;
 	
-		if( !_updatePeriod || _updateTime>time ) return i>0;
-		
-		_updateTime+=_updatePeriod;
-		
-		BBWinrtGame::UpdateGame();
+	if( !_updateRate ){
+		UpdateGame();
+		return;
 	}
 	
-	_updateTime=GetTime()+_updatePeriod;
+	if( !_nextUpdate ) _nextUpdate=GetTime();
 	
-	return true;
+	for( int i=0;i<4;++i ){
+	
+		UpdateGame();
+		if( !_nextUpdate ) return;
+		
+		_nextUpdate+=_updatePeriod;
+		if( GetTime()<_nextUpdate ) return;
+	}
+	_nextUpdate=0;
 }
 
 void BBMonkeyGame::SwapBuffers(){
 	DXASS( _swapChain->Present( 1,0 ) );
 }
 
-int BBMonkeyGame::GetDeviceRotation(){
+int BBMonkeyGame::GetDeviceRotationX(){
 	switch( DisplayProperties::CurrentOrientation ){
 	case DisplayOrientations::Landscape:return 0;
 	case DisplayOrientations::Portrait:return 1;

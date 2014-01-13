@@ -24,15 +24,19 @@ public:
 	
 	virtual int GetDeviceWidth();
 	virtual int GetDeviceHeight();
+	virtual void SetDeviceWindow( int width,int height,int flags );
+	virtual Array<BBDisplayMode*> GetDisplayModes();
+	virtual BBDisplayMode *GetDesktopMode();
+	virtual void SetSwapInterval( int interval );
 
 	virtual String PathToFilePath( String path );
-
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *depth );
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
-	BBGlfwVideoMode *GetGlfwDesktopMode();
-	Array<BBGlfwVideoMode*> GetGlfwVideoModes();
 	virtual void SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen );
+	virtual BBGlfwVideoMode *GetGlfwDesktopMode();
+	virtual Array<BBGlfwVideoMode*> GetGlfwVideoModes();
+	
 	virtual void Run();
 	
 private:
@@ -40,6 +44,8 @@ private:
 
 	double _updatePeriod;
 	double _nextUpdate;
+	
+	int _swapInterval;
 	
 	void UpdateEvents();
 		
@@ -96,7 +102,7 @@ enum{
 
 BBGlfwGame *BBGlfwGame::_glfwGame;
 
-BBGlfwGame::BBGlfwGame():_updatePeriod(0),_nextUpdate(0){
+BBGlfwGame::BBGlfwGame():_updatePeriod(0),_nextUpdate(0),_swapInterval( CFG_GLFW_SWAP_INTERVAL ){
 	_glfwGame=this;
 }
 
@@ -121,41 +127,36 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 	int joy=GLFW_JOYSTICK_1+port;
 	if( !glfwGetJoystickParam( joy,GLFW_PRESENT ) ) return false;
 
-	int n_axes=glfwGetJoystickParam( joy,GLFW_AXES );
-	if( n_axes>6 ) n_axes=6;
-
-	int n_buttons=glfwGetJoystickParam( joy,GLFW_BUTTONS );
-	if( n_buttons>32 ) n_buttons=32;
-		
-	float pos[6];
-	memset( pos,0,sizeof(pos) );	
-	glfwGetJoystickPos( joy,pos,n_axes );
+	//read axes
+	float axes[6];
+	memset( axes,0,sizeof(axes) );
+	int n_axes=glfwGetJoystickPos( joy,axes,6 );
+	joyx[0]=axes[0];joyy[0]=axes[1];joyz[0]=axes[2];
+	joyx[1]=axes[3];joyy[1]=axes[4];joyz[1]=axes[5];
 	
-	float t;
-	switch( n_axes ){
-	case 4:	//my saitek...axes=4, buttons=14
-		pos[4]=pos[2];
-		pos[3]=pos[3];
-		pos[2]=0;
-		break;
-	case 5:	//xbox360...axes=5, buttons=10
-		t=pos[3];
-		pos[3]=pos[4];
-		pos[4]=t;
-		break;
-	}
-	
-	joyx[0]=pos[0];joyx[1]=pos[3];
-	joyy[0]=pos[1];joyy[1]=pos[4];
-	joyz[0]=pos[2];joyz[1]=pos[5];
-
-	//Buttons...
-	//	
+	//read buttons
 	unsigned char buts[32];
 	memset( buts,0,sizeof(buts) );
-	glfwGetJoystickButtons( port,buts,n_buttons );
-
-	for( int i=0;i<n_buttons;++i ) buttons[i]=(buts[i]==GLFW_PRESS);
+	int n_buts=glfwGetJoystickButtons( joy,buts,32 );
+	if( n_buts>12 ){
+		for( int i=0;i<8;++i ) buttons[i]=(buts[i]==GLFW_PRESS);
+		for( int i=0;i<4;++i ) buttons[i+8]=(buts[n_buts-4+i]==GLFW_PRESS);
+		for( int i=0;i<n_buts-12;++i ) buttons[i+12]=(buts[i+8]==GLFW_PRESS);
+	}else{
+		for( int i=0;i<n_buts;++i ) buttons[i]=(buts[i]=-GLFW_PRESS);
+	}
+	
+	//kludges for device type!
+	if( n_axes==5 && n_buts==14 ){
+		//XBOX_360?
+		joyx[1]=axes[4];
+		joyy[1]=-axes[3];
+	}else if( n_axes==4 && n_buts==18 ){
+		//My Saitek?
+		joyy[1]=-joyz[0];
+	}
+	
+	//enough!
 	return true;
 }
 
@@ -396,6 +397,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 
 	glfwCloseWindow();
 	
+	glfwOpenWindowHint( GLFW_REFRESH_RATE,60 );
 	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE,CFG_GLFW_WINDOW_RESIZABLE ? GL_FALSE : GL_TRUE );
 
 	glfwOpenWindow( width,height,red,green,blue,alpha,depth,stencil,fullscreen ? GLFW_FULLSCREEN : GLFW_WINDOW );
@@ -411,9 +413,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	Init_GL_Exts();
 #endif
 
-#if CFG_GLFW_SWAP_INTERVAL>=0
-	glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
-#endif
+	if( _swapInterval>=0 ) glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
 
 	glfwEnable( GLFW_KEY_REPEAT );
 	glfwDisable( GLFW_AUTO_POLL_EVENTS );
@@ -435,10 +435,8 @@ Array<BBGlfwVideoMode*> BBGlfwGame::GetGlfwVideoModes(){
 }
 
 BBGlfwVideoMode *BBGlfwGame::GetGlfwDesktopMode(){
-
 	GLFWvidmode mode;
 	glfwGetDesktopMode( &mode );
-	
 	return new BBGlfwVideoMode( mode.Width,mode.Height,mode.RedBits,mode.GreenBits,mode.BlueBits );
 }
 
@@ -452,6 +450,32 @@ int BBGlfwGame::GetDeviceHeight(){
 	int width,height;
 	glfwGetWindowSize( &width,&height );
 	return height;
+}
+
+void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
+
+	SetGlfwWindow( width,height,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,(flags&1)!=0 );
+}
+
+Array<BBDisplayMode*> BBGlfwGame::GetDisplayModes(){
+
+	GLFWvidmode vmodes[1024];
+	int n=glfwGetVideoModes( vmodes,1024 );
+	Array<BBDisplayMode*> modes( n );
+	for( int i=0;i<n;++i ) modes[i]=new BBDisplayMode( vmodes[i].Width,vmodes[i].Height );
+	return modes;
+}
+
+BBDisplayMode *BBGlfwGame::GetDesktopMode(){
+
+	GLFWvidmode vmode;
+	glfwGetDesktopMode( &vmode );
+	return new BBDisplayMode( vmode.Width,vmode.Height );
+}
+
+void BBGlfwGame::SetSwapInterval( int interval ){
+	_swapInterval=interval;
+	if( _swapInterval>=0 ) glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
 }
 
 void BBGlfwGame::UpdateEvents(){
