@@ -117,7 +117,7 @@ int _glfwPlatformGetJoystickParam( int joy, int param )
 
     case GLFW_BUTTONS:
         // Return number of joystick axes
-        return jc.wNumButtons;
+        return jc.wNumButtons + ( (jc.wCaps & JOYCAPS_HASPOV) ? 4 : 0 );
 
     default:
         break;
@@ -193,7 +193,7 @@ int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
 
 
 //========================================================================
-// Get joystick button states
+// Get joystick button states`
 //========================================================================
 
 int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
@@ -218,15 +218,31 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     ji.dwSize = sizeof( JOYINFOEX );
     ji.dwFlags = JOY_RETURNBUTTONS;
     _glfw_joyGetPosEx( joy - GLFW_JOYSTICK_1, &ji );
-
+    
     // Get states of all requested buttons
     button = 0;
-    while( button < numbuttons && button < (int) jc.wNumButtons )
+    while( button < numbuttons && button < jc.wNumButtons )
     {
-        buttons[ button ] = (unsigned char)
-            (ji.dwButtons & (1UL << button) ? GLFW_PRESS : GLFW_RELEASE);
-        button ++;
+        buttons[ button ] = (unsigned char)(ji.dwButtons & (1UL << button) ? GLFW_PRESS : GLFW_RELEASE);
+        button++;
     }
+    
+    //also POV thingy
+    if (jc.wCaps & JOYCAPS_HASPOV)
+    {
+    	const int masks[]={ 2,6,4,12, 8,9,1,3 };
+
+    	int pov=ji.dwPOV/100/45;
+    	
+    	int mask=( pov>=0 && pov<8 ) ? masks[ pov ] : 0;
+    	
+    	int i;
+		for( i=0;button < numbuttons && i<4;++i )
+		{
+			buttons[ button ] = (mask & (1<<i)) ? GLFW_PRESS : GLFW_RELEASE;
+			button++;
+		}
+	}
 
     return button;
 }
