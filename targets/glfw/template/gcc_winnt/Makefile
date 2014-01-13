@@ -9,7 +9,7 @@ CPPFLAGS=$(CCOPTS) -I../glfw/include -I../glfw/lib -I../glfw/lib/win32 -I../open
 
 LD=g++
 LDFLAGS=-Wl,--subsystem,windows -L../openal/libs/Win32
-LDLIBS=-lopengl32 -lOpenAL32 -lws2_32
+LDLIBS=-lgdi32 -lopengl32 -lOpenAL32 -lws2_32
 
 OBJS=../glfw/lib/enable.o ../glfw/lib/fullscreen.o ../glfw/lib/glext.o ../glfw/lib/image.o ../glfw/lib/init.o ../glfw/lib/input.o \
 ../glfw/lib/joystick.o ../glfw/lib/stream.o ../glfw/lib/tga.o ../glfw/lib/thread.o ../glfw/lib/time.o ../glfw/lib/window.o \
@@ -21,3 +21,4 @@ all : $(OUT)
 
 $(OUT) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+	
