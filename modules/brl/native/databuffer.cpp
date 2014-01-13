@@ -2,31 +2,63 @@
 // ***** databuffer.h *****
 
 class BBDataBuffer : public Object{
-
 public:
 	
 	BBDataBuffer();
+	
 	~BBDataBuffer();
 	
 	bool _New( int length,void *data=0 );
+	
 	bool _Load( String path );
+	
 	void _LoadAsync( String path,BBThread *thread );
 
-	const void *ReadPointer( int offset=0 );
-	void *WritePointer( int offset=0 );
-	
 	void Discard();
-	int Length();
 	
-	void PokeByte( int addr,int value );
-	void PokeShort( int addr,int value );
-	void PokeInt( int addr,int value );
-	void PokeFloat( int addr,float value );
+	const void *ReadPointer( int offset=0 ){
+		return _data+offset;
+	}
 	
-	int PeekByte( int addr );
-	int PeekShort( int addr );
-	int PeekInt( int addr );
-	float PeekFloat( int addr );
+	void *WritePointer( int offset=0 ){
+		return _data+offset;
+	}
+	
+	int Length(){
+		return _length;
+	}
+	
+	void PokeByte( int addr,int value ){
+		*(_data+addr)=value;
+	}
+
+	void PokeShort( int addr,int value ){
+		*(short*)(_data+addr)=value;
+	}
+	
+	void PokeInt( int addr,int value ){
+		*(int*)(_data+addr)=value;
+	}
+	
+	void PokeFloat( int addr,float value ){
+		*(float*)(_data+addr)=value;
+	}
+
+	int PeekByte( int addr ){
+		return *(_data+addr);
+	}
+	
+	int PeekShort( int addr ){
+		return *(short*)(_data+addr);
+	}
+	
+	int PeekInt( int addr ){
+		return *(int*)(_data+addr);
+	}
+	
+	float PeekFloat( int addr ){
+		return *(float*)(_data+addr);
+	}
 	
 private:
 	signed char *_data;
@@ -63,53 +95,9 @@ void BBDataBuffer::_LoadAsync( String path,BBThread *thread ){
 	if( _Load( path ) ) thread->SetResult( this );
 }
 
-const void *BBDataBuffer::ReadPointer( int offset ){
-	return _data+offset;
-}
-
-void *BBDataBuffer::WritePointer( int offset ){
-	return _data+offset;
-}
-
 void BBDataBuffer::Discard(){
 	if( !_data ) return;
 	free( _data );
 	_data=0;
 	_length=0;
-}
-
-int BBDataBuffer::Length(){
-	return _length;
-}
-
-void BBDataBuffer::PokeByte( int addr,int value ){
-	*(_data+addr)=value;
-}
-
-void BBDataBuffer::PokeShort( int addr,int value ){
-	*(short*)(_data+addr)=value;
-}
-
-void BBDataBuffer::PokeInt( int addr,int value ){
-	*(int*)(_data+addr)=value;
-}
-
-void BBDataBuffer::PokeFloat( int addr,float value ){
-	*(float*)(_data+addr)=value;
-}
-
-int BBDataBuffer::PeekByte( int addr ){
-	return *(_data+addr);
-}
-
-int BBDataBuffer::PeekShort( int addr ){
-	return *(short*)(_data+addr);
-}
-
-int BBDataBuffer::PeekInt( int addr ){
-	return *(int*)(_data+addr);
-}
-
-float BBDataBuffer::PeekFloat( int addr ){
-	return *(float*)(_data+addr);
 }
