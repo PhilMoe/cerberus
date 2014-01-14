@@ -3,6 +3,18 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v77c *****
 
+Fixed PSM ButtonsDown bug.
+
+Added OnResize method to App.
+
+Moved DeviceWidth/DeviceHeight from graphics to app module.
+
+Added DisplayMode class to app; DisplayModes, DesktopMode, SetDeviceWindow, SetSwapInterval functions to app module.
+
+Added  update rate '0'. This is 'go nuts' mode - app just runs as fast as possible and you get exactly one update per render.
+
+glfwSwapBuffers moved from mojo graphics code to target.
+
 Souped up html5 target template - moved resize handling code to html.
 
 Fixed XNA PlayMusic paused flag bug.
