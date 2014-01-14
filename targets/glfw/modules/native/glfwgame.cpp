@@ -521,9 +521,7 @@ void BBGlfwGame::Run(){
 		UpdateEvents();
 
 		//App suspended?		
-		if( _suspended ){
-			continue;
-		}
+		if( _suspended ) continue;
 
 		//'Go nuts' mode!
 		if( !_updateRate ){
@@ -532,9 +530,7 @@ void BBGlfwGame::Run(){
 		}
 		
 		//Reset update timer?
-		if( !_nextUpdate ){
-			_nextUpdate=glfwGetTime();
-		}
+		if( !_nextUpdate ) _nextUpdate=glfwGetTime();
 		
 		//Catch up updates...
 		int i=0;

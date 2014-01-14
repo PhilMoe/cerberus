@@ -121,8 +121,6 @@ void BBIosGame::ValidateUpdateTimer(){
 	
 	if( _updateRate==0 || (_updateRate==60 && _displayLinkAvail && CFG_IOS_DISPLAY_LINK_ENABLED) ){
 	
-		puts( "Using display link" );fflush(stdout);
-
 		_updatePeriod=1.0/60.0;
 				
 		_displayLink=[NSClassFromString(@"CADisplayLink") displayLinkWithTarget:_appDelegate selector:@selector(updateTimerFired)];
@@ -131,8 +129,6 @@ void BBIosGame::ValidateUpdateTimer(){
 		
 	}else{
 
-		puts( "NOT using display link" );fflush(stdout);
-	
 		_updatePeriod=1.0/_updateRate;
 		
 		NSTimeInterval interval=(NSTimeInterval)( _updatePeriod );

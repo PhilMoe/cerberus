@@ -14,6 +14,9 @@
 #import <AVFoundation/AVAudioPlayer.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#include <TargetConditionals.h>
+#include <mach-o/dyld.h>
+
 #include <cmath>
 #include <cctype>
 #include <cstdio>
@@ -21,13 +24,11 @@
 #include <cstring>
 #include <vector>
 #include <typeinfo>
-#include <signal.h>
-
-#include <TargetConditionals.h>
-#include <mach-o/dyld.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <copyfile.h>
+#include <signal.h>
+#include <pthread.h>
 
 class BBIosGame;
 

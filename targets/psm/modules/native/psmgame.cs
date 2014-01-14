@@ -9,6 +9,8 @@ public class BBPsmGame : BBGame{
 	float[] _touchX=new float[32];
 	float[] _touchY=new float[32];
 	
+	double _updatePeriod,_nextUpdate;
+	
 	public BBPsmGame(){
 		_psmGame=this;
 
@@ -23,8 +25,8 @@ public class BBPsmGame : BBGame{
 	
 	void PollTouch(){
 	
-		float gw=_gc.GetViewport().Width;
-		float gh=_gc.GetViewport().Height;
+		float gw=GetDeviceWidth();
+		float gh=GetDeviceHeight();
 	
 		List<TouchData> touchData=Touch.GetData( 0 );
 		
@@ -78,7 +80,13 @@ public class BBPsmGame : BBGame{
 	
 	public override int GetDeviceHeight(){
 		return _gc.GetViewport().Height;
-	}	
+	}
+	
+	public override void SetUpdateRate( int hertz ){
+		base.SetUpdateRate( hertz );
+		if( _updateRate!=0 ) _updatePeriod=1.0/_updateRate;
+		_nextUpdate=0;
+	}
 	
 	public override int SaveState( String state ){
 		try{
@@ -109,7 +117,7 @@ public class BBPsmGame : BBGame{
 		joyx[1]=gd.AnalogRightX;
 		joyy[1]=-gd.AnalogRightY;
 		
-		GamePadButtons down=gd.ButtonsDown;
+		GamePadButtons down=gd.Buttons;
 		
 		buttons[0]=(down & GamePadButtons.Cross)!=0;
 		buttons[1]=(down & GamePadButtons.Circle)!=0;
@@ -188,31 +196,43 @@ public class BBPsmGame : BBGame{
 		base.UpdateGame();
 	}
 	
+	public double GetTime(){
+		return _stopwatch.Elapsed.TotalSeconds;
+	}
+	
 	public virtual void Run(){
 		
 		StartGame();
-		RenderGame();
-		
-		long time=_stopwatch.ElapsedMilliseconds;
 		
 		for(;;){
 		
-			SystemEvents.CheckEvents();
-			
-			if( _updateRate==0 ) continue;
-			
-			UpdateGame();
 			RenderGame();
 			
-			if( _updateRate==0 || _updateRate>=60 ) continue;
-			
-			long period=1000/_updateRate;
-			
-			while( _stopwatch.ElapsedMilliseconds-time<period ){
+			if( _nextUpdate!=0 ){
+				do{
+					SystemEvents.CheckEvents();
+				}while( GetTime()<_nextUpdate );
+			}else{
 				SystemEvents.CheckEvents();
 			}
 			
-			time+=period;
+			if( _updateRate==0 ){
+				UpdateGame();
+				continue;
+			}
+			
+			if( _nextUpdate==0 ) _nextUpdate=GetTime();
+			
+			int i=0;
+			for( ;i<4;++i ){
+			
+				UpdateGame();
+				if( _nextUpdate==0 ) break;
+				
+				_nextUpdate+=_updatePeriod;
+				if( GetTime()<_nextUpdate ) break;
+			}
+			if( i==4 ) _nextUpdate=0;
 		}
 	}
 }
