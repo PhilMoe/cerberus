@@ -1,8 +1,6 @@
 
-'#GLFW_SWAP_INTERVAL=0
-'#GLFW_WINDOW_WIDTH=1920
-'#GLFW_WINDOW_HEIGHT=1080
-'#GLFW_WINDOW_FULLSCREEN=True
+#GLFW_WINDOW_WIDTH=0
+#GLFW_WINDOW_HEIGHT=0
 
 Import mojo
 
@@ -12,21 +10,14 @@ Class MyApp Extends App
 	Field scroll_mod:Float
 
 	Method OnCreate()
-	
-		If DesktopMode
-			Print "Desktop="+DesktopMode.Width+","+DesktopMode.Height
-		Endif
-		
-		For Local mode:=Eachin DisplayModes
-			Print mode.Width+","+mode.Height
-		Next
-		
+		SetDeviceWindow DesktopMode().Width,DesktopMode().Height,1
+		SetSwapInterval 1
 		SetUpdateRate 0
-		
 		scroll_mod=DeviceWidth*3
 	End
 	
 	Method OnUpdate()
+		If KeyHit( KEY_ESCAPE ) EndApp
 		scroll_x=(scroll_x+2) Mod scroll_mod
 	End
 	

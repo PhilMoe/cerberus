@@ -1,10 +1,4 @@
 
-'setting these to 0 prevents creation of initial graphics window - with no window you can load graphics, but don't draw!
-'#GLFW_WINDOW_WIDTH=0
-'#GLFW_WINDOW_HEIGHT=0
-#GLFW_WINDOW_WIDTH=640
-#GLFW_WINDOW_HEIGHT=480
-
 Import mojo
 
 Public
@@ -48,44 +42,40 @@ Class MyApp Extends App
 	
 	Field ums
 
+	Field fullscreen:=False
+	
+	Method ToggleFullscreen:Void()
+		fullscreen=Not fullscreen
+		If fullscreen
+			SetDeviceWindow 1024,768,1
+			SetSwapInterval 1			'I reckon there's a 98% chance this will give us 60fps on YOUR PC!
+			SetUpdateRate 0
+		Else
+			SetDeviceWindow 640,480,0
+			SetSwapInterval 0			'As for windowed mode...
+			SetUpdateRate 60
+		Endif
+	End
+	
 	Method OnCreate()
+	
+		Print "Display modes:"
+		For Local mode:=Eachin DisplayModes()
+			Print mode.Width+","+mode.Height
+		Next
 
-#If TARGET="glfw" And GLFW_WINDOW_WIDTH=0 And GLFW_WINDOW_HEIGHT=0
-		GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
-#Endif
 		image1=LoadImage( "alien1.png",8,Image.MidHandle )
 		image2=LoadImage( "alien2.png",8,Image.MidHandle )
 		
 		For Local i=0 Until 100
 			sprites.Push New Sprite
 		Next
+
+		SetSwapInterval 0
+		SetUpdateRate 60
 		
 		utime=Millisecs()
 		rtime=utime
-		
-		SetUpdateRate 60
-	End
-	
-	Field fullscreen:=False
-	
-	Method ToggleFullscreen:Void()
-#If TARGET="glfw"
-		fullscreen=Not fullscreen
-		If fullscreen
-			GlfwGame.GetGlfwGame().SetGlfwWindow( 1024,768,8,8,8,0,0,0,True )
-			ShowMouse
-		Else
-			GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
-		Endif
-#Elseif TARGET="xna"
-		fullscreen=Not fullscreen
-		If fullscreen
-			XnaGame.GetXnaGame().SetXnaDisplayMode( 1024,768,1,True )
-			ShowMouse
-		Else
-			XnaGame.GetXnaGame().SetXnaDisplayMode( 640,480,1,False )
-		Endif
-#Endif
 	End
 	
 	Method OnUpdate()
@@ -190,28 +180,6 @@ Class MyApp Extends App
 End
 
 Function Main()
-
-#If TARGET="glfw"
-
-	For Local mode:=Eachin GlfwGame.GetGlfwGame().GetGlfwVideoModes()
-		Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
-	Next
-
-	Print "Desktop:"
-	Local mode:=GlfwGame.GetGlfwGame().GetGlfwDesktopMode()
-	Print mode.Width+","+mode.Height+","+mode.RedBits+","+mode.GreenBits+","+mode.BlueBits
-	
-#Else If TARGET="xna"
-
-	For Local mode:=Eachin XnaGame.GetXnaGame().GetXnaDisplayModes()
-		Print mode.Width+","+mode.Height+","+mode.Format
-	Next
-
-	Print "Desktop:"
-	Local mode:=XnaGame.GetXnaGame().GetXnaDesktopMode()
-	Print mode.Width+","+mode.Height+","+mode.Format
-
-#Endif
 
 	New MyApp
 	
