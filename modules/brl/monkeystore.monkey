@@ -2,7 +2,7 @@
 Import asyncevent
 
 #If Not BRL_MONKEYSTORE_IMPLEMENTED
-#If TARGET="ios" Or TARGET="android"
+#If TARGET="ios" Or TARGET="android" Or TARGET="winrt"
 #BRL_MONKEYSTORE_IMPLEMENTED=True
 #If TARGET="ios"
 #LIBS+="StoreKit.framework"
@@ -11,6 +11,8 @@ Import "native/monkeystore.ios.cpp"
 #SRCS+="${CD}/native/android_iab/src/com/android/vending/billing/IInAppBillingService.aidl"
 #ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qcom.android.vending.BILLING~q />"
 Import "native/monkeystore.android.java"
+#Else If TARGET="winrt"
+Import "native/monkeystore.winrt.cpp"
 #Endif
 #Endif
 #Endif
