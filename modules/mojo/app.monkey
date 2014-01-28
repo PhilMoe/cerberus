@@ -213,7 +213,7 @@ Function LoadState:String()
 End
 
 Function SaveState:Void( state:String )
-	Return _game.SaveState( state )
+	_game.SaveState( state )
 End
 
 Function LoadString:String( path:String )
