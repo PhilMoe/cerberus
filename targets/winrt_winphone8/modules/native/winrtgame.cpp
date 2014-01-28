@@ -10,13 +10,12 @@ public:
 	virtual int GetDeviceWidthX()=0;
 	virtual int GetDeviceHeightX()=0;
 	virtual int GetDeviceRotationX()=0;
-
 	virtual ID3D11Device1 *GetD3dDevice()=0;
 	virtual ID3D11DeviceContext1 *GetD3dContext()=0;
 	virtual ID3D11RenderTargetView *GetRenderTargetView()=0;
+	virtual void PostToUIThread( std::function<void()> action )=0;
 	
 	virtual void ValidateUpdateTimer()=0;
-
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format )=0;
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz )=0;
 

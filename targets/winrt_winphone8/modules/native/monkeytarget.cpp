@@ -6,7 +6,7 @@
 class BBMonkeyGame : public BBWinrtGame{
 public:
 	BBMonkeyGame( Direct3DBackground ^d3dBackground );
-	
+
 	//BBMonkeyGame
 	void UpdateD3dDevice( ID3D11Device1 *device,ID3D11DeviceContext1 *context,ID3D11RenderTargetView *view );
 	void UpdateGameEx();
@@ -16,15 +16,15 @@ public:
 	virtual int GetDeviceWidthX(){ return _background->RenderResolution.Width; }
 	virtual int GetDeviceHeightX(){ return _background->RenderResolution.Height; }
 	virtual int GetDeviceRotationX(){ return _background->DeviceRotation; }
-	
 	virtual ID3D11Device1 *GetD3dDevice(){ return _device.Get(); }
 	virtual ID3D11DeviceContext1 *GetD3dContext(){ return _context.Get(); }
 	virtual ID3D11RenderTargetView *GetRenderTargetView(){ return _view.Get(); }
-
-	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format );
-	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
+	virtual void PostToUIThread( std::function<void()> action );
+	virtual void RunOnUIThread();
 
 	virtual void ValidateUpdateTimer();
+	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format );
+	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
 	virtual void MouseEvent( int event,int data,float x,float y );
 	virtual void TouchEvent( int event,int data,float x,float y );
@@ -32,6 +32,8 @@ public:
 private:
 
 	Direct3DBackground ^_background;
+	
+	std::function<void()> _uiAction;
 	
 	double _updatePeriod,_nextUpdate;
 	
@@ -49,6 +51,16 @@ void BBMonkeyGame::UpdateD3dDevice( ID3D11Device1 *device,ID3D11DeviceContext1 *
 	_device=device;
 	_context=context;
 	_view=view;
+}
+
+void BBMonkeyGame::PostToUIThread( std::function<void()> action ){
+	_uiAction=action;
+	_background->PostToUIThread();
+}
+
+void BBMonkeyGame::RunOnUIThread(){
+	_uiAction();
+	_uiAction=nullptr;
 }
 
 void BBMonkeyGame::ValidateUpdateTimer(){

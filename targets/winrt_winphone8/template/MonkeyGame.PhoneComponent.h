@@ -12,6 +12,9 @@ namespace MonkeyGame_PhoneComponent
 		int type;
 		Windows::UI::Input::PointerPoint ^point;
 	};
+	
+	public delegate void PostToUIThreadHandler();
+	
     public delegate void RequestAdditionalFrameHandler();
 
 	[Windows::Foundation::Metadata::WebHostHidden]
@@ -27,14 +30,16 @@ namespace MonkeyGame_PhoneComponent
 
 		void Application_Activated();
 		void Application_Deactivated();
-
+		
 		//return true to cancel
 		bool OnBackKeyPress();
+		void RunOnUIThread();
 
 		property int DeviceRotation;
 		property Windows::Foundation::Size WindowBounds;
 		property Windows::Foundation::Size NativeResolution;
 		property Windows::Foundation::Size RenderResolution;
+		property PostToUIThreadHandler ^PostToUIThread;
 		
 	protected:
 	

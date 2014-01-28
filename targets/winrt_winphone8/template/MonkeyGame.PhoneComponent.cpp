@@ -69,6 +69,11 @@ bool Direct3DBackground::OnBackKeyPress()
 	return false;
 }
 
+void Direct3DBackground::RunOnUIThread(){
+
+	_game->RunOnUIThread();
+}
+
 void Direct3DBackground::FlushEvents(){
 	while( _get!=_put ){
 		switch( _events[_get].type ){

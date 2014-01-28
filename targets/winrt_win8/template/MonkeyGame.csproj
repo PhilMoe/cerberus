@@ -123,6 +123,7 @@
     <Content Include="Assets\SimpleVertexShader.cso" />
     <Content Include="Assets\TexturePixelShader.cso" />
     <Content Include="Assets\TextureVertexShader.cso" />
+    <Content Include="Assets\WindowsStoreProxy.xml" />
     <None Include="MonkeyGame_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

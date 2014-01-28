@@ -49,7 +49,14 @@ namespace MonkeyGame
                 // Hook-up native component to DrawingSurfaceBackgroundGrid
                 DrawingSurfaceBackground.SetBackgroundContentProvider(_background.CreateContentProvider());
                 DrawingSurfaceBackground.SetBackgroundManipulationHandler(_background);
+                
+                _background.PostToUIThread=PostToUIThread;
             }
+        }
+        
+        private void PostToUIThread(){
+
+            Dispatcher.BeginInvoke( () => { _background.RunOnUIThread(); } );
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
