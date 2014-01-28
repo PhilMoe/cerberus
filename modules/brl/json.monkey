@@ -178,7 +178,7 @@ Class JsonArray Extends JsonValue
 		Return Get( index ).IntValue()
 	End
 	
-	Method GetFloat:Int( index:Int )
+	Method GetFloat:Float( index:Int )
 		Return Get( index ).FloatValue()
 	End
 	
