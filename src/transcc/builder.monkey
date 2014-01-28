@@ -85,7 +85,13 @@ Class Builder
 
 		transCode=transbuf.Join()
 		
-		Local buildPath:=StripExt( tcc.opt_srcpath )+".build"
+		Local buildPath:String
+		
+		If tcc.opt_builddir
+			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+		Else
+			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
+		Endif
 		
 		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
 

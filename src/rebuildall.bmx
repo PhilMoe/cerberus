@@ -46,8 +46,10 @@ Function RebuildTrans()
 		Return
 	EndIf
 	
-	Const trans_mk$=trans+" -target=C++_Tool"
 	Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
+
+'	Const trans_mk$=trans+" -target=C++_Tool"
+	Const trans_mk$=trans+" -target=C++_Tool -builddir=transcc.build"
 	
 	system trans_mk+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0 transcc/transcc.monkey"
 	
