@@ -28,22 +28,32 @@ BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 	var game=this;
 	var seq=game._timerSeq;
 	
-	if( !this._updateRate ){
+	var maxUpdates=4;
+	var updateRate=this._updateRate;
 	
-		function animate(){
-			if( seq!=game._timerSeq ) return;
+	if( !updateRate ){
 
-			game.UpdateGame();
-			if( seq!=game._timerSeq ) return;
-
-			requestAnimationFrame( animate );
-			game.RenderGame();
+		var reqAnimFrame=(window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame);
+	
+		if( reqAnimFrame ){
+			function animate(){
+				if( seq!=game._timerSeq ) return;
+	
+				game.UpdateGame();
+				if( seq!=game._timerSeq ) return;
+	
+				reqAnimFrame( animate );
+				game.RenderGame();
+			}
+			reqAnimFrame( animate );
+			return;
 		}
-		requestAnimationFrame( animate );
-		return;
+		
+		maxUpdates=1;
+		updateRate=60;
 	}
-
-	var updatePeriod=1000.0/this._updateRate;
+	
+	var updatePeriod=1000.0/updateRate;
 	var nextUpdate=0;
 
 	function timeElapsed(){
@@ -51,7 +61,7 @@ BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 		
 		if( !nextUpdate ) nextUpdate=Date.now();
 		
-		for( var i=0;i<4;++i ){
+		for( var i=0;i<maxUpdates;++i ){
 		
 			game.UpdateGame();
 			if( seq!=game._timerSeq ) return;

@@ -413,7 +413,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	Init_GL_Exts();
 #endif
 
-	if( _swapInterval>=0 ) glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
+	if( _swapInterval>=0 ) glfwSwapInterval( _swapInterval );
 
 	glfwEnable( GLFW_KEY_REPEAT );
 	glfwDisable( GLFW_AUTO_POLL_EVENTS );
@@ -475,7 +475,7 @@ BBDisplayMode *BBGlfwGame::GetDesktopMode(){
 
 void BBGlfwGame::SetSwapInterval( int interval ){
 	_swapInterval=interval;
-	if( _swapInterval>=0 ) glfwSwapInterval( CFG_GLFW_SWAP_INTERVAL );
+	if( _swapInterval>=0 ) glfwSwapInterval( _swapInterval );
 }
 
 void BBGlfwGame::UpdateEvents(){
