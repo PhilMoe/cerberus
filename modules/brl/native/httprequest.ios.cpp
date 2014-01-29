@@ -36,6 +36,10 @@ void BBHttpRequest::Open( String req,String url ){
 	
 	[_req setHTTPMethod:req.ToNSString()];
 	[_req setURL:[NSURL URLWithString:url.ToNSString()]];
+
+	if( [_req respondsToSelector:@selector(setAllowsCellularAccess:)] ){
+		[_req setAllowsCellularAccess:YES];
+	}
 	
 	_response="";
 	_status=-1;

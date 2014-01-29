@@ -186,7 +186,7 @@ Class HttpRequest Implements IOnConnectComplete,IOnSendComplete,IOnReceiveComple
 	
 	Method Finish:Void()
 		_sock.Close
-		If _response _responseText=_response.Join( "~n" )
+		If _response _responseText=_response.Join( "" )
 		_onComplete.OnHttpRequestComplete Self
 	End
 	
