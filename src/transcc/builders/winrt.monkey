@@ -19,11 +19,11 @@ Class WinrtBuilder Extends Builder
 		Local cont:=New StringStack
 		For Local kv:=Eachin dataFiles
 			If csharp
-				cont.Push "    <Content Include=~qAssets\monkey\"+kv.Value+"~q>"
+				cont.Push "    <Content Include=~qAssets\monkey\"+kv.Value.Replace( "/","\" )+"~q>"
 				cont.Push "      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>"
 				cont.Push "    </Content>"
 			Else
-				cont.Push "    <None Include=~qAssets\monkey\"+kv.Value+"~q>"
+				cont.Push "    <None Include=~qAssets\monkey\"+kv.Value.Replace( "/","\" )+"~q>"
 				cont.Push "      <DeploymentContent>true</DeploymentContent>"
 				cont.Push "    </None>"
 			Endif
