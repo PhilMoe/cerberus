@@ -1,6 +1,25 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v77d *****
+
+Fixed glfw SetSwapInterval bug.
+
+Added fallback for missing requestAnimationFrame on html5 with update rate 0.
+
+Added setAllowsCellularAccess:YES to ios httprequest.
+
+Added info-plist entry to disable status bar on ios7.0.
+
+Fixed httprequest so newlines aren't inserted.
+
+Fixed app.SaveState bug.
+
+Added winrt monkeystore for Windows Phone 8.0.
+
+.build folders now/at last tagged with version info taken from THIS file, eg: bouncyaliens.buildv77d
+
+
 ***** v77c *****
 
 Fixed PSM ButtonsDown bug.
