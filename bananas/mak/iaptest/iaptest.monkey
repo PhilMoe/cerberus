@@ -22,19 +22,23 @@ Import brl.json
 Import brl.filestream
 Import brl.monkeystore
 
+'For OUYA!
+Const USE_JOYSTICK:=False
+
+'For Windows 8! make sure to also set ProductId on Winphone8...
+#WINRT_TEST_IAP=True
+
+'For android!
 #ANDROID_APP_TITLE="Bouncy Aliens"
 #ANDROID_APP_PACKAGE="com.monkeycoder.bouncyaliens"
-#ANDROID_SIGN_APP=True
-#rem
 #ANDROID_KEY_STORE="../../release-key.keystore"
 #ANDROID_KEY_ALIAS="release-key-alias"
 #ANDROID_KEY_STORE_PASSWORD="password"
 #ANDROID_KEY_ALIAS_PASSWORD="password"
-#end
+#ANDROID_SIGN_APP=True
 
-'For OUYA!
-Const USE_JOYSTICK:=True
-'#ANDROID_OUYA_DEVELOPER_UUID="xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx"	'from the main developer portal page
+'For Ouya!
+#ANDROID_OUYA_DEVELOPER_UUID="xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx"	'from the main developer portal page
 
 Global CONSUMABLES:=["bulletboost","speedboost"]
 
@@ -65,7 +69,10 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 	
 	Method OnOpenStoreComplete:Void( result:Int )
 		Print "OpenStoreComplete, result="+result
-		If result<>0 Error "Store unavailable"
+		If result<>0 
+			Print "Failed to open Monkey Store"
+			store=Null
+		Endif
 	End
 	
 	Method OnBuyProductComplete:Void( result:Int,product:Product )
@@ -109,6 +116,8 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 	
 		UpdateAsyncEvents
 		
+		If Not store Return
+		
 		Local hit:=0
 		
 		If USE_JOYSTICK
@@ -151,7 +160,9 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 		
 		DrawText Millisecs,0,0
 		
-		If store.IsOpen()
+		If Not store
+			DrawText "Store unavailable",160,40,.5,.5
+		Else If store.IsOpen()
 			SetColor 255,255,255
 			If store.IsBusy() SetColor 128,128,128
 			
