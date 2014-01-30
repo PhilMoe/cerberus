@@ -127,7 +127,6 @@ void BBMonkeyStore::OpenStoreAsync( Array<BBProduct*> products ){
 								
 							}catch( Platform::Exception ^exception ){
 		                    }
-		                    
 		                    _running=false;
 		                });
 #elif WINDOWS_PHONE_8
@@ -171,6 +170,7 @@ void BBMonkeyStore::ConsumePurchase( Platform::String ^productId,Platform::Guid 
 			case FulfillmentResult::ServerError:
 				break;
 			}
+
 		}catch( Platform::Exception ^exception ){
 		}
 	});
@@ -209,8 +209,8 @@ void BBMonkeyStore::RequestPurchase( BBProduct *product ){
 			case ProductPurchaseStatus::NotPurchased:			//cancelled?
 				break;
 			}
+
 		}catch( Platform::Exception ^exception ){
-		
 		}
 		_running=false;
 	});
@@ -238,7 +238,6 @@ void BBMonkeyStore::RequestPurchase( BBProduct *product ){
 			}
 
 		}catch( Platform::Exception ^exception ){
-		
 		}
 		_running=false;
 	});
@@ -251,8 +250,18 @@ void BBMonkeyStore::BuyProductAsync( BBProduct *product ){
 
 	_result=-1;
 	
+	//already bought?
+	
+	auto licenseInfo=CURRENT_APP::LicenseInformation;
+	auto license=licenseInfo->ProductLicenses->Lookup( product->identifier.ToWinRTString() );
+	
+	if( license->IsActive ){
+		if( product->type==2 ) _result=0;
+		return;
+	}
+
 	_running=true;
-		
+	
 #if WINDOWS_8
 
 	RequestPurchase( product );
