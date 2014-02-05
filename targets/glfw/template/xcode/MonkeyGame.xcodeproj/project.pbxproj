@@ -321,10 +321,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
-				WARNING_CFLAGS = (
-					"-Wno-parentheses",
-					"-Wno-dangling-else",
-				);
+				WARNING_CFLAGS = "-Wno-parentheses";
 			};
 			name = Debug;
 		};
@@ -341,10 +338,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
-				WARNING_CFLAGS = (
-					"-Wno-parentheses",
-					"-Wno-dangling-else",
-				);
+				WARNING_CFLAGS = "-Wno-parentheses";
 			};
 			name = Release;
 		};
