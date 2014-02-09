@@ -5,12 +5,6 @@
 
 #if _WIN32
 
-/*
-#include <windows.h>
-#include <direct.h>
-#include <sys/stat.h>
-*/
-
 #ifndef PATH_MAX
 #define PATH_MAX MAX_PATH
 #endif
@@ -37,13 +31,6 @@ typedef struct _stat stat_t;
 #define dirent _wdirent
 
 #elif __APPLE__
-
-/*
-#include <mach-o/dyld.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <copyfile.h>
-*/
 
 typedef char OS_CHAR;
 typedef struct stat stat_t;

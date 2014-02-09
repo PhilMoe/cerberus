@@ -3,17 +3,16 @@
 '
 'Use brl.filesystem and brl.filepath instead!
 '
-'#If Not BRL_OS_IMPLEMENTED
+#If Not BRL_OS_IMPLEMENTED
 #If TARGET="stdcpp" Or TARGET="glfw"
 #BRL_OS_IMPLEMENTED=True
 Import "native/os.cpp"
 #Endif
-'#Endif
+#Endif
 
-'#If Not BRL_OS_IMPLEMENTED
-'#Error "Native OS Module not implemented"
-'#Endif
-'#End
+#If Not BRL_OS_IMPLEMENTED
+#Error "Native OS Module not implemented"
+#Endif
 
 Extern
 
