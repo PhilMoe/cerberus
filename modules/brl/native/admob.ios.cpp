@@ -99,8 +99,6 @@ void BBAdmob::ShowAdView( int style,int layout ){
 	[appView addSubview:_view];
     
 	[_view loadRequest:[GADRequest request]];
-	
-	gc_force_sweep=true;
 }
 
 void BBAdmob::HideAdView(){
