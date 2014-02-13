@@ -33,6 +33,9 @@ public:
 	virtual void UpdateTimerFired();
 	virtual void TouchesEvent( UIEvent *event );
 	
+	virtual void ViewAppeared();
+	virtual void ViewDisappeared();
+	
 protected:
 	static BBIosGame *_iosGame;
 	
@@ -405,10 +408,6 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 			scaleFactor=[view contentScaleFactor];
 		}
 		
-		for( int pid=0;pid<32;++pid ){
-			if( _touches[pid] && _touches[pid].view!=view ) _touches[pid]=0;
-		}
-		
 		for( UITouch *touch in [event touchesForView:view] ){
 		
 			int pid;
@@ -418,6 +417,7 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 
 			switch( [touch phase] ){
 			case UITouchPhaseBegan:
+//				puts( "touches began" );
 				if( pid!=32 ) break;
 				for( pid=0;pid<32 && _touches[pid];++pid ){}
 				if( pid==32 ) break;
@@ -425,13 +425,20 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 				ev=BBGameEvent::TouchDown;
 				break;
 			case UITouchPhaseEnded:
+//				puts( "touches ended" );
+				if( pid==32 ) break;
+				_touches[pid]=0;
+				ev=BBGameEvent::TouchUp;
+				break;
 			case UITouchPhaseCancelled:
+//				puts( "touches cancelled" );
 				if( pid==32 ) break;
 				_touches[pid]=0;
 				ev=BBGameEvent::TouchUp;
 				break;
 			case UITouchPhaseMoved:
 			case UITouchPhaseStationary:
+//				puts( "touches moved/stationery" );
 				ev=BBGameEvent::TouchMove;
 				break;
 			}
@@ -445,6 +452,15 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 			TouchEvent( ev,pid,p.x,p.y );
 		}
 	}
+}
+
+void BBIosGame::ViewAppeared(){
+//	puts( "ViewAppeared" );
+}
+
+void BBIosGame::ViewDisappeared(){
+//	puts( "ViewDisappeared" );
+	memset( _touches,0,sizeof(_touches) );
 }
 
 //***** BBMonkeyView implementation *****
@@ -612,6 +628,19 @@ void BBIosGame::TouchesEvent( UIEvent *event ){
 //***** BBMonkeyViewController implementation *****
 
 @implementation BBMonkeyViewController
+
+//ios 2
+-(void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	BBIosGame::IosGame()->ViewAppeared();
+}
+
+
+-(void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	BBIosGame::IosGame()->ViewDisappeared();
+}
+
 
 //ios 4,5
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation{
