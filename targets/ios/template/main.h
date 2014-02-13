@@ -74,6 +74,10 @@ class BBIosGame;
 @public
 }
 
+//ios 2
+-(void)viewDidAppear:(BOOL)animated;
+-(void)viewDidDisappear:(BOOL)animated;
+
 //ios 4,5
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
