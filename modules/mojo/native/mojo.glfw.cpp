@@ -818,6 +818,15 @@ static void FlushDiscarded(){
 
 int gxtkChannel::AL_Source(){
 	if( source ) return source;
+
+	/*	
+	static int n;
+	if( ++n<17 ){
+		alGetError();
+		alGenSources( 1,&source );
+		if( alGetError()==AL_NO_ERROR ) return source;
+	}
+	*/
 	
 	alGetError();
 	alGenSources( 1,&source );
@@ -829,6 +838,7 @@ int gxtkChannel::AL_Source(){
 	for( int i=0;i<32;++i ){
 		gxtkChannel *chan=&gxtkAudio::audio->channels[i];
 		if( !chan->source || gxtkAudio::audio->ChannelState( i ) ) continue;
+//		puts( "Stealing source!" );
 		source=chan->source;
 		chan->source=0;
 		break;
