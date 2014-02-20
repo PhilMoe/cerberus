@@ -13,8 +13,10 @@ class BBGameCenter{
 	static BBGameCenter *_gameCenter;
 
 	int _state;
-	
+
 	BBGameCenterDelegate *_delegate;
+	
+	NSMutableArray *_achievements;
 
 public:
 	BBGameCenter();
@@ -31,8 +33,11 @@ public:
 	
 	void ShowAchievements();
     void ReportAchievement( float percent,String achievement_ID );
+    float GetAchievementPercent( String id );
     
     //INTERNAL
+	GKAchievement *FindAchievement( String id );
+	
     void GameCenterViewControllerDidFinish( UIViewController *vc );
 };
 
@@ -56,7 +61,7 @@ BBGameCenter *BBGameCenter::_gameCenter;
 
 @end
 
-BBGameCenter::BBGameCenter():_state(-1),_delegate(0){
+BBGameCenter::BBGameCenter():_state(-1),_delegate(0),_achievements(0){
 	if( !GameCenterAvail() ) return;
 	_delegate=[[BBGameCenterDelegate alloc] init];
 	_state=0;
@@ -90,7 +95,20 @@ void BBGameCenter::StartGameCenter(){
 		_state=1;
 	    [localPlayer authenticateWithCompletionHandler:^(NSError *error){
 			if( localPlayer.isAuthenticated ){
-				_state=2;
+				[GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements,NSError *error){
+					if( achievements ){
+						_achievements=[[NSMutableArray alloc] init];
+						[_achievements addObjectsFromArray:achievements];
+						/*
+						int n=[_achievements count];
+						for( int i=0;i<n;++i ){
+							GKAchievement *achievement=[_achievements objectAtIndex:i];
+							bbPrint( String("Achievement:")+String(achievement.identifier) );
+						}
+						*/
+					}
+					_state=2;
+				}];
 			}else{
 				_state=-1;
 			}
@@ -124,6 +142,8 @@ void BBGameCenter::ShowLeaderboard( String leaderboard_ID ){
 }	
     
 void BBGameCenter::ReportScore( int value,String leaderboard_ID ){
+
+	if( _state!=2 ) return;
     
 	GKScore *score=[[GKScore alloc] initWithCategory:leaderboard_ID.ToNSString()];
 	    		
@@ -148,15 +168,40 @@ void BBGameCenter::ShowAchievements(){
 	// [BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentViewController:vc animated:YES completion:nil];
 	[BBIosGame::IosGame()->GetUIAppDelegate()->viewController presentModalViewController:vc animated:YES];
 }
+
+GKAchievement *BBGameCenter::FindAchievement( String id ){
+	if( !_achievements ) return 0;
+	NSString *str=id.ToNSString();
+	int n=[_achievements count];
+	for( int i=0;i<n;++i ){
+		GKAchievement *achievement=[_achievements objectAtIndex:i];
+		if( [achievement.identifier isEqualToString:str] ) return achievement;
+	}
+	return 0;
+}
     
 void BBGameCenter::ReportAchievement( float percent,String achievement_ID ){
-    
-	GKAchievement *achievement=[[GKAchievement alloc] initWithIdentifier:achievement_ID.ToNSString()];
-	if( !achievement ) return;
+
+	if( _state!=2 ) return;
+
+	GKAchievement *achievement=FindAchievement( achievement_ID );
+	if( !achievement ){
+		achievement=[[GKAchievement alloc] initWithIdentifier:achievement_ID.ToNSString()];
+		[_achievements addObject:achievement];
+	}
 	
 	achievement.percentComplete=percent;
+	achievement.showsCompletionBanner=true;
 	
 	[achievement reportAchievementWithCompletionHandler:^(NSError *error){} ];
+}
+
+float BBGameCenter::GetAchievementPercent( String achievement_ID ){
+
+	GKAchievement *achievement=FindAchievement( achievement_ID );
+	if( !achievement ) return 0;
+	
+	return achievement.percentComplete;
 }
     
 void BBGameCenter::GameCenterViewControllerDidFinish( UIViewController *vc ){

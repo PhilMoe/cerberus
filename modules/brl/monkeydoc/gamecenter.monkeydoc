@@ -116,7 +116,7 @@ Returns one of the following values:
 |  1    | Game Center has started and is busy connecting
 |  2    | Game Center has successfully connected and is awaiting further instructions
 |  3    | A leaderboard is currently showing
-|  4    | Game achievments are currently showing
+|  4    | Game achievements are currently showing
 
 
 # Method ShowLeaderboard:Void( leaderboard_ID:String )

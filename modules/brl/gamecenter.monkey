@@ -27,4 +27,6 @@ Class GameCenter Extends Null="BBGameCenter"
 	
 	Method ReportAchievement:Void( percent:Float,achievement_ID:String )
 	
+	Method GetAchievementPercent:Float( achievement_ID:String )
+	
 End
