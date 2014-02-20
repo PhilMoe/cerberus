@@ -166,7 +166,11 @@ void CodeEditor::rename( const QString &path ){
 
 void CodeEditor::gotoLine( int line ){
 
-    setTextCursor( QTextCursor( document()->findBlockByNumber( line ) ) );
+    QTextBlock block=document()->findBlockByNumber( line );
+
+    setTextCursor( QTextCursor( block ) );
+
+//    verticalScrollBar()->setValue( line );
 
     ensureCursorVisible();
 }
