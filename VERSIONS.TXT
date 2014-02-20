@@ -1,6 +1,22 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v78a *****
+
+Fixed databuffer.LoadAsync private BBThread problem.
+
+Kludged around some weird winphone8 media engine issues.
+
+Added blind fix for glfw openal running out of source.
+
+Fixed iOS touch event issue involving missing touch end/cancel events.
+
+
+***** v77g *****
+
+Removed reference to non-existant gc_force_sweep from ios admob code.
+
+
 ***** v77f *****
 
 Tweaked os module.
