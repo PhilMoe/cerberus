@@ -62,21 +62,13 @@ Class Thread Extends BBThread
 
 End
 
-#Else If LANG="java" Or LANG="cs"
-
-Class Thread Extends BBThread
-
-	Method Discard:Void()
-	End
-	
-End
-
 #Else
 
 Class Thread Extends BBThread
 
 	Method Discard:Void()
 	End
+	
 End
 
 #Endif
