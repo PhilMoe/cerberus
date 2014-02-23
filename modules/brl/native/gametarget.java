@@ -33,12 +33,13 @@ class BBGameDelegate{
 }
 
 class BBDisplayMode{
-
 	public int width;
 	public int height;
-	
-	BBDisplayMode(){ width=0;height=0; }
-	BBDisplayMode( int width,int height ){ this.width=width;this.height=height; }
+	public int format;
+	public int hertz;
+	public int flags;
+	public BBDisplayMode(){}
+	public BBDisplayMode( int width,int height ){ this.width=width;this.height=height; }
 }
 
 abstract class BBGame{
