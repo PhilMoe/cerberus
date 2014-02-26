@@ -3,6 +3,8 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v78b *****
 
+Project data no longer copied to target project every build - filetime now used to conditionally update data files.
+
 Fixed missing fields from java BBDisplayMode class implementation that was causing reflection confusion.
 
 
