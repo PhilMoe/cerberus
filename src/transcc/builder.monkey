@@ -147,15 +147,27 @@ Class Builder
 		Return tcc.Execute( cmd,failHard )
 	End
 	
+	Method CCopyFile:Void( src:String,dst:String )
+		If FileTime( src )>FileTime( dst ) Or FileSize( src )<>FileSize( dst )
+			CopyFile src,dst
+		Endif
+	End
+	
 	Method CreateDataDir:Void( dir:String )
+	
 		dir=RealPath( dir )
 	
-		DeleteDir dir,True
 		CreateDir dir
+		If FileType( dir )<>FILETYPE_DIR Die "Failed to create target project data dir: "+dir
 		
 		Local dataPath:=StripExt( tcc.opt_srcpath )+".data"
+		If FileType( dataPath )<>FILETYPE_DIR dataPath=""
 		
-		If FileType( dataPath )=FILETYPE_DIR
+		'all used data...
+		Local udata:=New StringSet
+		
+		'Copy data from monkey project to target project
+		If dataPath
 		
 			Local srcs:=New StringStack
 			srcs.Push dataPath
@@ -174,7 +186,8 @@ Class Builder
 					Select FileType( p )
 					Case FILETYPE_FILE
 						If MatchPath( r,DATA_FILES )
-							CopyFile p,t
+							CCopyFile p,t
+							udata.Insert t
 							dataFiles.Set p,r
 						Endif
 					Case FILETYPE_DIR
@@ -187,14 +200,50 @@ Class Builder
 		
 		Endif
 		
+		'Copy dodgy module data imports...
 		For Local p:=Eachin app.fileImports
 			Local r:=StripDir( p )
 			Local t:=dir+"/"+r
 			If MatchPath( r,DATA_FILES )
-				CopyFile p,t
+				CCopyFile p,t
+				udata.Insert t
 				dataFiles.Set p,r
 			Endif
 		Next
+		
+		'Clean up...delete data in target project not in monkey project.
+		If dataPath
+		
+			Local dsts:=New StringStack
+			dsts.Push dir
+			
+			While Not dsts.IsEmpty()
+				
+				Local dst:=dsts.Pop()
+				
+				For Local f:=Eachin LoadDir( dst )
+					If f.StartsWith( "." ) Continue
+	
+					Local p:=dst+"/"+f
+					Local r:=p[dir.Length+1..]
+					Local t:=dataPath+"/"+r
+					
+					Select FileType( p )
+					Case FILETYPE_FILE
+						If Not udata.Contains( p )
+							DeleteFile p
+						Endif
+					Case FILETYPE_DIR
+						If FileType( t )=FILETYPE_DIR
+							dsts.Push p
+						Else
+							DeleteDir p,True
+						Endif
+					End
+				Next
+				
+			Wend
+		End
 		
 	End
 	
