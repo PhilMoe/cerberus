@@ -7,7 +7,7 @@ The filesystem module is currently only available for the android, ios, win8, gl
 
 Example:
 <pre>
-#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"win8" And TARGET<>"glfw"
+#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"winrt" And TARGET<>"glfw"
 #Error "Invalid target"
 #Endif
 
