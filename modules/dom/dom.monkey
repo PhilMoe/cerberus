@@ -137,6 +137,8 @@ Class Window Extends EventTarget
 	Field navigator:Navigator
 	Field applicationCache:ApplicationCache
  
+ 	Method close()
+	Method stop()
 	Method focus()
 	Method blur()
 	Method open:Window( url$,target$,features$,replace$ )
