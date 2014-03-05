@@ -335,7 +335,8 @@ Function GetMatrix( matrix#[] )
 End
 
 Function PushMatrix()
-	Local sp=context.matrixSp
+	Local sp:=context.matrixSp
+	If sp=context.matrixStack.Length context.matrixStack=context.matrixStack.Resize( sp*2 )
 	context.matrixStack[sp+0]=context.ix
 	context.matrixStack[sp+1]=context.iy
 	context.matrixStack[sp+2]=context.jx
