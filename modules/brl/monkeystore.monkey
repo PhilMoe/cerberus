@@ -128,6 +128,7 @@ Class MonkeyStore Implements IAsyncEventSource
 	Method BuyProductAsync:Void( product:Product,onComplete:IOnBuyProductComplete )
 	
 		If _state<0 Error "Store unavailable"
+		If _state=0 Error "Store not open"
 		If _state<>1 Error "Store currently busy"
 		
 		_buying=product
@@ -142,6 +143,7 @@ Class MonkeyStore Implements IAsyncEventSource
 	Method GetOwnedProductsAsync:Void( onComplete:IOnGetOwnedProductsComplete )
 	
 		If _state<0 Error "Store unavailable"
+		If _state=0 Error "Store not open"
 		If _state<>1 Error "Store currently busy"
 		
 		_onGetOwned=onComplete
@@ -220,7 +222,7 @@ Class MonkeyStore Implements IAsyncEventSource
 				Next
 				_state=1
 			Else
-				_state=-1
+				_state=0
 			End
 			
 			_all=all.ToArray()
