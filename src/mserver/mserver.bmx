@@ -69,7 +69,7 @@ Function ConnectToMServer:TSocket()
 	Return client
 End Function
 
-ChangeDir LaunchDir
+'ChangeDir LaunchDir
 
 If AppArgs.length=1
 
@@ -370,6 +370,7 @@ Function MServer()
 		
 	Print "MServer " + Version
 	Print "MServer active and listening on port "+mserverPort
+'	print "CurrentDir="+CurrentDir()
 	
 	Local serverId
 	Local serverMap:TMap=New TMap				'maps dirs to servers
