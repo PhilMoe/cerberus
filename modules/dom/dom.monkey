@@ -1,4 +1,3 @@
-
 'Import elements
 
 'Based on interfaces published at:
@@ -127,6 +126,9 @@ Class Window Extends EventTarget
 	Field opener:Window
 	Field parent:Window
 	
+	Field innerWidth
+	Field innerHeight
+	
 	Field frameElement:Element
 
 	'getter WindowProxy( index )
@@ -134,9 +136,7 @@ Class Window Extends EventTarget
 	
 	Field navigator:Navigator
 	Field applicationCache:ApplicationCache
-
-	Method close()
-	Method stop()
+ 
 	Method focus()
 	Method blur()
 	Method open:Window( url$,target$,features$,replace$ )
