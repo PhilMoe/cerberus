@@ -71,6 +71,34 @@ void BBMonkeyGame::ValidateUpdateTimer(){
 void BBMonkeyGame::UpdateGameEx(){
 	if( _suspended ) return;
 	
+	//poll accelerometer
+	static Windows::Devices::Sensors::Accelerometer ^accel;
+	if( !accel ) accel=Windows::Devices::Sensors::Accelerometer::GetDefault();
+	if( accel ){
+		auto r=accel->GetCurrentReading();
+		float x= float( r->AccelerationX );
+		float y=-float( r->AccelerationY );
+		float z= float( r->AccelerationZ );
+		float tx=x,ty=y;
+		switch( GetDeviceRotationX() ){
+		case 0:
+			break;
+		case 1:
+			x=ty;
+			y=-tx;
+			break;
+		case 2:
+			x=-tx;
+			y=-ty;
+			break;
+		case 3:
+			x=-ty;
+			y=tx;
+			break;
+		}
+		MotionEvent( BBGameEvent::MotionAccel,-1,x,y,z );
+	}
+	
 	if( !_updateRate ){
 		UpdateGame();
 		return;
