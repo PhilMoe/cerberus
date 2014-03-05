@@ -1,6 +1,18 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+
+***** v78c *****
+
+Added accelerometer support to winrt targets.
+
+Fixed PushMatrix so it grows stack.
+
+Fixed mserver so it doesn't lock .build folder on windows.
+
+Modified brl.monkeystore so you can call OpenStoreAsync repeatedly until success.
+
+
 ***** v78b *****
 
 Project data no longer copied to target project every build - filetime now used to conditionally update data files.
@@ -14,7 +26,7 @@ Fixed databuffer.LoadAsync private BBThread problem.
 
 Kludged around some weird winphone8 media engine issues.
 
-Added blind fix for glfw openal running out of source.
+Added blind fix for glfw openal running out of sources.
 
 Fixed iOS touch event issue involving missing touch end/cancel events.
 
