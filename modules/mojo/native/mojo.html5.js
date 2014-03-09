@@ -574,7 +574,7 @@ gxtkSample.prototype.AllocAudio=function(){
 			audio.currentTime=0;
 			return audio;
 		}catch( ex ){
-			print( "AUDIO ERROR1!" );
+//			print( "AUDIO ERROR1!" );
 		}
 	}
 	
@@ -591,7 +591,7 @@ gxtkSample.prototype.AllocAudio=function(){
 				this.currentTime=0;
 				this.play();
 			}catch( ex ){
-				print( "AUDIO ERROR2!" );
+//				print( "AUDIO ERROR2!" );
 			}
 		}
 	},false );
