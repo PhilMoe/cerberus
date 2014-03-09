@@ -148,6 +148,7 @@ Class Window Extends EventTarget
 	Method prompt$( message$,defaultText$ )
 	Method print()
 	Method showModalDialog:DOMObject( url$,arg0:DOMObject )
+	Method eval:Object(expression$)
 	
 End
 
