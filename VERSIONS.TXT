@@ -4,6 +4,12 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v78c *****
 
+Updated ios admob to 6.8.0
+
+Fixed xcode 5.1 build issues, upgraded project format etc.
+
+Added optional webaudio to html5 mojo - use #HTML5_WEBAUDIO_ENABLED=True to enable.
+
 Improved winphone8 playmusic volume.
 
 Added accelerometer support to winrt targets.
