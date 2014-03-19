@@ -4,7 +4,7 @@
 // Copyright 2011 Mark Sibly, all rights reserved.
 // No warranty implied; use at your own risk.
 
-//***** gxtkGraphics class *****
+// ***** gxtkGraphics class *****
 
 function gxtkGraphics(){
 	this.game=BBHtml5Game.Html5Game();
@@ -59,14 +59,11 @@ gxtkGraphics.prototype.LoadSurface=function( path ){
 	var ty=game.GetMetaData( path,"type" );
 	if( ty.indexOf( "image/" )!=0 ) return null;
 	
-	function onloadfun(){
-		game.DecLoading();
-	}
-	
 	game.IncLoading();
 
 	var image=new Image();
-	image.onload=onloadfun;
+	image.onload=function(){ game.DecLoading(); }
+	image.onerror=function(){ game.DecLoading(); }
 	image.meta_width=parseInt( game.GetMetaData( path,"width" ) );
 	image.meta_height=parseInt( game.GetMetaData( path,"height" ) );
 	image.src=game.PathToUrl( path );
@@ -342,7 +339,7 @@ gxtkGraphics.prototype.WritePixels2=function( surface,pixels,x,y,width,height,of
 	surface.gc.putImageData( imgData,x,y );
 }
 
-//***** gxtkSurface class *****
+// ***** gxtkSurface class *****
 
 function gxtkSurface( image,graphics ){
 	this.image=image;
@@ -351,7 +348,7 @@ function gxtkSurface( image,graphics ){
 	this.sheight=image.meta_height;
 }
 
-//***** GXTK API *****
+// ***** GXTK API *****
 
 gxtkSurface.prototype.Discard=function(){
 	if( this.image ){
@@ -375,8 +372,290 @@ gxtkSurface.prototype.OnUnsafeLoadComplete=function(){
 	return true;
 }
 
-//***** gxtkChannel class *****
-function gxtkChannel(){
+if( CFG_HTML5_WEBAUDIO_ENABLED=="1" && (window.AudioContext || window.webkitAudioContext) ){
+
+//print( "Using WebAudio!" );
+
+// ***** WebAudio *****
+
+var wa=null;
+
+// ***** WebAudio gxtkSample *****
+
+var gxtkSample=function(){
+	this.waBuffer=null;
+	this.state=0;
+}
+
+gxtkSample.prototype.Load=function( path ){
+	if( this.state ) return false;
+
+	var req=new XMLHttpRequest();
+	
+	req.open( "get",BBGame.Game().PathToUrl( path ),true );
+	req.responseType="arraybuffer";
+	
+	var abuf=this;
+	
+	req.onload=function(){
+		wa.decodeAudioData( req.response,function( buffer ){
+			//success!
+			abuf.waBuffer=buffer;
+			abuf.state=1;
+		},function(){
+			abuf.state=-1;
+		} );
+	}
+	
+	req.onerror=function(){
+		abuf.state=-1;
+	}
+	
+	req.send();
+	
+	this.state=2;
+			
+	return true;
+}
+
+gxtkSample.prototype.Discard=function(){
+}
+
+// ***** WebAudio gxtkChannel *****
+
+var gxtkChannel=function(){
+	this.buffer=null;
+	this.flags=0;
+	this.volume=1;
+	this.pan=0;
+	this.rate=1;
+	this.waSource=null;
+	this.waPan=wa.create
+	this.waGain=wa.createGain();
+	this.waGain.connect( wa.destination );
+	this.waPanner=wa.createPanner();
+	this.waPanner.rolloffFactor=0;
+	this.waPanner.connect( this.waGain );
+	this.startTime=0;
+	this.offset=0;
+	this.state=0;
+}
+
+// ***** WebAudio gxtkAudio *****
+
+var gxtkAudio=function(){
+
+	if( !wa ){
+		window.AudioContext=window.AudioContext || window.webkitAudioContext;
+		wa=new AudioContext();
+	}
+	
+	this.okay=true;
+	this.music=null;
+	this.musicState=0;
+	this.musicVolume=1;
+	this.channels=new Array();
+	for( var i=0;i<32;++i ){
+		this.channels[i]=new gxtkChannel();
+	}
+}
+
+gxtkAudio.prototype.Suspend=function(){
+	if( this.MusicState()==1 ) this.music.pause();
+	for( var i=0;i<32;++i ){
+		var chan=this.channels[i];
+		if( chan.state!=1 ) continue;
+		this.PauseChannel( i );
+		chan.state=5;
+	}
+}
+
+gxtkAudio.prototype.Resume=function(){
+	if( this.MusicState()==1 ) this.music.play();
+	for( var i=0;i<32;++i ){
+		var chan=this.channels[i];
+		if( chan.state!=5 ) continue;
+		chan.state=2;
+		this.ResumeChannel( i );
+	}
+}
+
+gxtkAudio.prototype.LoadSample=function( path ){
+
+	var sample=new gxtkSample();
+	if( !sample.Load( BBHtml5Game.Html5Game().PathToUrl( path ) ) ) return null;
+	
+	return sample;
+}
+
+gxtkAudio.prototype.PlaySample=function( buffer,channel,flags ){
+
+	if( buffer.state!=1 ) return;
+
+	var chan=this.channels[channel];
+	
+	if( chan.state ){
+		chan.waSource.onended=null
+		chan.waSource.stop( 0 );
+	}
+	
+	chan.buffer=buffer;
+	chan.flags=flags;
+
+	chan.waSource=wa.createBufferSource();
+	chan.waSource.buffer=buffer.waBuffer;
+	chan.waSource.playbackRate.value=chan.rate;
+	chan.waSource.loop=(flags&1)!=0;
+	chan.waSource.connect( chan.waPanner );
+	
+	chan.waSource.onended=function( e ){
+		chan.waSource=null;
+		chan.state=0;
+	}
+
+	chan.offset=0;	
+	chan.startTime=wa.currentTime;
+	chan.waSource.start( 0 );
+
+	chan.state=1;
+}
+
+gxtkAudio.prototype.StopChannel=function( channel ){
+
+	var chan=this.channels[channel];
+	if( !chan.state ) return;
+	
+	if( chan.state==1 ){
+		chan.waSource.onended=null;
+		chan.waSource.stop( 0 );
+		chan.waSource=null;
+	}
+
+	chan.state=0;
+}
+
+gxtkAudio.prototype.PauseChannel=function( channel ){
+
+	var chan=this.channels[channel];
+	if( chan.state!=1 ) return;
+	
+	chan.offset=(chan.offset+(wa.currentTime-chan.startTime)*chan.rate)%chan.buffer.waBuffer.duration;
+	
+	chan.waSource.onended=null;
+	chan.waSource.stop( 0 );
+	chan.waSource=null;
+	
+	chan.state=2;
+}
+
+gxtkAudio.prototype.ResumeChannel=function( channel ){
+
+	var chan=this.channels[channel];
+	if( chan.state!=2 ) return;
+	
+	chan.waSource=wa.createBufferSource();
+	chan.waSource.buffer=chan.buffer.waBuffer;
+	chan.waSource.playbackRate.value=chan.rate;
+	chan.waSource.loop=(chan.flags&1)!=0;
+	chan.waSource.connect( chan.waPanner );
+	
+	chan.waSource.onended=function( e ){
+		chan.waSource=null;
+		chan.state=0;
+	}
+	
+	chan.startTime=wa.currentTime;
+	chan.waSource.start( 0,chan.offset );
+
+	chan.state=1;
+}
+
+gxtkAudio.prototype.ChannelState=function( channel ){
+	return this.channels[channel].state & 3;
+}
+
+gxtkAudio.prototype.SetVolume=function( channel,volume ){
+	var chan=this.channels[channel];
+
+	chan.volume=volume;
+	
+	chan.waGain.gain.value=volume;
+}
+
+gxtkAudio.prototype.SetPan=function( channel,pan ){
+	var chan=this.channels[channel];
+
+	chan.pan=pan;
+	
+	var sin=Math.sin( pan*3.14159265359/2 );
+	var cos=Math.cos( pan*3.14159265359/2 );
+	
+	chan.waPanner.setPosition( sin,0,-cos );
+}
+
+gxtkAudio.prototype.SetRate=function( channel,rate ){
+
+	var chan=this.channels[channel];
+
+	if( chan.state==1 ){
+		//update offset for pause/resume
+		var time=wa.currentTime;
+		chan.offset=(chan.offset+(time-chan.startTime)*chan.rate)%chan.buffer.waBuffer.duration;
+		chan.startTime=time;
+	}
+
+	chan.rate=rate;
+	
+	if( chan.waSource ) chan.waSource.playbackRate.value=rate;
+}
+
+gxtkAudio.prototype.PlayMusic=function( path,flags ){
+	if( this.musicState ) this.music.pause();
+	this.music=new Audio( BBGame.Game().PathToUrl( path ) );
+	this.music.loop=(flags&1)!=0;
+	this.music.play();
+	this.musicState=1;
+}
+
+gxtkAudio.prototype.StopMusic=function(){
+	if( !this.musicState ) return;
+	this.music.pause();
+	this.music=null;
+	this.musicState=0;
+}
+
+gxtkAudio.prototype.PauseMusic=function(){
+	if( this.musicState!=1 ) return;
+	this.music.pause();
+	this.musicState=2;
+}
+
+gxtkAudio.prototype.ResumeMusic=function(){
+	if( this.musicState!=2 ) return;
+	this.music.play();
+	this.musicState=1;
+}
+
+gxtkAudio.prototype.MusicState=function(){
+	if( this.musicState==1 && this.music.ended && !this.music.loop ){
+		this.music=null;
+		this.musicState=0;
+	}
+	return this.musicState;
+}
+
+gxtkAudio.prototype.SetMusicVolume=function( volume ){
+	this.musicVolume=volume;
+	if( this.musicState ) this.music.volume=volume;
+}
+
+}else{
+
+//print( "Using OldAudio!" );
+
+// ***** gxtkChannel class *****
+
+var gxtkChannel=function(){
 	this.sample=null;
 	this.audio=null;
 	this.volume=1;
@@ -386,8 +665,9 @@ function gxtkChannel(){
 	this.state=0;
 }
 
-//***** gxtkAudio class *****
-function gxtkAudio(){
+// ***** gxtkAudio class *****
+
+var gxtkAudio=function(){
 	this.game=BBHtml5Game.Html5Game();
 	this.okay=typeof(Audio)!="undefined";
 	this.music=null;
@@ -554,9 +834,10 @@ gxtkAudio.prototype.SetMusicVolume=function( volume ){
 	this.SetVolume( 32,volume );
 }
 
-//***** gxtkSample class *****
+// ***** gxtkSample class *****
 
-function gxtkSample( audio ){
+//function gxtkSample( audio ){
+var gxtkSample=function( audio ){
 	this.audio=audio;
 	this.free=new Array();
 	this.insts=new Array();
@@ -601,4 +882,6 @@ gxtkSample.prototype.AllocAudio=function(){
 }
 
 gxtkSample.prototype.Discard=function(){
+}
+
 }
