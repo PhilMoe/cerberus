@@ -8,7 +8,7 @@ There are 3 ways to specify app config settings:
 
 * With [[Trans]] using the command line.
 
-* In Monkey source code using the preprocessor, eg: `#OPENGL_GLES20_ENABLED=True`. Settings made this way will not overwrite settings passed to Trans.
+* In Monkey source code using the preprocessor, eg: `#MOJO_AUTO_SUSPEND_ENABLED=False`. Settings made this way will not overwrite settings passed to Trans.
 
 * By editing the CONFIG.MONKEY text file in your apps .build/target folder. Settings in CONFIG.MONKEY will not overwrite any settings passed to Trans or in Monkey source code, so this provides a mechanism for defining 'default' settings.
 
@@ -69,7 +69,7 @@ The following app config settings are currently supported:
 #ANDROID_KEY_ALIAS_PASSWORD="password"
 #ANDROID_SIGN_APP=False
 
-'OpenGL settings. To override, set these in your code BEFORE importing opengl.gles112 or opengl.gles20
+'OpenGL settings. To override, set these in your code BEFORE importing opengl.gles11 or opengl.gles20
 '
 #OPENGL_DEPTH_BUFFER_ENABLED=True
 
