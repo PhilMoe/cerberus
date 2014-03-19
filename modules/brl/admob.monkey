@@ -15,23 +15,20 @@ Import "native/admob.android.java"
 
 Import "native/admob.ios.cpp"
 
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/libGoogleAdMobAds.a"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADBannerView.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADBannerViewDelegate.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADAdSize.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADRequest.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADRequestError.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADInterstitial.h"
-#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.4.2/GADInterstitialDelegate.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/libGoogleAdMobAds.a"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADBannerView.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADBannerViewDelegate.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADAdSize.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADRequest.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADRequestError.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADInterstitial.h"
+#LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADInterstitialDelegate.h"
 
 #LIBS+="StoreKit.framework"
 #LIBS+="MessageUI.framework"
 #LIBS+="SystemConfiguration.framework"
 #LIBS+="AdSupport.framework"
-
-'Already in project...
-'#LIBS+="AudioToolbox.framework"
-'#LIBS+="CoreGraphics.framework"
+#LIBS+="CoreTelephony.framework"	'added for admob 6.8.0
 
 #End
 
