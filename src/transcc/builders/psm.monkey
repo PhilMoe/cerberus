@@ -28,14 +28,9 @@ Class PsmBuilder Extends Builder
 			Local ext:=ExtractExt( r ).ToLower()
 			
 			If MatchPath( r,TEXT_FILES )
-				Select ext
-				Case "txt","xml","json"
 				    cont.Push "    <Content Include=~q"+t+"~q>"
 					cont.Push "      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>"
 					cont.Push "    </Content>"
-				Default
-					Die "Invalid text file type"
-				End
 			Else If MatchPath( r,IMAGE_FILES )
 				Select ext
 				Case "png","jpg","bmp","gif"
