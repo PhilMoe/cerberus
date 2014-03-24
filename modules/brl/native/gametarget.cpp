@@ -19,9 +19,9 @@ public:
 	virtual void UpdateGame(){}
 	virtual void RenderGame(){}
 	virtual void KeyEvent( int event,int data ){}
-	virtual void MouseEvent( int event,int data,float x,float y ){}
-	virtual void TouchEvent( int event,int data,float x,float y ){}
-	virtual void MotionEvent( int event,int data,float x,float y,float z ){}
+	virtual void MouseEvent( int event,int data,Float x,Float y ){}
+	virtual void TouchEvent( int event,int data,Float x,Float y ){}
+	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
 };
 
