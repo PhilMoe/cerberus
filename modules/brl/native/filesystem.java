@@ -1,5 +1,6 @@
 
 import java.nio.channels.FileChannel;
+import android.widget.Toast;
 
 class BBFileSystem{
 
@@ -48,7 +49,31 @@ class BBFileSystem{
 		
 		try{
 			File srcf=file( src );
-			if( !srcf.isFile() ) return false;
+			if( !srcf.isFile() ) {
+				AssetManager am = BBAndroidGame.AndroidGame()._activity.getAssets();
+				InputStream inputStream = am.open(src);
+				
+				try{
+					File dstf = file(dst);
+					if( dstf.exists() && (!dstf.isFile() || !dstf.delete()) ) return false;
+					if( !dstf.createNewFile() ) return false;
+						
+					OutputStream outputStream = new FileOutputStream(dstf);
+					byte buffer[] = new byte[1024];
+					int length = 0;
+
+					while((length=inputStream.read(buffer)) > 0) {
+						outputStream.write(buffer,0,length);
+					}
+
+					outputStream.close();
+					inputStream.close();
+
+					return true;
+				}catch (IOException e) {
+				}
+				return false;				
+			}
 			
 			File dstf=file( dst );
 			if( dstf.exists() && (!dstf.isFile() || !dstf.delete()) ) return false;
@@ -63,7 +88,7 @@ class BBFileSystem{
 				}
 				srcc.close();
 			}
-		}catch( IOException ex ){
+		}catch( Exception ex ){
 		}
 		
 		return ok;

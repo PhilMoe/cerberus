@@ -466,7 +466,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			File f=Environment.getExternalStorageDirectory();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}
-		return "";
+		return PathToAssetPath(path);
 	}
 
 	String PathToAssetPath( String path ){
