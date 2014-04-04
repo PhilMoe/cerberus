@@ -1,6 +1,16 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v78d *****
+
+Fixed ios accelerometer bug.
+
+Fixed async image loading/threading bugs.
+
+Removed limitations on supported text files types for PSM target.
+
+Fixed #CPP_DOUBLE_PRECISION_FLOATS=True messing up mouse events on desktop target.
+
 
 ***** v78c *****
 
