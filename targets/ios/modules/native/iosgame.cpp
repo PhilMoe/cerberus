@@ -27,6 +27,7 @@ public:
 	
 	//***** INTERNAL *****
 	
+	virtual void StartGame();
 	virtual void SuspendGame();
 	virtual void ResumeGame();
 	
@@ -117,10 +118,11 @@ void BBIosGame::ValidateUpdateTimer(){
 	
 	if( !_accelerometer && CFG_IOS_ACCELEROMETER_ENABLED ){
 		_accelerometer=[UIAccelerometer sharedAccelerometer];
-		[_accelerometer setUpdateInterval:1.0/_updateRate];
 		[_accelerometer setDelegate:_appDelegate];
 		[_app setIdleTimerDisabled:YES];
 	}
+	
+	if( _accelerometer ) [_accelerometer setUpdateInterval:1.0/(_updateRate ? _updateRate : 60)];
 	
 	if( _updateRate==0 || (_updateRate==60 && _displayLinkAvail && CFG_IOS_DISPLAY_LINK_ENABLED) ){
 	
@@ -362,13 +364,20 @@ BBMonkeyAppDelegate *BBIosGame::GetUIAppDelegate(){
 
 //***** INTERNAL *****
 
+void BBIosGame::StartGame(){
+	BBGame::StartGame();
+	if( !_updateTimer && !_displayLink ) ValidateUpdateTimer();
+}
+
 void BBIosGame::SuspendGame(){
+	if( !_started ) return;
 	BBGame::SuspendGame();
 	ValidateUpdateTimer();
 	
 }
 
 void BBIosGame::ResumeGame(){
+	if( !_started ) return;
 	BBGame::ResumeGame();
 	ValidateUpdateTimer();
 }
