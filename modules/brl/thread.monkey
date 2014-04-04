@@ -45,7 +45,8 @@ Class Thread Extends BBThread
 
 #If LANG<>"cpp"
 	Method Strdup:String( str:String )
+		Return str
+	End
 #Endif
 
 End
-

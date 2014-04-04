@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v78e *****
+
+Fixed silly glitch in thread.monkey
+
+
 ***** v78d *****
 
 Fixed ios accelerometer bug.
