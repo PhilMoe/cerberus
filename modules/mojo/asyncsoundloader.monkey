@@ -23,6 +23,7 @@ Class AsyncSoundLoaderThread="BBAsyncSoundLoaderThread"
 	Field _device:AudioDevice
 	Field _path:String
 	Field _sample:Sample
+	Field _result:Bool
 	
 	Method Start:Void()
 	Method IsRunning:Bool()
@@ -36,6 +37,7 @@ Class AsyncSoundLoaderThread Extends Thread
 	Field _device:AudioDevice
 	Field _path:String
 	Field _sample:Sample
+	Field _result:Bool
 	
 	Method Start:Void()
 		_sample=New Sample
@@ -47,7 +49,7 @@ Class AsyncSoundLoaderThread Extends Thread
 	End
 	
 	Method Run__UNSAFE__:Void()
-		_sample=_device.LoadSample__UNSAFE__( _sample,_path )
+		_result=_device.LoadSample__UNSAFE__( _sample,Strdup( _path ) )
 	End
 
 End
@@ -80,7 +82,7 @@ Class AsyncSoundLoader Extends AsyncSoundLoaderThread Implements IAsyncEventSour
 	Method UpdateAsyncEvents:Void()
 		If IsRunning() Return
 		RemoveAsyncEventSource Self
-		If _sample
+		If _result
 			Local sound:=New Sound( _sample )
 			_onComplete.OnLoadSoundComplete sound,_mpath,Self
 		Else

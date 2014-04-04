@@ -43,7 +43,7 @@ Class GraphicsDevice="gxtkGraphics"
 	Method ReadPixels( pixels[],x,y,width,height,offset,pitch )
 	
 	'INTERNAL - subject to change etc.
-	Method LoadSurface__UNSAFE__:Surface( surface:Surface,path$ )
+	Method LoadSurface__UNSAFE__:bool( surface:Surface,path$ )
 
 End
 
@@ -56,6 +56,6 @@ Class Surface="gxtkSurface"
 	Method Loaded() Property
 
 	'INTERNAL - subject to change etc.
-	Method OnUnsafeLoadComplete:Bool()
+	Method OnUnsafeLoadComplete:Void()
 
 End

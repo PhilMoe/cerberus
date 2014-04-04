@@ -369,7 +369,6 @@ gxtkSurface.prototype.Loaded=function(){
 }
 
 gxtkSurface.prototype.OnUnsafeLoadComplete=function(){
-	return true;
 }
 
 if( CFG_HTML5_WEBAUDIO_ENABLED=="1" && (window.AudioContext || window.webkitAudioContext) ){

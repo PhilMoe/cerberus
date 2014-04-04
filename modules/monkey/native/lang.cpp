@@ -222,7 +222,7 @@ void gc_flush_free( int size ){
 	while( gc_free_bytes>t ){
 		gc_object *p=gc_free_list.succ;
 		if( !p || p==&gc_free_list ){
-//			printf("ERROR:p=%p gc_free_bytes=%i\n",p,gc_free_bytes);
+//			printf( "GC_ERROR:p=%p gc_free_bytes=%i\n",p,gc_free_bytes );
 //			fflush(stdout);
 			gc_free_bytes=0;
 			break;
@@ -232,50 +232,51 @@ void gc_flush_free( int size ){
 	}
 }
 
-void *gc_ext_malloc( int size ){
 
-	gc_new_bytes+=size;
-	
-	gc_flush_free( size );
-	
-	return malloc( size );
-}
+//Can be modified off thread!
+static volatile int gc_ext_new_bytes;
 
+#if _MSC_VER
+#define atomic_add(P,V) InterlockedExchangeAdd((volatile unsigned int*)P,V)//(*(P)+=(V))
+#define atomic_sub(P,V) InterlockedExchangeSubtract((volatile unsigned int*)P,V)//(*(P)-=(V))
+#else
+#define atomic_add(P,V) __sync_fetch_and_add(P,V)
+#define atomic_sub(P,V) __sync_fetch_and_sub(P,V)
+#endif
+
+//Careful! May be called off thread!
+//
 void gc_ext_malloced( int size ){
-
-	gc_new_bytes+=size;
-	
-	gc_flush_free( size );
+	atomic_add( &gc_ext_new_bytes,size );
 }
 
 gc_object *gc_object_alloc( int size ){
 
 	size=(size+7)&~7;
 	
-#if CFG_CPP_GC_MODE==1
-
 	gc_new_bytes+=size;
 	
-#elif CFG_CPP_GC_MODE==2
+#if CFG_CPP_GC_MODE==2
 
 	if( !gc_ctor_nest ){
+
 #if DEBUG_GC
 		int ms=gc_micros();
 #endif
-		if( gc_new_bytes+size>(CFG_CPP_GC_TRIGGER) ){
+		if( gc_new_bytes+gc_ext_new_bytes>(CFG_CPP_GC_TRIGGER) ){
+			atomic_sub( &gc_ext_new_bytes,gc_ext_new_bytes );
 			gc_collect_all();
-			gc_new_bytes=size;
+			gc_new_bytes=0;
 		}else{
-			gc_new_bytes+=size;
 			gc_mark_queued( (long long)(gc_new_bytes)*(gc_alloced_bytes-gc_new_bytes)/(CFG_CPP_GC_TRIGGER)+gc_new_bytes );
 		}
-		
+
 #if DEBUG_GC
 		ms=gc_micros()-ms;
 		if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
 #endif
 	}
-
+	
 #endif
 
 	gc_flush_free( size );
@@ -425,10 +426,6 @@ void gc_collect_all(){
 
 //	printf( "Mark roots\n" );fflush( stdout );
 	gc_mark_roots();
-
-#if DEBUG_GC	
-	printf( "gc collected:%i\n",reclaimed );fflush( stdout );
-#endif
 }
 
 void gc_collect(){
@@ -444,7 +441,8 @@ void gc_collect(){
 	int ms=gc_micros();
 #endif
 
-	if( gc_new_bytes>(CFG_CPP_GC_TRIGGER) ){
+	if( gc_new_bytes+gc_ext_new_bytes>(CFG_CPP_GC_TRIGGER) ){
+		atomic_sub( &gc_ext_new_bytes,gc_ext_new_bytes );
 		gc_collect_all();
 		gc_new_bytes=0;
 	}else{
@@ -454,6 +452,7 @@ void gc_collect(){
 #if DEBUG_GC
 	ms=gc_micros()-ms;
 	if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
+//	if( ms>=0 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
 #endif
 
 #endif
@@ -733,6 +732,12 @@ public:
 	
 	template<class C> String( const C *p,int length ):rep( Rep::alloc(length) ){
 		for( int i=0;i<rep->length;++i ) rep->data[i]=p[i];
+	}
+	
+	String Copy()const{
+		Rep *crep=Rep::alloc( rep->length );
+		t_memcpy( crep->data,rep->data,rep->length );
+		return String( crep );
 	}
 	
 	int Length()const{
@@ -1164,11 +1169,13 @@ private:
 		}
 		
 		void retain(){
+//			atomic_add( &refs,1 );
 			++refs;
 		}
 		
 		void release(){
-			if( --refs || !length ) return;
+//			if( atomic_sub( &refs,1 )>1 || this==&nullRep ) return;
+			if( --refs || this==&nullRep ) return;
 			free( this );
 		}
 

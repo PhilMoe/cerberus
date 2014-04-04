@@ -45,8 +45,8 @@ public:
 	virtual void DiscardGraphics();
 
 	virtual gxtkSurface *LoadSurface( String path );
-	virtual gxtkSurface *LoadSurface__UNSAFE__( gxtkSurface *surface,String path );
 	virtual gxtkSurface *CreateSurface( int width,int height );
+	virtual bool LoadSurface__UNSAFE__( gxtkSurface *surface,String path );
 	
 	virtual int Cls( float r,float g,float b );
 	virtual int SetAlpha( float alpha );
@@ -94,7 +94,7 @@ public:
 	virtual int Width();
 	virtual int Height();
 	virtual int Loaded();
-	virtual bool OnUnsafeLoadComplete();
+	virtual void OnUnsafeLoadComplete();
 };
 
 //***** gxtkGraphics.cpp *****
@@ -690,22 +690,23 @@ void gxtkSurface::Bind(){
 	}
 }
 
-bool gxtkSurface::OnUnsafeLoadComplete(){
+void gxtkSurface::OnUnsafeLoadComplete(){
 	Bind();
+}
+
+bool gxtkGraphics::LoadSurface__UNSAFE__( gxtkSurface *surface,String path ){
+
+	int width,height,depth;
+	unsigned char *data=BBGlfwGame::GlfwGame()->LoadImageData( path,&width,&height,&depth );
+	if( !data ) return false;
+	
+	surface->SetData( data,width,height,depth );
 	return true;
 }
 
-gxtkSurface *gxtkGraphics::LoadSurface__UNSAFE__( gxtkSurface *surface,String path ){
-	int width,height,depth;
-	unsigned char *data=BBGlfwGame::GlfwGame()->LoadImageData( path,&width,&height,&depth );
-	if( !data ) return 0;
-	surface->SetData( data,width,height,depth );
-	return surface;
-}
-
 gxtkSurface *gxtkGraphics::LoadSurface( String path ){
-	gxtkSurface *surf=LoadSurface__UNSAFE__( new gxtkSurface(),path );
-	if( !surf ) return 0;
+	gxtkSurface *surf=new gxtkSurface();
+	if( !LoadSurface__UNSAFE__( surf,path ) ) return 0;
 	surf->Bind();
 	return surf;
 }
@@ -747,8 +748,9 @@ public:
 	virtual int Suspend();
 	virtual int Resume();
 
-	virtual gxtkSample *LoadSample__UNSAFE__( gxtkSample *sample,String path );
 	virtual gxtkSample *LoadSample( String path );
+	virtual bool LoadSample__UNSAFE__( gxtkSample *sample,String path );
+	
 	virtual int PlaySample( gxtkSample *sample,int channel,int flags );
 
 	virtual int StopChannel( int channel );
@@ -906,14 +908,14 @@ int gxtkAudio::Resume(){
 	return 0;
 }
 
-gxtkSample *gxtkAudio::LoadSample__UNSAFE__( gxtkSample *sample,String path ){
+bool gxtkAudio::LoadSample__UNSAFE__( gxtkSample *sample,String path ){
 
 	int length=0;
 	int channels=0;
 	int format=0;
 	int hertz=0;
 	unsigned char *data=BBGlfwGame::GlfwGame()->LoadAudioData( path,&length,&channels,&format,&hertz );
-	if( !data ) return 0;
+	if( !data ) return false;
 	
 	int al_format=0;
 	if( format==1 && channels==1 ){
@@ -934,14 +936,14 @@ gxtkSample *gxtkAudio::LoadSample__UNSAFE__( gxtkSample *sample,String path ){
 	free( data );
 	
 	sample->SetBuffer( al_buffer );
-	return sample;
+	return true;
 }
 
 gxtkSample *gxtkAudio::LoadSample( String path ){
-
 	FlushDiscarded();
-
-	return LoadSample__UNSAFE__( new gxtkSample(),path );
+	gxtkSample *sample=new gxtkSample();
+	if( !LoadSample__UNSAFE__( sample,path ) ) return 0;
+	return sample;
 }
 
 int gxtkAudio::PlaySample( gxtkSample *sample,int channel,int flags ){

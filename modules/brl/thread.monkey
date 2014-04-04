@@ -25,6 +25,13 @@ Class BBThread
 	Method Start:Void()
 	Method IsRunning:Bool()
 	Method Result:Object()
+	
+	'Call this inside Run__UNSAFE__ to duplicate any strings you need to pass to background threads.
+	'Not pretty, but faster than atomically syncing String refcnt incs/decs so it'll do for now.
+	'
+#If LANG="cpp"
+	Method Strdup:String( str:String )
+#Endif
 
 	Private
 
@@ -34,41 +41,11 @@ End
 
 Public
 
-#If LANG="cpp"
-
 Class Thread Extends BBThread
 
-	Method New()
-		'flush zombies!
-		For Local thread:=Eachin _zombies
-			If thread.IsRunning() _zombies2.Push thread
-		Next
-		_zombies=_zombies2
-		_zombies2.Clear
-		_alive.Push Self
-	End
-	
-	Method Discard:Void()
-		If IsRunning() _zombies.Push Self
-		_alive.RemoveEach Self
-	End
-	
-	Private
-	
-	'These keep threads alive to prevent GC prematurely reclaiming them...
-	Global _alive:=New Stack<Thread>
-	Global _zombies:=New Stack<Thread>
-	Global _zombies2:=New Stack<Thread>
-
-End
-
-#Else
-
-Class Thread Extends BBThread
-
-	Method Discard:Void()
-	End
-	
-End
-
+#If LANG<>"cpp"
+	Method Strdup:String( str:String )
 #Endif
+
+End
+

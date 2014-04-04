@@ -25,6 +25,7 @@ Class AsyncImageLoaderThread="BBAsyncImageLoaderThread"
 	Field _device:GraphicsDevice
 	Field _path:String
 	Field _surface:Surface
+	Field _result:Bool
 	
 	Method Start:Void()
 	Method IsRunning:Bool()
@@ -38,6 +39,7 @@ Class AsyncImageLoaderThread Extends Thread
 	Field _device:GraphicsDevice
 	Field _path:String
 	Field _surface:Surface
+	Field _result:Bool
 	
 	Method Start:Void()
 		_surface=New Surface
@@ -49,7 +51,7 @@ Class AsyncImageLoaderThread Extends Thread
 	End
 	
 	Method Run__UNSAFE__:Void()
-		_surface=_device.LoadSurface__UNSAFE__( _surface,_path )
+		_result=_device.LoadSurface__UNSAFE__( _surface,Strdup( _path ) )
 	End
 
 End
@@ -84,7 +86,8 @@ Class AsyncImageLoader Extends AsyncImageLoaderThread Implements IAsyncEventSour
 	Method UpdateAsyncEvents:Void()
 		If IsRunning() Return
 		RemoveAsyncEventSource Self
-		If _surface And _surface.OnUnsafeLoadComplete()
+		If _result 
+			_surface.OnUnsafeLoadComplete()
 			Local image:=(New Image).Init( _surface,_frames,_flags )
 			_onComplete.OnLoadImageComplete image,_mpath,Self
 		Else

@@ -33,7 +33,7 @@ Class AudioDevice="gxtkAudio"
 	Method SetMusicVolume( volume# )
 	
 	'INTERNAL - subject to change etc.
-	Method LoadSample__UNSAFE__:Sample( sample:Sample,path$ )
+	Method LoadSample__UNSAFE__:bool( sample:Sample,path$ )
 	
 End
 

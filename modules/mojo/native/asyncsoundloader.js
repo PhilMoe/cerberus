@@ -1,7 +1,5 @@
 
 function BBAsyncSoundLoaderThread(){
-	this._device=null;
-	this._sample=null;
 	this._running=false;
 }
   
@@ -13,6 +11,9 @@ BBAsyncSoundLoaderThread.prototype.Start=function(){
 	if( !this._device.okay ) return;
 	
 	var thread=this;
+	
+	thread._sample=null;
+	thread._result=false;
 	thread._running=true;
 
 	var req=new XMLHttpRequest();
@@ -26,6 +27,7 @@ BBAsyncSoundLoaderThread.prototype.Start=function(){
 			thread._sample=new gxtkSample();
 			thread._sample.waBuffer=buffer;
 			thread._sample.state=1;
+			thread._result=true;
 			thread._running=false;
 		},function(){	
 			//decode fail!
@@ -52,13 +54,17 @@ BBAsyncSoundLoaderThread.prototype.Start=function(){
 	if( !audio ) return;
 	
 	var thread=this;
+	
+	thread._sample=null;
+	thread._result=false;
 	thread._running=true;
 
 	audio.src=BBGame.Game().PathToUrl( this._path );
 	audio.preload='auto';	
 	
 	var success=function( e ){
-		thread._sample = new gxtkSample( audio );
+		thread._sample=new gxtkSample( audio );
+		thread._result=true;
 		thread._running=false;
 		audio.removeEventListener( 'canplaythrough',success,false );
 		audio.removeEventListener( 'error',error,false );

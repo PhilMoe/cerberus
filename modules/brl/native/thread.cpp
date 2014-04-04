@@ -12,16 +12,17 @@ public:
 	Object *result;
 	
 	BBThread();
-	~BBThread();
 	
 	virtual void Start();
 	virtual bool IsRunning();
+	
 	virtual Object *Result();
 	virtual void SetResult( Object *result );
 	
+	virtual String Strdup( const String &str );
+	
 	virtual void Run__UNSAFE__();
 	
-	virtual void Wait();
 	
 private:
 
@@ -48,23 +49,19 @@ private:
 		}
 		
 		public:
+		
 		void operator()( IAsyncAction ^operation ){
 			_thread->Run__UNSAFE__();
 			_thread->_state=FINISHED;
 		} 
 	};
-
+	
 #elif _WIN32
 
-	DWORD _id;
-	HANDLE _handle;
-	
 	static DWORD WINAPI run( void *p );
 	
 #else
 
-	pthread_t _handle;
-	
 	static void *run( void *p );
 	
 #endif
@@ -73,23 +70,23 @@ private:
 
 // ***** thread.cpp *****
 
-BBThread::BBThread():_result( 0 ),_state( INIT ){
-}
-
-BBThread::~BBThread(){
-	Wait();
+BBThread::BBThread():_state( INIT ),_result( 0 ){
 }
 
 bool BBThread::IsRunning(){
 	return _state==RUNNING;
 }
 
+Object *BBThread::Result(){
+	return _result;
+}
+
 void BBThread::SetResult( Object *result ){
 	_result=result;
 }
 
-Object *BBThread::Result(){
-	return _result;
+String BBThread::Strdup( const String &str ){
+	return str.Copy();
 }
 
 void BBThread::Run__UNSAFE__(){
@@ -100,10 +97,7 @@ void BBThread::Run__UNSAFE__(){
 void BBThread::Start(){
 	if( _state==RUNNING ) return;
 	
-	if( _state==FINISHED ) {}
-
 	_result=0;
-	
 	_state=RUNNING;
 	
 	Launcher launcher( this );
@@ -113,33 +107,24 @@ void BBThread::Start(){
 	ThreadPool::RunAsync( handler );
 }
 
-void BBThread::Wait(){
-//	exit( -1 );
-}
-
 #elif _WIN32
 
 void BBThread::Start(){
 	if( _state==RUNNING ) return;
 	
-	if( _state==FINISHED ) CloseHandle( _handle );
-
+	_result=0;
 	_state=RUNNING;
-
-	_handle=CreateThread( 0,0,run,this,0,&_id );
 	
-//	_handle=CreateThread( 0,0,run,this,CREATE_SUSPENDED,&_id );
-//	SetThreadPriority( _handle,THREAD_PRIORITY_ABOVE_NORMAL );
-//	ResumeThread( _handle );
-}
+	DWORD _id;
+	HANDLE _handle;
 
-void BBThread::Wait(){
-	if( _state==INIT ) return;
-
-	WaitForSingleObject( _handle,INFINITE );
-	CloseHandle( _handle );
-
-	_state=INIT;
+	if( _handle=CreateThread( 0,0,run,this,0,&_id ) ){
+		CloseHandle( _handle );
+		return;
+	}
+	
+	puts( "CreateThread failed!" );
+	exit( -1 );
 }
 
 DWORD WINAPI BBThread::run( void *p ){
@@ -156,21 +141,18 @@ DWORD WINAPI BBThread::run( void *p ){
 void BBThread::Start(){
 	if( _state==RUNNING ) return;
 	
-	if( _state==FINISHED ) pthread_join( _handle,0 );
-
 	_result=0;
-		
 	_state=RUNNING;
 	
-	pthread_create( &_handle,0,run,this );
-}
-
-void BBThread::Wait(){
-	if( _state==INIT ) return;
+	pthread_t _handle;
 	
-	pthread_join( _handle,0 );
+	if( !pthread_create( &_handle,0,run,this ) ){
+		pthread_detach( _handle );
+		return;
+	}
 	
-	_state=INIT;
+	puts( "pthread_create failed!" );
+	exit( -1 );
 }
 
 void *BBThread::run( void *p ){

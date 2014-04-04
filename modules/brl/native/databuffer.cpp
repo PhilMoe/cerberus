@@ -12,7 +12,7 @@ public:
 	
 	bool _Load( String path );
 	
-	void _LoadAsync( String path,BBThread *thread );
+	void _LoadAsync( const String &path,BBThread *thread );
 
 	void Discard();
 	
@@ -91,7 +91,10 @@ bool BBDataBuffer::_Load( String path ){
 	return true;
 }
 
-void BBDataBuffer::_LoadAsync( String path,BBThread *thread ){
+void BBDataBuffer::_LoadAsync( const String &cpath,BBThread *thread ){
+
+	String path=cpath.Copy();
+	
 	if( _Load( path ) ) thread->SetResult( this );
 }
 

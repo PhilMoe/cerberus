@@ -64,7 +64,7 @@ Class AsyncDataLoader Extends Thread Implements IAsyncEventSource
 	Field _onComplete:IOnLoadDataComplete
 
 	Method Run__UNSAFE__:Void()
-		_data._LoadAsync( _path,Self )
+		_data._LoadAsync( Strdup(_path),Self )
 	End
 		
 	Method UpdateAsyncEvents:Void()

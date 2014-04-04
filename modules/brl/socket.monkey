@@ -133,7 +133,7 @@ Class AsyncConnectOp Extends AsyncOp
 	Field _result:Bool
 
 	Method Execute__UNSAFE__:Void( source:Socket )
-		_result=_socket.Connect( _host,_port )
+		_result=_socket.Connect( Strdup(_host),_port )
 	End
 	
 	Method Complete:Void( source:Socket )
@@ -161,7 +161,7 @@ Class AsyncBindOp Extends AsyncOp
 	Field _result:Bool
 
 	Method Execute__UNSAFE__:Void( source:Socket )
-		_result=_socket.Bind( _host,_port )
+		_result=_socket.Bind( Strdup(_host),_port )
 	End
 	
 	Method Complete:Void( source:Socket )
