@@ -32,6 +32,8 @@ This method is called when an asynchronous socket accept operation completes.
 
 @socket contains the incoming connection.
 
+If you want to accept another connection, you will need to call [[Socket.AcceptAsync]] again.
+
 Links: [[Socket.AcceptAsync]]
 
 
@@ -188,6 +190,8 @@ Accepts a new connection from a remote host asynchronously.
 The method returns immediately. Once a new connection is accepted, the [[OnAcceptComplete]] method of the @onComplete object is called.
 
 The socket must be a server socket.
+
+In order to allow multiple incoming connections, your code should call AcceptAsync again somewhere inside OnAcceptComplete.
 
 
 # Method Send:Int( data:DataBuffer,offset:Int,count:Int )

@@ -19,6 +19,7 @@ Class TcpEchoServer Implements IOnAcceptComplete
 		If Not socket Error "Accept error"
 		Print "TcpEchoServer: Accepted client connection"
 		Local client:=New TcpEchoServerClient( socket )
+		_socket.AcceptAsync( Self )
 	End
 	
 End

@@ -19,7 +19,7 @@ public:
 	virtual Object *Result();
 	virtual void SetResult( Object *result );
 	
-	virtual String Strdup( const String &str );
+	static  String Strdup( const String &str );
 	
 	virtual void Run__UNSAFE__();
 	

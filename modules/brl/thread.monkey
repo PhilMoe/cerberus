@@ -30,7 +30,7 @@ Class BBThread
 	'Not pretty, but faster than atomically syncing String refcnt incs/decs so it'll do for now.
 	'
 #If LANG="cpp"
-	Method Strdup:String( str:String )
+	Function Strdup:String( str:String )
 #Endif
 
 	Private
@@ -44,7 +44,7 @@ Public
 Class Thread Extends BBThread
 
 #If LANG<>"cpp"
-	Method Strdup:String( str:String )
+	Function Strdup:String( str:String )
 		Return str
 	End
 #Endif
