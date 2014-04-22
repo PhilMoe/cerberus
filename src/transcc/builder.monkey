@@ -149,6 +149,7 @@ Class Builder
 	
 	Method CCopyFile:Void( src:String,dst:String )
 		If FileTime( src )>FileTime( dst ) Or FileSize( src )<>FileSize( dst )
+			DeleteFile dst
 			CopyFile src,dst
 		Endif
 	End
