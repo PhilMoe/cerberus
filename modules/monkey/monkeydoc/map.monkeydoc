@@ -147,10 +147,14 @@ Links:
 '# Method ValueForKey:V(key:K)
 
 
-'# Method FirstNode:Node<K,V>()
+# Method FirstNode:Node<K,V>()
+
+Returns the first node in the map. This is the node with the minimum key value.
 
 
-'# Method LastNode:Node<K,V>()
+# Method LastNode:Node<K,V>()
+
+Returns the last node in the map. This is the node with the maximum key value.
 
 
 '# Method FindNode:Node<K,V>(key:K)
@@ -193,10 +197,18 @@ Returns the key contained in the map node.
 Returns the value contained in the map node.
 
 
-'# Method NextNode:Node()
+# Method NextNode:Node()
+
+Returns the next node in the map, or Null if this is the last node.
+
+Nodes are sorted by key, so the next node's key will always have a greater value than this node.
 
 
-'# Method PrevNode:Node()
+# Method PrevNode:Node()
+
+Returns the previous node in the map, or Null if this is the first node.
+
+Nodes are sorted by key, so the previous node's key will always have a lesser value than this node.
 
 
 '# Method Copy:Node(parent:Node)

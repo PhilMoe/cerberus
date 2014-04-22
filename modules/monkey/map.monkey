@@ -121,18 +121,6 @@ Class Map<K,V>
 		Return New NodeEnumerator<K,V>( FirstNode() )
 	End
 
-	'Deprecated - use Set
-	Method Insert:Bool( key:K,value:V )
-		Return Set( key,value )
-	End
-
-	'Deprecated - use Get
-	Method ValueForKey:V( key:K )
-		Return Get( key )
-	End
-
-Private
-
 	Method FirstNode:Node<K,V>()
 		If Not root Return
 
@@ -153,6 +141,18 @@ Private
 		Return node
 	End
 	
+	'Deprecated - use Set
+	Method Insert:Bool( key:K,value:V )
+		Return Set( key,value )
+	End
+
+	'Deprecated - use Get
+	Method ValueForKey:V( key:K )
+		Return Get( key )
+	End
+
+Private
+
 	Method FindNode:Node<K,V>( key:K )
 		Local node:=root
 
