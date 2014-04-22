@@ -521,7 +521,9 @@ public class BBXnaGame : BBGame{
 
 		_app.IsMouseVisible=true;
 
+#if WINDOWS
 		_autoSuspend=MonkeyConfig.MOJO_AUTO_SUSPEND_ENABLED=="1";
+#endif
 
 #if WINDOWS
 		if( MonkeyConfig.XNA_WINDOW_FULLSCREEN!="1" ){
