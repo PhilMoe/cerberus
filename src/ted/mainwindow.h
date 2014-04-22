@@ -158,12 +158,8 @@ private:
     QString _defaultDir;
 
     QString _blitzmaxPath;
-    QString _buildBmxCmd;
-    QString _runBmxCmd;
 
     QString _monkeyPath;
-    QString _buildMonkeyCmd;
-    QString _runMonkeyCmd;
 
     QString _transVersion;
 

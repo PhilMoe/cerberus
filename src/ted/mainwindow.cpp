@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.19"
+#define TED_VERSION "1.20"
 
 #define SETTINGS_VERSION 2
 
@@ -583,12 +583,6 @@ void MainWindow::readSettings(){
     QSettings settings;
 
     Prefs *prefs=Prefs::prefs();
-
-    _buildMonkeyCmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
-    _runMonkeyCmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -run \"${FILEPATH}\"";
-
-    _buildBmxCmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -x ${FILEPATH}";
-    _runBmxCmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -r -x ${FILEPATH}";
 
     if( settings.value( "settingsVersion" ).toInt()<1 ){
 
@@ -1260,9 +1254,9 @@ void MainWindow::build( QString mode ){
         }
     }else if( editor->fileType()=="bmx" ){
         if( mode=="run" ){
-            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -r -x ${FILEPATH}";
+            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -r -x \"${FILEPATH}\"";
         }else if( mode=="build" ){
-            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -x ${FILEPATH}";
+            cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -x \"${FILEPATH}\"";
         }
     }
 
