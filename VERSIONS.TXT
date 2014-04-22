@@ -1,9 +1,31 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v78g *****
+
+XNA MOJO_AUTO_SUSPEND_ENABLED forced to false for non-windows builds.
+
+Updated Ted so bmk src file arg is quoted, ie: you can use rebuildall.bmx in a monkey install with spaces in the path!
+
+Fixed XNA/WinRT async surface loading bugs.
+
+Kludged transcc to fix issue with xcode not recognizing changed data files. Maybe. Works here anyway.
+
+Fixed winrt music volume bug.
+
+Trailing ';' removed from Content-Type headers in MServer. MServer version bumped to 1.1 - has worked pretty well!
+
+Made FirstNode, LastNode public in Map.
+
+
+***** v78f *****
+
+Fixed Strdup issue in socket.monkey
+
+
 ***** v78e *****
 
-Fixed silly glitch in thread.monkey
+Fixed Strdup issue in thread.monkey
 
 
 ***** v78d *****
