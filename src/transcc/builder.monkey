@@ -123,6 +123,8 @@ Class Builder
 		If BINARY_FILES DATA_FILES+="|"+BINARY_FILES
 		DATA_FILES=DATA_FILES.Replace( ";","|" )
 	
+		syncData=GetConfigVar( "FAST_SYNC_PROJECT_DATA" )="1"
+		
 		Local cd:=CurrentDir
 
 		ChangeDir targetPath
@@ -136,6 +138,7 @@ Class Builder
 	Field transCode:String
 	Field casedConfig:String
 	Field dataFiles:=New StringMap<String>	'maps real src path to virtual target path
+	Field syncData:Bool
 	Field DATA_FILES$
 	Field TEXT_FILES$
 	Field IMAGE_FILES$
@@ -158,7 +161,9 @@ Class Builder
 	
 		dir=RealPath( dir )
 	
+		If Not syncData DeleteDir dir,True
 		CreateDir dir
+		
 		If FileType( dir )<>FILETYPE_DIR Die "Failed to create target project data dir: "+dir
 		
 		Local dataPath:=StripExt( tcc.opt_srcpath )+".data"

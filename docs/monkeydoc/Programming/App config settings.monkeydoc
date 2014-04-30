@@ -22,6 +22,7 @@ The following app config settings are currently supported:
 #SOUND_FILES="*.wav|*.ogg"
 #MUSIC_FILES="*.wav|*.ogg"
 #BINARY_FILES="*.bin|*.dat"
+#FAST_SYNC_PROJECT_DATA=True			'Set to True to enable 'fast syncing' of project data when building - warning: has problems with xcode, False by default.
 
 'Mojo settings, defaults shown
 '
