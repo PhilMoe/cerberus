@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v78h *****
+
+Added #FAST_SYNC_PROJECT_DATA to enable 'fast syncing' of app data, ala feature introduced in v78b. Defaults to False and may or may not work with your installation of xcode!
+
+
 ***** v78g *****
 
 XNA MOJO_AUTO_SUSPEND_ENABLED forced to false for non-windows builds.
