@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v79a *****
+
+Restored winrt_winphone8 EnableKeyboard to its former 'glory', only tested on my HTC 8S though. Tried hard to get winrt_win8 EnableKeyboard going but gave up. I am seriously considering deprecating this feature as it's a nasty hack on pretty much all targets.
+
+
 ***** v78h *****
 
 Added #FAST_SYNC_PROJECT_DATA to enable 'fast syncing' of app data, ala feature introduced in v78b. Defaults to False and may or may not work with your installation of xcode!
