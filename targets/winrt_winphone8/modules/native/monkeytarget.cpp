@@ -23,6 +23,9 @@ public:
 	virtual void RunOnUIThread();
 
 	virtual void ValidateUpdateTimer();
+	
+	virtual void SetKeyboardEnabled( bool enabled );
+	
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format );
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
@@ -139,6 +142,13 @@ void BBMonkeyGame::RotateCoords( float &x,float &y ){
 		y=tx;
 		break;
 	}
+}
+
+
+void BBMonkeyGame::SetKeyboardEnabled( bool enabled ){
+	BBWinrtGame::SetKeyboardEnabled( enabled );
+	
+	PostToUIThread( [=](){ _background->ActivateKeyboard( enabled ); } );
 }
 
 unsigned char *BBMonkeyGame::LoadImageData( String path,int *width,int *height,int *format ){

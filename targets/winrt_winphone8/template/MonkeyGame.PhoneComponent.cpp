@@ -12,6 +12,8 @@ using namespace MonkeyGame_PhoneComponent;
 
 Direct3DBackground::Direct3DBackground():_get( 0 ),_put( 0 )
 {
+	KeyChar=0;
+
 	_game=new BBMonkeyGame( this );
 	
 	try{
@@ -83,6 +85,11 @@ void Direct3DBackground::FlushEvents(){
 		}
 		_get=(_get+1)&255;
 	}
+	if( KeyChar ){
+		_game->KeyEvent( BBGameEvent::KeyChar,KeyChar );
+		KeyChar=0;
+	}
+
 }
 
 // Event Handlers

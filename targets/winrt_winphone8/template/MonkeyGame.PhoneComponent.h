@@ -14,8 +14,8 @@ namespace MonkeyGame_PhoneComponent
 	};
 	
 	public delegate void PostToUIThreadHandler();
-	
     public delegate void RequestAdditionalFrameHandler();
+	public delegate void ActivateKeyboardHandler( bool activate );
 
 	[Windows::Foundation::Metadata::WebHostHidden]
     public ref class Direct3DBackground sealed : public Windows::Phone::Input::Interop::IDrawingSurfaceManipulationHandler
@@ -33,6 +33,7 @@ namespace MonkeyGame_PhoneComponent
 		
 		//return true to cancel
 		bool OnBackKeyPress();
+
 		void RunOnUIThread();
 
 		property int DeviceRotation;
@@ -40,7 +41,9 @@ namespace MonkeyGame_PhoneComponent
 		property Windows::Foundation::Size NativeResolution;
 		property Windows::Foundation::Size RenderResolution;
 		property PostToUIThreadHandler ^PostToUIThread;
-		
+		property ActivateKeyboardHandler ^ActivateKeyboard;
+		property int KeyChar;
+
 	protected:
 	
 		void FlushEvents();

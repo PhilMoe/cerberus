@@ -14,7 +14,18 @@
     shell:SystemTray.IsVisible="False" >
 
     <DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground" Loaded="DrawingSurfaceBackground_Loaded">
-	
+        
+        <TextBox x:Name="KeyboardTextBox"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Width="0"
+                 Height="0"
+                 IsEnabled="False"
+                 KeyDown="DrawingSurfaceBackground_KeyDown"
+                 TextChanged="DrawingSurfaceBackground_TextChanged"
+                 LostFocus="DrawingSurfaceBackground_LostFocus"
+                 />
+        
         <!--TextBlock x:Name="SimpleTextBlock" HorizontalAlignment="Center" FontSize="42" Height="72" Text="Hello, XAML!" Margin="0,0,0,50"/-->
 		
     </DrawingSurfaceBackgroundGrid>

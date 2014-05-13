@@ -1,8 +1,12 @@
+
 using System;
 using System.Windows;
-using MonkeyGame.Resources;
-using Microsoft.Phone.Controls;
+using System.Windows.Input;
 using System.ComponentModel;
+
+using MonkeyGame.Resources;
+
+using Microsoft.Phone.Controls;
 
 using MonkeyGame_PhoneComponent;
 
@@ -22,6 +26,34 @@ namespace MonkeyGame
         public Direct3DBackground D3dBackground
         {
             get{ return _background; }
+        }
+
+        private void DrawingSurfaceBackground_KeyDown(object sender, KeyEventArgs e)
+        {
+            int key=0;
+            switch( e.Key ){
+                case Key.Back:
+                    key=8;break;
+                case Key.Enter:
+                    key=13;break;
+                case Key.Escape:
+                    key=27;break;
+                default:
+                    return;
+            }
+            _background.KeyChar=key;
+        }
+
+        private void DrawingSurfaceBackground_TextChanged(object sender, EventArgs e)
+        {
+            String text = KeyboardTextBox.Text;
+            if( text.Length==1 ) _background.KeyChar = (int)text[0];
+            if( text.Length>0 ) KeyboardTextBox.Text = "";
+        }
+
+        private void DrawingSurfaceBackground_LostFocus(object sender, EventArgs e)
+        {
+            _background.KeyChar=27;
         }
 
         private void DrawingSurfaceBackground_Loaded(object sender, RoutedEventArgs e)
@@ -51,6 +83,20 @@ namespace MonkeyGame
                 DrawingSurfaceBackground.SetBackgroundManipulationHandler(_background);
                 
                 _background.PostToUIThread=PostToUIThread;
+                _background.ActivateKeyboard = ActivateKeyboard;
+            }
+        }
+
+        private void ActivateKeyboard( bool activate ){
+
+            if (activate)
+            {
+                KeyboardTextBox.IsEnabled = true;
+                KeyboardTextBox.Focus();
+            }
+            else
+            {
+                KeyboardTextBox.IsEnabled = false;
             }
         }
         
