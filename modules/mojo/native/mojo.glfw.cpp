@@ -319,7 +319,7 @@ int gxtkGraphics::DrawPoint( float x,float y ){
 	
 	float *vp=Begin( 1,1,0 );
 	
-	vp[0]=x;vp[1]=y;(int&)vp[4]=colorARGB;
+	vp[0]=x+.5f;vp[1]=y+.5f;(int&)vp[4]=colorARGB;
 
 	return 0;	
 }
@@ -334,8 +334,8 @@ int gxtkGraphics::DrawLine( float x0,float y0,float x1,float y1 ){
 	
 	float *vp=Begin( 2,2,0 );
 
-	vp[0]=x0;vp[1]=y0;(int&)vp[4]=colorARGB;
-	vp[5]=x1;vp[6]=y1;(int&)vp[9]=colorARGB;
+	vp[0]=x0+.5f;vp[1]=y0+.5f;(int&)vp[4]=colorARGB;
+	vp[5]=x1+.5f;vp[6]=y1+.5f;(int&)vp[9]=colorARGB;
 	
 	return 0;
 }

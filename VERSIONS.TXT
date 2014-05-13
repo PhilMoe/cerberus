@@ -3,6 +3,8 @@ NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!
 
 ***** v79a *****
 
+Points/Lines offset by +.5 in screenspace for android, ios, winrt, glfw and xna targets. Html5/Flash seem to be OK as-is; PSM still on hold until I get my Vita back...
+
 Restored winrt_winphone8 EnableKeyboard to its former 'glory', only tested on my HTC 8S though. Tried hard to get winrt_win8 EnableKeyboard going but gave up. I am seriously considering deprecating this feature as it's a nasty hack on pretty much all targets.
 
 
