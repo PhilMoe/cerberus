@@ -51,7 +51,10 @@ Class CppTranslator Extends CTranslator
 		For Local arg:=Eachin args
 			If t t+=","
 			Local targ:=arg.Trans()
-			If IsGcObject( arg ) And (IsHeapVal( arg ) Or IsInvoke( arg )) targ=Retain( targ )
+			
+			If IsGcObject( arg ) And Not IsLocalVar( arg ) targ=Retain( targ )
+'			If IsGcObject( arg ) And (IsHeapVal( arg ) Or IsInvoke( arg )) targ=Retain( targ )
+
 			t+=targ
 		Next
 		Return Bra(t)
@@ -93,7 +96,9 @@ Class CppTranslator Extends CTranslator
 	
 	Method IsHeapVal?( expr:Expr )
 		expr=Uncast( expr )
+		
 		If IndexExpr( expr ) Return True
+		
 		Local decl:Decl
 		If VarExpr( expr ) 
 			decl=VarExpr( expr ).decl
@@ -105,7 +110,10 @@ Class CppTranslator Extends CTranslator
 		
 	Method TransLocalDecl$( munged$,init:Expr )
 		Local tinit:=init.Trans()
-		If IsGcObject( init ) And (IsHeapVal( init ) Or IsInvoke( init )) tinit=Retain(tinit)
+		
+		If IsGcObject( init ) And Not IsLocalVar( init ) tinit=Retain( tinit )
+'		If IsGcObject( init ) And (IsHeapVal( init ) Or IsInvoke( init )) tinit=Retain(tinit)
+		
 		Return TransType( init.exprType )+" "+munged+"="+tinit
 	End
 	
@@ -432,14 +440,19 @@ Class CppTranslator Extends CTranslator
 		Local tlhs:=stmt.lhs.TransVar()
 		Local trhs:=stmt.rhs.Trans()
 		
-		If IsLocalVar( stmt.lhs )
-			If IsHeapVal( stmt.rhs ) Or IsInvoke( stmt.rhs ) trhs=Retain( trhs )
+		If gc_mode=2 And IsLocalVar( stmt.lhs )
+			If Not IsLocalVar( stmt.rhs ) trhs=Retain( trhs )
 			Return tlhs+"="+trhs
 		Endif
 		
-		If gc_mode=2 And IsLocalVar( stmt.rhs )
-			Return tlhs+"="+trhs
-		End
+'		If IsLocalVar( stmt.lhs )
+'			If IsHeapVal( stmt.rhs ) Or IsInvoke( stmt.rhs ) trhs=Retain( trhs )
+'			Return tlhs+"="+trhs
+'		Endif
+		
+'		If gc_mode=2 And IsLocalVar( stmt.rhs )
+'			Return tlhs+"="+trhs
+'		End
 		
 		Return "gc_assign("+tlhs+","+trhs+")"
 	End

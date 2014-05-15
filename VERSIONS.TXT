@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v79b *****
+
+Fixed some bugs in c++ GC_MODE 2.
+
+
 ***** v79a *****
 
 Points/Lines offset by +.5 in screenspace for android, ios, winrt, glfw and xna targets. Html5/Flash seem to be OK as-is; PSM still on hold until I get my Vita back...

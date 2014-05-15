@@ -144,9 +144,6 @@ int gc_markbit=1;
 
 gc_object *gc_cache[8];
 
-int gc_ctor_nest;
-gc_object *gc_locals[CFG_CPP_GC_MAX_LOCALS],**gc_locals_sp=gc_locals;
-
 void gc_collect_all();
 void gc_mark_queued( int n );
 
@@ -177,6 +174,9 @@ void gc_init2(){
 
 #if CFG_CPP_GC_MODE==2
 
+int gc_ctor_nest;
+gc_object *gc_locals[CFG_CPP_GC_MAX_LOCALS],**gc_locals_sp=gc_locals;
+
 struct gc_ctor{
 	gc_ctor(){ ++gc_ctor_nest; }
 	~gc_ctor(){ --gc_ctor_nest; }
@@ -187,14 +187,14 @@ struct gc_enter{
 	gc_enter():sp(gc_locals_sp){
 	}
 	~gc_enter(){
-	/*
+#if DEBUG_GC
 		static int max_locals;
 		int n=gc_locals_sp-gc_locals;
 		if( n>max_locals ){
 			max_locals=n;
 			printf( "max_locals=%i\n",n );
 		}
-	*/
+#endif		
 		gc_locals_sp=sp;
 	}
 };
@@ -214,25 +214,6 @@ struct gc_enter{
 
 #endif
 
-void gc_flush_free( int size ){
-
-	int t=gc_free_bytes-size;
-	if( t<0 ) t=0;
-	
-	while( gc_free_bytes>t ){
-		gc_object *p=gc_free_list.succ;
-		if( !p || p==&gc_free_list ){
-//			printf( "GC_ERROR:p=%p gc_free_bytes=%i\n",p,gc_free_bytes );
-//			fflush(stdout);
-			gc_free_bytes=0;
-			break;
-		}
-		GC_REMOVE_NODE(p);
-		delete p;	//...to gc_free
-	}
-}
-
-
 //Can be modified off thread!
 static volatile int gc_ext_new_bytes;
 
@@ -248,6 +229,40 @@ static volatile int gc_ext_new_bytes;
 //
 void gc_ext_malloced( int size ){
 	atomic_add( &gc_ext_new_bytes,size );
+}
+
+void gc_object_free( gc_object *p ){
+
+	int size=p->flags & ~7;
+	gc_free_bytes-=size;
+	
+	if( size<64 ){
+		p->succ=gc_cache[size>>3];
+		gc_cache[size>>3]=p;
+	}else{
+		free( p );
+	}
+}
+
+void gc_flush_free( int size ){
+
+	int t=gc_free_bytes-size;
+	if( t<0 ) t=0;
+	
+	while( gc_free_bytes>t ){
+		gc_object *p=gc_free_list.succ;
+
+		GC_REMOVE_NODE( p );
+	
+#if DEBUG_GC
+//		printf( "deleting @%p\n",p );fflush( stdout );
+//		p->flags|=4;
+//		continue;
+		delete p;
+#else
+		delete p;
+#endif
+	}
 }
 
 gc_object *gc_object_alloc( int size ){
@@ -301,22 +316,33 @@ gc_object *gc_object_alloc( int size ){
 	return p;
 }
 
-void gc_object_free( gc_object *p ){
+#if DEBUG_GC
 
-	int size=p->flags & ~7;
-	gc_free_bytes-=size;
-	
-	if( size<64 ){
-		p->succ=gc_cache[size>>3];
-		gc_cache[size>>3]=p;
-	}else{
-		free( p );
+template<class T> gc_object *to_gc_object( T *t ){
+	gc_object *p=dynamic_cast<gc_object*>(t);
+	if( p && (p->flags & 4) ){
+		printf( "gc error : object already deleted @%p\n",p );fflush( stdout );
+		exit(-1);
 	}
+	return p;
+}
+
+#else
+
+#define to_gc_object(t) dynamic_cast<gc_object*>(t)
+
+#endif
+
+template<class T> T *gc_retain( T *t ){
+#if CFG_CPP_GC_MODE==2
+	*gc_locals_sp++=to_gc_object( t );
+#endif
+	return t;
 }
 
 template<class T> void gc_mark( T *t ){
 
-	gc_object *p=dynamic_cast<gc_object*>(t);
+	gc_object *p=to_gc_object( t );
 	
 	if( p && (p->flags & 3)==gc_markbit ){
 		p->flags^=1;
@@ -329,7 +355,7 @@ template<class T> void gc_mark( T *t ){
 
 template<class T> void gc_mark_q( T *t ){
 
-	gc_object *p=dynamic_cast<gc_object*>(t);
+	gc_object *p=to_gc_object( t );
 	
 	if( p && (p->flags & 3)==gc_markbit ){
 		p->flags^=1;
@@ -338,15 +364,10 @@ template<class T> void gc_mark_q( T *t ){
 	}
 }
 
-template<class T> T *gc_retain( T *t ){
-#if CFG_CPP_GC_MODE==2
-	*gc_locals_sp++=dynamic_cast<gc_object*>( t );
-#endif	
-	return t;
-}
-
 template<class T,class V> void gc_assign( T *&lhs,V *rhs ){
-	gc_object *p=dynamic_cast<gc_object*>(rhs);
+
+	gc_object *p=to_gc_object( rhs );
+	
 	if( p && (p->flags & 3)==gc_markbit ){
 		p->flags^=1;
 		GC_REMOVE_NODE( p );
@@ -356,6 +377,7 @@ template<class T,class V> void gc_assign( T *&lhs,V *rhs ){
 }
 
 void gc_mark_locals(){
+#if CFG_CPP_GC_MODE==2
 	for( gc_object **pp=gc_locals;pp!=gc_locals_sp;++pp ){
 		gc_object *p=*pp;
 		if( p && (p->flags & 3)==gc_markbit ){
@@ -366,6 +388,7 @@ void gc_mark_locals(){
 			p->mark();
 		}
 	}
+#endif	
 }
 
 void gc_mark_queued( int n ){
@@ -379,12 +402,11 @@ void gc_mark_queued( int n ){
 }
 
 //returns reclaimed bytes
-int gc_sweep(){
+void gc_sweep(){
 
 	int reclaimed_bytes=gc_alloced_bytes-gc_marked_bytes;
 	
 	if( reclaimed_bytes ){
-	
 		//append unmarked list to end of free list
 		gc_object *head=gc_unmarked_list.succ;
 		gc_object *tail=gc_unmarked_list.pred;
@@ -394,7 +416,6 @@ int gc_sweep(){
 		tail->succ=succ;
 		pred->succ=head;
 		succ->pred=tail;
-		
 		gc_free_bytes+=reclaimed_bytes;
 	}
 	
@@ -409,8 +430,6 @@ int gc_sweep(){
 	gc_alloced_bytes=gc_marked_bytes;
 	gc_marked_bytes=0;
 	gc_markbit^=1;
-	
-	return reclaimed_bytes;
 }
 
 void gc_collect_all(){
@@ -429,11 +448,6 @@ void gc_collect_all(){
 }
 
 void gc_collect(){
-
-	if( gc_locals_sp!=gc_locals ){
-//		printf( "GC_LOCALS error\n" );fflush( stdout );
-		gc_locals_sp=gc_locals;
-	}
 	
 #if CFG_CPP_GC_MODE==1
 
@@ -456,7 +470,6 @@ void gc_collect(){
 #endif
 
 #endif
-
 }
 
 // ***** Array *****
