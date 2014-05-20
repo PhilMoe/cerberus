@@ -1,6 +1,13 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v79c *****
+
+Removed 'Flush' calls from mojo native WritePixels2 functions - shouldn't be necessary and causes issues outside OnRender.
+
+Performance tweaks to GC_MODE 2.
+
+
 ***** v79b *****
 
 Fixed some bugs in c++ GC_MODE 2.
