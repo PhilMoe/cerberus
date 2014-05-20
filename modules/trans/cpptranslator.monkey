@@ -14,6 +14,7 @@ Class CppTranslator Extends CTranslator
 	Field lastDbgInfo:=""
 	Field dbgLocals:=New Stack<LocalDecl>
 	Field gc_mode=0
+	Field pure
 
 	Method TransType$( ty:Type )
 		If VoidType( ty ) Return "void"
@@ -50,10 +51,8 @@ Class CppTranslator Extends CTranslator
 		Local t$
 		For Local arg:=Eachin args
 			If t t+=","
-			Local targ:=arg.Trans()
 			
-			If IsGcObject( arg ) And Not IsLocalVar( arg ) targ=Retain( targ )
-'			If IsGcObject( arg ) And (IsHeapVal( arg ) Or IsInvoke( arg )) targ=Retain( targ )
+			Local targ:=GcRetain( arg )
 
 			t+=targ
 		Next
@@ -61,12 +60,7 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	'***** Utility *****
-	
-	Method Retain$( str:String )
-		If unsafe Or gc_mode<>2 Return str
-		Return "gc_retain("+str+")"
-	End
-	
+
 	Method Uncast:Expr( expr:Expr )
 		Repeat
 			Local cexpr:=CastExpr( expr )
@@ -83,37 +77,25 @@ Class CppTranslator Extends CTranslator
 		Return True
 	End
 	
-	Method IsInvoke?( expr:Expr )
-		expr=Uncast( expr )
-		Return InvokeExpr( expr ) Or InvokeMemberExpr( expr ) Or InvokeSuperExpr( expr )
-	End
-	
 	Method IsLocalVar?( expr:Expr )
 		expr=Uncast( expr )
 		Local vexpr:=VarExpr( expr )
 		Return vexpr And LocalDecl( vexpr.decl )
 	End
 	
-	Method IsHeapVal?( expr:Expr )
+	Method GcRetain:String( expr:Expr,texpr:String="" )
+		If Not texpr texpr=expr.Trans()
+		If unsafe Or gc_mode<>2 Or Not IsGcObject( expr ) Return texpr
+
 		expr=Uncast( expr )
+		If NewObjectExpr( expr ) Or NewArrayExpr( expr ) Or ArrayExpr( expr ) Return texpr
+		If VarExpr( expr ) And LocalDecl( VarExpr( expr ).decl ) Return texpr
 		
-		If IndexExpr( expr ) Return True
-		
-		Local decl:Decl
-		If VarExpr( expr ) 
-			decl=VarExpr( expr ).decl
-		Else If MemberVarExpr( expr )
-			decl=MemberVarExpr( expr ).decl
-		End
-		Return FieldDecl( decl ) Or GlobalDecl( decl )
+		Return "gc_retain("+texpr+")"
 	End
-		
+	
 	Method TransLocalDecl$( munged$,init:Expr )
-		Local tinit:=init.Trans()
-		
-		If IsGcObject( init ) And Not IsLocalVar( init ) tinit=Retain( tinit )
-'		If IsGcObject( init ) And (IsHeapVal( init ) Or IsInvoke( init )) tinit=Retain(tinit)
-		
+		Local tinit:=GcRetain( init )
 		Return TransType( init.exprType )+" "+munged+"="+tinit
 	End
 	
@@ -195,6 +177,8 @@ Class CppTranslator Extends CTranslator
 	End
 		
 	Method TransFunc$( decl:FuncDecl,args:Expr[],lhs:Expr )
+		pure=0
+		
 		CheckSafe decl
 		If decl.IsMethod()
 			If lhs Return TransSubExpr( lhs )+"->"+decl.munged+TransArgs( args,decl )
@@ -204,6 +188,8 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	Method TransSuperFunc$( decl:FuncDecl,args:Expr[] )
+		pure=0
+	
 		CheckSafe decl
 		Return decl.ClassScope().munged+"::"+decl.munged+TransArgs( args,decl )
 	End
@@ -215,14 +201,16 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	Method TransNewObjectExpr$( expr:NewObjectExpr )
-	
+		pure=0
+
 		Local t$="(new "+expr.classDecl.munged+")"
 		If expr.ctor t+="->"+expr.ctor.munged+TransArgs( expr.args,expr.ctor )
 		Return t
 	End
 	
 	Method TransNewArrayExpr$( expr:NewArrayExpr )
-	
+		pure=0
+
 		Local texpr$=expr.expr.Trans()
 		Return "Array<"+TransRefType( expr.ty )+" >"+Bra( expr.expr.Trans() )
 	End
@@ -315,6 +303,7 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	Method TransArrayExpr$( expr:ArrayExpr )
+		pure=0
 	
 		Local elemType:=ArrayType( expr.exprType ).elemType
 
@@ -334,6 +323,8 @@ Class CppTranslator Extends CTranslator
 	End
 
 	Method TransIntrinsicExpr$( decl:Decl,expr:Expr,args:Expr[] )
+		pure=0	'relax!
+		
 		Local texpr$,arg0$,arg1$,arg2$
 		
 		If expr texpr=TransSubExpr( expr )
@@ -399,10 +390,12 @@ Class CppTranslator Extends CTranslator
 	'***** Statements *****
 	
 	Method BeginLoop()
-		If gc_mode=2 Emit "GC_ENTER"
+		If gc_mode<>2 Return
+		Emit "GC_ENTER"
 	End
 	
 	Method EndLoop()
+		If gc_mode<>2 Return
 	End
 	
 	Method TransTryStmt$( stmt:TryStmt )
@@ -440,19 +433,7 @@ Class CppTranslator Extends CTranslator
 		Local tlhs:=stmt.lhs.TransVar()
 		Local trhs:=stmt.rhs.Trans()
 		
-		If gc_mode=2 And IsLocalVar( stmt.lhs )
-			If Not IsLocalVar( stmt.rhs ) trhs=Retain( trhs )
-			Return tlhs+"="+trhs
-		Endif
-		
-'		If IsLocalVar( stmt.lhs )
-'			If IsHeapVal( stmt.rhs ) Or IsInvoke( stmt.rhs ) trhs=Retain( trhs )
-'			Return tlhs+"="+trhs
-'		Endif
-		
-'		If gc_mode=2 And IsLocalVar( stmt.rhs )
-'			Return tlhs+"="+trhs
-'		End
+		If IsLocalVar( stmt.lhs ) Return tlhs+"="+GcRetain( stmt.rhs,trhs )
 		
 		Return "gc_assign("+tlhs+","+trhs+")"
 	End

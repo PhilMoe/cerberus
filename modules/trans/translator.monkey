@@ -223,7 +223,6 @@ Class CTranslator Extends Translator
 				End
 			Next
 			If n=1 Return str
-'			If str.FindLast("(")<str.Find(")") Return str
 		Endif
 		Return "("+str+")"
 	End
