@@ -120,6 +120,8 @@ static int Pow2Size( int n ){
 gxtkGraphics::gxtkGraphics(){
 
 	width=height=0;
+	vertCount=0;
+	
 #ifdef _glfw3_h_
 	GLFWwindow *window=BBGlfwGame::GlfwGame()->GetGLFWwindow();
 	if( window ) glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
@@ -534,8 +536,6 @@ int gxtkGraphics::ReadPixels( Array<int> pixels,int x,int y,int width,int height
 
 int gxtkGraphics::WritePixels2( gxtkSurface *surface,Array<int> pixels,int x,int y,int width,int height,int offset,int pitch ){
 
-	Flush();
-	
 	surface->SetSubData( x,y,width,height,(unsigned*)&pixels[offset],pitch );
 	
 	return 0;
