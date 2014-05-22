@@ -1,6 +1,11 @@
 
 NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
 
+***** v79d *****
+
+Fixed some opengl/webgl texImage bugs.
+
+
 ***** v79c *****
 
 Removed 'Flush' calls from mojo native WritePixels2 functions - shouldn't be necessary and causes issues outside OnRender.

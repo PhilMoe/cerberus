@@ -261,7 +261,7 @@ function _glTexImage2D( target,level,internalformat,format,type,path ){
 }
 
 function _glTexImage2D2( target,level,internalformat,width,height,border,format,type,pixels ){
-	gl.texImage2D( target,level,internalformat,width,height,border,format,type,pixels.byteArray );
+	gl.texImage2D( target,level,internalformat,width,height,border,format,type,new Uint8Array(pixels.arrayBuffer) );
 }
 
 function _glTexSubImage2D( target, level, xoffset, yoffset, format, type, path ){
@@ -292,7 +292,7 @@ function _glTexSubImage2D( target, level, xoffset, yoffset, format, type, path )
 }
 
 function _glTexSubImage2D2( target,level,xoffset,yoffset,width,height,format,type,pixels ){
-	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,pixels.byteArray );
+	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,new Uint8Array(pixels.arrayBuffer) );
 }
 
 function _glUniform1fv( location, count, v ){
