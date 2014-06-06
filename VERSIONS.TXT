@@ -1,9 +1,23 @@
 
-NOTE: If you're having trouble with a new version, try deleting '.build' dirs!!!!!
-
 ***** v79d *****
 
+Added experimental android_new target - targets API 10 (2.3.3 Gingerbread), requires SDK 19 (4.2.2). Uses googleplay for admob.
+
+Fixed android fullscreen soft keyboard issue.
+
+Fixed private methods/functions not really private.
+
+Fixed private const/var/class decls in modules causing name clashes.
+
+Ted fix: Project browser 'new file' now prompts before overwriting existing files.
+
+#HTML5_WEBAUDIO_ENABLED now defaults to True - code will still fallback to old media player code if webaudio not preset, eg: on IE11.
+
+Mojo openal alcOpenDevice now tries default, hardware, software devices, in that order.
+
 Fixed some opengl/webgl texImage bugs.
+
+Doubled max width of 'help' combobox in Ted.
 
 
 ***** v79c *****
