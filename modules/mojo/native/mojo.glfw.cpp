@@ -851,8 +851,14 @@ int gxtkChannel::AL_Source(){
 gxtkAudio::gxtkAudio(){
 
 	audio=this;
+	
+	alcDevice=alcOpenDevice( 0 );
+	if( !alcDevice ){
+		alcDevice=alcOpenDevice( "Generic Hardware" );
+		if( !alcDevice ) alcDevice=alcOpenDevice( "Generic Software" );
+	}
 
-	if( alcDevice=alcOpenDevice( 0 ) ){
+	if( alcDevice ){
 		if( alcContext=alcCreateContext( alcDevice,0 ) ){
 			if( alcMakeContextCurrent( alcContext ) ){
 				//alc all go!
