@@ -1507,10 +1507,10 @@ Class Parser
 			classDecl.munged=classDecl.ident
 			If CParse( "=" ) classDecl.munged=ParseStringLit()
 		Endif
-		
+
 		Local decl_attrs=(attrs & DECL_EXTERN)
 		
-		Local func_attrs=decl_attrs
+		Local func_attrs:=0
 		If attrs & CLASS_INTERFACE func_attrs|=DECL_ABSTRACT
 		
 		Repeat
@@ -1521,18 +1521,18 @@ Class Parser
 				Exit
 			Case "private"
 				NextToke
-				decl_attrs=decl_attrs | DECL_PRIVATE
+				decl_attrs|=DECL_PRIVATE
 			Case "public"
 				NextToke
-				decl_attrs=decl_attrs & ~DECL_PRIVATE
+				decl_attrs&=~DECL_PRIVATE
 			Case "const","global","field"
 				If (attrs & CLASS_INTERFACE) And _toke<>"const" Err "Interfaces can only contain constants and methods."
 				classDecl.InsertDecls ParseDecls( _toke,decl_attrs )
 			Case "method"
-				classDecl.InsertDecl ParseFuncDecl( func_attrs )
+				classDecl.InsertDecl ParseFuncDecl( decl_attrs|func_attrs )
 			Case "function"
 				If (attrs & CLASS_INTERFACE) Err "Interfaces can only contain constants and methods."
-				classDecl.InsertDecl ParseFuncDecl( func_attrs )
+				classDecl.InsertDecl ParseFuncDecl( decl_attrs|func_attrs )
 			Default
 				Err "Syntax error - expecting class member declaration."
 			End Select

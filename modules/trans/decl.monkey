@@ -449,11 +449,6 @@ Public
 			If decl Return decl
 			tscope=tscope.scope
 		Wend
-#rem
-		Local decl:=GetDecl( ident )
-		If decl Return decl
-		If scope Return scope.FindDecl( ident )
-#end
 	End
 	
 	Method FindValDecl:ValDecl( ident$ )
@@ -522,7 +517,7 @@ Public
 		Local match:FuncDecl,isexact,err$
 
 		For Local func:FuncDecl=Eachin funcs
-			If Not func.CheckAccess() Continue
+'			If Not func.CheckAccess() Continue
 			
 			Local argDecls:ArgDecl[]=func.argDecls
 			
@@ -546,7 +541,6 @@ Public
 
 				Else If argDecls[i].init
 				
-'					exact=False
 					If Not explicit Continue
 					
 				Endif
@@ -1268,7 +1262,26 @@ Class ModuleDecl Extends ScopeDecl
 		While Not todo.IsEmpty()
 	
 			Local mdecl:ModuleDecl=todo.RemoveLast()
+			
 			Local tdecl:=mdecl.GetDecl2( ident )
+			
+			If tdecl And _env
+				'ignore private decls
+				Local ddecl:=Decl( tdecl )
+				If ddecl And Not ddecl.CheckAccess() tdecl=Null
+				
+				'ignore funclists with no public funcs
+				Local flist:=FuncDeclList( tdecl )
+				If flist
+					Local pub:=False
+					For Local fdecl:=Eachin flist
+						If Not fdecl.CheckAccess() Continue
+						pub=True
+						Exit
+					Next
+					If Not pub tdecl=Null
+				Endif
+			Endif
 			
 			If tdecl And tdecl<>decl
 				If mdecl=Self Return tdecl
