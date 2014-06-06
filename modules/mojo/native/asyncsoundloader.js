@@ -79,6 +79,9 @@ BBAsyncSoundLoaderThread.prototype.Start=function(){
 	audio.addEventListener( 'canplaythrough',success,false );
 	audio.addEventListener( 'error',error,false );
 	
+	//voodoo fix for Chrome!
+	var timer=setInterval( function(){ if( !thread._running ) clearInterval( timer ); },200 );
+	
 	audio.load();
 }
 
