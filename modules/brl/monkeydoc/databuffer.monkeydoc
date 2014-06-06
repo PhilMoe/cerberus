@@ -100,7 +100,7 @@ Copies @count 32 bit ints from the @ints array to the databuffer.
 @offset is the starting index within the source array, and @address is the starting byte address within the databuffer.
 
 
-# Method PokeFloats:Void(address:Int,floats:Int[],offset:Int,count:Int )
+# Method PokeFloats:Void(address:Int,floats:Float[],offset:Int,count:Int )
 
 Copies @count 32 bit floats from the @floats array to the databuffer.
 
