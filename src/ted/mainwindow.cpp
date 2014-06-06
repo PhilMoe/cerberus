@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.20"
+#define TED_VERSION "1.22"
 
 #define SETTINGS_VERSION 2
 
@@ -103,11 +103,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _ui->buildToolBar->addWidget( _configsWidget );
 
     _indexWidget=new QComboBox;
-    _indexWidget->setFixedWidth( 120 );
     _indexWidget->setEditable( true );
     _indexWidget->setInsertPolicy( QComboBox::NoInsert );
+    _indexWidget->setMinimumSize( 80,_indexWidget->minimumHeight() );
+    _indexWidget->setMaximumSize( 240,_indexWidget->maximumHeight() );
+//    _indexWidget->setSizePolicy( QSizePolicy::Expanding,QSizePolicy::Preferred );
     _ui->helpToolBar->addWidget( _indexWidget );
-//    connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
 
     //init central tab widget
     _mainTabWidget=new QTabWidget;
@@ -315,7 +316,6 @@ QWidget *MainWindow::newFile( const QString &cpath ){
     QString path=cpath;
 
     if( path.isEmpty() ){
-
         path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files (*.monkey *.bmx *.cpp *.cs *.js *.as *.java *.txt)" ) );
         if( path.isEmpty() ) return 0;
     }
@@ -326,6 +326,8 @@ QWidget *MainWindow::newFile( const QString &cpath ){
         return 0;
     }
     file.close();
+
+    if( CodeEditor *editor=editorWithPath( path ) ) closeFile( editor );
 
     return openFile( path,true );
 }
@@ -926,7 +928,13 @@ void MainWindow::onProjectMenu( const QPoint &pos ){
         if( ok && !name.isEmpty() ){
             if( extractExt( name ).isEmpty() ) name+=".monkey";
             QString path=info.filePath()+"/"+name;
-            newFile( path );
+            if( QFileInfo( path ).exists() ){
+                if( QMessageBox::question( this,"Create File","Okay to overwrite existing file: "+path+" ?",QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel )==QMessageBox::Ok ){
+                    newFile( path );
+                }
+            }else{
+                newFile( path );
+            }
         }
 
     }else if( action==_ui->actionNewFolder ){
