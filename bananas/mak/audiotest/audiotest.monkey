@@ -1,3 +1,4 @@
+
 'A simple audio test app
 
 Import mojo
@@ -31,7 +32,8 @@ Class MyApp Extends App
 		'
 		soundFmt="wav"
 		musicFmt="ogg"
-		If UserAgent.Contains( "MSIE " )
+		If UserAgent.Contains( "MSIE " ) Or UserAgent.Contains( "Trident/" )
+			Print "Applying IE fudge..."
 			soundFmt="mp3"
 			musicFmt="mp3"
 		Endif
