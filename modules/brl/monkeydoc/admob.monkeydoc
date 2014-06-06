@@ -26,9 +26,9 @@ Example:
 #Error "Admob is only supported on Android and iOS targets"
 #End
 
-#ADMOB_PUBLISHER_ID="abcdabcdabcdabc"							'from your admob account
-#ADMOB_ANDROID_TEST_DEVICE1="TEST_EMULATOR"
-#ADMOB_ANDROID_TEST_DEVICE2="ABCDABCDABCDABCDABCDABCDABCDABCD"	'your device's admob ID for test mode
+#ADMOB_PUBLISHER_ID="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY"	'from your admob account
+#ADMOB_ANDROID_TEST_DEVICE1="F477AABF905E5DB901B57E1F9DDFA037"	'My Nexus 7!
+#ADMOB_ANDROID_TEST_DEVICE2="TEST_EMULATOR"
 
 Import mojo
 Import brl.admob

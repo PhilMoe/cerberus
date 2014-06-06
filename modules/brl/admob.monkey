@@ -5,11 +5,24 @@
 
 #If TARGET="android"
 
+#If ANDROID_LIBGOOGLEPLAY_AVAILABLE
+
+Import "native/admob_googleplay.android.java"
+
+#ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.android.gms.ads.AdActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
+#ANDROID_MANIFEST_APPLICATION+="<meta-data android:name=~qcom.google.android.gms.version~q android:value=~q@integer/google_play_services_version~q />"
+
+#ANDROID_LIBRARY_REFERENCE_1="android.library.reference.1=google-play-services_lib"
+
+#Else
+
 Import "native/admob.android.java"
 
 #LIBS+="${CD}/native/GoogleAdMobAdsSdk-6.4.1.jar"
 
 #ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.ads.AdActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
+
+#End
 
 #Else
 
