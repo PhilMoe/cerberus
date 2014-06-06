@@ -230,16 +230,6 @@ Function EndRender()
 	renderDevice=Null
 End
 
-#rem
-Function DeviceWidth()
-	Return device.Width
-End
-
-Function DeviceHeight()
-	Return device.Height
-End
-#end
-
 Function LoadImage:Image( path$,frameCount=1,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
 	If surf Return (New Image).Init( surf,frameCount,flags )
