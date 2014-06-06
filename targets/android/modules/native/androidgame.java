@@ -201,7 +201,9 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		
 		//Voodoo to disable predictive text on soft keyboard
 		public InputConnection onCreateInputConnection( EditorInfo outAttrs ){
+			//voodoo to disable various undesirable soft keyboard features such as predictive text and fullscreen mode.
 			outAttrs.inputType=InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+			outAttrs.imeOptions=EditorInfo.IME_FLAG_NO_FULLSCREEN|EditorInfo.IME_FLAG_NO_EXTRACT_UI;			
 			return null;
 		}
 		
