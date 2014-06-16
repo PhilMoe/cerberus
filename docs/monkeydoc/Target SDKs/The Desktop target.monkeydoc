@@ -8,7 +8,7 @@ Desktop apps use the OpenGL API for graphics rendering and the OpenAL API for au
 
 * [MinGW 4.8.1](http://www.monkeycoder.co.nz/downloads/tdm-gcc-4.8.1-3.exe) or [Microsoft Visual C++ Express 2010 (MSVC)](http://www.microsoft.com/visualstudio/eng/downloads).
 
-* [OpenAL Windows Drivers](http://www.monkeycoder.co.nz/downloads/oalinst.zip).
+* [OpenAL Windows Drivers](http://www.monkeycoder.co.nz/downloads/oalinst.exe).
 
 >> MacOS Requirements
 
