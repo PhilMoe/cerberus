@@ -137,16 +137,10 @@ Class Image
 		device.WritePixels2 surface,pixels,x,y,width,height,offset,pitch
 	End
 	
-Private
-	Const FullFrame=65536
-
-	Field source:Image
-	Field surface:Surface
-	Field width,height,flags
-	Field frames:Frame[]
-	Field tx#,ty#
+	'***** INTERNAL *****
 	
 	Method Init:Image( surf:Surface,nframes,iflags )
+		If surface Error "Image already initialized"
 		surface=surf
 			
 		width=surface.Width/nframes
@@ -162,6 +156,7 @@ Private
 	End
 	
 	Method Init:Image( surf:Surface,x,y,iwidth,iheight,nframes,iflags,src:Image,srcx,srcy,srcw,srch )
+		If surface Error "Image already initialized"
 		surface=surf
 		source=src
 
@@ -187,6 +182,16 @@ Private
 		ApplyFlags iflags
 		Return Self
 	End
+	
+Private
+
+	Const FullFrame=65536
+
+	Field source:Image
+	Field surface:Surface
+	Field width,height,flags
+	Field frames:Frame[]
+	Field tx#,ty#
 	
 	Method ApplyFlags( iflags )
 		flags=iflags
