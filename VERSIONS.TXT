@@ -1,4 +1,11 @@
 
+***** v79e *****
+
+Made Image Init methods public so async loader can use them!
+
+Had a go at fixing dead code analysis for weird Java 'If True' exception.
+
+
 ***** v79d *****
 
 Added experimental android_new target - targets API 10 (2.3.3 Gingerbread), requires SDK 19 (4.2.2). Uses googleplay for admob.
