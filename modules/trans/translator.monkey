@@ -574,7 +574,7 @@ Class CTranslator Extends Translator
 	End
 	
 	Method TransIfStmt$( stmt:IfStmt )
-		If ConstExpr( stmt.expr )
+		If ConstExpr( stmt.expr ) And ENV_LANG<>"java"	'ignore If Const in java...
 			If ConstExpr( stmt.expr ).value
 				If Not stmt.thenBlock.stmts.IsEmpty()
 					Emit "if(true){"
