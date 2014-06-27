@@ -1,4 +1,11 @@
 
+***** v80a *****
+
+Removed local.properties file from googleplay lib in android_new target template. Seems to use 'app' local.properties file instead OK.
+
+Fixed glfw joystick button code with <12 buttons.
+
+
 ***** v79e *****
 
 Made Image Init methods public so async loader can use them!
