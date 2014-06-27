@@ -143,7 +143,7 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 		for( int i=0;i<4;++i ) buttons[i+8]=(buts[n_buts-4+i]==GLFW_PRESS);
 		for( int i=0;i<n_buts-12;++i ) buttons[i+12]=(buts[i+8]==GLFW_PRESS);
 	}else{
-		for( int i=0;i<n_buts;++i ) buttons[i]=(buts[i]=-GLFW_PRESS);
+		for( int i=0;i<n_buts;++i ) buttons[i]=(buts[i]==GLFW_PRESS);
 	}
 	
 	//kludges for device type!
