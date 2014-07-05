@@ -442,6 +442,7 @@ Function DrawPoly( verts#[],image:Image,frame:Int=0 )
 	If frame<0 Or frame>=image.frames.Length Error "Invalid image frame"
 #End
 	Local f:=image.frames[frame]
+	context.Validate
 	renderDevice.DrawPoly2 verts,image.surface,f.x,f.y
 End
 
