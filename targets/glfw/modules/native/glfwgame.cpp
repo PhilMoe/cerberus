@@ -44,6 +44,7 @@ private:
 
 	double _updatePeriod;
 	double _nextUpdate;
+	String _baseDir;
 	
 	int _swapInterval;
 	
@@ -182,14 +183,49 @@ void BBGlfwGame::SetMouseVisible( bool visible ){
 }
 
 String BBGlfwGame::PathToFilePath( String path ){
+
+	if( !_baseDir.Length() ){
+		String appPath;
+
+#if _WIN32
+		WCHAR buf[MAX_PATH+1];
+		GetModuleFileNameW( GetModuleHandleW(0),buf,MAX_PATH );
+		buf[MAX_PATH]=0;appPath=String( buf ).Replace( "\\","/" );
+
+#elif __APPLE__
+		char buf[PATH_MAX+1];
+		uint32_t size=sizeof( buf );
+		_NSGetExecutablePath( buf,&size );
+		buf[PATH_MAX]=0;appPath=String( buf ).Replace( "/./","/" );
+	
+#elif __linux
+		char lnk[PATH_MAX+1],buf[PATH_MAX];
+		sprintf( lnk,"/proc/%i/exe",getpid() );
+		int n=readlink( lnk,buf,PATH_MAX );
+		if( n<0 || n>=PATH_MAX ) abort();
+		appPath=String( buf,n );
+	
+#endif
+		int i=appPath.FindLast( "/" );
+		if( i==-1 ) abort();
+		_baseDir=appPath.Slice( 0,i );
+		
+#if __APPLE__
+		i=_baseDir.FindLast( "/" );
+		if( i==-1 ) abort();
+		_baseDir=_baseDir.Slice( 0,i )+"/Resources";
+#endif
+//		bbPrint( String("_baseDir=")+_baseDir );
+	}
+	
 	if( !path.StartsWith( "monkey:" ) ){
 		return path;
 	}else if( path.StartsWith( "monkey://data/" ) ){
-		return String("./data/")+path.Slice(14);
+		return _baseDir+"/data/"+path.Slice( 14 );
 	}else if( path.StartsWith( "monkey://internal/" ) ){
-		return String("./internal/")+path.Slice(18);
+		return _baseDir+"/internal/"+path.Slice( 18 );
 	}else if( path.StartsWith( "monkey://external/" ) ){
-		return String("./external/")+path.Slice(18);
+		return _baseDir+"/external/"+path.Slice( 18 );
 	}
 	return "";
 }
