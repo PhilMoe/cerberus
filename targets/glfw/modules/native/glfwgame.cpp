@@ -29,6 +29,9 @@ public:
 	virtual BBDisplayMode *GetDesktopMode();
 	virtual void SetSwapInterval( int interval );
 
+	virtual int SaveState( String state );
+	virtual String LoadState();
+	virtual String PathToFilePath( String path );
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *depth );
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
@@ -44,12 +47,11 @@ private:
 	double _updatePeriod;
 	double _nextUpdate;
 	
-	String _dataDir;
+	String _baseDir;
 	String _internalDir;
-	String _externalDir;
 	
 	int _swapInterval;
-	
+
 	void UpdateEvents();
 		
 protected:
@@ -179,6 +181,112 @@ void BBGlfwGame::SetMouseVisible( bool visible ){
 	}else{
 		glfwDisable( GLFW_MOUSE_CURSOR );
 	}
+}
+
+int BBGlfwGame::SaveState( String state ){
+#ifdef CFG_GLFW_APP_LABEL
+	if( FILE *f=OpenFile( "monkey://internal/.monkeystate","wb" ) ){
+		bool ok=state.Save( f );
+		fclose( f );
+		return ok ? 0 : -2;
+	}
+	return -1;
+#else
+	return BBGame::SaveState( state );
+#endif
+}
+
+String BBGlfwGame::LoadState(){
+#ifdef CFG_GLFW_APP_LABEL
+	if( FILE *f=OpenFile( "monkey://internal/.monkeystate","rb" ) ){
+		String str=String::Load( f );
+		fclose( f );
+		return str;
+	}
+	return "";
+#else
+	return BBGame::LoadState();
+#endif
+}
+
+String BBGlfwGame::PathToFilePath( String path ){
+
+	if( !_baseDir.Length() ){
+	
+		String appPath;
+
+#if _WIN32
+		WCHAR buf[MAX_PATH+1];
+		GetModuleFileNameW( GetModuleHandleW(0),buf,MAX_PATH );
+		buf[MAX_PATH]=0;appPath=String( buf ).Replace( "\\","/" );
+
+#elif __APPLE__
+
+		char buf[PATH_MAX+1];
+		uint32_t size=sizeof( buf );
+		_NSGetExecutablePath( buf,&size );
+		buf[PATH_MAX]=0;appPath=String( buf ).Replace( "/./","/" );
+	
+#elif __linux
+		char lnk[PATH_MAX+1],buf[PATH_MAX];
+		sprintf( lnk,"/proc/%i/exe",getpid() );
+		int n=readlink( lnk,buf,PATH_MAX );
+		if( n<0 || n>=PATH_MAX ) abort();
+		appPath=String( buf,n );
+
+#endif
+		int i=appPath.FindLast( "/" );if( i==-1 ) abort();
+		_baseDir=appPath.Slice( 0,i );
+		
+#if __APPLE__
+		if( _baseDir.EndsWith( ".app/Contents/MacOS" ) ) _baseDir=_baseDir.Slice( 0,-5 )+"Resources";
+#endif
+//		bbPrint( String( "_baseDir=" )+_baseDir );
+	}
+	
+	if( !path.StartsWith( "monkey:" ) ){
+		return path;
+	}else if( path.StartsWith( "monkey://data/" ) ){
+		return _baseDir+"/data/"+path.Slice( 14 );
+	}else if( path.StartsWith( "monkey://internal/" ) ){
+		if( !_internalDir.Length() ){
+#ifdef CFG_GFLW_APP_LABEL
+
+#if _WIN32
+			_internalDir=String( getenv( "APPDATA" ) );
+#elif __APPLE__
+			_internalDir=String( getenv( "HOME" ) )+"/Library/Application Support";
+#elif __linux
+			_internalDir=String( getenv( "HOME" ) )+"/.config";
+			mkdir( _internalDir.ToCString<char>(),0777 );
+#endif
+
+#ifdef CFG_GLFW_APP_PUBLISHER
+			_internalDir=_internalDir+"/"+_STRINGIZE( CFG_GLFW_APP_PUBLISHER );
+#if _WIN32
+			_wmkdir( _internalDir.ToCString<wchar_t>() );
+#else
+			mkdir( _internalDir.ToCString<char>(),0777 );
+#endif
+#endif
+
+			_internalDir=_internalDir+"/"+_STRINGIZE( CFG_GLFW_APP_LABEL );
+#if _WIN32
+			_wmkdir( _internalDir.ToCString<wchar_t>() );
+#else
+			mkdir( _internalDir.ToCString<char>(),0777 );
+#endif
+
+#else
+			_internalDir=_baseDir+"/internal";
+#endif			
+//			bbPrint( String( "_internalDir=" )+_internalDir );
+		}
+		return _internalDir+"/"+path.Slice( 18 );
+	}else if( path.StartsWith( "monkey://external/" ) ){
+		return _baseDir+"/external/"+path.Slice( 18 );
+	}
+	return "";
 }
 
 unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int *depth ){
