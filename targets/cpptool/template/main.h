@@ -28,3 +28,6 @@
 #include <dirent.h>
 #include <pthread.h>
 #endif
+
+#define _QUOTE(X) #X
+#define _STRINGIZE( X ) _QUOTE(X)

@@ -1,7 +1,11 @@
 
 ***** v80a *****
 
-Made glfw target monkey://data/ etc dirs absolute, so you can ChangeDir away...
+Moved glfw monkey://blah/ handling from glfwgame.cpp to gametarget.cpp for stdcpp compatibility.
+
+Changed glfw monkey://internal/ to point to per-user 'app data' location. App must also set #CPP_APP_IDENT to a unique identifier. App data location on windows is: $APPDATA\CPP_APP_IDENT; on linux: $HOME/.config/CPP_APP_IDENT; on macos, $HOME/Library/Application Support/CPP_APP_IDENT. Note: monkey://data/ and monkey://external/ still point to app relative dirs.
+
+Made glfw target monkey://data/ etc dir locations absolute, not CD relative.
 
 Removed local.properties file from googleplay lib in android_new target template. Seems to use 'app' local.properties file instead OK.
 

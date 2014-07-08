@@ -48,3 +48,8 @@
 //stb_vorbis lib
 #define STB_VORBIS_HEADER_ONLY
 #include <stb_vorbis.c>
+
+#define _QUOTE(X) #X
+#define _STRINGIZE( X ) _QUOTE(X)
+
+

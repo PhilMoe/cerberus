@@ -92,6 +92,14 @@ The following app config settings are currently supported:
 #CPP_GC_MODE=1  					'0 disable GC, 1=incremental collect after every OnWhatever, 2=Incremental collect every GC allocation
 #CPP_GC_TRIGGER=8388608 			'Allocated memory (in bytes) before a GC 'sweep' occurs. Defaults to 8 MiB
 #CPP_GC_MAX_LOCALS=8192 			'This is used with GC_MODE 2 to track local object vars and defaults to 8192
+#CPP_APP_LABEL="My App"				'Human readable label for app. 
+									'Must be set for monkey://internal to map to 'per user' app data.
+									'If not set (the default), monkey://internal is shared by all users of app.
+									'monkey://external is ALWAYS shared by all users of app.
+									'Must contain filesystem friendly chars only - generally, [A-Z], [a-z], [0-9], 
+									'<space>, <underscore> <minus>, <dot> should be OK.
+#CPP_APP_PUBLISHER="My Company"		'Optional human readable publisher name for app. Must be filesystem friendly.
+									'Not defined by default.
 
 'Misc
 '
