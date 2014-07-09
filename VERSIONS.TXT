@@ -1,6 +1,8 @@
 
 ***** v80a *****
 
+Changed glfw LoadState/SaveState to use monkey://internal/.monkeystate if #GLFW_APP_LABEL is set.
+
 Changed glfw monkey://internal/ to point to local per-user app data location. App must set #GLFW_APP_LABEL (and optionally #GLFW_APP_PUBLISHER) for this to work. App data location on windows is: $APPDATA\GLFW_APP_PUBLISHER\GLFW_APP_LABEL; on linux: $HOME/.config/GLFW_APP_PUBLISHER/GLFW_APP_LABEL; on macos, $HOME/Library/Application Support/GLFW_APP_PUBLISHER/GLFW_APP_LABEL. If #GLFW_APP_PUBLISHER is not set, it's not used.
 
 Made glfw target monkey://data/ etc dir locations absolute, not CD relative.
