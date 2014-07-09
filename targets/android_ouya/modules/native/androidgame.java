@@ -11,11 +11,13 @@ import android.widget.*;
 import android.view.inputmethod.*;
 import android.content.res.*;
 import android.opengl.*;
+import android.text.*;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
 class ActivityDelegate{
+
 	public void onStart(){
 	}
 	public void onRestart(){
@@ -29,6 +31,8 @@ class ActivityDelegate{
 	public void onDestroy(){
 	}
 	public void onActivityResult( int requestCode,int resultCode,Intent data ){
+	}
+	public void onNewIntent( Intent intent ){
 	}
 }
 
@@ -795,7 +799,6 @@ class AndroidGame extends Activity{
 		}
 	}
 	
-	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
@@ -808,6 +811,14 @@ class AndroidGame extends Activity{
 	protected void onActivityResult( int requestCode,int resultCode,Intent data ){
 		for( ActivityDelegate delegate : _game._activityDelegates ){
 			delegate.onActivityResult( requestCode,resultCode,data );
+		}
+	}
+	
+	@Override
+	public void onNewIntent( Intent intent ){
+		super.onNewIntent( intent );
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onNewIntent( intent );
 		}
 	}
 }

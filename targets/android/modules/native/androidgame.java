@@ -786,11 +786,10 @@ class AndroidGame extends Activity{
 	}
 	
 	@Override
-	public void onNewIntent(Intent intent){
-		super.onNewIntent(intent);
+	public void onNewIntent( Intent intent ){
+		super.onNewIntent( intent );
 		for( ActivityDelegate delegate : _game._activityDelegates ){
-			delegate.onNewIntent(intent);
+			delegate.onNewIntent( intent );
 		}
 	}
 }
-
