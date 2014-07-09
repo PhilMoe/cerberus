@@ -31,6 +31,8 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+			
+			${ANDROID_MANIFEST_ACTIVITY}
 		</activity>
 		
 		${ANDROID_MANIFEST_APPLICATION}

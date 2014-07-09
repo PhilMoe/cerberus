@@ -32,6 +32,8 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 				<category android:name="tv.ouya.intent.category.APP"/>
 			</intent-filter>
+			
+			${ANDROID_MANIFEST_ACTIVITY}
 		</activity>
 		
 		${ANDROID_MANIFEST_APPLICATION}

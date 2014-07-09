@@ -50,7 +50,8 @@ Class AndroidBuilder Extends Builder
 		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
 		
 		SetConfigVar "ANDROID_MAINFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
-		SetConfigVar "ANDROID_MAINFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
+		SetConfigVar "ANDROID_MAINFEST_APPLICATION", GetConfigVar("ANDROID_MANIFEST_APPLICATION").Replace(";", "~n") + "~n"
+		SetConfigVar "ANDROID_MAINFEST_ACTIVITY", GetConfigVar("ANDROID_MAINFEST_ACTIVITY").Replace(";", "~n") + "~n"
 		
 		'create package
 		Local jpath:="src"
