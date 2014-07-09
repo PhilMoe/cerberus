@@ -48,29 +48,31 @@ class BBFileSystem{
 		FileChannel srcc,dstc;
 		
 		try{
+		
 			File srcf=file( src );
+			
 			if( !srcf.isFile() ) {
-				AssetManager am = BBAndroidGame.AndroidGame()._activity.getAssets();
-				InputStream inputStream = am.open(src);
+				AssetManager am=BBAndroidGame.AndroidGame()._activity.getAssets();
+				InputStream inputStream=am.open(src);
 				
 				try{
-					File dstf = file(dst);
+					File dstf=file(dst);
 					if( dstf.exists() && (!dstf.isFile() || !dstf.delete()) ) return false;
 					if( !dstf.createNewFile() ) return false;
 						
-					OutputStream outputStream = new FileOutputStream(dstf);
-					byte buffer[] = new byte[1024];
-					int length = 0;
+					OutputStream outputStream=new FileOutputStream( dstf );
+					byte buffer[]=new byte[1024];
+					int length=0;
 
-					while((length=inputStream.read(buffer)) > 0) {
-						outputStream.write(buffer,0,length);
+					while( (length=inputStream.read( buffer ))>0 ){
+						outputStream.write( buffer,0,length );
 					}
 
 					outputStream.close();
 					inputStream.close();
 
 					return true;
-				}catch (IOException e) {
+				}catch( IOException e ){
 				}
 				return false;				
 			}

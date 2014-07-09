@@ -1,5 +1,8 @@
 
-***** v80a *****
+***** v80b *****
+
+Merged some pull requests: Internal android ActivityDelegate class now handles onNewIntent, and android brl.filesystem CopyFile() now handles src files in monkey://data/
+
 
 Changed glfw LoadState/SaveState to use monkey://internal/.monkeystate if #GLFW_APP_LABEL is set.
 
