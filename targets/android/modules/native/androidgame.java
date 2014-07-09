@@ -32,6 +32,8 @@ class ActivityDelegate{
 	}
 	public void onActivityResult( int requestCode,int resultCode,Intent data ){
 	}
+	public void onNewIntent( Intent intent ){
+	}
 }
 
 class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEventListener{
@@ -780,6 +782,14 @@ class AndroidGame extends Activity{
 	protected void onActivityResult( int requestCode,int resultCode,Intent data ){
 		for( ActivityDelegate delegate : _game._activityDelegates ){
 			delegate.onActivityResult( requestCode,resultCode,data );
+		}
+	}
+	
+	@Override
+	public void onNewIntent(Intent intent){
+		super.onNewIntent(intent);
+		for( ActivityDelegate delegate : _game._activityDelegates ){
+			delegate.onNewIntent(intent);
 		}
 	}
 }
