@@ -1022,6 +1022,7 @@ Class Parser
 				Endif
 				ParseStmt
 			Wend
+			If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Next variable name does not match For variable name"
 			PopBlock
 			
 			Local stmt:ForEachinStmt=New ForEachinStmt( varid,varty,varlocal,expr,block )
@@ -1073,9 +1074,8 @@ Class Parser
 			Endif
 			ParseStmt
 		Wend
+		If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Next variable name does not match For variable name"
 		PopBlock
-		
-		NextToke
 
 		Local stmt:ForStmt=New ForStmt( init,expr,incr,block )
 		
