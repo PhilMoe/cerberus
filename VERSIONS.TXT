@@ -1,8 +1,18 @@
 
 ***** v80b *****
 
+Fixed android_new 'sdk not found' admob issue - moved some google-player-services_lib config files to 'templates' dir.
+
+Fixed trans Next [varname] issue where varname was being ignored.
+
+Transcc android builders now preserve parent dir name when copying android #LIBS files from "x86", "mips", "armeabi" and "armeabi-v7a" dirs.
+
+Fixed misspelling of MANIFEST as MAINFEST in transcc android builders!
+
 Merged some pull requests: Internal android ActivityDelegate class now handles onNewIntent, and android brl.filesystem CopyFile() now handles src files in monkey://data/
 
+
+***** v80a *****
 
 Changed glfw LoadState/SaveState to use monkey://internal/.monkeystate if #GLFW_APP_LABEL is set.
 
