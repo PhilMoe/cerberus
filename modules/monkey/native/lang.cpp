@@ -218,8 +218,8 @@ struct gc_enter{
 static volatile int gc_ext_new_bytes;
 
 #if _MSC_VER
-#define atomic_add(P,V) InterlockedExchangeAdd((volatile unsigned int*)P,V)//(*(P)+=(V))
-#define atomic_sub(P,V) InterlockedExchangeSubtract((volatile unsigned int*)P,V)//(*(P)-=(V))
+#define atomic_add(P,V) InterlockedExchangeAdd((volatile unsigned int*)P,V)			//(*(P)+=(V))
+#define atomic_sub(P,V) InterlockedExchangeSubtract((volatile unsigned int*)P,V)	//(*(P)-=(V))
 #else
 #define atomic_add(P,V) __sync_fetch_and_add(P,V)
 #define atomic_sub(P,V) __sync_fetch_and_sub(P,V)
@@ -250,18 +250,17 @@ void gc_flush_free( int size ){
 	if( t<0 ) t=0;
 	
 	while( gc_free_bytes>t ){
+	
 		gc_object *p=gc_free_list.succ;
 
 		GC_REMOVE_NODE( p );
-	
+
 #if DEBUG_GC
 //		printf( "deleting @%p\n",p );fflush( stdout );
 //		p->flags|=4;
 //		continue;
-		delete p;
-#else
-		delete p;
 #endif
+		delete p;
 	}
 }
 
@@ -377,6 +376,7 @@ template<class T,class V> void gc_assign( T *&lhs,V *rhs ){
 }
 
 void gc_mark_locals(){
+
 #if CFG_CPP_GC_MODE==2
 	for( gc_object **pp=gc_locals;pp!=gc_locals_sp;++pp ){
 		gc_object *p=*pp;
@@ -401,30 +401,51 @@ void gc_mark_queued( int n ){
 	}
 }
 
+void gc_validate_list( gc_object &list,const char *msg ){
+	gc_object *node=list.succ;
+	while( node ){
+		if( node==&list ) return;
+		if( !node->pred ) break;
+		if( node->pred->succ!=node ) break;
+		node=node->succ;
+	}
+	if( msg ){
+		puts( msg );fflush( stdout );
+	}
+	puts( "LIST ERROR!" );
+	exit(-1);
+}
+
 //returns reclaimed bytes
 void gc_sweep(){
 
 	int reclaimed_bytes=gc_alloced_bytes-gc_marked_bytes;
 	
 	if( reclaimed_bytes ){
+	
 		//append unmarked list to end of free list
 		gc_object *head=gc_unmarked_list.succ;
 		gc_object *tail=gc_unmarked_list.pred;
 		gc_object *succ=&gc_free_list;
 		gc_object *pred=succ->pred;
+		
 		head->pred=pred;
 		tail->succ=succ;
 		pred->succ=head;
 		succ->pred=tail;
+		
 		gc_free_bytes+=reclaimed_bytes;
 	}
-	
+
 	//move marked to unmarked.
-	gc_unmarked_list=gc_marked_list;
-	gc_unmarked_list.succ->pred=gc_unmarked_list.pred->succ=&gc_unmarked_list;
-	
-	//clear marked.
-	GC_CLEAR_LIST( gc_marked_list );
+	if( GC_LIST_IS_EMPTY( gc_marked_list ) ){
+		GC_CLEAR_LIST( gc_unmarked_list );
+	}else{
+		gc_unmarked_list.succ=gc_marked_list.succ;
+		gc_unmarked_list.pred=gc_marked_list.pred;
+		gc_unmarked_list.succ->pred=gc_unmarked_list.pred->succ=&gc_unmarked_list;
+		GC_CLEAR_LIST( gc_marked_list );
+	}
 	
 	//adjust sizes
 	gc_alloced_bytes=gc_marked_bytes;
@@ -434,17 +455,24 @@ void gc_sweep(){
 
 void gc_collect_all(){
 
-//	printf( "Mark locals\n" );fflush( stdout );
+//	puts( "Mark locals" );
 	gc_mark_locals();
 
-//	printf( "Mark queued\n" );fflush( stdout );
+//	puts( "Marked queued" );
 	gc_mark_queued( 0x7fffffff );
 
-//	printf( "sweep\n" );fflush( stdout );	
+//	puts( "Sweep" );
 	gc_sweep();
 
-//	printf( "Mark roots\n" );fflush( stdout );
+//	puts( "Mark roots" );
 	gc_mark_roots();
+
+#if DEBUG_GC
+	gc_validate_list( gc_marked_list,"Validating gc_marked_list"  );
+	gc_validate_list( gc_unmarked_list,"Validating gc_unmarked_list"  );
+	gc_validate_list( gc_free_list,"Validating gc_free_list" );
+#endif
+
 }
 
 void gc_collect(){
