@@ -107,6 +107,11 @@ Params:
 path - a file system path.
 
 
+# Function RealPath:String(path:String)
+
+Converts @path to an absolute filesystem path.
+
+
 # Function CreateFile:Bool(path:String)
 
 Creates a new file at @path.

@@ -15,6 +15,7 @@ Extern Private
 Class BBFileSystem
 
 	Function FixPath:String( path:String )
+	Function RealPath:String( path:String )
 	Function FileType:Int( path:String )
 	Function FileSize:Int( path:String )
 	Function FileTime:Int( path:String )
@@ -57,6 +58,10 @@ End
 
 Function FileTime:Int( path:String )
 	Return BBFileSystem.FileTime( FixPath( path ) )
+End
+
+Function RealPath:String( path:String )
+	Return BBFileSystem.RealPath( FixPath( path ) )
 End
 
 Function CreateFile:Bool( path:String )
@@ -157,3 +162,4 @@ Function LoadDir:String[]( path:String,recursive:Bool=False,hidden:Bool=False )
 
 	Return files.ToArray()
 End
+

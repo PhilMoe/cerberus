@@ -43,6 +43,28 @@ class BBFileSystem{
 		return BBGame::Game()->PathToFilePath( path );
 	}
 	
+	static String RealPath( String path ){
+#if _WIN32
+		OS_CHAR buf[ MAX_PATH+1 ];
+		GetFullPathNameW( OS_STR(path),MAX_PATH,buf,0 );
+		return String( buf );
+#else
+		OS_CHAR buf[ PATH_MAX+1 ];
+		realpath( OS_STR( path ),buf );
+		return String( buf );
+/*		
+		std::vector<OS_CHAR> buf( PATH_MAX+1 );
+		if( realpath( OS_STR( path ),&buf[0] ) ){}
+		buf[buf.size()-1]=0;
+		for( int i=0;i<PATH_MAX && buf[i];++i ){
+			if( buf[i]=='\\' ) buf[i]='/';
+			
+		}
+		return String( &buf[0] );
+*/
+#endif
+	}
+	
 	static int FileType( String path ){
 		stat_t st;
 		if( stat( OS_STR(path),&st ) ) return 0;

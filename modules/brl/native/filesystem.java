@@ -11,6 +11,10 @@ class BBFileSystem{
 	static String FixPath( String path ){
 		return BBGame.Game().PathToFilePath( path );
 	}
+	
+	static String RealPath( String path ){
+		return file( path ).getAbsolutePath();
+	}
 
 	static int FileType( String path ){
 		File f=file( path );
