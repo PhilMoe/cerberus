@@ -1,4 +1,15 @@
 
+***** v80c *****
+
+Fixed a nasty GC bug.
+
+Fixed misspelling of CFG_GLFW_APP_LABEL in glfw target.
+
+Had another hack at the glfw joystick code. Both pc/mac versions now attempt to detect xbox360 controllers (mac also tries to detect ps3) defaulting to 'logitech dual action' layout if device not recognized. FAR from foolproof, but should/may be an improvement on current setup.
+
+Added RealPath to brl.filesystem.
+
+
 ***** v80b *****
 
 Fixed android_new 'sdk not found' admob issue - moved some google-player-services_lib config files to 'templates' dir.
