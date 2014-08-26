@@ -55,7 +55,8 @@ static int _glfwJoystickPresent( int joy )
     {
         return GL_FALSE;
     }
-
+    
+    
     // Is the joystick present?
     if( _glfw_joyGetPos( joy - GLFW_JOYSTICK_1, &ji ) != JOYERR_NOERROR )
     {
@@ -203,20 +204,18 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     JOYINFOEX ji;
     int       button;
 
-//  return 0;
-
     // Is joystick present?
     if( !_glfwJoystickPresent( joy ) )
     {
         return 0;
     }
-
+    
     // Get joystick capabilities
     _glfw_joyGetDevCaps( joy - GLFW_JOYSTICK_1, &jc, sizeof(JOYCAPS) );
 
     // Get joystick state
     ji.dwSize = sizeof( JOYINFOEX );
-    ji.dwFlags = JOY_RETURNBUTTONS;
+    ji.dwFlags = JOY_RETURNBUTTONS|JOY_RETURNPOV;
     _glfw_joyGetPosEx( joy - GLFW_JOYSTICK_1, &ji );
     
     // Get states of all requested buttons
@@ -226,20 +225,18 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
         buttons[ button ] = (unsigned char)(ji.dwButtons & (1UL << button) ? GLFW_PRESS : GLFW_RELEASE);
         button++;
     }
-    
-    //also POV thingy
-    if (jc.wCaps & JOYCAPS_HASPOV)
-    {
-    	const int masks[]={ 2,6,4,12, 8,9,1,3 };
 
-    	int pov=ji.dwPOV/100/45;
-    	
-    	int mask=( pov>=0 && pov<8 ) ? masks[ pov ] : 0;
-    	
-    	int i;
-		for( i=0;button < numbuttons && i<4;++i )
-		{
-			buttons[ button ] = (mask & (1<<i)) ? GLFW_PRESS : GLFW_RELEASE;
+    if( (jc.wCaps & JOYCAPS_HASPOV) && button+3 < numbuttons ){
+		int i=-1;
+		switch( ji.dwPOV ){
+		case JOY_POVLEFT:i=0;break;
+		case JOY_POVFORWARD:i=1;break;
+		case JOY_POVRIGHT:i=2;break;
+		case JOY_POVBACKWARD:i=3;break;
+		}
+		int j;
+		for( j=0;j<4;++j ){
+			buttons[button] = (j==i) ? GLFW_PRESS : GLFW_RELEASE;
 			button++;
 		}
 	}
