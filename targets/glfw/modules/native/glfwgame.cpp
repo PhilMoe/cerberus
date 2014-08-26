@@ -145,15 +145,18 @@ int BBGlfwGame::Millisecs(){
 bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons ){
 
 	//Just in case...my PC has either started doing weird things with joystick ordering, or I assumed too much in the past!
-	int joy=0;
-	for( joy=GLFW_JOYSTICK_1;joy<=GLFW_JOYSTICK_16;++joy ){
-		if( !glfwGetJoystickParam( joy,GLFW_PRESENT ) ) continue;
-		if( !port ) break;
-		--port;
+	static int pjoys[4];
+	if( !port ){
+		int i=0;
+		for( int joy=GLFW_JOYSTICK_1;joy<=GLFW_JOYSTICK_16 && i<4;++joy ){
+			if( glfwGetJoystickParam( joy,GLFW_PRESENT ) ) pjoys[i++]=joy;
+		}
+		while( i<4 ) pjoys[i++]=-1;
 	}
-	if( joy>GLFW_JOYSTICK_16 ) return false;
-
-	//Stopped working at some point...
+	int joy=pjoys[port];
+	if( joy==-1 ) return false;
+	
+	//Stopped working on my PC at some point...
 //	int joy=GLFW_JOYSTICK_1+port;
 //	if( !glfwGetJoystickParam( joy,GLFW_PRESENT ) ) return false;
 
@@ -170,6 +173,8 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 //	static int done;
 //	if( !done++ ) printf( "n_axes=%i, n_buts=%i\n",n_axes,n_buts );fflush( stdout );
 
+	//Ugh...
+	
 	const int *dev_axes;
 	const int *dev_buttons;
 	
