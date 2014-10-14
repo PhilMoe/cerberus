@@ -4,13 +4,16 @@ Import mojo
 
 Class ProgressBar
 	
+Private
+
 	Field x:Float, y:Float
 	
 	Field width:Float, height:Float
 	
-Private
 	Field value:Float
 	
+Public
+
 	Method New(x:Float, y:Float, width:Float, height:Float)
 		Self.x = x; Self.y = y
 		Self.width = width; Self.height = height
