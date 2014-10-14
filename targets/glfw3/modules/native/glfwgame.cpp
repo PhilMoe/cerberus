@@ -157,8 +157,6 @@ bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Arra
 	const int logitech_axes[]={0,1,0x86,2,0x43,0x87,999};
 	const int logitech_buttons[]={1,2,0,3,4,5,8,9,15,12,13,14,10,11,999};
 	
-	printf( "port=%i, n_axes=%i, n_buts=%i\n",port,n_axes,n_buts );fflush( stdout );
-	
 	if( n_axes==5 && n_buts==14 ){
 		dev_axes=xbox360_axes;
 		dev_buttons=xbox360_buttons;
