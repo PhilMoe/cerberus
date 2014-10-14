@@ -227,14 +227,13 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     }
 
     if( (jc.wCaps & JOYCAPS_HASPOV) && button+3 < numbuttons ){
-		int i=-1;
+		int j=0,i=-1;
 		switch( ji.dwPOV ){
 		case JOY_POVLEFT:i=0;break;
 		case JOY_POVFORWARD:i=1;break;
 		case JOY_POVRIGHT:i=2;break;
 		case JOY_POVBACKWARD:i=3;break;
 		}
-		int j;
 		for( j=0;j<4;++j ){
 			buttons[button] = (j==i) ? GLFW_PRESS : GLFW_RELEASE;
 			button++;
