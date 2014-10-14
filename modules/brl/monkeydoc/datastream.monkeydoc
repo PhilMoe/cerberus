@@ -15,29 +15,30 @@ Please see the [[DataStream]] class for more information on datastreams.
 A datastream allows you to read and write data to and from a databuffer in a stream-like way.
 
 
-# Method New( buffer:DataBuffer,start:Int=0 )
+# Method New( data:DataBuffer,offset:Int=0 )
 
 Creates a datastream that wraps the specified databuffer.
 
-The wrapped range of data begins at byte address @start and extends to the end of the buffer. Data outside this range will not be modified by any stream operations.
-
-Params: 
-
-@buffer - databuffer to wrap.
-
-@start - byte address within databuffer.
+The wrapped range of data begins at byte address @offset and extends to the end of the buffer. Data outside this range will not be modified by any stream operations.
 
 
-# Method New( buffer:DataBuffer,start:Int,length:Int )
+# Method New( data:DataBuffer,offset:Int,length:Int )
 
 Creates a datastream that wraps the specified databuffer.
 
-The wrapped range of data begins at byte address @start and extends for @length bytes. Data outside of this range will not be modified by any stream operations.
+The wrapped range of data begins at byte address @offset and extends for @length bytes. Data outside of this range will not be modified by any stream operations.
 
-Params: 
 
-@buffer - databuffer to wrap.
+# Method Data:DataBuffer() Property
 
-@start - byte address within databuffer.
+Returns the databuffer object wrapped by this datastream.
 
-@length - byte length.
+
+# Method Offset:Int() Property
+
+Returns the start offset of the data in the databuffer object wrapped by this datastream.
+
+
+# Method Length:Int() Property
+
+Returns the length of the data in the databuffer object wrapped by this datastream.
