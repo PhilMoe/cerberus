@@ -1,4 +1,17 @@
 
+***** v81a *****
+
+Renamed a bunch of targets  - see IDE combo box. Shouldn't affect monkey code in any way.
+
+Added new glfw target (note: had to apt-get install libxcursor-dev and libxinerama-dev on Linux)
+
+More extern extends null fixes for debugger/gc.
+
+Fixed bug where extern 'extends null' objects confused cpp debug builds.
+
+Tweaked android audio so pool.stop() isn't inadvertantly called twice.
+
+
 ***** v80c *****
 
 Fixed a nasty GC bug.
