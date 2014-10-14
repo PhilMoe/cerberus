@@ -3,16 +3,24 @@ Import brl.stream
 
 Class DataStream Extends Stream
 
-	Method New( buf:DataBuffer,offset:Int=0 )
+	Method New( buffer:DataBuffer,offset:Int=0 )
 		_buffer=buf
 		_offset=offset
 		_length=buf.Length-offset
 	End
 	
-	Method New( buf:DataBuffer,offset:Int,length:Int )
+	Method New( buffer:DataBuffer,offset:Int,length:Int )
 		_buffer=buf
 		_offset=offset
 		_length=length
+	End
+	
+	Method Data:DataBuffer() Property
+		Return _buffer
+	End
+	
+	Method Offset:Int() Property
+		Return _offset
 	End
 	
 	Method Length:Int() Property
