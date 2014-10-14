@@ -1327,7 +1327,7 @@ String dbg_type( String *p ){
 	return "String";
 }
 
-template<class T> String dbg_type( T *p ){
+template<class T> String dbg_type( T **p ){
 	return "Object";
 }
 
@@ -1357,7 +1357,7 @@ String dbg_value( String *p ){
 	return String("\"")+t+"\"";
 }
 
-template<class T> String dbg_value( T *t ){
+template<class T> String dbg_value( T **t ){
 	Object *p=dynamic_cast<Object*>( *t );
 	char buf[64];
 	sprintf_s( buf,"%p",p );
@@ -1367,11 +1367,18 @@ template<class T> String dbg_value( T *t ){
 template<class T> String dbg_value( Array<T> *p ){
 	String t="[";
 	int n=(*p).Length();
+	if( n>10 ) n=10;
 	for( int i=0;i<n;++i ){
 		if( i ) t+=",";
 		t+=dbg_value( &(*p)[i] );
 	}
 	return t+"]";
+}
+
+String dbg_ptr_value( void *p ){
+	char buf[64];
+	sprintf_s( buf,"%p",p );
+	return (buf[0]=='0' && buf[1]=='x' ? buf+2 : buf );
 }
 
 template<class T> String dbg_decl( const char *id,T *ptr ){

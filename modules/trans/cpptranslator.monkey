@@ -60,7 +60,7 @@ Class CppTranslator Extends CTranslator
 	End
 	
 	'***** Utility *****
-
+	
 	Method Uncast:Expr( expr:Expr )
 		Repeat
 			Local cexpr:=CastExpr( expr )
@@ -81,6 +81,24 @@ Class CppTranslator Extends CTranslator
 		expr=Uncast( expr )
 		Local vexpr:=VarExpr( expr )
 		Return vexpr And LocalDecl( vexpr.decl )
+	End
+
+	'extends Null objects and arrays of are not debuggable!
+	Method IsDebuggable?( type:Type )
+		Return True
+		#rem
+		Local objty:=ObjectType( type )
+		If Not objty
+			Local arrty:=ArrayType( type )
+			While arrty
+				Local elemty:=arrty.elemType
+				objty=ObjectType( elemty )
+				arrty=ArrayType( elemty )
+			Wend
+		Endif
+		If objty And Not objty.GetClass().ExtendsObject() Return False
+		Return True
+		#end
 	End
 	
 	Method GcRetain:String( expr:Expr,texpr:String="" )
@@ -137,7 +155,9 @@ Class CppTranslator Extends CTranslator
 		If info=lastDbgInfo Return
 		lastDbgInfo=info
 		For Local decl:=Eachin dbgLocals
-			If decl.ident Emit "DBG_LOCAL("+decl.munged+",~q"+decl.ident+"~q)"
+			If decl.ident And IsDebuggable( decl.type )
+				Emit "DBG_LOCAL("+decl.munged+",~q"+decl.ident+"~q)"
+			Endif
 		Next
 		dbgLocals.Clear
 		Emit "DBG_INFO(~q"+info.Replace( "\","/" )+"~q);"
@@ -590,7 +610,6 @@ Class CppTranslator Extends CTranslator
 		If gc_mode=0 Return
 		
 		If Not ObjectType( ty ) And Not ArrayType( ty ) Return
-
 		If ObjectType( ty ) And Not ty.GetClass().ExtendsObject() Return
 	
 		If queue
@@ -663,10 +682,12 @@ Class CppTranslator Extends CTranslator
 				Local vdecl:=VarDecl( decl )
 				If Not vdecl Continue
 				
-				If ObjectType( vdecl.type )
-					Local cdecl:=vdecl.type.GetClass()
-					If cdecl And Not cdecl.ExtendsObject() Continue
-				Endif
+				If Not IsDebuggable( vdecl.type ) Continue
+				
+'				If ObjectType( vdecl.type )
+'					Local cdecl:=vdecl.type.GetClass()
+'					If cdecl And Not cdecl.ExtendsObject() Continue
+'				Endif
 				
 				If FieldDecl( decl )
 					Emit "t+=dbg_decl(~q"+decl.ident+"~q,&"+decl.munged+");"
@@ -727,6 +748,17 @@ Class CppTranslator Extends CTranslator
 			Endif
 		Next
 		
+		'extern null types
+		For Local decl:=Eachin app.allSemantedDecls
+			Local cdecl:=ClassDecl( decl )
+			If Not cdecl Or cdecl.ExtendsObject() Or cdecl.munged="String" Continue
+			Emit "void gc_mark( "+cdecl.munged+" *p ){}"
+			If ENV_CONFIG="debug"
+				Emit "String dbg_type( "+cdecl.munged+" **p ){ return ~q"+decl.ident+"~q; }"
+				Emit "String dbg_value( "+cdecl.munged+" **p ){ return dbg_ptr_value( *p ); }"
+			Endif
+		Next
+		
 		'definitions!
 		For Local decl:=Eachin app.Semanted
 			
@@ -755,7 +787,7 @@ Class CppTranslator Extends CTranslator
 		For Local decl:=Eachin app.semantedGlobals
 			Local munged:=TransGlobal( decl )
 			Emit munged+"="+decl.init.Trans()+";"
-			If ENV_CONFIG="debug"
+			If ENV_CONFIG="debug" And IsDebuggable( decl.type )
 				Emit "DBG_GLOBAL(~q"+decl.ident+"~q,&"+munged+");"
 			Endif
 		Next
