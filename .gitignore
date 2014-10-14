@@ -28,6 +28,7 @@
 !/targets/cpptool
 !/targets/flash
 !/targets/glfw
+!/targets/glfw3
 !/targets/html5
 !/targets/ios
 !/targets/psm
