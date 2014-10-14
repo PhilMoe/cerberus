@@ -83,7 +83,7 @@ Class AsyncQueue Extends Thread Implements IAsyncEventSource
 	
 	Method UpdateAsyncEvents:Void()
 		If nxt<>put
-			If Not IsRunning() Print "RACE!"
+'			If Not IsRunning() Print "RACE!"
 			Start					'NOP if already running. This is a kludge for the above race condition...
 		Endif			
 		While get<>nxt
