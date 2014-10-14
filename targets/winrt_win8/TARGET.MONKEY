@@ -1,4 +1,4 @@
 
-#TARGET_NAME="Windows 8 Game"
+#TARGET_NAME="Windows RT Game (Tablet)"
 #TARGET_SYSTEM="winrt"
 #TARGET_BUILDER="winrt"
