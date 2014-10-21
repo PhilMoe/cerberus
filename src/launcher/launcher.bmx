@@ -1,4 +1,6 @@
 
+'Monkey launcher app for win32
+
 Strict
 
 Framework brl.blitz
