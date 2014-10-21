@@ -12,7 +12,6 @@ CPPFLAGS=$(CCOPTS) \
 -I../openal/include \
 -I../stb \
 -D_GLFW_HAS_GLXGETPROCADDRESS \
--D_GLFW_USE_LINUX_JOYSTICKS \
 -pthread
 
 LD=g++
