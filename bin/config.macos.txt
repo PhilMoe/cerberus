@@ -23,6 +23,7 @@ HTML_PLAYER=open -n "${MONKEYDIR}/bin/mserver_macos.app" --args
 'Ant is currently available here: 
 '	http://ant.apache.org/bindownload.cgi
 '
+ANT_PATH="${HOME}/apache-ant-1.9.4"
 ANT_PATH="${HOME}/apache-ant-1.9.2"
 '--------------------
 
