@@ -167,7 +167,7 @@ Class AndroidBuilder Extends Builder
 			
 			If GetConfigVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
 
-			If Not (Execute( "ant clean",False ) And Execute( "ant "+antcfg+" install",False ))
+			If Not (Execute( tcc.ANT_PATH+"/bin/ant clean",False ) And Execute( tcc.ANT_PATH+"/bin/ant "+antcfg+" install",False ))
 
 				Die "Android build failed."
 				

@@ -58,12 +58,15 @@ Class StdcppBuilder Extends Builder
 				LIBS+=" -lwinmm -lws2_32"
 			Case "macos"
 				OPTS+=" -Wno-parentheses -Wno-dangling-else"
-				OPTS+=" -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3"
+				OPTS+=" -mmacosx-version-min=10.6"
 			Case "linux"
+				OPTS+=" -Wno-unused-result"
 				LIBS+=" -lpthread"
 			End
 			
 			Select ENV_CONFIG
+			Case "debug"
+				OPTS+=" -O0"
 			Case "release"
 				OPTS+=" -O3 -DNDEBUG"
 			End
