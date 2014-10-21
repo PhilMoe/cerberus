@@ -3,9 +3,49 @@
 
 # Import brl.databuffer
 
+# Function AppPath:String()
+
+Returns the file system path of the currently running application.
+
+
+# Function AppArgs:String[]()
+
+Returns the application startup parameters.
+
+
+# Function SetEnv:Int(name:String,value:String)
+
+Set an environment variable.
+
+
+# Function GetEnv:String(name:String)
+
+Get an environment variable.
+
+
+# Function ChangeDir:Int(path:String)
+
+Changes the current directory of the running application.
+
+
+# Function CurrentDir:String()
+
+Returns the current directory of the currently running application.
+
+
+# Function Execute:Int(cmd:String)
+
+Executes a shell command and returns the result. This is generally 0 for success, or non-0 for failure.
+
+
+# Function ExitApp:Int(retcode:Int)
+
+Exits the application with the given return code.
+
+In general, ExitApp should return 0 if successful, or <0 upon failure.
+
 
 # Class Process
-
 
 
 # Method Start:Void(cmd:String)

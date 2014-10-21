@@ -16,6 +16,8 @@ Extern Private
 
 Class BBProcess
 
+	Method Discard:Void()
+	
 	Method Start:Bool( cmd:String )
 	Method Kill:Void( retcode:Int )
 	Method Wait:Int()
@@ -30,6 +32,15 @@ Class BBProcess
 	
 	Method WriteStdin:Int( buf:DataBuffer,offset:Int,count:Int )
 	
+	Function AppPath:String()
+	Function AppArgs:String[]()
+	Function GetEnv:String( key:String ) 
+	Function SetEnv:Int( key:String,value:String )
+	Function Sleep:Void( millisecs:Int )
+	Function ExitApp:Void( exitCode:Int )
+	Function CurrentDir:String()
+	Function ChangeDir:Int( dir:String )
+	Function System:Int( cmd:String )
 End
 
 Public
@@ -52,4 +63,40 @@ Class Process Extends BBProcess
 		Return stdout.Join()
 	End
 	
+End
+
+Function AppPath:String()
+	Return BBProcess.AppPath()
+End
+
+Function AppArgs:String[]()
+	Return BBProcess.AppArgs()
+End
+
+Function GetEnv:String( key:String ) 
+	Return BBProcess.GetEnv( key )
+End
+
+Function SetEnv:Void( key:String,value:String )
+	BBProcess.SetEnv key,value
+End
+
+Function Sleep:Void( millisecs:Int )
+	BBProcess.Sleep millisecs
+End
+	
+Function ExitApp:Void( exitCode:Int )
+	BBProcess.ExitApp exitCode
+End
+
+Function CurrentDir:String()
+	Return BBProcess.CurrentDir()
+End
+
+Function ChangeDir:Void( dir:String )
+	BBProcess.ChangeDir dir
+End
+
+Function Execute:Int( cmd:String )
+	Return BBProcess.System( cmd )
 End

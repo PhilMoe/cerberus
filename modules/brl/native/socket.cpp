@@ -172,7 +172,7 @@ bool BBSocket::Open( int proto ){
 			setsockopt( _sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&nodelay,sizeof(nodelay) );
 	
 			//Do this on Mac so server ports can be quickly reused...
-			#if __APPLE__
+			#if __APPLE__ || __linux
 			int flag=1;
 			setsockopt( _sock,SOL_SOCKET,SO_REUSEADDR,&flag,sizeof(flag) );
 			#endif

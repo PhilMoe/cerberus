@@ -1090,14 +1090,19 @@ public:
 		return ref new Platform::String( rep->data,rep->length );
 	}
 #endif
+	CString<char> ToUtf8()const{
+		std::vector<unsigned char> buf;
+		Save( buf );
+		return CString<char>( &buf[0],buf.size() );
+	}
 
-	bool Save( FILE *fp ){
+	bool Save( FILE *fp )const{
 		std::vector<unsigned char> buf;
 		Save( buf );
 		return buf.size() ? fwrite( &buf[0],1,buf.size(),fp )==buf.size() : true;
 	}
 	
-	void Save( std::vector<unsigned char> &buf ){
+	void Save( std::vector<unsigned char> &buf )const{
 	
 		Char *p=rep->data;
 		Char *e=p+rep->length;

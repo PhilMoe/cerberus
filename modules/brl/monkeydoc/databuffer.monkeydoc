@@ -78,6 +78,8 @@ The @encoding parameter should be one of:
 | "utf8"	| Unicode
 | "ascii"	| 8 bit ascii
 
+The returned value is the number of bytes poked into the databuffer.
+
 
 # Method PokeBytes:Void(address:Int,bytes:Int[],offset:Int,count:Int )
 
