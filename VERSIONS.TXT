@@ -1,4 +1,27 @@
 
+***** v81b *****
+
+Ant now referenced by absolute path in android builder because Yosemite...
+
+Fixed glfw/glfw3 targets so they can build with mingw64 (TDM-GCC-64 tested). Building with mingw64 will produce 64 bit apps by default.
+
+Removed forced 32 bit architecture for macos stdcpp builds.
+
+Moved some hard coded gcc options from transcc to makefile for glfw target.
+
+Added AppPath/AppArgs/SetEnv/GetEnv/ChangeDir/CurrentDir/Execute/ExitApp to brl.process - brl.filepath, brl.filesystem and brl.process should now be preferred over os module (although that wont be going anywhere just yet).
+
+Added src/mserver/mserver.monkey, src/launcher/launcher.monkey and src/rebuildall.monkey for linux 64.
+
+Renamed src/monkey->src/launcher; removed src/modman.
+
+Added #GLFW_VERSION int var to glfw targets.
+
+Fixed glfw3 window resizing not updating DeviceWidth/DeviceHeight.
+
+Fixed weird yosemite issue where ant wasn't found when building for android.
+
+
 ***** v81a *****
 
 Renamed a bunch of targets  - see IDE combo box. Shouldn't affect monkey code?
