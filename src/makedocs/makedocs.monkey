@@ -333,6 +333,8 @@ End
 
 Function Main:Int()
 
+	ChangeDir ExtractDir( AppPath() )
+
 	While FileType( "docs" )<>FILETYPE_DIR Or FileType( "modules" )<>FILETYPE_DIR
 		ChangeDir ".."
 	Wend
