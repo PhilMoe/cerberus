@@ -5,10 +5,16 @@ CFLAGS=
 CXX=g++
 CXXFLAGS=
 
-CPPFLAGS=$(CCOPTS) -I../glfw/include -I../glfw/lib -I../glfw/lib/win32 -I../openal/include -I../stb
+CPPFLAGS=$(CCOPTS) \
+-Wno-free-nonheap-object \
+-I../glfw/include \
+-I../glfw/lib \
+-I../glfw/lib/win32 \
+-I../openal/include \
+-I../stb
 
 LD=g++
-LDFLAGS=-Wl,--subsystem,windows -L../openal/libs/Win32
+LDFLAGS=-Wl,--subsystem,windows -L../openal/libs/Win32 -L../openal/libs/Win64
 LDLIBS=-lgdi32 -lopengl32 -lOpenAL32 -lws2_32
 
 OBJS=../glfw/lib/enable.o ../glfw/lib/fullscreen.o ../glfw/lib/glext.o ../glfw/lib/image.o ../glfw/lib/init.o ../glfw/lib/input.o \

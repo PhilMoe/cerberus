@@ -6,6 +6,8 @@ CXX=g++
 CXXFLAGS=
 
 CPPFLAGS=$(CCOPTS) \
+-Wno-free-nonheap-object \
+-Wno-unused-result \
 -I../glfw3/include \
 -I../openal/include \
 -I../stb \
@@ -15,7 +17,7 @@ CPPFLAGS=$(CCOPTS) \
 
 LD=g++
 LDFLAGS=
-LDLIBS=-lGL -lopenal -lX11 -lpthread -lXi -lXrandr -lXinerama -lXcursor
+LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread
 
 OBJS=\
 ../glfw3/src/context.o \

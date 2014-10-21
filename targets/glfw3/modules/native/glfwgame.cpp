@@ -53,6 +53,7 @@ private:
 	static void OnMouseButton( GLFWwindow *window,int button,int action,int mods );
 	static void OnCursorPos( GLFWwindow *window,double x,double y );
 	static void OnWindowClose( GLFWwindow *window );
+	static void OnWindowSize( GLFWwindow *window,int width,int height );
 };
 
 //***** glfwgame.cpp *****
@@ -454,6 +455,18 @@ void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
 	_glfwGame->KeyEvent( BBGameEvent::KeyUp,0x1b0 );
 }
 
+void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
+
+	_glfwGame->_width=width;
+	_glfwGame->_height=height;
+	
+#if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
+	_glfwGame->RenderGame();
+	glfwSwapBuffers( _glfwGame->_window );
+	_glfwGame->_nextUpdate=0;
+#endif
+}
+
 void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen ){
 
 	_focus=false;
@@ -512,6 +525,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	glfwSetMouseButtonCallback( _window,OnMouseButton );
 	glfwSetCursorPosCallback( _window,OnCursorPos );
 	glfwSetWindowCloseCallback(	_window,OnWindowClose );
+	glfwSetWindowSizeCallback(_window,OnWindowSize );
 }
 
 void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
