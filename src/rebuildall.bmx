@@ -1,10 +1,8 @@
 
-Strict
-
-RebuildTrans 
-'RebuildMakedocs
-'RebuildMServer
-'RebuildMonkey
+RebuildTranscc
+RebuildMakedocs
+RebuildMServer
+RebuildLauncher	'Note: On Windows, kill process Monkey.exe before rebuilding launcher!
 
 End
 
@@ -19,98 +17,93 @@ Const bin$="../bin/"
 Const ext$="_linux"
 ?
 
-Const QUICKTRANS=False
-
 Const trans$=bin+"transcc"+ext
 
 Const makedocs$=bin+"makedocs"+ext
 
-Function system( cmd$,fail=True )
-	If system_( cmd ) 
-		If fail
-			Print "system failed for: "+cmd
-			End
-		EndIf
-	EndIf
+Function Error( msg$ )
+	Print "***** ERROR ***** "+msg
+	exit_ -1
+'	End
 End Function
 
-Function RebuildTrans()
-	If QUICKTRANS
-?Win32
-		system "g++ -o ..\bin\transcc_winnt.exe transcc\transcc.build\cpptool\main.cpp"
-?Macos
-		system "g++ -arch i386 -read_only_relocs suppress -mmacosx-version-min=10.3 -o ../bin/transcc_macos transcc/transcc.build/cpptool/main.cpp"
-?Linux
-		system "g++ -o ../bin/transcc_linux transcc/transcc.build/cpptool/main.cpp"
-?
-		Return
-	EndIf
-	
-	Const trans_tmp$="transcc/transcc.build/cpptool/main"+ext
+Function Execute( cmd$,fail=True )
+	Return system_( cmd )
+End Function
 
-'	Const trans_mk$=trans+" -target=C++_Tool"
-	Const trans_mk$=trans+" -target=C++_Tool -builddir=transcc.build"
+Function Update( src$,dst$ )
+
+	DeleteFile dst
+	If FileType( dst ) Error "Failed to delete file:"+dst
 	
-	system trans_mk+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0 transcc/transcc.monkey"
-	
-	Delay 100
-	
-	DeleteFile trans
-	If FileType( trans )
-		Print "***** ERROR ***** Failed to delete transcc"
-		End
-	EndIf
-	
-	CopyFile trans_tmp,trans
-	If FileType( trans )<>FILETYPE_FILE 
-		Print "***** ERROR ***** Failed to copy transcc"
-		End
-	EndIf
+	CopyFile src,dst
+	If FileType( dst )<>FILETYPE_FILE Error "Failed to copy "+src+","+dst
 
 ?Not Win32
-	system "chmod +x "+trans
+	Execute "chmod +x "+dst
 ?
+
+End Function
+
+Function RebuildTranscc()
+
+	Print "~nRebuildall: rebuilding transcc..."
+	
+	Local opts$=""
+	opts:+" -target=C++_Tool -builddir=transcc.build"
+	opts:+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0"
+	
+	Local make$=trans+" "+opts+" transcc/transcc.monkey"
+	Print make
+	If Execute( make ) Error "Failed to build transcc"
+
+	Update "transcc/transcc.build/cpptool/main"+ext,"../bin/transcc"+ext
+	
 	Print "transcc built OK!"
 
 End Function
 
 Function RebuildMakedocs()
-	Const makedocs_tmp$="makedocs/makedocs.build/cpptool/main"+ext
 
-	system trans+" -target=C++_Tool -clean -config=release makedocs/makedocs.monkey"
+	Print "~nRebuild all: rebuilding makedocs..."
 	
-	DeleteFile makedocs
-	If FileType( makedocs )
-		Print "***** ERROR ***** Failed to delete makedocs"
-		End
-	Endif
+	Local opts$=""
+	opts:+" -target=C++_Tool -builddir=makedocs.build"
+	opts:+" -clean -config=release +CPP_GC_MODE=0"
 	
-	CopyFile makedocs_tmp,makedocs
-	If FileType( makedocs )<>FILETYPE_FILE
-		Print "***** ERROR ***** Failed to copy makedocs"
-		End
-	Endif
-
-?Not win32
-	system "chmod +x "+makedocs
-?
+	Local make$=trans+" "+opts+" makedocs/makedocs.monkey"
+	Print make
+	If Execute( make ) Error "Failed to build makedocs"
+	
+	Update "makedocs/makedocs.build/cpptool/main"+ext,"../bin/makedocs"+ext
+	
 	Print "makedocs built OK!"
+
 End Function
 
 Function RebuildMServer()
-	system "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -h -t gui -a -r -o "+bin+"mserver"+ext+" mserver/mserver.bmx"
+
+	Print "~nRebuild all: rebuilding mserver..."
+
+	If Execute( "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -h -t gui -a -r -o "+bin+"mserver"+ext+" mserver/mserver.bmx" ) Error "Failed to build mserver"
+	
 	Print "mserver built OK!"
+	
 End Function
 
-Function RebuildMonkey()
+Function RebuildLauncher()
+
+	Print "~nRebuild all: rebuilding launcher..."
+
 ?Win32
-	system "windres monkey/resource.rc monkey/resource.o"
+	Execute "windres launcher/resource.rc launcher/resource.o"
 ?
-	system "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -t gui -a -r -o ../Monkey monkey/monkey.bmx"
+	Execute "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -t gui -a -r -o ../Monkey launcher/launcher.bmx"
 ?MacOS
-	system "cp monkey/info.plist ../Monkey.app/Contents"
-	system "rm ../Monkey.app/Contents/Resources/monkey.icns"
-	system "cp monkey/monkey.icns ../Monkey.app/Contents/Resources"
+	Execute "cp launcher/info.plist ../Monkey.app/Contents"
+	Execute "rm ../Monkey.app/Contents/Resources/monkey.icns"
+	Execute "cp launcher/monkey.icns ../Monkey.app/Contents/Resources"
 ?	
-	Print "Monkey built OK!"
+	Print "launcher built OK!"
+	
 End Function
