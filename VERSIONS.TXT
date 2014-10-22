@@ -1,6 +1,10 @@
 
 ***** v81b *****
 
+Added #GLFW_WINDOW_DECORATED to glfw3 target - set to 'false' to create a borderless etc window.
+
+Fixed macos glfw3 audio not working.
+
 Ant now referenced by absolute path in android builder because Yosemite...
 
 Fixed glfw/glfw3 targets so they can build with mingw64 (TDM-GCC-64 tested). Building with mingw64 will produce 64 bit apps by default.
