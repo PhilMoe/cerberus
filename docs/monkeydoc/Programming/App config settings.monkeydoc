@@ -35,9 +35,13 @@ The following app config settings are currently supported:
 #GLFW_USE_MINGW=False					'Set to true on Windows to use Mingw instead of msvc2010 to build glfw apps
 #GLFW_WINDOW_TITLE="Monkey Game"
 #GLFW_WINDOW_WIDTH=640					'Set this and HEIGHT to 0 for a 'windowless' glfw app
-#GLFW_WINDOW_HEIGHT=480					
+#GLFW_WINDOW_HEIGHT=480	
 #GLFW_WINDOW_RESIZABLE=False
 #GLFW_WINDOW_FULLSCREEN=False
+#GLFW_WINDOW_SAMPLES=0					'Set to number of samples for multisampling (glfw3 only). Defaults to 0.
+#GLFW_WINDOW_DECORATED=False			'Set to false to create a broderless window (glfw3 only). Defaults to True.
+#GLFW_VERSION=2							'Set to GLFW version, ie: 2 or 3.			
+
 #GLFW_APP_LABEL="My App"				'Human readable label for app. 
 										'Must be set for monkey://internal to map to 'per user' app data dir.
 										'If not set (the default), monkey://internal is shared by all users of app.
