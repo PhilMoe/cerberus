@@ -821,15 +821,6 @@ static void FlushDiscarded(){
 int gxtkChannel::AL_Source(){
 	if( source ) return source;
 
-	/*	
-	static int n;
-	if( ++n<17 ){
-		alGetError();
-		alGenSources( 1,&source );
-		if( alGetError()==AL_NO_ERROR ) return source;
-	}
-	*/
-	
 	alGetError();
 	alGenSources( 1,&source );
 	if( alGetError()==AL_NO_ERROR ) return source;
@@ -858,6 +849,7 @@ gxtkAudio::gxtkAudio(){
 		if( !alcDevice ) alcDevice=alcOpenDevice( "Generic Software" );
 	}
 
+	bbPrint( "opening openal device" );
 	if( alcDevice ){
 		if( alcContext=alcCreateContext( alcDevice,0 ) ){
 			if( alcMakeContextCurrent( alcContext ) ){
@@ -1085,7 +1077,6 @@ al_buffer(buf){
 }
 
 gxtkSample::~gxtkSample(){
-	puts( "Discarding sample" );
 	Discard();
 }
 
