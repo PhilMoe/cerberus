@@ -21,6 +21,7 @@ public:
 
 	virtual String PathToFilePath( String path );
 	virtual unsigned char *LoadImageData( String path,int *width,int *height,int *format );
+	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	
 	void Run();
 	
@@ -302,6 +303,25 @@ unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int
 }
 */
 
+unsigned char *BBGlfwGame::LoadAudioData( String path,int *length,int *channels,int *format,int *hertz ){
+
+	FILE *f=OpenFile( path,"rb" );
+	if( !f ) return 0;
+	
+	unsigned char *data=0;
+	
+	if( path.ToLower().EndsWith( ".wav" ) ){
+		data=LoadWAV( f,length,channels,format,hertz );
+	}else if( path.ToLower().EndsWith( ".ogg" ) ){
+		data=LoadOGG( f,length,channels,format,hertz );
+	}
+	fclose( f );
+	
+	if( data ) gc_ext_malloced( (*length)*(*channels)*(*format) );
+	
+	return data;
+}
+
 //glfw key to monkey key!
 int BBGlfwGame::TransKey( int key ){
 
@@ -490,6 +510,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	glfwWindowHint( GLFW_VISIBLE,fullscreen ? GL_TRUE : GL_FALSE );
 	glfwWindowHint( GLFW_SAMPLES,CFG_GLFW_WINDOW_SAMPLES );
 	glfwWindowHint( GLFW_REFRESH_RATE,60 );
+	glfwWindowHint( GLFW_DECORATED,CFG_GLFW_WINDOW_DECORATED ? GL_TRUE : GL_FALSE );
 	
 	GLFWmonitor *monitor=0;
 	if( fullscreen ) monitor=glfwGetPrimaryMonitor();
