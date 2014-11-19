@@ -26,9 +26,13 @@ The following app config settings are currently supported:
 
 'Mojo settings, defaults shown
 '
-#MOJO_AUTO_SUSPEND_ENABLED=True			'Set to True to cause app to suspend when desktop window loses focus
+#MOJO_AUTO_SUSPEND_ENABLED=True			'Set to True to cause app to suspend when desktop window loses focus.
 #MOJO_HICOLOR_TEXTURES=True	
 #MOJO_IMAGE_FILTERING_ENABLED=True
+
+'Html5 settings, defaults shown
+'
+#HTML5_WEBAUDIO_ENABLED=True			'Set to false to disable webaudio support for mojo audio, and to use older multimedia audio system instead.
 
 'GLFW settings, defaults shown
 '
@@ -38,8 +42,8 @@ The following app config settings are currently supported:
 #GLFW_WINDOW_HEIGHT=480	
 #GLFW_WINDOW_RESIZABLE=False
 #GLFW_WINDOW_FULLSCREEN=False
-#GLFW_WINDOW_SAMPLES=0					'Set to number of samples for multisampling (glfw3 only). Defaults to 0.
-#GLFW_WINDOW_DECORATED=False			'Set to false to create a broderless window (glfw3 only). Defaults to True.
+#GLFW_WINDOW_SAMPLES=0					'Set to number of samples for multisampling (glfw3 only).
+#GLFW_WINDOW_DECORATED=True				'Set to false to create a broderless window (glfw3 only).
 #GLFW_VERSION=2							'Set to GLFW version, ie: 2 or 3.			
 
 #GLFW_APP_LABEL="My App"				'Human readable label for app. 
@@ -108,7 +112,7 @@ The following app config settings are currently supported:
 
 'Misc
 '
-#CC_OPTS							'additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_OPTS=""							'additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 
 </pre>
 

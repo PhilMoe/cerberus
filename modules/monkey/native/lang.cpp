@@ -31,7 +31,11 @@ void dbg_error( const char *p );
 
 //***** GC Config *****
 
+#if CFG_CPP_GC_DEBUG
+#define DEBUG_GC 1
+#else
 #define DEBUG_GC 0
+#endif
 
 // GC mode:
 //
@@ -493,8 +497,8 @@ void gc_collect(){
 
 #if DEBUG_GC
 	ms=gc_micros()-ms;
-	if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
-//	if( ms>=0 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
+//	if( ms>=100 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
+	if( ms>10 ) {printf( "gc time:%i\n",ms );fflush( stdout );}
 #endif
 
 #endif

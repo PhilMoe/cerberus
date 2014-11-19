@@ -4,7 +4,7 @@ Import brl.filepath
 Import brl.filesystem
 
 Function RebuildAll:Void()
-'	RebuildTranscc		'not available on windows - use rebuildall.bmx
+	RebuildTranscc		'not available on windows - use rebuildall.bmx
 '	RebuildMakedocs
 '	RebuildMServer
 '	RebuildLauncher		'not available on window/macos - use rebuildall.bmx

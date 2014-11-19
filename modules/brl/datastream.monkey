@@ -4,13 +4,13 @@ Import brl.stream
 Class DataStream Extends Stream
 
 	Method New( buffer:DataBuffer,offset:Int=0 )
-		_buffer=buf
+		_buffer=buffer
 		_offset=offset
-		_length=buf.Length-offset
+		_length=buffer.Length-offset
 	End
 	
 	Method New( buffer:DataBuffer,offset:Int,length:Int )
-		_buffer=buf
+		_buffer=buffer
 		_offset=offset
 		_length=length
 	End
@@ -43,34 +43,35 @@ Class DataStream Extends Stream
 	Method Close:Void()
 		If _buffer
 			_buffer=Null
-			_position=0
+			_offset=0
 			_length=0
+			_position=0
 		Endif
 	End
 	
 	Method Read:Int( buf:DataBuffer,offset:Int,count:Int )
 		If _position+count>_length count=_length-_position
-		For Local i:=0 Until count
-			buf.PokeByte offset+i,_buffer.PeekByte( _offset+_position+i )
-		Next
+
+		_buffer.CopyBytes _offset+_position,buf,offset,count
 		_position+=count
+
 		Return count
 	End
 	
 	Method Write:Int( buf:DataBuffer,offset:Int,count:Int )
 		If _position+count>_length count=_length-_position
-		For Local i:=0 Until count
-			_buffer.PokeByte _offset+_position+i,buf.PeekByte( offset+i )
-		Next
+		
+		buf.CopyBytes offset,_buffer,_offset+_position,count
 		_position+=count
+		
 		Return count
 	End
 	
 	Private
 	
 	Field _buffer:DataBuffer
-	Field _position:Int
 	Field _offset:Int
 	Field _length:Int
+	Field _position:Int
 	
 End

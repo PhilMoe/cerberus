@@ -1,8 +1,8 @@
 
 RebuildTranscc
-RebuildMakedocs
-RebuildMServer
-RebuildLauncher	'Note: On Windows, kill process Monkey.exe before rebuilding launcher!
+'RebuildMakedocs
+'RebuildMServer
+'RebuildLauncher	'Note: On Windows, kill process Monkey.exe before rebuilding launcher!
 
 End
 
@@ -51,6 +51,7 @@ Function RebuildTranscc()
 	
 	Local opts$=""
 	opts:+" -target=C++_Tool -builddir=transcc.build"
+'	opts:+" -clean -config=debug +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0"
 	opts:+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0"
 	
 	Local make$=trans+" "+opts+" transcc/transcc.monkey"

@@ -354,9 +354,9 @@ String BBProcess::AppPath(){
 	
 #if _WIN32
 
-	WCHAR buf[PATH_MAX+1];
-	GetModuleFileNameW( GetModuleHandleW(0),buf,PATH_MAX );
-	buf[PATH_MAX]=0;
+	WCHAR buf[MAX_PATH+1];
+	GetModuleFileNameW( GetModuleHandleW(0),buf,MAX_PATH );
+	buf[MAX_PATH]=0;
 	_appPath=String( buf );
 	
 #elif __APPLE__

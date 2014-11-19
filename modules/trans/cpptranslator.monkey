@@ -751,7 +751,7 @@ Class CppTranslator Extends CTranslator
 		'extern null types
 		For Local decl:=Eachin app.allSemantedDecls
 			Local cdecl:=ClassDecl( decl )
-			If Not cdecl Or cdecl.ExtendsObject() Or cdecl.munged="String" Continue
+			If Not cdecl Or cdecl.ExtendsObject() Or cdecl.munged="String" Or cdecl.munged="Array" Continue
 			Emit "void gc_mark( "+cdecl.munged+" *p ){}"
 			If ENV_CONFIG="debug"
 				Emit "String dbg_type( "+cdecl.munged+" **p ){ return ~q"+decl.ident+"~q; }"

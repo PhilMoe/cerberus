@@ -315,6 +315,7 @@
 				);
 				INFOPLIST_FILE = "MonkeyGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
 			};
@@ -337,6 +338,7 @@
 				);
 				INFOPLIST_FILE = "MonkeyGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = MonkeyGame;
 				SDKROOT = macosx;
 			};

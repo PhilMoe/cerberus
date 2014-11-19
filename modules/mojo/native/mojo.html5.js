@@ -434,6 +434,7 @@ var gxtkChannel=function(){
 	this.waGain.connect( wa.destination );
 	this.waPanner=wa.createPanner();
 	this.waPanner.rolloffFactor=0;
+	this.waPanner.panningModel="equalpower";
 	this.waPanner.connect( this.waGain );
 	this.startTime=0;
 	this.offset=0;

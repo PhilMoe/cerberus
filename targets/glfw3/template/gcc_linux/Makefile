@@ -6,6 +6,7 @@ CXX=g++
 CXXFLAGS=
 
 CPPFLAGS=$(CCOPTS) \
+-Wno-int-to-pointer-cast \
 -Wno-free-nonheap-object \
 -Wno-unused-result \
 -I../glfw3/include \
@@ -16,7 +17,7 @@ CPPFLAGS=$(CCOPTS) \
 
 LD=g++
 LDFLAGS=
-LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread
+LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread -ldl
 
 OBJS=\
 ../glfw3/src/context.o \
