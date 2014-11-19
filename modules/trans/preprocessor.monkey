@@ -41,17 +41,20 @@ Function EvalText:String( toker:Toker )
 	Return val
 End
 
-Function PreProcess$( path$,modpath$="" )
+Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 
 	Local cnest,ifnest,line,source:=New StringStack
-	
-	Local toker:=New Toker( path,LoadString( path ) )
-	toker.NextToke
 	
 	PushEnv GetConfigScope()
 	
 	SetConfigVar "CD",ExtractDir( RealPath( path ) )
-	If modpath SetConfigVar "MODPATH",modpath
+	If mdecl SetConfigVar "MODPATH",mdecl.rmodpath
+	
+	Local toker:=New Toker( path,LoadString( path ) )
+	toker.NextToke
+	
+	Local attrs:=0
+'	If mdecl mdecl.ImportModule "monkey",0
 	
 	Repeat
 
@@ -71,11 +74,39 @@ Function PreProcess$( path$,modpath$="" )
 		
 		If toker.Toke<>"#"
 			If cnest=ifnest
-				Local line$
+				Local line:=""
 				While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
-					Local toke$=toker.Toke
-					line+=toke
+				
+					Local toke:=toker.Toke
 					toker.NextToke
+					
+					If mdecl
+						Select toke.ToLower()
+						Case "public"
+							attrs=0
+						Case "private"
+							attrs=DECL_PRIVATE
+						Case "import"
+							While toker.TokeType=TOKE_SPACE
+								toke+=toker.Toke
+								toker.NextToke
+							Wend
+							If toker.TokeType=TOKE_IDENT
+								Local modpath:=toker.Toke
+								While toker.NextToke="."
+									modpath+="."
+									toker.NextToke
+									If toker.TokeType<>TOKE_IDENT Exit
+									modpath+=toker.Toke
+								Wend
+								toke+=modpath
+'								Print "Import found: "+toke
+								mdecl.ImportModule modpath,attrs
+							Endif
+						End
+					Endif
+					
+					line+=toke
 				Wend
 				If line source.Push line
 			Endif
@@ -200,7 +231,7 @@ Function PreProcess$( path$,modpath$="" )
 	Forever
 	
 	RemoveConfigVar "CD"
-	If modpath RemoveConfigVar "MODPATH"
+	If mdecl RemoveConfigVar "MODPATH"
 
 	PopEnv
 		

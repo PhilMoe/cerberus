@@ -1576,74 +1576,14 @@ Class Parser
 	End
 	
 	Method ImportModule( modpath$,attrs )
-	
-		Local cdir:=RealPath( ExtractDir( _toker.Path ) )
-		
-		Local dir:="",filepath:="",mpath:=modpath.Replace( ".","/" )+"."+FILE_EXT			'blah/etc.monkey
-		
-		For dir=Eachin ENV_MODPATH.Split( ";" )
-			If Not dir Continue
-			
-			'blah.monkey path
-			If dir="."
-				filepath=cdir+"/"+mpath
-			Else
-				filepath=RealPath( dir )+"/"+mpath
-			Endif
-			
-			'blah/blah.monkey path			
-			Local filepath2:=StripExt( filepath )+"/"+StripDir( filepath )
-			
-			If FileType( filepath )=FILETYPE_FILE
-				If FileType( filepath2 )<>FILETYPE_FILE Exit
-				Err "Duplicate module file: '"+filepath+"' and '"+filepath2+"'."
-			Endif
-			
-			filepath=filepath2
-			If FileType( filepath )=FILETYPE_FILE
-				If modpath.Contains( "." ) 	modpath+="."+ExtractExt( modpath ) Else modpath+="."+modpath
-				Exit
-			Endif
-			
-			filepath=""
-		Next
-		
-		If dir="." And _module.modpath.Contains( "." )
-			modpath=StripExt( _module.modpath )+"."+modpath
-		Endif
-	
-		Local mdecl:=_app.imported.Get( filepath )
-		If mdecl And mdecl.modpath<>modpath
-			Print "Modpath error - import="+modpath+", existing="+mdecl.modpath
-		Endif
-		
-		If _module.imported.Contains( filepath ) Return
-		
-		If Not mdecl mdecl=ParseModule( modpath,filepath,_app )
-		
-		_module.imported.Insert mdecl.filepath,mdecl
-		
-		If Not (attrs & DECL_PRIVATE) _module.pubImported.Insert mdecl.filepath,mdecl
-		
-		_module.InsertDecl New AliasDecl( mdecl.ident,attrs,mdecl )
-
+		'done by preprocessor now...	
 	End
 	
 	Method ParseMain()
 	
 		SkipEols
 		
-		If _module
-		
-			If CParse( "strict" ) _module.attrs|=MODULE_STRICT
-		
-			_module.imported.Set _module.filepath,_module
-			
-			_app.InsertModule _module
-			
-			ImportModule "monkey",0
-			
-		Endif
+		If _module And CParse( "strict" ) _module.attrs|=MODULE_STRICT
 			
 		Local attrs
 		
@@ -1781,9 +1721,11 @@ Function ParseModule:ModuleDecl( modpath$,filepath$,app:AppDecl )
 	Local ident:=modpath
 	If ident.Contains( "." ) ident=ExtractExt( ident )
 	
-	Local mdecl:=New ModuleDecl( ident,0,"",modpath,filepath )
+	Local mdecl:=New ModuleDecl( ident,0,"",modpath,filepath,app )
+	
+	mdecl.ImportModule "monkey",0
 
-	Local source:=PreProcess( filepath,mdecl.rmodpath )
+	Local source:=PreProcess( filepath,mdecl )
 	
 	Local toker:=New Toker( filepath,source )
 

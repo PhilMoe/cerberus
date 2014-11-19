@@ -1228,7 +1228,7 @@ Class ModuleDecl Extends ScopeDecl
 		Return "Module "+modpath
 	End
 	
-	Method New( ident$,attrs,munged$,modpath$,filepath$ )
+	Method New( ident$,attrs,munged$,modpath$,filepath$,app:AppDecl )
 	
 		Self.ident=ident
 		Self.attrs=attrs
@@ -1241,6 +1241,9 @@ Class ModuleDecl Extends ScopeDecl
 			Local bits:=modpath.Split( "." ),n:=bits.Length
 			If n>1 And bits[n-2]=bits[n-1] Self.rmodpath=StripExt( modpath )
 		Endif
+		
+		imported.Set filepath,Self
+		app.InsertModule Self
 		
 '		Print "Created module: ident="+Self.ident+", modpath="+Self.rmodpath+", filepath="+Self.filepath
 	End
@@ -1311,6 +1314,61 @@ Class ModuleDecl Extends ScopeDecl
 	
 	Method GetDecl2:Object( ident$ )
 		Return Super.GetDecl( ident )
+	End
+
+	Method ImportModule( modpath$,attrs )
+	
+		Local cdir:=ExtractDir( Self.filepath )
+		
+		Local dir:="",filepath:="",mpath:=modpath.Replace( ".","/" )+"."+FILE_EXT			'blah/etc.monkey
+		
+		For dir=Eachin ENV_MODPATH.Split( ";" )
+			If Not dir Continue
+			
+			'blah.monkey path
+			If dir="."
+				filepath=cdir+"/"+mpath
+			Else
+				filepath=RealPath( dir )+"/"+mpath
+			Endif
+			
+			'blah/blah.monkey path			
+			Local filepath2:=StripExt( filepath )+"/"+StripDir( filepath )
+			
+			If FileType( filepath )=FILETYPE_FILE
+				If FileType( filepath2 )<>FILETYPE_FILE Exit
+				Err "Duplicate module file: '"+filepath+"' and '"+filepath2+"'."
+			Endif
+			
+			filepath=filepath2
+			If FileType( filepath )=FILETYPE_FILE
+				If modpath.Contains( "." ) 	modpath+="."+ExtractExt( modpath ) Else modpath+="."+modpath
+				Exit
+			Endif
+			
+			filepath=""
+		Next
+		
+		If dir="." And Self.modpath.Contains( "." )
+			modpath=StripExt( Self.modpath )+"."+modpath
+		Endif
+		
+		Local app:=AppDecl( scope )
+	
+		Local mdecl:=app.imported.Get( filepath )
+		If mdecl And mdecl.modpath<>modpath
+			Print "Modpath error - import="+modpath+", existing="+mdecl.modpath
+		Endif
+		
+		If Self.imported.Contains( filepath ) Return
+		
+		If Not mdecl mdecl=ParseModule( modpath,filepath,app )
+		
+		Self.imported.Insert mdecl.filepath,mdecl
+		
+		If Not (attrs & DECL_PRIVATE) Self.pubImported.Insert mdecl.filepath,mdecl
+		
+		Self.InsertDecl New AliasDecl( mdecl.ident,attrs,mdecl )
 	End
 
 	Method OnSemant()
