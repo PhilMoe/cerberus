@@ -1,4 +1,15 @@
 
+***** v82a *****
+
+Fixed some typos in brl.datastream.
+
+Imports now happen while preprocessing, not after.
+
+Fixed c++ issue with reflection and recent extends null fixes.
+
+Fixed html5 webaudio panning issue - panningModel now set to "equalpower".
+
+
 ***** v81b *****
 
 Added #GLFW_WINDOW_DECORATED to glfw3 target - set to 'false' to create a borderless etc window.
