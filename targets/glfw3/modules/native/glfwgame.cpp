@@ -512,6 +512,13 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	glfwWindowHint( GLFW_REFRESH_RATE,60 );
 	glfwWindowHint( GLFW_DECORATED,CFG_GLFW_WINDOW_DECORATED ? GL_TRUE : GL_FALSE );
 	
+#if CFG_GLFW_CONTEXT_VERSION_MAJOR && CFG_GLFW_CONTEXT_VERSION_MINOR
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR,CFG_GLFW_CONTEXT_VERSION_MAJOR );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR,CFG_GLFW_CONTEXT_VERSION_MINOR );
+	glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE );
+	glfwWindowHint( GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE );
+#endif
+	
 	GLFWmonitor *monitor=0;
 	if( fullscreen ) monitor=glfwGetPrimaryMonitor();
 	
