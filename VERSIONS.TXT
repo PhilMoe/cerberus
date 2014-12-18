@@ -1,4 +1,15 @@
 
+***** v82b *****
+
+Fixed glfw3 windows/linux gcc builds dumping obj files in same dir.
+
+Fixed val decls can have void type.
+
+Upped max debugger array elements dumped from 10 to 100.
+
+Fixed issue with alias statements confusing/crashing new import handling.
+
+
 ***** v82a *****
 
 Fixed some typos in brl.datastream.
