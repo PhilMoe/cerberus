@@ -1376,7 +1376,7 @@ template<class T> String dbg_value( T **t ){
 template<class T> String dbg_value( Array<T> *p ){
 	String t="[";
 	int n=(*p).Length();
-	if( n>10 ) n=10;
+	if( n>100 ) n=100;
 	for( int i=0;i<n;++i ){
 		if( i ) t+=",";
 		t+=dbg_value( &(*p)[i] );
