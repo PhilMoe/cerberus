@@ -202,6 +202,7 @@ Class ValDecl Extends Decl
 		Else
 			InternalErr
 		Endif
+		If VoidType( type ) Err "Declaration has void type."
 	End
 	
 End
