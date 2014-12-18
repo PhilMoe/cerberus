@@ -37,7 +37,7 @@ Class GlfwBuilder Extends Builder
 
 			ChangeDir dst
 			CreateDir "build"
-			CreateDir "build/"+ENV_CONFIG
+			CreateDir "build/"+casedConfig
 	
 			Local ccopts:=""
 			Select ENV_CONFIG

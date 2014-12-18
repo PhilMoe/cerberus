@@ -19,27 +19,41 @@ LD=g++
 LDFLAGS=
 LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread -ldl
 
-OBJS=\
-../glfw3/src/context.o \
-../glfw3/src/init.o \
-../glfw3/src/input.o \
-../glfw3/src/joystick.o \
-../glfw3/src/monitor.o \
-../glfw3/src/time.o \
-../glfw3/src/window.o \
-../glfw3/src/glx_context.o \
-../glfw3/src/x11_init.o \
-../glfw3/src/x11_monitor.o \
-../glfw3/src/x11_window.o \
-../glfw3/src/posix_time.o \
-../glfw3/src/posix_tls.o \
-../glfw3/src/linux_joystick.o \
-../glfw3/src/xkb_unicode.o \
-../stb/stb_vorbis.o \
-../stb/stb_image.o \
-../main.o
+vpath %.c ../glfw3/src
+vpath %.c ../stb
+vpath %.cpp ..
+
+OBJS0=\
+context.o \
+init.o \
+input.o \
+joystick.o \
+monitor.o \
+time.o \
+window.o \
+glx_context.o \
+x11_init.o \
+x11_monitor.o \
+x11_window.o \
+posix_time.o \
+posix_tls.o \
+linux_joystick.o \
+xkb_unicode.o \
+stb_vorbis.o \
+stb_image.o \
+main.o
+
+TMP=build/$(dir $(OUT))
+
+OBJS=$(patsubst %.o,$(TMP)%.o,$(OBJS0))
 
 all : $(OUT)
 
 $(OUT) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+
+$(TMP)%.o : %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(TMP)%.o : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
