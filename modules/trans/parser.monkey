@@ -1630,7 +1630,7 @@ Class Parser
 
 					Local scope:ScopeDecl=_module
 					
-					_env=_module	'naughty! Shouldn't be doing GetDecl in parser...
+					PushEnv _module	'naughty! Shouldn't be doing GetDecl in parser...
 					
 					Repeat
 						Local id:=ParseIdent()
@@ -1640,8 +1640,8 @@ Class Parser
 						scope=ScopeDecl( decl )
 						If Not scope Or FuncDecl( scope ) Err "Invalid scope '"+id+"'."
 					Forever
-					
-					_env=Null	'/naughty
+
+					PopEnv			'/naughty
 					
 					_module.InsertDecl New AliasDecl( ident,attrs,decl )
 					
