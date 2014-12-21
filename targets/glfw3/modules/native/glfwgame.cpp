@@ -433,6 +433,7 @@ void BBGlfwGame::OnKey( GLFWwindow *window,int key,int scancode,int action,int m
 	
 	switch( action ){
 	case GLFW_PRESS:
+	case GLFW_REPEAT:
 		_glfwGame->KeyEvent( BBGameEvent::KeyDown,key );
 		if( int chr=KeyToChar( key ) ) _glfwGame->KeyEvent( BBGameEvent::KeyChar,chr );
 		break;
