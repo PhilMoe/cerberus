@@ -1,4 +1,11 @@
 
+***** v82c *****
+
+Updated glfw3 to github version.
+
+Added GLFW_REPEAT to OnKey handler for glfw target for GetChar fix.
+
+
 ***** v82b *****
 
 Fixed glfw3 windows/linux gcc builds dumping obj files in same dir.

@@ -146,8 +146,13 @@ extern "C" {
 #if defined(__APPLE_CC__)
   #if defined(GLFW_INCLUDE_GLCOREARB)
     #include <OpenGL/gl3.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <OpenGL/gl3ext.h>
+    #endif
   #elif !defined(GLFW_INCLUDE_NONE)
-//    #define GL_GLEXT_LEGACY
+    #if !defined(GLFW_INCLUDE_GLEXT)
+      #define GL_GLEXT_LEGACY
+    #endif
     #include <OpenGL/gl.h>
   #endif
   #if defined(GLFW_INCLUDE_GLU)
@@ -158,14 +163,29 @@ extern "C" {
     #include <GL/glcorearb.h>
   #elif defined(GLFW_INCLUDE_ES1)
     #include <GLES/gl.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <GLES/glext.h>
+    #endif
   #elif defined(GLFW_INCLUDE_ES2)
     #include <GLES2/gl2.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <GLES2/gl2ext.h>
+    #endif
   #elif defined(GLFW_INCLUDE_ES3)
     #include <GLES3/gl3.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <GLES3/gl2ext.h>
+    #endif
   #elif defined(GLFW_INCLUDE_ES31)
     #include <GLES3/gl31.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <GLES3/gl2ext.h>
+    #endif
   #elif !defined(GLFW_INCLUDE_NONE)
     #include <GL/gl.h>
+    #if defined(GLFW_INCLUDE_GLEXT)
+      #include <GL/glext.h>
+    #endif
   #endif
   #if defined(GLFW_INCLUDE_GLU)
     #include <GL/glu.h>
@@ -182,12 +202,12 @@ extern "C" {
 
 #if defined(_WIN32) && defined(_GLFW_BUILD_DLL)
 
- /* We are building a Win32 DLL */
+ /* We are building GLFW as a Win32 DLL */
  #define GLFWAPI __declspec(dllexport)
 
 #elif defined(_WIN32) && defined(GLFW_DLL)
 
- /* We are calling a Win32 DLL */
+ /* We are calling GLFW as a Win32 DLL */
  #if defined(__LCC__)
   #define GLFWAPI extern
  #else
@@ -196,11 +216,12 @@ extern "C" {
 
 #elif defined(__GNUC__) && defined(_GLFW_BUILD_DLL)
 
+ /* We are building GLFW as a shared / dynamic library */
  #define GLFWAPI __attribute__((visibility("default")))
 
 #else
 
- /* We are either building/calling a static lib or we are non-win32 */
+ /* We are building or calling GLFW as a static library */
  #define GLFWAPI
 
 #endif
@@ -526,6 +547,20 @@ extern "C" {
 #define GLFW_OUT_OF_MEMORY          0x00010005
 /*! @brief GLFW could not find support for the requested client API on the
  *  system.
+ *
+ *  GLFW could not find support for the requested client API on the system.
+ *
+ *  @par Analysis
+ *  The installed graphics driver does not support the requested client API, or
+ *  does not support it via the chosen context creation backend.  Below are
+ *  a few examples.
+ *
+ *  @par
+ *  Some pre-installed Windows graphics drivers do not support OpenGL.  AMD only
+ *  supports OpenGL ES via EGL, while nVidia and Intel only supports it via
+ *  a WGL or GLX extension.  OS X does not provide OpenGL ES at all.  The Mesa
+ *  EGL, OpenGL and OpenGL ES libraries do not interface with the nVidia binary
+ *  driver.
  */
 #define GLFW_API_UNAVAILABLE        0x00010006
 /*! @brief The requested OpenGL or OpenGL ES version is not available.
@@ -539,10 +574,11 @@ extern "C" {
  *  Otherwise, inform the user that their machine does not match your
  *  requirements.
  *
- *  @note Because GLFW is not psychic, future invalid OpenGL and OpenGL ES
- *  versions, say for example OpenGL 4.8 if 5.0 comes out before the 4.x series
- *  gets that far, also fail with this error and not @ref GLFW_INVALID_VALUE.
- *  The version logic is updated in every patch release, as needed.
+ *  @par
+ *  Future invalid OpenGL and OpenGL ES versions, for example OpenGL 4.8 if 5.0
+ *  comes out before the 4.x series gets that far, also fail with this error and
+ *  not @ref GLFW_INVALID_VALUE, because GLFW cannot know what future versions
+ *  will exist.
  */
 #define GLFW_VERSION_UNAVAILABLE    0x00010007
 /*! @brief A platform-specific error occurred that does not match any of the
@@ -556,7 +592,24 @@ extern "C" {
  *  [issue tracker](https://github.com/glfw/glfw/issues).
  */
 #define GLFW_PLATFORM_ERROR         0x00010008
-/*! @brief The clipboard did not contain data in the requested format.
+/*! @brief The requested format is not supported or available.
+ *
+ *  If emitted during window creation, the requested pixel format is not
+ *  supported.
+ *
+ *  If emitted when querying the clipboard, the contents of the clipboard could
+ *  not be converted to the requested format.
+ *
+ *  @par Analysis
+ *  If emitted during window creation, one or more
+ *  [hard constraints](@ref window_hints_hard) did not match any of the
+ *  available pixel formats.  If your application is sufficiently flexible,
+ *  downgrade your requirements and try again.  Otherwise, inform the user that
+ *  their machine does not match your requirements.
+ *
+ *  @par
+ *  If emitted when querying the clipboard, ignore the error or report it to
+ *  the user, as appropriate.
  */
 #define GLFW_FORMAT_UNAVAILABLE     0x00010009
 /*! @} */
@@ -618,6 +671,42 @@ extern "C" {
 #define GLFW_ANY_RELEASE_BEHAVIOR            0
 #define GLFW_RELEASE_BEHAVIOR_FLUSH 0x00035001
 #define GLFW_RELEASE_BEHAVIOR_NONE  0x00035002
+
+/*! @defgroup shapes Standard cursor shapes
+ *  @ingroup input
+ *  @{ */
+
+/*! @brief The regular arrow cursor shape.
+ *
+ *  The regular arrow cursor.
+ */
+#define GLFW_ARROW_CURSOR           0x00036001
+/*! @brief The text input I-beam cursor shape.
+ *
+ *  The text input I-beam cursor shape.
+ */
+#define GLFW_IBEAM_CURSOR           0x00036002
+/*! @brief The crosshair shape.
+ *
+ *  The crosshair shape.
+ */
+#define GLFW_CROSSHAIR_CURSOR       0x00036003
+/*! @brief The hand shape.
+ *
+ *  The hand shape.
+ */
+#define GLFW_HAND_CURSOR            0x00036004
+/*! @brief The horizontal resize arrow shape.
+ *
+ *  The horizontal resize arrow shape.
+ */
+#define GLFW_HRESIZE_CURSOR         0x00036005
+/*! @brief The vertical resize arrow shape.
+ *
+ *  The vertical resize arrow shape.
+ */
+#define GLFW_VRESIZE_CURSOR         0x00036006
+/*! @} */
 
 #define GLFW_CONNECTED              0x00040001
 #define GLFW_DISCONNECTED           0x00040002
@@ -960,8 +1049,6 @@ typedef struct GLFWgammaramp
 } GLFWgammaramp;
 
 /*! @brief Image data.
- *
- *  @ingroup window
  */
 typedef struct GLFWimage
 {
@@ -1001,6 +1088,12 @@ typedef struct GLFWimage
  *  application to the `Contents/Resources` subdirectory of the application's
  *  bundle, if present.  This can be disabled with a
  *  [compile-time option](@ref compile_options_osx).
+ *
+ *  @remarks __X11:__ If the `LC_CTYPE` category of the current locale is set to
+ *  `"C"` then the environment's locale will be applied to that category.  This
+ *  is done because character input will not function when `LC_CTYPE` is set to
+ *  `"C"`.  If another locale was set before this function was called, it will
+ *  be left untouched.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
@@ -1555,7 +1648,8 @@ GLFWAPI void glfwWindowHint(int target, int hint);
  *  @remarks __X11:__ Some window managers will not respect the placement of
  *  initially hidden windows.
  *
- *  @note This function may not be called from a callback.
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
@@ -1583,10 +1677,11 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height, const char* title, G
  *
  *  @param[in] window The window to destroy.
  *
- *  @note This function may not be called from a callback.
- *
  *  @note The context of the specified window must not be current on any other
  *  thread when this function is called.
+ *
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
@@ -2249,7 +2344,8 @@ GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* window
  *
  *  Event processing is not required for joystick input to work.
  *
- *  @note This function may not be called from a callback.
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
@@ -2292,10 +2388,11 @@ GLFWAPI void glfwPollEvents(void);
  *
  *  Event processing is not required for joystick input to work.
  *
- *  @note This function may not be called from a callback.
- *
  *  @note On some platforms, certain callbacks may be called outside of a call
  *  to one of the event processing functions.
+ *
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
@@ -2553,7 +2650,7 @@ GLFWAPI void glfwGetCursorPos(GLFWwindow* window, double* xpos, double* ypos);
  */
 GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
 
-/*! @brief Creates a cursor.
+/*! @brief Creates a custom cursor.
  *
  *  Creates a new cursor that can be made the system cursor for a window with
  *  @ref glfwSetCursor.  The cursor can be destroyed with @ref
@@ -2570,16 +2667,18 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
  *  @return A new cursor ready to use or `NULL` if an
  *  [error](@ref error_handling) occurred.
  *
- *  @note This function may not be called from a callback.
- *
  *  @par Pointer Lifetime
  *  The specified image data is copied before this function returns.
+ *
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.
  *
  *  @sa @ref input_cursor
  *  @sa glfwDestroyCursor
+ *  @sa glfwCreateStandardCursor
  *
  *  @par History
  *  Added in GLFW 3.1.
@@ -2587,6 +2686,32 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
  *  @ingroup input
  */
 GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot);
+
+/*! @brief Creates a cursor with a standard shape.
+ *
+ *  Returns a cursor with a [standard shape](@ref shapes), which can be made the
+ *  system cursor for a window with @ref glfwSetCursor.
+ *
+ *  @param[in] shape One of the [standard shapes](@ref shapes).
+ *
+ *  @return A new cursor ready to use or `NULL` if an
+ *  [error](@ref error_handling) occurred.
+ *
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
+ *
+ *  @par Thread Safety
+ *  This function may only be called from the main thread.
+ *
+ *  @sa @ref input_cursor
+ *  @sa glfwCreateCursor
+ *
+ *  @par History
+ *  Added in GLFW 3.1.
+ *
+ *  @ingroup input
+ */
+GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape);
 
 /*! @brief Destroys a cursor.
  *
@@ -2596,7 +2721,8 @@ GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
  *
  *  @param[in] cursor The cursor object to destroy.
  *
- *  @note This function may not be called from a callback.
+ *  @par Reentrancy
+ *  This function may not be called from a callback.
  *
  *  @par Thread Safety
  *  This function may only be called from the main thread.

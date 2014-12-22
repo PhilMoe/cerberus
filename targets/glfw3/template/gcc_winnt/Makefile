@@ -26,9 +26,7 @@ OBJS0=\
 context.o \
 init.o \
 input.o \
-joystick.o \
 monitor.o \
-time.o \
 wgl_context.o \
 win32_init.o \
 win32_monitor.o \

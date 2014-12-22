@@ -26,10 +26,8 @@
 		7CE1AA8017E154F600D079FE /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA6E17E154F600D079FE /* context.c */; };
 		7CE1AA8217E154F600D079FE /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7017E154F600D079FE /* init.c */; };
 		7CE1AA8317E154F600D079FE /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7117E154F600D079FE /* input.c */; };
-		7CE1AA8417E154F600D079FE /* joystick.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7317E154F600D079FE /* joystick.c */; };
 		7CE1AA8517E154F600D079FE /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7417E154F600D079FE /* monitor.c */; };
 		7CE1AA8617E154F600D079FE /* nsgl_context.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7517E154F600D079FE /* nsgl_context.m */; };
-		7CE1AA8717E154F600D079FE /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7717E154F600D079FE /* time.c */; };
 		7CE1AA8817E154F600D079FE /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7817E154F600D079FE /* window.c */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -66,10 +64,8 @@
 		7CE1AA7017E154F600D079FE /* init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = init.c; path = ../glfw3/src/init.c; sourceTree = "<group>"; };
 		7CE1AA7117E154F600D079FE /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input.c; path = ../glfw3/src/input.c; sourceTree = "<group>"; };
 		7CE1AA7217E154F600D079FE /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = internal.h; path = ../glfw3/src/internal.h; sourceTree = "<group>"; };
-		7CE1AA7317E154F600D079FE /* joystick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = joystick.c; path = ../glfw3/src/joystick.c; sourceTree = "<group>"; };
 		7CE1AA7417E154F600D079FE /* monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = monitor.c; path = ../glfw3/src/monitor.c; sourceTree = "<group>"; };
 		7CE1AA7517E154F600D079FE /* nsgl_context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsgl_context.m; path = ../glfw3/src/nsgl_context.m; sourceTree = "<group>"; };
-		7CE1AA7717E154F600D079FE /* time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = time.c; path = ../glfw3/src/time.c; sourceTree = "<group>"; };
 		7CE1AA7817E154F600D079FE /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = window.c; path = ../glfw3/src/window.c; sourceTree = "<group>"; };
 		7CE1AA8B17E16F2900D079FE /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../glfw3/include/GLFW/glfw3.h; sourceTree = "<group>"; };
 		7CE1AA8C17E16FB600D079FE /* glext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glext.h; path = ../glfw3/deps/GL/glext.h; sourceTree = "<group>"; };
@@ -159,9 +155,7 @@
 				7CE1AA7017E154F600D079FE /* init.c */,
 				7CE1AA7117E154F600D079FE /* input.c */,
 				7CE1AA7217E154F600D079FE /* internal.h */,
-				7CE1AA7317E154F600D079FE /* joystick.c */,
 				7CE1AA7417E154F600D079FE /* monitor.c */,
-				7CE1AA7717E154F600D079FE /* time.c */,
 				7CE1AA7817E154F600D079FE /* window.c */,
 				7C72C3131315BB8C00BC53BB /* main.cpp */,
 				7C17EE5112BAD553007B72A6 /* stb_image.c */,
@@ -274,10 +268,8 @@
 				7CE1AA8217E154F600D079FE /* init.c in Sources */,
 				7CE1AA8317E154F600D079FE /* input.c in Sources */,
 				7C7330A71999832400988833 /* iokit_joystick.m in Sources */,
-				7CE1AA8417E154F600D079FE /* joystick.c in Sources */,
 				7CE1AA8517E154F600D079FE /* monitor.c in Sources */,
 				7CE1AA8617E154F600D079FE /* nsgl_context.m in Sources */,
-				7CE1AA8717E154F600D079FE /* time.c in Sources */,
 				7CE1AA8817E154F600D079FE /* window.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

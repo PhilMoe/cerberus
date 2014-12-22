@@ -17,13 +17,7 @@
     <ClCompile Include="..\glfw3\src\input.c">
       <Filter>glfw</Filter>
     </ClCompile>
-    <ClCompile Include="..\glfw3\src\joystick.c">
-      <Filter>glfw</Filter>
-    </ClCompile>
     <ClCompile Include="..\glfw3\src\monitor.c">
-      <Filter>glfw</Filter>
-    </ClCompile>
-    <ClCompile Include="..\glfw3\src\time.c">
       <Filter>glfw</Filter>
     </ClCompile>
     <ClCompile Include="..\glfw3\src\wgl_context.c">

@@ -102,9 +102,7 @@
     <ClCompile Include="..\glfw3\src\context.c" />
     <ClCompile Include="..\glfw3\src\init.c" />
     <ClCompile Include="..\glfw3\src\input.c" />
-    <ClCompile Include="..\glfw3\src\joystick.c" />
     <ClCompile Include="..\glfw3\src\monitor.c" />
-    <ClCompile Include="..\glfw3\src\time.c" />
     <ClCompile Include="..\glfw3\src\wgl_context.c" />
     <ClCompile Include="..\glfw3\src\win32_init.c" />
     <ClCompile Include="..\glfw3\src\win32_monitor.c" />

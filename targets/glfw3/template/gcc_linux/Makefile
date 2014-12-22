@@ -27,9 +27,7 @@ OBJS0=\
 context.o \
 init.o \
 input.o \
-joystick.o \
 monitor.o \
-time.o \
 window.o \
 glx_context.o \
 x11_init.o \
