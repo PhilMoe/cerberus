@@ -151,7 +151,7 @@ extern "C" {
     #endif
   #elif !defined(GLFW_INCLUDE_NONE)
     #if !defined(GLFW_INCLUDE_GLEXT)
-      #define GL_GLEXT_LEGACY
+//      #define GL_GLEXT_LEGACY
     #endif
     #include <OpenGL/gl.h>
   #endif

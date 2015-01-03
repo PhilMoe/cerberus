@@ -558,7 +558,7 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 }
 
 void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
-	SetGlfwWindow( width,height,8,8,8,0,0,0,(flags&1)!=0 );
+	SetGlfwWindow( width,height,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,(flags&1)!=0 );
 }
 
 Array<BBDisplayMode*> BBGlfwGame::GetDisplayModes(){
