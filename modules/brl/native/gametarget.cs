@@ -160,6 +160,9 @@ public class BBGame{
 	public virtual void SetDeviceWindow( int width,int height,int flags ){
 	}
 	
+	public virtual void SetDisplayMode( int width,int height,int depth,int hertz,int flags ){
+	}
+	
 	public virtual BBDisplayMode[] GetDisplayModes(){
 		return new BBDisplayMode[0];
 	}

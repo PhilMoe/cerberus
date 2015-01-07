@@ -158,6 +158,9 @@ abstract class BBGame{
 	void SetDeviceWindow( int width,int height,int flags ){
 	}
 	
+	void SetDisplayMode( int width,int height,int depth,int hertz,int flags ){
+	}
+	
 	BBDisplayMode[] GetDisplayModes(){
 		return new BBDisplayMode[0];
 	}

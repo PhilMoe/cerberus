@@ -162,6 +162,9 @@ class BBGame{
 	public function SetDeviceWindow( width:int,height:int,flags:int ):void{
 	}
 	
+	public function SetDisplayMode( width:int,height:int,depth:int,hertz:int,flags:int ):void{
+	}
+	
 	public function GetDisplayModes():Array{
 		return new Array();
 	}

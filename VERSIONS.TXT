@@ -1,6 +1,8 @@
 
 ***** v82c *****
 
+Updated SetDisplayMode.
+
 Updated glfw3 to github version.
 
 Added GLFW_REPEAT to OnKey handler for glfw target for GetChar fix.

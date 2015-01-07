@@ -3,12 +3,19 @@
 Import "native/gametarget.${LANG}"
 #Endif
 
+Const BBWINDOW_FULLSCREEN:=1
+Const BBWINDOW_RESIZABLE:=2
+Const BBWINDOW_DECORATED:=4
+Const BBWINDOW_FLOATING:=8
+Const BBWINDOW_DEPTHBUFFER:=16
+Const BBWINDOW_SECONDMONITOR:=32
+
 Extern
 
 Class BBDisplayMode
 	Field width:Int
 	Field height:Int
-	Field format:Int
+	Field depth:Int
 	Field hertz:Int
 	Field flags:Int
 End
@@ -34,6 +41,7 @@ Class BBGame Extends Null
 	Method GetDeviceWidth:Int()
 	Method GetDeviceHeight:Int()
 	Method SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
+	Method SetDisplayMode:Void( width:Int,height:Int,depth:Int,hertz:Int,flags:Int )
 	Method GetDisplayModes:BBDisplayMode[]()
 	Method GetDesktopMode:BBDisplayMode()
 	Method SetSwapInterval:Void( interval:Int )

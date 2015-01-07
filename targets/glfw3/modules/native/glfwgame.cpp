@@ -16,6 +16,8 @@ public:
 	virtual int GetDeviceWidth(){ return _width; }
 	virtual int GetDeviceHeight(){ return _height; }
 	virtual void SetDeviceWindow( int width,int height,int flags );
+	virtual void SetDisplayMode( int width,int height,int depth,int hertz,int flags );
+	virtual void SetSwapInterval( int interval );
 	virtual Array<BBDisplayMode*> GetDisplayModes();
 	virtual BBDisplayMode *GetDesktopMode();
 
@@ -35,6 +37,7 @@ private:
 	GLFWwindow *_window;
 	int _width;
 	int _height;
+	int _swapInterval;
 	bool _focus;
 
 	double _updatePeriod;
@@ -44,7 +47,7 @@ private:
 	void Sleep( double time );
 	void UpdateEvents();
 
-	void SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen );
+//	void SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen );
 		
 	static int TransKey( int key );
 	static int KeyToChar( int key );
@@ -105,7 +108,7 @@ int glfwGraphicsSeq=0;
 
 BBGlfwGame *BBGlfwGame::_glfwGame;
 
-BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_focus(true),_updatePeriod(0),_nextUpdate(0){
+BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_swapInterval(1),_focus(true),_updatePeriod(0),_nextUpdate(0){
 	_glfwGame=this;
 
 	memset( &_desktopMode,0,sizeof(_desktopMode) );	
@@ -488,6 +491,90 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 #endif
 }
 
+void BBGlfwGame::SetDisplayMode( int width,int height,int depth,int hertz,int flags ){
+
+	_focus=false;
+
+	if( _window ){
+		for( int i=0;i<=GLFW_KEY_LAST;++i ){
+			int key=TransKey( i );
+			if( key && glfwGetKey( _window,i )==GLFW_PRESS ) KeyEvent( BBGameEvent::KeyUp,key );
+		}
+		glfwDestroyWindow( _window );
+		_window=0;
+	}
+
+	bool fullscreen=(flags&1);
+	bool resizable=(flags&2);
+	bool decorated=(flags&4);
+	bool floating=(flags&8);
+	bool depthbuffer=(flags&16);
+	bool secondmonitor=(flags&32);
+
+	glfwWindowHint( GLFW_RED_BITS,8 );
+	glfwWindowHint( GLFW_GREEN_BITS,8 );
+	glfwWindowHint( GLFW_BLUE_BITS,8 );
+	glfwWindowHint( GLFW_ALPHA_BITS,0 );
+	glfwWindowHint( GLFW_DEPTH_BITS,depthbuffer ? 32 : 0 );
+	glfwWindowHint( GLFW_STENCIL_BITS,0 );
+	glfwWindowHint( GLFW_RESIZABLE,resizable );
+	glfwWindowHint( GLFW_DECORATED,decorated );
+	glfwWindowHint( GLFW_FLOATING,floating );
+	glfwWindowHint( GLFW_VISIBLE,fullscreen );
+	glfwWindowHint( GLFW_SAMPLES,CFG_GLFW_WINDOW_SAMPLES );
+	glfwWindowHint( GLFW_REFRESH_RATE,hertz );
+	
+	GLFWmonitor *monitor=0;
+	if( fullscreen ){
+		if( secondmonitor ){
+			int count=0;
+			GLFWmonitor **monitors=glfwGetMonitors( &count );
+			if( count>0 ) monitor=monitors[1];
+		}else{
+			 monitor=glfwGetPrimaryMonitor();
+		}
+	}
+	
+	_window=glfwCreateWindow( width,height,_STRINGIZE(CFG_GLFW_WINDOW_TITLE),monitor,0 );
+	if( !_window ){
+		bbPrint( "glfwCreateWindow FAILED!" );
+		abort();
+	}
+	
+	_width=width;
+	_height=height;
+	
+	++glfwGraphicsSeq;
+
+	if( !fullscreen ){	
+		glfwSetWindowPos( _window,(_desktopMode.width-width)/2,(_desktopMode.height-height)/2 );
+		glfwShowWindow( _window );
+	}
+	
+	glfwMakeContextCurrent( _window );
+	
+	if( _swapInterval>=0 ) glfwSwapInterval( _swapInterval );
+
+#if CFG_OPENGL_INIT_EXTENSIONS
+	Init_GL_Exts();
+#endif
+
+	glfwSetKeyCallback( _window,OnKey );
+	glfwSetCharCallback( _window,OnChar );
+	glfwSetMouseButtonCallback( _window,OnMouseButton );
+	glfwSetCursorPosCallback( _window,OnCursorPos );
+	glfwSetWindowCloseCallback(	_window,OnWindowClose );
+	glfwSetWindowSizeCallback(_window,OnWindowSize );
+}
+
+void BBGlfwGame::SetSwapInterval( int interval ){
+
+	_swapInterval=interval;
+	
+	if( _swapInterval>=0 && _window ) glfwSwapInterval( _swapInterval );
+}
+
+/*
 void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,int alpha,int depth,int stencil,bool fullscreen ){
 
 	_focus=false;
@@ -556,9 +643,29 @@ void BBGlfwGame::SetGlfwWindow( int width,int height,int red,int green,int blue,
 	glfwSetWindowCloseCallback(	_window,OnWindowClose );
 	glfwSetWindowSizeCallback(_window,OnWindowSize );
 }
+*/
 
 void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
-	SetGlfwWindow( width,height,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,(flags&1)!=0 );
+#if CFG_GLFW_WINDOW_FULLSCREEN
+	flags|=1;
+#endif
+#if CFG_GLFW_WINDOW_RESIZABLE
+	flags|=2;
+#endif
+#if CFG_GLFW_WINDOW_DECORATED
+	flags|=4;
+#endif
+#if CFG_GLFW_WINDOW_FLOATING
+	flags|=8;
+#endif
+#if CFG_OPENGL_DEPTH_BUFFER_ENABLED
+	flags|=16;
+#endif
+#if CFG_GLFW_SECONDMONITOR
+	flags|=32;
+#endif
+
+	SetDisplayMode( width,height,32,60,flags );
 }
 
 Array<BBDisplayMode*> BBGlfwGame::GetDisplayModes(){
@@ -620,7 +727,8 @@ void BBGlfwGame::Run(){
 
 #if	CFG_GLFW_WINDOW_WIDTH && CFG_GLFW_WINDOW_HEIGHT
 
-	SetGlfwWindow( CFG_GLFW_WINDOW_WIDTH,CFG_GLFW_WINDOW_HEIGHT,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,CFG_GLFW_WINDOW_FULLSCREEN );
+	SetDeviceWindow( CFG_GLFW_WINDOW_WIDTH,CFG_GLFW_WINDOW_HEIGHT,0 );
+//	SetGlfwWindow( CFG_GLFW_WINDOW_WIDTH,CFG_GLFW_WINDOW_HEIGHT,8,8,8,0,CFG_OPENGL_DEPTH_BUFFER_ENABLED ? 32 : 0,0,CFG_GLFW_WINDOW_FULLSCREEN );
 
 #endif
 

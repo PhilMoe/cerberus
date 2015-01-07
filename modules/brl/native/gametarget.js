@@ -147,6 +147,9 @@ BBGame.prototype.GetDeviceHeight=function(){
 BBGame.prototype.SetDeviceWindow=function( width,height,flags ){
 }
 
+BBGame.prototype.SetDisplayMode=function( width,height,depth,hertz,flags ){
+}
+
 BBGame.prototype.GetDisplayModes=function(){
 	return new Array();
 }
