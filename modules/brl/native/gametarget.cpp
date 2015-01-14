@@ -66,7 +66,6 @@ public:
 	virtual int GetDeviceWidth(){ return 0; }
 	virtual int GetDeviceHeight(){ return 0; }
 	virtual void SetDeviceWindow( int width,int height,int flags ){}
-	virtual void SetDisplayMode( int width,int height,int depth,int hertz,int flags ){}
 	virtual Array<BBDisplayMode*> GetDisplayModes(){ return Array<BBDisplayMode*>(); }
 	virtual BBDisplayMode *GetDesktopMode(){ return 0; }
 	virtual void SetSwapInterval( int interval ){}

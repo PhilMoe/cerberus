@@ -8,7 +8,8 @@ Const BBWINDOW_RESIZABLE:=2
 Const BBWINDOW_DECORATED:=4
 Const BBWINDOW_FLOATING:=8
 Const BBWINDOW_DEPTHBUFFER:=16
-Const BBWINDOW_SECONDMONITOR:=32
+Const BBWINDOW_SINGLEBUFFER:=32
+Const BBWINDOW_SECONDMONITOR:=64
 
 Extern
 
@@ -41,7 +42,6 @@ Class BBGame Extends Null
 	Method GetDeviceWidth:Int()
 	Method GetDeviceHeight:Int()
 	Method SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
-	Method SetDisplayMode:Void( width:Int,height:Int,depth:Int,hertz:Int,flags:Int )
 	Method GetDisplayModes:BBDisplayMode[]()
 	Method GetDesktopMode:BBDisplayMode()
 	Method SetSwapInterval:Void( interval:Int )

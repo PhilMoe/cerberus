@@ -1,7 +1,9 @@
 
 ***** v82c *****
 
-Updated SetDisplayMode.
+Added some more flags to SetDeviceWindow (GLFW only!).
+
+Fixed ios LoadImageData bug.
 
 Updated glfw3 to github version.
 
