@@ -51,85 +51,87 @@ class BBMonkeyStore extends ActivityDelegate implements ServiceConnection{
 				}
 			}
 			
-			ArrayList list=new ArrayList();
-			for( int i=0;i<_products.length;++i ){
-				list.add( _products[i].identifier );
-			}
-			
-			Bundle query=new Bundle();
-			query.putStringArrayList( "ITEM_ID_LIST",list );
-			
 			_result=0;
 
 			try{
-
-				//Get product details
-				Bundle details=_service.getSkuDetails( 3,_activity.getPackageName(),"inapp",query );
-				ArrayList detailsList=details.getStringArrayList( "DETAILS_LIST" );
-				
-				if( detailsList==null ){
-					_result=-1;
-					_running=false;
-					return;
-				}
-				
-				for( int i=0;i<detailsList.size();++i ){
-				
-					JSONObject jobj=new JSONObject( (String)detailsList.get( i ) );
-					
-					BBProduct p=FindProduct( jobj.getString( "productId" ) );
-					if( p==null ) continue;
-
-					//strip (APP_NAME) from end of title					
-					String title=jobj.getString( "title" );
-					if( title.endsWith( ")" ) ){
-						int j=title.lastIndexOf( " (" );
-						if( j!=-1 ) title=title.substring( 0,j );
-					}
-					
-					p.valid=true;
-					p.title=title;
-					p.description=jobj.getString( "description" );
-					p.price=jobj.getString( "price" );
-				}
-				
-				
-				//Get owned products and consume consumables
-				Bundle owned=_service.getPurchases( 3,_activity.getPackageName(),"inapp",null );
-				ArrayList itemList=owned.getStringArrayList( "INAPP_PURCHASE_ITEM_LIST" );
-				ArrayList dataList=owned.getStringArrayList( "INAPP_PURCHASE_DATA_LIST" );
-
-				if( itemList==null || dataList==null ){
-					_result=-1;
-					_running=false;
-					return;
-				}
-				
-				//consume consumables
-				for( int i=0;i<itemList.size();++i ){
-				
-					BBProduct p=FindProduct( (String)itemList.get( i ) );
-					if( p==null ) continue;
-					
-					if( p.type==1 ){
-						JSONObject jobj=new JSONObject( (String)dataList.get( i ) );
-						int response=_service.consumePurchase( 3,_activity.getPackageName(),jobj.getString( "purchaseToken" ) );
-						if( response!=0 ){
-							p.valid=false;
+				ArrayList list=new ArrayList();
+				for( int i=0;i<_products.length;++i ){
+					list.add( _products[i].identifier );
+	                if (list.size() == 20 || i == (_products.length-1)) {
+						Bundle query=new Bundle();
+						query.putStringArrayList( "ITEM_ID_LIST",list );
+						
+						//Get product details
+						Bundle details=_service.getSkuDetails( 3,_activity.getPackageName(),"inapp",query );
+						ArrayList detailsList=details.getStringArrayList( "DETAILS_LIST" );
+						
+						if( detailsList==null ){
 							_result=-1;
-							break;
+							_running=false;
+							return;
 						}
-					}else if( p.type==2 ){
-						p.owned=true;
+					
+						for( int i2=0;i2<detailsList.size();++i2 ){
+						
+							JSONObject jobj=new JSONObject( (String)detailsList.get( i2 ) );
+							
+							BBProduct p=FindProduct( jobj.getString( "productId" ) );
+							if( p==null ) continue;
+
+							//strip (APP_NAME) from end of title					
+							String title=jobj.getString( "title" );
+							if( title.endsWith( ")" ) ){
+								int j=title.lastIndexOf( " (" );
+								if( j!=-1 ) title=title.substring( 0,j );
+							}
+							
+							p.valid=true;
+							p.title=title;
+							p.description=jobj.getString( "description" );
+							p.price=jobj.getString( "price" );
+						}
+					
+					
+						//Get owned products and consume consumables
+						Bundle owned=_service.getPurchases( 3,_activity.getPackageName(),"inapp",null );
+						ArrayList itemList=owned.getStringArrayList( "INAPP_PURCHASE_ITEM_LIST" );
+						ArrayList dataList=owned.getStringArrayList( "INAPP_PURCHASE_DATA_LIST" );
+
+						if( itemList==null || dataList==null ){
+							_result=-1;
+							_running=false;
+							return;
+						}
+					
+						//consume consumables
+						for( int i3=0;i3<itemList.size();++i3 ){
+					
+							BBProduct p=FindProduct( (String)itemList.get( i3 ) );
+							if( p==null ) continue;
+							
+							if( p.type==1 ){
+								JSONObject jobj=new JSONObject( (String)dataList.get( 3 ) );
+								int response=_service.consumePurchase( 3,_activity.getPackageName(),jobj.getString( "purchaseToken" ) );
+								if( response!=0 ){
+									p.valid=false;
+									_result=-1;
+									break;
+								}
+							}else if( p.type==2 ){
+								p.owned=true;
+							}
+						}
+					
+
+						list.clear();		
 					}
 				}
-				
 			}catch( RemoteException ex ){
 				_result=-1;
 			}catch( JSONException ex ){
 				_result=-1;
 			}
-			
+
 			_running=false;
 		}
 	}
