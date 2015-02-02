@@ -192,6 +192,8 @@ End
 
 Returns the current date and time as an array of 7 integers: year, month (1-12), day (1-31), hours (0-23), minutes (0-59), seconds (0-59) and milliseconds (0-999).
 
+On the GLFW target, GetDate is only accurate to the second. Milliseconds are not available and index 6 of the GetDate array will always return 0.
+
 Example: 
 
 <pre>
