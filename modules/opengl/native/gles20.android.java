@@ -66,7 +66,7 @@ class bb_opengl_gles20{
 	}
 	
 	static void _glBufferData( int target,int size,BBDataBuffer data,int usage ){
-		GLES20.glBufferData( target,size,data._data,usage );
+		GLES20.glBufferData( target,size,data ? data._data : null,usage );
 	}
 	
 	static void _glBufferSubData( int target,int offset,int size,BBDataBuffer data ){

@@ -46,7 +46,7 @@ void _glBindAttribLocation( int program, int index, String name ){
 }
 
 void _glBufferData( int target,int size,BBDataBuffer *data,int usage ){
-	glBufferData( target,size,data->ReadPointer(),usage );
+	glBufferData( target,size,data ? data->ReadPointer() : 0,usage );
 }
 
 void _glBufferSubData( int target,int offset,int size,BBDataBuffer *data ){
