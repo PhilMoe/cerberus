@@ -1,6 +1,10 @@
 
 ***** v82c *****
 
+Fixed gles20 glBufferData not accepting null databuffer.
+
+Added some PSM docs thanks to Alan Rawkins!
+
 Added some more flags to SetDeviceWindow (GLFW only!).
 
 Fixed ios LoadImageData bug.
