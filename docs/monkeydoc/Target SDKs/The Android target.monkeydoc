@@ -52,7 +52,7 @@ Your app will need to have a unique 'package name'. This can be done via the #AN
 
 In-app purchases can be added to your app using the [[MonkeyStore]] class.
 
-Testing IAP is a bit tricky. The general idea on both Android/iOS is that you create 'test' accounts to test with, and add these test accounts to the GooglePlay Dev Console and/or iTunes Connect. Test are accounts are generally just email address/password combos, although on Android you'll have to provide more details the first time you use the test account.
+Testing IAP is a bit tricky. The general idea on both Android/iOS is that you create 'test' accounts to test with, and add these test accounts to the GooglePlay Dev Console and/or iTunes Connect. Test accounts are generally just email address/password combos, although on Android you'll have to provide more details the first time you use the test account.
 
 * On Android, your app must be signed and a version uploaded (but not necessarily 'published') to your Google Play developer account.
 
