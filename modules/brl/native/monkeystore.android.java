@@ -153,7 +153,6 @@ class BBMonkeyStore extends ActivityDelegate implements ServiceConnection{
 		
 		public void run(){
 		
-			//comment this out to simulate interrupt consumable purchase...
 			try{
 				int response=_service.consumePurchase( 3,_activity.getPackageName(),_token );
 				if( response==0 ) _result=0;
