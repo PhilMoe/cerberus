@@ -1,9 +1,15 @@
 
-***** v82c *****
+***** v83a *****
+
+Added src/rebuildall.sh, linux only.
+
+Fixed ReadPixels setting display purple on XNA.
+
+Fixed some MonkeyStore issues - added 'interrupted:Product[]' param to OnOpenStoreComplete.
 
 Fixed gles20 glBufferData not accepting null databuffer.
 
-Added some PSM docs thanks to Alan Rawkins!
+Added some PSM docs courtesy of Alan Rawkins.
 
 Added some more flags to SetDeviceWindow (GLFW only!).
 
