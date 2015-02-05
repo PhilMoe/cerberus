@@ -26,9 +26,11 @@ Import brl.monkeystore
 Const USE_JOYSTICK:=False
 
 'For Windows 8! make sure to also set ProductId on Winphone8...
+#WINRT_PRINT_ENABLED=True
 #WINRT_TEST_IAP=True
 
 'For android!
+#ANDROID_VERSION_CODE="2"
 #ANDROID_APP_TITLE="Bouncy Aliens"
 #ANDROID_APP_PACKAGE="com.monkeycoder.bouncyaliens"
 #ANDROID_KEY_STORE="../../release-key.keystore"
@@ -67,22 +69,35 @@ Class MyApp Extends App Implements IOnOpenStoreComplete,IOnBuyProductComplete,IO
 		f.Close()
 	End
 	
-	Method OnOpenStoreComplete:Void( result:Int )
+	Method MakePurchase:Void( product:Product )
+		Select product.Type
+		Case 1 purchases.SetInt product.Identifier,purchases.GetInt( product.Identifier )+1
+		Case 2 purchases.SetBool product.Identifier,True
+		End
+		SavePurchases
+	end
+	
+	Method OnOpenStoreComplete:Void( result:Int,interrupted:Product[] )
 		Print "OpenStoreComplete, result="+result
 		If result<>0 
 			Print "Failed to open Monkey Store"
 			store=Null
+		Endif
+		If interrupted.Length
+			Print "Interrupted purchases:"
+			For Local p:=Eachin interrupted
+				Print p.Identifier
+				MakePurchase p
+			Next
+		Else
+			Print "No interrupted purchases."
 		Endif
 	End
 	
 	Method OnBuyProductComplete:Void( result:Int,product:Product )
 		Print "BuyProductComplete, result="+result
 		If result<>0 Return
-		Select product.Type
-		Case 1 purchases.SetInt product.Identifier,purchases.GetInt( product.Identifier )+1
-		Case 2 purchases.SetBool product.Identifier,True
-		End
-		SavePurchases
+		MakePurchase product
 	End
 	
 	Method OnGetOwnedProductsComplete:Void( result:Int,products:Product[] )

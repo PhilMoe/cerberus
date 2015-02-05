@@ -32,6 +32,7 @@ Private
 	Field identifier:String
 	Field type:Int				'1=consumable, 2=non-consumable
 	Field owned:Bool
+	Field interrupted:Bool
 End
 
 Class BBMonkeyStore
@@ -47,7 +48,7 @@ End
 Public
 
 Interface IOnOpenStoreComplete
-	Method OnOpenStoreComplete:Void( result:Int )
+	Method OnOpenStoreComplete:Void( result:Int,interrupted:Product[] )
 End
 
 Interface IOnBuyProductComplete
@@ -211,6 +212,7 @@ Class MonkeyStore Implements IAsyncEventSource
 			Local all:=New Stack<Product>
 			Local cons:=New Stack<Product>
 			Local ncons:=New Stack<Product>
+			Local inter:=New Stack<Product>
 			
 			If result=0
 				For Local p:=Eachin _products
@@ -219,9 +221,14 @@ Class MonkeyStore Implements IAsyncEventSource
 					_prods.Set p.identifier,p
 					If p.type=1 cons.Push p
 					If p.type=2 ncons.Push p
+					If p.interrupted inter.Push p
 				Next
 				_state=1
 			Else
+				For Local p:=Eachin _products
+					If Not p.valid Continue
+					If p.interrupted inter.Push p
+				Next
 				_state=0
 			End
 			
@@ -231,7 +238,7 @@ Class MonkeyStore Implements IAsyncEventSource
 			
 			Local onOpen:=_onOpen
 			_onOpen=Null
-			onOpen.OnOpenStoreComplete( result )
+			onOpen.OnOpenStoreComplete( result,inter.ToArray() )
 			
 		Case 3
 		

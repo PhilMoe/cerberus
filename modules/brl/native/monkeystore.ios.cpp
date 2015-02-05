@@ -29,6 +29,7 @@ public:
 	String price;
 	int type;
 	bool owned;
+	bool interrupted;
 };
 
 class BBMonkeyStore : public Object{
@@ -89,7 +90,7 @@ private:
 
 @end
 
-BBProduct::BBProduct():product(0),valid(false),type(0),owned(false){
+BBProduct::BBProduct():product(0),valid(false),type(0),owned(false),interrupted(false){
 }
 
 BBProduct::~BBProduct(){

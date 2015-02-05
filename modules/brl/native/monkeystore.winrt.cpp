@@ -20,6 +20,7 @@ public:
 	String price;
 	int type;
 	bool owned;
+	bool interrupted;
 };
 
 class BBMonkeyStore : public Object{
@@ -56,7 +57,7 @@ using namespace Windows::ApplicationModel::Store;
 
 // ***** BBProduct *****
 
-BBProduct::BBProduct():valid(false),type(0),owned(false){
+BBProduct::BBProduct():valid(false),type(0),owned(false),interrupted(false){
 }
 
 BBProduct::~BBProduct(){
@@ -100,7 +101,10 @@ void BBMonkeyStore::OpenStoreAsync( Array<BBProduct*> products ){
 							if( product->type==1 ){
 								if( listing->ProductType!=ProductType::Consumable ) continue;
 #if WINDOWS_PHONE_8								
-								if( license->IsActive ) CURRENT_APP::ReportProductFulfillment( productId );
+								if( license->IsActive ){
+									CURRENT_APP::ReportProductFulfillment( productId );
+									product->interrupted=true;
+								}
 #endif							
 							}else if( product->type==2 ){
 								if( listing->ProductType!=ProductType::Durable ) continue;
@@ -120,7 +124,16 @@ void BBMonkeyStore::OpenStoreAsync( Array<BBProduct*> products ){
 								auto products=currentTask.get();
 								
 								for( unsigned int i=0;i<products->Size;++i ){
-									ConsumePurchase( products->GetAt(i)->ProductId,products->GetAt(i)->TransactionId );
+								
+									auto product= products->GetAt(i);
+									
+									for( int j=0;j<_products.Length();++j ){
+										auto p=_products[j];
+										if( p->identifier!=product->ProductId ) continue;
+										ConsumePurchase( product->ProductId,product->TransactionId );
+										p->interrupted=true;
+										break;
+									}
 								}
 								
 								_result=0;
@@ -199,7 +212,7 @@ void BBMonkeyStore::RequestPurchase( BBProduct *product ){
 				}
 				_result=0;
 				break;
-            case ProductPurchaseStatus::NotFulfilled:			//A previous consumable purchase has not been fulfilled
+            case ProductPurchaseStatus::NotFulfilled:			//A previous consumable purchase has not been fulfilled?
             	if( product->type==1 ){
 	           		ConsumePurchase( productId,results->TransactionId );
 	           	}
