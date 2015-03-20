@@ -41,7 +41,7 @@ Class GlfwBuilder Extends Builder
 	
 			Local ccopts:=""
 			Select ENV_CONFIG
-			Case "rebug"
+			Case "debug"
 				ccopts+=" -O0"
 			Case "release"
 				ccopts+=" -O3 -DNDEBUG"
