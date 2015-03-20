@@ -166,16 +166,27 @@ Class AndroidBuilder Extends Builder
 			Local antcfg:="debug"
 			
 			If GetConfigVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
+			
+			Local ant:="ant"
+			If tcc.ANT_PATH ant="~q"+tcc.ANT_PATH+"/bin/ant~q"
 
-			If Not (Execute( tcc.ANT_PATH+"/bin/ant clean",False ) And Execute( tcc.ANT_PATH+"/bin/ant "+antcfg+" install",False ))
+			If Not (Execute( ant+" clean",False ) And Execute( ant+" "+antcfg+" install",False ))
 
 				Die "Android build failed."
 				
 			Else If tcc.opt_run
+
+				Local adb:="adb"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+
+				Execute adb+" logcat -c",False
+				Execute adb+" shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
+				Execute adb+" logcat [Monkey]:I *:E",False
 			
-				Execute "adb logcat -c",False
-				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
-				Execute "adb logcat [Monkey]:I *:E",False
+'				Execute "echo $PATH",False
+'				Execute "adb logcat -c",False
+'				Execute "adb shell am start -n "+app_package+"/"+app_package+".MonkeyGame",False
+'				Execute "adb logcat [Monkey]:I *:E",False
 				'
 				'NOTE: This leaves ADB server running which can LOCK the .build dir making it undeletable...
 				'
