@@ -180,7 +180,7 @@ Class Reflector
 		If cdecl.munged="Object" Return True
 		If cdecl.munged="ThrowableObject" Return True
 		If Not cdecl.ExtendsObject() Return False
-		If Not refmods.Contains( cdecl.ModuleScope().filepath ) Return False
+'		If Not refmods.Contains( cdecl.ModuleScope().filepath ) Return False
 		For Local arg:=Eachin cdecl.instArgs
 			If ObjectType( arg ) And Not ValidClass( arg.GetClass() ) Return False
 		Next
