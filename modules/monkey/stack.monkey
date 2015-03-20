@@ -37,6 +37,10 @@ Class Stack<T>
 		length=0
 	End
 	
+	Method Data:T[]() Property
+		Return Self.data
+	End
+	
 	Method Length:Void( newlength:Int ) Property
 		If newlength<length
 			For Local i:=newlength Until length

@@ -53,6 +53,12 @@ By default, this methods simply generates a runtime error. Extending classes sho
 
 Removes all items from the stack.
 
+# Method Data:T[]()
+
+Provides access to the underlying array used to store stack data.
+
+Note: The length of this array may be greater than the actual length of the stack.
+
 
 # Method Length:Void( length:Int ) Property
 
