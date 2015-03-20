@@ -36,7 +36,7 @@ Class Toker
 		If _keywords Return
 		
 		Const keywords:="void strict "+
-		"public private property "+
+		"public private protected friend property "+
 		"bool int float string array object mod continue exit "+
 		"include import module extern "+
 		"new self super eachin true false null not "+

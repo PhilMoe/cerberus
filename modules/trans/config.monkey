@@ -78,10 +78,10 @@ Function GetConfigVars:StringMap<String>()
 	Return _cfgScope.vars
 End
 
-Function RemoveConfigVar( key$ )
-	_cfgScope.cdecls.Remove key
-	_cfgScope.vars.Remove key
-End
+'Function RemoveConfigVar( key$ )
+'	_cfgScope.cdecls.Remove key
+'	_cfgScope.vars.Remove key
+'End
 
 Function EvalConfigTags$( cfg$ )
 	Local i:=0

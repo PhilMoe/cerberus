@@ -7,7 +7,7 @@
 Import trans
 Import builders
 
-Const VERSION:="1.80"
+Const VERSION:="1.84"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -403,6 +403,9 @@ Class TransCC
 			If JDK_PATH SetEnv "JAVA_HOME",JDK_PATH
 	
 		Case "macos"
+
+			'Execute "echo $PATH"
+			'Print GetEnv( "PATH" )
 		
 			Local path:=GetEnv( "PATH" )
 			
@@ -412,6 +415,9 @@ Class TransCC
 			If FLEX_PATH path+=":"+FLEX_PATH+"/bin"
 			
 			SetEnv "PATH",path
+			
+			'Execute "echo $PATH"
+			'Print GetEnv( "PATH" )
 			
 		Case "linux"
 

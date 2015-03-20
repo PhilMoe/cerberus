@@ -486,13 +486,16 @@ Class CTranslator Extends Translator
 		Else
 			If emitDebugInfo And realBlock EmitEnterBlock
 		Endif
-
+		
+		Local lastStmt:Stmt=Null
 		For Local stmt:Stmt=Eachin block.stmts
 		
 			_errInfo=stmt.errInfo
 			
 			If unreachable Exit
-
+			
+			lastStmt=stmt
+			
 			If emitDebugInfo
 				Local rs:=ReturnStmt( stmt )
 				If rs
@@ -510,9 +513,7 @@ Class CTranslator Extends Translator
 					unreachable=True
 					Continue
 				Endif
-				'
 				If stmt.errInfo EmitSetErr stmt.errInfo
-				'
 			Endif
 			
 			Local t$=stmt.Trans()
@@ -529,9 +530,7 @@ Class CTranslator Extends Translator
 
 			'Actionscript's reachability analysis is...weird.
 			If func And ENV_LANG="as" And Not VoidType( func.retType )
-				If block.stmts.IsEmpty() Or Not ReturnStmt( block.stmts.Last() )
-					Emit "return "+TransValue( func.retType,"" )+";"
-				Endif
+				If Not ReturnStmt( lastStmt ) Emit "return "+TransValue( func.retType,"" )+";"
 			Endif
 		
 		Else If func

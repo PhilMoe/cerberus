@@ -47,8 +47,11 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 	
 	PushEnv GetConfigScope()
 	
+	Local p_cd:=GetConfigVar( "CD" )
+	Local p_modpath:=GetConfigVar( "MODPATH" )
+	
 	SetConfigVar "CD",ExtractDir( RealPath( path ) )
-	If mdecl SetConfigVar "MODPATH",mdecl.rmodpath
+	If mdecl SetConfigVar "MODPATH",mdecl.rmodpath Else SetConfigVar "MODPATH",""
 	
 	Local toker:=New Toker( path,LoadString( path ) )
 	toker.NextToke
@@ -205,7 +208,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 							Local expr:=EvalExpr( toker )
 							Local val:=expr.Eval()
 							If Not GetConfigVars().Contains( toke )
-								If StringType( expr.exprType )  val=EvalConfigTags( val )
+								If StringType( expr.exprType ) val=EvalConfigTags( val )
 								SetConfigVar toke,val,expr.exprType
 							Endif
 						Case "+="
@@ -229,9 +232,9 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 		End
 
 	Forever
-	
-	RemoveConfigVar "CD"
-	If mdecl RemoveConfigVar "MODPATH"
+
+	SetConfigVar "MODPATH",p_modpath
+	SetConfigVar "CD",p_cd
 
 	PopEnv
 		

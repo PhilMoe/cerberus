@@ -669,6 +669,7 @@ Class Parser
 		Case "super"
 			NextToke
 			Parse "."
+			SkipEols
 			If _toke="new"
 				NextToke
 				Local func:=FuncDecl( _block )
@@ -717,22 +718,10 @@ Class Parser
 			Case "."
 
 				NextToke
-				If False	'_toke="new"	'experimental Self.New - needs more testing/thinking.
-					NextToke
-					If Not SelfExpr( expr )
-						Err "Member 'New' can only by accessed using Self."
-					Endif
-					Local func:=FuncDecl( _block )
-					If Not func Or Not stmt Or Not func.IsCtor() Or Not func.stmts.IsEmpty()
-						Err "Call to Self.New must be first statement in a constructor."
-					Endif
-					expr=New FuncCallExpr( New IdentExpr( "new",expr ),ParseArgs( True ) )
-					func.attrs|=FUNC_CALLSCTOR
-				Else
-					Local id$=ParseIdent()
-					expr=New IdentExpr( id,expr )
-				Endif
-				
+				SkipEols
+				Local id:=ParseIdent()
+				expr=New IdentExpr( id,expr )
+
 			Case "("
 			
 				expr=New FuncCallExpr( expr,ParseArgs( stmt ) )
@@ -1519,12 +1508,17 @@ Class Parser
 			Case "end"
 				NextToke
 				Exit
-			Case "private"
-				NextToke
-				decl_attrs|=DECL_PRIVATE
 			Case "public"
 				NextToke
-				decl_attrs&=~DECL_PRIVATE
+				decl_attrs&=~(DECL_PRIVATE|DECL_PROTECTED)
+			Case "private"
+				NextToke
+				decl_attrs&=~(DECL_PRIVATE|DECL_PROTECTED)
+				decl_attrs|=DECL_PRIVATE
+			Case "protected"
+				NextToke
+				decl_attrs&=~(DECL_PRIVATE|DECL_PROTECTED)
+				decl_attrs|=DECL_PROTECTED
 			Case "const","global","field"
 				If (attrs & CLASS_INTERFACE) And _toke<>"const" Err "Interfaces can only contain constants and methods."
 				classDecl.InsertDecls ParseDecls( _toke,decl_attrs )
@@ -1583,7 +1577,9 @@ Class Parser
 	
 		SkipEols
 		
-		If _module And CParse( "strict" ) _module.attrs|=MODULE_STRICT
+		'TODO: can _module be null in here...?
+		
+		If CParse( "strict" ) _module.attrs|=MODULE_STRICT
 			
 		Local attrs
 		
@@ -1599,6 +1595,8 @@ Class Parser
 			Case "private"
 				NextToke
 				attrs=DECL_PRIVATE
+			Case "protected"
+				Err "Protected may only be used within classes."
 			Case "import"
 				NextToke
 				If _tokeType=TOKE_STRINGLIT
@@ -1606,6 +1604,10 @@ Class Parser
 				Else
 					ImportModule ParseModPath(),attrs
 				Endif
+			Case "friend"
+				NextToke
+				Local modpath:=ParseModPath()
+				_module.friends.Insert modpath
 			Case "alias"
 				NextToke
 				Repeat

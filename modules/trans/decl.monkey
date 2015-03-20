@@ -10,6 +10,7 @@ Const DECL_EXTERN=		$000100
 Const DECL_PRIVATE=		$000200
 Const DECL_ABSTRACT=	$000400
 Const DECL_FINAL=		$000800
+Const DECL_PROTECTED=	$004000
 
 Const CLASS_INTERFACE=	$001000
 Const CLASS_THROWABLE=	$002000
@@ -63,8 +64,16 @@ Class Decl
 		Return (attrs & DECL_EXTERN)<>0
 	End
 	
+	Method IsPublic()
+		Return (attrs & (DECL_PRIVATE|DECL_PROTECTED))=0
+	End
+	
 	Method IsPrivate()
 		Return (attrs & DECL_PRIVATE)<>0
+	End
+	
+	Method IsProtected()
+		Return (attrs & DECL_PROTECTED)<>0
 	End
 	
 	Method IsFinal()
@@ -104,18 +113,46 @@ Class Decl
 	End
 	
 	Method CheckAccess()
-		If IsPrivate() And ModuleScope()<>_env.ModuleScope()
-			Local fdecl:=_env.FuncScope()
-			If fdecl And fdecl.attrs & DECL_REFLECTOR Return True
-			Return False
+
+		' if no environment, just let us through
+		If Not _env Return True
+		
+		' if public, always accessible
+		If IsPublic() Return True
+		
+		Local mdecl:=ModuleScope()
+		If mdecl
+			Local mdecl2:=_env.ModuleScope()
+			If mdecl=mdecl2 Return True
+			If mdecl2 And mdecl.friends.Contains( mdecl2.rmodpath ) Return True
 		Endif
-		Return True
+		
+		' if same module, always accessible
+		'If ModuleScope()=_env.ModuleScope() Return True
+		
+		'if protected...
+		If IsProtected()
+			Local thisClass:=ClassScope()
+			Local currentClass:=_env.ClassScope()
+			While currentClass
+				If currentClass=thisClass Return True
+				currentClass=currentClass.superClass
+			End
+		End
+		
+		'accessible if reflecting
+		Local fdecl:=_env.FuncScope()
+		If fdecl And fdecl.attrs & DECL_REFLECTOR Return True
+		
+		Return False	
+
 	End
 	
 	Method AssertAccess()
-		If Not CheckAccess()
-			Err ToString() +" is private."
-		Endif
+		If CheckAccess() Return
+		If IsPrivate() Err ToString()+" is private."
+		If IsProtected() Err ToString()+" is protected."
+		Err ToString()+" is inaccessible."
 	End
 	
 	Method Copy:Decl()
@@ -185,7 +222,8 @@ Class ValDecl Extends Decl
 	
 	Method ToString$()
 		Local t$=Super.ToString()
-		Return t+":"+type.ToString()
+		If type Return t+":"+type.ToString()
+		Return t
 	End
 
 	Method CopyInit:Expr()
@@ -1224,6 +1262,7 @@ Class ModuleDecl Extends ScopeDecl
 	Field modpath$,rmodpath$,filepath$
 	Field imported:=New StringMap<ModuleDecl>		'Maps filepath to modules
 	Field pubImported:=New StringMap<ModuleDecl>	'Ditto for publicly imported modules
+	Field friends:=New StringSet
 	
 	Method ToString$()
 		Return "Module "+modpath
