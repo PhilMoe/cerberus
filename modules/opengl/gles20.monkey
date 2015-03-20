@@ -349,7 +349,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
 Function glBlendFunc:Void( sfactor, dfactor )
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer )="_glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
 Function glCheckFramebufferStatus:Int( target )
 Function glClear:Void( mask )
 Function glClearColor:Void( red#, green#, blue#, alpha# )

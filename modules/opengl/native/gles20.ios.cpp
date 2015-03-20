@@ -10,7 +10,7 @@ BBDataBuffer *LoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 
 	int y=0,pitch=width*format;
 		
-	unsgined char *srcp=src;
+	unsigned char *srcp=src;
 	
 	switch( format ){
 	case 3:
@@ -247,7 +247,7 @@ void _glShaderSource( int shader, String source ){
 }
 
 void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer *pixels ){
-	glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels->ReadPointer() );
+	glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels ? pixels->ReadPointer() : 0 );
 }
 
 void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *pixels ){

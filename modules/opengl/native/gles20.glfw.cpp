@@ -35,8 +35,8 @@ void _glBufferData( int target,int size,BBDataBuffer *data,int usage ){
 	glBufferData( target,size,data ? data->ReadPointer() : 0,usage );
 }
 
-void _glBufferSubData( int target,int offset,int size,BBDataBuffer *data ){
-	glBufferSubData( target,offset,size,data->ReadPointer() );
+void _glBufferSubData( int target,int offset,int size,BBDataBuffer *data,int dataOffset ){
+	glBufferSubData( target,offset,size,(unsigned char*)data->ReadPointer()+dataOffset );
 }
 
 void _glClearDepthf( float depth ){
@@ -241,7 +241,7 @@ void _glShaderSource( int shader, String source ){
 }
 
 void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer *pixels ){
-	glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels->ReadPointer() );
+	glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels ? pixels->ReadPointer() : 0 );
 }
 
 void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *pixels ){

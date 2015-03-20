@@ -66,7 +66,7 @@ class bb_opengl_gles20{
 	}
 	
 	static void _glBufferData( int target,int size,BBDataBuffer data,int usage ){
-		GLES20.glBufferData( target,size,data ? data._data : null,usage );
+		GLES20.glBufferData( target,size,data!=null ? data._data : null,usage );
 	}
 	
 	static void _glBufferSubData( int target,int offset,int size,BBDataBuffer data ){
@@ -234,7 +234,7 @@ class bb_opengl_gles20{
 	}
 
 	static void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer pixels ){
-		GLES20.glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels._data );
+		GLES20.glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels!=null ? pixels._data : null );
 	}
 
 	static void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer pixels ){
