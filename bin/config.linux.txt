@@ -20,11 +20,10 @@ HTML_PLAYER="${MONKEYDIR}/bin/mserver_linux"
 '
 'Must be set to a valid dir for ANDROID and FLASH target support
 '
-'Make sure to install the 32 bit JDK, even on 64 bit Windows!
-'
 'The Java JDK is currently available here:
 '	http://www.oracle.com/technetwork/java/javase/downloads/index.html
 '
+JDK_PATH="${HOME}/jdk1.8.0_31"
 JDK_PATH="${HOME}/jdk1.7.0_09"
 '--------------------
 

@@ -272,11 +272,6 @@ Function SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
 	ValidateDeviceWindow False
 End
 
-Function SetDisplayMode:Void( width:Int,height:Int,depth:Int,hertz:Int,flags:Int )
-	_game.SetDisplayMode width,height,depth,hertz,flags
-	ValidateDeviceWindow False
-End
-
 Function DisplayModes:DisplayMode[]()
 	Return _displayModes
 End

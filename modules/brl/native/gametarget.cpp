@@ -28,10 +28,10 @@ public:
 struct BBDisplayMode : public Object{
 	int width;
 	int height;
-	int format;
+	int depth;
 	int hertz;
 	int flags;
-	BBDisplayMode( int width=0,int height=0,int format=0,int hertz=0,int flags=0 ):width(width),height(height),format(format),hertz(hertz),flags(flags){}
+	BBDisplayMode( int width=0,int height=0,int depth=0,int hertz=0,int flags=0 ):width(width),height(height),depth(depth),hertz(hertz),flags(flags){}
 };
 
 class BBGame{
