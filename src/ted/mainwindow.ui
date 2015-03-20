@@ -10,6 +10,11 @@
     <height>783</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <stylestrategy>PreferDefault</stylestrategy>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Big Ted</string>
   </property>
@@ -93,7 +98,7 @@
      <x>0</x>
      <y>0</y>
      <width>996</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -617,9 +622,9 @@
    </property>
   </action>
   <action name="actionOpen_in_Help">
-  <property name="text">
-   <string>Open in Help View</string>
-  </property>
+   <property name="text">
+    <string>Open in Help View</string>
+   </property>
   </action>
   <action name="actionHelpQuickHelp">
    <property name="text">

@@ -197,9 +197,9 @@ bool Process::start( const QString &cmd ){
 
     int in[2],out[2],err[2];
 
-    pipe( in );
-    pipe( out );
-    pipe( err );
+    if( pipe( in ) ){}
+    if( pipe( out ) ){}
+    if( pipe( err ) ){}
 
     _pid=vfork();
 

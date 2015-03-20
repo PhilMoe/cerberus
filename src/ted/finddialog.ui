@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>761</width>
-    <height>122</height>
+    <height>148</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,12 +84,18 @@
        <property name="text">
         <string>Replace All</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="replace">
        <property name="text">
         <string>Replace</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

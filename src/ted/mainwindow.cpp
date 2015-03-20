@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.22"
+#define TED_VERSION "1.23"
 
 #define SETTINGS_VERSION 2
 
@@ -49,7 +49,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
 
     mainWindow=this;
 
+    //Untested fix for QT5 ala dawlane
+#if QT_VERSION <= 0x050000
     QTextCodec::setCodecForCStrings( QTextCodec::codecForName( "UTF-8" ) );
+#endif
 
 #ifdef Q_OS_MAC
     QCoreApplication::instance()->setAttribute( Qt::AA_DontShowIconsInMenus );
@@ -345,7 +348,8 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 */
         QWebView *webView=0;
         for( int i=0;i<_mainTabWidget->count();++i ){
-            if( webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) ) ) break;
+            webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) );
+            if( webView ) break;
         }
         if( !webView ){
             webView=new QWebView;
@@ -891,6 +895,8 @@ void MainWindow::onMainTabChanged( int index ){
 
 void MainWindow::onDockVisibilityChanged( bool visible ){
 
+    (void)visible;
+
     updateActions();
 }
 
@@ -1189,6 +1195,8 @@ void MainWindow::onProcStderr(){
 
 void MainWindow::onProcLineAvailable( int channel ){
 
+    (void)channel;
+
 //    qDebug()<<"onProcLineAvailable";
 
     while( _consoleProc ){
@@ -1303,7 +1311,8 @@ void MainWindow::onFileCloseAll(){
         int i;
         CodeEditor *editor=0;
         for( i=0;i<_mainTabWidget->count();++i ){
-            if( editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) ) ) break;
+            editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) );
+            if( editor ) break; 
         }
         if( !editor ) return;
 
@@ -1317,7 +1326,6 @@ void MainWindow::onFileCloseOthers(){
 
     for(;;){
         int i;
-        QWidget *widget=0;
         CodeEditor *editor=0;
         for( i=0;i<_mainTabWidget->count();++i ){
             editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) );

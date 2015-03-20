@@ -1,3 +1,4 @@
+
 /*
 Ted,imple text editor/IDE.
 
@@ -454,7 +455,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
     if( !_keyWords.isEmpty() ) return;
 
     const QString &kws=
-        "Void;Strict;Public;Private;Property;"
+        "Void;Strict;Public;Private;Protected;Friend;Property;"
         "Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"
         "Include;Import;Module;Extern;"
         "New;Self;Super;Eachin;True;False;Null;Not;"

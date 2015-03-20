@@ -202,7 +202,7 @@ void FindInFilesDialog::showResult( QListWidgetItem *item ){
     int i=info.lastIndexOf( '<' );
     if( i!=-1 && info.endsWith( '>' ) ){
         QString path=info.left( i );
-        int line=info.mid( i+1,info.length()-i-2 ).toInt()-1;
+//        int line=info.mid( i+1,info.length()-i-2 ).toInt()-1;
 //        emit showCode( path,line );
         emit showCode( path,pos,_len );
     }

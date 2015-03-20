@@ -28,5 +28,7 @@ void ColorSwatch::setColor( const QColor &color ){
 }
 
 void ColorSwatch::mousePressEvent( QMouseEvent *ev ){
+    (void)ev;
+
     setColor( QColorDialog::getColor( _color,this ) );
 }
