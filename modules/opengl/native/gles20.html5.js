@@ -1,4 +1,139 @@
 
+function BBLoadImageData( path,info ){
+
+	gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
+	
+	var game=BBHtml5Game.Html5Game();
+
+	var ty=game.GetMetaData( path,"type" );
+	if( ty.indexOf( "image/" )!=0 ) return null;
+	
+	info[0]=parseInt( game.GetMetaData( path,"width" ) );
+	info[1]=parseInt( game.GetMetaData( path,"height" ) );
+	
+	var img=new Image();
+	img.src=game.PathToUrl( path );
+	
+	return img;
+}
+
+function _glGenerateMipmap( target ){
+
+	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
+	
+	if( tex && tex._loading ){
+		tex._genmipmap=true;
+	}else{
+		gl.generateMipmap( target );
+	}
+}
+
+function _glBindTexture( target,tex ){
+
+	gl.bindTexture( target,tex );
+}
+
+function _glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels ){
+
+	gl.texImage2D( target,level,internalformat,width,height,border,format,type,pixels ? new Uint8Array(pixels.arrayBuffer) : null );
+}
+
+function _glTexImage2D2( target,level,internalformat,format,type,img ){
+
+	if( img.complete ){
+		gl.texImage2D( target,level,internalformat,format,type,img );
+		return;
+	}
+	
+	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
+	if( 	tex._loading ){
+		tex._loading+=1;
+	}else{
+		tex._loading=1;
+	}
+	
+	var onload=function(){
+	
+		var tmp=gl.getParameter( gl.TEXTURE_BINDING_2D );
+		gl.bindTexture( target,tex );
+		gl.texImage2D( target,level,internalformat,format,type,img );
+		if( tex._genmipmap && tex._loading==1 ){
+			gl.generateMipmap( target );
+			tex._genmipmap=false;
+		}
+		gl.bindTexture( target,tmp );
+		
+		img.removeEventListener( "load",onload );
+		tex._loading-=1;
+	}
+	
+	img.addEventListener( "load",onload );
+}
+
+function _glTexImage2D3( target,level,internalformat,format,type,path ){
+
+	var game=BBHtml5Game.Html5Game();
+
+	var ty=game.GetMetaData( path,"type" );
+	if( ty.indexOf( "image/" )!=0 ) return null;
+	
+	var img=new Image();
+	img.src=game.PathToUrl( path );
+	
+	_glTexImage2D2( target,level,internalformat,format,type,img );
+}
+
+function _glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,pixels ){
+
+	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,new Uint8Array(pixels.arrayBuffer) );
+	
+}
+
+function _glTexSubImage2D2( target,level,xoffset,yoffset,format,type,img ){
+
+	if( img.complete ){
+		gl.texSubImage2D( target,level,xoffset,yoffset,format,type,img );
+		return;
+	}
+	
+	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
+	if( 	tex._loading>0 ){
+		tex._loading+=1;
+	}else{
+		tex._loading=1;
+	}
+
+	var onload=function(){
+	
+		var tmp=gl.getParameter( gl.TEXTURE_BINDING_2D );
+		gl.bindTexture( target,tex );
+		gl.texSubImage2D( target,level,xoffset,yoffset,format,type,img );
+		if( tex._genmipmap && tex._loading==1 ){
+			gl.generateMipmap( target );
+			tex._genmipmap=false;
+		}
+		gl.bindTexture( target,tmp );
+		
+		img.removeEventListener( "load",onload );
+		tex._loading-=1;
+	}
+	
+	img.addEventListener( "load",onload );
+}
+
+function _glTexSubImage2D3( target,level,xoffset,yoffset,format,type,path ){
+
+	var game=BBHtml5Game.Html5Game();
+
+	var ty=game.GetMetaData( path,"type" );
+	if( ty.indexOf( "image/" )!=0 ) return null;
+	
+	var img=new Image();
+	img.src=game.PathToUrl( path );
+	
+	_glTexSubImage2D2( target,level,xoffset,yoffset,format,type,img );
+}
+
 // Dodgy code to convert 'any' to i,f,iv,fv...
 //
 function _mkf( p ){
@@ -66,11 +201,11 @@ function _glBufferData( target,size,data,usage ){
 	}
 }
 
-function _glBufferSubData( target,offset,size,data ){
-	if( size==data.size ){
+function _glBufferSubData( target,offset,size,data,dataOffset ){
+	if( size==data.size && dataOffset==0 ){
 		gl.bufferSubData( target,offset,data.arrayBuffer );
 	}else{
-		gl.bufferSubData( target,offset,new Int8Array( data.arrayBuffer,0,size ) );
+		gl.bufferSubData( target,offset,new Int8Array( data.arrayBuffer,dataOffset,size ) );
 	}
 }
 
@@ -83,17 +218,17 @@ function _glDepthRange( zNear,zFar ){
 	gl.depthRange( zNear,zFar );
 }
 
-function _glGetActiveAttrib( program,index,type,size,name ){
+function _glGetActiveAttrib( program,index,size,type,name ){
 	var info=gl.getActiveAttrib( program,index );
-	if( type && type.length ) type[0]=info.type;
 	if( size && size.length ) size[0]=info.size;
+	if( type && type.length ) type[0]=info.type;
 	if( name && name.length ) name[0]=info.name;
 }
 
-function _glGetActiveUniform( program,index,type,size,name ){
+function _glGetActiveUniform( program,index,size,type,name ){
 	var info=gl.getActiveUniform( program,index );
-	if( type && type.length ) type[0]=info.type;
 	if( size && size.length ) size[0]=info.size;
+	if( type && type.length ) type[0]=info.type;
 	if( name && name.length ) name[0]=info.name;
 }
 
@@ -202,97 +337,6 @@ function _glBindRenderbuffer( target,renderbuffer ){
 	}else{
 		gl.bindRenderbuffer( target,null );
 	}
-}
-
-function _glBindTexture( target,tex ){
-	if( tex ){
-		gl.bindTexture( target,tex );
-		if( tex._loaded ){
-			gl.texSubImage2D( target,tex._level,tex._xoffset,tex._yoffset,tex._format,tex._type,tex._loaded );
-			if( tex._genmipmap ) gl.generateMipmap( target );
-			tex._loaded=null;
-			tex._loading=false;
-		}
-	}else{
-		gl.bindTexture( target,null );
-	}
-}
-
-function _glGenerateMipmap( target ){
-	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
-	if( tex && tex._loading ){
-		tex._genmipmap=true;
-	}else{
-		gl.generateMipmap( target );
-	}
-}
-
-function _glTexImage2D( target,level,internalformat,format,type,path ){
-
-	var game=BBHtml5Game.Html5Game();
-
-	var ty=game.GetMetaData( path,"type" );
-	if( ty.indexOf( "image/" )!=0 ) return null;
-	
-	var w=game.GetMetaData( path,"width" );
-	var h=game.GetMetaData( path,"height" );
-
-	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
-	tex._loaded=null;
-	tex._loading=true;
-	tex._genmipmap=false;
-	tex._level=level;
-	tex._xoffset=0;
-	tex._yoffset=0;
-	tex._format=format;
-	tex._type=type;
-	
-	//Freaks Opera out!
-	gl.texImage2D( target,level,internalformat,w,h,0,format,type,null );
-
-	var img=new Image();
-	
-	function loaded(){
-		tex._loaded=img;
-	}
-	
-	img.onload=loaded;
-	img.src=game.PathToUrl( path );
-}
-
-function _glTexImage2D2( target,level,internalformat,width,height,border,format,type,pixels ){
-	gl.texImage2D( target,level,internalformat,width,height,border,format,type,new Uint8Array(pixels.arrayBuffer) );
-}
-
-function _glTexSubImage2D( target, level, xoffset, yoffset, format, type, path ){
-
-	var game=BBHtml5Game.Html5Game();
-
-	var ty=game.GetMetaData( path,"type" );
-	if( ty.indexOf( "image/" )!=0 ) return null;
-
-	var tex=gl.getParameter( gl.TEXTURE_BINDING_2D );
-	tex._loaded=null;
-	tex._loading=true;
-	tex._genmipmap=false;
-	tex._level=level;
-	tex._xoffset=xoffset;
-	tex._yoffset=yoffset;
-	tex._format=format;
-	tex._type=type;
-
-	var img=new Image();
-	
-	function loaded(){
-		tex._loaded=img;
-	}
-	
-	img.onload=loaded;
-	img.src=game.PathToUrl( path );
-}
-
-function _glTexSubImage2D2( target,level,xoffset,yoffset,width,height,format,type,pixels ){
-	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,new Uint8Array(pixels.arrayBuffer) );
 }
 
 function _glUniform1fv( location, count, v ){

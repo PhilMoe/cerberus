@@ -7,9 +7,15 @@ function BBHtml5Game( canvas ){
 	this._timerSeq=0;
 	this._gl=null;
 	if( CFG_OPENGL_GLES20_ENABLED=="1" ){
-		this._gl=this._canvas.getContext( "webgl" );
-		if( !this._gl ) this._gl=this._canvas.getContext( "experimental-webgl" );
+
+		var attrs={ alpha:false };
+	
+		this._gl=this._canvas.getContext( "webgl",attrs );
+
+		if( !this._gl ) this._gl=this._canvas.getContext( "experimental-webgl",attrs );
+		
 		if( !this._gl ) this.Die( "Can't create WebGL" );
+		
 		gl=this._gl;
 	}
 }

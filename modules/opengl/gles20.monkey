@@ -765,8 +765,13 @@ Function glViewport:Void( x, y, width, height )
 
 #Elseif TARGET="html5"
 
-Function glTexImage2D:Void( target, level, internalformat, format, type, path:String )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, path:String )="_glTexSubImage2D"
+Function LoadImageData:Object( path$,info[]=[] )="BBLoadImageData"
+
+Function glTexImage2D:Void( target, level, internalformat, format, type, data:Object )="_glTexImage2D2"
+Function glTexImage2D:Void( target, level, internalformat, format, type, path:String )="_glTexImage2D3"
+
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="_glTexSubImage2D2"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, path:String )="_glTexSubImage2D3"
 
 '${HTML5_DECLS}
 Function glActiveTexture:Void( texture )="gl.activeTexture"
@@ -782,7 +787,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )="gl.blendEquationSep
 Function glBlendFunc:Void( sfactor, dfactor )="gl.blendFunc"
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )="gl.blendFuncSeparate"
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer )="_glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
 Function glCheckFramebufferStatus:Int( target )="gl.checkFramebufferStatus"
 Function glClear:Void( mask )="gl.clear"
 Function glClearColor:Void( red#, green#, blue#, alpha# )="gl.clearColor"
@@ -870,8 +875,8 @@ Function glStencilMask:Void( mask )="gl.stencilMask"
 Function glStencilMaskSeparate:Void( face, mask )="gl.stencilMaskSeparate"
 Function glStencilOp:Void( fail, zfail, zpass )="gl.stencilOp"
 Function glStencilOpSeparate:Void( face, fail, zfail, zpass )="gl.stencilOpSeparate"
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D2"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D2"
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
 Function glTexParameterf:Void( target, pname, param# )="gl.texParameterf"
 Function glTexParameteri:Void( target, pname, param )="gl.texParameteri"
 Function glUniform1f:Void( location, x# )="gl.uniform1f"
@@ -912,7 +917,7 @@ Function glViewport:Void( x, y, width, height )="gl.viewport"
 
 Public
 
-#If TARGET="glfw" Or TARGET="ios" Or TARGET="android"
+#If TARGET<>"html5"
 
 Function LoadImageData:DataBuffer( path:String,info:Int[]=[] )
 	Local buf:=New DataBuffer
