@@ -773,6 +773,9 @@ Function glTexImage2D:Void( target, level, internalformat, format, type, path:St
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="_glTexSubImage2D2"
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, path:String )="_glTexSubImage2D3"
 
+Function GLTextureLoading:Bool( tex:Int )="BBTextureLoading"
+Function GLTexturesLoading:Int()="BBTexturesLoading"
+
 '${HTML5_DECLS}
 Function glActiveTexture:Void( texture )="gl.activeTexture"
 Function glAttachShader:Void( program, shader )="gl.attachShader"

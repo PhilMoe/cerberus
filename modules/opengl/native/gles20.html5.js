@@ -1,4 +1,6 @@
 
+var bb_texs_loading=0;
+
 function BBLoadImageData( path,info ){
 
 	gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
@@ -15,6 +17,14 @@ function BBLoadImageData( path,info ){
 	img.src=game.PathToUrl( path );
 	
 	return img;
+}
+
+function BBTextureLoading( tex ){
+	return tex && tex._loading;
+}
+
+function BBTexturesLoading(){
+	return bb_texs_loading;
 }
 
 function _glGenerateMipmap( target ){
@@ -51,6 +61,8 @@ function _glTexImage2D2( target,level,internalformat,format,type,img ){
 	}else{
 		tex._loading=1;
 	}
+
+	bb_texs_loading+=1;
 	
 	var onload=function(){
 	
@@ -65,6 +77,8 @@ function _glTexImage2D2( target,level,internalformat,format,type,img ){
 		
 		img.removeEventListener( "load",onload );
 		tex._loading-=1;
+		
+		bb_texs_loading-=1;
 	}
 	
 	img.addEventListener( "load",onload );
@@ -102,6 +116,8 @@ function _glTexSubImage2D2( target,level,xoffset,yoffset,format,type,img ){
 	}else{
 		tex._loading=1;
 	}
+	
+	bb_texs_loading+=1;
 
 	var onload=function(){
 	
@@ -116,6 +132,8 @@ function _glTexSubImage2D2( target,level,xoffset,yoffset,format,type,img ){
 		
 		img.removeEventListener( "load",onload );
 		tex._loading-=1;
+		
+		bb_texs_loading-=1;
 	}
 	
 	img.addEventListener( "load",onload );
