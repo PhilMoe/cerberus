@@ -335,6 +335,9 @@ Extern
 
 Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
 
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
+
 '${GLFW_DECLS}
 Function glActiveTexture:Void( texture )
 Function glAttachShader:Void( program, shader )
@@ -437,8 +440,6 @@ Function glStencilMask:Void( mask )
 Function glStencilMaskSeparate:Void( face, mask )
 Function glStencilOp:Void( fail, zfail, zpass )
 Function glStencilOpSeparate:Void( face, fail, zfail, zpass )
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
 Function glTexParameterf:Void( target, pname, param# )
 Function glTexParameteri:Void( target, pname, param )
 Function glUniform1f:Void( location, x# )
@@ -478,6 +479,13 @@ Function glViewport:Void( x, y, width, height )
 #Elseif TARGET="android"
 
 Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="bb_opengl_gles20.LoadImageData"
+Function BBLoadStaticTexImage:Object( path$,info[]=[] )="bb_opengl_gles20.LoadStaticTexImage"
+
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:DataBuffer )="bb_opengl_gles20._glTexImage2D"
+Function glTexImage2D:Void( target, level, internalformat, format, type, data:Object )="bb_opengl_gles20._glTexImage2D2"
+
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:DataBuffer )="bb_opengl_gles20._glTexSubImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="bb_opengl_gles20._glTexSubImage2D2"
 
 '${ANDROID_DECLS}
 Function glActiveTexture:Void( texture )="GLES20.glActiveTexture"
@@ -493,7 +501,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )="GLES20.glBlendEquat
 Function glBlendFunc:Void( sfactor, dfactor )="GLES20.glBlendFunc"
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )="GLES20.glBlendFuncSeparate"
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="bb_opengl_gles20._glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer )="bb_opengl_gles20._glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="bb_opengl_gles20._glBufferSubData"
 Function glCheckFramebufferStatus:Int( target )="GLES20.glCheckFramebufferStatus"
 Function glClear:Void( mask )="GLES20.glClear"
 Function glClearColor:Void( red#, green#, blue#, alpha# )="GLES20.glClearColor"
@@ -581,8 +589,6 @@ Function glStencilMask:Void( mask )="GLES20.glStencilMask"
 Function glStencilMaskSeparate:Void( face, mask )="GLES20.glStencilMaskSeparate"
 Function glStencilOp:Void( fail, zfail, zpass )="GLES20.glStencilOp"
 Function glStencilOpSeparate:Void( face, fail, zfail, zpass )="GLES20.glStencilOpSeparate"
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="bb_opengl_gles20._glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="bb_opengl_gles20._glTexSubImage2D"
 Function glTexParameterf:Void( target, pname, param# )="GLES20.glTexParameterf"
 Function glTexParameteri:Void( target, pname, param )="GLES20.glTexParameteri"
 Function glUniform1f:Void( location, x# )="GLES20.glUniform1f"
@@ -621,7 +627,10 @@ Function glViewport:Void( x, y, width, height )="GLES20.glViewport"
 
 #ElseIf TARGET="ios"
 
-Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="LoadImageData"
+Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
+
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
 
 '${IOS_DECLS}
 Function glActiveTexture:Void( texture )
@@ -637,7 +646,8 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
 Function glBlendFunc:Void( sfactor, dfactor )
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer )="_glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
+
 Function glCheckFramebufferStatus:Int( target )
 Function glClear:Void( mask )
 Function glClearColor:Void( red#, green#, blue#, alpha# )
@@ -725,8 +735,6 @@ Function glStencilMask:Void( mask )
 Function glStencilMaskSeparate:Void( face, mask )
 Function glStencilOp:Void( fail, zfail, zpass )
 Function glStencilOpSeparate:Void( face, fail, zfail, zpass )
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
 Function glTexParameterf:Void( target, pname, param# )
 Function glTexParameteri:Void( target, pname, param )
 Function glUniform1f:Void( location, x# )
@@ -765,16 +773,17 @@ Function glViewport:Void( x, y, width, height )
 
 #Elseif TARGET="html5"
 
-Function LoadImageData:Object( path$,info[]=[] )="BBLoadImageData"
+Function BBLoadStaticTexImage:Object( path$,info[]=[] )="BBLoadStaticTexImage"
+Function GLTextureLoading:Bool( tex:Int )="BBTextureLoading"
+Function GLTexturesLoading:Int()="BBTexturesLoading"
 
 Function glTexImage2D:Void( target, level, internalformat, format, type, data:Object )="_glTexImage2D2"
 Function glTexImage2D:Void( target, level, internalformat, format, type, path:String )="_glTexImage2D3"
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D"
 
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="_glTexSubImage2D2"
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, path:String )="_glTexSubImage2D3"
-
-Function GLTextureLoading:Bool( tex:Int )="BBTextureLoading"
-Function GLTexturesLoading:Int()="BBTexturesLoading"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
 
 '${HTML5_DECLS}
 Function glActiveTexture:Void( texture )="gl.activeTexture"
@@ -878,8 +887,6 @@ Function glStencilMask:Void( mask )="gl.stencilMask"
 Function glStencilMaskSeparate:Void( face, mask )="gl.stencilMaskSeparate"
 Function glStencilOp:Void( fail, zfail, zpass )="gl.stencilOp"
 Function glStencilOpSeparate:Void( face, fail, zfail, zpass )="gl.stencilOpSeparate"
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, pixels:DataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
 Function glTexParameterf:Void( target, pname, param# )="gl.texParameterf"
 Function glTexParameteri:Void( target, pname, param )="gl.texParameteri"
 Function glUniform1f:Void( location, x# )="gl.uniform1f"
@@ -941,3 +948,14 @@ Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, pa
 End
 
 #Endif
+
+#If TARGET="android" Or TARGET="html5"
+
+Function LoadStaticTexImage:Object( path:String,info:Int[]=[] )
+
+	Return BBLoadStaticTexImage( path,info )
+
+End
+
+#Endif
+

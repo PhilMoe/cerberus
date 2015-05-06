@@ -1,7 +1,7 @@
 
 var bb_texs_loading=0;
 
-function BBLoadImageData( path,info ){
+function BBLoadStaticTexImage( path,info ){
 
 	gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
 	
@@ -10,8 +10,8 @@ function BBLoadImageData( path,info ){
 	var ty=game.GetMetaData( path,"type" );
 	if( ty.indexOf( "image/" )!=0 ) return null;
 	
-	info[0]=parseInt( game.GetMetaData( path,"width" ) );
-	info[1]=parseInt( game.GetMetaData( path,"height" ) );
+	if( info.length>0 ) info[0]=parseInt( game.GetMetaData( path,"width" ) );
+	if( info.length>1 ) info[1]=parseInt( game.GetMetaData( path,"height" ) );
 	
 	var img=new Image();
 	img.src=game.PathToUrl( path );

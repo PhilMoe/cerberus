@@ -27,6 +27,14 @@ BBDataBuffer *BBLoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 	return buf;
 }
 
+void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer *data ){
+	glTexImage2D( target,level,internalformat,width,height,border,format,type,data ? data->ReadPointer() : 0 );
+}
+
+void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *data ){
+	glTexImage2D( target,level,xoffset,yoffset,width,height,format,type,data->ReadPointer() );
+}
+
 void _glBindAttribLocation( int program, int index, String name ){
 	glBindAttribLocation( program,(GLuint)index,name.ToCString<char>() );
 }
@@ -36,7 +44,7 @@ void _glBufferData( int target,int size,BBDataBuffer *data,int usage ){
 }
 
 void _glBufferSubData( int target,int offset,int size,BBDataBuffer *data,int dataOffset ){
-	glBufferSubData( target,offset,size,(unsigned char*)data->ReadPointer()+dataOffset );
+	glBufferSubData( target,offset,size,data->ReadPointer( dataOffset ) );
 }
 
 void _glClearDepthf( float depth ){
@@ -238,14 +246,6 @@ void _glShaderSource( int shader, String source ){
 	const char *buf[1];
 	buf[0]=cstr;
 	glShaderSource( shader,1,(const GLchar**)buf,0 );
-}
-
-void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer *pixels ){
-	glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels ? pixels->ReadPointer() : 0 );
-}
-
-void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *pixels ){
-	glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,pixels->ReadPointer() );
 }
 
 void _glUniform1fv( int location, int count, Array<float> v ){

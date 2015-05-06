@@ -65,12 +65,52 @@ class bb_opengl_gles20{
 		return buf;
 	}
 	
+	static Bitmap LoadStaticTexImage( String path,int[] info ){
+		Bitmap bitmap=null;
+		try{
+			bitmap=BBAndroidGame.AndroidGame().LoadBitmap( path );
+		}catch( OutOfMemoryError e ){
+			throw new Error( "Out of memory error loading bitmap" );
+		}
+		if( bitmap==null ) return null;
+		
+		if( info.length>0 ) info[0]=bitmap.getWidth();
+		if( info.length>1 ) info[1]=bitmap.getHeight();
+		
+		return bitmap;
+	}
+	
+	static void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer data ){
+		GLES20.glTexImage2D( target,level,internalformat,width,height,border,format,type,data!=null ? data._data : null );
+	}
+	
+	static void _glTexImage2D2( int target,int level,int internalFormat,int format,int type,Object data ){
+		Bitmap bitmap=(Bitmap)data;
+		if( bitmap!=null ) GLUtils.texImage2D( target,level,bitmap,0 );
+	}
+
+	static void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer data ){
+		GLES20.glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,data!=null ? data._data : null );
+	}
+
+	static void _glTexSubImage2D2( int target,int level,int xoffset,int yoffset,Object data ){
+		Bitmap bitmap=(Bitmap)data;
+		if( bitmap!=null ) GLUtils.texSubImage2D( target,level,xoffset,yoffset,bitmap );
+	}
+	
 	static void _glBufferData( int target,int size,BBDataBuffer data,int usage ){
 		GLES20.glBufferData( target,size,data!=null ? data._data : null,usage );
 	}
 	
-	static void _glBufferSubData( int target,int offset,int size,BBDataBuffer data ){
-		GLES20.glBufferSubData( target,offset,size,data._data );
+	static void _glBufferSubData( int target,int offset,int size,BBDataBuffer data,int dataOffset ){
+		if( dataOffset==0 ){
+			GLES20.glBufferSubData( target,offset,size,data._data );
+		}else{
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );
+			GLES20.glBufferSubData( target,offset,size,buf );
+			buf.rewind();
+		}
 	}
 	
 	static int _glCreateBuffer(){
@@ -233,14 +273,6 @@ class bb_opengl_gles20{
 		GLES20.glReadPixels( x,y,width,height,format,type,pixels._data );
 	}
 
-	static void _glTexImage2D( int target,int level,int internalformat,int width,int height,int border,int format,int type,BBDataBuffer pixels ){
-		GLES20.glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels!=null ? pixels._data : null );
-	}
-
-	static void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer pixels ){
-		GLES20.glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,pixels._data );
-	}
-	
 	static void _glUniform1fv( int location, int count, float[] v ){
 		GLES20.glUniform1fv( location,count,v,0 );
 	}
