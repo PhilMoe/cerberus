@@ -428,7 +428,7 @@ Function glLineWidth:Void( width# )
 Function glLinkProgram:Void( program )
 Function glPixelStorei:Void( pname, param )
 Function glPolygonOffset:Void( factor#, units# )
-Function glReadPixels:Void( x, y, width, height, format, type, pixels:DataBuffer )="_glReadPixels"
+Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer, dataOffset=0 )="_glReadPixels"
 Function glReleaseShaderCompiler:Void()
 Function glRenderbufferStorage:Void( target, internalformat, width, height )
 Function glSampleCoverage:Void( value#, invert? )
@@ -577,7 +577,7 @@ Function glLineWidth:Void( width# )="GLES20.glLineWidth"
 Function glLinkProgram:Void( program )="GLES20.glLinkProgram"
 Function glPixelStorei:Void( pname, param )="GLES20.glPixelStorei"
 Function glPolygonOffset:Void( factor#, units# )="GLES20.glPolygonOffset"
-Function glReadPixels:Void( x, y, width, height, format, type, pixels:DataBuffer )="bb_opengl_gles20._glReadPixels"
+Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer, dataOffset=0 )="bb_opengl_gles20._glReadPixels"
 Function glReleaseShaderCompiler:Void()="GLES20.glReleaseShaderCompiler"
 Function glRenderbufferStorage:Void( target, internalformat, width, height )="GLES20.glRenderbufferStorage"
 Function glSampleCoverage:Void( value#, invert? )="GLES20.glSampleCoverage"
@@ -723,7 +723,7 @@ Function glLineWidth:Void( width# )
 Function glLinkProgram:Void( program )
 Function glPixelStorei:Void( pname, param )
 Function glPolygonOffset:Void( factor#, units# )
-Function glReadPixels:Void( x, y, width, height, format, type, pixels:DataBuffer )="_glReadPixels"
+Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer, dataOffset=0 )="_glReadPixels"
 Function glReleaseShaderCompiler:Void()
 Function glRenderbufferStorage:Void( target, internalformat, width, height )
 Function glSampleCoverage:Void( value#, invert? )
@@ -875,7 +875,7 @@ Function glLineWidth:Void( width# )="gl.lineWidth"
 Function glLinkProgram:Void( program )="gl.linkProgram"
 Function glPixelStorei:Void( pname, param )="gl.pixelStorei"
 Function glPolygonOffset:Void( factor#, units# )="gl.polygonOffset"
-Function glReadPixels:Void( x, y, width, height, format, type, pixels:DataBuffer )="_glReadPixels"
+Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer,dataOffset=0 )="_glReadPixels"
 Function glReleaseShaderCompiler:Void()="gl.releaseShaderCompiler"
 Function glRenderbufferStorage:Void( target, internalformat, width, height )="gl.renderbufferStorage"
 Function glSampleCoverage:Void( value#, invert? )="gl.sampleCoverage"

@@ -329,8 +329,8 @@ function _glGetVertexAttribiv( index, pname, params ){
 	_mkiv( gl.getVertexAttrib( index,pname ),params );
 }
 
-function _glReadPixels( x,y,width,height,format,type,pixels ){
-	gl.readPixels( x,y,width,height,format,type,pixels.byteArray );
+function _glReadPixels( x,y,width,height,format,type,data,dataOffset ){
+	gl.readPixels( x,y,width,height,format,type,new Uint8Array( data.arrayBuffer,dataOffset,data.length-dataOffset ) );
 }
 
 function _glBindBuffer( target,buffer ){

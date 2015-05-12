@@ -269,8 +269,28 @@ class bb_opengl_gles20{
 		GLES20.glGetVertexAttribiv( index,pname,params,0 );
 	}
 	
-	static void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer pixels ){
-		GLES20.glReadPixels( x,y,width,height,format,type,pixels._data );
+	static void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer data,int dataOffset ){
+		if( dataOffset==0 ){
+			GLES20.glReadPixels( x,y,width,height,format,type,data._data );
+		}else{
+			//another day, another android BUG?
+			//
+			//glReadPixels doesn't seem to work if you read into a buffer with non-0 position.
+			//
+			ByteBuffer tmp=ByteBuffer.allocate( width*height*4 );
+			GLES20.glReadPixels( x,y,width,height,format,type,tmp );
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );
+			buf.put( tmp );
+			buf.rewind();
+			
+			/*
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );	//crash unless dataOffset is 0
+			GLES20.glReadPixels( x,y,width,height,format,type,buf );
+			buf.rewind();
+			*/
+		}
 	}
 
 	static void _glUniform1fv( int location, int count, float[] v ){

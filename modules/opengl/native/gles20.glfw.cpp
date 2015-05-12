@@ -237,8 +237,8 @@ void _glGetVertexAttribiv( int index, int pname, Array<int> params ){
 	glGetVertexAttribiv( index,pname,&params[0] );
 }
 
-void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer *pixels ){
-	glReadPixels( x,y,width,height,format,type,pixels->WritePointer() );
+void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer *pixels,int dataOffset ){
+	glReadPixels( x,y,width,height,format,type,pixels->WritePointer( dataOffset ) );
 }
 
 void _glShaderSource( int shader, String source ){
