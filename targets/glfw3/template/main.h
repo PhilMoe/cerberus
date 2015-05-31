@@ -12,6 +12,7 @@
 
 #if _WIN32
 #include <windows.h>
+#include <shlobj.h>
 #include <direct.h>
 #include <sys/stat.h>
 #undef LoadString
