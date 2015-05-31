@@ -1,0 +1,53 @@
+
+# Module requesters
+
+The requesters module allows you to use simple modal requesters with the glfw3 target on Mac and Windows only!
+
+
+# Function Notify:Void( title:String,text:String,serious:Bool )
+
+Notify activates a simple modal dialog informing the user of an event. The optional @serious flag can be used to indicate a 'critical' event.
+
+
+# Function Confirm:Bool( title:String,text:String,serious:Bool )
+
+Confirm activates a simple modal dialog requesting the user to select between YES and NO options. If the user selects YES, then Confirm returns true. Otherwise, false is returned.
+
+
+# Function Proceed:Bool( title:String,text:String,serious:Bool )
+
+Proceed activates a simple modal dialog requesting the user to select between YES, NO and CANCEL options. If the user selects YES, then Proceed return 1. If the user selects NO, then Proceed returns 0. Otherwise, Proceed returns -1.
+
+
+# Function RequestFile:String( title:String,filters:String="",save:Bool=True,file:String="" )
+
+RequestFile activates a modal file requester dialog.
+
+The optional @filters string can either be a comma separated list of file extensions or, as in the following example, groups of extensions that begin with a "group:" and are separated by a semicolon. The @save parameter can be true to create a save-style requester, or false to create a load-style requester.
+
+Example:
+
+Import mojo
+
+Import brl.requesters
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		Local filter:="Image Files:png,jpg,bmp;Text Files:txt;All Files:*"
+		Local file:=RequestFile( "Select graphic file to open",filter )
+		If file Notify "Image file selected",file
+	End
+			
+End
+
+Function Main()
+
+	New MyApp
+
+End
+
+
+# Function RequestDir:String( title:String,dir:String="" )
+
+RequestDir activates a modal directory requester dialog.
