@@ -36,7 +36,7 @@ The following app config settings are currently supported:
 
 'GLFW settings, defaults shown
 '
-#GLFW_USE_MINGW=False					'Set to true on Windows to use Mingw instead of msvc2010 to build glfw apps
+#GLFW_USE_MINGW=True					'Set to false on Windows to use MSVC instead of MinGW to build glfw apps.
 #GLFW_WINDOW_TITLE="Monkey Game"
 #GLFW_WINDOW_WIDTH=640					'Set this and HEIGHT to 0 for a 'windowless' glfw app
 #GLFW_WINDOW_HEIGHT=480	

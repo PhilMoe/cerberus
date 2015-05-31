@@ -116,7 +116,9 @@ typedef size_t GLsizeiptr;
 #define GL_TEXTURE30 0x84DE
 #define GL_TEXTURE31 0x84DF
 #define GL_ACTIVE_TEXTURE 0x84E0
+#ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F
+#endif
 #define GL_MIRRORED_REPEAT 0x8370
 #define GL_FLOAT_VEC2 0x8B50
 #define GL_FLOAT_VEC3 0x8B51

@@ -4,8 +4,8 @@
 #
 cd `dirname $0`
 cd ../../bin
-macdeployqt-4.8 Ted.app
-#/Developer/Tools/Qt/macdeployqt Ted.app
+#macdeployqt-4.8 Ted.app
+/Developer/Tools/Qt/macdeployqt Ted.app
 cd Ted.app/Contents/Frameworks
 rm -r -f QtDeclarative.framework
 rm -r -f QtScript.framework

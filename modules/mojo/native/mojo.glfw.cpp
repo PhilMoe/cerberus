@@ -849,7 +849,7 @@ gxtkAudio::gxtkAudio(){
 		if( !alcDevice ) alcDevice=alcOpenDevice( "Generic Software" );
 	}
 
-	bbPrint( "opening openal device" );
+//	bbPrint( "opening openal device" );
 	if( alcDevice ){
 		if( alcContext=alcCreateContext( alcDevice,0 ) ){
 			if( alcMakeContextCurrent( alcContext ) ){
