@@ -43,10 +43,9 @@
 #include <al.h>
 #include <alc.h>
 
-//STB_image lib...
+//stb_image lib
 //
-#define STBI_HEADER_FILE_ONLY
-#include <stb_image.c>
+#include <stb_image.h>
 
 //stb_vorbis lib
 //

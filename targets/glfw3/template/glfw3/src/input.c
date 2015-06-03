@@ -46,7 +46,7 @@ static void setCursorMode(_GLFWwindow* window, int newMode)
         newMode != GLFW_CURSOR_HIDDEN &&
         newMode != GLFW_CURSOR_DISABLED)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, NULL);
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid cursor mode");
         return;
     }
 
@@ -55,24 +55,27 @@ static void setCursorMode(_GLFWwindow* window, int newMode)
 
     window->cursorMode = newMode;
 
-    if (window == _glfw.focusedWindow)
+    if (_glfw.focusedWindow == window)
     {
         if (oldMode == GLFW_CURSOR_DISABLED)
         {
-            window->cursorPosX = _glfw.cursorPosX;
-            window->cursorPosY = _glfw.cursorPosY;
-
-            _glfwPlatformSetCursorPos(window, _glfw.cursorPosX, _glfw.cursorPosY);
+            _glfwPlatformSetCursorPos(window,
+                                      _glfw.cursorPosX,
+                                      _glfw.cursorPosY);
         }
         else if (newMode == GLFW_CURSOR_DISABLED)
         {
             int width, height;
 
-            _glfw.cursorPosX = window->cursorPosX;
-            _glfw.cursorPosY = window->cursorPosY;
+            _glfwPlatformGetCursorPos(window,
+                                      &_glfw.cursorPosX,
+                                      &_glfw.cursorPosY);
+
+            window->cursorPosX = _glfw.cursorPosX;
+            window->cursorPosY = _glfw.cursorPosY;
 
             _glfwPlatformGetWindowSize(window, &width, &height);
-            _glfwPlatformSetCursorPos(window, width / 2.0, height / 2.0);
+            _glfwPlatformSetCursorPos(window, width / 2, height / 2);
         }
 
         _glfwPlatformApplyCursorMode(window);
@@ -198,22 +201,13 @@ void _glfwInputCursorMotion(_GLFWwindow* window, double x, double y)
 
         window->cursorPosX += x;
         window->cursorPosY += y;
-    }
-    else
-    {
-        if (window->cursorPosX == x && window->cursorPosY == y)
-            return;
 
-        window->cursorPosX = x;
-        window->cursorPosY = y;
+        x = window->cursorPosX;
+        y = window->cursorPosY;
     }
 
     if (window->callbacks.cursorPos)
-    {
-        window->callbacks.cursorPos((GLFWwindow*) window,
-                                    window->cursorPosX,
-                                    window->cursorPosY);
-    }
+        window->callbacks.cursorPos((GLFWwindow*) window, x, y);
 }
 
 void _glfwInputCursorEnter(_GLFWwindow* window, int entered)
@@ -222,10 +216,10 @@ void _glfwInputCursorEnter(_GLFWwindow* window, int entered)
         window->callbacks.cursorEnter((GLFWwindow*) window, entered);
 }
 
-void _glfwInputDrop(_GLFWwindow* window, int count, const char** names)
+void _glfwInputDrop(_GLFWwindow* window, int count, const char** paths)
 {
     if (window->callbacks.drop)
-        window->callbacks.drop((GLFWwindow*) window, count, names);
+        window->callbacks.drop((GLFWwindow*) window, count, paths);
 }
 
 
@@ -248,7 +242,7 @@ GLFWAPI int glfwGetInputMode(GLFWwindow* handle, int mode)
         case GLFW_STICKY_MOUSE_BUTTONS:
             return window->stickyMouseButtons;
         default:
-            _glfwInputError(GLFW_INVALID_ENUM, NULL);
+            _glfwInputError(GLFW_INVALID_ENUM, "Invalid input mode");
             return 0;
     }
 }
@@ -271,7 +265,7 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
             setStickyMouseButtons(window, value ? GL_TRUE : GL_FALSE);
             break;
         default:
-            _glfwInputError(GLFW_INVALID_ENUM, NULL);
+            _glfwInputError(GLFW_INVALID_ENUM, "Invalid input mode");
             break;
     }
 }
@@ -284,7 +278,7 @@ GLFWAPI int glfwGetKey(GLFWwindow* handle, int key)
 
     if (key < 0 || key > GLFW_KEY_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "The specified key is invalid");
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid key");
         return GLFW_RELEASE;
     }
 
@@ -307,7 +301,7 @@ GLFWAPI int glfwGetMouseButton(GLFWwindow* handle, int button)
     if (button < 0 || button > GLFW_MOUSE_BUTTON_LAST)
     {
         _glfwInputError(GLFW_INVALID_ENUM,
-                        "The specified mouse button is invalid");
+                        "Invalid mouse button");
         return GLFW_RELEASE;
     }
 
@@ -332,10 +326,15 @@ GLFWAPI void glfwGetCursorPos(GLFWwindow* handle, double* xpos, double* ypos)
 
     _GLFW_REQUIRE_INIT();
 
-    if (xpos)
-        *xpos = window->cursorPosX;
-    if (ypos)
-        *ypos = window->cursorPosY;
+    if (window->cursorMode == GLFW_CURSOR_DISABLED)
+    {
+        if (xpos)
+            *xpos = window->cursorPosX;
+        if (ypos)
+            *ypos = window->cursorPosY;
+    }
+    else
+        _glfwPlatformGetCursorPos(window, xpos, ypos);
 }
 
 GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
@@ -347,20 +346,17 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
     if (_glfw.focusedWindow != window)
         return;
 
-    // Don't do anything if the cursor position did not change
-    if (xpos == window->cursorPosX && ypos == window->cursorPosY)
-        return;
-
-    // Set GLFW cursor position
-    window->cursorPosX = xpos;
-    window->cursorPosY = ypos;
-
-    // Do not move physical cursor if it is disabled
     if (window->cursorMode == GLFW_CURSOR_DISABLED)
-        return;
-
-    // Update physical cursor position
-    _glfwPlatformSetCursorPos(window, xpos, ypos);
+    {
+        // Only update the accumulated position if the cursor is disabled
+        window->cursorPosX = xpos;
+        window->cursorPosY = ypos;
+    }
+    else
+    {
+        // Update system cursor position
+        _glfwPlatformSetCursorPos(window, xpos, ypos);
+    }
 }
 
 GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
@@ -387,6 +383,17 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
     _GLFWcursor* cursor;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    if (shape != GLFW_ARROW_CURSOR &&
+        shape != GLFW_IBEAM_CURSOR &&
+        shape != GLFW_CROSSHAIR_CURSOR &&
+        shape != GLFW_HAND_CURSOR &&
+        shape != GLFW_HRESIZE_CURSOR &&
+        shape != GLFW_VRESIZE_CURSOR)
+    {
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid standard cursor");
+        return NULL;
+    }
 
     cursor = calloc(1, sizeof(_GLFWcursor));
     cursor->next = _glfw.cursorListHead;
@@ -522,7 +529,7 @@ GLFWAPI int glfwJoystickPresent(int joy)
 
     if (joy < 0 || joy > GLFW_JOYSTICK_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, NULL);
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid joystick");
         return 0;
     }
 
@@ -537,7 +544,7 @@ GLFWAPI const float* glfwGetJoystickAxes(int joy, int* count)
 
     if (joy < 0 || joy > GLFW_JOYSTICK_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, NULL);
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid joystick");
         return NULL;
     }
 
@@ -552,7 +559,7 @@ GLFWAPI const unsigned char* glfwGetJoystickButtons(int joy, int* count)
 
     if (joy < 0 || joy > GLFW_JOYSTICK_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, NULL);
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid joystick");
         return NULL;
     }
 
@@ -565,7 +572,7 @@ GLFWAPI const char* glfwGetJoystickName(int joy)
 
     if (joy < 0 || joy > GLFW_JOYSTICK_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, NULL);
+        _glfwInputError(GLFW_INVALID_ENUM, "Invalid joystick");
         return NULL;
     }
 
@@ -595,6 +602,13 @@ GLFWAPI double glfwGetTime(void)
 GLFWAPI void glfwSetTime(double time)
 {
     _GLFW_REQUIRE_INIT();
+
+    if (time != time || time < 0.0 || time > 18446744073.0)
+    {
+        _glfwInputError(GLFW_INVALID_VALUE, "Invalid time");
+        return;
+    }
+
     _glfwPlatformSetTime(time);
 }
 

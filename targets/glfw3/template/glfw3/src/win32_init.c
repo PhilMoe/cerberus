@@ -30,20 +30,22 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#ifdef __BORLANDC__
-// With the Borland C++ compiler, we want to disable FPU exceptions
-#include <float.h>
-#endif // __BORLANDC__
 
-
-#if defined(_GLFW_USE_OPTIMUS_HPG)
+#if defined(_GLFW_USE_HYBRID_HPG) || defined(_GLFW_USE_OPTIMUS_HPG)
 
 // Applications exporting this symbol with this value will be automatically
-// directed to the high-performance GPU on nVidia Optimus systems
+// directed to the high-performance GPU on Nvidia Optimus systems with
+// up-to-date drivers
 //
-__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+__declspec(dllexport) DWORD NvOptimusEnablement = 1;
 
-#endif // _GLFW_USE_OPTIMUS_HPG
+// Applications exporting this symbol with this value will be automatically
+// directed to the high-performance GPU on AMD PowerXpress systems with
+// up-to-date drivers
+//
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif // _GLFW_USE_HYBRID_HPG
 
 #if defined(_GLFW_BUILD_DLL)
 
@@ -101,6 +103,8 @@ static GLboolean initLibraries(void)
     {
         _glfw.win32.dwmapi.DwmIsCompositionEnabled = (DWMISCOMPOSITIONENABLED_T)
             GetProcAddress(_glfw.win32.dwmapi.instance, "DwmIsCompositionEnabled");
+        _glfw.win32.dwmapi.DwmFlush = (DWMFLUSH_T)
+            GetProcAddress(_glfw.win32.dwmapi.instance, "DwmFlush");
     }
 
     return GL_TRUE;
@@ -335,12 +339,6 @@ int _glfwPlatformInit(void)
     if (_glfw_SetProcessDPIAware)
         _glfw_SetProcessDPIAware();
 
-#ifdef __BORLANDC__
-    // With the Borland C++ compiler, we want to disable FPU exceptions
-    // (this is recommended for OpenGL applications under Windows)
-    _control87(MCW_EM, MCW_EM);
-#endif
-
     if (!_glfwRegisterWindowClass())
         return GL_FALSE;
 
@@ -371,7 +369,7 @@ void _glfwPlatformTerminate(void)
 
 const char* _glfwPlatformGetVersionString(void)
 {
-    const char* version = _GLFW_VERSION_NUMBER " Win32"
+    return _GLFW_VERSION_NUMBER " Win32"
 #if defined(_GLFW_WGL)
         " WGL"
 #elif defined(_GLFW_EGL)
@@ -381,14 +379,10 @@ const char* _glfwPlatformGetVersionString(void)
         " MinGW"
 #elif defined(_MSC_VER)
         " VisualC"
-#elif defined(__BORLANDC__)
-        " BorlandC"
 #endif
 #if defined(_GLFW_BUILD_DLL)
         " DLL"
 #endif
         ;
-
-    return version;
 }
 

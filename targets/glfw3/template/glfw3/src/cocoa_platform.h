@@ -27,7 +27,6 @@
 #ifndef _cocoa_platform_h_
 #define _cocoa_platform_h_
 
-
 #include <stdint.h>
 
 #if defined(__OBJC__)
@@ -38,14 +37,13 @@ typedef void* id;
 #endif
 
 #include "posix_tls.h"
+#include "iokit_joystick.h"
 
 #if defined(_GLFW_NSGL)
  #include "nsgl_context.h"
 #else
- #error "No supported context creation API selected"
+ #error "The Cocoa backend depends on NSGL platform support"
 #endif
-
-#include "iokit_joystick.h"
 
 #define _GLFW_PLATFORM_WINDOW_STATE         _GLFWwindowNS  ns
 #define _GLFW_PLATFORM_LIBRARY_WINDOW_STATE _GLFWlibraryNS ns
@@ -59,10 +57,14 @@ typedef void* id;
 typedef struct _GLFWwindowNS
 {
     id              object;
-    id	            delegate;
+    id              delegate;
     id              view;
     unsigned int    modifierFlags;
-    int             cursorInside;
+
+    // The total sum of the distances the cursor has been warped
+    // since the last cursor motion event was processed
+    // This is kept to counteract Cocoa doing the same internally
+    double          warpDeltaX, warpDeltaY;
 
 } _GLFWwindowNS;
 
@@ -72,6 +74,7 @@ typedef struct _GLFWwindowNS
 typedef struct _GLFWlibraryNS
 {
     CGEventSourceRef eventSource;
+    id              delegate;
     id              autoreleasePool;
     id              cursor;
 
@@ -87,7 +90,6 @@ typedef struct _GLFWmonitorNS
 {
     CGDirectDisplayID   displayID;
     CGDisplayModeRef    previousMode;
-    id                  screen;
 
 } _GLFWmonitorNS;
 

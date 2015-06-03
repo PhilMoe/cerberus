@@ -86,7 +86,7 @@ void _glfwInputError(int error, const char* format, ...)
 {
     if (_glfwErrorCallback)
     {
-        char buffer[16384];
+        char buffer[8192];
         const char* description;
 
         if (format)
@@ -129,13 +129,6 @@ GLFWAPI int glfwInit(void)
     }
 
     _glfw.monitors = _glfwPlatformGetMonitors(&_glfw.monitorCount);
-    if (!_glfw.monitorCount)
-    {
-        _glfwInputError(GLFW_PLATFORM_ERROR, "No monitors found");
-        _glfwPlatformTerminate();
-        return GL_FALSE;
-    }
-
     _glfwInitialized = GL_TRUE;
 
     // Not all window hints have zero as their default value

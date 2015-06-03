@@ -27,6 +27,8 @@
 #include "internal.h"
 
 #include <stdlib.h>
+#include <string.h>
+
 
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW internal API                      //////
@@ -41,7 +43,9 @@ int _glfwPlatformInit(void)
     if (!mir_connection_is_valid(_glfw.mir.connection))
     {
         _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "Mir: Unable to connect to Server");
+                        "Mir: Unable to connect to server: %s",
+                        mir_connection_get_error_message(_glfw.mir.connection));
+
         return GL_FALSE;
     }
 
@@ -61,7 +65,8 @@ int _glfwPlatformInit(void)
     if (error)
     {
         _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "Mir: Failed to create Event Mutex Error: %i\n", error);
+                        "Mir: Failed to create event mutex: %s",
+                        strerror(error));
         return GL_FALSE;
     }
 
@@ -82,15 +87,18 @@ void _glfwPlatformTerminate(void)
 
 const char* _glfwPlatformGetVersionString(void)
 {
-    const char* version = _GLFW_VERSION_NUMBER " Mir EGL "
+    return _GLFW_VERSION_NUMBER " Mir EGL"
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
         " clock_gettime"
+#else
+        " gettimeofday"
+#endif
+#if defined(__linux__)
+        " /dev/js"
 #endif
 #if defined(_GLFW_BUILD_DLL)
         " shared"
 #endif
         ;
-
-    return version;
 }
 

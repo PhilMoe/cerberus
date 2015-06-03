@@ -114,6 +114,43 @@ createTmpfileCloexec(char* tmpname)
     return fd;
 }
 
+static void
+handleEvents(int timeout)
+{
+    struct wl_display* display = _glfw.wl.display;
+    struct pollfd fds[] = {
+        { wl_display_get_fd(display), POLLIN },
+    };
+
+    while (wl_display_prepare_read(display) != 0)
+        wl_display_dispatch_pending(display);
+
+    // If an error different from EAGAIN happens, we have likely been
+    // disconnected from the Wayland session, try to handle that the best we
+    // can.
+    if (wl_display_flush(display) < 0 && errno != EAGAIN)
+    {
+        _GLFWwindow* window = _glfw.windowListHead;
+        while (window)
+        {
+            _glfwInputWindowCloseRequest(window);
+            window = window->next;
+        }
+        wl_display_cancel_read(display);
+        return;
+    }
+
+    if (poll(fds, 1, timeout) > 0)
+    {
+        wl_display_read_events(display);
+        wl_display_dispatch_pending(display);
+    }
+    else
+    {
+        wl_display_cancel_read(display);
+    }
+}
+
 /*
  * Create a new, unique, anonymous file of the given size, and
  * return the file descriptor for it. The file descriptor is set
@@ -239,7 +276,7 @@ void _glfwPlatformGetWindowPos(_GLFWwindow* window, int* xpos, int* ypos)
     // as (0, 0)
 
     _glfwInputError(GLFW_PLATFORM_ERROR,
-                    "Wayland: Window position retreival not supported");
+                    "Wayland: Window position retrieval not supported");
 }
 
 void _glfwPlatformSetWindowPos(_GLFWwindow* window, int xpos, int ypos)
@@ -307,51 +344,45 @@ void _glfwPlatformHideWindow(_GLFWwindow* window)
     wl_surface_commit(window->wl.surface);
 }
 
+int _glfwPlatformWindowFocused(_GLFWwindow* window)
+{
+    // TODO
+    return GL_FALSE;
+}
+
+int _glfwPlatformWindowIconified(_GLFWwindow* window)
+{
+    // TODO
+    return GL_FALSE;
+}
+
+int _glfwPlatformWindowVisible(_GLFWwindow* window)
+{
+    // TODO
+    return GL_FALSE;
+}
+
 void _glfwPlatformPollEvents(void)
 {
-    struct wl_display* display = _glfw.wl.display;
-    struct pollfd fds[] = {
-        { wl_display_get_fd(display), POLLIN },
-    };
-
-    while (wl_display_prepare_read(display) != 0)
-        wl_display_dispatch_pending(display);
-    wl_display_flush(display);
-    if (poll(fds, 1, 0) > 0)
-    {
-        wl_display_read_events(display);
-        wl_display_dispatch_pending(display);
-    }
-    else
-    {
-        wl_display_cancel_read(display);
-    }
+    handleEvents(0);
 }
 
 void _glfwPlatformWaitEvents(void)
 {
-    struct wl_display* display = _glfw.wl.display;
-    struct pollfd fds[] = {
-        { wl_display_get_fd(display), POLLIN },
-    };
-
-    while (wl_display_prepare_read(display) != 0)
-        wl_display_dispatch_pending(display);
-    wl_display_flush(display);
-    if (poll(fds, 1, -1) > 0)
-    {
-        wl_display_read_events(display);
-        wl_display_dispatch_pending(display);
-    }
-    else
-    {
-        wl_display_cancel_read(display);
-    }
+    handleEvents(-1);
 }
 
 void _glfwPlatformPostEmptyEvent(void)
 {
     wl_display_sync(_glfw.wl.display);
+}
+
+void _glfwPlatformGetCursorPos(_GLFWwindow* window, double* xpos, double* ypos)
+{
+    if (xpos)
+        *xpos = window->wl.cursorPosX;
+    if (ypos)
+        *ypos = window->wl.cursorPosY;
 }
 
 void _glfwPlatformSetCursorPos(_GLFWwindow* window, double x, double y)

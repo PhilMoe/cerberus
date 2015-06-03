@@ -33,7 +33,18 @@
  #include "glfw_config.h"
 //#endif
 
-#define _GLFW_VERSION_NUMBER "3.1.0"
+#define _GLFW_VERSION_NUMBER "3.1.2"
+
+#if defined(GLFW_INCLUDE_GLCOREARB) || \
+    defined(GLFW_INCLUDE_ES1)       || \
+    defined(GLFW_INCLUDE_ES2)       || \
+    defined(GLFW_INCLUDE_ES3)       || \
+    defined(GLFW_INCLUDE_NONE)      || \
+    defined(GLFW_INCLUDE_GLEXT)     || \
+    defined(GLFW_INCLUDE_GLU)       || \
+    defined(GLFW_DLL)
+ #error "You may not define any header option macros when compiling GLFW"
+#endif
 
 #if defined(_GLFW_USE_OPENGL)
  // This is the default for glfw3.h
@@ -112,7 +123,7 @@ typedef struct _GLFWcursor      _GLFWcursor;
 // Helper macros
 //========================================================================
 
-// Checks for whether the library has been intitalized
+// Checks for whether the library has been initialized
 #define _GLFW_REQUIRE_INIT()                         \
     if (!_glfwInitialized)                           \
     {                                                \
@@ -184,7 +195,7 @@ struct _GLFWctxconfig
 /*! @brief Framebuffer configuration.
  *
  *  This describes buffers and their sizes.  It also contains
- *  a platform-specific ID used to map back to the backend API's object.
+ *  a platform-specific ID used to map back to the backend API object.
  *
  *  It is used to pass framebuffer parameters from shared code to the platform
  *  API and also to enumerate and select available framebuffer configs.
@@ -219,12 +230,10 @@ struct _GLFWwindow
     struct _GLFWwindow* next;
 
     // Window settings and state
-    GLboolean           iconified;
     GLboolean           resizable;
     GLboolean           decorated;
     GLboolean           autoIconify;
     GLboolean           floating;
-    GLboolean           visible;
     GLboolean           closed;
     void*               userPointer;
     GLFWvidmode         videoMode;
@@ -412,6 +421,11 @@ void _glfwPlatformTerminate(void);
  */
 const char* _glfwPlatformGetVersionString(void);
 
+/*! @copydoc glfwGetCursorPos
+ *  @ingroup platform
+ */
+void _glfwPlatformGetCursorPos(_GLFWwindow* window, double* xpos, double* ypos);
+
 /*! @copydoc glfwSetCursorPos
  *  @ingroup platform
  */
@@ -575,6 +589,21 @@ void _glfwPlatformUnhideWindow(_GLFWwindow* window);
  */
 void _glfwPlatformHideWindow(_GLFWwindow* window);
 
+/*! @brief Returns whether the window is focused.
+ *  @ingroup platform
+ */
+int _glfwPlatformWindowFocused(_GLFWwindow* window);
+
+/*! @brief Returns whether the window is iconified.
+ *  @ingroup platform
+ */
+int _glfwPlatformWindowIconified(_GLFWwindow* window);
+
+/*! @brief Returns whether the window is visible.
+ *  @ingroup platform
+ */
+int _glfwPlatformWindowVisible(_GLFWwindow* window);
+
 /*! @copydoc glfwPollEvents
  *  @ingroup platform
  */
@@ -684,14 +713,6 @@ void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height);
  *  @ingroup event
  */
 void _glfwInputWindowIconify(_GLFWwindow* window, int iconified);
-
-/*! @brief Notifies shared code of a window show/hide event.
- *  @param[in] window The window that received the event.
- *  @param[in] visible `GL_TRUE` if the window was shown, or `GL_FALSE` if it
- *  was hidden.
- *  @ingroup event
- */
-void _glfwInputWindowVisibility(_GLFWwindow* window, int visible);
 
 /*! @brief Notifies shared code of a window damage event.
  *  @param[in] window The window that received the event.

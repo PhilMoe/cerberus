@@ -84,8 +84,6 @@ void _glfwInputWindowSize(_GLFWwindow* window, int width, int height)
 
 void _glfwInputWindowIconify(_GLFWwindow* window, int iconified)
 {
-    window->iconified = iconified;
-
     if (window->callbacks.iconify)
         window->callbacks.iconify((GLFWwindow*) window, iconified);
 }
@@ -94,11 +92,6 @@ void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
 {
     if (window->callbacks.fbsize)
         window->callbacks.fbsize((GLFWwindow*) window, width, height);
-}
-
-void _glfwInputWindowVisibility(_GLFWwindow* window, int visible)
-{
-    window->visible = visible;
 }
 
 void _glfwInputWindowDamage(_GLFWwindow* window)
@@ -401,7 +394,7 @@ GLFWAPI void glfwWindowHint(int target, int hint)
             _glfw.hints.release = hint;
             break;
         default:
-            _glfwInputError(GLFW_INVALID_ENUM, NULL);
+            _glfwInputError(GLFW_INVALID_ENUM, "Invalid window hint");
             break;
     }
 }
@@ -425,7 +418,7 @@ GLFWAPI void glfwDestroyWindow(GLFWwindow* handle)
         _glfwPlatformMakeContextCurrent(NULL);
 
     // Clear the focused window pointer if this is the focused window
-    if (window == _glfw.focusedWindow)
+    if (_glfw.focusedWindow == window)
         _glfw.focusedWindow = NULL;
 
     _glfwPlatformDestroyWindow(window);
@@ -486,7 +479,7 @@ GLFWAPI void glfwSetWindowPos(GLFWwindow* handle, int xpos, int ypos)
     if (window->monitor)
     {
         _glfwInputError(GLFW_INVALID_VALUE,
-                        "Fullscreen windows cannot be positioned");
+                        "Full screen windows cannot be moved");
         return;
     }
 
@@ -600,17 +593,17 @@ GLFWAPI int glfwGetWindowAttrib(GLFWwindow* handle, int attrib)
     switch (attrib)
     {
         case GLFW_FOCUSED:
-            return window == _glfw.focusedWindow;
+            return _glfwPlatformWindowFocused(window);
         case GLFW_ICONIFIED:
-            return window->iconified;
+            return _glfwPlatformWindowIconified(window);
+        case GLFW_VISIBLE:
+            return _glfwPlatformWindowVisible(window);
         case GLFW_RESIZABLE:
             return window->resizable;
         case GLFW_DECORATED:
             return window->decorated;
         case GLFW_FLOATING:
             return window->floating;
-        case GLFW_VISIBLE:
-            return window->visible;
         case GLFW_CLIENT_API:
             return window->context.api;
         case GLFW_CONTEXT_VERSION_MAJOR:
@@ -631,7 +624,7 @@ GLFWAPI int glfwGetWindowAttrib(GLFWwindow* handle, int attrib)
             return window->context.release;
     }
 
-    _glfwInputError(GLFW_INVALID_ENUM, NULL);
+    _glfwInputError(GLFW_INVALID_ENUM, "Invalid window attribute");
     return 0;
 }
 

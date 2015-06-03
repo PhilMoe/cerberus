@@ -28,6 +28,7 @@
 #include "internal.h"
 
 #include <math.h>
+#include <float.h>
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -304,6 +305,10 @@ GLFWAPI GLFWmonitor** glfwGetMonitors(int* count)
 GLFWAPI GLFWmonitor* glfwGetPrimaryMonitor(void)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    if (!_glfw.monitorCount)
+        return NULL;
+
     return (GLFWmonitor*) _glfw.monitors[0];
 }
 
@@ -321,21 +326,21 @@ GLFWAPI void glfwGetMonitorPos(GLFWmonitor* handle, int* xpos, int* ypos)
     _glfwPlatformGetMonitorPos(monitor, xpos, ypos);
 }
 
-GLFWAPI void glfwGetMonitorPhysicalSize(GLFWmonitor* handle, int* width, int* height)
+GLFWAPI void glfwGetMonitorPhysicalSize(GLFWmonitor* handle, int* widthMM, int* heightMM)
 {
     _GLFWmonitor* monitor = (_GLFWmonitor*) handle;
 
-    if (width)
-        *width = 0;
-    if (height)
-        *height = 0;
+    if (widthMM)
+        *widthMM = 0;
+    if (heightMM)
+        *heightMM = 0;
 
     _GLFW_REQUIRE_INIT();
 
-    if (width)
-        *width = monitor->widthMM;
-    if (height)
-        *height = monitor->heightMM;
+    if (widthMM)
+        *widthMM = monitor->widthMM;
+    if (heightMM)
+        *heightMM = monitor->heightMM;
 }
 
 GLFWAPI const char* glfwGetMonitorName(GLFWmonitor* handle)
@@ -385,10 +390,9 @@ GLFWAPI void glfwSetGamma(GLFWmonitor* handle, float gamma)
 
     _GLFW_REQUIRE_INIT();
 
-    if (gamma <= 0.f)
+    if (gamma != gamma || gamma <= 0.f || gamma > FLT_MAX)
     {
-        _glfwInputError(GLFW_INVALID_VALUE,
-                        "Gamma value must be greater than zero");
+        _glfwInputError(GLFW_INVALID_VALUE, "Invalid gamma value");
         return;
     }
 

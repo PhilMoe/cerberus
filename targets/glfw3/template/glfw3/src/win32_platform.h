@@ -28,7 +28,6 @@
 #ifndef _win32_platform_h_
 #define _win32_platform_h_
 
-
 // We don't need all the fancy stuff
 #ifndef NOMINMAX
  #define NOMINMAX
@@ -71,9 +70,7 @@
  #define strdup _strdup
 #endif
 
-
 // HACK: Define macros that some older windows.h variants don't
-
 #ifndef WM_MOUSEHWHEEL
  #define WM_MOUSEHWHEEL 0x020E
 #endif
@@ -102,7 +99,6 @@ typedef struct tagCHANGEFILTERSTRUCT
 #endif
 #endif /*Windows 7*/
 
-
 // winmm.dll function pointer typedefs
 typedef MMRESULT (WINAPI * JOYGETDEVCAPS_T)(UINT,LPJOYCAPS,UINT);
 typedef MMRESULT (WINAPI * JOYGETPOS_T)(UINT,LPJOYINFO);
@@ -121,15 +117,16 @@ typedef BOOL (WINAPI * CHANGEWINDOWMESSAGEFILTEREX_T)(HWND,UINT,DWORD,PCHANGEFIL
 
 // dwmapi.dll function pointer typedefs
 typedef HRESULT (WINAPI * DWMISCOMPOSITIONENABLED_T)(BOOL*);
+typedef HRESULT (WINAPI * DWMFLUSH_T)(VOID);
 #define _glfw_DwmIsCompositionEnabled _glfw.win32.dwmapi.DwmIsCompositionEnabled
-
+#define _glfw_DwmFlush _glfw.win32.dwmapi.DwmFlush
 
 #define _GLFW_RECREATION_NOT_NEEDED 0
 #define _GLFW_RECREATION_REQUIRED   1
 #define _GLFW_RECREATION_IMPOSSIBLE 2
 
-
 #include "win32_tls.h"
+#include "winmm_joystick.h"
 
 #if defined(_GLFW_WGL)
  #include "wgl_context.h"
@@ -140,8 +137,6 @@ typedef HRESULT (WINAPI * DWMISCOMPOSITIONENABLED_T)(BOOL*);
 #else
  #error "No supported context creation API selected"
 #endif
-
-#include "winmm_joystick.h"
 
 #define _GLFW_PLATFORM_WINDOW_STATE         _GLFWwindowWin32  win32
 #define _GLFW_PLATFORM_LIBRARY_WINDOW_STATE _GLFWlibraryWin32 win32
@@ -158,10 +153,11 @@ typedef struct _GLFWwindowWin32
     DWORD               dwStyle;
     DWORD               dwExStyle;
 
-    GLboolean           cursorCentered;
     GLboolean           cursorInside;
-    GLboolean           cursorHidden;
-    int                 oldCursorX, oldCursorY;
+    GLboolean           iconified;
+
+    // The last received cursor position, regardless of source
+    int                 cursorPosX, cursorPosY;
 
 } _GLFWwindowWin32;
 
@@ -194,6 +190,7 @@ typedef struct _GLFWlibraryWin32
     struct {
         HINSTANCE       instance;
         DWMISCOMPOSITIONENABLED_T DwmIsCompositionEnabled;
+        DWMFLUSH_T      DwmFlush;
     } dwmapi;
 
 } _GLFWlibraryWin32;
