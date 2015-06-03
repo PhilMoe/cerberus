@@ -1,6 +1,7 @@
 
-#GLFW_VERSION=2
 #BRL_GAMETARGET_IMPLEMENTED=True
+
+#GLFW_VERSION=2
 
 Import brl.gametarget
 
