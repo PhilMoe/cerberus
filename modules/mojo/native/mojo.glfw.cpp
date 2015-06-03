@@ -205,9 +205,11 @@ int gxtkGraphics::BeginRender(){
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
-	
-	if( CFG_OPENGL_GLES20_ENABLED ) return 0;
-	
+
+#if CFG_OPENGL_GLES20_ENABLED
+	return 0;
+#else
+
 	glViewport( 0,0,width,height );
 
 	glMatrixMode( GL_PROJECTION );
@@ -233,6 +235,8 @@ int gxtkGraphics::BeginRender(){
 	vertCount=0;
 	
 	return 1;
+	
+#endif
 }
 
 void gxtkGraphics::EndRender(){
@@ -380,7 +384,7 @@ int gxtkGraphics::DrawOval( float x,float y,float w,float h ){
 		float dy=sqrtf( dy_x*dy_x+dy_y*dy_y );
 		n=(int)( dx+dy );
 	}else{
-		n=(int)( abs( xr )+abs( yr ) );
+		n=(int)( fabs( xr )+fabs( yr ) );
 	}
 	
 	if( n<12 ){
@@ -851,8 +855,8 @@ gxtkAudio::gxtkAudio(){
 
 //	bbPrint( "opening openal device" );
 	if( alcDevice ){
-		if( alcContext=alcCreateContext( alcDevice,0 ) ){
-			if( alcMakeContextCurrent( alcContext ) ){
+		if( (alcContext=alcCreateContext( alcDevice,0 )) ){
+			if( (alcMakeContextCurrent( alcContext )) ){
 				//alc all go!
 			}else{
 				bbPrint( "OpenAl error: alcMakeContextCurrent failed" );
