@@ -2,7 +2,6 @@
 typedef char GLchar;
 typedef size_t GLintptr;
 typedef size_t GLsizeiptr;
-#define INIT_GL_EXTS 1
 #define __gl2_h_ 
 #define GL_ES_VERSION_2_0 1
 #define GL_FUNC_ADD 0x8006

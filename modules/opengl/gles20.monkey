@@ -7,20 +7,21 @@
 #OPENGL_DEPTH_BUFFER_ENABLED=True
 
 Import monkeytarget
-
 Import brl.databuffer
 
-#If TARGET="glfw"
+#If GLFW_USE_ANGLE_GLES20
+Import "native/gles20.angle.cpp"
+#Else If TARGET="glfw"
 #If HOST="winnt"
 #OPENGL_INIT_EXTENSIONS=True
 Import "native/gles20_win32_exts.cpp"
 #Endif
 Import "native/gles20.glfw.cpp"
-#ElseIf TARGET="android"
+#Elseif TARGET="android"
 Import "native/gles20.android.java"
-#ElseIf TARGET="ios"
+#Elseif TARGET="ios"
 Import "native/gles20.ios.cpp"
-#ElseIf TARGET="html5"
+#Elseif TARGET="html5"
 Import "native/gles20.html5.js"
 #Endif
 
@@ -331,7 +332,153 @@ Const GL_INVALID_FRAMEBUFFER_OPERATION  =$0506
 
 Extern
 
-#If TARGET="glfw"
+#if TARGET="ios" Or GLFW_USE_ANGLE_GLES20
+
+Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
+
+Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
+
+'${IOS_DECLS}
+Function glActiveTexture:Void( texture )
+Function glAttachShader:Void( program, shader )
+Function glBindAttribLocation:Void( program, index, name$ )="_glBindAttribLocation"
+Function glBindBuffer:Void( target, buffer )
+Function glBindFramebuffer:Void( target, framebuffer )
+Function glBindRenderbuffer:Void( target, renderbuffer )
+Function glBindTexture:Void( target, texture )
+Function glBlendColor:Void( red#, green#, blue#, alpha# )
+Function glBlendEquation:Void(  mode  )
+Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
+Function glBlendFunc:Void( sfactor, dfactor )
+Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
+Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
+
+Function glCheckFramebufferStatus:Int( target )
+Function glClear:Void( mask )
+Function glClearColor:Void( red#, green#, blue#, alpha# )
+Function glClearDepthf:Void( depth# )
+Function glClearStencil:Void( s )
+Function glColorMask:Void( red?, green?, blue?, alpha? )
+Function glCompileShader:Void( shader )
+Function glCopyTexImage2D:Void( target, level, internalformat, x, y, width, height, border )
+Function glCopyTexSubImage2D:Void( target, level, xoffset, yoffset, x, y, width, height )
+Function glCreateBuffer:Int()="_glCreateBuffer"
+Function glCreateFramebuffer:Int()="_glCreateFramebuffer"
+Function glCreateRenderbuffer:Int()="_glCreateRenderbuffer"
+Function glCreateTexture:Int()="_glCreateTexture"
+Function glCreateProgram:Int()
+Function glCreateShader:Int( type )
+Function glDeleteBuffer:Void( buffer )="_glDeleteBuffer"
+Function glDeleteFramebuffer:Void( framebuffer )="_glDeleteFramebuffer"
+Function glDeleteRenderbuffer:Void( renderBuffer )="_glDeleteRenderbuffer"
+Function glDeleteTexture:Void( texture )="_glDeleteTexture"
+Function glDeleteProgram:Void( program )
+Function glDeleteShader:Void( shader )
+Function glCullFace:Void( mode )
+Function glDepthFunc:Void( func )
+Function glDepthMask:Void( flag? )
+Function glDepthRangef:Void( zNear#, zFar# )
+Function glDetachShader:Void( program, shader )
+Function glDisable:Void( cap )
+Function glDisableVertexAttribArray:Void( index )
+Function glDrawArrays:Void( mode, first, count )
+Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="_glDrawElements"
+Function glDrawElements:Void( mode, count, type, offset )="_glDrawElements"
+Function glEnable:Void( cap )
+Function glEnableVertexAttribArray:Void( index )
+Function glFinish:Void()
+Function glFlush:Void()
+Function glFramebufferRenderbuffer:Void( target, attachment, renderbuffertarget, renderbuffer )
+Function glFramebufferTexture2D:Void( target, attachment, textarget, texture, level )
+Function glFrontFace:Void( mode )
+Function glGenerateMipmap:Void( target )
+Function glGetActiveAttrib:Void( program, index, size[], type[], name$[] )="_glGetActiveAttrib"
+Function glGetActiveUniform:Void( program, index, size[], type[], name$[] )="_glGetActiveUniform"
+Function glGetAttachedShaders:Void( program, maxcount, count[], shaders[] )="_glGetAttachedShaders"
+Function glGetAttribLocation:Int( program, name$ )="_glGetAttribLocation"
+Function glGetBooleanv:Void( pname, params?[] )="_glGetBooleanv"
+Function glGetBufferParameteriv:Void( target, pname, params[] )="_glGetBufferParameteriv"
+Function glGetError:Int()
+Function glGetFloatv:Void( pname, params#[] )="_glGetFloatv"
+Function glGetFramebufferAttachmentParameteriv:Void( target, attachment, pname, params[] )="_glGetFramebufferAttachmentParameteriv"
+Function glGetIntegerv:Void( pname, params[] )="_glGetIntegerv"
+Function glGetProgramiv:Void( program, pname, params[] )="_glGetProgramiv"
+Function glGetProgramInfoLog:String( program )="_glGetProgramInfoLog"
+Function glGetRenderbufferParameteriv:Void( target, pname, params[] )="_glGetRenderbufferParameteriv"
+Function glGetShaderiv:Void( shader, pname, params[] )="_glGetShaderiv"
+Function glGetShaderInfoLog:String( shader )="_glGetShaderInfoLog"
+Function glGetShaderSource:String( shader )="_glGetShaderSource"
+Function glGetString:String( name )="_glGetString"
+Function glGetTexParameterfv:Void( target, pname, params#[] )="_glGetTexParameterfv"
+Function glGetTexParameteriv:Void( target, pname, params[] )="_glGetTexParameteriv"
+Function glGetUniformfv:Void( program, location, params#[] )="_glGetUniformfv"
+Function glGetUniformiv:Void( program, location, params[] )="_glGetUniformiv"
+Function glGetUniformLocation:Int( program, name$ )="_glGetUniformLocation"
+Function glGetVertexAttribfv:Void( index, pname, params#[] )="_glGetVertexAttribfv"
+Function glGetVertexAttribiv:Void( index, pname, params[] )="_glGetVertexAttribiv"
+Function glHint:Void( target, mode )
+Function glIsBuffer:Bool( buffer )
+Function glIsEnabled:Bool( cap )
+Function glIsFramebuffer:Bool( framebuffer )
+Function glIsProgram:Bool( program )
+Function glIsRenderbuffer:Bool( renderbuffer )
+Function glIsShader:Bool( shader )
+Function glIsTexture:Bool( texture )
+Function glLineWidth:Void( width# )
+Function glLinkProgram:Void( program )
+Function glPixelStorei:Void( pname, param )
+Function glPolygonOffset:Void( factor#, units# )
+Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer, dataOffset=0 )="_glReadPixels"
+Function glReleaseShaderCompiler:Void()
+Function glRenderbufferStorage:Void( target, internalformat, width, height )
+Function glSampleCoverage:Void( value#, invert? )
+Function glScissor:Void( x, y, width, height )
+Function glShaderSource:Void( shader, source$ )="_glShaderSource"
+Function glStencilFunc:Void( func, ref, mask )
+Function glStencilFuncSeparate:Void( face, func, ref, mask )
+Function glStencilMask:Void( mask )
+Function glStencilMaskSeparate:Void( face, mask )
+Function glStencilOp:Void( fail, zfail, zpass )
+Function glStencilOpSeparate:Void( face, fail, zfail, zpass )
+Function glTexParameterf:Void( target, pname, param# )
+Function glTexParameteri:Void( target, pname, param )
+Function glUniform1f:Void( location, x# )
+Function glUniform1i:Void( location, x )
+Function glUniform2f:Void( location, x#, y# )
+Function glUniform2i:Void( location, x, y )
+Function glUniform3f:Void( location, x#, y#, z# )
+Function glUniform3i:Void( location, x, y, z )
+Function glUniform4f:Void( location, x#, y#, z#, w# )
+Function glUniform4i:Void( location, x, y, z, w )
+Function glUniform1fv:Void( location, count, v#[] )="_glUniform1fv"
+Function glUniform1iv:Void( location, count, v[] )="_glUniform1iv"
+Function glUniform2fv:Void( location, count, v#[] )="_glUniform2fv"
+Function glUniform2iv:Void( location, count, v[] )="_glUniform2iv"
+Function glUniform3fv:Void( location, count, v#[] )="_glUniform3fv"
+Function glUniform3iv:Void( location, count, v[] )="_glUniform3iv"
+Function glUniform4fv:Void( location, count, v#[] )="_glUniform4fv"
+Function glUniform4iv:Void( location, count, v[] )="_glUniform4iv"
+Function glUniformMatrix2fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix2fv"
+Function glUniformMatrix3fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix3fv"
+Function glUniformMatrix4fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix4fv"
+Function glUseProgram:Void( program )
+Function glValidateProgram:Void( program )
+Function glVertexAttrib1f:Void( indx, x# )
+Function glVertexAttrib2f:Void( indx, x#, y# )
+Function glVertexAttrib3f:Void( indx, x#, y#, z# )
+Function glVertexAttrib4f:Void( indx, x#, y#, z#, w# )
+Function glVertexAttrib1fv:Void( indx, values#[] )="_glVertexAttrib1fv"
+Function glVertexAttrib2fv:Void( indx, values#[] )="_glVertexAttrib2fv"
+Function glVertexAttrib3fv:Void( indx, values#[] )="_glVertexAttrib3fv"
+Function glVertexAttrib4fv:Void( indx, values#[] )="_glVertexAttrib4fv"
+Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="_glVertexAttribPointer"
+Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="_glVertexAttribPointer"
+Function glViewport:Void( x, y, width, height )
+'${END}
+
+#Elseif TARGET="glfw"
 
 Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
 
@@ -625,152 +772,6 @@ Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offs
 Function glViewport:Void( x, y, width, height )="GLES20.glViewport"
 '${END}
 
-#ElseIf TARGET="ios"
-
-Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
-
-Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
-
-'${IOS_DECLS}
-Function glActiveTexture:Void( texture )
-Function glAttachShader:Void( program, shader )
-Function glBindAttribLocation:Void( program, index, name$ )="_glBindAttribLocation"
-Function glBindBuffer:Void( target, buffer )
-Function glBindFramebuffer:Void( target, framebuffer )
-Function glBindRenderbuffer:Void( target, renderbuffer )
-Function glBindTexture:Void( target, texture )
-Function glBlendColor:Void( red#, green#, blue#, alpha# )
-Function glBlendEquation:Void(  mode  )
-Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
-Function glBlendFunc:Void( sfactor, dfactor )
-Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
-Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
-
-Function glCheckFramebufferStatus:Int( target )
-Function glClear:Void( mask )
-Function glClearColor:Void( red#, green#, blue#, alpha# )
-Function glClearDepthf:Void( depth# )
-Function glClearStencil:Void( s )
-Function glColorMask:Void( red?, green?, blue?, alpha? )
-Function glCompileShader:Void( shader )
-Function glCopyTexImage2D:Void( target, level, internalformat, x, y, width, height, border )
-Function glCopyTexSubImage2D:Void( target, level, xoffset, yoffset, x, y, width, height )
-Function glCreateBuffer:Int()="_glCreateBuffer"
-Function glCreateFramebuffer:Int()="_glCreateFramebuffer"
-Function glCreateRenderbuffer:Int()="_glCreateRenderbuffer"
-Function glCreateTexture:Int()="_glCreateTexture"
-Function glCreateProgram:Int()
-Function glCreateShader:Int( type )
-Function glDeleteBuffer:Void( buffer )="_glDeleteBuffer"
-Function glDeleteFramebuffer:Void( framebuffer )="_glDeleteFramebuffer"
-Function glDeleteRenderbuffer:Void( renderBuffer )="_glDeleteRenderbuffer"
-Function glDeleteTexture:Void( texture )="_glDeleteTexture"
-Function glDeleteProgram:Void( program )
-Function glDeleteShader:Void( shader )
-Function glCullFace:Void( mode )
-Function glDepthFunc:Void( func )
-Function glDepthMask:Void( flag? )
-Function glDepthRangef:Void( zNear#, zFar# )
-Function glDetachShader:Void( program, shader )
-Function glDisable:Void( cap )
-Function glDisableVertexAttribArray:Void( index )
-Function glDrawArrays:Void( mode, first, count )
-Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="_glDrawElements"
-Function glDrawElements:Void( mode, count, type, offset )="_glDrawElements"
-Function glEnable:Void( cap )
-Function glEnableVertexAttribArray:Void( index )
-Function glFinish:Void()
-Function glFlush:Void()
-Function glFramebufferRenderbuffer:Void( target, attachment, renderbuffertarget, renderbuffer )
-Function glFramebufferTexture2D:Void( target, attachment, textarget, texture, level )
-Function glFrontFace:Void( mode )
-Function glGenerateMipmap:Void( target )
-Function glGetActiveAttrib:Void( program, index, size[], type[], name$[] )="_glGetActiveAttrib"
-Function glGetActiveUniform:Void( program, index, size[], type[], name$[] )="_glGetActiveUniform"
-Function glGetAttachedShaders:Void( program, maxcount, count[], shaders[] )="_glGetAttachedShaders"
-Function glGetAttribLocation:Int( program, name$ )="_glGetAttribLocation"
-Function glGetBooleanv:Void( pname, params?[] )="_glGetBooleanv"
-Function glGetBufferParameteriv:Void( target, pname, params[] )="_glGetBufferParameteriv"
-Function glGetError:Int()
-Function glGetFloatv:Void( pname, params#[] )="_glGetFloatv"
-Function glGetFramebufferAttachmentParameteriv:Void( target, attachment, pname, params[] )="_glGetFramebufferAttachmentParameteriv"
-Function glGetIntegerv:Void( pname, params[] )="_glGetIntegerv"
-Function glGetProgramiv:Void( program, pname, params[] )="_glGetProgramiv"
-Function glGetProgramInfoLog:String( program )="_glGetProgramInfoLog"
-Function glGetRenderbufferParameteriv:Void( target, pname, params[] )="_glGetRenderbufferParameteriv"
-Function glGetShaderiv:Void( shader, pname, params[] )="_glGetShaderiv"
-Function glGetShaderInfoLog:String( shader )="_glGetShaderInfoLog"
-Function glGetShaderSource:String( shader )="_glGetShaderSource"
-Function glGetString:String( name )="_glGetString"
-Function glGetTexParameterfv:Void( target, pname, params#[] )="_glGetTexParameterfv"
-Function glGetTexParameteriv:Void( target, pname, params[] )="_glGetTexParameteriv"
-Function glGetUniformfv:Void( program, location, params#[] )="_glGetUniformfv"
-Function glGetUniformiv:Void( program, location, params[] )="_glGetUniformiv"
-Function glGetUniformLocation:Int( program, name$ )="_glGetUniformLocation"
-Function glGetVertexAttribfv:Void( index, pname, params#[] )="_glGetVertexAttribfv"
-Function glGetVertexAttribiv:Void( index, pname, params[] )="_glGetVertexAttribiv"
-Function glHint:Void( target, mode )
-Function glIsBuffer:Bool( buffer )
-Function glIsEnabled:Bool( cap )
-Function glIsFramebuffer:Bool( framebuffer )
-Function glIsProgram:Bool( program )
-Function glIsRenderbuffer:Bool( renderbuffer )
-Function glIsShader:Bool( shader )
-Function glIsTexture:Bool( texture )
-Function glLineWidth:Void( width# )
-Function glLinkProgram:Void( program )
-Function glPixelStorei:Void( pname, param )
-Function glPolygonOffset:Void( factor#, units# )
-Function glReadPixels:Void( x, y, width, height, format, type, data:DataBuffer, dataOffset=0 )="_glReadPixels"
-Function glReleaseShaderCompiler:Void()
-Function glRenderbufferStorage:Void( target, internalformat, width, height )
-Function glSampleCoverage:Void( value#, invert? )
-Function glScissor:Void( x, y, width, height )
-Function glShaderSource:Void( shader, source$ )="_glShaderSource"
-Function glStencilFunc:Void( func, ref, mask )
-Function glStencilFuncSeparate:Void( face, func, ref, mask )
-Function glStencilMask:Void( mask )
-Function glStencilMaskSeparate:Void( face, mask )
-Function glStencilOp:Void( fail, zfail, zpass )
-Function glStencilOpSeparate:Void( face, fail, zfail, zpass )
-Function glTexParameterf:Void( target, pname, param# )
-Function glTexParameteri:Void( target, pname, param )
-Function glUniform1f:Void( location, x# )
-Function glUniform1i:Void( location, x )
-Function glUniform2f:Void( location, x#, y# )
-Function glUniform2i:Void( location, x, y )
-Function glUniform3f:Void( location, x#, y#, z# )
-Function glUniform3i:Void( location, x, y, z )
-Function glUniform4f:Void( location, x#, y#, z#, w# )
-Function glUniform4i:Void( location, x, y, z, w )
-Function glUniform1fv:Void( location, count, v#[] )="_glUniform1fv"
-Function glUniform1iv:Void( location, count, v[] )="_glUniform1iv"
-Function glUniform2fv:Void( location, count, v#[] )="_glUniform2fv"
-Function glUniform2iv:Void( location, count, v[] )="_glUniform2iv"
-Function glUniform3fv:Void( location, count, v#[] )="_glUniform3fv"
-Function glUniform3iv:Void( location, count, v[] )="_glUniform3iv"
-Function glUniform4fv:Void( location, count, v#[] )="_glUniform4fv"
-Function glUniform4iv:Void( location, count, v[] )="_glUniform4iv"
-Function glUniformMatrix2fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix2fv"
-Function glUniformMatrix3fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix3fv"
-Function glUniformMatrix4fv:Void( location, count, transpose?, value#[] )="_glUniformMatrix4fv"
-Function glUseProgram:Void( program )
-Function glValidateProgram:Void( program )
-Function glVertexAttrib1f:Void( indx, x# )
-Function glVertexAttrib2f:Void( indx, x#, y# )
-Function glVertexAttrib3f:Void( indx, x#, y#, z# )
-Function glVertexAttrib4f:Void( indx, x#, y#, z#, w# )
-Function glVertexAttrib1fv:Void( indx, values#[] )="_glVertexAttrib1fv"
-Function glVertexAttrib2fv:Void( indx, values#[] )="_glVertexAttrib2fv"
-Function glVertexAttrib3fv:Void( indx, values#[] )="_glVertexAttrib3fv"
-Function glVertexAttrib4fv:Void( indx, values#[] )="_glVertexAttrib4fv"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="_glVertexAttribPointer"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="_glVertexAttribPointer"
-Function glViewport:Void( x, y, width, height )
-'${END}
-
 #Elseif TARGET="html5"
 
 Function BBLoadStaticTexImage:Object( path$,info[]=[] )="BBLoadStaticTexImage"
@@ -958,4 +959,3 @@ Function LoadStaticTexImage:Object( path:String,info:Int[]=[] )
 End
 
 #Endif
-

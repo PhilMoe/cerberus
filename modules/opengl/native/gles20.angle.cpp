@@ -1,4 +1,6 @@
 
+#include <GLES2/gl2.h>
+
 BBDataBuffer *BBLoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 
 	int width,height,depth;
@@ -47,10 +49,6 @@ void _glBufferSubData( int target,int offset,int size,BBDataBuffer *data,int dat
 	glBufferSubData( target,offset,size,data->ReadPointer( dataOffset ) );
 }
 
-void _glClearDepthf( float depth ){
-	glClearDepth( depth );
-}
-
 int _glCreateBuffer(){
 	GLuint buf;
 	glGenBuffers( 1,&buf );
@@ -91,16 +89,12 @@ void _glDeleteTexture( int texture ){
 	glDeleteTextures( 1,(GLuint*)&texture );
 }
 
-void _glDepthRangef( float zNear,float zFar ){
-	glDepthRange( zNear,zFar );
-}
-
 void _glDrawElements( int mode, int count, int type, BBDataBuffer *indices ){
 	glDrawElements( mode,count,type,indices->ReadPointer() );
 }
 
 void _glDrawElements( int mode, int count, int type, int offset ){
-	glDrawElements( mode,count,type,(char*)0+offset );
+	glDrawElements( mode,count,type,(const GLvoid*)offset );
 }
 
 void _glGetActiveAttrib( int program, int index, Array<int> size,Array<int> type,Array<String> name ){
@@ -237,8 +231,8 @@ void _glGetVertexAttribiv( int index, int pname, Array<int> params ){
 	glGetVertexAttribiv( index,pname,&params[0] );
 }
 
-void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer *pixels,int dataOffset ){
-	glReadPixels( x,y,width,height,format,type,pixels->WritePointer( dataOffset ) );
+void _glReadPixels( int x,int y,int width,int height,int format,int type,BBDataBuffer *data,int dataOffset ){
+	glReadPixels( x,y,width,height,format,type,data->WritePointer( dataOffset ) );
 }
 
 void _glShaderSource( int shader, String source ){
@@ -313,5 +307,5 @@ void _glVertexAttribPointer( int indx, int size, int type, bool normalized, int 
 }
 
 void _glVertexAttribPointer( int indx, int size, int type, bool normalized, int stride, int offset ){
-	glVertexAttribPointer( indx,size,type,normalized,stride,(char*)0+offset );
+	glVertexAttribPointer( indx,size,type,normalized,stride,(const GLvoid*)offset );
 }

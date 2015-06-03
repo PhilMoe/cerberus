@@ -17,15 +17,11 @@ BBDataBuffer *BBLoadImageData( BBDataBuffer *buf,String path,Array<int> info ){
 	int pitch=CGImageGetBytesPerRow( cgimage );
 	int bpp=CGImageGetBitsPerPixel( cgimage );
 	
-	printf( "LoadImageData: width=%i,height=%i, pitch=%i, bpp=%i\n",width,height,pitch,bpp );
-	
 	if( bpp!=24 && bpp!=32 ) return 0;
 	
 	CFDataRef cfdata=CGDataProviderCopyData( CGImageGetDataProvider( cgimage ) );
 	unsigned char *src=(unsigned char*)CFDataGetBytePtr( cfdata );
 	int srclen=(int)CFDataGetLength( cfdata );
-	
-	printf( "LoadImageData: srclen=%i\n",srclen );
 	
 	if( !buf->_New( width*height*4 ) ) return 0;
 
