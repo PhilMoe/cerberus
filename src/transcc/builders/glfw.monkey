@@ -69,11 +69,6 @@ Class GlfwBuilder Extends Builder
 	'***** Vc2010 *****
 	Method MakeVc2010:Void()
 	
-		If FileType( "vc2010" )<>FILETYPE_DIR
-			MakeGcc
-			Return
-		Endif	
-	
 		CreateDir "vc2010/"+casedConfig
 		CreateDir "vc2010/"+casedConfig+"/internal"
 		CreateDir "vc2010/"+casedConfig+"/external"
@@ -91,7 +86,39 @@ Class GlfwBuilder Extends Builder
 
 			ChangeDir "vc2010"
 
-			Execute tcc.MSBUILD_PATH+" /p:Configuration="+casedConfig+" /p:Platform=Win32 MonkeyGame.sln"
+			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=Win32 MonkeyGame.sln"
+			
+			If tcc.opt_run
+			
+				ChangeDir casedConfig
+
+				Execute "MonkeyGame"
+				
+			Endif
+		Endif
+	End
+
+	'***** Msvc *****
+	Method MakeMsvc:Void()
+	
+		CreateDir "msvc/"+casedConfig
+		CreateDir "msvc/"+casedConfig+"/internal"
+		CreateDir "msvc/"+casedConfig+"/external"
+		
+		CreateDataDir "msvc/"+casedConfig+"/data"
+		
+		Local main:=LoadString( "main.cpp" )
+		
+		main=ReplaceBlock( main,"TRANSCODE",transCode )
+		main=ReplaceBlock( main,"CONFIG",Config() )
+		
+		SaveString main,"main.cpp"
+		
+		If tcc.opt_build
+
+			ChangeDir "msvc"
+
+			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig'+" /p:Platform=Win32 MonkeyGame.sln"
 			
 			If tcc.opt_run
 			
@@ -118,6 +145,8 @@ Class GlfwBuilder Extends Builder
 		If tcc.opt_build
 		
 			ChangeDir "xcode"
+			
+'			Execute "set -o pipefail && xcodebuild -configuration "+casedConfig+" | egrep -A 5 ~q(error|warning):~q"
 			Execute "xcodebuild -configuration "+casedConfig
 			
 			If tcc.opt_run
@@ -151,8 +180,12 @@ Class GlfwBuilder Extends Builder
 		Case "winnt"
 			If GetConfigVar( "GLFW_USE_MINGW" )="1" And tcc.MINGW_PATH
 				MakeGcc
-			Else
+			Else If FileType( "vc2010" )=FILETYPE_DIR
 				MakeVc2010
+			Else If FileType( "msvc" )=FILETYPE_DIR
+				MakeMsvc
+			Else If tcc.MINGW_PATH
+				MakeGcc
 			Endif
 		Case "macos"
 			MakeXcode

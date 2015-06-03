@@ -236,7 +236,10 @@ Class TransCC
 				If system
 					Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
 					If builder
-						_targets.Set name,New Target( f,name,system,builder )
+						Local host:=GetConfigVar( "TARGET_HOST" )
+						If Not host Or host=HostOS
+							_targets.Set name,New Target( f,name,system,builder )
+						Endif
 					Endif
 				Endif
 			Endif
