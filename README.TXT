@@ -1,6 +1,8 @@
-For more Monkey fun, please visit: http://www.monkey-x.com
+For more Monkey fun, please visit: http://www.monkey-x.com.
 
 Monkey is released under the zlib/libpng license.
+
+The mojo and mojo2 modules are released under proprietary licenses.
 
 The zlib/libpng License
 
