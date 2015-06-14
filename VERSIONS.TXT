@@ -1,4 +1,53 @@
 
+***** v84a *****
+
+Ted now prompts for rebuild docs at startup if docs/html not found.
+
+Added f1 cycle through helps for a keyword to Ted.
+
+Added shift-f5 to kill app to Ted.
+
+Updated stb libs to latest version for all glfw targets.
+
+Updated glfw3 lib to latest version for glfw3 targets.
+
+Bumped glfw3 target msvc projects to msvc2013e. Note: msbuild has moved, see/update config.winnt.txt
+
+Added brl.requesters for simple modal requester support (Glfw3/Pc/Mac only)
+
+Glfw3 builds on macos can now use Objective C.
+
+Lots of opengl tweaks.
+
+
+***** v83c *****
+
+Added Protected and Friend to language!
+
+Fixed some reflection issues.
+
+Fixed some preprocessor issues.
+
+Added Stack.Data
+
+Fixed some Ted issues.
+
+Fixed more issues with gles20 native code.
+
+Added support for '.' member access operator at end of line. Not supported for module paths.
+
+
+***** v83b *****
+
+Fixed issue with spaces in ANT_PATH.
+
+Implemented nullterm's fix for ios audio category issues.
+
+Rebuilt Linux Ted with Qt5, resulting in 1001% sexier fonts. No idea what's up with Linux fonts in Qt4.
+
+Fixed unreachable code issue in trans for actionscript target.
+
+
 ***** v83a *****
 
 Added src/rebuildall.sh, linux only.
