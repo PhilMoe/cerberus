@@ -23,7 +23,9 @@ Proceed activates a simple modal dialog requesting the user to select between YE
 
 RequestFile activates a modal file requester dialog.
 
-The optional @filters string can either be a comma separated list of file extensions or, as in the following example, groups of extensions that begin with a "group:" and are separated by a semicolon. The @save parameter can be true to create a save-style requester, or false to create a load-style requester.
+The optional @filters string can either be a comma separated list of file extensions or, as in the following example, groups of extensions that begin with a "group:" and are separated by a semicolon. 
+
+The @save parameter can be true to create a save-style requester, or false to create a load-style requester.
 
 Example:
 
