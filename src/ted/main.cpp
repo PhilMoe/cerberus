@@ -19,7 +19,10 @@ int main( int argc,char *argv[] ){
 #endif
 
     MainWindow window;
+
     window.show();
+
+    window.updateHelp();
 
     return app.exec();
 }

@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.23"
+#define TED_VERSION "1.24"
 
 #define SETTINGS_VERSION 2
 
@@ -85,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _codeEditor=0;
     _lockedEditor=0;
     _helpWidget=0;
+    _helpTopicId=0;
+    _rebuildingHelp=false;
 
     //docking options
     setCorner( Qt::TopLeftCorner,Qt::LeftDockWidgetArea );
@@ -299,8 +301,8 @@ bool MainWindow::isBuildable( CodeEditor *editor ){
 QString MainWindow::widgetPath( QWidget *widget ){
     if( CodeEditor *editor=qobject_cast<CodeEditor*>( widget ) ){
         return editor->path();
-    }else if( QWebView *webView=qobject_cast<QWebView*>( widget ) ){
-        return webView->url().toString();
+    }else if( HelpView *helpView=qobject_cast<HelpView*>( widget ) ){
+        return helpView->url().toString();
     }
     return "";
 }
@@ -346,27 +348,27 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
             if( QFile::exists( path2 ) ) path="file:///"+path2;
         }
 */
-        QWebView *webView=0;
+        HelpView *helpView=0;
         for( int i=0;i<_mainTabWidget->count();++i ){
-            webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) );
-            if( webView ) break;
+            helpView=qobject_cast<HelpView*>( _mainTabWidget->widget( i ) );
+            if( helpView ) break;
         }
-        if( !webView ){
-            webView=new QWebView;
-            webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-            connect( webView,SIGNAL(linkClicked(QUrl)),SLOT(onLinkClicked(QUrl)) );
-            _mainTabWidget->addTab( webView,"Help" );
+        if( !helpView ){
+            helpView=new HelpView;
+            helpView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+            connect( helpView,SIGNAL(linkClicked(QUrl)),SLOT(onLinkClicked(QUrl)) );
+            _mainTabWidget->addTab( helpView,"Help" );
         }
 
-        webView->setUrl( path );
+        helpView->setUrl( path );
 
-        if( webView!=_mainTabWidget->currentWidget() ){
-            _mainTabWidget->setCurrentWidget( webView );
+        if( helpView!=_mainTabWidget->currentWidget() ){
+            _mainTabWidget->setCurrentWidget( helpView );
         }else{
             updateWindowTitle();
         }
 
-        return webView;
+        return helpView;
     }
 
     if( path.isEmpty() ){
@@ -835,8 +837,8 @@ void MainWindow::updateWindowTitle(){
     QWidget *widget=_mainTabWidget->currentWidget();
     if( CodeEditor *editor=qobject_cast<CodeEditor*>( widget ) ){
         setWindowTitle( editor->path() );
-    }else if( QWebView *webView=qobject_cast<QWebView*>( widget ) ){
-        setWindowTitle( webView->url().toString() );
+    }else if( HelpView *helpView=qobject_cast<HelpView*>( widget ) ){
+        setWindowTitle( helpView->url().toString() );
     }else{
         setWindowTitle( "Ted V"TED_VERSION );
     }
@@ -866,7 +868,7 @@ void MainWindow::onMainTabChanged( int index ){
 
     _codeEditor=qobject_cast<CodeEditor*>( widget );
 
-    _helpWidget=qobject_cast<QWebView*>( widget );
+    _helpWidget=qobject_cast<HelpView*>( widget );
 
     if( _oldEditor ){
 
@@ -1229,6 +1231,16 @@ void MainWindow::onProcFinished(){
 
     _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
     print( "Done." );
+
+    if( _rebuildingHelp ){
+        _rebuildingHelp=false;
+        loadHelpIndex();
+        for( int i=0;i<_mainTabWidget->count();++i ){
+            HelpView *helpView=qobject_cast<HelpView*>( _mainTabWidget->widget( i ) );
+            if( helpView ) helpView->triggerPageAction( QWebPage::ReloadAndBypassCache );
+        }
+        onHelpHome();
+    }
 
     if( _debugTreeModel ){
         _debugTreeWidget->setModel( 0 );
@@ -1656,6 +1668,15 @@ void MainWindow::onBuildAddProject(){
 
 //***** Help menu *****
 
+void MainWindow::updateHelp(){
+    QString home=_monkeyPath+"/docs/html/Home.html";
+    if( !QFile::exists( home ) ){
+        if( QMessageBox::question( this,"Rebuild monkey docs","Monkey documentation not found - rebuild docs?",QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Ok )==QMessageBox::Ok ){
+            onHelpRebuild();
+        }
+    }
+}
+
 void MainWindow::onHelpHome(){
     QString home=_monkeyPath+"/docs/html/Home.html";
     if( !QFile::exists( home ) ) return;
@@ -1718,10 +1739,40 @@ void MainWindow::onHelpAbout(){
     QMessageBox::information( this,"About Ted",ABOUT );
 }
 
+void MainWindow::onShowHelp(){
+
+    if( _helpTopic.isEmpty() ) return;
+
+    if( !_helpTopicId ) _helpTopicId=1;
+    ++_helpTopicId;
+
+    QString tmp=_helpTopic+"("+QString::number( _helpTopicId )+")";
+    QString url=_helpUrls.value( tmp );
+
+    if( url.isEmpty() ){
+        //qDebug()<<"Help not found for"<<tmp;
+        url=_helpUrls.value( _helpTopic );
+        if( url.isEmpty() ){
+            _helpTopic="";
+            return;
+        }
+        _helpTopicId=0;
+    }
+
+    openFile( url,false );
+}
+
 void MainWindow::onShowHelp( const QString &topic ){
 
     QString url=_helpUrls.value( topic );
-    if( url.isEmpty() ) return;
+
+    if( url.isEmpty() ){
+        _helpTopic="";
+        return;
+    }
+
+    _helpTopic=topic;
+    _helpTopicId=0;
 
     openFile( url,false );
 }
@@ -1751,14 +1802,14 @@ void MainWindow::onHelpRebuild(){
 
     QString cmd="\"${MONKEYPATH}/bin/makedocs"+HOST+"\"";
 
+    _rebuildingHelp=true;
+
     runCommand( cmd,0 );
+}
 
-    loadHelpIndex();
-
-    for( int i=0;i<_mainTabWidget->count();++i ){
-        QWebView *webView=qobject_cast<QWebView*>( _mainTabWidget->widget( i ) );
-
-        if( webView ) webView->triggerPageAction( QWebPage::ReloadAndBypassCache );
-//        if( webView ) webView->reload();
+void HelpView::keyPressEvent ( QKeyEvent * event ){
+    if( event->key()==Qt::Key_F1 ){
+        mainWindow->onShowHelp();
     }
 }
+

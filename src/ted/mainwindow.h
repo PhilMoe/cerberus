@@ -25,6 +25,14 @@ class MainWindow;
 class Prefs;
 class PrefsDialog;
 
+class HelpView : public QWebView{
+    Q_OBJECT
+public:
+
+protected:
+    void keyPressEvent ( QKeyEvent * event );
+};
+
 class MainWindow : public QMainWindow{
     Q_OBJECT
 public:
@@ -33,6 +41,9 @@ public:
     ~MainWindow();
 
     void cdebug( const QString &str );
+
+    void updateHelp();
+    void onShowHelp();
 
 private:
 
@@ -182,7 +193,7 @@ private:
 
     CodeEditor *_codeEditor;
     CodeEditor *_lockedEditor;
-    QWebView *_helpWidget;
+    HelpView *_helpWidget;
 
     PrefsDialog *_prefsDialog;
     FindDialog *_findDialog;
@@ -197,6 +208,11 @@ private:
     QComboBox *_targetsWidget;
     QComboBox *_configsWidget;
     QComboBox *_indexWidget;
+
+    QString _helpTopic;
+    int _helpTopicId;
+
+    bool _rebuildingHelp;
 };
 
 #endif // MAINWINDOW_H
