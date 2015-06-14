@@ -49,6 +49,13 @@ This method is used by the [[Sort]] method to compare elements.
 By default, this methods simply generates a runtime error. Extending classes should implement this method if they want to support [[Sort]].
 
 
+# Method Sort:Int(ascending:Int=True)
+
+Sorts the stack into ascending or descending order.
+
+The stack must implement the Compare method.
+
+
 # Method Clear:Void()
 
 Removes all items from the stack.

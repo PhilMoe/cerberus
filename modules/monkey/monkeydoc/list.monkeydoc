@@ -220,10 +220,11 @@ End
 </pre>
 
 
-# Method Sort:Int(ascending:Int)
+# Method Sort:Int(ascending:Int=True)
 
-Sorts the list.
+Sorts the list into ascending or descending order.
 
+The list must implement the Compare method.
 
 
 
