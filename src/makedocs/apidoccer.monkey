@@ -670,7 +670,9 @@ Class ApiDoccer Implements ILinkResolver
 	End
 	
 	Method ParseMonkeydocFile:Void( srcpath:String,modpath:String )
-	
+
+'		Print "modpath="+modpath+", srcpath="+srcpath	
+		
 		george.SetErrInfo srcpath
 		
 		Local parser:=New Parser( "" )
@@ -679,8 +681,11 @@ Class ApiDoccer Implements ILinkResolver
 	
 		Local mdecl:=New ModuleDecl( pdecl,Self )
 		scopes.Set mdecl.path,mdecl
+
+'		Local img:=ExtractDir( srcpath )+"/"+StripAll( srcpath )+"_icon.png"
+'		If FileType( img )<>FILETYPE_FILE img=""
 		
-		george.AddPage mdecl.PagePath()
+		george.AddPage mdecl.PagePath(),""'img
 		
 		Local scope:ScopeDecl=mdecl
 		Local sect:="description"
@@ -797,16 +802,39 @@ Class ApiDoccer Implements ILinkResolver
 			Local p:=dir+"/"+f
 			Select FileType( p )
 			Case FILETYPE_DIR
+				If f="3rdparty.monkeydoc"
+					For Local t:=Eachin LoadDir( p )
+						Local q:=p+"/"+t
+						Select FileType( q )
+						Case FILETYPE_DIR
+							CopyDir q,"docs/monkeydoc/3rd party modules/"+t,True
+						Case FILETYPE_FILE
+							Select ExtractExt( t )
+							Case "png"
+								CopyFile q,"docs/html/3rd party modules_"+t
+								george.AddIconLink "3rd party modules_"+t,"3rd party modules_"+StripExt( t )+".html"
+							Case "monkeydoc"
+								CopyFile q,"docs/monkeydoc/3rd party modules/"+t
+							End
+						End
+					Next
+					Continue
+				Endif
+			
 				If ignore_mods.Contains( f ) Continue
+				
 				If modpath
 					ParseModules p,modpath+"."+f
 				Else
 					ParseModules p,f
 				Endif
+				
 			Case FILETYPE_FILE
 				Local name:=StripExt( f )
 				Local ext:=ExtractExt( f )
+				
 				If ext="monkey"
+				
 					Local q:=modpath
 					If name<>StripDir( dir ) q+="."+name
 					

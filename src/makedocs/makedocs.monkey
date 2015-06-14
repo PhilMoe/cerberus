@@ -1,3 +1,4 @@
+
 #If TARGET<>"stdcpp"
 #Error "Invalid target"
 #Endif
@@ -19,6 +20,9 @@ Class George Implements ILinkResolver,IPrettifier
 	Field pages:=New StringMap<String>					'maps docpath to url
 	Field content:=New StringMap<String>				'maps url to html
 	Field indexcats:=New StringMap<StringMap<String>>	'maps index categories to indexes
+	
+	Field iconImgs:=New StringStack
+	Field iconUrls:=New StringStack
 
 	Field srcdir:String
 	Field docbase:String
@@ -48,6 +52,7 @@ Class George Implements ILinkResolver,IPrettifier
 		Self.docbase=docbase
 	End
 	
+	#rem
 	Method AddFile:String( path:String )
 	
 		Local src:=srcdir+path
@@ -61,6 +66,7 @@ Class George Implements ILinkResolver,IPrettifier
 		
 		Return "data/"+StripDir( udst )+".html"
 	End
+	#end
 	
 	Method MakeLink:String( url:String,text:String )
 		If Not text text=url
@@ -129,11 +135,17 @@ Class George Implements ILinkResolver,IPrettifier
 		Return index
 	End
 	
-	Method AddPage:Void( path:String )
+	Method AddIconLink:Void( iconImg:String,iconUrl:String )
+		iconImgs.Push iconImg
+		iconUrls.Push iconUrl
+	End
+	
+	Method AddPage:Void( path:String,icon:String="" )
 	
 		If pages.Contains( path ) Print "Overwriting page:"+path
-
+		
 		Local url:=MakeUrl( path )
+		
 '		Print "Adding page:"+path+" url:"+url
 
 		pages.Set path,url
@@ -226,6 +238,16 @@ Class George Implements ILinkResolver,IPrettifier
 			
 			maker.Clear
 			maker.SetString "CONTENT",page
+			
+			If iconImgs.Length
+				maker.BeginList "ICONLINKS"
+				For Local i:=0 Until iconImgs.Length
+					maker.AddItem
+					maker.SetString "ICON",iconImgs.Get( i )
+					maker.SetString "URL",iconUrls.Get( i )
+				Next
+				maker.EndList
+			Endif
 		
 			If path<>"Home" And path<>"Home2"
 				maker.BeginList "NAVLINKS"
@@ -356,7 +378,11 @@ Function Main:Int()
 	CreateDir "docs/html"
 	CreateDir "docs/html/data"
 	CreateDir "docs/html/examples"
+	CreateDir "docs/html/3rd party modules"
 	CopyDir   "docs/htmldoc","docs/html",True
+	
+	DeleteDir "docs/monkeydoc/3rd party modules",True
+	CreateDir "docs/monkeydoc/3rd party modules"
 	
 	Local style:=LoadString( "bin/docstyle.txt" ).Trim()
 	If Not style Or FileType( "docs/templates/"+style )<>FILETYPE_DIR style="devolonter"
@@ -382,6 +408,8 @@ Function Main:Int()
 	docsdoccer.MakeDocs
 	
 	george.MakeDocs
+	
+	DeleteDir "docs/monkeydoc/3rd party modules",True
 	
 	Print "Makedocs finished!"
 	Return 0
