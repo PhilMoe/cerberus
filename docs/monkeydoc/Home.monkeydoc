@@ -1,10 +1,16 @@
 
 (New to Monkey? Try the [[Getting started]] page or check out the [[Samples]])
 
+>> New stuff!
+
+* Mojo2 [[mojo2|overview]] and [[Mojo2 samples|samples]].
+* [[brl.requesters|Requesters]] module for Windows and MacOS.
+
 >> Programming Guide
 
 * [[Target SDKs]]
 * [[API Reference]]
+* [[3rd party modules]]
 * [[Programming/File formats]]
 * [[Programming/Resource paths]]
 * [[Programming/App config settings]]

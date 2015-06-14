@@ -10,7 +10,24 @@
 		<header class="main">
 
 			<div class="title">
-				<a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      ${IF ICONLINKS}
+					      <td style="text-align: right;">
+					      	${FOR ICONLINKS}
+					      		<a href='${URL}'><img src='${ICON}'></a>
+					      	${NEXT}
+					      </td>
+					  ${ENDIF}
+				    </tr>
+				
+				</table>
+
 			</div>
 			
 			<ul class="breadcrumb">
