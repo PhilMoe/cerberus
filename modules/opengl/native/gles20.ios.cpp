@@ -45,8 +45,8 @@ void _glTexImage2D( int target,int level,int internalformat,int width,int height
 	glTexImage2D( target,level,internalformat,width,height,border,format,type,data ? data->ReadPointer() : 0 );
 }
 
-void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *data ){
-	glTexImage2D( target,level,xoffset,yoffset,width,height,format,type,data->ReadPointer() );
+void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer *data,int dataOffset ){
+	glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,data->ReadPointer( dataOffset ) );
 }
 
 void _glBindAttribLocation( int program, int index, String name ){

@@ -332,12 +332,12 @@ Const GL_INVALID_FRAMEBUFFER_OPERATION  =$0506
 
 Extern
 
-#if TARGET="ios" Or GLFW_USE_ANGLE_GLES20
+#If TARGET="ios" Or GLFW_USE_ANGLE_GLES20
 
 Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
 
 Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer, dataOffset=0 )="_glTexSubImage2D"
 
 '${IOS_DECLS}
 Function glActiveTexture:Void( texture )
@@ -353,7 +353,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
 Function glBlendFunc:Void( sfactor, dfactor )
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset=0 )="_glBufferSubData"
 
 Function glCheckFramebufferStatus:Int( target )
 Function glClear:Void( mask )
@@ -483,7 +483,7 @@ Function glViewport:Void( x, y, width, height )
 Function BBLoadImageData:BBDataBuffer( buf:BBDataBuffer,path$,info[]=[] )="BBLoadImageData"
 
 Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:BBDataBuffer )="_glTexImage2D"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer )="_glTexSubImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:BBDataBuffer, dataOffset=0 )="_glTexSubImage2D"
 
 '${GLFW_DECLS}
 Function glActiveTexture:Void( texture )
@@ -499,7 +499,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )
 Function glBlendFunc:Void( sfactor, dfactor )
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="_glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="_glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset=0 )="_glBufferSubData"
 Function glCheckFramebufferStatus:Int( target )
 Function glClear:Void( mask )
 Function glClearColor:Void( red#, green#, blue#, alpha# )
@@ -631,7 +631,7 @@ Function BBLoadStaticTexImage:Object( path$,info[]=[] )="bb_opengl_gles20.LoadSt
 Function glTexImage2D:Void( target, level, internalformat, width, height, border, format, type, data:DataBuffer )="bb_opengl_gles20._glTexImage2D"
 Function glTexImage2D:Void( target, level, internalformat, format, type, data:Object )="bb_opengl_gles20._glTexImage2D2"
 
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:DataBuffer )="bb_opengl_gles20._glTexSubImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:DataBuffer, dataOffset=0 )="bb_opengl_gles20._glTexSubImage2D"
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="bb_opengl_gles20._glTexSubImage2D2"
 
 '${ANDROID_DECLS}
@@ -648,7 +648,7 @@ Function glBlendEquationSeparate:Void( modeRGB, modeAlpha )="GLES20.glBlendEquat
 Function glBlendFunc:Void( sfactor, dfactor )="GLES20.glBlendFunc"
 Function glBlendFuncSeparate:Void( srcRGB, dstRGB, srcAlpha, dstAlpha )="GLES20.glBlendFuncSeparate"
 Function glBufferData:Void( target, size, data:DataBuffer, usage )="bb_opengl_gles20._glBufferData"
-Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset:Int=0 )="bb_opengl_gles20._glBufferSubData"
+Function glBufferSubData:Void( target, offset, size, data:DataBuffer, dataOffset=0 )="bb_opengl_gles20._glBufferSubData"
 Function glCheckFramebufferStatus:Int( target )="GLES20.glCheckFramebufferStatus"
 Function glClear:Void( mask )="GLES20.glClear"
 Function glClearColor:Void( red#, green#, blue#, alpha# )="GLES20.glClearColor"
@@ -784,7 +784,7 @@ Function glTexImage2D:Void( target, level, internalformat, width, height, border
 
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, data:Object )="_glTexSubImage2D2"
 Function glTexSubImage2D:Void( target, level, xoffset, yoffset, format, type, path:String )="_glTexSubImage2D3"
-Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, pixels:DataBuffer )="_glTexSubImage2D"
+Function glTexSubImage2D:Void( target, level, xoffset, yoffset, width, height, format, type, data:DataBuffer, dataOffset=0 )="_glTexSubImage2D"
 
 '${HTML5_DECLS}
 Function glActiveTexture:Void( texture )="gl.activeTexture"

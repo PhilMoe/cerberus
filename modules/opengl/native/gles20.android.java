@@ -89,8 +89,15 @@ class bb_opengl_gles20{
 		if( bitmap!=null ) GLUtils.texImage2D( target,level,bitmap,0 );
 	}
 
-	static void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer data ){
-		GLES20.glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,data!=null ? data._data : null );
+	static void _glTexSubImage2D( int target,int level,int xoffset,int yoffset,int width,int height,int format,int type,BBDataBuffer data,int dataOffset ){
+		if( dataOffset==0 ){
+			GLES20.glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,data._data );
+		}else{
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );
+			GLES20.glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,buf );
+			buf.rewind();
+		}
 	}
 
 	static void _glTexSubImage2D2( int target,int level,int xoffset,int yoffset,Object data ){

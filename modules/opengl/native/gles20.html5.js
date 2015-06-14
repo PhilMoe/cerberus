@@ -3,8 +3,6 @@ var bb_texs_loading=0;
 
 function BBLoadStaticTexImage( path,info ){
 
-	gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
-	
 	var game=BBHtml5Game.Html5Game();
 
 	var ty=game.GetMetaData( path,"type" );
@@ -68,7 +66,11 @@ function _glTexImage2D2( target,level,internalformat,format,type,img ){
 	
 		var tmp=gl.getParameter( gl.TEXTURE_BINDING_2D );
 		gl.bindTexture( target,tex );
+		
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
 		gl.texImage2D( target,level,internalformat,format,type,img );
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false );	
+
 		if( tex._genmipmap && tex._loading==1 ){
 			gl.generateMipmap( target );
 			tex._genmipmap=false;
@@ -97,9 +99,9 @@ function _glTexImage2D3( target,level,internalformat,format,type,path ){
 	_glTexImage2D2( target,level,internalformat,format,type,img );
 }
 
-function _glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,pixels ){
+function _glTexSubImage2D( target,level,xoffset,yoffset,width,height,format,type,data,dataOffset ){
 
-	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,new Uint8Array(pixels.arrayBuffer) );
+	gl.texSubImage2D( target,level,xoffset,yoffset,width,height,format,type,new Uint8Array( data.arrayBuffer,dataOffset ) );
 	
 }
 
@@ -123,7 +125,11 @@ function _glTexSubImage2D2( target,level,xoffset,yoffset,format,type,img ){
 	
 		var tmp=gl.getParameter( gl.TEXTURE_BINDING_2D );
 		gl.bindTexture( target,tex );
+
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
 		gl.texSubImage2D( target,level,xoffset,yoffset,format,type,img );
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false );
+
 		if( tex._genmipmap && tex._loading==1 ){
 			gl.generateMipmap( target );
 			tex._genmipmap=false;
