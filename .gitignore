@@ -1,6 +1,8 @@
 /bin/*
 !/bin/*.txt
 
+.DS_Store
+
 /Monkey
 /Monkey.app
 /Monkey.exe
@@ -32,6 +34,7 @@
 !/targets/flash
 !/targets/glfw
 !/targets/glfw3
+!/targets/glfw3_angle
 !/targets/html5
 !/targets/ios
 !/targets/psm
