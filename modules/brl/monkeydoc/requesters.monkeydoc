@@ -19,7 +19,7 @@ Confirm activates a simple modal dialog requesting the user to select between YE
 Proceed activates a simple modal dialog requesting the user to select between YES, NO and CANCEL options. If the user selects YES, then Proceed return 1. If the user selects NO, then Proceed returns 0. Otherwise, Proceed returns -1.
 
 
-# Function RequestFile:String( title:String,filters:String="",save:Bool=True,file:String="" )
+# Function RequestFile:String( title:String,filters:String="",save:Bool=False,file:String="" )
 
 RequestFile activates a modal file requester dialog.
 
