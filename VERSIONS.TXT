@@ -1,4 +1,13 @@
 
+***** v84b *****
+
+Mojo2 DrawOp's now allocated from a pool.
+
+Undid fancy but broken reflection fixes.
+
+Fixed some mojo2 issues, including IE11 and Safari fixes.
+
+
 ***** v84a *****
 
 Ted now prompts for rebuild docs at startup if docs/html not found.
