@@ -18,7 +18,7 @@
 #MOJO_AUTO_SUSPEND_ENABLED=True
 #MOJO_IMAGE_FILTERING_ENABLED=True
 
-#TEXT_FILES="*.txt|*.xml|*.json"
+#TEXT_FILES="*.txt|*.xml|*.json|*.glsl"
 #IMAGE_FILES="*.png|*.jpg"
 #SOUND_FILES="*.wav|*.ogg"
 #MUSIC_FILES="*.wav|*.ogg"
