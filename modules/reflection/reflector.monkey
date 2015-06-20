@@ -143,7 +143,17 @@ Class Reflector
 		Local mdecl:=ModuleDecl( decl )
 		If mdecl
 			If path Return mdecl.rmodpath
-			Return modexprs.Get( mdecl.filepath )
+			
+			Local expr:=modexprs.Get( mdecl.filepath )
+			If Not expr
+				Print "REFLECTION ERROR"
+				expr=Mung( mdecl.rmodpath )
+				refmod.InsertDecl New AliasDecl( expr,0,mdecl )
+				modexprs.Set mdecl.filepath,expr
+			Endif
+			
+			Return expr
+			
 		Endif
 		
 		Local cdecl:=ClassDecl( decl )
@@ -155,7 +165,7 @@ Class Reflector
 			If path Return "monkey.lang.Throwable"
 			Return "Throwable"
 		Endif
-	
+		
 		Local ident:=DeclExpr( decl.scope,path )+"."+decl.ident
 		
 		If cdecl And cdecl.instArgs
@@ -180,7 +190,7 @@ Class Reflector
 		If cdecl.munged="Object" Return True
 		If cdecl.munged="ThrowableObject" Return True
 		If Not cdecl.ExtendsObject() Return False
-'		If Not refmods.Contains( cdecl.ModuleScope().filepath ) Return False
+		If Not refmods.Contains( cdecl.ModuleScope().filepath ) Return False
 		For Local arg:=Eachin cdecl.instArgs
 			If ObjectType( arg ) And Not ValidClass( arg.GetClass() ) Return False
 		Next
