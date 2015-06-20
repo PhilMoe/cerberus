@@ -384,7 +384,7 @@ Function glDetachShader:Void( program, shader )
 Function glDisable:Void( cap )
 Function glDisableVertexAttribArray:Void( index )
 Function glDrawArrays:Void( mode, first, count )
-Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="_glDrawElements"
+Function glDrawElements:Void( mode, count, type, data:DataBuffer, dataOffset=0 )="_glDrawElements"
 Function glDrawElements:Void( mode, count, type, offset )="_glDrawElements"
 Function glEnable:Void( cap )
 Function glEnableVertexAttribArray:Void( index )
@@ -473,7 +473,7 @@ Function glVertexAttrib1fv:Void( indx, values#[] )="_glVertexAttrib1fv"
 Function glVertexAttrib2fv:Void( indx, values#[] )="_glVertexAttrib2fv"
 Function glVertexAttrib3fv:Void( indx, values#[] )="_glVertexAttrib3fv"
 Function glVertexAttrib4fv:Void( indx, values#[] )="_glVertexAttrib4fv"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="_glVertexAttribPointer"
+Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer, dataOffset=0 )="_glVertexAttribPointer"
 Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="_glVertexAttribPointer"
 Function glViewport:Void( x, y, width, height )
 '${END}
@@ -529,7 +529,7 @@ Function glDetachShader:Void( program, shader )
 Function glDisable:Void( cap )
 Function glDisableVertexAttribArray:Void( index )
 Function glDrawArrays:Void( mode, first, count )
-Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="_glDrawElements"
+Function glDrawElements:Void( mode, count, type, data:DataBuffer, dataOffset=0 )="_glDrawElements"
 Function glDrawElements:Void( mode, count, type, offset )="_glDrawElements"
 Function glEnable:Void( cap )
 Function glEnableVertexAttribArray:Void( index )
@@ -618,7 +618,7 @@ Function glVertexAttrib1fv:Void( indx, values#[] )="_glVertexAttrib1fv"
 Function glVertexAttrib2fv:Void( indx, values#[] )="_glVertexAttrib2fv"
 Function glVertexAttrib3fv:Void( indx, values#[] )="_glVertexAttrib3fv"
 Function glVertexAttrib4fv:Void( indx, values#[] )="_glVertexAttrib4fv"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="_glVertexAttribPointer"
+Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer, dataOffset=0 )="_glVertexAttribPointer"
 Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="_glVertexAttribPointer"
 Function glViewport:Void( x, y, width, height )
 '${END}
@@ -678,7 +678,7 @@ Function glDetachShader:Void( program, shader )="GLES20.glDetachShader"
 Function glDisable:Void( cap )="GLES20.glDisable"
 Function glDisableVertexAttribArray:Void( index )="GLES20.glDisableVertexAttribArray"
 Function glDrawArrays:Void( mode, first, count )="GLES20.glDrawArrays"
-Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="bb_opengl_gles20._glDrawElements"
+Function glDrawElements:Void( mode, count, type, data:DataBuffer, dataOffset=0 )="bb_opengl_gles20._glDrawElements"
 Function glDrawElements:Void( mode, count, type, offset )="bb_opengl_gles20._glDrawElements"
 Function glEnable:Void( cap )="GLES20.glEnable"
 Function glEnableVertexAttribArray:Void( index )="GLES20.glEnableVertexAttribArray"
@@ -767,7 +767,7 @@ Function glVertexAttrib1fv:Void( indx, values#[] )="bb_opengl_gles20._glVertexAt
 Function glVertexAttrib2fv:Void( indx, values#[] )="bb_opengl_gles20._glVertexAttrib2fv"
 Function glVertexAttrib3fv:Void( indx, values#[] )="bb_opengl_gles20._glVertexAttrib3fv"
 Function glVertexAttrib4fv:Void( indx, values#[] )="bb_opengl_gles20._glVertexAttrib4fv"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="bb_opengl_gles20._glVertexAttribPointer"
+Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer, dataOffset=0 )="bb_opengl_gles20._glVertexAttribPointer"
 Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="bb_opengl_gles20._glVertexAttribPointer"
 Function glViewport:Void( x, y, width, height )="GLES20.glViewport"
 '${END}
@@ -830,7 +830,7 @@ Function glDetachShader:Void( program, shader )="gl.detachShader"
 Function glDisable:Void( cap )="gl.disable"
 Function glDisableVertexAttribArray:Void( index )="gl.disableVertexAttribArray"
 Function glDrawArrays:Void( mode, first, count )="gl.drawArrays"
-Function glDrawElements:Void( mode, count, type, ptr:DataBuffer )="gl.drawElements"
+'Function glDrawElements:Void( mode, count, type, data:DataBuffer, dataOffset=0 )		'NOT in webgl!
 Function glDrawElements:Void( mode, count, type, offset )="gl.drawElements"
 Function glEnable:Void( cap )="gl.enable"
 Function glEnableVertexAttribArray:Void( index )="gl.enableVertexAttribArray"
@@ -919,7 +919,7 @@ Function glVertexAttrib1fv:Void( indx, values#[] )="gl.vertexAttrib1fv"
 Function glVertexAttrib2fv:Void( indx, values#[] )="gl.vertexAttrib2fv"
 Function glVertexAttrib3fv:Void( indx, values#[] )="gl.vertexAttrib3fv"
 Function glVertexAttrib4fv:Void( indx, values#[] )="gl.vertexAttrib4fv"
-Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer )="gl.vertexAttribPointer"
+'Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, data:DataBuffer, dataOffset=0 ) 'NOT in webgl!
 Function glVertexAttribPointer:Void( indx, size, type, normalized?, stride, offset )="gl.vertexAttribPointer"
 Function glViewport:Void( x, y, width, height )="gl.viewport"
 '${END}

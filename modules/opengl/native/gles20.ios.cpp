@@ -101,8 +101,8 @@ void _glDeleteTexture( int texture ){
 	glDeleteTextures( 1,(GLuint*)&texture );
 }
 
-void _glDrawElements( int mode, int count, int type, BBDataBuffer *indices ){
-	glDrawElements( mode,count,type,indices->ReadPointer() );
+void _glDrawElements( int mode, int count, int type, BBDataBuffer *data, int dataOffset ){
+	glDrawElements( mode,count,type,data->ReadPointer( dataOffset ) );
 }
 
 void _glDrawElements( int mode, int count, int type, int offset ){
@@ -314,8 +314,8 @@ void _glVertexAttrib4fv( int indx, Array<float> values ){
 	glVertexAttrib4fv( indx,&values[0] );
 }
 
-void _glVertexAttribPointer( int indx, int size, int type, bool normalized, int stride, BBDataBuffer *ptr ){
-	glVertexAttribPointer( indx,size,type,normalized,stride,ptr->ReadPointer() );
+void _glVertexAttribPointer( int indx, int size, int type, bool normalized, int stride, BBDataBuffer *data, int dataOffset ){
+	glVertexAttribPointer( indx,size,type,normalized,stride,data->ReadPointer( dataOffset ) );
 }
 
 void _glVertexAttribPointer( int indx, int size, int type, bool normalized, int stride, int offset ){

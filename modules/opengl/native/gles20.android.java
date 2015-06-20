@@ -163,9 +163,16 @@ class bb_opengl_gles20{
 		int[] tmp={texture};
 		GLES20.glDeleteTextures( 1,tmp,0 );
 	}
-	
-	static void _glDrawElements( int mode, int count, int type,BBDataBuffer indices ){
-		GLES20.glDrawElements( mode,count,type,indices._data );
+
+	static void _glDrawElements( int mode, int count, int type,BBDataBuffer data,int dataOffset ){
+		if( dataOffset==0 ){
+			GLES20.glDrawElements( mode,count,type,data._data );
+		}else{
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );
+			GLES20.glDrawElements( mode,count,type,buf );
+			buf.rewind();
+		}
 	}
 	
 	static void _glDrawElements( int mode, int count, int type, int offset ){
@@ -360,8 +367,15 @@ class bb_opengl_gles20{
 		GLES20.glVertexAttrib4fv( indx,values,0 );
 	}
 	
-	static void _glVertexAttribPointer( int indx, int size, int type, boolean normalized, int stride, BBDataBuffer ptr ){
-		GLES20.glVertexAttribPointer( indx,size,type,normalized,stride,ptr._data );
+	static void _glVertexAttribPointer( int indx, int size, int type, boolean normalized, int stride, BBDataBuffer data, int dataOffset ){
+		if( dataOffset==0 ){
+			GLES20.glVertexAttribPointer( indx,size,type,normalized,stride,data._data );
+		}else{
+			ByteBuffer buf=data._data;
+			buf.position( dataOffset );
+			GLES20.glVertexAttribPointer( indx,size,type,normalized,stride,buf );
+			buf.rewind();
+		}
 	}
 	
 	static void _glVertexAttribPointer( int indx, int size, int type, boolean normalized, int stride, int offset ){
