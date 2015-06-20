@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST macos
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -5960,7 +5960,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS monkey compiler V1.84",27));
+	bbPrint(String(L"TRANS monkey compiler V1.85",27));
 	m_monkeydir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"MONKEYDIR",9),m_monkeydir);
 	SetEnv(String(L"TRANSDIR",8),m_monkeydir+String(L"/bin",4));
@@ -16376,6 +16376,9 @@ bool c_Reflector::p_ValidClass(c_ClassDecl* t_cdecl){
 	if(!((t_cdecl->p_ExtendsObject())!=0)){
 		return false;
 	}
+	if(!m_refmods->p_Contains(t_cdecl->p_ModuleScope()->m_filepath)){
+		return false;
+	}
 	Array<c_Type* > t_=t_cdecl->m_instArgs;
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -16424,7 +16427,14 @@ String c_Reflector::p_DeclExpr(c_Decl* t_decl,bool t_path){
 		if(t_path){
 			return t_mdecl->m_rmodpath;
 		}
-		return m_modexprs->p_Get(t_mdecl->m_filepath);
+		String t_expr=m_modexprs->p_Get(t_mdecl->m_filepath);
+		if(!((t_expr).Length()!=0)){
+			bbPrint(String(L"REFLECTION ERROR",16));
+			t_expr=p_Mung(t_mdecl->m_rmodpath);
+			m_refmod->p_InsertDecl((new c_AliasDecl)->m_new(t_expr,0,(t_mdecl)));
+			m_modexprs->p_Set2(t_mdecl->m_filepath,t_expr);
+		}
+		return t_expr;
 	}
 	c_ClassDecl* t_cdecl=dynamic_cast<c_ClassDecl*>(t_decl);
 	if(((t_cdecl)!=0) && t_cdecl->m_munged==String(L"Object",6)){
