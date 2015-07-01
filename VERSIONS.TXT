@@ -1,4 +1,25 @@
 
+***** v84c *****
+
+Added versions of DrawList.DrawPrimitives/DrawList.DrawIndexedPrimitives with texcoords:float[] param.
+
+Canvas.RenderDrawList NOT affected by current blend mode - blend modes used to create DrawList always used.
+
+Canvas.RenderDrawList now always affected by current color/alpha.
+
+Canvas.RenderDrawList now always affected by 2d matrix.
+
+Canvas.RenderDrawListEx renamed to Canvas.RenderDrawList.
+
+Mojo2 2d matrix stack now quietly wraps around.
+
+Added DrawList.SetMatrixStackCapacity.
+
+Replaced all #BLAH_FILES="..." with #BLAH_FILES+="..." in all target CONFIG.MONKEY files so they don't fail if code sets a custom file type filter.
+
+Added 'VBO orphaning' to mojo2 for improved performance on at least ios/mac.
+
+
 ***** v84b *****
 
 Mojo2 DrawOp's now allocated from a pool.
