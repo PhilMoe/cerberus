@@ -8,8 +8,8 @@
 
 #MOJO_IMAGE_FILTERING_ENABLED=true
 
-#TEXT_FILES="*.txt|*.xml|*.json|*.glsl"
-#IMAGE_FILES="*.png|*.jpg"
-#SOUND_FILES="*.wav|*.mp3|*.m4a"
-#MUSIC_FILES="*.wav|*.mp3|*.m4a"
-#BINARY_FILES="*.bin|*.dat"
+#TEXT_FILES+="*.txt|*.xml|*.json"
+#IMAGE_FILES+="*.png|*.jpg"
+#SOUND_FILES+="*.wav|*.mp3|*.m4a"
+#MUSIC_FILES+="*.wav|*.mp3|*.m4a"
+#BINARY_FILES+="*.bin|*.dat"

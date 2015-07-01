@@ -5,9 +5,8 @@
 
 #OPENGL_GLES20_ENABLED=False
 
-#TEXT_FILES="*.txt|*.xml|*.json|*.glsl"
-#IMAGE_FILES="*.png|*.jpg"
-#SOUND_FILES="*.wav|*.ogg|*.mp3|*.m4a"
-#MUSIC_FILES="*.wav|*.ogg|*.mp3|*.m4a"
-#BINARY_FILES="*.bin|*.dat"
-
+#TEXT_FILES+="*.txt|*.xml|*.json"
+#IMAGE_FILES+="*.png|*.jpg"
+#SOUND_FILES+="*.wav|*.ogg|*.mp3|*.m4a"
+#MUSIC_FILES+="*.wav|*.ogg|*.mp3|*.m4a"
+#BINARY_FILES+="*.bin|*.dat"

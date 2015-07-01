@@ -27,8 +27,8 @@
 
 #ANDROID_OUYA_DEVELOPER_UUID="xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx"	'from the main developer portal page
 
-#TEXT_FILES="*.txt|*.xml|*.json"
-#IMAGE_FILES="*.png|*.jpg|*.gif|*.bmp"
-#SOUND_FILES="*.wav|*.ogg|*.mp3|*.m4a"
-#MUSIC_FILES="*.wav|*.ogg|*.mp3|*.m4a"
-#BINARY_FILES="*.bin|*.dat"
+#TEXT_FILES+="*.txt|*.xml|*.json"
+#IMAGE_FILES+="*.png|*.jpg|*.gif|*.bmp"
+#SOUND_FILES+="*.wav|*.ogg|*.mp3|*.m4a"
+#MUSIC_FILES+="*.wav|*.ogg|*.mp3|*.m4a"
+#BINARY_FILES+="*.bin|*.dat"

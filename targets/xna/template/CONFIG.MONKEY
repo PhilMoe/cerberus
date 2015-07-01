@@ -16,8 +16,8 @@
 #MOJO_IMAGE_FILTERING_ENABLED=True
 #MOJO_BACKBUFFER_ACCESS_ENABLED=true
 
-#TEXT_FILES="*.txt|*.xml|*.json"
-#IMAGE_FILES="*.png|*.jpg"
-#SOUND_FILES="*.wav"
-#MUSIC_FILES="*.mp3|*.wma"
-#BINARY_FILES="*.bin|*.dat"
+#TEXT_FILES+="*.txt|*.xml|*.json"
+#IMAGE_FILES+="*.png|*.jpg"
+#SOUND_FILES+="*.wav"
+#MUSIC_FILES+="*.mp3|*.wma"
+#BINARY_FILES+="*.bin|*.dat"
