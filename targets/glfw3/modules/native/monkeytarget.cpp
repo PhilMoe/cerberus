@@ -11,8 +11,15 @@ public:
 #define _QUOTE(X) #X
 #define _STRINGIZE(X) _QUOTE(X)
 
+static void onGlfwError( int err,const char *msg ){
+	printf( "GLFW Error: err=%i, msg=%s\n",err,msg );
+	fflush( stdout );
+}
+
 void BBMonkeyGame::Main( int argc,const char *argv[] ){
 
+	glfwSetErrorCallback( onGlfwError );
+	
 	if( !glfwInit() ){
 		puts( "glfwInit failed" );
 		exit( -1 );
