@@ -1,4 +1,11 @@
 
+***** v84d *****
+
+DrawList.Color now returns a copy. Added DrawList.GetColor.
+
+Tweaked android_new target so OnUpdate always happens on render thread.
+
+
 ***** v84c *****
 
 Added versions of DrawList.DrawPrimitives/DrawList.DrawIndexedPrimitives with texcoords:float[] param.
