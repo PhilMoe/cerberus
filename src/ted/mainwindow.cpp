@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.24"
+#define TED_VERSION "1.25"
 
 #define SETTINGS_VERSION 2
 
@@ -100,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
 
     //targets combobox
     _targetsWidget=new QComboBox;
+    _targetsWidget->setSizeAdjustPolicy( QComboBox::AdjustToContents );
     _ui->buildToolBar->addWidget( _targetsWidget );
 
     _configsWidget=new QComboBox;
@@ -211,6 +212,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
 
     readSettings();
 
+    if( _buildFileType.isEmpty() ){
+        updateTargetsWidget( "monkey" );
+    }
+
     QString home2=_monkeyPath+"/docs/html/Home2.html";
     if( QFile::exists( home2 ) ) openFile( "file:///"+home2,false );
 
@@ -242,6 +247,17 @@ MainWindow::~MainWindow(){
 }
 
 //***** private methods *****
+
+void MainWindow::onTargetChanged( int index ){
+
+    QString target=_targetsWidget->currentText();
+
+    if( _buildFileType=="monkey" ){
+        _activeMonkeyTarget=target;
+    }else if( _buildFileType=="mx2" || _buildFileType=="monkey2" ){
+        _activeMonkey2Target=target;
+    }
+}
 
 void MainWindow::loadHelpIndex(){
     if( _monkeyPath.isEmpty() ) return;
@@ -295,6 +311,7 @@ bool MainWindow::isBuildable( CodeEditor *editor ){
     if( !editor ) return false;
     if( editor->fileType()=="monkey" ) return !_monkeyPath.isEmpty();
     if( editor->fileType()=="bmx" ) return !_blitzmaxPath.isEmpty();
+    if( editor->fileType()=="monkey2" ) return !_monkey2Path.isEmpty();
     return false;
 }
 
@@ -321,7 +338,11 @@ QWidget *MainWindow::newFile( const QString &cpath ){
     QString path=cpath;
 
     if( path.isEmpty() ){
-        path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files (*.monkey *.bmx *.cpp *.cs *.js *.as *.java *.txt)" ) );
+
+        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
+
+        path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files ("+srcTypes+")" ) );
         if( path.isEmpty() ) return 0;
     }
 
@@ -373,7 +394,10 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     if( path.isEmpty() ){
 
-        path=fixPath( QFileDialog::getOpenFileName( this,"Open File",_defaultDir,"Source Files (*.monkey *.cpp *.cs *.js *.as *.java);;Image Files(*.jpg *.png *.bmp);;All Files(*.*)" ) );
+        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
+
+        path=fixPath( QFileDialog::getOpenFileName( this,"Open File",_defaultDir,"Source Files ("+srcTypes+");;Image Files(*.jpg *.png *.bmp);;All Files(*.*)" ) );
         if( path.isEmpty() ) return 0;
 
         _defaultDir=extractDir( path );
@@ -436,7 +460,10 @@ bool MainWindow::saveFile( QWidget *widget,const QString &cpath ){
 
         _mainTabWidget->setCurrentWidget( editor );
 
-        path=fixPath( QFileDialog::getSaveFileName( this,"Save File As",editor->path(),"Source Files (*.monkey *.cpp *.cs *.js *.as *.java)" ) );
+        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
+
+        path=fixPath( QFileDialog::getSaveFileName( this,"Save File As",editor->path(),"Source Files ("+srcTypes+")" ) );
         if( path.isEmpty() ) return false;
 
     }else if( !editor->modified() ){
@@ -561,12 +588,21 @@ QString MainWindow::defaultMonkeyPath(){
 void MainWindow::enumTargets(){
     if( _monkeyPath.isEmpty() ) return;
 
+    _monkeyTargets.clear();
+    _monkey2Targets.clear();
+
+    QDir monkey2Dir( _monkeyPath+"/../monkey2" );
+    if( monkey2Dir.exists() ){
+        _monkey2Path=monkey2Dir.absolutePath();
+        _monkey2Targets.push_back( "Desktop" );
+        _monkey2Targets.push_back( "Emscripten" );
+        _activeMonkey2Target="Desktop";
+    }
+
     QString cmd="\""+_monkeyPath+"/bin/transcc"+HOST+"\"";
 
     Process proc;
     if( !proc.start( cmd ) ) return;
-
-    _targetsWidget->clear();
 
     QString sol="Valid targets: ";
     QString ver="TRANS monkey compiler V";
@@ -580,7 +616,10 @@ void MainWindow::enumTargets(){
             QStringList bits=line.split( ' ' );
             for( int i=0;i<bits.count();++i ){
                 QString bit=bits[i];
-                if( !bit.isEmpty() ) _targetsWidget->addItem( bit.replace( '_',' ' ) );
+                if( bit.isEmpty() ) continue;
+                QString target=bit.replace( '_',' ' );
+                if( target.contains( "Html5" ) ) _activeMonkeyTarget=target;
+                _monkeyTargets.push_back( target );
             }
         }
     }
@@ -687,6 +726,11 @@ void MainWindow::readSettings(){
 
     settings.beginGroup( "buildSettings" );
     QString target=settings.value( "target" ).toString();
+
+    _activeMonkeyTarget=target;
+    _buildFileType="";
+
+    /*
     if( !target.isEmpty() ){
         for( int i=0;i<_targetsWidget->count();++i ){
             if( _targetsWidget->itemText(i)==target ){
@@ -695,6 +739,8 @@ void MainWindow::readSettings(){
             }
         }
     }
+    */
+
     QString config=settings.value( "config" ).toString();
     if( !config.isEmpty() ){
         for( int i=0;i<_configsWidget->count();++i ){
@@ -704,6 +750,7 @@ void MainWindow::readSettings(){
             }
         }
     }
+
     QString locked=settings.value( "locked" ).toString();
     if( !locked.isEmpty() ){
         if( CodeEditor *editor=editorWithPath( locked ) ){
@@ -757,12 +804,42 @@ void MainWindow::writeSettings(){
     settings.endArray();
 
     settings.beginGroup( "buildSettings" );
-    settings.setValue( "target",_targetsWidget->currentText() );
+    settings.setValue( "target",_activeMonkeyTarget );
     settings.setValue( "config",_configsWidget->currentText() );
     settings.setValue( "locked",_lockedEditor ? _lockedEditor->path() : "" );
     settings.endGroup();
 
     settings.setValue( "defaultDir",_defaultDir );
+}
+
+void MainWindow::updateTargetsWidget( QString fileType ){
+
+    if( _buildFileType!=fileType ){
+
+        disconnect( _targetsWidget,0,0,0 );
+        _targetsWidget->clear();
+
+        if( fileType=="monkey" ){
+            for( int i=0;i<_monkeyTargets.size();++i ){
+                _targetsWidget->addItem( _monkeyTargets.at(i) );
+                if( _monkeyTargets.at(i)==_activeMonkeyTarget ) _targetsWidget->setCurrentIndex( i );
+            }
+            _activeMonkeyTarget=_targetsWidget->currentText();
+            _configsWidget->setEnabled( true );
+        }else if( fileType=="mx2" || fileType=="monkey2" ){
+            for( int i=0;i<_monkey2Targets.size();++i ){
+                _targetsWidget->addItem( _monkey2Targets.at(i) );
+                if( _monkey2Targets.at(i)==_activeMonkey2Target ) _targetsWidget->setCurrentIndex( i );
+            }
+            _activeMonkey2Target=_targetsWidget->currentText();
+            _configsWidget->setEnabled( true );
+        }else if( fileType=="bmx" ){
+            _targetsWidget->addItem( "BlitzMax App" );
+            _configsWidget->setEnabled( false );
+        }
+        _buildFileType=fileType;
+        connect( _targetsWidget,SIGNAL(currentIndexChanged(int)),SLOT(onTargetChanged(int)) );
+    }
 }
 
 //Actions...
@@ -825,6 +902,11 @@ void MainWindow::updateActions(){
     _ui->actionKill->setEnabled( _consoleProc!=0 );
     _ui->actionLock_Build_File->setEnabled( _codeEditor!=_lockedEditor && isBuildable( _codeEditor ) );
     _ui->actionUnlock_Build_File->setEnabled( _lockedEditor!=0 );
+
+    //targets widget
+    if( isBuildable( buildEditor ) ){
+        updateTargetsWidget( buildEditor->fileType() );
+    }
 
     //help menu
     _ui->actionHelpBack->setEnabled( _helpWidget!=0 );
@@ -1091,6 +1173,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
     cmd=cmd.replace( "${TARGET}",_targetsWidget->currentText().replace( ' ','_' ) );
     cmd=cmd.replace( "${CONFIG}",_configsWidget->currentText() );
     cmd=cmd.replace( "${MONKEYPATH}",_monkeyPath );
+    cmd=cmd.replace( "${MONKEY2PATH}",_monkey2Path );
     cmd=cmd.replace( "${BLITZMAXPATH}",_blitzmaxPath );
     if( fileWidget ) cmd=cmd.replace( "${FILEPATH}",widgetPath( fileWidget ) );
 
@@ -1285,6 +1368,10 @@ void MainWindow::build( QString mode ){
             cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -r -x \"${FILEPATH}\"";
         }else if( mode=="build" ){
             cmd="\"${BLITZMAXPATH}/bin/bmk\" makeapp -a -x \"${FILEPATH}\"";
+        }
+    }else if( editor->fileType()=="monkey2" ){
+        if( mode=="run" ){
+            cmd="\"${MONKEY2PATH}/bin/mx2cc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
         }
     }
 

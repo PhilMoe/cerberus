@@ -18,7 +18,7 @@ See LICENSE.TXT for licensing terms.
 #endif
 
 static QString textFileTypes=";txt;monkeydoc;";
-static QString codeFileTypes=";monkey;bmx;cpp;java;js;as;cs;py;";
+static QString codeFileTypes=";monkey;bmx;cpp;java;js;as;cs;py;mx2;monkey2;";
 
 inline bool isDigit( QChar ch ){
     return (ch>='0' && ch<='9');

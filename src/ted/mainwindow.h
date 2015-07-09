@@ -69,6 +69,7 @@ private:
 
     void updateWindowTitle();
     void updateTabLabel( QWidget *widget );
+    void updateTargetsWidget( QString fileType );
     void updateActions();
 
     void print( const QString &str );
@@ -138,6 +139,8 @@ public slots:
 
 private slots:
 
+    void onTargetChanged( int index );
+
     void onShowHelp( const QString &text );
 
     void onLinkClicked( const QUrl &url );
@@ -169,8 +172,8 @@ private:
     QString _defaultDir;
 
     QString _blitzmaxPath;
-
     QString _monkeyPath;
+    QString _monkey2Path;
 
     QString _transVersion;
 
@@ -213,6 +216,14 @@ private:
     int _helpTopicId;
 
     bool _rebuildingHelp;
+
+    QString _buildFileType;
+
+    QString _activeMonkeyTarget;
+    QString _activeMonkey2Target;
+
+    QVector<QString> _monkeyTargets;
+    QVector<QString> _monkey2Targets;
 };
 
 #endif // MAINWINDOW_H
