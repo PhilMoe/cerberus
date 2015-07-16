@@ -65,7 +65,7 @@ private:
 
 //***** CodeEditor *****
 
-CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 ){
+CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 ),_capitalize( false ){
 
     _highlighter=new Highlighter( this );
 
@@ -156,7 +156,8 @@ void CodeEditor::rename( const QString &path ){
 
     _txt=textFileTypes.contains( t );
     _code=codeFileTypes.contains( t );
-    _monkey=_fileType=="monkey";
+    _monkey=_fileType=="monkey" || _fileType=="mx2" || _fileType=="monkey2";
+    _monkey2=_fileType=="mx2" || _fileType=="monkey2";
 
     if( _txt ){
         setLineWrapMode( QPlainTextEdit::WidgetWidth );
@@ -328,23 +329,43 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
         }
     }
 
+    int cursorPos=textCursor().positionInBlock();
+
     if( e ) QPlainTextEdit::keyPressEvent( e );
 
     if( _monkey && block.userState()==-1 ){
-        //auto capitalize
-
-//        if( cursor!=textCursor() ) qDebug()<<"cursor changed!";
 
         if( key>=32 && key<=255 ){
-            if( (key>=Qt::Key_A && key<=Qt::Key_Z) || (key>=Qt::Key_0 && key<=Qt::Key_9) || (key==Qt::Key_Underscore) ) return;
+            if( (key>=Qt::Key_A && key<=Qt::Key_Z) || (key>=Qt::Key_0 && key<=Qt::Key_9) || (key==Qt::Key_Underscore) ){
+                _capitalize=true;
+                return;
+            }
+            if( !_capitalize ) return;
+        }else if( block==textCursor().block() ){
+            if( textCursor().positionInBlock()!=cursorPos ) _capitalize=false;
+            return;
+        }
+
+        _highlighter->capitalize( block,textCursor() );
+
+        _capitalize=false;
+        /*
+
+        //auto capitalize
+        if( key>=32 && key<=255 ){
+            if( (key>=Qt::Key_A && key<=Qt::Key_Z) || (key>=Qt::Key_0 && key<=Qt::Key_9) || (key==Qt::Key_Underscore) ){
+                _lastChar=true;
+                return;
+            }
+            if( !lastChar ) return;
         }else{
             if( block==textCursor().block() ) return;
         }
 
         _highlighter->capitalize( block,textCursor() );
+        */
     }
 }
-
 
 bool CodeEditor::findNext( const QString &findText,bool cased,bool wrap ){
 
@@ -445,31 +466,53 @@ QString CodeEditor::identAtCursor(){
 #define KW(X) _keyWords.insert( QString(X).toLower(),X )
 
 QMap<QString,QString> Highlighter::_keyWords;
+QMap<QString,QString> Highlighter::_keyWords2;
 
 Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->document() ),_editor( editor ){
+
+    if( _keyWords.isEmpty() ){
+        const QString &kws=
+            "Void;Strict;Public;Private;Protected;Friend;Property;"
+            "Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"
+            "Include;Import;Module;Extern;"
+            "New;Self;Super;Eachin;True;False;Null;Not;"
+            "Extends;Abstract;Final;Native;Select;Case;Default;"
+            "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;"
+            "And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"
+            "Try;Catch;Throw;Throwable;"
+            "Print;Error;Alias";
+
+        const QString &kws2=
+            "Namespace;Using;Import;Extern;"
+            "Public;Private;Protected;Friend;"
+            "Void;Bool;Byte;Short;Int;Long;Float;Double;String;Object;Mod;Continue;Exit;"
+            "New;Self;Super;Eachin;True;False;Null;"
+            "Alias;Const;Local;Global;Field;Method;Function;Property;Operator;"
+            "Enum;Class;Interface;Struct;Extends;Implements;Abstract;Final;Inline;"
+            "Var;Varptr;Ptr;"
+            "Not;And;Or;Shl;Shr;End;"
+            "If;Then;Else;Elseif;Endif;"
+            "While;Wend;"
+            "Repeat;Until;Forever;"
+            "For;To;Step;Next;"
+            "Select;Case;Default;"
+            "Try;Catch;Throw;Throwable;"
+            "Return;Print;";
+
+        QStringList bits=kws.split( ";" );
+        for( int i=0;i<bits.size();++i ){
+            _keyWords.insert( bits.at(i).toLower(),bits.at(i) );
+        }
+
+        bits=kws2.split( ";" );
+        for( int i=0;i<bits.size();++i ){
+            _keyWords2.insert( bits.at(i).toLower(),bits.at(i) );
+        }
+    }
 
     connect( Prefs::prefs(),SIGNAL(prefsChanged(const QString&)),SLOT(onPrefsChanged(const QString&)) );
 
     onPrefsChanged( "" );
-
-    if( !_keyWords.isEmpty() ) return;
-
-    const QString &kws=
-        "Void;Strict;Public;Private;Protected;Friend;Property;"
-        "Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"
-        "Include;Import;Module;Extern;"
-        "New;Self;Super;Eachin;True;False;Null;Not;"
-        "Extends;Abstract;Final;Native;Select;Case;Default;"
-        "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;"
-        "And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"
-        "Try;Catch;Throw;Throwable;"
-        "Print;Error;Alias";
-
-    QStringList bits=kws.split( ";" );
-
-    for( int i=0;i<bits.size();++i ){
-        _keyWords.insert( bits.at(i).toLower(),bits.at(i) );
-    }
 }
 
 Highlighter::~Highlighter(){
@@ -578,7 +621,7 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
     }else if( isAlpha(c) ){
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
-        if( monkeyFile && _keyWords.contains( text.left(i).toLower()  ) ) color=_keywordsColor;
+        if( monkeyFile && keyWords().contains( text.left(i).toLower()  ) ) color=_keywordsColor;
     }else if( c=='0' && !monkeyFile ){
         if( i<n && text[i]=='x' ){
             for( ++i;i<n && isHexDigit( text[i] );++i ){}
@@ -653,7 +696,7 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
         QString t=parseToke( text,color );
         if( t.isEmpty() ) break;
 
-        QString kw=_keyWords.value( t.toLower() );
+        QString kw=keyWords().value( t.toLower() );
 
         if( !kw.isEmpty() && t!=kw ){
             int i0=block.position()+i;

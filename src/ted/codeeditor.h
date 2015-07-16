@@ -38,6 +38,7 @@ public:
     bool isTxt(){ return _txt; }
     bool isCode(){ return _code; }
     bool isMonkey(){ return _monkey; }
+    bool isMonkey2(){ return _monkey2; }
 
     void gotoLine( int line );
     void highlightLine( int line );
@@ -77,8 +78,10 @@ private:
     bool _txt;
     bool _code;
     bool _monkey;
+    bool _monkey2;
 
     int _modified;
+    bool _capitalize;
 
     friend class Highlighter;
 };
@@ -126,7 +129,10 @@ private:
 
     QString parseToke( QString &text,QColor &color );
 
+    const QMap<QString,QString>&keyWords(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords; }
+
     static QMap<QString,QString> _keyWords;
+    static QMap<QString,QString> _keyWords2;
 
     friend class BlockData;
 };
