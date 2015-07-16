@@ -1,12 +1,27 @@
 
+var webglGraphicsSeq=1;
+
 function BBHtml5Game( canvas ){
+
 	BBGame.call( this );
 	BBHtml5Game._game=this;
 	this._canvas=canvas;
 	this._loading=0;
 	this._timerSeq=0;
 	this._gl=null;
+	
 	if( CFG_OPENGL_GLES20_ENABLED=="1" ){
+
+		//can't get these to fire!
+		canvas.addEventListener( "webglcontextlost",function( event ){
+			event.preventDefault();
+//			print( "WebGL context lost!" );
+		},false );
+
+		canvas.addEventListener( "webglcontextrestored",function( event ){
+			++webglGraphicsSeq;
+//			print( "WebGL context restored!" );
+		},false );
 
 		var attrs={ alpha:false };
 	
