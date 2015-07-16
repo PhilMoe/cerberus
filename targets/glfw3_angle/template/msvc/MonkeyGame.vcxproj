@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -80,9 +80,11 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-		  <Command>copy "..\angle\bin\libEGL.dll" "$(TargetDir)"</Command>
-	  	<Command>copy "..\angle\bin\libGLESv2.dll" "$(TargetDir)"</Command>
-	  	<Command>copy "..\angle\bin\d3dcompiler_47.dll" "$(TargetDir)"</Command>
+		  <Command>
+		  copy "..\angle\bin\libEGL.dll" "$(TargetDir)"
+          copy "..\angle\bin\libGLESv2.dll" "$(TargetDir)"
+          copy "..\angle\bin\d3dcompiler_47.dll" "$(TargetDir)"
+          </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -110,9 +112,11 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-		  <Command>copy "..\angle\bin\libEGL.dll" "$(TargetDir)"</Command>
-		  <Command>copy "..\angle\bin\libGLESv2.dll" "$(TargetDir)"</Command>
-		  <Command>copy "..\angle\bin\d3dcompiler_47.dll" "$(TargetDir)"</Command>
+		  <Command>
+		  copy "..\angle\bin\libEGL.dll" "$(TargetDir)"
+          copy "..\angle\bin\libGLESv2.dll" "$(TargetDir)"
+          copy "..\angle\bin\d3dcompiler_47.dll" "$(TargetDir)"
+		  </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
