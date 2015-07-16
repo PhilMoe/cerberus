@@ -1,7 +1,16 @@
 
+***** v84e *****
+
+Fixed issue with Mojo2 html5 texture loading.
+
+Mojo2 Shader.OnLoadMaterial now returns a Material so it can signal failure.
+
+Mooo2 DrawList.DrawPoint and DrawList.DrawLine coords offset by .5
+
+
 ***** v84d *****
 
-DrawList.Color now returns a copy. Added DrawList.GetColor.
+Mojo2 DrawList.Color now returns a copy. Added DrawList.GetColor.
 
 Tweaked android_new target so OnUpdate always happens on render thread.
 
