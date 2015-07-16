@@ -49,7 +49,9 @@ function _glTexImage2D( target,level,internalformat,width,height,border,format,t
 function _glTexImage2D2( target,level,internalformat,format,type,img ){
 
 	if( img.complete ){
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true );	
 		gl.texImage2D( target,level,internalformat,format,type,img );
+		gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false );	
 		return;
 	}
 	
