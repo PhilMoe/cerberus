@@ -1,10 +1,9 @@
 
-#If TARGET<>"glfw" And TARGET<>"android" And TARGET<>"ios"
-#Error "c++ or java Mojo target required"
-#Endif
+#GLFW_WINDOW_WIDTH=900
+#GLFW_WINDOW_HEIGHT=480
 
 Import mojo
-Import brl.asynctcpstream
+Import brl.httprequest
 Import monkey
 
 'main program
@@ -121,7 +120,7 @@ Class HTTPGetter Implements IOnReadComplete,IOnWriteComplete,IOnConnectComplete
 	End
 	
 	Field _host:String
-	Field _port:Int	
+	Field _port:Int
 	Field _listener:HTTPListener
 	
 	Field _stream:AsyncTcpStream
@@ -131,7 +130,7 @@ Class HTTPGetter Implements IOnReadComplete,IOnWriteComplete,IOnConnectComplete
 End
 
 'main app
-Class IconFun Extends App implements HTTPListener
+Class IconFun Extends App Implements IOnHttpRequestComplete
 	Const ICON_SIZE:Int = 32
 	
 	Const MODE_IDLE:Int = 0
@@ -140,8 +139,7 @@ Class IconFun Extends App implements HTTPListener
 	Const MODE_LOAD:Int = 3
 	Const MODE_SAVE:Int = 4
 	
-	Const REMOTE_SERVER:String = "www.skn3.com/junk/iconfun/index.php"
-	Const REMOTE_PORT:Int = 80
+	Const REMOTE_SERVER:String = "www.skn3.com:80/junk/iconfun/index.php"
 	
 	Field paletteR:Int[9]
 	Field paletteG:Int[9]
@@ -162,6 +160,7 @@ Class IconFun Extends App implements HTTPListener
 	Field editorSubmitInput:ButtonInput
 	Field editorSpacing:Int = 5
 	Field editorGadgetHeight:Int = 24
+	Field editorTransparent:= False
 	
 	Global ms:Int
 	Global fontWhite:Image
@@ -170,10 +169,8 @@ Class IconFun Extends App implements HTTPListener
 	Field icons:= new List<Icon>
 	Field iconsPending:= new List<Icon>
 	
-	Field http:= New HTTPGetter
+	Field http:HttpRequest
 	Field httpMode:Int = MODE_IDLE
-	Field httpBuffer:String
-	Field httpDebugBuffer:String
 	
 	Field loadTimestamp:Int
 	Field loadInterval:Int = 20000
@@ -303,19 +300,8 @@ Class IconFun Extends App implements HTTPListener
 			
 			'create the image
 			icon.image = CreateImage(ICON_SIZE, ICON_SIZE, 1, Image.MidHandle)
-			'icon.x = ICON_SIZE' Rnd(ICON_SIZE, DeviceWidth() - ICON_SIZE)
-			'icon.y = 100'Rnd(ICON_SIZE, DeviceHeight() - ICON_SIZE)
-
-#rem			
-			If icon.title="checker"
-				Print "id="+icon.id
-				Print "author="+icon.author
-				Print "title="+icon.title
-				Print "data="+icon.data
-			Endif
-#End
 			
-			'go through the data 
+			'go through the data
 			For index = 0 Until icon.data.Length
 				Local i:=icon.data[index];
 
@@ -401,10 +387,17 @@ Class IconFun Extends App implements HTTPListener
 		EndIf
 		
 		'check for mouse interaction with editor pixels
-		if editorDisabled = False
+		If editorDisabled = False
+			'check if in editro box
+			If pointerX >= editorRootX - editorSpacing And pointerY >= editorRootY - editorSpacing And pointerX <= editorRootX - editorSpacing + editorSize + editorSpacing + editorSpacing And pointerY <= editorRootY - editorSpacing + editorSize + editorSpacing + editorPaletteSize + editorSpacing + editorSpacing + editorGadgetHeight + editorSpacing + editorGadgetHeight + editorSpacing + editorGadgetHeight + editorSpacing
+				editorTransparent = False
+			Else
+				editorTransparent = True
+			EndIf
+		
 			editorX = pointerX - editorRootX
 			editorY = pointerY - editorRootY
-			if editorX >= 0 And editorY >= 0 And editorX < editorSize And editorY < editorSize
+			If editorX >= 0 And editorY >= 0 And editorX < editorSize And editorY < editorSize
 				'pointer is within editor
 				editorPixelX = (editorX / editorPixelSize)
 				editorPixelY = (editorY / editorPixelSize)
@@ -478,7 +471,7 @@ Class IconFun Extends App implements HTTPListener
 		Next
 		
 		'render editor
-		if editorDisabled
+		If editorDisabled Or editorTransparent
 			SetAlpha(0.2)
 		Else
 			SetAlpha(1.0)
@@ -571,79 +564,24 @@ Class IconFun Extends App implements HTTPListener
 		EndIf
 	End
 	
-	Method OnHTTPConnected:Void(getter:HTTPGetter)
-		httpDebugBuffer = "";
-	End
-	
-	Method OnHTTPDataReceived:Void( data:DataBuffer,offset:Int,count:Int,getter:HTTPGetter )
-		'add data to http buffer
-		Local text:String = data.PeekString(offset, count)
-		httpBuffer += text
-		httpDebugBuffer += text
-		
-		'process buffer
-		Local start:Int = 0
-		Local pos:Int = httpBuffer.Find("~n", start)
-		Local line:String
-		Local lines:String[5]
-		Local valid:Int = false
-		Local index:Int
-		
-		'do different loads
-		Select httpMode
-			Case MODE_SAVE
-				While pos <> - 1
-					line = httpBuffer[start .. pos]
-					start = pos + 1
-					
-					if line = "<SAVED>"
-						'success
-						saveSuccess = True
-						return
-					EndIf
-					
-					'find next eol
-					pos = httpBuffer.Find("~n", start)
-				Wend				
-			
-			Case MODE_LOAD
-			
-				While pos <> - 1
-					line = httpBuffer[start .. pos]
-					start = pos + 1
-					
-					If valid = False
-						If line = "<ICON>" valid = True
-					Else
-						lines[index] = line
-						
-						If index = 4
-							'add icon
-							AddIcon(lines[0], lines[1], lines[2], lines[3])
-							index = 0
-							valid = False
-							
-							'remember tiemstamp so we dont load any after
-							loadRemoteTimestamp = lines[4]
-							
-							'clear this part of data from buffer
-							httpBuffer = httpBuffer[start ..]
-						Else
-							'next readline
-							index += 1
-						Endif
-					Endif
-					
-					'find next eol
-					pos = httpBuffer.Find("~n", start)
-				Wend
-		End
-	End
-	
-	Method OnHTTPPageComplete:Void(getter:HTTPGetter)
+	Method OnHttpRequestComplete:Void(req:HttpRequest)
 		' --- http request completed ---
 		Select httpMode
 			Case MODE_SAVE
+				'add data to http buffer
+				Local httpBuffer:String = req.ResponseText().Replace("~r", "")
+		
+				'process buffer
+				Local lines:= httpBuffer.Split("~n")
+				
+				saveSuccess = False
+				For Local index:= 0 Until lines.Length()
+					If lines[index] = "<SAVED>"
+						saveSuccess = True
+						Exit
+					EndIf
+				Next
+			
 				if saveSuccess
 					'success saving
 					ResetEditor()
@@ -655,15 +593,32 @@ Class IconFun Extends App implements HTTPListener
 				EndIf
 			
 			Case MODE_LOAD
+				'add data to http buffer
+				Local httpBuffer:String = req.ResponseText().Replace("~r", "")
+				
+				'process buffer
+				Local lines:= httpBuffer.Split("~n")
+				Local index:Int
+		
+				For index = 0 Until lines.Length() Step 6
+					If lines[index] = "<ICON>" And index + 5 < lines.Length()
+						AddIcon(lines[index + 1], lines[index + 2], lines[index + 3], lines[index + 4])
+						
+						'remember tiemstamp so we dont load any after
+						If lines[index + 5] > loadRemoteTimestamp
+							loadRemoteTimestamp = lines[index + 5]
+						EndIf
+					EndIf
+				Next
+			
 				loadTimestamp = ms
 		End
 		
 		'reset http buffer
 		httpMode = MODE_IDLE
-		httpBuffer = ""
 		busyEndTimestamp = ms
 	End
-	
+		
 	'api
 	Method LoadIcons:Void()
 		' --- this will load icons from the server ---
@@ -671,11 +626,12 @@ Class IconFun Extends App implements HTTPListener
 			'we can process a load now
 			loadTimestamp = ms
 			httpMode = MODE_LOAD
-			if loadRemoteTimestamp.Length
-				http.GetPage(REMOTE_SERVER + "?mode=load&timestamp=" + loadRemoteTimestamp, REMOTE_PORT, Self)
+			If loadRemoteTimestamp.Length
+				http = New HttpRequest("GET",REMOTE_SERVER + "?mode=load&timestamp=" + loadRemoteTimestamp, Self)
 			Else
-				http.GetPage(REMOTE_SERVER + "?mode=load", REMOTE_PORT, Self)
+				http = New HttpRequest("GET", REMOTE_SERVER + "?mode=load", Self)
 			EndIf
+			http.Send()
 			busyText = "Refreshing Icons..."
 		Else
 			'we can schedule teh load once the save has finished
@@ -689,7 +645,8 @@ Class IconFun Extends App implements HTTPListener
 		If httpMode = MODE_IDLE
 			'get data fro meditor
 			Local author:String = CleanString(editorAuthorInput.Value())
-			Local title:String = CleanString(editorTitleInput.Value())
+			Local titleRaw:String = editorTitleInput.Value()
+			Local title:String = CleanString(titleRaw)
 			Local data:String
 			
 			For Local index:Int = 0 until editorPixels.Length
@@ -699,8 +656,9 @@ Class IconFun Extends App implements HTTPListener
 			'start http request
 			saveSuccess = False
 			httpMode = MODE_SAVE
-			http.GetPage(REMOTE_SERVER + "?mode=save&author=" + author + "&title=" + title + "&data=" + data, REMOTE_PORT, Self)
-			busyText = "Saving Your Icon '" + title + "' ..."
+			http = New HttpRequest("GET", REMOTE_SERVER + "?mode=save&author=" + author + "&title=" + title + "&data=" + data, Self)
+			http.Send()
+			busyText = "Saving Your Icon '" + titleRaw + "' ..."
 		Else
 			'save later
 			saveNext = True
@@ -724,6 +682,8 @@ Class IconFun Extends App implements HTTPListener
 		For icon = EachIn icons
 			if icon.id = id Return
 		Next
+		
+		Print "adding icon: " + title + " (by: " + author + ")"
 		
 		'create new icon
 		icon = New Icon
