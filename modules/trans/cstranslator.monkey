@@ -382,11 +382,13 @@ Class CsTranslator Extends CTranslator
 			Next
 			
 			Emit "interface "+classid+bases+"{"
+			
 			For Local decl:=Eachin classDecl.Semanted
 				Local fdecl:=FuncDecl( decl )
 				If Not fdecl Continue
 				EmitFuncDecl fdecl
 			Next
+
 			Emit "}"
 			Return
 		Endif

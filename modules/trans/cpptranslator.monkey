@@ -520,14 +520,31 @@ Class CppTranslator Extends CTranslator
 		Local superid$=classDecl.superClass.munged
 		
 		If classDecl.IsInterface()
+
 			Local bases$
 			For Local iface:=Eachin classDecl.implments
 				If bases bases+="," Else bases=" : "
 				bases+="public virtual "+iface.munged
 			Next
+			
 			If Not bases bases=" : public virtual gc_interface"
 			Emit "class "+classid+bases+"{"
 			Emit "public:"
+			
+			'Fancy fix!
+			'
+			For Local decl:=Eachin classDecl.Semanted
+				Local fdecl:=FuncDecl(decl)
+				If Not fdecl Continue
+				EmitFuncProto fdecl
+			Next
+			
+			Emit "};"
+			Return
+			
+			'Fancy fix!
+			'
+			#rem
 			Local emitted:=New Stack<FuncDecl>
 			For Local decl:=Eachin classDecl.Semanted
 				Local fdecl:=FuncDecl(decl)
@@ -535,6 +552,7 @@ Class CppTranslator Extends CTranslator
 				EmitFuncProto fdecl
 				emitted.Push fdecl
 			Next
+			
 			For Local iface:=Eachin classDecl.implmentsAll
 				For Local decl:=Eachin iface.Semanted
 					Local fdecl:=FuncDecl(decl)
@@ -551,8 +569,10 @@ Class CppTranslator Extends CTranslator
 					emitted.Push fdecl
 				Next
 			Next
+			
 			Emit "};"
 			Return
+			#end
 		Endif
 		
 		Local bases$=" : public "+superid

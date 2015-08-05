@@ -401,6 +401,7 @@ Class JavaTranslator Extends CTranslator
 				If Not fdecl Continue
 				EmitFuncDecl fdecl
 			Next
+
 			Emit "}"
 			Return
 		Endif

@@ -1058,19 +1058,6 @@ Class ClassDecl Extends ScopeDecl
 		Next
 		implments=impls
 
-		#rem
-		If IsInterface()
-			'add implemented methods to our methods
-			For Local iface:=Eachin implmentsAll
-				For Local decl:=Eachin iface.FuncDecls
-					InsertAlias decl.ident,decl
-				Next
-			Next
-		Endif
-		#end
-		
-'		attrs|=DECL_SEMANTED
-		
 		PopEnv
 		
 		'Are we abstract?
@@ -1232,8 +1219,25 @@ Class ClassDecl Extends ScopeDecl
 		'Check we implement all interface methods!
 		'
 		For Local iface:=Eachin implmentsAll
+		
+			'Fancy fix!
+			'
+			'See if any super class already implements this iface...
+			'
+			Local cdecl:=superClass,found:=False
+			While cdecl
+				For Local iface2:=Eachin cdecl.implmentsAll
+					If iface<>iface2 Continue
+					found=True
+					Exit
+				Next
+				If found Exit
+				cdecl=cdecl.superClass
+			Wend
+			If found Continue
+			
 			For Local decl:=Eachin iface.SemantedMethods()
-				Local found
+				Local found:=False
 				For Local decl2:=Eachin SemantedMethods( decl.ident )
 					If decl.EqualsFunc( decl2 )
 						If decl2.munged
