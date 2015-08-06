@@ -121,6 +121,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _mainTabWidget->setMovable( true );
     _mainTabWidget->setTabsClosable( true );
 
+#ifdef Q_OS_MAC
+    _mainTabWidget->setDocumentMode( true );
+#endif
+
     setCentralWidget( _mainTabWidget );
     connect( _mainTabWidget,SIGNAL(currentChanged(int)),SLOT(onMainTabChanged(int)) );
     connect( _mainTabWidget,SIGNAL(tabCloseRequested(int)),SLOT(onCloseMainTab(int)) );
@@ -129,9 +133,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _consoleProc=0;
     _consoleTextWidget=new QTextEdit;
     _consoleTextWidget->setReadOnly( true );
-    //_consoleTextWidget->setAcceptRichText( false );
-    //_consoleTextWidget->setAutoFormatting( QTextEdit::AutoNone );
-    //
+    _consoleTextWidget->setFocusPolicy( Qt::NoFocus );
+#ifdef Q_OS_WIN
+    _consoleTextWidget->setFrameStyle( QFrame::NoFrame );
+#endif
+
     _consoleDockWidget=new QDockWidget;
     _consoleDockWidget->setObjectName( "consoleDockWidget" );
     _consoleDockWidget->setAllowedAreas( Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea );
@@ -149,19 +155,33 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _projectTreeWidget->hideColumn( 2 );
     _projectTreeWidget->hideColumn( 3 );
     _projectTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+#ifdef Q_OS_WIN
+    _projectTreeWidget->setFrameStyle( QFrame::NoFrame );
+#endif
+
+    _projectTreeWidget->setFocusPolicy( Qt::NoFocus );
+
     connect( _projectTreeWidget,SIGNAL(doubleClicked(const QModelIndex&)),SLOT(onFileClicked(const QModelIndex&)) );
     connect( _projectTreeWidget,SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(onProjectMenu(const QPoint&)) );
 
     _emptyCodeWidget=new QWidget;
+    _emptyCodeWidget->setFocusPolicy( Qt::NoFocus );
 
     _debugTreeModel=0;
     _debugTreeWidget=new QTreeView;
     _debugTreeWidget->setHeaderHidden( true );
+    _debugTreeWidget->setFocusPolicy( Qt::NoFocus );
+#ifdef Q_OS_WIN
+    _debugTreeWidget->setFrameStyle( QFrame::NoFrame );
+#endif
 
     _browserTabWidget=new QTabWidget;
     _browserTabWidget->addTab( _projectTreeWidget,"Projects" );
     _browserTabWidget->addTab( _emptyCodeWidget,"Code" );
     _browserTabWidget->addTab( _debugTreeWidget,"Debug" );
+#ifdef Q_OS_MAC
+//  _browserTabWidget->setDocumentMode( true );
+#endif
 
     _browserDockWidget=new QDockWidget;
     _browserDockWidget->setObjectName( "browserDockWidget" );

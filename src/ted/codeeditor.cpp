@@ -74,6 +74,12 @@ CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 
     _codeTreeView=new QTreeView( 0 );
     _codeTreeView->setHeaderHidden( true );
     _codeTreeView->setModel( _codeTreeModel );
+    _codeTreeView->setFocusPolicy( Qt::NoFocus );
+
+#ifdef Q_OS_WIN
+    _codeTreeView->setFrameStyle( QFrame::NoFrame );
+    setFrameStyle( QFrame::NoFrame );
+#endif
 
     connect( _codeTreeView,SIGNAL(clicked(QModelIndex)),SLOT(onCodeTreeViewClicked(QModelIndex)) );
 
@@ -487,8 +493,8 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
             "Public;Private;Protected;Friend;"
             "Void;Bool;Byte;Short;Int;Long;Float;Double;String;Object;Mod;Continue;Exit;"
             "New;Self;Super;Eachin;True;False;Null;"
-            "Alias;Const;Local;Global;Field;Method;Function;Property;Operator;"
-            "Enum;Class;Interface;Struct;Extends;Implements;Abstract;Final;Inline;"
+            "Alias;Const;Local;Global;Field;Method;Function;Property;Getter;Setter;Operator;"
+            "Enum;Class;Interface;Struct;Extends;Implements;Virtual;Override;Abstract;Final;Inline;"
             "Var;Varptr;Ptr;"
             "Not;And;Or;Shl;Shr;End;"
             "If;Then;Else;Elseif;Endif;"
