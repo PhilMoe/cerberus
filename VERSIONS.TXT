@@ -1,4 +1,20 @@
 
+***** v85b *****
+
+Applied Xaron's fix for HttpRequest on winrt.
+
+Changed android string->int/float conversion to native code to prevent 'number format exceptions'.
+
+
+***** v85a *****
+
+Mojo2 now inits itself properly.
+
+Fixed vectormonkey so it uses LoadString instead of an inline mega-string.
+
+Fixed angle target so spaces in project path work.
+
+
 ***** v84e *****
 
 Fixed issue with Mojo2 html5 texture loading.
