@@ -32,8 +32,7 @@ Class MyApp Extends App
 		'
 		soundFmt="wav"
 		musicFmt="ogg"
-		If UserAgent.Contains( "MSIE " ) Or UserAgent.Contains( "Trident/" )
-			Print "Applying IE fudge..."
+		If UserAgent.Contains( "MSIE " ) Or UserAgent.Contains( "Trident/" ) Or UserAgent.Contains( "Edge/" )
 			soundFmt="mp3"
 			musicFmt="mp3"
 		Endif
