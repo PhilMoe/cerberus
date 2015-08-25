@@ -37,6 +37,7 @@ public:
 	STDMETHODIMP OnResponseReceived( __RPC__in_opt IXMLHTTPRequest2 *pXHR,__RPC__in_opt ISequentialStream *pResponseStream );
 	
 	void Start();
+	void Failed();
 	
 	String ResponseText(){ return _response; }
 	int Status(){ return _status; }
@@ -201,6 +202,11 @@ void CXMLHTTPRequest2Callback::Start(){
 	_running=true;
 }
 
+void CXMLHTTPRequest2Callback::Failed(){
+
+	_running=false;
+}
+
 // ***** HttpRequest.cpp *****
 
 BBHttpRequest::BBHttpRequest(){
@@ -224,12 +230,13 @@ void BBHttpRequest::SetHeader( String name,String value ){
 }
 
 void BBHttpRequest::Send(){
+	
+	_cb->Start();
 
 	if( FAILED( _req->Send( 0,0 ) ) ){
 	//	bbPrint( "Send failed" );
+		_cb->Failed();
 	}
-	
-	_cb->Start();
 }
 
 void BBHttpRequest::SendText( String text,String encoding ){
@@ -237,10 +244,11 @@ void BBHttpRequest::SendText( String text,String encoding ){
 	_data=Microsoft::WRL::Details::Make<CXMLHTTPRequestData>();
 	
 	int length=_data->SetText( text );
+
+	_cb->Start();
 	
 	if( FAILED( _req->Send( _data.Get(),length ) ) ){
 	//	bbPrint( "Send failed" );
+		_cb->Failed();
 	}
-
-	_cb->Start();
 }
