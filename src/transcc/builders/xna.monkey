@@ -124,7 +124,7 @@ Class XnaBuilder Extends Builder
 			
 		If tcc.opt_build
 		
-			Execute tcc.MSBUILD_PATH+" /t:MonkeyGame /p:Configuration="+casedConfig+" MonkeyGame.sln"
+			Execute "~q"+tcc.MSBUILD_PATH+"~q /t:MonkeyGame /p:Configuration="+casedConfig+" MonkeyGame.sln"
 
 			If tcc.opt_run
 				ChangeDir "MonkeyGame/MonkeyGame/bin/x86/"+casedConfig

@@ -69,7 +69,7 @@ Class WinrtBuilder Extends Builder
 
 		If tcc.opt_build
 
-			Execute tcc.MSBUILD_PATH+" /p:Configuration="+casedConfig+" /p:Platform=Win32 MonkeyGame.sln"
+			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=Win32 MonkeyGame.sln"
 			
 			If tcc.opt_run
 				'Any bright ideas...?
