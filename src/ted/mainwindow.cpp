@@ -133,7 +133,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _consoleProc=0;
     _consoleTextWidget=new QTextEdit;
     _consoleTextWidget->setReadOnly( true );
-    _consoleTextWidget->setFocusPolicy( Qt::NoFocus );
+//    _consoleTextWidget->setFocusPolicy( Qt::NoFocus );    //Oops, disables copy...
 #ifdef Q_OS_WIN
     _consoleTextWidget->setFrameStyle( QFrame::NoFrame );
 #endif
@@ -611,7 +611,8 @@ void MainWindow::enumTargets(){
     _monkeyTargets.clear();
     _monkey2Targets.clear();
 
-    QDir monkey2Dir( _monkeyPath+"/../monkey2" );
+    QDir monkey2Dir( _monkeyPath+"/monkey2" );
+    if( !monkey2Dir.exists() ) monkey2Dir=QDir( _monkeyPath+"/../monkey2" );
     if( monkey2Dir.exists() ){
         _monkey2Path=monkey2Dir.absolutePath();
         _monkey2Targets.push_back( "Desktop" );
@@ -1391,7 +1392,13 @@ void MainWindow::build( QString mode ){
         }
     }else if( editor->fileType()=="monkey2" ){
         if( mode=="run" ){
-            cmd="\"${MONKEY2PATH}/bin/mx2cc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
+            QString mx2="mx2cc";
+#ifdef Q_OS_WIN
+            mx2+="_windows";
+#else
+            mx2+=HOST;
+#endif
+            cmd="\"${MONKEY2PATH}/bin/"+mx2+"\" makeapp -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
         }
     }
 

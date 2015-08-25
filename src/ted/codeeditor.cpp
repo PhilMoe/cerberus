@@ -492,7 +492,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
             "Namespace;Using;Import;Extern;"
             "Public;Private;Protected;Friend;"
             "Void;Bool;Byte;Short;Int;Long;Float;Double;String;Object;Mod;Continue;Exit;"
-            "New;Self;Super;Eachin;True;False;Null;"
+            "New;Self;Super;Eachin;True;False;Null;Where;"
             "Alias;Const;Local;Global;Field;Method;Function;Property;Getter;Setter;Operator;"
             "Enum;Class;Interface;Struct;Extends;Implements;Virtual;Override;Abstract;Final;Inline;"
             "Var;Varptr;Ptr;"
