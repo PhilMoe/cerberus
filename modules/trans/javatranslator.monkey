@@ -9,6 +9,8 @@ Import trans
 Class JavaTranslator Extends CTranslator
 
 	Field unsafe
+	
+	Field langutil:=False
 
 	Method TransType$( ty:Type )
 		If VoidType( ty ) Return "void"
@@ -180,11 +182,23 @@ Class JavaTranslator Extends CTranslator
 			If BoolType( src ) Return Bra( texpr+"?1:0" )
 			If IntType( src ) Return texpr
 			If FloatType( src ) Return "(int)"+texpr
-			If StringType( src ) Return "Integer.parseInt("+texpr+".trim())"
+			
+			If langutil
+				If StringType( src ) Return "LangUtil.parseInt("+texpr+".trim())"
+			Else
+				If StringType( src ) Return "Integer.parseInt("+texpr+".trim())"
+			Endif
+			
 		Else If FloatType( dst )
 			If IntType( src ) Return "(float)"+texpr
 			If FloatType( src ) Return texpr
-			If StringType( src ) Return "Float.parseFloat("+texpr+".trim())"
+			
+			If langutil
+				If StringType( src ) Return "LangUtil.parseFloat("+texpr+".trim())"
+			Else
+				If StringType( src ) Return "Float.parseFloat("+texpr+".trim())"
+			Endif
+			
 		Else If StringType( dst )
 			If IntType( src ) Return "String.valueOf"+texpr
 			If FloatType( src ) Return "String.valueOf"+texpr
@@ -443,6 +457,8 @@ Class JavaTranslator Extends CTranslator
 	End
 	
 	Method TransApp$( app:AppDecl )
+	
+		langutil=(GetConfigVar( "ANDROID_LANGUTIL_ENABLED" )="1")
 
 		app.mainModule.munged="bb_"
 		app.mainFunc.munged="bbMain"

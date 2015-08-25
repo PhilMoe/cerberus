@@ -153,6 +153,13 @@ Class AndroidBuilder Extends Builder
 				Endif
 			End
 		Next
+
+		If GetConfigVar( "ANDROID_LANGUTIL_ENABLED" )="1"
+			CopyDir "langutil/libs","libs",True
+			CreateDir "src/com"
+			CreateDir "src/com/monkey"
+			CopyFile "langutil/LangUtil.java","src/com/monkey/LangUtil.java"
+		Endif
 		
 		If GetConfigVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
 			CopyDir "nativegl/libs","libs",True

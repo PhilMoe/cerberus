@@ -3084,8 +3084,6 @@ class c_Node19;
 class c_Enumerator6;
 class c_Stack9;
 class c_Enumerator7;
-class c_Stack10;
-class c_Enumerator8;
 class c_TransCC : public Object{
 	public:
 	Array<String > m_args;
@@ -5128,6 +5126,7 @@ class c_CTranslator : public c_Translator{
 };
 class c_JavaTranslator : public c_CTranslator{
 	public:
+	bool m_langutil;
 	int m_unsafe;
 	c_JavaTranslator();
 	c_JavaTranslator* m_new();
@@ -5609,33 +5608,6 @@ class c_Enumerator7 : public Object{
 	c_LocalDecl* p_NextObject();
 	void mark();
 };
-class c_Stack10 : public Object{
-	public:
-	Array<c_FuncDecl* > m_data;
-	int m_length;
-	c_Stack10();
-	c_Stack10* m_new();
-	c_Stack10* m_new2(Array<c_FuncDecl* >);
-	void p_Push28(c_FuncDecl*);
-	void p_Push29(Array<c_FuncDecl* >,int,int);
-	void p_Push30(Array<c_FuncDecl* >,int);
-	c_Enumerator8* p_ObjectEnumerator();
-	static c_FuncDecl* m_NIL;
-	void p_Length(int);
-	int p_Length2();
-	void mark();
-};
-class c_Enumerator8 : public Object{
-	public:
-	c_Stack10* m_stack;
-	int m_index;
-	c_Enumerator8();
-	c_Enumerator8* m_new(c_Stack10*);
-	c_Enumerator8* m_new2();
-	bool p_HasNext();
-	c_FuncDecl* p_NextObject();
-	void mark();
-};
 c_TransCC::c_TransCC(){
 	m_args=Array<String >();
 	m_monkeydir=String();
@@ -5960,7 +5932,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS monkey compiler V1.85",27));
+	bbPrint(String(L"TRANS monkey compiler V1.86",27));
 	m_monkeydir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"MONKEYDIR",9),m_monkeydir);
 	SetEnv(String(L"TRANSDIR",8),m_monkeydir+String(L"/bin",4));
@@ -7914,6 +7886,12 @@ void c_AndroidBuilder::p_MakeTarget(){
 			}
 		}
 	}
+	if(bb_config_GetConfigVar(String(L"ANDROID_LANGUTIL_ENABLED",24))==String(L"1",1)){
+		bb_os_CopyDir(String(L"langutil/libs",13),String(L"libs",4),true,false);
+		CreateDir(String(L"src/com",7));
+		CreateDir(String(L"src/com/monkey",14));
+		CopyFile(String(L"langutil/LangUtil.java",22),String(L"src/com/monkey/LangUtil.java",28));
+	}
 	if(bb_config_GetConfigVar(String(L"ANDROID_NATIVE_GL_ENABLED",25))==String(L"1",1)){
 		bb_os_CopyDir(String(L"nativegl/libs",13),String(L"libs",4),true,false);
 		CreateDir(String(L"src/com",7));
@@ -9061,7 +9039,7 @@ void c_WinrtBuilder::p_MakeTarget(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"MonkeyGame.cpp",14));
 	if(m_tcc->m_opt_build){
-		p_Execute(m_tcc->m_MSBUILD_PATH+String(L" /p:Configuration=",18)+m_casedConfig+String(L" /p:Platform=Win32 MonkeyGame.sln",33),true);
+		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=Win32 MonkeyGame.sln",33),true);
 		if(m_tcc->m_opt_run){
 		}
 	}
@@ -9190,7 +9168,7 @@ void c_XnaBuilder::p_MakeTarget(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"MonkeyGame/MonkeyGame/Program.cs",32));
 	if(m_tcc->m_opt_build){
-		p_Execute(m_tcc->m_MSBUILD_PATH+String(L" /t:MonkeyGame /p:Configuration=",32)+m_casedConfig+String(L" MonkeyGame.sln",15),true);
+		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /t:MonkeyGame /p:Configuration=",33)+m_casedConfig+String(L" MonkeyGame.sln",15),true);
 		if(m_tcc->m_opt_run){
 			ChangeDir(String(L"MonkeyGame/MonkeyGame/bin/x86/",30)+m_casedConfig);
 			p_Execute(String(L"MonkeyGame",10),false);
@@ -12856,21 +12834,43 @@ int c_ClassDecl::p_FinalizeClass(){
 	while(t_6<t_5.Length()){
 		c_ClassDecl* t_iface=t_5[t_6];
 		t_6=t_6+1;
-		c_Enumerator3* t_7=t_iface->p_SemantedMethods(String())->p_ObjectEnumerator();
-		while(t_7->p_HasNext()){
-			c_FuncDecl* t_decl4=t_7->p_NextObject();
-			int t_found2=0;
-			c_Enumerator3* t_8=p_SemantedMethods(t_decl4->m_ident)->p_ObjectEnumerator();
-			while(t_8->p_HasNext()){
-				c_FuncDecl* t_decl23=t_8->p_NextObject();
+		c_ClassDecl* t_cdecl3=m_superClass;
+		bool t_found2=false;
+		while((t_cdecl3)!=0){
+			Array<c_ClassDecl* > t_7=t_cdecl3->m_implmentsAll;
+			int t_8=0;
+			while(t_8<t_7.Length()){
+				c_ClassDecl* t_iface2=t_7[t_8];
+				t_8=t_8+1;
+				if(t_iface!=t_iface2){
+					continue;
+				}
+				t_found2=true;
+				break;
+			}
+			if(t_found2){
+				break;
+			}
+			t_cdecl3=t_cdecl3->m_superClass;
+		}
+		if(t_found2){
+			continue;
+		}
+		c_Enumerator3* t_9=t_iface->p_SemantedMethods(String())->p_ObjectEnumerator();
+		while(t_9->p_HasNext()){
+			c_FuncDecl* t_decl4=t_9->p_NextObject();
+			bool t_found3=false;
+			c_Enumerator3* t_10=p_SemantedMethods(t_decl4->m_ident)->p_ObjectEnumerator();
+			while(t_10->p_HasNext()){
+				c_FuncDecl* t_decl23=t_10->p_NextObject();
 				if(t_decl4->p_EqualsFunc(t_decl23)){
 					if((t_decl23->m_munged).Length()!=0){
 						bb_config_Err(String(L"Extern methods cannot be used to implement interface methods.",61));
 					}
-					t_found2=1;
+					t_found3=true;
 				}
 			}
-			if(!((t_found2)!=0)){
+			if(!t_found3){
 				bb_config_Err(t_decl4->p_ToString()+String(L" must be implemented by class ",30)+p_ToString());
 			}
 		}
@@ -18079,6 +18079,7 @@ void c_CTranslator::mark(){
 	c_Translator::mark();
 }
 c_JavaTranslator::c_JavaTranslator(){
+	m_langutil=false;
 	m_unsafe=0;
 }
 c_JavaTranslator* c_JavaTranslator::m_new(){
@@ -18255,6 +18256,7 @@ String c_JavaTranslator::p_TransGlobal(c_GlobalDecl* t_decl){
 	return p_TransStatic(t_decl);
 }
 String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
+	m_langutil=bb_config_GetConfigVar(String(L"ANDROID_LANGUTIL_ENABLED",24))==String(L"1",1);
 	t_app->m_mainModule->m_munged=String(L"bb_",3);
 	t_app->m_mainFunc->m_munged=String(L"bbMain",6);
 	c_ValueEnumerator* t_=t_app->m_imported->p_Values()->p_ObjectEnumerator();
@@ -18495,8 +18497,14 @@ String c_JavaTranslator::p_TransCastExpr(c_CastExpr* t_expr){
 			if((dynamic_cast<c_FloatType*>(t_src))!=0){
 				return String(L"(int)",5)+t_texpr;
 			}
-			if((dynamic_cast<c_StringType*>(t_src))!=0){
-				return String(L"Integer.parseInt(",17)+t_texpr+String(L".trim())",8);
+			if(m_langutil){
+				if((dynamic_cast<c_StringType*>(t_src))!=0){
+					return String(L"LangUtil.parseInt(",18)+t_texpr+String(L".trim())",8);
+				}
+			}else{
+				if((dynamic_cast<c_StringType*>(t_src))!=0){
+					return String(L"Integer.parseInt(",17)+t_texpr+String(L".trim())",8);
+				}
 			}
 		}else{
 			if((dynamic_cast<c_FloatType*>(t_dst))!=0){
@@ -18506,8 +18514,14 @@ String c_JavaTranslator::p_TransCastExpr(c_CastExpr* t_expr){
 				if((dynamic_cast<c_FloatType*>(t_src))!=0){
 					return t_texpr;
 				}
-				if((dynamic_cast<c_StringType*>(t_src))!=0){
-					return String(L"Float.parseFloat(",17)+t_texpr+String(L".trim())",8);
+				if(m_langutil){
+					if((dynamic_cast<c_StringType*>(t_src))!=0){
+						return String(L"LangUtil.parseFloat(",20)+t_texpr+String(L".trim())",8);
+					}
+				}else{
+					if((dynamic_cast<c_StringType*>(t_src))!=0){
+						return String(L"Float.parseFloat(",17)+t_texpr+String(L".trim())",8);
+					}
 				}
 			}else{
 				if((dynamic_cast<c_StringType*>(t_dst))!=0){
@@ -19156,7 +19170,6 @@ int c_CppTranslator::p_EmitClassProto(c_ClassDecl* t_classDecl){
 		}
 		p_Emit(String(L"class ",6)+t_classid+t_bases+String(L"{",1));
 		p_Emit(String(L"public:",7));
-		c_Stack10* t_emitted=(new c_Stack10)->m_new();
 		c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
@@ -19165,72 +19178,39 @@ int c_CppTranslator::p_EmitClassProto(c_ClassDecl* t_classDecl){
 				continue;
 			}
 			p_EmitFuncProto(t_fdecl);
-			t_emitted->p_Push28(t_fdecl);
-		}
-		Array<c_ClassDecl* > t_4=t_classDecl->m_implmentsAll;
-		int t_5=0;
-		while(t_5<t_4.Length()){
-			c_ClassDecl* t_iface2=t_4[t_5];
-			t_5=t_5+1;
-			c_Enumerator2* t_6=t_iface2->p_Semanted()->p_ObjectEnumerator();
-			while(t_6->p_HasNext()){
-				c_Decl* t_decl2=t_6->p_NextObject();
-				c_FuncDecl* t_fdecl2=dynamic_cast<c_FuncDecl*>(t_decl2);
-				if(!((t_fdecl2)!=0)){
-					continue;
-				}
-				int t_found=0;
-				c_Enumerator8* t_7=t_emitted->p_ObjectEnumerator();
-				while(t_7->p_HasNext()){
-					c_FuncDecl* t_fdecl22=t_7->p_NextObject();
-					if(t_fdecl2->m_ident!=t_fdecl22->m_ident){
-						continue;
-					}
-					if(!t_fdecl2->p_EqualsFunc(t_fdecl22)){
-						continue;
-					}
-					t_found=1;
-					break;
-				}
-				if((t_found)!=0){
-					continue;
-				}
-				p_EmitFuncProto(t_fdecl2);
-				t_emitted->p_Push28(t_fdecl2);
-			}
 		}
 		p_Emit(String(L"};",2));
 		return 0;
 	}
 	String t_bases2=String(L" : public ",10)+t_superid;
-	Array<c_ClassDecl* > t_8=t_classDecl->m_implments;
-	int t_9=0;
-	while(t_9<t_8.Length()){
-		c_ClassDecl* t_iface3=t_8[t_9];
-		t_9=t_9+1;
-		t_bases2=t_bases2+(String(L",public virtual ",16)+t_iface3->m_munged);
+	Array<c_ClassDecl* > t_4=t_classDecl->m_implments;
+	int t_5=0;
+	while(t_5<t_4.Length()){
+		c_ClassDecl* t_iface2=t_4[t_5];
+		t_5=t_5+1;
+		t_bases2=t_bases2+(String(L",public virtual ",16)+t_iface2->m_munged);
 	}
 	p_Emit(String(L"class ",6)+t_classid+t_bases2+String(L"{",1));
 	p_Emit(String(L"public:",7));
-	c_Enumerator2* t_10=t_classDecl->p_Semanted()->p_ObjectEnumerator();
-	while(t_10->p_HasNext()){
-		c_Decl* t_decl3=t_10->p_NextObject();
-		c_FieldDecl* t_fdecl3=dynamic_cast<c_FieldDecl*>(t_decl3);
-		if((t_fdecl3)!=0){
-			p_Emit(p_TransRefType(t_fdecl3->m_type)+String(L" ",1)+t_fdecl3->m_munged+String(L";",1));
+	c_Enumerator2* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	while(t_6->p_HasNext()){
+		c_Decl* t_decl2=t_6->p_NextObject();
+		c_FieldDecl* t_fdecl2=dynamic_cast<c_FieldDecl*>(t_decl2);
+		if((t_fdecl2)!=0){
+			p_Emit(p_TransRefType(t_fdecl2->m_type)+String(L" ",1)+t_fdecl2->m_munged+String(L";",1));
 			continue;
 		}
 	}
 	p_Emit(t_classid+String(L"();",3));
-	c_Enumerator2* t_11=t_classDecl->p_Semanted()->p_ObjectEnumerator();
-	while(t_11->p_HasNext()){
-		c_Decl* t_decl4=t_11->p_NextObject();
-		c_FuncDecl* t_fdecl4=dynamic_cast<c_FuncDecl*>(t_decl4);
-		if((t_fdecl4)!=0){
-			p_EmitFuncProto(t_fdecl4);
+	c_Enumerator2* t_7=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	while(t_7->p_HasNext()){
+		c_Decl* t_decl3=t_7->p_NextObject();
+		c_FuncDecl* t_fdecl3=dynamic_cast<c_FuncDecl*>(t_decl3);
+		if((t_fdecl3)!=0){
+			p_EmitFuncProto(t_fdecl3);
 			continue;
 		}
-		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
+		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl3);
 		if((t_gdecl)!=0){
 			p_Emit(String(L"static ",7)+p_TransRefType(t_gdecl->m_type)+String(L" ",1)+t_gdecl->m_munged+String(L";",1));
 			continue;
@@ -22850,76 +22830,6 @@ c_LocalDecl* c_Enumerator7::p_NextObject(){
 void c_Enumerator7::mark(){
 	Object::mark();
 }
-c_Stack10::c_Stack10(){
-	m_data=Array<c_FuncDecl* >();
-	m_length=0;
-}
-c_Stack10* c_Stack10::m_new(){
-	return this;
-}
-c_Stack10* c_Stack10::m_new2(Array<c_FuncDecl* > t_data){
-	this->m_data=t_data.Slice(0);
-	this->m_length=t_data.Length();
-	return this;
-}
-void c_Stack10::p_Push28(c_FuncDecl* t_value){
-	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
-	}
-	m_data[m_length]=t_value;
-	m_length+=1;
-}
-void c_Stack10::p_Push29(Array<c_FuncDecl* > t_values,int t_offset,int t_count){
-	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push28(t_values[t_offset+t_i]);
-	}
-}
-void c_Stack10::p_Push30(Array<c_FuncDecl* > t_values,int t_offset){
-	p_Push29(t_values,t_offset,t_values.Length()-t_offset);
-}
-c_Enumerator8* c_Stack10::p_ObjectEnumerator(){
-	return (new c_Enumerator8)->m_new(this);
-}
-c_FuncDecl* c_Stack10::m_NIL;
-void c_Stack10::p_Length(int t_newlength){
-	if(t_newlength<m_length){
-		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
-			m_data[t_i]=m_NIL;
-		}
-	}else{
-		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
-		}
-	}
-	m_length=t_newlength;
-}
-int c_Stack10::p_Length2(){
-	return m_length;
-}
-void c_Stack10::mark(){
-	Object::mark();
-}
-c_Enumerator8::c_Enumerator8(){
-	m_stack=0;
-	m_index=0;
-}
-c_Enumerator8* c_Enumerator8::m_new(c_Stack10* t_stack){
-	this->m_stack=t_stack;
-	return this;
-}
-c_Enumerator8* c_Enumerator8::m_new2(){
-	return this;
-}
-bool c_Enumerator8::p_HasNext(){
-	return m_index<m_stack->p_Length2();
-}
-c_FuncDecl* c_Enumerator8::p_NextObject(){
-	m_index+=1;
-	return m_stack->m_data[m_index-1];
-}
-void c_Enumerator8::mark(){
-	Object::mark();
-}
 int bbInit(){
 	GC_CTOR
 	c_Type::m_stringType=(new c_StringType)->m_new();
@@ -22956,7 +22866,6 @@ int bbInit(){
 	c_ClassDecl::m_nullObjectClass=(new c_ClassDecl)->m_new(String(L"{NULL}",6),1280,Array<String >(),0,Array<c_IdentType* >());
 	bb_decl__loopnest=0;
 	c_Stack9::m_NIL=0;
-	c_Stack10::m_NIL=0;
 	return 0;
 }
 void gc_mark(){
