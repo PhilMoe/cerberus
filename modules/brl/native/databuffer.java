@@ -6,7 +6,19 @@ class BBDataBuffer{
 
 	boolean _New( int length ){
 		if( _data!=null ) return false;
-		_data=ByteBuffer.allocateDirect( length );
+		_data=ByteBuffer.allocate( length );
+		_data.order( ByteOrder.nativeOrder() );
+		_length=length;
+		return true;
+	}
+	
+	boolean _New( int length,boolean direct ){
+		if( _data!=null ) return false;
+		if( direct ){
+			_data=ByteBuffer.allocateDirect( length );
+		}else{
+			_data=ByteBuffer.allocate( length );
+		}
 		_data.order( ByteOrder.nativeOrder() );
 		_length=length;
 		return true;

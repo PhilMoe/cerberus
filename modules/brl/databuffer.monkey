@@ -35,8 +35,13 @@ Class BBDataBuffer
 	Method PeekFloat:Float( addr:Int )
 	
 Private
-	
+
+#If LANG="java"
+	Method _New:Bool( length:Int,direct:Bool )
+#Else	
 	Method _New:Bool( length:Int )
+#Endif
+
 	Method _Load:Bool( path:String )
 	Method _LoadAsync:Void( path:String,thread:Thread )
 
@@ -90,8 +95,12 @@ End
 
 Class DataBuffer Extends BBDataBuffer
 
-	Method New( length:Int )
+	Method New( length:Int,direct:Bool=False )
+#If LANG="java"
+		If Not _New( length,direct ) Error "Allocate DataBuffer failed"
+#Else
 		If Not _New( length ) Error "Allocate DataBuffer failed"
+#Endif
 	End
 	
 	Method Slice:DataBuffer( start:Int )
