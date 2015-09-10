@@ -1,4 +1,13 @@
 
+***** v85c *****
+
+Added Ferdis fix for ios monkeystore not failing when offline.
+
+Added 'direct:Bool' parameter to DataBuffer constructor, which should be true when creating opengl VBO databuffers (defaults to false). Only affects android, ignored on all other targets.
+
+Fixed glfw3 PathToFilePath so SaveState saves to User/AppData/... as it used to in glfw2.
+
+
 ***** v85b *****
 
 Applied Xaron's fix for HttpRequest on winrt.
