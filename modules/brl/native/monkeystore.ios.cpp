@@ -14,6 +14,7 @@ BBMonkeyStore *_peer;
 -(void)paymentQueue:(SKPaymentQueue*)queue updatedTransactions:(NSArray*)transactions;
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue*)queue;
 -(void)paymentQueue:(SKPaymentQueue*)queue restoreCompletedTransactionsFailedWithError:(NSError*)error;
+-(void)request:(SKRequest*)request didFailWithError:(NSError*)error;
 @end
 
 class BBProduct : public Object{
@@ -46,6 +47,7 @@ public:
 	void OnRequestProductDataResponse( SKProductsRequest *request,SKProductsResponse *response );
 	void OnUpdatedTransactions( SKPaymentQueue *queue,NSArray *transactions );
 	void OnRestoreTransactionsFinished( SKPaymentQueue *queue,NSError *error );
+	void OnRequestFailed( SKRequest *request,NSError *error );
 	
 private:
 
@@ -86,6 +88,10 @@ private:
 
 -(void)paymentQueue:(SKPaymentQueue*)queue restoreCompletedTransactionsFailedWithError:(NSError*)error{
 	_peer->OnRestoreTransactionsFinished( queue,error );
+}
+
+-(void)request:(SKRequest*)request didFailWithError:(NSError*)error{
+	_peer->OnRequestFailed( request,error );
 }
 
 @end
@@ -233,4 +239,7 @@ void BBMonkeyStore::OnRestoreTransactionsFinished( SKPaymentQueue *queue,NSError
 	_running=false;
 }
 
+void BBMonkeyStore::OnRequestFailed( SKRequest *request,NSError *error ){
 
+	_running=false;
+}
