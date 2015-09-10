@@ -1,4 +1,9 @@
 
+***** v85d *****
+
+Applied PathToFilepath fix to angle target too.
+
+
 ***** v85c *****
 
 Added Ferdis fix for ios monkeystore not failing when offline.
