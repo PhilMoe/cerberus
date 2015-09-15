@@ -33,6 +33,27 @@ function BBHtml5Game( canvas ){
 		
 		gl=this._gl;
 	}
+	
+	// --- start gamepad api by skn3 ---------
+	this._gamepads = null;
+	this._gamepadLookup = [-1,-1,-1,-1];//support 4 gamepads
+	var that = this;
+	window.addEventListener("gamepadconnected", function(e) {
+		that.connectGamepad(e.gamepad);
+	});
+	
+	window.addEventListener("gamepaddisconnected", function(e) {
+		that.disconnectGamepad(e.gamepad);
+	});
+	
+	//need to process already connected gamepads (before page was loaded)
+	var gamepads = this.getGamepads();
+	if (gamepads && gamepads.length > 0) {
+		for(var index=0;index < gamepads.length;index++) {
+			this.connectGamepad(gamepads[index]);
+		}
+	}
+	// --- end gamepad api by skn3 ---------
 }
 
 BBHtml5Game.prototype=extend_class( BBGame );
@@ -40,6 +61,139 @@ BBHtml5Game.prototype=extend_class( BBGame );
 BBHtml5Game.Html5Game=function(){
 	return BBHtml5Game._game;
 }
+
+// --- start gamepad api by skn3 ---------
+BBHtml5Game.prototype.getGamepads = function() {
+	return navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+}
+
+BBHtml5Game.prototype.connectGamepad = function(gamepad) {
+	if (!gamepad) {
+		return false;
+	}
+	
+	//check if this is a standard gamepad
+	if (gamepad.mapping == "standard") {
+		//yup so lets add it to an array of valid gamepads
+		//find empty controller slot
+		var slot = -1;
+		for(var index = 0;index < this._gamepadLookup.length;index++) {
+			if (this._gamepadLookup[index] == -1) {
+				slot = index;
+				break;
+			}
+		}
+		
+		//can we add this?
+		if (slot != -1) {
+			this._gamepadLookup[slot] = gamepad.index;
+			
+			//console.log("gamepad at html5 index "+gamepad.index+" mapped to monkey gamepad unit "+slot);
+		}
+	} else {
+		console.log('Monkey has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
+	}
+}
+
+BBHtml5Game.prototype.disconnectGamepad = function(gamepad) {
+	if (!gamepad) {
+		return false;
+	}
+	
+	//scan all gamepads for matching index
+	for(var index = 0;index < this._gamepadLookup.length;index++) {
+		if (this._gamepadLookup[index] == gamepad.index) {
+			//remove this gamepad
+			this._gamepadLookup[index] = -1
+			break;
+		}
+	}
+}
+
+BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
+	//is this the first gamepad being polled
+	if (port == 0) {
+		//yes it is so we use the web api to get all gamepad info
+		//we can then use this in subsequent calls to PollJoystick
+		this._gamepads = this.getGamepads();
+	}
+	
+	//dont bother processing if nothing to process
+	if (!this._gamepads) {
+	  return false;
+	}
+	
+	//so use the monkey port to find the correct raw data
+	var index = this._gamepadLookup[port];
+	if (index == -1) {
+		return false;
+	}
+
+	var gamepad = this._gamepads[index];
+	if (!gamepad) {
+		return false;
+	}
+	//so now process gamepad axis/buttons according to the standard mappings
+	//https://w3c.github.io/gamepad/#remapping
+	
+	//left stick axis
+	joyx[0] = gamepad.axes[0];
+	joyy[0] = -gamepad.axes[1];
+	
+	//right stick axis
+	joyx[1] = gamepad.axes[2];
+	joyy[1] = -gamepad.axes[3];
+	
+	//left trigger
+	joyz[0] = gamepad.buttons[6] ? gamepad.buttons[6].value : 0.0;
+	
+	//right trigger
+	joyz[1] = gamepad.buttons[7] ? gamepad.buttons[7].value : 0.0;
+	
+	//clear button states
+	for(var index = 0;index <32;index++) {
+		buttons[index] = false;
+	}
+	
+	//map html5 "standard" mapping to monkeys joy codes
+	/*
+	Const JOY_A=0
+	Const JOY_B=1
+	Const JOY_X=2
+	Const JOY_Y=3
+	Const JOY_LB=4
+	Const JOY_RB=5
+	Const JOY_BACK=6
+	Const JOY_START=7
+	Const JOY_LEFT=8
+	Const JOY_UP=9
+	Const JOY_RIGHT=10
+	Const JOY_DOWN=11
+	Const JOY_LSB=12
+	Const JOY_RSB=13
+	Const JOY_MENU=14
+	*/
+	buttons[0] = gamepad.buttons[0] && gamepad.buttons[0].pressed;
+	buttons[1] = gamepad.buttons[1] && gamepad.buttons[1].pressed;
+	buttons[2] = gamepad.buttons[2] && gamepad.buttons[2].pressed;
+	buttons[3] = gamepad.buttons[3] && gamepad.buttons[3].pressed;
+	buttons[4] = gamepad.buttons[4] && gamepad.buttons[4].pressed;
+	buttons[5] = gamepad.buttons[5] && gamepad.buttons[5].pressed;
+	buttons[6] = gamepad.buttons[8] && gamepad.buttons[8].pressed;
+	buttons[7] = gamepad.buttons[9] && gamepad.buttons[9].pressed;
+	buttons[8] = gamepad.buttons[14] && gamepad.buttons[14].pressed;
+	buttons[9] = gamepad.buttons[12] && gamepad.buttons[12].pressed;
+	buttons[10] = gamepad.buttons[15] && gamepad.buttons[15].pressed;
+	buttons[11] = gamepad.buttons[13] && gamepad.buttons[13].pressed;
+	buttons[12] = gamepad.buttons[10] && gamepad.buttons[10].pressed;
+	buttons[13] = gamepad.buttons[11] && gamepad.buttons[11].pressed;
+	buttons[14] = gamepad.buttons[16] && gamepad.buttons[16].pressed;
+	
+	//success
+	return true
+}
+// --- end gamepad api by skn3 ---------
+
 
 BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 
