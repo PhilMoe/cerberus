@@ -144,11 +144,10 @@ BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
 	joyx[1] = gamepad.axes[2];
 	joyy[1] = -gamepad.axes[3];
 	
-	//left trigger
-	joyz[0] = gamepad.buttons[6] ? gamepad.buttons[6].value : 0.0;
-	
-	//right trigger
-	joyz[1] = gamepad.buttons[7] ? gamepad.buttons[7].value : 0.0;
+	//triggers
+	//emulate same functionality of GLFW
+	joyz[0] = gamepad.buttons[6].value - gamepad.buttons[7].value;
+	joyz[1] = gamepad.buttons[7].value - gamepad.buttons[6].value;
 	
 	//clear button states
 	for(var index = 0;index <32;index++) {
