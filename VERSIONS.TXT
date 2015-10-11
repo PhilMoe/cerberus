@@ -1,4 +1,13 @@
 
+***** v85e *****
+
+Mojo2 tweak: Canvas New/SetRenderTarget param can now be either an Image or a Texture.
+
+Mojo2 tweak: Bump map rotation now taken into account by lighting equations.
+
+Mojo2 addition: Added Image.SetFlagsMask and Image.FlagsMask functions.
+
+
 ***** v85d *****
 
 Applied PathToFilepath fix to angle target too.

@@ -503,7 +503,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
             "For;To;Step;Next;"
             "Select;Case;Default;"
             "Try;Catch;Throw;Throwable;"
-            "Return;Print;";
+            "Return;Print;Static";
 
         QStringList bits=kws.split( ";" );
         for( int i=0;i<bits.size();++i ){
