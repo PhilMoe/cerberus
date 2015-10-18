@@ -1,4 +1,9 @@
 
+***** v85f *****
+
+Merged skn3's html5 gamepad support pull request.
+
+
 ***** v85e *****
 
 Mojo2 tweak: Canvas New/SetRenderTarget param can now be either an Image or a Texture.
