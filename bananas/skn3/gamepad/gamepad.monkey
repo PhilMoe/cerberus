@@ -23,6 +23,10 @@ Class Game Extends App
 	End
 
 	Method OnUpdate()
+
+		'Slow! Don't do this every update in real code!
+		CountJoysticks( True )
+		
 		'update all states
 		stickLeft[0] = JoyX(0)
 		stickLeft[1] = JoyY(0)

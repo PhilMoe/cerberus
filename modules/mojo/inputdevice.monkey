@@ -95,6 +95,10 @@ Class InputDevice
 		Return _accelZ
 	End
 	
+	Method CountJoysticks:Int( update:Bool )
+		Return BBGame.Game().CountJoysticks( update )
+	End
+	
 	Method JoyX#( index,unit )
 		Return _joyStates[unit].joyx[index]
 	End

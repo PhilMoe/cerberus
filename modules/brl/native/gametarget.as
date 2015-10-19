@@ -135,6 +135,10 @@ class BBGame{
 		return "";
 	}
 	
+	public function CountJoysticks( update:Boolean ):int{
+		return 0;
+	}
+	
 	public function PollJoystick( port:int,joyx:Array,joyy:Array,joyz:Array,buttons:Array ):Boolean{
 		return false;
 	}

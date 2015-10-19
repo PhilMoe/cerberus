@@ -301,6 +301,17 @@ On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return M
 Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
 
 
+# Function CountJoysticks:Int( update:Bool=False )
+
+Returns the number of connected joysticks.
+
+This function is only currently supported for the glfw3 target. It will return 0 for all other targets.
+
+If @update is true, then the OS is queried to determine the number of joysticks connected. This can be slow, so should be done sparringly.
+
+If @update is false, then CountJoysticks() returns the result of the last OS query. The OS is always queried the first time CountJoysticks is called.
+
+
 # Function JoyX:Float(index:Int=0,unit:Int=0)
 
 Returns the x, or horizontal, state of a joystick.

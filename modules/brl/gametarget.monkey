@@ -35,6 +35,7 @@ Class BBGame Extends Null
 	Method SaveState:Int( state:String )
 	Method LoadState:String()
 	Method LoadString:String( path:String )
+	Method CountJoysticks:Int( update:Bool )
 	Method PollJoystick:Bool( port:Int,joyx:Float[],joyy:Float[],joyz:Float[],buttons:Bool[] )
 	Method OpenUrl:Void( url:String )
 	Method SetMouseVisible( visible:Bool )

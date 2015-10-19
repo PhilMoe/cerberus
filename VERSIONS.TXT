@@ -1,6 +1,8 @@
 
 ***** v85f *****
 
+Added CountJoysticks( update:bool ) for glfw3 targets only.
+
 Merged skn3's html5 gamepad support pull request.
 
 

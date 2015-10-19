@@ -9,6 +9,7 @@ public:
 	
 	virtual void SetUpdateRate( int hertz );
 	virtual int Millisecs();
+	virtual int CountJoysticks( bool update );
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
@@ -44,6 +45,10 @@ private:
 	
 	String _baseDir;
 	String _internalDir;
+	
+	int _joys[4];
+	int _numJoys;
+	bool _joysCounted;
 	
 	double GetTime();
 	void Sleep( double time );
@@ -110,7 +115,7 @@ int glfwGraphicsSeq=0;
 
 BBGlfwGame *BBGlfwGame::_glfwGame;
 
-BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_swapInterval(1),_focus(true),_updatePeriod(0),_nextUpdate(0){
+BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_swapInterval(1),_focus(true),_updatePeriod(0),_nextUpdate(0),_numJoys(0),_joysCounted(false){
 	_glfwGame=this;
 
 	memset( &_desktopMode,0,sizeof(_desktopMode) );	
@@ -128,29 +133,40 @@ int BBGlfwGame::Millisecs(){
 	return int( GetTime()*1000.0 );
 }
 
+int BBGlfwGame::CountJoysticks( bool update ){
+
+	if( !update && _joysCounted ) return _numJoys;
+
+	_joysCounted=true;
+
+	_numJoys=0;
+
+	for( int joy=0;joy<16 && _numJoys<4;++joy ){
+		if( glfwJoystickPresent( joy ) ) _joys[_numJoys++]=joy;
+	}
+	
+	return _numJoys;
+}
+
 bool BBGlfwGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons ){
 
-	static int pjoys[4];
-	if( !port ){
-		int i=0;
-		for( int joy=0;joy<16 && i<4;++joy ){
-			if( glfwJoystickPresent( joy ) ) pjoys[i++]=joy;
-		}
-		while( i<4 ) pjoys[i++]=-1;
-	}
-	port=pjoys[port];
-	if( port==-1 ) return false;
+	CountJoysticks( false );
+	
+	if( port<0 || port>=_numJoys ) return false;
+	
+	port=_joys[port];
 	
 	//read axes
 	int n_axes=0;
 	const float *axes=glfwGetJoystickAxes( port,&n_axes );
+	if( !axes ) return false;
 	
 	//read buttons
 	int n_buts=0;
 	const unsigned char *buts=glfwGetJoystickButtons( port,&n_buts );
+	if( !buts ) return false;
 
 	//Ugh...
-	
 	const int *dev_axes;
 	const int *dev_buttons;
 	

@@ -140,6 +140,10 @@ abstract class BBGame{
 		return "";
 	}
 	
+	public int CountJoysticks( boolean update ){
+		return 0;
+	}
+	
 	public boolean PollJoystick( int port,float[] joyx,float[] joyy,float[] joyz,boolean[] buttons ){
 		return false;
 	}

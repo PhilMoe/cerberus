@@ -139,6 +139,10 @@ public class BBGame{
 		return text;
 	}
 	
+	public virtual int CountJoysticks( bool update ){
+		return 0;
+	}
+	
 	public virtual bool PollJoystick( int port,float[] joyx,float[] joyy,float[] joyz,bool[] buttons ){
 		return false;
 	}

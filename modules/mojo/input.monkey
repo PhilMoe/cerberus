@@ -90,6 +90,10 @@ End
 
 '***** Joystick *****
 
+Function CountJoysticks:Int( update:Bool=False )
+	Return device.CountJoysticks( update )
+End
+
 Function JoyX#( index=0,unit=0 )
 	Return device.JoyX( index,unit )
 End

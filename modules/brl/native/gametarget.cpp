@@ -59,6 +59,7 @@ public:
 	virtual int SaveState( String state );
 	virtual String LoadState();
 	virtual String LoadString( String path );
+	virtual int CountJoysticks( bool update );
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
@@ -199,6 +200,10 @@ String BBGame::LoadString( String path ){
 		return str;
 	}
 	return "";
+}
+
+int BBGame::CountJoysticks( bool update ){
+	return 0;
 }
 
 bool BBGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons ){

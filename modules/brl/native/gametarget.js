@@ -120,6 +120,10 @@ BBGame.prototype.LoadString=function( path ){
 	return "";
 }
 
+BBGame.prototype.CountJoysticks=function( update ){
+	return 0;
+}
+
 BBGame.prototype.PollJoystick=function( port,joyx,joyy,joyz,buttons ){
 	return false;
 }
