@@ -90,7 +90,7 @@ End
 
 '***** Joystick *****
 
-Function CountJoysticks:Int( update:Bool=False )
+Function CountJoysticks:Int( update:Bool=True )
 	Return device.CountJoysticks( update )
 End
 

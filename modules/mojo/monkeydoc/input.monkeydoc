@@ -301,7 +301,7 @@ On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return M
 Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
 
 
-# Function CountJoysticks:Int( update:Bool=False )
+# Function CountJoysticks:Int( update:Bool=True )
 
 Returns the number of connected joysticks.
 
