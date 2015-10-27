@@ -10,6 +10,7 @@
 /src/rebuildall*
 /src/createrelease
 /src/ted-build-*
+/src/build-ted-*
 /src/ted/ted.pro.user*
 
 /docs/html
