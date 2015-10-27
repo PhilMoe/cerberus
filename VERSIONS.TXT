@@ -1,7 +1,9 @@
 
-***** v85f *****
+***** v86a *****
 
-Added CountJoysticks( update:bool ) for glfw3 targets only.
+MacOS Ted now uses Qt5.5. This adds around 20M to the app (which is why I tried to avoid it) but I just CANNOT get Qt4.8 running (or even installed) on the increasingly walled off 'El Capitan'.
+
+Added CountJoysticks( update:bool=true ) for glfw3 targets only. You will need to call this to detect if any joysticks have been attached/detached. Returns 0 and does nothing on all other targets.
 
 Merged skn3's html5 gamepad support pull request.
 
