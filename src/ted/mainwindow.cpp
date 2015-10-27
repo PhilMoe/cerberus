@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.25"
+#define TED_VERSION "1.26"
 
 #define SETTINGS_VERSION 2
 
