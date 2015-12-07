@@ -1,4 +1,11 @@
 
+***** v86b *****
+
+Fixed mojo2 Renderer leak when resizing viewport.
+
+Fixed html5 #MOJO_AUTO_SUSPEND_ENABLED=False.
+
+
 ***** v86a *****
 
 MacOS Ted now uses Qt5.5. This adds around 20M to the app (which is why I tried to avoid it) but I just CANNOT get Qt4.8 running (or even installed) on the increasingly walled off 'El Capitan'.

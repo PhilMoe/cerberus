@@ -540,6 +540,8 @@ BBHtml5Game.prototype.Run=function(){
 	canvas.onfocus=function( e ){
 		if( CFG_MOJO_AUTO_SUSPEND_ENABLED=="1" ){
 			game.ResumeGame();
+		}else{
+			game.ValidateUpdateTimer();
 		}
 	}
 	
@@ -549,7 +551,7 @@ BBHtml5Game.prototype.Run=function(){
 			game.SuspendGame();
 		}
 	}
-	
+
 	canvas.updateSize=function(){
 		xscale=canvas.width/canvas.clientWidth;
 		yscale=canvas.height/canvas.clientHeight;
@@ -561,6 +563,6 @@ BBHtml5Game.prototype.Run=function(){
 	canvas.focus();
 	
 	game.StartGame();
-
+	
 	game.RenderGame();
 }
