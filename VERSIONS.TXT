@@ -1,4 +1,9 @@
 
+***** v86c *****
+
+Added workaround for GLES20.glGetActiveUniform bug in android6.
+
+
 ***** v86b *****
 
 Fixed mojo2 Renderer leak when resizing viewport.

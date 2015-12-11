@@ -7,6 +7,10 @@ class bb_opengl_gles20{
 	static Method drawElements;
 	static Method vertexAttribPointer;
 	
+	static Method getActiveUniform;
+	static IntBuffer sizeBuf;
+	static IntBuffer typeBuf;
+	
 	static void initNativeGL(){
 	
 		if( inited ) return;
@@ -29,6 +33,14 @@ class bb_opengl_gles20{
 		try{
 			Class[] p=new Class[]{ Integer.TYPE,Integer.TYPE,Integer.TYPE,Boolean.TYPE,Integer.TYPE,Integer.TYPE };
 			vertexAttribPointer=c.getMethod( "glVertexAttribPointer",p );
+		}catch( NoSuchMethodException ex ){
+		}
+		
+		try{
+			Class[] p=new Class[]{ Integer.TYPE,Integer.TYPE,IntBuffer.class,IntBuffer.class };
+			getActiveUniform=GLES20.class.getMethod( "glGetActiveUniform",p );
+			sizeBuf=IntBuffer.allocate( 1 );
+			typeBuf=IntBuffer.allocate( 1 );
 		}catch( NoSuchMethodException ex ){
 		}
 	}
@@ -197,9 +209,29 @@ class bb_opengl_gles20{
 	}
 	
 	static void _glGetActiveUniform( int program, int index, int[] size,int[] type,String[] name ){
+	
 		int[] tmp={0,0,0};
 		byte[] namebuf=new byte[1024];
+		
 		GLES20.glGetActiveUniform( program,index,1024,tmp,0,tmp,1,tmp,2,namebuf,0 );
+		
+		//work around for big ugly android 6.0 bug...
+		//
+		if( (tmp[1]==0 || tmp[2]==0) && getActiveUniform!=null ){
+		
+			try{
+			
+				Object args[]=new Object[]{ Integer.valueOf( program ),Integer.valueOf( index ),sizeBuf,typeBuf };
+
+				getActiveUniform.invoke( null,args );
+				
+				tmp[1]=sizeBuf.get( 0 );
+				tmp[2]=typeBuf.get( 0 );
+				
+			}catch( Exception ex ){
+			}
+		}
+		
 		if( size!=null && size.length!=0 ) size[0]=tmp[1];
 		if( type!=null && type.length!=0 ) type[0]=tmp[2];
 		if( name!=null && name.length!=0 ) name[0]=new String( namebuf,0,tmp[0] );
