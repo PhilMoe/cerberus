@@ -1,7 +1,10 @@
 /bin/*
 !/bin/*.txt
 
+.bmx
+
 .DS_Store
+desktop.ini
 
 /Monkey
 /Monkey.app
