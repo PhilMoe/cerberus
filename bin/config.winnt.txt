@@ -39,12 +39,18 @@ ANT_PATH="${SYSTEMDRIVE}\ant"
 '
 'MinGW is currently here:
 '
+'***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
+MINGW_PATH="C:\\TDM-GCC-32"
+MINGW_PATH="D:\\devtools\TDM-GCC-64-4.9.2"
+
+'***** 32 bit mingw *****
 MINGW_PATH="D:\\devtools\TDM-GCC-32-5.1.0"
-MINGW_PATH="D:\\devtools\TDM-GCC-32"
-MINGW_PATH="${MONKEYDIR}\MinGW"
-MINGW_PATH="${SYSTEMDRIVE}\TDM-GCC-32"
-MINGW_PATH="${SYSTEMDRIVE}\MinGW32"
-MINGW_PATH="${SYSTEMDRIVE}\MinGW"
+
+'MINGW_PATH="D:\\devtools\TDM-GCC-32"
+'MINGW_PATH="${MONKEYDIR}\MinGW"
+'MINGW_PATH="${SYSTEMDRIVE}\TDM-GCC-32"
+'MINGW_PATH="${SYSTEMDRIVE}\MinGW32"
+'MINGW_PATH="${SYSTEMDRIVE}\MinGW"
 '--------------------
 
 '--------------------
@@ -130,6 +136,7 @@ PSM_PATH="${PROGRAMFILES}\SCE\PSM"
 '
 'Must be set for XNA and GLFW target support.
 '
+MSBUILD_PATH="${PROGRAMFILES}\MSBuild\14.0\Bin\MSBuild.exe"
 MSBUILD_PATH="${PROGRAMFILES}\MSBuild\12.0\Bin\MSBuild.exe"
 MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 '--------------------

@@ -18,13 +18,17 @@ Class GlfwBuilder Extends Builder
 	'***** GCC *****
 	Method MakeGcc:Void()
 	
+		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
+		
+		Local tconfig:=casedConfig+msize
+	
 		Local dst:="gcc_"+HostOS
 		
-		CreateDir dst+"/"+casedConfig
-		CreateDir dst+"/"+casedConfig+"/internal"
-		CreateDir dst+"/"+casedConfig+"/external"
+		CreateDir dst+"/"+tconfig
+		CreateDir dst+"/"+tconfig+"/internal"
+		CreateDir dst+"/"+tconfig+"/external"
 		
-		CreateDataDir dst+"/"+casedConfig+"/data"
+		CreateDataDir dst+"/"+tconfig+"/data"
 		
 		Local main:=LoadString( "main.cpp" )
 		
@@ -37,24 +41,30 @@ Class GlfwBuilder Extends Builder
 
 			ChangeDir dst
 			CreateDir "build"
-			CreateDir "build/"+casedConfig
-	
-			Local ccopts:=""
+			CreateDir "build/"+tconfig
+			
+			Local ccopts:="",ldopts:=""
+
+			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
+			
+			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
+			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
+			
 			Select ENV_CONFIG
 			Case "debug"
 				ccopts+=" -O0"
 			Case "release"
 				ccopts+=" -O3 -DNDEBUG"
 			End
-
+			
 			Local cmd:="make"
 			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
 			
-			Execute cmd+" CCOPTS=~q"+ccopts+"~q OUT=~q"+casedConfig+"/MonkeyGame~q"
+			Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q OUT=~q"+tconfig+"/MonkeyGame~q"
 			
 			If tcc.opt_run
 
-				ChangeDir casedConfig
+				ChangeDir tconfig
 
 				If HostOS="winnt"
 					Execute "MonkeyGame"

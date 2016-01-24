@@ -14,17 +14,53 @@ CPPFLAGS=$(CCOPTS) \
 -I../stb
 
 LD=g++
-LDFLAGS=-Wl,--subsystem,windows -L../openal/libs/Win32 -L../openal/libs/Win64
+LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows -L../openal/libs/Win32 -L../openal/libs/Win64
 LDLIBS=-lgdi32 -lopengl32 -lOpenAL32 -lws2_32
 
-OBJS=../glfw/lib/enable.o ../glfw/lib/fullscreen.o ../glfw/lib/glext.o ../glfw/lib/image.o ../glfw/lib/init.o ../glfw/lib/input.o \
-../glfw/lib/joystick.o ../glfw/lib/stream.o ../glfw/lib/tga.o ../glfw/lib/thread.o ../glfw/lib/time.o ../glfw/lib/window.o \
-../glfw/lib/win32/win32_dllmain.o ../glfw/lib/win32/win32_enable.o ../glfw/lib/win32/win32_fullscreen.o ../glfw/lib/win32/win32_glext.o \
-../glfw/lib/win32/win32_init.o ../glfw/lib/win32/win32_joystick.o ../glfw/lib/win32/win32_thread.o ../glfw/lib/win32/win32_time.o ../glfw/lib/win32/win32_window.o \
-../stb/stb_image.o ../stb/stb_vorbis.o ../main.o
+vpath %.c ../glfw/lib
+vpath %.c ../glfw/lib/win32
+vpath %.c ../stb
+vpath %.cpp ..
+
+OBJS0=\
+enable.o \
+fullscreen.o \
+glext.o \
+image.o \
+init.o \
+input.o \
+joystick.o \
+stream.o \
+tga.o \
+thread.o \
+time.o \
+window.o \
+win32_dllmain.o \
+win32_enable.o \
+win32_fullscreen.o \
+win32_glext.o \
+win32_init.o \
+win32_joystick.o \
+win32_thread.o \
+win32_time.o \
+win32_window.o \
+stb_image.o \
+stb_vorbis.o \
+main.o
+
+TMP=build/$(dir $(OUT))
+
+OBJS=$(patsubst %.o,$(TMP)%.o,$(OBJS0))
 
 all : $(OUT)
 
 $(OUT) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+
+$(TMP)%.o : %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(TMP)%.o : %.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+
 	
