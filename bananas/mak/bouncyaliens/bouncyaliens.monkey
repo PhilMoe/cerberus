@@ -1,4 +1,8 @@
 
+'#GLFW_USE_MINGW=False		'to build with MSVC.
+
+'#GLFW_GCC_MSIZE_WINNT="64"	'to force 64 bit mingw builds. Needs mingw64.
+
 Import mojo
 
 Public
@@ -175,6 +179,11 @@ Class MyApp Extends App
 	Method OnResume()
 		Print "BouncyAliens: OnResume"
 		paused=False
+	End
+	
+	Method OnClose()
+		Print "BouncyAliens: OnClose"
+		Super.OnClose()
 	End
 
 End

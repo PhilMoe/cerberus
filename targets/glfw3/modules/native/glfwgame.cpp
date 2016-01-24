@@ -351,21 +351,6 @@ String BBGlfwGame::PathToFilePath( String path ){
 	return "";
 }
 
-/*
-String BBGlfwGame::PathToFilePath( String path ){
-	if( !path.StartsWith( "monkey:" ) ){
-		return path;
-	}else if( path.StartsWith( "monkey://data/" ) ){
-		return String("./data/")+path.Slice( 14 );
-	}else if( path.StartsWith( "monkey://internal/" ) ){
-		return String("./internal/")+path.Slice( 18 );
-	}else if( path.StartsWith( "monkey://external/" ) ){
-		return String("./external/")+path.Slice( 18 );
-	}
-	return "";
-}
-*/
-
 unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int *depth ){
 
 	FILE *f=OpenFile( path,"rb" );
@@ -378,33 +363,6 @@ unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int
 	
 	return data;
 }
-
-/*
-extern "C" unsigned char *load_image_png( FILE *f,int *width,int *height,int *format );
-extern "C" unsigned char *load_image_jpg( FILE *f,int *width,int *height,int *format );
-
-unsigned char *BBGlfwGame::LoadImageData( String path,int *width,int *height,int *depth ){
-
-	FILE *f=OpenFile( path,"rb" );
-	if( !f ) return 0;
-
-	unsigned char *data=0;
-	
-	if( path.ToLower().EndsWith( ".png" ) ){
-		data=load_image_png( f,width,height,depth );
-	}else if( path.ToLower().EndsWith( ".jpg" ) || path.ToLower().EndsWith( ".jpeg" ) ){
-		data=load_image_jpg( f,width,height,depth );
-	}else{
-		//meh?
-	}
-
-	fclose( f );
-	
-	if( data ) gc_ext_malloced( (*width)*(*height)*(*depth) );
-	
-	return data;
-}
-*/
 
 unsigned char *BBGlfwGame::LoadAudioData( String path,int *length,int *channels,int *format,int *hertz ){
 
@@ -575,6 +533,7 @@ void BBGlfwGame::OnCursorPos( GLFWwindow *window,double x,double y ){
 }
 
 void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
+	glfwSetWindowShouldClose( _glfwGame->_window,0 );
 	_glfwGame->KeyEvent( BBGameEvent::KeyDown,0x1b0 );
 	_glfwGame->KeyEvent( BBGameEvent::KeyUp,0x1b0 );
 }
