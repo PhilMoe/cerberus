@@ -1807,6 +1807,7 @@ public:
 	virtual int SaveState( String state );
 	virtual String LoadState();
 	virtual String LoadString( String path );
+	virtual int CountJoysticks( bool update );
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
@@ -1947,6 +1948,10 @@ String BBGame::LoadString( String path ){
 		return str;
 	}
 	return "";
+}
+
+int BBGame::CountJoysticks( bool update ){
+	return 0;
 }
 
 bool BBGame::PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons ){
@@ -5293,7 +5298,7 @@ class c_FileStream : public c_Stream{
 class c_DataBuffer : public BBDataBuffer{
 	public:
 	c_DataBuffer();
-	c_DataBuffer* m_new(int);
+	c_DataBuffer* m_new(int,bool);
 	c_DataBuffer* m_new2();
 	void mark();
 };
@@ -5932,7 +5937,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS monkey compiler V1.86",27));
+	bbPrint(String(L"TRANS monkey compiler V1.87",27));
 	m_monkeydir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"MONKEYDIR",9),m_monkeydir);
 	SetEnv(String(L"TRANSDIR",8),m_monkeydir+String(L"/bin",4));
@@ -8156,11 +8161,13 @@ String c_GlfwBuilder::p_Config(){
 	return t_config->p_Join(String(L"\n",1));
 }
 void c_GlfwBuilder::p_MakeGcc(){
+	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
+	String t_tconfig=m_casedConfig+t_msize;
 	String t_dst=String(L"gcc_",4)+HostOS();
-	CreateDir(t_dst+String(L"/",1)+m_casedConfig);
-	CreateDir(t_dst+String(L"/",1)+m_casedConfig+String(L"/internal",9));
-	CreateDir(t_dst+String(L"/",1)+m_casedConfig+String(L"/external",9));
-	p_CreateDataDir(t_dst+String(L"/",1)+m_casedConfig+String(L"/data",5));
+	CreateDir(t_dst+String(L"/",1)+t_tconfig);
+	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
+	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
+	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
@@ -8168,8 +8175,15 @@ void c_GlfwBuilder::p_MakeGcc(){
 	if(m_tcc->m_opt_build){
 		ChangeDir(t_dst);
 		CreateDir(String(L"build",5));
-		CreateDir(String(L"build/",6)+m_casedConfig);
+		CreateDir(String(L"build/",6)+t_tconfig);
 		String t_ccopts=String();
+		String t_ldopts=String();
+		if((t_msize).Length()!=0){
+			t_ccopts=t_ccopts+(String(L" -m",3)+t_msize);
+			t_ldopts=t_ldopts+(String(L" -m",3)+t_msize);
+		}
+		t_ccopts=t_ccopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16)).Replace(String(L";",1),String(L" ",1)));
+		t_ldopts=t_ldopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16)).Replace(String(L";",1),String(L" ",1)));
 		String t_1=bb_config_ENV_CONFIG;
 		if(t_1==String(L"debug",5)){
 			t_ccopts=t_ccopts+String(L" -O0",4);
@@ -8182,9 +8196,9 @@ void c_GlfwBuilder::p_MakeGcc(){
 		if(HostOS()==String(L"winnt",5) && ((FileType(m_tcc->m_MINGW_PATH+String(L"/bin/mingw32-make.exe",21)))!=0)){
 			t_cmd=String(L"mingw32-make",12);
 		}
-		p_Execute(t_cmd+String(L" CCOPTS=\"",9)+t_ccopts+String(L"\" OUT=\"",7)+m_casedConfig+String(L"/MonkeyGame\"",12),true);
+		p_Execute(t_cmd+String(L" CCOPTS=\"",9)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/MonkeyGame\"",12),true);
 		if(m_tcc->m_opt_run){
-			ChangeDir(m_casedConfig);
+			ChangeDir(t_tconfig);
 			if(HostOS()==String(L"winnt",5)){
 				p_Execute(String(L"MonkeyGame",10),true);
 			}else{
@@ -20542,7 +20556,7 @@ void c_FileStream::mark(){
 }
 c_DataBuffer::c_DataBuffer(){
 }
-c_DataBuffer* c_DataBuffer::m_new(int t_length){
+c_DataBuffer* c_DataBuffer::m_new(int t_length,bool t_direct){
 	if(!_New(t_length)){
 		bbError(String(L"Allocate DataBuffer failed",26));
 	}
@@ -20557,7 +20571,7 @@ void c_DataBuffer::mark(){
 int bb_html5_GetInfo_PNG(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
-		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32);
+		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32,false);
 		int t_n=t_f->p_Read(t_data,0,24);
 		t_f->p_Close();
 		if(t_n==24 && t_data->PeekByte(1)==80 && t_data->PeekByte(2)==78 && t_data->PeekByte(3)==71){
@@ -20571,7 +20585,7 @@ int bb_html5_GetInfo_PNG(String t_path){
 int bb_html5_GetInfo_JPG(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
-		c_DataBuffer* t_buf=(new c_DataBuffer)->m_new(32);
+		c_DataBuffer* t_buf=(new c_DataBuffer)->m_new(32,false);
 		if(t_f->p_Read(t_buf,0,2)==2 && (t_buf->PeekByte(0)&255)==255 && (t_buf->PeekByte(1)&255)==216){
 			do{
 				while(t_f->p_Read(t_buf,0,1)==1 && (t_buf->PeekByte(0)&255)!=255){
@@ -20616,7 +20630,7 @@ int bb_html5_GetInfo_JPG(String t_path){
 int bb_html5_GetInfo_GIF(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
-		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32);
+		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32,false);
 		int t_n=t_f->p_Read(t_data,0,10);
 		t_f->p_Close();
 		if(t_n==10 && t_data->PeekByte(0)==71 && t_data->PeekByte(1)==73 && t_data->PeekByte(2)==70){

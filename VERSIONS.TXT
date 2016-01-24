@@ -1,4 +1,15 @@
 
+***** v86d *****
+
+Fixed closing glfw3 window ALWAYS closing window - yikes!
+
+Added #GLFW_GCC_MSIZE_WINNT config var to allow 32 builds on windows with mingw64. Defaults to "32". Set to "64" to force 64 bit builds, or "" for compiler default (32 bit for mingw32, 64 bit for mingw64). DO NOT use mingw64-5.1.0. DO NOT use "64" with glfw3+angle target. #GLFW_GCC_MSIZE_LINUX also supported but untested! For Mac, you'll need to modify the target project in xcode although I have no idea if XCode even supports 32 bit builds any more.
+
+Fixed html5 glex20 glBindTexture crash when texture was 0. 
+
+Updated glfw, glfw3 and glfw3_angle taret MSVC solutions/projects to VS2015 Community Edition.
+
+
 ***** v86c *****
 
 Added workaround for GLES20.glGetActiveUniform bug in android6.
