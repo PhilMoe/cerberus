@@ -40,7 +40,6 @@ ANT_PATH="${SYSTEMDRIVE}\ant"
 'MinGW is currently here:
 '
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
-MINGW_PATH="C:\\TDM-GCC-32"
 MINGW_PATH="D:\\devtools\TDM-GCC-64-4.9.2"
 
 '***** 32 bit mingw *****
