@@ -16,7 +16,7 @@ CPPFLAGS=$(CCOPTS) \
 -I../lpng1610
 
 LD=g++
-LDFLAGS=-Wl,--subsystem,windows -L../openal/libs/Win32 -L../openal/libs/Win64 -L../angle/lib
+LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows -L../openal/libs/Win32 -L../openal/libs/Win64 -L../angle/lib
 LDLIBS=-llibEGL -llibGLESv2 -lcomdlg32 -lgdi32 -lOpenAL32 -lws2_32
 
 vpath %.c ../glfw3/src
@@ -56,5 +56,5 @@ $(TMP)%.o : %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(TMP)%.o : %.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 	
