@@ -37,8 +37,11 @@ function _glGenerateMipmap( target ){
 }
 
 function _glBindTexture( target,tex ){
-
-	gl.bindTexture( target,tex );
+	if( tex ){
+		gl.bindTexture( target,tex );
+	}else{
+		gl.bindTexture( target,null );
+	}
 }
 
 function _glTexImage2D( target,level,internalformat,width,height,border,format,type,pixels ){
