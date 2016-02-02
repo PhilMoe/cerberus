@@ -407,7 +407,7 @@ BBHtml5Game.prototype.Run=function(){
 			x-=c.offsetLeft;
 			c=c.offsetParent;
 		}
-		return x;
+		return x*xscale;
 	}			
 	
 	function touchY( touch ){
@@ -417,7 +417,7 @@ BBHtml5Game.prototype.Run=function(){
 			y-=c.offsetTop;
 			c=c.offsetParent;
 		}
-		return y;
+		return y*yscale;
 	}
 	
 	canvas.onkeydown=function( e ){

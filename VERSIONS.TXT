@@ -1,4 +1,9 @@
 
+***** v86e *****
+
+Fixed html5 touch x,y with scaled canvases.
+
+
 ***** v86d *****
 
 Removed PSM target from release package.
