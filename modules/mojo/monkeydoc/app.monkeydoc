@@ -336,6 +336,7 @@ Calling this function does NOT result in your application's [[OnResize]] method 
 | 16		| Depth buffered		| glfw3
 | 32		| Single buffered		| glfw3
 | 64		| Use second monitor	| glfw3
+| 128		| Use stencil buffer	| glfw3
 
 Use [[DisplayModes]] for a list of valid fullscreen device width/heights.
 
