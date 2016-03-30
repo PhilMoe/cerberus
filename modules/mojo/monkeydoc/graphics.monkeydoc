@@ -524,7 +524,7 @@ Discard any underlying resources associated with the image.
 This isn't normally necessary because automatic memory management will eventually take care of this for you. However, on devices with limited resources this may which to do this manually.
 
 
-# Method WritePixels:Void(pixels:Int[],x:Int,y:Int,width:Int,height:Int,arrayOffset:Int=0,arrayPitch:Int=0)
+# Method WritePixels:Void(pixels:Int[],x:Int,y:Int,width:Int,height:Int,arrayOffset:Int=0,arrayPitch:Int=0,frame:Int=0)
 
 Copies a rectangular section of pixels from an int array to the image.
 
