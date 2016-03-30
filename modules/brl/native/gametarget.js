@@ -113,6 +113,10 @@ BBGame.prototype.LoadString=function( path ){
 	var xhr=new XMLHttpRequest();
 	xhr.open( "GET",this.PathToUrl( path ),false );
 	
+//	if( navigator.userAgent.indexOf( "Chrome/48." )>0 ){
+//		xhr.setRequestHeader( "If-Modified-Since","Sat, 1 Jan 2000 00:00:00 GMT" );
+//	}
+	
 	xhr.send( null );
 	
 	if( xhr.status==200 || xhr.status==0 ) return xhr.responseText;
@@ -178,6 +182,10 @@ BBGame.prototype.LoadData=function( path ){
 	xhr.open( "GET",this.PathToUrl( path ),false );
 
 	if( xhr.overrideMimeType ) xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+	
+//	if( navigator.userAgent.indexOf( "Chrome/48." )>0 ){
+//		xhr.setRequestHeader( "If-Modified-Since","Sat, 1 Jan 2000 00:00:00 GMT" );
+//	}
 
 	xhr.send( null );
 	if( xhr.status!=200 && xhr.status!=0 ) return null;
