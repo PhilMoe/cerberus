@@ -46,6 +46,11 @@ FLEX_PATH="${HOME}/flex_sdk_4.6"
 'Must be set to a valid for for ANDROID target support
 '
 'Android SDK
+
+'This is where new android studio puts sdk on my macos machine...
+ANDROID_PATH="${HOME}/Library/Android/sdk"
+
+'Old sdk..
 ANDROID_PATH="${HOME}/android-sdk-macosx"
 '--------------------
 
