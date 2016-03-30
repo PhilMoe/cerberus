@@ -570,13 +570,14 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	bool depthbuffer=(flags & 16);
 	bool doublebuffer=!(flags & 32);
 	bool secondmonitor=(flags & 64);
+	bool usestencil=(flags & 128);
 
 	glfwWindowHint( GLFW_RED_BITS,8 );
 	glfwWindowHint( GLFW_GREEN_BITS,8 );
 	glfwWindowHint( GLFW_BLUE_BITS,8 );
 	glfwWindowHint( GLFW_ALPHA_BITS,0 );
 	glfwWindowHint( GLFW_DEPTH_BITS,depthbuffer ? 32 : 0 );
-	glfwWindowHint( GLFW_STENCIL_BITS,0 );
+	glfwWindowHint( GLFW_STENCIL_BITS,usestencil ? 8 : 0 );
 	glfwWindowHint( GLFW_RESIZABLE,resizable );
 	glfwWindowHint( GLFW_DECORATED,decorated );
 	glfwWindowHint( GLFW_FLOATING,floating );
