@@ -253,6 +253,9 @@ void gc_flush_free( int size ){
 	int t=gc_free_bytes-size;
 	if( t<0 ) t=0;
 	
+	//ignore bytes freed by released strings
+	int new_bytes=gc_new_bytes;
+	
 	while( gc_free_bytes>t ){
 	
 		gc_object *p=gc_free_list.succ;
@@ -266,6 +269,8 @@ void gc_flush_free( int size ){
 #endif
 		delete p;
 	}
+	
+	gc_new_bytes=new_bytes;
 }
 
 gc_object *gc_object_alloc( int size ){
@@ -1219,19 +1224,19 @@ private:
 		}
 		
 		void retain(){
-//			atomic_add( &refs,1 );
 			++refs;
 		}
 		
 		void release(){
-//			if( atomic_sub( &refs,1 )>1 || this==&nullRep ) return;
 			if( --refs || this==&nullRep ) return;
+			gc_new_bytes-=sizeof(Rep)+length*sizeof(Char);
 			free( this );
 		}
 
 		static Rep *alloc( int length ){
 			if( !length ) return &nullRep;
 			void *p=malloc( sizeof(Rep)+length*sizeof(Char) );
+			gc_new_bytes+=sizeof(Rep)+length*sizeof(Char);
 			return new(p) Rep( length );
 		}
 	};
