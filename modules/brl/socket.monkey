@@ -3,16 +3,35 @@ Import brl.databuffer
 Import brl.asyncevent
 
 #If Not BRL_SOCKET_IMPLEMENTED
-#If LANG="cpp" Or LANG="java"
+
+#If TARGET="glfw" Or TARGET="stdcpp"
+
 #BRL_SOCKET_IMPLEMENTED=True
-Import "native/socket.${LANG}"
-#If LANG="cpp"
+Import "native/socket.cpp"
+
+#Else If TARGET="android"
+
+#BRL_SOCKET_IMPLEMENTED=True
+Import "native/socket.java"
+
+#Else If TARGET="winrt"
+
+#BRL_SOCKET_IMPLEMENTED=True
 Import "native/socket_winrt.cpp"
+
+#Else If TARGET="ios"
+
+#BRL_SOCKET_IMPLEMENTED=True
+Import "native/socket_ipv6.cpp"
+
 #Endif
+
 #Endif
 
 #If Not BRL_SOCKET_IMPLEMENTED
+
 #Error "Native Socket class not implemented."
+
 #Endif
 
 Private
