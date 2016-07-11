@@ -97,8 +97,10 @@ void BBAdmob::ShowAdView( int style,int layout ){
 	_view.frame=b2;
 		    
 	[appView addSubview:_view];
-    
-	[_view loadRequest:[GADRequest request]];
+	
+	GADRequest *request=[GADRequest request];
+   
+	[_view loadRequest:request];
 }
 
 void BBAdmob::HideAdView(){

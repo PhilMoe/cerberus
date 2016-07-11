@@ -490,7 +490,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
 
         const QString &kws2=
             "Namespace;Using;Import;Extern;"
-            "Public;Private;Protected;Friend;"
+            "Public;Private;Protected;Internal;Friend;"
             "Void;Bool;Byte;UByte;Short;UShort;Int;UInt;Long;ULong;Float;Double;String;Object;Continue;Exit;"
             "New;Self;Super;Eachin;True;False;Null;Where;"
             "Alias;Const;Local;Global;Field;Method;Function;Property;Getter;Setter;Operator;Lambda;"
@@ -503,7 +503,8 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
             "For;To;Step;Next;"
             "Select;Case;Default;"
             "Try;Catch;Throw;Throwable;"
-            "Return;Print;Static;Cast;Variant";
+            "Return;Print;Static;Cast;"
+            "Extension;Protocol;Delete";
 
         QStringList bits=kws.split( ";" );
         for( int i=0;i<bits.size();++i ){

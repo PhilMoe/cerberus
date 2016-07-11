@@ -1,6 +1,10 @@
 
 #BRL_GAMETARGET_IMPLEMENTED=True
 
+#ANDROID_LANGUTIL_ENABLED=True
+
+#ANDROID_LIBGOOGLEPLAY_AVAILABLE=True
+
 Import brl.gametarget
 
 Import "native/androidgame.java"

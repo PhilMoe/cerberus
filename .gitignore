@@ -34,14 +34,19 @@ desktop.ini
 
 /targets/*
 !/targets/android
+!/targets/android_ouya
 !/targets/cpptool
 !/targets/flash
-!/targets/glfw
 !/targets/glfw3
 !/targets/glfw3_angle
 !/targets/html5
 !/targets/ios
-!/targets/psm
 !/targets/winrt_win8
 !/targets/winrt_winphone8
-!/targets/xna
+!/targets/__deprecated__/android
+!/targets/__deprecated__/android_new
+!/targets/__deprecated__/glfw
+!/targets/__deprecated__/psm
+!/targets/__deprecated__/xna
+
+*.buildv*

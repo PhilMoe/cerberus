@@ -1,4 +1,15 @@
 
+***** v87a *****
+
+Android target has been modified to build with sdk-24, and create apps for minSdk=10 (Gingerbread) and targetSdk=23 (Marshmallow and greater).
+
+Updated android google play services to 8.4.0 through several dark and mysterious processes. This means admob apps should continue to function after Sep 15. This apparently doesn't apply to ios, so I've left the ios target alone for now - one thing at a time, and I doubt this is the end of the android target upgrade saga.
+
+Implemented secondgear's fix for android soft keyboard backspace failure on minSdk>15.
+
+Deprecated a bunch of targets: old android targets, glfw2, psm, xna. There is either no longer any way to publish for these targets, or they have been superceded by new targets. Left android ouya as there is still, somewhat to my surprise, an ouya store online. Deprecated targets have been moved to a __deprecated__ subdir so you can move them back to targets if you want to use them - at your own risk.
+
+
 ***** v86e *****
 
 Fixed html5 touch x,y with scaled canvases.

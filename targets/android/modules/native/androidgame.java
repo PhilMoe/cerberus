@@ -16,6 +16,8 @@ import android.text.*;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
+import com.monkey.LangUtil;
+
 class ActivityDelegate{
 
 	public void onStart(){
@@ -48,8 +50,10 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	int _reqCode;
 	
 	Display _display;
-
-	GameTimer _timer;
+	
+	long _nextUpdate;
+	
+	long _updatePeriod;
 	
 	boolean _canRender;
 	
@@ -91,63 +95,11 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		}
 	}
 	
-	//***** Timing *****
-	
-	static class GameTimer implements Runnable{
-	
-		long nextUpdate;
-		long updatePeriod;
-		boolean cancelled;
-	
-		public GameTimer( int fps ){
-			updatePeriod=1000000000/fps;
-			nextUpdate=0;
-			_androidGame._view.postDelayed( this,0 );
-		}
-	
-		public void cancel(){
-			cancelled=true;
-		}
-		
-		public void run(){
-			if( cancelled ) return;
-
-			if( nextUpdate==0 ) nextUpdate=System.nanoTime();
-			
-			int updates=0;
-			for( ;updates<4;++updates ){
-			
-				_androidGame.UpdateGame();
-				if( cancelled ) return;
-				
-				nextUpdate+=updatePeriod;
-				long delay=nextUpdate-System.nanoTime();
-				if( delay>0 ){
-					_androidGame._view.postDelayed( this,delay/1000000 );
-					_androidGame._view.requestRender();
-					return;
-				}
-			}
-			nextUpdate=0;
-			_androidGame._view.postDelayed( this,0 );
-			_androidGame._view.requestRender();
-		}
-	}
-	
 	void ValidateUpdateTimer(){
-	
-		if( _timer!=null ){
-			_timer.cancel();
-			_timer=null;
-		}
-
-		if( _suspended ) return;
+		_nextUpdate=0;
+		_updatePeriod=0;
+		if( _updateRate!=0 ) _updatePeriod=1000000000/_updateRate;
 		
-		if( _updateRate!=0 ){
-			_timer=new GameTimer( _updateRate );
-		}else{
-			_view.requestRender();
-		}
 	}
 	
 	//***** GameView *****
@@ -201,20 +153,43 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			init();
 		}
 		
-		//Voodoo to disable predictive text on soft keyboard
+		/*
 		public InputConnection onCreateInputConnection( EditorInfo outAttrs ){
 			//voodoo to disable various undesirable soft keyboard features such as predictive text and fullscreen mode.
 			outAttrs.inputType=InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 			outAttrs.imeOptions=EditorInfo.IME_FLAG_NO_FULLSCREEN|EditorInfo.IME_FLAG_NO_EXTRACT_UI;			
 			return null;
 		}
+		*/
+		
+		public InputConnection onCreateInputConnection( EditorInfo outAttrs ){
+			//voodoo to disable various undesirable soft keyboard features such as predictive text and fullscreen mode.
+			outAttrs.inputType=InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD|InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+			outAttrs.imeOptions=EditorInfo.IME_FLAG_NO_FULLSCREEN|EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+			outAttrs.initialSelStart=-1;
+			outAttrs.initialSelEnd=-1;
+			return new BackspaceInputConnection( this,false );
+		}
+				
+		//Yet more voodoo courtesy of secondgear
+		private class BackspaceInputConnection extends BaseInputConnection {
+					
+			public BackspaceInputConnection( View targetView,boolean fullEditor ){
+				super( targetView,fullEditor );
+			}
+		
+			public boolean deleteSurroundingText( int beforeLength,int afterLength ){       
+				if( beforeLength==1 && afterLength==0 ){
+					return	super.sendKeyEvent( new KeyEvent( KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL ) ) &&
+							super.sendKeyEvent( new KeyEvent( KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL ) );
+				}
+				return super.deleteSurroundingText( beforeLength,afterLength );
+			}			
+		}		
 		
 		//View event handling
-	
 		public boolean dispatchKeyEventPreIme( KeyEvent event ){
 
-			//New! Experimental gamepad support...
-			//
 			if( _useGamepad ){
 				int button=-1;
 				switch( event.getKeyCode() ){
@@ -237,7 +212,6 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			}
 			
 			//Convert back button to ESC in soft keyboard mode...
-			//
 			if( _androidGame._keyboardEnabled ){
 				if( event.getKeyCode()==KeyEvent.KEYCODE_BACK ){
 					if( event.getAction()==KeyEvent.ACTION_DOWN ){
@@ -470,7 +444,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			File f=Environment.getExternalStorageDirectory();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}
-		return PathToAssetPath(path);
+		return "";
 	}
 
 	String PathToAssetPath( String path ){
@@ -600,7 +574,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		
 		//audio volume control
 		_activity.setVolumeControlStream( AudioManager.STREAM_MUSIC );
-
+		
 		//GL version
 		if( MonkeyConfig.OPENGL_GLES20_ENABLED.equals( "1" ) ){
 			//
@@ -618,10 +592,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		}
 
 		_view.setRenderer( this );
-		_view.setRenderMode( GLSurfaceView.RENDERMODE_WHEN_DIRTY );
 		_view.setFocusableInTouchMode( true );
 		_view.requestFocus();
-		_view.requestRender();
 	}
 	
 	//***** GLSurfaceView.Renderer *****
@@ -630,13 +602,38 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		if( !_canRender ) return;
 		
 		StartGame();
-		
-		if( _updateRate==0 && !_suspended ){
+
+		if( _updateRate==0 ){
 			UpdateGame();
-			_view.requestRender();
+			RenderGame();
+			return;
 		}
+			
+		if( _nextUpdate==0 ){
+			_nextUpdate=System.nanoTime();
+		}else{
+			long delay=_nextUpdate-System.nanoTime();
+			if( delay>0 ){
+				try{
+					Thread.sleep( delay/1000000 );
+				}catch( InterruptedException e ){
+					_nextUpdate=0;
+				}
+			}
+		}
+			
+		int i=0;
+		for( ;i<4;++i ){
+
+			UpdateGame();
+			if( _nextUpdate==0 ) break;
+			
+			_nextUpdate+=_updatePeriod;
+			if( _nextUpdate>System.nanoTime() ) break;
+		}
+		if( i==4 ) _nextUpdate=0;
 		
-		RenderGame();
+		RenderGame();		
 	}
 	
 	public void onSurfaceChanged( GL10 gl,int width,int height ){

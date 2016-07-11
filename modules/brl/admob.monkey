@@ -10,11 +10,15 @@
 Import "native/admob_googleplay.android.java"
 
 #ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.android.gms.ads.AdActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
+
 #ANDROID_MANIFEST_APPLICATION+="<meta-data android:name=~qcom.google.android.gms.version~q android:value=~q@integer/google_play_services_version~q />"
 
 #ANDROID_LIBRARY_REFERENCE_1="android.library.reference.1=google-play-services_lib"
+#ANDROID_LIBRARY_REFERENCE_2="android.library.reference.2=google-play-services-basement_lib"
 
 #Else
+
+#Error "The standalone admob library has been discontinued"
 
 Import "native/admob.android.java"
 

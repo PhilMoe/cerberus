@@ -4,9 +4,9 @@ Android is Google's hugely popular cellphone and tablet OS.
 
 >> You will need
 
-* The [Android SDK](http://developer.android.com/sdk/index.html). You only need the "SDK Tools" version, not the "Eclipse+ADT Plugin" one.
+* The [Android SDK](http://developer.android.com/sdk/index.html). You will also need to install the API24 SDK.
 
-* The [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html). On Windows, make sure to grab the 32bit version even if you're running a 64bit OS.
+* The [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
 * On Windows and MacOS, you will also need [ANT](http://ant.apache.org/bindownload.cgi).
 
@@ -14,11 +14,9 @@ Android is Google's hugely popular cellphone and tablet OS.
 
 The `ANDROID_PATH` (Windows/MacOS), `JDK_PATH` (Windows) and `ANT_PATH` (Windows/MacOS) vars in your [[Trans]] config file must be correctly set to use the android target.
 
-The Android download is just a 'setup' app - after installation you will prompted to run the SDK manager, which you will need to do to install the actual android SDKs. Make sure to install at least "Android SDK Platform-tools" and "Android 3.2 (API 13) SDK Platform".
-
 To run apps on real hardware on MacOS, you should be able to just 'plug and play'. Make sure to enable 'USB debugging' on the device first though.
 
-To run apps on real hardware on Windows, you will need to install USB drivers. USB drivers from device manufacturers are generally the preferred solution, although they often tend to come bundled with nasty bloated 'virtual desktop' apps. With a bit of googling, you may be able to track down a plain USB driver for your device.
+To run apps on real hardware on Windows, you may need to install USB drivers. USB drivers from device manufacturers are generally the preferred solution, although they often tend to come bundled with nasty bloated 'virtual desktop' apps. With a bit of googling, you may be able to track down a plain USB driver for your device.
 
 >> Signing apps
 
