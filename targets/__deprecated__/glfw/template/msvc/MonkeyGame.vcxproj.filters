@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\stb\stb_image.c">
+      <Filter>stb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\enable.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\window.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\fullscreen.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\glext.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\image.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\init.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\input.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\joystick.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\stream.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\tga.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\thread.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\time.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_dllmain.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_enable.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_fullscreen.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_glext.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_init.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_joystick.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_thread.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_time.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\lib\win32\win32_window.c">
+      <Filter>glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\stb\stb_vorbis.c">
+      <Filter>stb</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\glfw\lib\internal.h">
+      <Filter>glfw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\glfw\lib\win32\platform.h">
+      <Filter>glfw</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="stb">
+      <UniqueIdentifier>{25fc8a80-cfea-408d-8787-d3590ba48db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glfw">
+      <UniqueIdentifier>{4e218c8e-e0aa-4359-ae44-34be26958a3c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

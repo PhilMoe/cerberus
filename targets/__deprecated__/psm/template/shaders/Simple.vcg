@@ -1,0 +1,11 @@
+
+void main(
+	float4 in a_Position  : POSITION,
+	float4 in a_Color     : COLOR0,
+	float4 out v_Position : POSITION,
+	float4 out v_Color    : COLOR0,
+	uniform float4x4 WorldViewProj ){
+
+	v_Position = mul( a_Position, WorldViewProj );
+    v_Color = a_Color;
+}

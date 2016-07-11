@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="${ANDROID_APP_PACKAGE}"
+	android:versionCode="${ANDROID_VERSION_CODE}"
+	android:versionName="${ANDROID_VERSION_NAME}"
+	android:installLocation="auto">
+	
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="7" />
+	
+	<uses-feature android:glEsVersion="0x00010001" />
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="com.android.vending.BILLING" />
+
+	${ANDROID_MANIFEST_MAIN}
+		
+	<application android:label="${ANDROID_APP_LABEL}" android:icon="@drawable/icon">
+	
+		<activity 
+			android:name="MonkeyGame"
+			android:label="${ANDROID_APP_LABEL}"
+			android:screenOrientation="${ANDROID_SCREEN_ORIENTATION}"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+			android:launchMode="singleTop">
+			
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			
+			${ANDROID_MANIFEST_ACTIVITY}
+			
+		</activity>
+		
+		${ANDROID_MANIFEST_APPLICATION}
+		
+	</application>
+</manifest> 
+          
