@@ -424,7 +424,7 @@ BBHtml5Game.prototype.Run=function(){
 		game.KeyEvent( BBGameEvent.KeyDown,e.keyCode );
 		var chr=keyToChar( e.keyCode );
 		if( chr ) game.KeyEvent( BBGameEvent.KeyChar,chr );
-		if( e.keyCode<48 || (e.keyCode>111 && e.keyCode<122) ) eatEvent( e );
+		if( (e.keyCode>0 && e.keyCode<48) || (e.keyCode>111 && e.keyCode<122) ) eatEvent( e );
 	}
 
 	canvas.onkeyup=function( e ){
