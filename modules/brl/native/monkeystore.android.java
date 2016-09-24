@@ -187,7 +187,12 @@ class BBMonkeyStore extends ActivityDelegate implements ServiceConnection{
 	@Override	
 	public void onActivityResult( int requestCode,int resultCode,Intent data ){
 	
-		if( requestCode!=_reqCode ) return;
+        if( requestCode!=_reqCode ) return;
+
+        if (resultCode == android.app.Activity.RESULT_CANCELED) {
+         _result=1;      //cancelled
+         _running=false;
+        }
 
 //		bb_std_lang.print( "Buy result="+data.getIntExtra( "RESPONSE_CODE",12345 ) );
 			
