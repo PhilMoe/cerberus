@@ -496,7 +496,11 @@ gxtkAudio.prototype.PlaySample=function( buffer,channel,flags ){
 	
 	if( chan.state ){
 		chan.waSource.onended=null
-		chan.waSource.stop( 0 );
+		try {
+			chan.waSource.stop( 0 );
+			chan.state = 0			
+		} catch (err) {			
+		}
 	}
 	
 	chan.buffer=buffer;
@@ -527,7 +531,10 @@ gxtkAudio.prototype.StopChannel=function( channel ){
 	
 	if( chan.state==1 ){
 		chan.waSource.onended=null;
-		chan.waSource.stop( 0 );
+		try {
+			chan.waSource.stop( 0 );
+		} catch (err) {			
+		}
 		chan.waSource=null;
 	}
 
@@ -542,7 +549,10 @@ gxtkAudio.prototype.PauseChannel=function( channel ){
 	chan.offset=(chan.offset+(wa.currentTime-chan.startTime)*chan.rate)%chan.buffer.waBuffer.duration;
 	
 	chan.waSource.onended=null;
-	chan.waSource.stop( 0 );
+	try {
+		chan.waSource.stop( 0 );
+	} catch (err) {			
+	}
 	chan.waSource=null;
 	
 	chan.state=2;
