@@ -11,8 +11,21 @@ BBDataBuffer.tints=new Int32Array( BBDataBuffer.tbuf );
 BBDataBuffer.tfloats=new Float32Array( BBDataBuffer.tbuf );
 
 BBDataBuffer.prototype._Init=function( buffer ){
+  
+  this.length=buffer.byteLength;
+  
+  if (buffer.byteLength != Math.ceil(buffer.byteLength / 4) * 4)
+  {
+    var new_buffer = new ArrayBuffer(Math.ceil(buffer.byteLength / 4) * 4);
+    var src = new Int8Array(buffer);
+    var dst = new Int8Array(new_buffer);
+    for (var i = 0; i < this.length; i++) {
+      dst[i] = src[i];
+    }
+    buffer = new_buffer;    
+  }
+
 	this.arrayBuffer=buffer;
-	this.length=buffer.byteLength;
 	this.bytes=new Int8Array( buffer );	
 	this.shorts=new Int16Array( buffer,0,this.length/2 );	
 	this.ints=new Int32Array( buffer,0,this.length/4 );	
