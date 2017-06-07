@@ -1,0 +1,130 @@
+
+# Module mojo2.renderer
+
+# Import mojo2.graphics
+
+# Interface ILight
+
+# Method LightMatrix:Float[]()
+
+Get 4x4 light matrix.
+
+
+# Method LightType:Int()
+
+Get light type - 0 for disabled, 1 for point light.
+
+
+# Method LightRange:Float()
+
+Get light range.
+
+
+# Method LightColor:Float[]()
+
+Get 4 component light color.
+
+
+# Method LightImage:Image()
+
+Get image used for textured lighting.
+
+The image should use the [[LightMaskShader]] shader.
+
+
+# Interface ILayer
+
+# Method LayerMatrix:Float[]()
+
+Get 4x4 layer matrix.
+
+
+# Method LayerFogColor:Float[]()
+
+Get 4 component fog color for layer.
+
+
+# Method LayerLightMaskImage:Image()
+
+Get layer lightmask image.
+
+The image should use the [[LightMaskShader]] shader.
+
+
+# Method EnumLayerLights:Void( lights:Stack<ILight> )
+
+Get lights to be rendered for layer.
+
+
+# Method OnRenderLayer:Void( drawLists:Stack<DrawList> )
+
+Render current layer.
+
+Classes should push any drawlists that must be rendererd to the @drawLists stack.
+
+
+# Class mojo2.Renderer
+
+A renderer is used to draw complex scenes using multipass rendering.
+
+To do this, renderer uses the idea of layers to manage the drawing of 2d primitives. Layers are added to a renderer by pushing them onto a renderer's layer stack and, when it is time to render, the renderer calls the [[ILayer.OnRenderLayer]] method to cause each layer to render itself. Layers are rendered in the order they are pushed on the layer stack.
+
+To use renderer, you must write classes that implement the [[ILight]] and [[ILayer]] interfaces. You add layer objects to a renderer by pushing them on the renderer's [[Layers]] stack before rendering. You add lights when the renderer calls the [[ILayer.EnumLayerLights]] method during rendering.
+
+Renderer also handles shadow rendering. To add shadow casters to a scene, you can either call the [[DrawList.AddShadowCaster]] method while rendering a layer inside [[ILayer.OnRenderLayer]], or you can simply draw images with shadow casters attached via [[Image.SetShadowCaster]]. 
+
+
+# Method New()
+
+Create a new renderer.
+
+By default, a renderer will render to the back buffer. To change this, use [[SetRenderTarget]].
+
+
+# Method SetRenderTarget:void( image:Image )
+
+Change render target.
+
+	
+# Method SetViewport:Void( x:Int,y:Int,width:Int,height:Int )
+
+Set viewport.
+
+
+# Method SetClearMode:Void( clearMode:Int )
+
+Set clear mode.
+
+| @Mode		| @Effect
+| 0			| Canvas is not cleared by renderer.
+| 1			| Canvas is cleared using clear color.
+
+
+# Method SetClearColor:Void( clearColor:Float[] )
+
+Set clear color.
+
+
+# Method SetAmbientLight:Void( ambientLight:Float[] )
+
+Set ambient light.
+
+
+# Method SetCameraMatrix:Void( cameraMatrix:Float[] )
+
+Set 4x4 camera matrix.
+
+
+# Method SetProjectionMatrix:Void( projectionMatrix:Float[] )
+
+Set 4x4 projection matrix.
+
+
+# Method Layers:Stack<ILayer>() Property
+
+Get layer stack.
+
+
+# Method Render:Void()
+
+Render everything.

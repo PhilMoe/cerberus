@@ -17,6 +17,15 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 HTML_PLAYER="${MONKEYDIR}\bin\mserver_winnt.exe"
 '--------------------
 
+'----- ---------------------
+'Stuff in local devtools dir
+'
+ANT_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\apache-ant-1.9.7"
+JDK_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\jdk1.8.0_91"
+ANDROID_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\Android\sdk"
+FLEX_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\flex_sdk_4.6"
+'---------------------------
+
 '--------------------
 'Ant build tool path
 '

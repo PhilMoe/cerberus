@@ -21,8 +21,8 @@ desktop.ini
 /modules/brlx
 /modules/brl/native/GoogleAdMobAdsSdk*
 /modules/mojo/native/*
-/modules/mojo2
 /modules/playniax
+
 !/modules/mojo/native/mojo.html5.js
 !/modules/mojo/native/mojo.glfw.cpp
 !/modules/mojo/native/asyncimageloader.js

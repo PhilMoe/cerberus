@@ -1,0 +1,217 @@
+
+'a port of the mojo1 banana...
+
+'#GLFW_USE_MINGW=False	'to build with msvc.
+
+'#GLFW_GCC_MSIZE_WINNT="64"	'to force 64 bit mingw builds. Needs mingw64 and will not work with angle target.
+
+Import mojo2
+
+Public
+
+Const WIDTH#=320
+Const HEIGHT#=240
+
+Class Sprite
+
+	Field x#,vx#
+	Field y#,vy#
+	Field f#,vf#
+	
+	Method New()
+		x=Rnd( WIDTH )
+		y=Rnd( HEIGHT )
+		vx=Rnd(1,2);If Rnd(1)>=.5 vx=-vx
+		vy=Rnd(1,2);If Rnd(1)>=.5 vy=-vy
+		vf=Rnd( .5,1.5 )
+	End
+
+	Method Update()
+		x+=vx;If x<0 Or x>=WIDTH vx=-vx
+		y+=vy;If y<0 Or y>=HEIGHT vy=-vy
+		f+=vf;If f>=8 f-=8
+	End
+	
+End
+
+Class MyApp Extends App
+
+	Field canvas:Canvas
+
+	Field utime,uframes,ufps
+	Field rtime,rframes,rfps
+	
+	Field frames1:Image[]
+	Field frames2:Image[]
+	Field sprites:=New Stack<Sprite>
+	
+	Field rot#
+	
+	Field ums
+
+	Field fullscreen:=False
+	
+	Method ToggleFullscreen:Void()
+		fullscreen=Not fullscreen
+		If fullscreen
+			SetDeviceWindow DesktopMode.Width,DesktopMode.Height,1
+			SetSwapInterval 1
+			SetUpdateRate 0
+		Else
+			SetDeviceWindow 640,480,4
+			SetSwapInterval 1
+			SetUpdateRate 0
+		Endif
+	End
+	
+	Method OnCreate()
+
+		'For 'pixel art' style graphics!	
+		Image.SetFlagsMask( Image.Managed )
+		
+		canvas=New Canvas
+		
+		'make sure I haven't broken any file type filters!
+		Local test:=LoadString( "test.txt" )
+		If test Print "LoadString:"+test Else Print "LoadString failed."
+		
+		Print "Display modes:"
+		For Local mode:=Eachin DisplayModes()
+			Print mode.Width+","+mode.Height
+		Next
+
+		frames1=Image.LoadFrames( "alien1.png",8 )
+		frames2=Image.LoadFrames( "alien2.png",8 )
+		
+		For Local i=0 Until 100
+			sprites.Push New Sprite
+		Next
+
+		SetSwapInterval 1
+		SetUpdateRate 0
+		
+		utime=Millisecs()
+		rtime=utime
+	End
+	
+	Method OnUpdate()
+	
+		If KeyHit( KEY_SPACE ) 
+#If TARGET="glfw"
+			ToggleFullscreen
+#Else
+			CrashGraphics
+#Endif
+		End
+	
+		ums=Millisecs
+
+		uframes+=1
+		Local e=Millisecs-utime
+		If e>=1000
+			ufps=uframes
+			uframes=0
+			utime+=e
+		Endif
+	
+		If MouseHit(0)
+		
+			If MouseX()<DeviceWidth/3
+				For Local i=0 Until 25
+					If Not sprites.IsEmpty() sprites.Pop
+				Next
+			Else If MouseX()>DeviceWidth*2/3
+				For Local i=0 Until 25
+					sprites.Push New Sprite
+				Next
+			Else
+				If fullscreen ToggleFullscreen			
+				OpenUrl "http://www.blitzbasic.com"
+			Endif
+		Endif
+	
+		For Local sprite:=Eachin sprites
+			sprite.Update
+		Next
+		
+		rot+=1
+		
+		ums=Millisecs-ums;
+
+ 	End
+ 	
+ 	Field paused:Bool
+	
+	Method OnRender()
+	
+		'in case device mode changed
+		canvas.SetViewport 0,0,DeviceWidth,DeviceHeight
+		canvas.SetScissor 0,0,DeviceWidth,DeviceHeight
+	
+		canvas.SetProjection2d 0,WIDTH,0,HEIGHT
+	
+		rframes+=1
+		Local e=Millisecs-rtime
+		If e>=1000
+			rfps=rframes
+			rframes=0
+			rtime+=e
+		Endif
+		
+		canvas.Clear .5,0,1
+
+		Local r:=rot
+		Local frames:=frames1
+		Local i,n=sprites.Length()/10	'ie: simulate 10 render state changes
+		random.Seed=1234
+		For Local sprite:=Eachin sprites
+			i+=1
+			If i Mod n=0
+				If (i/n)&1 frames=frames2 Else frames=frames1
+			End
+			r+=Rnd(360)
+			canvas.DrawImage frames[sprite.f],sprite.x,sprite.y,r,Rnd(1,2),Rnd(1,2)
+		Next
+		
+		canvas.SetProjection2d 0,DeviceWidth,0,DeviceHeight
+		
+		canvas.DrawText "[<<]",0,8,0,.5
+		canvas.DrawText "imgs="+sprites.Length()+", ufps="+ufps+", rfps="+rfps+", last update="+ums,DeviceWidth/2,8,.5,.5
+		canvas.DrawText "[>>]",DeviceWidth,8,1,.5
+		
+		If paused
+
+			canvas.SetColor 0,0,0,.5
+			canvas.DrawRect 0,0,DeviceWidth,DeviceHeight
+			canvas.SetColor 1,1,1,1
+			canvas.DrawText "Suspended",DeviceWidth/2,DeviceHeight/2,.5,.5
+			canvas.SetColor 1,1,1,1
+			
+		Endif
+		
+		canvas.Flush
+
+	End
+	
+	Method OnSuspend()
+		Print "BouncyAliens: OnSuspend"
+		paused=True
+	End
+
+	Method OnResume()
+		Print "BouncyAliens: OnResume"
+		paused=False
+	End
+	
+	Method OnClose()
+		Print "BouncyAliens: OnClose"
+		Super.OnClose()
+	End
+	
+End
+
+Function Main()
+
+	New MyApp
+	
+End

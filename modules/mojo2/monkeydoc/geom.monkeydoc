@@ -1,0 +1,37 @@
+
+# Module mojo2.geom
+
+# Class Vec4
+
+# Field x:Float
+
+# Field y:Float
+
+# Field z:Float
+
+# Field w:Float
+
+# Method New()
+
+# Method New( x:Float,y:Float,z:Float,w:Float )
+
+
+# Class Mat4
+
+# Method Inverse:Mat4()
+
+# Method Transpose:Mat4()
+
+# Method Times:Vec4( v:Vec4 )
+
+# Method Times:Mat4( m:Mat4 )
+
+# Function Translation:Mat4( tx:Float,ty:Float,tz:Float )
+
+# Function Rotation:Mat4( rx:Float,ry:Float,rz:Float )
+
+# Function Scale:Mat4( sx:Float,sy:Float,sz:Float )
+
+# Function Ortho:Mat4( left:Float,right:Float,bottom:Float,top:Float,near:Float,far:Float )
+
+# Function Frustum:Mat4( left:Float,right:Float,bottom:Float,top:Float,near:Float,far:Float )
