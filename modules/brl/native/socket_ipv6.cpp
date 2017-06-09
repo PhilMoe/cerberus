@@ -96,26 +96,24 @@ static int setsockaddr( sockaddr_storage *sa,String host,int port ){
 	
 	if( host.Length()>1023 ) return 0;
 	
-	char buf[1024],*bufp=0;
-	buf[host.Length()]=0;
-	
+	char hostname[1024],*hostp=0;
 	if( host.Length() ){
-		for( int i=0;i<host.Length();++i ) buf[i]=host[i];
-		bufp=buf;
+		strcpy( hostname,host.ToCString<char>() );
+		hostp=hostname;
 	}
 
-	char buf2[1024];
-	sprintf( buf2,"%i",port );
+	char service[80];
+	sprintf( service,"%i",port );
 	
 	addrinfo hints;
 
 	memset( &hints,0,sizeof( hints ) );
-	hints.ai_family=PF_INET6;
-	hints.ai_flags|=AI_V4MAPPED;
-	if( !bufp ) hints.ai_flags|=AI_PASSIVE;
+	hints.ai_family=AF_UNSPEC;
+	hints.ai_flags=AI_DEFAULT;
+	if( !hostp ) hints.ai_flags|=AI_PASSIVE;
 
 	addrinfo *res;
-	if( getaddrinfo( bufp,buf2,&hints,&res )<0 ) return 0;
+	if( getaddrinfo( hostp,service,&hints,&res )<0 ) return 0;
 	if( !res ) return 0;
 	
 	int len=res->ai_addrlen;
@@ -188,7 +186,13 @@ bool BBSocket::Open( int proto ){
 	
 	switch( proto ){
 	case PROTOCOL_CLIENT:
+	
+		//Create socket later, once we know hostname...
+		_proto=proto;
+		return true;
+		
 	case PROTOCOL_SERVER:
+	
 		_sock=socket( PF_INET6,SOCK_STREAM,IPPROTO_TCP );
 		if( _sock>=0 ){
 
@@ -203,6 +207,7 @@ bool BBSocket::Open( int proto ){
 			#endif
 		}
 		break;
+		
 	case PROTOCOL_DATAGRAM:
 		_sock=socket( PF_INET6,SOCK_DGRAM,IPPROTO_UDP );
 		break;
@@ -242,9 +247,45 @@ void BBSocket::GetRemoteAddress( BBSocketAddress *address ){
 
 bool BBSocket::Connect( String host,int port ){
 
-	sockaddr_storage sa;
-	int len=setsockaddr( &sa,host,port );
-	return connect( _sock,(sockaddr*)&sa,len )>=0;
+	if( _sock>=0 ) return false;
+	
+	if( host.Length()>1023 ) return false;
+	
+	char hostname[1024];
+	strcpy( hostname,host.ToCString<char>() );
+	
+	char service[80];
+	sprintf( service,"%i",port );
+	
+	addrinfo hints;
+	memset( &hints,0,sizeof( hints ) );
+
+	hints.ai_family=AF_UNSPEC;
+	hints.ai_socktype=SOCK_STREAM;
+	hints.ai_flags=AI_DEFAULT;
+
+	addrinfo *addrs=0;
+	if( getaddrinfo( hostname,service,&hints,&addrs ) ) return -1;
+	
+	for( addrinfo *res=addrs;res;res=res->ai_next ){
+	
+		_sock=socket( res->ai_family,res->ai_socktype,res->ai_protocol );
+		if( _sock<0 ) continue;
+		
+		if( !connect( _sock,res->ai_addr,res->ai_addrlen ) ) break;
+			
+		close( _sock );
+		_sock=-1;
+	}
+	
+	freeaddrinfo( addrs );
+	
+	if( _sock<0 ) return false;
+	
+	int nodelay=1;
+	setsockopt( _sock,IPPROTO_TCP,TCP_NODELAY,(const char*)&nodelay,sizeof(nodelay) );
+	
+	return true;
 }
 
 bool BBSocket::Bind( String host,int port ){

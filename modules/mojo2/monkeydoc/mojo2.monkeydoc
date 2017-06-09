@@ -1,0 +1,61 @@
+
+# Module mojo2
+
+# Import mojo2.graphics
+
+# Import mojo2.renderer
+
+The mojo2 module is a new 2d rendering module for monkey.
+
+Mojo2 supports a similar set of drawing commands to the original mojo module, but includes many enhancements such as render-to-image, 3d lighting effects and custom shaders. Mojo2 uses the original mojo module for app, audio and input handling.
+
+Mojo2 uses opengl for rendering, and as such can only be used on the desktop, ios, android and html5 targets.
+
+To use mojo2 in your apps, simply import mojo2 at the top of your program.
+
+
+>>> Canvas and DrawList objects
+
+Mojo2 Canvas objects are used for actual rendering.
+
+Each canvas has an associated render target, which is either the app window or an image. The render target can be set when a canvas is created, and changed at any time using [[Canvas.SetRenderTarget]].
+
+Drawing commands are added to a canvas using methods such as [[DrawList.DrawRect]] and [[DrawList.DrawImage]]. Behind the scenes, drawing commands are actually queued in a [[DrawList]] object extended by canvas. A drawlist contains drawing state and a sequence of 2d drawing operations. You normally don't have to worry about draw lists when drawing to a canvas, as the canvas manages the draw list for you automatically.
+
+A canvas also provides misecellanous render state such as viewport, projection matrix, and lighting parameters.
+
+Read more here: [[Canvas]], [[DrawList]].
+
+
+>>> Images
+
+An Image is a rectangular area of pixels which can be drawn to a canvas or draw list using one of the [[DrawList.DrawImage]] methods.
+
+Behind the scenes, an image is actually a rectangular area within a material. Multiple images can share the same material, effectively allowing you to use image 'atlases'.
+
+Read more here: [[Image]].
+
+
+>>> Lighting and simple 3d effects
+
+Mojo2 provides support for simple lighting and 3d effects.
+
+If you are rendering directly to a canvas, you can enable up to 4 point lights, each with independant position, color and range.
+
+For unlimited lights and shadows, you will need to implement multi-pass renderering, or you can use the [[Renderer]] class.
+
+
+>>> Shaders and materials
+
+Mojo2 shaders are simple GLSL programs that fetch colors from textures for use by lighting calculations.
+
+Read more here: [[Shader]], [[Material]].
+
+
+>>> Renderers
+
+For more complex rendering, mojo2 provides the renderer class.
+
+A renderer allows you to perform multi-pass rendering, allowing for unlimited lights and shadows.
+
+Read more here: [[Renderer]].

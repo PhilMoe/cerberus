@@ -1,0 +1,1279 @@
+
+# Module mojo2.graphics
+
+# Import mojo2.renderer Private
+
+# Class Shader
+
+Mojo2 provides support for simple shaders that fetch texture/color data and produce values for use by the lighting equations. Shaders must be written in the opengl shading language. Shaders should declare a single void shader(){} function.
+
+Shaders are injected into a 'template' shader program that performs vertex processing and lighting. Shaders are executed at the top of the fragment shader portion of this program. Shaders cannot modify how the vertex processing and lighting steps are performed, although you can replace the template program with your own version.
+
+The textures and other parameters used by a shader are stored in materials. Every material has a single associated shader. When a material is used for rendering, the shader parameters stored in the material are copied to the shader's uniform variables for rendering.
+
+Shaders may make use of several built-in input variables, and should write values to one or more built-in output variables. These variables are:
+
+Shader inputs:
+| @Input var					| @Description
+| vec2 b3d_Texcoord0			| Interpolated vertex texture coordinates
+| vec4 b3d_Color				| Interpolated vertex color
+| vec4 b3d_ClipPosition		| Interpolated clip space vertex position
+| vec3 b3d_ViewPosition		| Interpolated view space vertex position
+| vec3 b3d_ViewNormal		| Interpolated view space vertex normal
+
+Shader outputs:
+| @Output var				| @Description
+| vec4 b3d_FragColor			| direct color write
+| vec4 b3d_Ambient			| ambient color for lighting
+| float b3d_Alpha			| alpha component
+| vec4 b3d_Diffuse			| diffuse color for lighting
+| vec4 b3d_Specular			| specular color for lighting
+| vec3 b3d_Normal			| surface normal in tanspace
+| float b3d_Roughness		| roughness for lighting
+
+Notes:
+
+* If b3d_FragColor is written by the shader, no other processing is performed on the fragment. This will effectively disable fog, and the following notes can be ignored.
+
+* b3d_Ambient and b3d_Alpha should always be written.
+
+* To perform lighting, b3d_Diffuse, b3d_Specular, b3d_Normal and b3d_Roughness should also be written.
+
+
+To declare your own shader, you must:
+
+* Extend the Shader class.
+
+* Call the Shader.Build method somewhere inside the shader. This is usually done in the shader's constructor.
+
+* Implement the [[OnInitMaterial]] method. This method must initialize an 'empty' material object to a default state, using the various Material.Set methods. A shader should initialize ALL material properties required by the shader, as once a material is initialized, properties cannot be added or removed from a material.
+
+* Implement the [[OnLoadMaterial]] method. This method should load the various textures required by a shader from the given path parameter, and assign them to a material.
+
+Once you have created an instance of your shader, you can pass it as a parameter to [[Material.New|Material.New]], [[Material.Load|Material.Load]], [[Image.New|Image.New]], [[Image.Load|Image.Load]] and [[Shader.SetDefaultShader|Shader.SetDefaultShader]].
+
+
+# Method Build:void( source:String )
+
+Compiles and links the shader.
+
+Classes that extend Shader must call this method at some point. This is usually done in the subclasses constructor.
+
+
+# Method OnInitMaterial:Void( material:Material )
+
+Classes that extend Shader must set defalut values for all valid shader parameters in this method.
+
+
+# Method OnLoadMaterial:Material( material:Material,path:String,texFlags:Int )
+
+Classes that extend Shader should load textures and other valid shader parameters from @path into @material in this method. The interpretation of @path is completely up to the shader. The @texFlags parameter contains texture flag values that should be used for any textures loaded.
+
+The @material parameter is an already initialized material.
+
+This method should return @material if successful, or null on failure.
+
+
+# Function FastShader:Shader()
+
+Returns a stock 'fast shader' for drawing unlit sprites efficiently.
+
+The following material properties are supported:
+
+| @Property		| @Type		| @Default
+| ColorTexture	| Texture	| White
+
+
+# Function BumpShader:Shader()
+
+Returns a stock bump shader for drawing lit sprites with specular and normal maps.
+
+The following material properties are supported:
+
+| @Property			| @Type		| @Default
+| ColorTexture		| Texture	| White
+| SpecularTexture	| Texture	| Black
+| NormalTexture		| Texture	| Flat
+| AmbientColor		| Float[4]	| [0.0,0.0,0.0,1.0]
+| Roughness			| Float		| 0.5
+
+The shader b3d_Ambient value is computed by multiplying ColorTexture by AmbientColor.
+
+The shader b3d_Diffuse value is computed by multiplying ColorTexture by 1-AmbientColor.
+
+When loading materials that use the bump shader, diffuse, specular and normal maps can be given the following files names:
+
+| @Texture map		| @Valid paths
+| Diffuse			| (FILE).(EXT) ; (FILE)_d.(EXT) ; (FILE)_diff.(EXT) ; (FILE)_diffuse.(EXT)
+| Specular			| (FILE)_s.(EXT) ; (FILE)_spec.(EXT) ; (FILE)_specular.(EXT) ;(FILE)_SPECUALR.(EXT)
+| Normal			| (FILE)_n.(EXT) ; (FILE)_norm.(EXT) ; (FILE)_normal.(EXT) ; (FILE)_NORMALS.(EXT)
+
+Where (FILE) is the filename component of the path provided to Material.Load or Image.Load, and (EXT) is the file extension, eg: png, jpg.
+
+
+# Function MatteShader:Shader()
+
+Returns a stock matte shader for drawing lit sprites with no specular or normal maps.
+
+The following material properties are supported:
+
+| @Property			| @Type		| @Default
+| ColorTexture		| Texture	| White
+| AmbientColor		| Float[4]	| [0.0,0.0,0.0,1.0]
+| Roughness			| Float		| 0.5
+
+
+# Function ShadowShader:Shader()
+
+Returns a stock shadow shader for drawing shadows. This shader simply writes 'black' to b3d_FragColor.
+
+
+# Function LightMaskShader:Shader()
+
+Returns a stock shader for drawing light textures and light mask effects. This shader performs a texture lookup, and writes the red component to b3d_FragColor.
+
+The following material properties are supported:
+
+| @Property			| @Type		| @Default
+| ColorTexture		| Texture	| White
+
+
+# Function DefaultShader:Shader()
+
+Returns the default shader used when a material is created with a 'Null' shader. This is initially the [[BumpShader]], but can be modified using  [[SetDefaultShader]].
+
+
+# Function SetDefaultShader:Void( shader:Shader )
+
+Sets the default shader used when a material is created with a 'Null' shader.
+
+
+# Class Texture
+
+Textures contains image data for use by shaders when rendering. For more information, please see the [[Shader]] class.
+
+
+# Method New( width:Int,height:Int,format:Int,flags:Int )
+
+The @width and @height are parameters are the size of the new texture.
+
+The @format parameter must be 4.
+
+The @flags parameter can be a bitwise combination of:
+
+| @ Flags				| @Description
+| Texture.Filter			| The texture is filtered when magnified
+| Texture.Mipmap			| The texture is mipmapped when minified
+| Texture.ClampS			| Texture S coordinate is clamped
+| Texture.ClampT			| Texture T coordinate is clamped
+| Texture.ClampST		| Texture S and T coordinates are clamped.
+| Texture.RenderTarget	| The texture can rendered to using a #Canvas.
+| Texture.Managed		| Texture contents are preserved when graphics are lost
+
+
+# Method Width:Int() Property
+
+Get texture width.
+
+
+# Method Height:Int() Property
+
+Get texture height.
+
+
+# Method Format:Int() Property
+
+Get texture format.
+
+
+# Method Flags:Int() Property
+
+Get texture flags.
+
+
+# Method WritePixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
+
+Write pixel data to texture.
+
+Pixels should be in premultiplied alpha format.
+
+
+# Function BlackTexture:Texture()
+
+Return a stock single texel black texture.
+
+
+# Function WhiteTexture:Texture()
+
+Return a stock single texel white texture.
+
+
+# Function FlatTexture:Texture()
+
+Return a stock single texel 'flat' texture for normal mapping.
+
+
+# Function Load:Texture( path:String,format:Int,flags:Int )
+
+Load a texture from a file.
+
+
+# Class Material
+
+Materials contain shader parameters that map to shader uniforms variables when rendering. For more information, please see the [[Shader]] class.
+
+
+# Method New( shader:Shader )
+
+Create a new material.
+
+
+# Method Shader:Shader() Property
+
+Get material shader.
+
+
+# Method SetScalar:Void( paramName:String,scalar:Float )
+
+Set float shader parameter.
+
+
+# Method GetScalar:Float( paramName:String,defaultValue:Float=0 )
+
+Get float shader parameter.
+
+
+# Method SetVector:Void( paramName:String,vector:Float )
+
+Set vector shader parameter.
+
+
+# Method GetVector:Float[]( paramName:String,defaultValue:Float[]=[] )
+
+Get vector shader parameter.
+
+
+# Method SetTexture:Void( paramName:String,texture:Texture )
+
+Set texture shader parameter.
+
+
+# Method GetTexture:Texture( paramName:String,defaultValue:Texture=Null )
+
+Get texture shader parameter.
+
+
+# Function Load:Material( path:String,texFlags:Int,shader:Shader )
+
+Load a material.
+
+If @shader is null, the [[Shader.DefaultShader]] is used.
+
+
+# Class Font
+
+The mojo2 Font class provides support for simple fixed width bitmap fonts.
+
+See also:
+
+[[DrawList.SetFont]], [[DrawList.DrawText]]
+
+
+# Method TextWidth:Int( text:String )
+
+Get width of @text drawn in this font.
+
+
+# Method TextHeight:Int( text:String )
+
+Get height of @text drawn in this font.
+
+
+# Function Load:Font( imagePath:String,firstChar:Int,numChars:int,padded:bool )
+
+Load a fixed width font from @chars.
+
+Glyphs should be laid out horizontally within the source image.
+
+If @padded is true, then each glyph is assumed to have a transparent one pixel padding border around it.
+
+
+# Class ShadowCaster
+
+The mojo2 ShadowCaster class provides support for simple 2d shadow rendering.
+
+Shadow casters are used by [[Renderer]] objects when rendering layers. To render shadows, you will need to add shadow casters to the drawlists returned by [[ILayer.OnRenderLayer]].
+
+A shadow caster can either be added to a drawlist using [[DrawList.AddShadowCaster]], or attached to images using [[Image.SetShadowCaster]]. Shadow casters attached to images are automatically added to drawlists when an image is drawn.
+
+A shadow caster contains a set of 2d vertices which describe the geometric shape of the object that casts a shadow. The vertices should describe a convex polygon.
+
+See also:
+
+[[DrawList.AddShadowCaster]], [[Image.SetShadowCaster]]
+
+
+# Method SetVertices( vertices:Float[] )
+
+Set shadow caster vertices.
+
+
+# Method Vertices:Float[]() Property
+
+Get shadow caster vertices.
+
+
+# Class Image
+
+An image is a rectangular area of pixels within a material, that can be drawn using one of the [[DrawList.DrawImage]] methods.
+
+You can create a new image using one of the [[Image.New]] methods, or load an image from file using [[Image.Load|Image.Load]].
+
+An image also has a handle, an offset within the image that represents it's origin whan it is drawn. Image handles are specified in fractional values, where 0,0 is the top-left of an image, 1,1 is the bottom-right and .5,.5 is the center.
+
+# Method New( width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter )
+
+Create a new image for rendering. The new image can be used as a render target for a [[Canvas]].
+
+The @flags parameter can be any bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter		| The image is filtered
+| Image.Mipmap		| The image is mipmapped
+| Image.Managed		| The image is managed
+
+The Image.Managed flag should be used if you want mojo2 to preserve the image contents when the graphics mode changes. This is not necessary if the image is being re-rendered every frame. Image.Managed consumes more memory, and slows down image rendering somewhat so should be avoided if possible.
+
+
+# Method New( sourceImage:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,xhandle:Float=.5,yhandle:Float=.5 )
+
+Create a new image from a region within an existing image.
+
+The new image shares the same material and image flags as @sourceImage.
+
+
+# Method New( material:Material,xhandle:Float=.5,yhandle:Float=.5 )
+
+Create a new image from a material.
+
+
+# Method New( material:Material,x:Int,y:Int,width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5 )
+
+Create a new image representing a rect within a material.
+
+
+# Function SetFlagsMask:Void( mask:Int )
+
+Sets an internal 'flags mask' that can be used to filter out specific image flags when creating images. The flags mask value is 'anded' with any flags values passed to Image.New, Image.Load or Image.LoadFrames.
+
+For example, by setting the flags mask to just Image.Managed, the Image.Filter and Image.Mipmap flags will be effectively disabled for all images - useful for pixel art or retro style graphics.
+
+The default flags mask is Image.Filter|Image.Mipmap|Image.Managed, which effectively disables the filter.
+
+
+# Function FlagsMask:Int()
+
+Returns the current flags mask.
+
+See also:
+
+SetFlagsMask
+
+
+# Method Discard:Void()
+
+Discard any internal resources such as videomem used by the image.
+
+ 
+# Method Width:Int() Property
+
+Get image width.
+
+
+# Method Height:Int() Property
+
+Get image height.
+
+
+# Method SetHandle:Void( xhandle:Float,yhandle:Float )
+
+Set image handle.
+
+
+# Method HandleX:Float() Property
+
+Get image x handle.
+
+
+# Method HandleY:Float() Property
+
+Get image y handle.
+
+
+# Method ShadowCaster:ShadowCaster() Property
+
+Get attached shadow caster.
+
+
+# Method SetShadowCaster:Void( shadowCaster:ShadowCaster )
+
+Set image shadow caster.
+
+Attaching a shadow caster to an image will cause the shadow caster to be automatically added to the drawlist whenever the image is drawn.
+
+
+# Method Loading:Bool() Property
+
+Returns true if image is currently busy loading.
+
+On targets other than html5, this will always return false.
+
+
+# Method X0:Float() Property
+
+Get x coordinate of the left edge of the image rect.
+
+
+# Method Y0:Float() Property
+
+Get y coordinate of the top edge of the image rect.
+
+
+# Method X1:Float() Property
+
+Get x coordinate of the right edge of the image rect.
+
+
+# Method Y1:Float() Property
+
+Get y coordinate of the bottom edge of the image rect.
+
+
+# Method WritePixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
+
+Write pixel data to image.
+
+Pixels should be in premultiplied alpha format.
+
+
+# Function ImagesLoading:Bool()
+
+Returns true if any images are currently busy loading.
+
+On targets other than html5, this will always return false.
+
+
+# Function Load:Image( path:String,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+
+Load an image from @path.
+
+The @flags parameter can be a bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter		| The image is filtered
+| Image.Mipmap		| The image is mipmapped
+
+If @shader is null, the default shader is used.
+
+Loaded images should not be used as render targets.
+
+See also: [[Shader.DefaultShader]]
+
+
+# Function LoadFrames:Image[]( path:String,numFrames:Int,padded:Bool,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+
+Load image frames from @path.
+
+Image frames should be laid out horizontally within the source image.
+
+If @padded is true, then each frame is assumed to have a transparent one pixel padding border around it.
+
+The @flags parameter can be a bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter	| The image is filtered
+| Image.Mipmap	| The image is mipmapped
+| Image.Managed	| The image is managed
+
+If @shader is null, the default shader is used.
+
+Loaded images should not be used as render targets.
+
+See also: [[Shader.DefaultShader]]
+
+
+# Class DrawList
+
+A drawlist contains drawing state and a sequence of 2d drawing operations.
+
+You add drawing operations to a drawlist using any of the Draw methods. When a drawing operation is added, the current drawing state is captured by the drawing operation. Further changes to the drawing state will not affect drawing operations already in the drawlist.
+
+A [[Canvas]] extends [[DrawList]], and can be used to draw directly to the app window or an image. A drawlist can also be rendered to a canvas using [[Canvas.RenderDrawList]].
+
+A drawlist's drawing state consists of:
+
+| @Drawing state			| @Description
+| Current color			| [[SetColor]]
+| Current 2d matrix		| [[Translate]], [[Rotate]], [[Scale]], [[PushMatrix]], [[PopMatrix]]
+| Current blend mode		| [[SetBlendMode]]
+| Current font			| [[DrawText]]
+
+
+# Method Reset:Void()
+
+Removes all items from drawlist.
+
+
+# Method SetAlpha:Void( a:Float )
+
+Set alpha only. Doesn't affect color.
+
+All color and alpha values should be in the range 0 to 1 inclusive.
+
+
+# Method SetColor:Void( red:Float,green:Float,blue:Float )
+
+Set color only. Doesn't affect alpha.
+
+All color and alpha values should be in the range 0 to 1 inclusive.
+
+
+# Method SetColor:Void( red:Float,green:Float,blue:Float,alpha:Float )
+
+Set color and alpha.
+
+All color and alpha values should be in the range 0 to 1 inclusive.
+
+
+# Method Color:Float[]() Property
+
+Returns a 4 component float array containing current color and alpha.
+
+Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
+
+
+# Method Alpha:Float() Property
+
+Return current alpha.
+
+
+# Method GetColor:void( color:Float[] )
+
+Copy current color to @color.
+
+@color must have a length of at least 3. If the length of @color is greater than 3, alpha is also copied.
+
+
+# Method SetBlendMode:Void( blendMode:Int )
+
+Set blend mode. The @blendMode parameter should be one of:
+
+| @Mode				| @Description
+| BlendMode.Opaque	| Opaque - no blending
+| BlendMode.Alpha	| Alpha blending
+| BlendMode.Additive	| Additive blending
+| BlendMode.Multiply	| Multiply blending
+
+
+# Method BlendMode:Int() Property
+
+Get blend mode.
+
+
+# Method SetFont:Void( font:Font )
+
+Set current font for use with @DrawText.
+
+If @font is null, a default font is used.
+
+
+# Method Font:Font() Property
+
+Get font.
+
+
+# Method SetMatrixStackCapacity:Void( capacity:Int )
+
+Set the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
+
+See also: [[MatrixStackCapacity]]
+
+
+# Method MatrixStackCapacity:Int() Property
+
+Get the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
+
+See also: [[SetMatrixStackCapacity]]
+
+
+# Method PushMatrix:Void()
+
+Push the current 2d matrix on the 2d matrix stack.
+
+
+# Method PopMatrix:Void()
+
+Pop the current 2d matrix from the 2d matrix stack.
+
+
+# Method ResetMatrix:Void()
+
+Set the current 2d matrix to the identity matrix. Same as SetMatrix( 1,0,0,1,0,0 ).
+
+
+# Method SetMatrix:Void( ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float )
+
+Set the current 2d matrix to the given matrix.
+
+
+# Method Transform:Void( ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float )
+
+Multiply the current 2d matrix by the given matrix.
+
+
+# Method Translate:Void( tx:Float,ty:Float )
+
+Translate the current 2d matrix.
+
+
+# Method Rotate:Void( rz:Float )
+
+Rotate current 2d matrix.
+
+
+# Method Scale:Void( sx:Float,sy:Float )
+
+Scale current 2d matrix.
+
+
+# Method TranslateRotate:Void( tx:Float,ty:Float,rz:Float )
+
+Translate and rotate (in that order) the current 2d matrix.
+
+
+# Method TranslateRotateScale:Void( tx:Float,ty:Float,rz:Float,sx:Float,sy:Float )
+
+Translate, rotate and scale (in that order) the current 2d matrix.
+
+
+# Method RotateScale:Void( rz:Float,sx:Float,sy:Float )
+
+Rotate and scale (in that order) the current 2d matrix.
+
+
+# Method GetMatrix:Void( matrix:Float[] )
+
+Get current 2d matrix.
+
+@matrix should be at least 6 elements in length.
+
+
+# Method SetDefaultMaterial( material:Material )
+
+Set the default material used for drawing operations that use a null material.
+
+See also: [[DefaultMaterial]]
+
+
+# Method DefaultMaterial:Material() Property
+
+Return the current default material.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawPoint:Void( x0:Float,y0:Float,material:Material=Null )
+
+Draw a point at @x0,@y0.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawLine:Void( x0:Float,y0:Float,x1:Float,y1:Float,material:Material=Null )
+
+Draw a line from @x0,@y0 to @x1,@y1.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawTriangle:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,material:Material=Null )
+
+Draw a triangle.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null )
+
+Draw a quad.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawOval:Void( x:float,y:Float,width:Float,height:Float,material:Material=Null )
+
+Draw an oval in the given rectangle.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawEllipse:Void( x:Float,y:Float,xRadius:Float,yRadius:Float,material:Material=Null )
+
+Draw an ellipse at @x, @y with radii @xRadius, @yRadius.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawCircle:Void( x:Float,y:Float,radius:Float,material:Material=Null )
+
+Draw a circle at @x, @y with radius @radius.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],material:Material=Null )
+
+Draw a batch of primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data, and must be at least @count \* @order \* 2 long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],material:Material=Null )
+
+Draw a batch of primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data, and must be at least @count \* @order \* 2 long.
+
+The @texcoords array contains s,t texture coordinate data, and must be at least @count \* @order \* 2 long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],indices:Int[],material:Material=Null )
+
+Draw a batch of indexed primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data.
+
+The @indices array contains vertex indices, and must be at least @count \* @order long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],indices:Int[],material:Material=Null )
+
+Draw a batch of indexed primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data.
+
+The @texcoords array contains s,t texture coordinate data.
+
+The @indices array contains vertex indices, and must be at least @count \* @order long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawRect:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
+
+Draw a rect from @x,@y to @x+@width,@y+@height.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawRect:Void( x:Float,y:Float,width:Float,height:Float,image:Image )
+
+Draw a rect from @x,@y to @x+@width,@y+@height filled with @image.
+
+The image's handle is ignored.
+
+
+# Method DrawRect:Void( x:Float,y:Float,image:Image,sourceX:Int,sourceY:Int,width:Int,height:Int )
+
+Draw a rect at @x,@y filled with the given subrect of @image.
+
+The image's handle is ignored.
+
+
+# Method DrawRect:Void( x:Float,y:Float,width:Float,height:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
+
+Draw a rect from @x,@y to @x+@width,@y+@height filled with the given subrect of @image.
+
+The image's handle is ignored.
+
+
+# Method DrawImage:Void( image:Image,tx:Float=0,ty:Float=0 )
+
+Draw an image at @tx,@ty.
+
+If the image has a shadow caster attached, the shadow caster will also be added to the drawlist.
+
+
+# Method DrawImage:Void( image:Image,tx:Float,ty:Float,rz:Float )
+
+Draw an image at @tx,@ty rotated by @rz.
+
+If the image has a shadow caster attached, the shadow caster will also be added to the drawlist.
+
+
+# Method DrawImage:Void( image:Image,tx:Float,ty:Float,rz:Float,sx:Float,sy:Float )
+
+Draw an image at @tx,@ty rotated by @rz and scaled by @sx,@sy.
+
+If the image has a shadow caster attached, the shadow caster will also be added to the drawlist.
+
+
+# Method DrawText:Void( text:String,x:float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+
+Draw @text at @x,@y in the current font.
+
+
+# Method DrawShadow:void( lightX:Float,lightY:Float,x0:Float,y0:Float,x1:Float,y1:Float )
+
+Draw a shadow volume.
+
+
+# Method DrawShadows:void( lightX:Float,lightY:Float,drawList:DrawList )
+
+Draw multiple shadow volumes.
+
+
+# Method AddShadowCaster:Void( shadowCaster:ShadowCaster,tx:Float=0,ty:Float=0,rz:Float=0,sx:Float=1,sy:Float=1 )
+
+Add a shadow caster to the drawlist.
+
+
+# Class Canvas Extends DrawList
+
+Canvas objects are used to perform rendering to either the app window or an 'off screen' image.
+
+Canvas extends [[DrawList]], so offers the same drawing commands as DrawList. You can also render any arbitrary drawlist to a canvas using [[RenderDrawList]].
+
+Once you have finished drawing to a canvas, you should call [[Flush]] to cause any buffered drawing operations to be rendered. Forgetting to do this can result in corrupt graphics.
+
+A canvas maintains various pieces of state, including:
+
+* Current render target: the image the canvas renders to, or null if the canvas renders directly to the app window. Use [[SetRenderTarget]] to change the current render target.
+
+* Current viewport: a rectangle within the render target that drawing coordinates are mapped to. Nothing is rendered outside of the viewport regardless of the scissor rect. Use [[SetViewport]] to change the current viewport.
+
+* Current scissor rect: a rectangle within the viewport that all rendering is clipped to. Use [[SetScissor]] to change the current scissor rect.
+
+* Current projection matrix: a matrix that describes the mapping from view space coordinates to viewport coordinates. This provides support for 'virtual resolutions'. Use [[SetProjection2d]] and [[SetProjectionMatrix]] to change the current projection matrix.
+
+* Currect model matrix: a matrix that transforms coordinates in draw lists to world space. You can change the model matrix using [[SetModelMatrix]], but for most 2d rendering you will not have to worry about the model matrix.
+
+* Current view matrix: a matrix that transforms coordinates from world space to view space. You can change the view matrix using [[SetViewMatrix]], but for most 2d rendering you will not have to worry about the view matrix.
+
+To create a canvas for rendering directly to the app window, simply use a new Canvas. For example:
+
+<pre>
+Import mojo2
+
+Class MyApp Extends App
+	Field canvas:Canvas
+
+	Method OnCreate()
+		canvas=New Canvas
+	End
+	
+	Method OnRender()
+		canvas.Clear
+		canvas.DrawText "Hello World!",0,0
+		canvas.Flush
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+To create a canvas for rendering to an image, provide the image to the canvas constructor. For example:
+
+<pre>
+Import mojo2
+
+Class MyApp Extends App
+	Field image:Image
+	Field imageCanvas:Canvas
+	field windowCanvas:Canvas
+	
+	Method OnCreate()
+	
+		image=New Image( DeviceWidth,DeviceHeight,0,0 )
+		imageCanvas=New Canvas( image )
+		windowCanvas=New Canvas
+	End
+	
+	Method OnRender()
+
+		imageCanvas.Clear
+		imageCanvas.DrawText "Hello World!",0,0
+		imageCanvas.Flush
+		
+		windowCanvas.Clear
+		windowCanvas.DrawImage image
+		windowCanvas.Flush
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+To setup a 'virtual resolution', use [[SetProjection2d]]. [[TransformCoords]] can also be used to convert mouse coordinates to canvas coordinates. For example:
+
+<pre>
+Import mojo2
+
+'virtual resolution
+Const VWIDTH:=320
+Const VHEIGHT:=240
+
+Class MyApp Extends App
+	Field canvas:Canvas
+	
+	Method OnCreate()
+		canvas=New Canvas
+		canvas.SetProjection2d 0,VWIDTH,0,VHEIGHT	
+	End
+	
+	Method OnRender()
+	
+		Local in:=[MouseX,MouseY],out:Float[2]
+		canvas.TransformCoords in,out
+		
+		canvas.Clear
+		canvas.SetColor 1,1,1
+		canvas.DrawText "Hello World!",0,0
+		canvas.DrawText "MouseX="+out[0]+", MouseY="+out[1],0,12
+		
+		canvas.SetColor 1,1,0
+		canvas.DrawRect out[0]-2,out[1]-2,5,5
+		canvas.Flush
+		
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
+
+A canvas also provides supports for simple 2d lighting with up to 4 point lights.
+
+To enable or disable a light, use [[SetLightType]]. To set a light's position, color and range, use [[SetLightPosition]], [[SetLightColor]] and [[SetLightRange]].
+
+Lights should be positioned 'off' the canvas. That is, a light's position should have a negative 'z' component. This allows you to control the angle that light rays hit the canvas at, creating a pseudo 3d lighting effect. 
+
+In addition, for lighting to work correctly images and materials drawn with lighting enabled will need to be correctly setup for lighting.
+
+The easiest way to load images for use with lighting is to use the matte shader when loading an image, eg:
+
+Local image:=Image.Load( "myimage.png",.5,.,5,Image.Filter|Image.Mipmap,Shader.MatteShader() )
+
+This will allow simple images with no specular or normal maps to be used with lighting.
+
+For more complex lighting, you can provide 'specular' and 'normal' maps. For example, if you use Image.Load to load an image name "myimage.png", and provide the following 3 image files:
+
+myimage.png
+myimage_s.png
+myimage_n.png
+
+The image will be automatically setup for correct lighting when loaded.
+
+# Method New()
+
+Create a new canvas for rendering directly to the app window.
+
+
+# Method New( renderTarget:Object )
+
+Create a new canvas for rendering to the given @renderTarget, which must be an image or a texture.
+
+If @renderTarget is an image, rendering will affect the "ColorMaterial" texture of the image's material.
+
+
+# Method SetRenderTarget:Void( renderTarget:Object )
+
+Change canvas render target.
+
+Note: Changing the render target does not affect the viewport.
+
+
+# Method RenderTarget:Object() Property
+
+Get current render target.
+
+
+# Method Width:Int() Property
+
+Get canvas width.
+
+
+# Method Height:Int() Property
+
+Get canvas height.
+
+ 
+# Method SetViewport:Void( x:Int,y:Int,width:Int,height:Int )
+
+Set viewport.
+
+By default, the viewport is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
+
+
+# Method Viewport:Int[]() Property
+
+Get viewport.
+
+
+# Method SetScissor:Void( x:Int,y:Int,width:Int,height:Int )
+
+Set scissor rect, in viewport coordinates.
+
+All rendering operations are clipped to the scissor rect and the viewport.
+
+By default, the scissor rect is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
+
+
+# Method Scissor:Int[]() Property
+
+Get scissor rect.
+
+
+# Method SetProjection2d:Void( left:Float,right:Float,top:Float,bottom:Float )
+
+Set 2d orthographic projection matrix.
+
+By default, the projection matrix is initialized to 0,width,0,height where width and height are the dimensions of the canvas.
+
+
+# Method SetProjectionMatrix:Void( projMatrix:Float[] )
+
+Set arbitrary projection matrix.
+
+Defaults to the identity matrix.
+
+
+# Method ProjectionMatrix:Float[]() Property
+
+Get projection matrix.
+
+
+# Method SetViewMatrix:Void( viewMatrix:Float[] )
+
+Set view matrix, ie: the matrix the transforms points in world space to view space.
+
+Defaults to the identity matrix.
+
+
+# Method ViewMatrix:Float[]() Property
+
+Get view matrix.
+
+
+# Method SetModelMatrix:Void( modelMatrix:Float[] )
+
+Set model matrix, ie: the matrix that transforms points in 2d canvas space into 3d world space.
+
+Defaults to the identity matrix.
+
+
+# Method ModelMatrix:Float[]() Property
+
+Get model matrix.
+
+
+# Method SetFogColor:Void( red:Float,green:Float,blue:Float,alpha:Float )
+
+Set fog color.
+
+The @alpha paramater controls the strength of the fog. If this is 1, all pixels are rendered in fog color. If 0, fog has no effect.
+
+By default, fog color is 0,0,0,0.
+
+
+# Method FogColor:Float[]() Property
+
+Get fog color.
+
+
+# Method SetAmbientLight:Void( red:Float,green:Float,blue:Float )
+
+Set ambient light color.
+
+By default, ambient light is 0,0,0.
+
+
+# Method AmbientLight:Float[]() Property
+
+Get ambient light color.
+
+
+# Method SetLightType:Void( index:Int,type:Int )
+
+Set light type.
+
+@index must be in the range 0 to 3 inclusive.
+
+@type must be one of:
+
+| @type	| @Light type
+| 0		| Light is disabled
+| 1		| Light is a point light
+
+By default, all lights are disabled.
+
+
+# Method GetLightType:Int( index:Int )
+
+Get light type.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method SetLightPosition:Void( index:Int,x:Float,y:Float,z:Float )
+
+Set light position in world space.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method GetLightPosition:Float[]( index:Int )
+
+Get light position.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method SetLightColor:Void( index:Int,r:Float,g:Float,b:Float )
+
+Set light color.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method GetLightColor:Float[]( index:Int )
+
+Get light color.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method SetLightRange:Void( index:Int,range:Float )
+
+Set light range.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method GetLightRange:Float( index:Int )
+
+Get light range.
+
+@index must be in the range 0 to 3 inclusive.
+
+
+# Method SetColorMask:Void( r:bool,g:bool,b:bool,a:bool )
+
+Set which color components are writeable.
+
+
+# Method ColorMask:bool[]() Property
+
+Get color mask.
+
+
+# Method SetShadowMap:Void( shadowMap:Image )
+
+Set shadow map to use when lighting.
+
+If @shadowMap is null (the default), shadow mapping is disabled.
+
+
+# Method ShadowMap:Image() Property
+
+Get shadow map.
+
+
+# Method Clear:Void( r:float=0,g:float=0,b:float=0,a:float=1 )
+
+Clear canvas to the specified color.
+
+Clear is affect by the current viewport, scissor rect and color mask.
+
+
+# Method RenderDrawList:void( drawList:DrawList )
+
+Render a drawlist to canvas.
+
+Rendering is affected by the current 2d matrix and color (inherited from DrawList), but not the current blendmode. The blendmodes used to created the drawlist are used instead.
+
+
+# Method RenderDrawList:Void( drawList:DrawList,tx:Float,ty:Float,rz:Float=0,sx:Float=1,sy:Float=1 )
+
+Render a drawlist to canvas, transformed by the canvas' current 2d matrix and @tx, @ty, @rz, @sx and @sy parameters.
+
+Rendering is affected by the current 2d matrix and color (inherited from DrawList), but not the current blendmode. The blendmodes used to created the drawlist are used instead.
+
+
+# Method ReadPixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
+
+Read pixel data from canvas.
+
+
+# Method Flush:Void()
+
+Flush rendering operations.
+
+
+# Method TransformCoords:Void( coords_in:Float[],coords_out:Float[],mode:Int=0 )
+
+| @Mode	| @Description
+| 0		| Transform window space x,y coords to canvas space.
+
+Use mode 0 to transform MouseX, MouseY to canvas coords.
