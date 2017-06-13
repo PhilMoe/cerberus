@@ -2,13 +2,18 @@
 !/bin/*.txt
 
 .bmx
-
 .DS_Store
+*.buildv*
 desktop.ini
 
 /Monkey
 /Monkey.app
 /Monkey.exe
+
+/docs/html
+
+/modules/brl/native/GoogleAdMobAdsSdkiOS-6.8.0
+/modules/brl/native/GoogleAdMobAdsSdk-6.4.1.jar
 
 /src/rebuildall*
 /src/createrelease
@@ -16,22 +21,4 @@ desktop.ini
 /src/build-ted-*
 /src/ted/ted.pro.user*
 
-/docs/html
-
-/modules/brlx
-/modules/brl/native/GoogleAdMobAdsSdk*
-/modules/mojo/native/*
-/modules/playniax
-
-!/modules/mojo/native/mojo.html5.js
-!/modules/mojo/native/mojo.glfw.cpp
-!/modules/mojo/native/asyncimageloader.js
-!/modules/mojo/native/asyncsoundloader.js
-
-/settings.ini
-
-/targets/glfw/oalinst.exe
-
 /targets/__deprecated__/android_ndk
-
-*.buildv*

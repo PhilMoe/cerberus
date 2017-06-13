@@ -1,4 +1,9 @@
-For more Monkey fun, please visit: http://www.monkey-x.com.
+
+Release notes:
+
+This repos does not include the ios admob sdk folder. You will need to download that separately, install it to the modules/brl/native folder and tweak the modules/brl/admob.monkey file appropriately so it uses the correct version.
+
+License:
 
 Monkey is released under the zlib/libpng license.
 
