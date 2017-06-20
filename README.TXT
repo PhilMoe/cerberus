@@ -1,11 +1,11 @@
 
 Release notes:
 
-This repos does not include the ios admob sdk folder. You will need to download that separately, install it to the modules/brl/native folder and tweak the modules/brl/admob.monkey file appropriately so it uses the correct version.
+This repository does not include the ios admob sdk folder. You will need to download that separately, install it to the modules/brl/native folder and tweak the modules/brl/admob.monkey file appropriately so it uses the correct version.
 
 License:
 
-Monkey is released under the zlib/libpng license.
+Cerberus is based on Monkey which was created by Mark Sibly / Blitz Research Ltd. Both are released under the zlib/libpng license.
 
 The zlib/libpng License
 
