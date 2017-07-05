@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+<head><title>Cerberus Game!</title></head>
+<body>
+
+<div>
+<embed src="CerberusGame.swf" type="application/x-shockwave-flash" width="640" height="480" wmode="direct">
+</embed>
+</div>
+
+<!-- Cerberus console for Print -->
+<textarea id="GameConsole" style="width:640px;height:240px;border:0;padding:0;margin:0" readonly></textarea><br>
+<script type="text/javascript">
+function cerberus_print( str ){
+	var cons=document.getElementById( "GameConsole" );
+	cons.value+=str+"\n";
+	cons.scrollTop=cons.scrollHeight-cons.clientHeight;
+}
+</script>
+
+</body>
+</html>

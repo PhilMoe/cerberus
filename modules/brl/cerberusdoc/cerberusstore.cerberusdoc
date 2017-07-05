@@ -1,0 +1,193 @@
+
+# Module brl.cerberusstore
+
+The CerberusStore module allows apps to perform 'in app purchases' (IAP) on the android, ios and winrt/windows8.1 targets.
+
+Please see the [[CerberusStore]] class for more details.
+
+
+# Interface IOnOpenStoreComplete
+
+# Method OnOpenStoreComplete:Void( result:Int,interrupted:Product[] )
+
+Called when the store has finished opening.
+
+@result can be one of:
+
+| Result	| Description
+| -1		| Fatal error
+| 0			| Success
+
+
+@interrupted is an array of interrupted consumable purchases.
+
+These are consumable purchases that were successfully made the last time your app was run, but that your app was not informed of for some reason. For example, the user may have completed the purchase, but then switched to another app before your app had a chance to process the purchase.
+
+Your app should handle the products in @interrupted as if they had just been successfully bought, ie: the same way you would handle them in OnBuyProductComplete.
+
+
+# Interface IOnBuyProductComplete
+
+# Method OnBuyProductComplete:Void( result:Int,product:Product )
+
+Called when a [[CerberusStore.BuyProductAsync]] operation completes.
+
+@result will be one of:
+
+| Result	| Description
+| -1		| Fatal error
+| 0			| Success
+| 1			| Cancelled by user
+
+
+# Interface IOnGetOwnedProductsComplete
+
+# Method OnGetOwnedProductsComplete:Void( result:Int,products:Product[] )
+
+Called when a [[CerberusStore.GetOwnedProductsAsync]] operation completes.
+
+@result will be one of:
+
+| Result	| Description
+| -1		| Fatal error
+| 0			| Success
+| 1			| Cancelled by user
+
+
+# Class Product
+
+# Method Title:String() Property
+
+The product title.
+
+
+# Method Identifier:String() Property
+
+The iTunes connect or GooglePlay product identifier.
+
+
+# Method Description:String() Property
+
+The product description.
+
+
+# Method Price:String() Property
+
+The localized product price.
+
+
+# Method Type:Int() Property
+
+Product type, one of:
+
+| Type	| Description
+| 1		| Consumable product
+| 2		| Non-consumable product
+
+
+# Class CerberusStore
+
+The CerberusStore and [[Product]] classes allow apps to perform 'in app purchases' (IAP) on the ios, android and winrt(windows8.1) targets.
+
+CerberusStore only currently supports consumable and non-consumables products. Subscriptions and downloadable content are not supported.
+
+The general process for using CerberusStore in your apps is:
+
+* Create a new CerberusStore object inside your App's OnCreate method.
+
+* Add products to the store using [[AddProducts]]. 
+
+* Open the store using [[OpenStoreAsync]].
+
+* Once the store is sucessfully open, buy products using [[BuyProductAsync]].
+
+* You can also enquire about products once the store is open using [[GetProduct]] or [[GetProducts]].
+
+Notes:
+
+* It is up to your app to keep track of purchased products, for example, in a file stored in cerberus://internal/.
+
+* If your app uses non-consumables, it can use [[GetOwnedProductsAsync]] to retreive a list of previously purchased non-consumables. This is for situations where the user may have reinstalled the app, or installed it on a different device. Note that on iOS, [[GetOwnedProductsAsync]] will cause an app store 'login' dialog to appear so it should only be used in response to a user interaction (eg: via clicking on a 'Restore Purchases' button). 
+
+* iOS apps that use non-consumables must provide a 'Restore Purchases' button or equivalent that restores previously purchased non-consumables, or they will fail app store requirements.
+
+For more information on setting up your app for IAP, see [[The Android target]], [[The iOS target]] and [[The WinRT target]] pages in the target SDKS reference.
+
+There's a bananas/mak/iaptest demo in the release, but it wont work 'as-is' - you'll need to add a keystore file for android; change the BundleID for ios; change the Product ID for winrt, and change the CONSUMABLES and NON_CONSUMABLES arrays to match your product ids.
+
+
+# Method AddProducts:Void( ids:String[],type:Int )
+
+Adds multiple new products to the store.
+
+Each element of @ids is the Android or iOS 'product id' of the product to add.
+
+@type is the product type - consumable or non-consumable.
+
+On iOS, you must ensure that @type matches the product type selected in iTunes Connect, otherwise the results will be unpredictable!
+
+On Android, the product type selected in the GooglePlay Developer Console must be 'managed' (CerberusStore emulates consumable products on Android).
+
+This method may only be called before [[OpenStoreAsync]].
+
+@type must be one of:
+
+| Type	| Description
+| 1		| Consumable product
+| 2		| Non-consumable product
+
+
+# Method OpenStoreAsync:Void( onComplete:IOnOpenStoreComplete )
+
+Starts an async operation to open the store.
+
+When the operation completes, the OnOpenStoreComplete method of the @onComplete object is called.
+
+
+# Method BuyProductAsync:Void( product:Product,onComplete:IOnBuyProductComplete )
+
+Starts an async operation to buy a product.
+
+When the operation completes, the OnBuyProductComplete method of the @onComplete object is called.
+
+Note that it is possible to buy the same non-consumable product multiple times, although the user will only be charged for the first purchase. It is up to your app to keep track of purchases and ensure the user is not presented with the option of repurchasing a non-consumable product.
+
+This method may only be called after [[OpenStoreAsync]] successfully completes.
+
+
+# Method GetOwnedProductsAsync:Void( onComplete:IOnGetOwnedProductsComplete )
+
+Starts an async operation to get an array of all non-consumable products owned by the user.
+
+When the operation completes, the OnGetOwnedProductsComplete method of the @onComplete object is called.
+
+This method may only be called after [[OpenStoreAsync]] successfully completes.
+
+On iOS, this method may cause an app store 'login' dialog to appear.
+
+
+# Method GetProduct:Product( id:String )
+
+Gets the product corresponding to @id, the iTunes connect or GooglePlay product identifier.
+
+This method may only be called after [[OpenStoreAsync]] successfully completes.
+
+
+# Method GetProducts:Product[]()
+
+Gets all products.
+
+This method may only be called after [[OpenStoreAsync]] successfully completes.
+
+
+# Method GetProducts:Product[]( type:Int )
+
+Gets all products of the given type.
+
+This method may only be called after [[OpenStoreAsync]] successfully completes.
+
+@type must be one of:
+
+| Type	| Description
+| 1		| Consumable product
+| 2		| Non-consumable product

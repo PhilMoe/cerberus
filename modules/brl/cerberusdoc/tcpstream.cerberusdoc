@@ -1,0 +1,78 @@
+
+# Module brl.tcpstream
+
+# Import brl.stream
+
+# Import brl.socket
+
+A tcp stream represents a synchronous tcp connection to a host on the internet.
+
+Please see the [[TcpStream]] class reference for more information.
+
+Tcp streams are only currently supported on the android, ios, win8, glfw and stdcpp targets.
+
+
+# Class brl.tcpstream.TcpStream Extends Stream
+
+A tcp stream represents a synchronous tcp connection to a host on the internet.
+
+*IMPORTANT! Performing synchronous tcp I/O may cause your app to be rejected by some publishers, as it may result in your app 'blocking' during execution as it waits for incoming data. To prevent this, use a plain [[Socket]] to perform asynchronous I/O instead. It is strongly recommended that synchronous tcp streams are only used with the stdcpp target.*
+
+After creating a tcp stream, you should use the [[Connect]] method to make a connection to a remote host.
+
+Once connected, you can read and write the stream using any of the [[Stream]] methods.
+
+Tcp streams are only currently supported on the android, ios, win8, glfw and stdcpp targets.
+
+Example:
+
+<pre>
+#If TARGET<>"glfw" And TARGET<>"android" And TARGET<>"ios" And TARGET<>"stdcpp"
+#Error "Invalid target!"
+#Endif
+
+Import brl.tcpstream
+
+Function Main()
+
+	Local stream:=New TcpStream
+	
+	If Not stream.Connect( "www.cerberus-x.com",80 )
+		Print "Failed to connect!"
+		Return
+	Endif
+	
+	Print "Connected!"
+	
+	stream.WriteLine "GET / HTTP/1.0"
+	stream.WriteLine "Host: www.cerberus-x.com"
+	stream.WriteLine ""
+	
+	While Not stream.Eof()
+		Local line:=stream.ReadLine()
+		Print line
+	Wend
+	
+	stream.Close
+	
+	Print "BYE!!!!"
+
+End
+</pre>
+
+
+# Method New()
+
+Creates a new unconnected tcp stream.
+
+
+# Method New( socket:Socket )
+
+Creates a new tcp stream from an existing socket. The socket must be a stream type socket.
+
+
+# Method Connect:Bool( host:String,port:Int )
+
+Attempts to connect to the specified host and returns true if successful.
+
+Once connected, you can use stream read/write commands to communicate with the host.

@@ -1,0 +1,25 @@
+
+# Module cerberus
+
+# Import cerberus.boxes
+
+# Import cerberus.lang
+
+# Import cerberus.list
+
+# Import cerberus.map
+
+# Import cerberus.math
+
+# Import cerberus.random
+
+# Import cerberus.set
+
+# Import cerberus.stack
+
+The cerberus modules provide 'built-in' functionality that is available to every cerberus program.
+
+This includes modules that provide math and random number functions, 'boxing' modules for treating primitives such as ints, floats and strings as objects, and modules that provide support for a range of simple container classes such as sets, maps, lists and stacks.
+
+It is not necesary to import cerberus modules as this is done automatically for every cerberus program.
+

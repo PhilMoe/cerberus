@@ -1,5 +1,5 @@
 
-package com.monkey;
+package com.cerberus;
 
 public class NativeGL{
 

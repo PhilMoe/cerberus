@@ -1,0 +1,33 @@
+> Keyword Null
+
+Null is a Cerberus X constant representing an empty Object reference.
+
+>> Syntax
+
+Null represents an empty Object, thereby allowing comparison between Null and an object's handle in order to determine whether or not the object actually exists.
+
+An object's handle may also be set to Null, thereby freeing the object and marking it for garbage collection (assuming no other handles still point to it); however, it is recommended that objects be allowed to go out of scope where possible, rather than nullifying them.
+
+>> Description
+
+>> See also
+
+[Language reference (Classes)](Language reference#classes)  
+
+>> Example
+
+<pre>
+Class Example
+		Field something:Int
+End
+
+Function Main ()
+
+		Local e:Example
+
+		' e = New Example ' Uncomment this line to change the outcome...
+
+		If e = Null Then Print "Object doesn't exist!" Else Print "Object exists!"
+
+End
+</pre>

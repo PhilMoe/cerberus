@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "1.26"
+#define TED_VERSION "2017-07-04"
 
 #define SETTINGS_VERSION 2
 
@@ -58,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     QCoreApplication::instance()->setAttribute( Qt::AA_DontShowIconsInMenus );
 #endif
 
-    QCoreApplication::setOrganizationName( "Blitz Research Ltd" );
-    QCoreApplication::setOrganizationDomain( "blitzresearchltd.com" );
+    QCoreApplication::setOrganizationName( "Cerberus X" );
+    QCoreApplication::setOrganizationDomain( "cerberus-x.com" );
     QCoreApplication::setApplicationName( "Ted" );
 
     QString comp=QHostInfo::localHostName();
@@ -233,10 +233,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     readSettings();
 
     if( _buildFileType.isEmpty() ){
-        updateTargetsWidget( "monkey" );
+        updateTargetsWidget( "cerberus" );
     }
 
-    QString home2=_monkeyPath+"/docs/html/Home2.html";
+    QString home2=_cerberusPath+"/docs/html/Home2.html";
     if( QFile::exists( home2 ) ) openFile( "file:///"+home2,false );
 
     _prefsDialog=new PrefsDialog( this );
@@ -272,17 +272,17 @@ void MainWindow::onTargetChanged( int index ){
 
     QString target=_targetsWidget->currentText();
 
-    if( _buildFileType=="monkey" ){
-        _activeMonkeyTarget=target;
+    if( _buildFileType=="cerberus" || _buildFileType=="monkey" ){
+        _activeCerberusTarget=target;
     }else if( _buildFileType=="mx2" || _buildFileType=="monkey2" ){
         _activeMonkey2Target=target;
     }
 }
 
 void MainWindow::loadHelpIndex(){
-    if( _monkeyPath.isEmpty() ) return;
+    if( _cerberusPath.isEmpty() ) return;
 
-    QFile file( _monkeyPath+"/docs/html/index.txt" );
+    QFile file( _cerberusPath+"/docs/html/index.txt" );
     if( !file.open( QIODevice::ReadOnly ) ) return;
 
     QTextStream stream( &file );
@@ -307,7 +307,7 @@ void MainWindow::loadHelpIndex(){
         if( j==-1 ) continue;
 
         QString topic=line.left(j);
-        QString url="file:///"+_monkeyPath+"/docs/html/"+line.mid(j+1);
+        QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
 
         _indexWidget->addItem( topic );
 
@@ -329,7 +329,8 @@ void MainWindow::parseAppArgs(){
 
 bool MainWindow::isBuildable( CodeEditor *editor ){
     if( !editor ) return false;
-    if( editor->fileType()=="monkey" ) return !_monkeyPath.isEmpty();
+    if( editor->fileType()=="cxs" ) return !_cerberusPath.isEmpty();
+    if( editor->fileType()=="monkey" ) return !_cerberusPath.isEmpty();
     if( editor->fileType()=="bmx" ) return !_blitzmaxPath.isEmpty();
     if( editor->fileType()=="monkey2" ) return !_monkey2Path.isEmpty();
     return false;
@@ -359,7 +360,7 @@ QWidget *MainWindow::newFile( const QString &cpath ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files ("+srcTypes+")" ) );
@@ -385,7 +386,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
     if( isUrl( path ) ){
 /*
         if( path.startsWith( "file:" ) && path.endsWith( "/docs/html/Home.html" ) ){
-            QString path2=_monkeyPath+"/docs/html/Home2.html";
+            QString path2=_cerberusPath+"/docs/html/Home2.html";
             if( QFile::exists( path2 ) ) path="file:///"+path2;
         }
 */
@@ -414,7 +415,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getOpenFileName( this,"Open File",_defaultDir,"Source Files ("+srcTypes+");;Image Files(*.jpg *.png *.bmp);;All Files(*.*)" ) );
@@ -480,7 +481,7 @@ bool MainWindow::saveFile( QWidget *widget,const QString &cpath ){
 
         _mainTabWidget->setCurrentWidget( editor );
 
-        QString srcTypes="*.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"Save File As",editor->path(),"Source Files ("+srcTypes+")" ) );
@@ -579,7 +580,7 @@ void MainWindow::closeEvent( QCloseEvent *event ){
 
 //Settings...
 //
-bool MainWindow::isValidMonkeyPath( const QString &path ){
+bool MainWindow::isValidCerberusPath( const QString &path ){
     QString transcc="transcc"+HOST;
 #ifdef Q_OS_WIN
     transcc+=".exe";
@@ -596,23 +597,23 @@ bool MainWindow::isValidBlitzmaxPath( const QString &path ){
     return QFile::exists( path+"/bin/"+bmk );
 }
 
-QString MainWindow::defaultMonkeyPath(){
+QString MainWindow::defaultCerberusPath(){
     QString path=QApplication::applicationDirPath();
     while( !path.isEmpty() ){
-        if( isValidMonkeyPath( path ) ) return path;
+        if( isValidCerberusPath( path ) ) return path;
         path=extractDir( path );
     }
     return "";
 }
 
 void MainWindow::enumTargets(){
-    if( _monkeyPath.isEmpty() ) return;
+    if( _cerberusPath.isEmpty() ) return;
 
-    _monkeyTargets.clear();
+    _cerberusTargets.clear();
     _monkey2Targets.clear();
 
-    QDir monkey2Dir( _monkeyPath+"/monkey2" );
-    if( !monkey2Dir.exists() ) monkey2Dir=QDir( _monkeyPath+"/../monkey2" );
+    QDir monkey2Dir( _cerberusPath+"/monkey2" );
+    if( !monkey2Dir.exists() ) monkey2Dir=QDir( _cerberusPath+"/../monkey2" );
     if( monkey2Dir.exists() ){
         _monkey2Path=monkey2Dir.absolutePath();
         _monkey2Targets.push_back( "Desktop" );
@@ -620,13 +621,13 @@ void MainWindow::enumTargets(){
         _activeMonkey2Target="Desktop";
     }
 
-    QString cmd="\""+_monkeyPath+"/bin/transcc"+HOST+"\"";
+    QString cmd="\""+_cerberusPath+"/bin/transcc"+HOST+"\"";
 
     Process proc;
     if( !proc.start( cmd ) ) return;
 
     QString sol="Valid targets: ";
-    QString ver="TRANS monkey compiler V";
+    QString ver="TRANS cerberus compiler V";
 
     while( proc.waitLineAvailable( 0 ) ){
         QString line=proc.readLine( 0 );
@@ -639,8 +640,8 @@ void MainWindow::enumTargets(){
                 QString bit=bits[i];
                 if( bit.isEmpty() ) continue;
                 QString target=bit.replace( '_',' ' );
-                if( target.contains( "Html5" ) ) _activeMonkeyTarget=target;
-                _monkeyTargets.push_back( target );
+                if( target.contains( "Html5" ) ) _activeCerberusTarget=target;
+                _cerberusTargets.push_back( target );
             }
         }
     }
@@ -667,14 +668,14 @@ void MainWindow::readSettings(){
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
         prefs->setValue( "smoothFonts",true );
 
-        _monkeyPath=defaultMonkeyPath();
-        prefs->setValue( "monkeyPath",_monkeyPath );
+        _cerberusPath=defaultCerberusPath();
+        prefs->setValue( "cerberusPath",_cerberusPath );
 
         _blitzmaxPath="";
         prefs->setValue( "blitzmaxPath",_blitzmaxPath );
 
-        if( !_monkeyPath.isEmpty() ){
-            _projectTreeModel->addProject( _monkeyPath );
+        if( !_cerberusPath.isEmpty() ){
+            _projectTreeModel->addProject( _cerberusPath );
         }
 
         enumTargets();
@@ -684,23 +685,23 @@ void MainWindow::readSettings(){
         return;
     }
 
-    _monkeyPath=defaultMonkeyPath();
+    _cerberusPath=defaultCerberusPath();
 
-    QString prefsMonkeyPath=prefs->getString( "monkeyPath" );
+    QString prefsCerberusPath=prefs->getString( "cerberusPath" );
 
-    if( _monkeyPath.isEmpty() ){
+    if( _cerberusPath.isEmpty() ){
 
-        _monkeyPath=prefsMonkeyPath;
+        _cerberusPath=prefsCerberusPath;
 
-        if( !isValidMonkeyPath( _monkeyPath ) ){
-            _monkeyPath="";
-            prefs->setValue( "monkeyPath",_monkeyPath );
-            QMessageBox::warning( this,"Monkey Path Error","Invalid Monkey path!\n\nPlease select correct path from the File..Options dialog" );
+        if( !isValidCerberusPath( _cerberusPath ) ){
+            _cerberusPath="";
+            prefs->setValue( "cerberusPath",_cerberusPath );
+            QMessageBox::warning( this,"Cerberus Path Error","Invalid Cerberus path!\n\nPlease select correct path from the File..Options dialog" );
         }
 
-    }else if( _monkeyPath!=prefsMonkeyPath ){
-        prefs->setValue( "monkeyPath",_monkeyPath );
-        QMessageBox::information( this,"Monkey Path Updated","Monkey path has been updated to "+_monkeyPath );
+    }else if( _cerberusPath!=prefsCerberusPath ){
+        prefs->setValue( "cerberusPath",_cerberusPath );
+        QMessageBox::information( this,"Cerberus Path Updated","Cerberus path has been updated to "+_cerberusPath );
     }
 
     _blitzmaxPath=prefs->getString( "blitzmaxPath" );
@@ -748,7 +749,7 @@ void MainWindow::readSettings(){
     settings.beginGroup( "buildSettings" );
     QString target=settings.value( "target" ).toString();
 
-    _activeMonkeyTarget=target;
+    _activeCerberusTarget=target;
     _buildFileType="";
 
     /*
@@ -825,7 +826,7 @@ void MainWindow::writeSettings(){
     settings.endArray();
 
     settings.beginGroup( "buildSettings" );
-    settings.setValue( "target",_activeMonkeyTarget );
+    settings.setValue( "target",_activeCerberusTarget );
     settings.setValue( "config",_configsWidget->currentText() );
     settings.setValue( "locked",_lockedEditor ? _lockedEditor->path() : "" );
     settings.endGroup();
@@ -840,12 +841,12 @@ void MainWindow::updateTargetsWidget( QString fileType ){
         disconnect( _targetsWidget,0,0,0 );
         _targetsWidget->clear();
 
-        if( fileType=="monkey" ){
-            for( int i=0;i<_monkeyTargets.size();++i ){
-                _targetsWidget->addItem( _monkeyTargets.at(i) );
-                if( _monkeyTargets.at(i)==_activeMonkeyTarget ) _targetsWidget->setCurrentIndex( i );
+        if( fileType=="cxs" || fileType=="monkey" ){
+            for( int i=0;i<_cerberusTargets.size();++i ){
+                _targetsWidget->addItem( _cerberusTargets.at(i) );
+                if( _cerberusTargets.at(i)==_activeCerberusTarget ) _targetsWidget->setCurrentIndex( i );
             }
-            _activeMonkeyTarget=_targetsWidget->currentText();
+            _activeCerberusTarget=_targetsWidget->currentText();
             _configsWidget->setEnabled( true );
         }else if( fileType=="mx2" || fileType=="monkey2" ){
             for( int i=0;i<_monkey2Targets.size();++i ){
@@ -912,7 +913,7 @@ void MainWindow::updateActions(){
     //build menu
     CodeEditor *buildEditor=_lockedEditor ? _lockedEditor : _codeEditor;
     bool canBuild=!_consoleProc && isBuildable( buildEditor );
-    bool canTrans=canBuild && buildEditor->fileType()=="monkey";
+    bool canTrans=canBuild && ( buildEditor->fileType()=="cxs" || buildEditor->fileType()=="monkey" );
     _ui->actionBuildBuild->setEnabled( canBuild );
     _ui->actionBuildRun->setEnabled( canBuild || db );
     _ui->actionBuildCheck->setEnabled( canTrans );
@@ -1037,7 +1038,7 @@ void MainWindow::onProjectMenu( const QPoint &pos ){
         bool ok=false;
         QString name=QInputDialog::getText( this,"Create File","File name: "+info.filePath()+"/",QLineEdit::Normal,"",&ok );
         if( ok && !name.isEmpty() ){
-            if( extractExt( name ).isEmpty() ) name+=".monkey";
+            if( extractExt( name ).isEmpty() ) name+=".cxs";
             QString path=info.filePath()+"/"+name;
             if( QFileInfo( path ).exists() ){
                 if( QMessageBox::question( this,"Create File","Okay to overwrite existing file: "+path+" ?",QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Cancel )==QMessageBox::Ok ){
@@ -1193,7 +1194,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 
     cmd=cmd.replace( "${TARGET}",_targetsWidget->currentText().replace( ' ','_' ) );
     cmd=cmd.replace( "${CONFIG}",_configsWidget->currentText() );
-    cmd=cmd.replace( "${MONKEYPATH}",_monkeyPath );
+    cmd=cmd.replace( "${CERBERUSPATH}",_cerberusPath );
     cmd=cmd.replace( "${MONKEY2PATH}",_monkey2Path );
     cmd=cmd.replace( "${BLITZMAXPATH}",_blitzmaxPath );
     if( fileWidget ) cmd=cmd.replace( "${FILEPATH}",widgetPath( fileWidget ) );
@@ -1221,7 +1222,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 void MainWindow::onProcStdout(){
 
     static QString comerr=" : Error : ";
-    static QString runerr="Monkey Runtime Error : ";
+    static QString runerr="Cerberus Runtime Error : ";
 
     QString text=_consoleProc->readLine( 0 );
 
@@ -1248,7 +1249,7 @@ void MainWindow::onProcStdout(){
         showNormal();
         raise();
         activateWindow();
-        QMessageBox::warning( this,"Monkey Runtime Error",err );
+        QMessageBox::warning( this,"Cerberus Runtime Error",err );
     }
 }
 
@@ -1372,16 +1373,16 @@ void MainWindow::build( QString mode ){
 
     QString cmd,msg="Building: "+filePath+"...";
 
-    if( editor->fileType()=="monkey" ){
+    if( editor->fileType()=="cxs" || editor->fileType()=="monkey" ){
         if( mode=="run" ){
-            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -run \"${FILEPATH}\"";
+            cmd="\"${CERBERUSPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -run \"${FILEPATH}\"";
         }else if( mode=="build" ){
-            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
+            cmd="\"${CERBERUSPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} \"${FILEPATH}\"";
         }else if( mode=="update" ){
-            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -update \"${FILEPATH}\"";
+            cmd="\"${CERBERUSPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -update \"${FILEPATH}\"";
             msg="Updating: "+filePath+"...";
         }else if( mode=="check" ){
-            cmd="\"${MONKEYPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -check \"${FILEPATH}\"";
+            cmd="\"${CERBERUSPATH}/bin/transcc"+HOST+"\" -target=${TARGET} -config=${CONFIG} -check \"${FILEPATH}\"";
             msg="Checking: "+filePath+"...";
         }
     }else if( editor->fileType()=="bmx" ){
@@ -1509,14 +1510,14 @@ void MainWindow::onFilePrefs(){
 
     Prefs *prefs=Prefs::prefs();
 
-    QString path=prefs->getString( "monkeyPath" );
-    if( path!=_monkeyPath ){
-        if( isValidMonkeyPath( path ) ){
-            _monkeyPath=path;
+    QString path=prefs->getString( "cerberusPath" );
+    if( path!=_cerberusPath ){
+        if( isValidCerberusPath( path ) ){
+            _cerberusPath=path;
             enumTargets();
         }else{
-            prefs->setValue( "monkeyPath",_monkeyPath );
-            QMessageBox::warning( this,"Tool Path Error","Invalid Monkey Path" );
+            prefs->setValue( "cerberusPath",_cerberusPath );
+            QMessageBox::warning( this,"Tool Path Error","Invalid Cerberus Path" );
         }
     }
 
@@ -1783,16 +1784,16 @@ void MainWindow::onBuildAddProject(){
 //***** Help menu *****
 
 void MainWindow::updateHelp(){
-    QString home=_monkeyPath+"/docs/html/Home.html";
+    QString home=_cerberusPath+"/docs/html/Home.html";
     if( !QFile::exists( home ) ){
-        if( QMessageBox::question( this,"Rebuild monkey docs","Monkey documentation not found - rebuild docs?",QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Ok )==QMessageBox::Ok ){
+        if( QMessageBox::question( this,"Rebuild cerberus docs","Cerberus documentation not found - rebuild docs?",QMessageBox::Ok|QMessageBox::Cancel,QMessageBox::Ok )==QMessageBox::Ok ){
             onHelpRebuild();
         }
     }
 }
 
 void MainWindow::onHelpHome(){
-    QString home=_monkeyPath+"/docs/html/Home.html";
+    QString home=_cerberusPath+"/docs/html/Home.html";
     if( !QFile::exists( home ) ) return;
     openFile( "file:///"+home,false );
 }
@@ -1820,9 +1821,9 @@ void MainWindow::onHelpQuickHelp(){
 
 void MainWindow::onHelpAbout(){
 
-    QString MONKEY_VERSION="?????";
+    QString CERBERUS_VERSION="?????";
 
-    QFile file( _monkeyPath+"/VERSIONS.TXT" );
+    QFile file( _cerberusPath+"/VERSIONS.TXT" );
     if( file.open( QIODevice::ReadOnly ) ){
         QTextStream stream( &file );
         stream.setCodec( "UTF-8" );
@@ -1835,7 +1836,7 @@ void MainWindow::onHelpAbout(){
                 QString v=line.mid( 7 );
                 int j=v.indexOf( " *****" );
                 if( j+6==v.length() ){
-                    MONKEY_VERSION=v.left( j );
+                    CERBERUS_VERSION=v.left( j );
                     break;
                 }
             }
@@ -1843,11 +1844,12 @@ void MainWindow::onHelpAbout(){
     }
 
     QString ABOUT=
-//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Monkey V"+MONKEY_VERSION+"; Trans V"+_transVersion+")\n\n"
-            "Ted V"TED_VERSION"  (Monkey V"+MONKEY_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
-            "Copyright Blitz Research Ltd.\n\n"
-            "A simple editor/IDE for the Monkey programming language.\n\n"
-            "Please visit www.monkeycoder.co.nz for more information on Monkey."
+//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")\n\n"
+            "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
+            "Copyright Blitz Research Ltd for Monkey X.\n\n"
+            "Cerberus X maintained by Michael Hartlef & Martin Leidel.\n\n"
+            "A simple editor/IDE for the Cerberus programming language.\n\n"
+            "Please visit www.cerberus-x.com for more information on Cerberus."
             ;
 
     QMessageBox::information( this,"About Ted",ABOUT );
@@ -1910,11 +1912,11 @@ void MainWindow::onLinkClicked( const QUrl &url ){
 }
 
 void MainWindow::onHelpRebuild(){
-    if( _consoleProc || _monkeyPath.isEmpty() ) return;
+    if( _consoleProc || _cerberusPath.isEmpty() ) return;
 
     onFileSaveAll();
 
-    QString cmd="\"${MONKEYPATH}/bin/makedocs"+HOST+"\"";
+    QString cmd="\"${CERBERUSPATH}/bin/makedocs"+HOST+"\"";
 
     _rebuildingHelp=true;
 

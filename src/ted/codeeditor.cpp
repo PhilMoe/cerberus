@@ -162,7 +162,7 @@ void CodeEditor::rename( const QString &path ){
 
     _txt=textFileTypes.contains( t );
     _code=codeFileTypes.contains( t );
-    _monkey=_fileType=="monkey" || _fileType=="mx2" || _fileType=="monkey2";
+    _cerberus=_fileType=="cxs" || _fileType=="monkey" || _fileType=="mx2" || _fileType=="monkey2";
     _monkey2=_fileType=="mx2" || _fileType=="monkey2";
 
     if( _txt ){
@@ -339,7 +339,7 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
 
     if( e ) QPlainTextEdit::keyPressEvent( e );
 
-    if( _monkey && block.userState()==-1 ){
+    if( _cerberus && block.userState()==-1 ){
 
         if( key>=32 && key<=255 ){
             if( (key>=Qt::Key_A && key<=Qt::Key_Z) || (key>=Qt::Key_0 && key<=Qt::Key_9) || (key==Qt::Key_Underscore) ){
@@ -621,15 +621,15 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
     int i=0,n=text.length();
     QChar c=text[i++];
 
-    bool monkeyFile=_editor->isMonkey();
+    bool cerberusFile=_editor->isCerberus();
 
     if( c<=' ' ){
         while( i<n && text[i]<=' ' ) ++i;
     }else if( isAlpha(c) ){
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
-        if( monkeyFile && keyWords().contains( text.left(i).toLower()  ) ) color=_keywordsColor;
-    }else if( c=='0' && !monkeyFile ){
+        if( cerberusFile && keyWords().contains( text.left(i).toLower()  ) ) color=_keywordsColor;
+    }else if( c=='0' && !cerberusFile ){
         if( i<n && text[i]=='x' ){
             for( ++i;i<n && isHexDigit( text[i] );++i ){}
         }else{
@@ -650,14 +650,14 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
             while( i<n && isDigit(text[i]) ) ++i;
         }
         color=_numbersColor;
-    }else if( c=='%' && monkeyFile && i<n && isBinDigit( text[i] ) ){
+    }else if( c=='%' && cerberusFile && i<n && isBinDigit( text[i] ) ){
         for( ++i;i<n && isBinDigit( text[i] );++i ){}
         color=_numbersColor;
-    }else if( c=='$' && monkeyFile && i<n && isHexDigit( text[i] ) ){
+    }else if( c=='$' && cerberusFile && i<n && isHexDigit( text[i] ) ){
         for( ++i;i<n && isHexDigit( text[i] );++i ){}
         color=_numbersColor;
     }else if( c=='\"' ){
-        if( monkeyFile ){
+        if( cerberusFile ){
             for( ;i<n && text[i]!='\"';++i ){}
         }else{
             for( ;i<n && text[i]!='\"';++i ){
@@ -666,12 +666,12 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
         }
         if( i<n ) ++i;
         color=_stringsColor;
-    }else if( !monkeyFile && c=='/' && i<n && text[i]=='/' ){
+    }else if( !cerberusFile && c=='/' && i<n && text[i]=='/' ){
         for( ++i;i<n && text[i]!='\n';++i ){}
         if( i<n ) ++i;
         color=_commentsColor;
     }else if( c=='\'' ){
-        if( monkeyFile ){
+        if( cerberusFile ){
             for( ;i<n && text[i]!='\n';++i ){}
             if( i<n ) ++i;
             color=_commentsColor;
@@ -730,9 +730,9 @@ void Highlighter::highlightBlock( const QString &ctext ){
     int i=0,n=text.length();
     while( i<n && text[i]<=' ' ) ++i;
 
-    if( _editor->isMonkey() ){
+    if( _editor->isCerberus() ){
 
-        //Handle Monkey block comments
+        //Handle Cerberus block comments
 
         int st=previousBlockState();
 
@@ -802,7 +802,7 @@ void Highlighter::highlightBlock( const QString &ctext ){
 
     if( colst<n ) setFormat( colst,n-colst,curcol );
 
-    if( _editor->isMonkey() ){
+    if( _editor->isCerberus() ){
         //
         //Update user block data for code tree.
         //

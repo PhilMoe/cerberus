@@ -1,0 +1,70 @@
+> Keyword Function
+
+Declares the beginning of a function.
+
+>> Syntax
+
+Function *Identifier*: *ReturnType* ( *Parameters* )~n
+	*Statements...*~n
+End [ Function ]
+
+>> Description
+
+The Function keyword begins the declaration of a function.
+
+Please see the Functions section of the Cerberus X language reference for more information on functions.
+
+>> See also
+
+[[End]]~n
+[Language reference (Functions)](Language reference#functions)~n
+[Language reference (Strict mode)](Language reference#strict)
+
+>> Examples
+
+The Main function, required by all Cerberus X programs.
+
+<pre>
+Function Main ()
+	Print "Hello"
+End
+</pre>
+
+The closing keyword End may be replaced with End Function if preferred:
+
+<pre>
+Function Main ()
+	Print "Hello"
+End Function
+</pre>
+
+The Main function in Strict mode; requires Int return type and Return statement.
+
+<pre>
+Strict
+
+Function Main:Int ()
+	Print "Hello"
+	Return 0
+End
+</pre>
+
+A function that returns the result of adding two floating-point values.
+
+<pre>
+Function AddFloats:Float (value1:Float, value2:Float)
+	Return value1 + value2
+End
+
+Print AddFloats (1, 2)
+</pre>
+
+For functions that don't return a value in Strict mode, the Void return type must be specified in the function declaration.
+
+<pre>
+Strict
+
+Function PrintMessage:Void (message:String)
+	Print message
+End
+</pre>

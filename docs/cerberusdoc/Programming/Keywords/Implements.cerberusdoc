@@ -1,0 +1,90 @@
+> Keyword Implements
+
+Declares that a class implements the methods of the specified interface.
+
+>> Syntax
+
+Class *Identifier* [ Implements *Interface* ]~n
+		 *Declarations...*~n
+End [ Class ]
+
+>> Description
+
+The Implements keyword is used to declare that a class will provide the methods listed in a given interface.
+
+Please see the Interfaces section of the Cerberus X language reference for more information on interfaces.
+
+>> See also
+
+[[Class]] | [[Interface]]~n
+[Language reference (Interfaces)](Language reference#interfaces)  
+
+>> Example
+
+An example of a simple interface, including use of the Implements keyword.
+
+<pre>
+Interface Computer
+
+	Method Boot ()
+	Method Process ()
+	Method Display ()
+	
+End
+
+Class PC Implements Computer
+
+	Method Boot ()
+		Print "BIOS version 1.01. Performing ancient rituals..."
+	End
+	
+	Method Process ()
+		Print "Calculating 1 + 1..."
+	End
+	
+	Method Display ()
+		Print "The result of 1 + 1 equals 2!"
+	End
+	
+End
+
+Class C64 Implements Computer
+
+	Method Boot ()
+		Print "**** COMMODORE 64 BASIC V2 **** | 64K RAM SYSTEM  38911 BASIC BYTES FREE"
+	End
+	
+	Method Process ()
+		Print "Calculating missile position..."
+	End
+	
+	Method Display ()
+		Print "Enemies exploding!"
+	End
+	
+End
+
+Function Main ()
+
+	Print ""
+	Print "PC"
+	Print ""
+
+	Local ibm:Computer = New PC
+	
+	ibm.Boot
+	ibm.Process
+	ibm.Display
+
+	Print ""
+	Print "C64"
+	Print ""
+
+	Local commodore:Computer = New C64
+	
+	commodore.Boot
+	commodore.Process
+	commodore.Display
+
+End
+</pre>

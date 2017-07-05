@@ -1,0 +1,35 @@
+> Operator New
+
+Creates and initialises object of given class.
+
+>> Syntax
+
+Local *Identifier:Class* [ = New *Class* ]
+
+Local *Identifier:*= New *Class*
+
+>> Description
+
+The New operator creates a new object of the given class and assigns it to an identifier of that class.
+
+The alternative syntax provided allows the identifier's class to be deduced from the expression.
+
+See the Classes section of the Cerberus X language reference for more details on the New operator.
+
+>> See also
+
+[Language reference](Language reference#classes)
+
+>> Example
+
+<pre>
+Class MyObject
+  Field whatever:Int = 1
+End
+
+Local thing:MyObject = New MyObject
+
+' thing is now an object of type MyObject...
+
+Print thing.whatever
+</pre>

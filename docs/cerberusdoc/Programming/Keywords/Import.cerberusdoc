@@ -1,0 +1,92 @@
+> Directive Import
+
+Module import directive.
+
+>> Syntax
+
+Import module*[.submodule]*
+
+>> Description
+
+A Cerberus X program consists of one or more modules, each of which is represented by a single source file; the name of the module is taken from the name of the source file. For example, if your file is named "particles.cxs" then the module will be called "particles".
+
+A module may 'import' other modules, gaining access to their declarations such as classes, functions, global variables, constants, etc. Imported modules in turn may import other modules, which may themselves import other modules, and so on.
+
+To import another module, the Import keyword must be placed at the top of your source file, but *after* the Strict keyword if used.
+
+Cerberus X also supports cyclic imports, whereby modules can import each other, gaining access to each other's declarations.
+
+>> See also
+[[Strict]]~n
+[Language reference](Language reference#modules)
+
+>> Example
+
+A common use case: importing the mojo module in a game application.
+
+<pre>
+Import mojo
+
+Function Main ()
+	' Game goes here!
+End
+</pre>
+
+In Strict mode, Strict should be declared before any imports:
+
+<pre>
+Strict
+
+Import mojo
+
+Function Main:Int ()
+	' Game goes here!
+	Return 0
+End
+</pre>
+
+>> Example 2
+
+This runnable two-part example shows a main module followed by a module to be imported. They should be saved as two separate files in the same folder.
+
+*Main module:*
+<pre>
+' Main module, save as, eg. mygame.cxs  
+Import hello  
+Function Main ()
+	SayHello
+End
+</pre>
+
+*Module to be imported:*
+<pre>
+' Save as hello.cxs  
+Function SayHello ()
+	Print "Hello"
+End
+</pre>
+
+The main module, mygame, can now access the SayHello function of the imported 'hello' module.
+
+>> Example 3
+
+This two-part cyclic import example shows a main module, mygame, which imports multiple modules; each of these modules imports mygame in return.
+
+*Main module:*
+<pre>
+' Saved as mygame.cxs  
+Import player
+Import rocket
+Import bullet  
+Function Main ()
+	' Game goes here!
+End
+</pre>
+
+*At the top of player.cxs, rocket.cxs and bullet.cxs:*
+<pre>
+Import mygame
+' ...
+</pre>
+
+Because the main module, mygame, imports player, rocket and bullet, each module importing mygame can access all declarations in player, rocket and bullet. Any new imports added to mygame will automatically become available.

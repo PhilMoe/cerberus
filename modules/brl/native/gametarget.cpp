@@ -176,7 +176,7 @@ void BBGame::GetDate( Array<int> date ){
 }
 
 int BBGame::SaveState( String state ){
-	if( FILE *f=OpenFile( "./.monkeystate","wb" ) ){
+	if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
 		bool ok=state.Save( f );
 		fclose( f );
 		return ok ? 0 : -2;
@@ -185,7 +185,7 @@ int BBGame::SaveState( String state ){
 }
 
 String BBGame::LoadState(){
-	if( FILE *f=OpenFile( "./.monkeystate","rb" ) ){
+	if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
 		String str=String::Load( f );
 		fclose( f );
 		return str;
@@ -278,7 +278,7 @@ unsigned char *BBGame::LoadData( String path,int *plength ){
 //***** INTERNAL *****
 
 void BBGame::Die( ThrowableObject *ex ){
-	bbPrint( "Monkey Runtime Error : Uncaught Monkey Exception" );
+	bbPrint( "Cerberus Runtime Error : Uncaught Cerberus Exception" );
 #ifndef NDEBUG
 	bbPrint( ex->stackTrace );
 #endif

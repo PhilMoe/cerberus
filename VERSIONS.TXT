@@ -1,4 +1,13 @@
 
+***** v2017-07-04 *****
+
+MOD: [ALL] changed everything from Monkey to the new name Cerberus
+MOD: [DESKTOP] updated to latest GLFW 3.3 (which fixes macOS Sierra issues)
+FIX: [HTML5] fixed audio issues with Samsung browser on Android
+FIX: [HTML5] key events with Umlauts for Firefox
+FIX: [ANDROID] fixed google play store issues
+FIX: [ANDROID] fixed databuffer boundary issue
+
 ***** v87a *****
 
 Android target has been modified to build with sdk-24, and create apps for minSdk=10 (Gingerbread) and targetSdk=23 (Marshmallow and greater).

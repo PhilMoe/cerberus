@@ -123,7 +123,7 @@ class BBMonkeyStore extends ActivityDelegate{
 
 	public BBMonkeyStore(){
 		_activity=BBAndroidGame.AndroidGame().GetActivity();
-		OuyaFacade.getInstance().init( _activity,MonkeyConfig.ANDROID_OUYA_DEVELOPER_UUID );
+		OuyaFacade.getInstance().init( _activity,CerberusConfig.ANDROID_OUYA_DEVELOPER_UUID );
 		BBAndroidGame.AndroidGame().AddActivityDelegate( this );
 	}
 
@@ -132,7 +132,7 @@ class BBMonkeyStore extends ActivityDelegate{
 		_result=-1;
 		
 		try{
-			byte[] appKey=BBAndroidGame.AndroidGame().LoadData( "monkey://data/key.der" );
+			byte[] appKey=BBAndroidGame.AndroidGame().LoadData( "cerberus://data/key.der" );
 			if( appKey!=null ){
 				X509EncodedKeySpec keySpec=new X509EncodedKeySpec( appKey );
 				KeyFactory keyFactory=KeyFactory.getInstance( "RSA" );

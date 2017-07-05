@@ -3,9 +3,9 @@
 #include "pch.h"
 #include <DrawingSurfaceNative.h>
 
-class BBMonkeyGame;
+class BBCerberusGame;
 
-namespace MonkeyGame_PhoneComponent
+namespace CerberusGame_PhoneComponent
 {
 	//Because pointer events appear to happen on another thread...?
 	struct PointerEvent{
@@ -60,7 +60,7 @@ namespace MonkeyGame_PhoneComponent
         HRESULT Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView);
         
 	private:
-		BBMonkeyGame *_game;
+		BBCerberusGame *_game;
 		PointerEvent _events[256];
 		int _put,_get;
     };

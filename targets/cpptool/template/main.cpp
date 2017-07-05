@@ -21,7 +21,7 @@ int main( int argc,const char **argv ){
 		
 	}catch( ThrowableObject *ex ){
 	
-		bbPrint( "Monkey Runtime Error : Uncaught Monkey Exception" );
+		bbPrint( "Cerberus Runtime Error : Uncaught Cerberus Exception" );
 	
 	}catch( const char *err ){
 	

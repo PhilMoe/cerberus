@@ -73,7 +73,7 @@ class BBAdmob implements Runnable{
 		case 3:sz=AdSize.SMART_BANNER;break;
 		}
 		
-		_adView=new AdView( activity,sz,MonkeyConfig.ADMOB_PUBLISHER_ID );
+		_adView=new AdView( activity,sz,CerberusConfig.ADMOB_PUBLISHER_ID );
 				
 		RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT );
 		
@@ -95,10 +95,10 @@ class BBAdmob implements Runnable{
 
 		AdRequest req=new AdRequest();
 		
-		AddTestDev( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE1,req );
-		AddTestDev( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE2,req );
-		AddTestDev( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE3,req );
-		AddTestDev( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE4,req );
+		AddTestDev( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE1,req );
+		AddTestDev( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE2,req );
+		AddTestDev( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE3,req );
+		AddTestDev( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE4,req );
 		
 		_adView.loadAd( req );
 	}

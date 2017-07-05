@@ -59,9 +59,9 @@ private:
     bool saveFile( QWidget *widget,const QString &path );
     bool closeFile( QWidget *widget,bool remove=true );
 
-    bool isValidMonkeyPath( const QString &path );
+    bool isValidCerberusPath( const QString &path );
     bool isValidBlitzmaxPath( const QString &path );
-    QString defaultMonkeyPath();
+    QString defaultCerberusPath();
     void enumTargets();
 
     void readSettings();
@@ -172,7 +172,7 @@ private:
     QString _defaultDir;
 
     QString _blitzmaxPath;
-    QString _monkeyPath;
+    QString _cerberusPath;
     QString _monkey2Path;
 
     QString _transVersion;
@@ -219,10 +219,10 @@ private:
 
     QString _buildFileType;
 
-    QString _activeMonkeyTarget;
+    QString _activeCerberusTarget;
     QString _activeMonkey2Target;
 
-    QVector<QString> _monkeyTargets;
+    QVector<QString> _cerberusTargets;
     QVector<QString> _monkey2Targets;
 };
 

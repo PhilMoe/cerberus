@@ -1,0 +1,107 @@
+
+# Module cerberus.deque
+
+A deque is a 'double ended queue'.
+
+Please refer to the [[Deque]] class for more information on deques.
+
+
+# Class Deque<T>
+
+A deque is a 'double ended queue'.
+
+It is similar to a stack, only items can be pushed and popped to and from either end of the stack.
+
+This means it can be used as either a FIFO or LIFO/FILO queue.
+
+
+# Method New()
+
+Creates a new empty deque.
+
+
+# Method New( data:T[] )
+
+Creates a new deque containing the elements of @data.
+
+
+# Method ToArray:T[]()
+
+Converts the deque to an array.
+
+
+# Method IsEmpty:Bool() Property
+
+Returns true if the deque is empty.
+
+
+# Method Length:Int() Property
+
+Returns the number of items in the deque.
+
+
+# Method Clear:Void()
+
+Removes all items from the deque.
+
+
+# Method PushLast:Void( value:T )
+
+Adds an item to the end of the deque.
+
+
+# Method PushFirst:Void( value:T )
+
+Adds an item to the beginning of the deque.
+
+
+# Method PopLast:T()
+
+Removes an item from the end of the deque.
+
+If the deque is empty, a runtime error occurs.
+
+
+# Method PopFirst:T()
+
+Removes an item from the beginning of the deque.
+
+If the deque is empty, a runtime error occurs.
+
+
+# Method Get:T( index:Int )
+
+Returns an item at the given index from the deque.
+
+The first item in the deck is at index 0, the last is at index Length-1.
+
+If the deque is empty, a runtime error occurs.
+
+
+# Method Set:Void( index:Int,value:T )
+
+Sets an item at the given index.
+
+The first item in the deck is at index 0, the last is at index Length-1.
+
+If the deque is empty, a runtime error occurs.
+
+
+# Method ObjectEnumerator:Object()
+
+Returns an object enumerator for use with For Eachin loops.
+
+
+# Class IntDeque Extends Deque<Int>
+
+IntDeque is a convenience class for handling deques of integer values.
+
+
+# Class FloatDeque Extends Deque<Float>
+
+FloatDeque is a convenience class for handling deques of floating point values.
+
+
+# Class StringDeque Extends Deque<String>
+
+StringDeque is a convenience class for handling deques of string values.

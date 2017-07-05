@@ -1,10 +1,10 @@
 
 '--------------------
-'Monkey modules path
+'Cerberus modules path
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
@@ -14,17 +14,8 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '
 'for opening .html files...
 '
-HTML_PLAYER="${MONKEYDIR}\bin\mserver_winnt.exe"
+HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '--------------------
-
-'----- ---------------------
-'Stuff in local devtools dir
-'
-ANT_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\apache-ant-1.9.7"
-JDK_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\jdk1.8.0_91"
-ANDROID_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\Android\sdk"
-FLEX_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\flex_sdk_4.6"
-'---------------------------
 
 '--------------------
 'Ant build tool path
@@ -33,13 +24,7 @@ FLEX_PATH="C:\Users\The Razorback\Desktop\monkey1_devtools_windows\flex_sdk_4.6"
 '
 'Ant is currently available here: http://ant.apache.org/bindownload.cgi
 '
-ANT_PATH="D:\\devtools\apache-ant-1.9.7"
-ANT_PATH="D:\\devtools\apache-ant-windows"
-ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.9.3"
-ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.9.2"
-ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.8.4"
-ANT_PATH="${SYSTEMDRIVE}\apache-ant-1.8.2"
-ANT_PATH="${SYSTEMDRIVE}\ant"
+ANT_PATH="d:\devtools\apache-ant-1.9.7"
 '--------------------
 
 '--------------------
@@ -50,17 +35,9 @@ ANT_PATH="${SYSTEMDRIVE}\ant"
 'MinGW is currently here:
 '
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
-'MINGW_PATH="C:\\TDM-GCC-64"
-'MINGW_PATH="D:\\devtools\TDM-GCC-64-4.9.2"
 
-'***** 32 bit mingw *****
-MINGW_PATH="D:\\devtools\TDM-GCC-32-5.1.0"
-
-'MINGW_PATH="D:\\devtools\TDM-GCC-32"
-'MINGW_PATH="${MONKEYDIR}\MinGW"
-'MINGW_PATH="${SYSTEMDRIVE}\TDM-GCC-32"
-'MINGW_PATH="${SYSTEMDRIVE}\MinGW32"
-'MINGW_PATH="${SYSTEMDRIVE}\MinGW"
+'***** 64 bit mingw *****
+MINGW_PATH="d:\devtools\TDM-GCC-64"
 '--------------------
 
 '--------------------
@@ -70,25 +47,7 @@ MINGW_PATH="D:\\devtools\TDM-GCC-32-5.1.0"
 '
 'The Java JDK is currently available here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 '
-JDK_PATH="D:\\devtools\jdk1.8.0_91"
-JDK_PATH="D:\\devtools\jdk-8u5-windows-i586"
-'
-'For normal JDK
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.7.0_51"
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.7.0_17"
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.7.0_02"
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.6.0_23"
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.6.0_21"
-JDK_PATH="${SYSTEMDRIVE}\Program Files\Java\jdk1.6.0_19"
-
-'For 32 bit JDK on 64 bit Windows
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.7.0_51"
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.7.0_17"
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.7.0_02"
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.6.0_23"
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.6.0_21"
-JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.6.0_19"
-
+JDK_PATH="d:\devtools\JavaSDK"
 '--------------------
 
 '--------------------
@@ -96,10 +55,7 @@ JDK_PATH="${SYSTEMDRIVE}\Program Files (x86)\Java\jdk1.6.0_19"
 '
 'Must be set to a valid dir for ANDROID target support
 '
-ANDROID_PATH="D:\\devtools\Android\sdk"
-ANDROID_PATH="D:\\devtools\android-sdk-windows"
-ANDROID_PATH="${SYSTEMDRIVE}\android-sdk-windows"
-ANDROID_PATH="${SYSTEMDRIVE}\android-sdk"
+ANDROID_PATH="d:\devtools\Android\sdk"
 '--------------------
 
 '--------------------
@@ -107,8 +63,7 @@ ANDROID_PATH="${SYSTEMDRIVE}\android-sdk"
 '
 'Must be set to a valid dir for ANDROID NDK target support
 '
-ANDROID_NDK_PATH=D:\\devtools\android-ndk-r9"
-ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r9"
+ANDROID_NDK_PATH="d:\devtools\android-ndk-r9"
 '--------------------
 
 '--------------------
@@ -118,19 +73,8 @@ ANDROID_NDK_PATH="${SYSTEMDRIVE}\android-ndk-r9"
 '
 'Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
 '
-FLEX_PATH="D:\\devtools\flex-sdk"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.11.0"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.9.1"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.6"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.5"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.1.0.16076"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.1"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.0.0.14159"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4.0"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk_4"
-FLEX_PATH="${SYSTEMDRIVE}\flex_sdk"
-'
-'for opening .swf files...monkey will use HTML_PLAYER if this is not set.
+FLEX_PATH="d:\devtools\flex-sdk"
+'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
 'FLASH_PLAYER="...?..."
 '--------------------
 
@@ -139,8 +83,7 @@ FLEX_PATH="${SYSTEMDRIVE}\flex_sdk"
 '
 'PSM_PATH must be set for PSM target support.
 '
-PSM_PATH="D:\devtools\PSM_SDK"
-PSM_PATH="${PROGRAMFILES}\SCE\PSM"
+PSM_PATH="d:\devtools\PSM_SDK"
 '--------------------
 
 '--------------------
@@ -148,7 +91,7 @@ PSM_PATH="${PROGRAMFILES}\SCE\PSM"
 '
 'Must be set for XNA and GLFW target support.
 '
-MSBUILD_PATH="${PROGRAMFILES}\MSBuild\14.0\Bin\MSBuild.exe"
-MSBUILD_PATH="${PROGRAMFILES}\MSBuild\12.0\Bin\MSBuild.exe"
+'MSBUILD_PATH="${PROGRAMFILES}\MSBuild\14.0\Bin\MSBuild.exe"
+'MSBUILD_PATH="${PROGRAMFILES}\MSBuild\12.0\Bin\MSBuild.exe"
 MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 '--------------------

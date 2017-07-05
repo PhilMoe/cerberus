@@ -4,13 +4,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
 
-using MonkeyGame.Resources;
+using CerberusGame.Resources;
 
 using Microsoft.Phone.Controls;
 
-using MonkeyGame_PhoneComponent;
+using CerberusGame_PhoneComponent;
 
-namespace MonkeyGame
+namespace CerberusGame
 {
     public partial class MainPage : PhoneApplicationPage
     {

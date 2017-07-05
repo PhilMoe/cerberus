@@ -21,7 +21,7 @@
 	<application android:label="${ANDROID_APP_LABEL}" android:icon="@drawable/ic_launcher">
 	
 		<activity 
-			android:name="MonkeyGame"
+			android:name="CerberusGame"
 			android:label="${ANDROID_APP_LABEL}"
 			android:screenOrientation="${ANDROID_SCREEN_ORIENTATION}"
 			android:configChanges="keyboardHidden|orientation|screenSize"

@@ -1,10 +1,10 @@
 
 '--------------------
-'Monkey modules path
+'Cerberus modules path
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
@@ -12,7 +12,7 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '
 'Must be set for HTML5 target support.
 '
-HTML_PLAYER=open -n "${MONKEYDIR}/bin/mserver_macos.app" --args
+HTML_PLAYER=open -n "${CERBERUSDIR}/bin/cserver_macos.app" --args
 '--------------------
 
 '--------------------
@@ -23,8 +23,7 @@ HTML_PLAYER=open -n "${MONKEYDIR}/bin/mserver_macos.app" --args
 'Ant is currently available here: 
 '	http://ant.apache.org/bindownload.cgi
 '
-ANT_PATH="${HOME}/apache-ant-1.9.4"
-ANT_PATH="${HOME}/apache-ant-1.9.2"
+ANT_PATH="${HOME}/apache-ant-1.9.7"
 '--------------------
 
 '--------------------
@@ -32,11 +31,9 @@ ANT_PATH="${HOME}/apache-ant-1.9.2"
 '
 'Must be set for FLASH target support.
 '
-FLEX_PATH="${HOME}/flex_sdk_4.9.1"
-FLEX_PATH="${HOME}/flex_sdk_4.9"
 FLEX_PATH="${HOME}/flex_sdk_4.6"
 '
-'for opening .swf files...monkey will use HTML_PLAYER if this is not set.
+'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
 'FLASH_PLAYER="...?..."
 '--------------------
 

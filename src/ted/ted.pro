@@ -52,5 +52,6 @@ win32{
 mac{
 #        WTF..enabling this appears to *break* 10.6 compatibility!!!!!
         QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.8
+#	QMAKE_INFO_PLIST = Info.plist
         ICON = ted.icns
 }

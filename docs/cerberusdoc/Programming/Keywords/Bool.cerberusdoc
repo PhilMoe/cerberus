@@ -1,0 +1,13 @@
+> Type Bool
+
+The built-in boolean type.
+
+Module: [[cerberus.lang]]
+
+>> Description
+
+The Bool type is a fundamental Cerberus X type used to express the result of conditional expressions, such as the comparison operators, and to represent a true/false 'state' in general. A Bool can only contain the values True or False.
+
+Please see the Types section of the Cerberus X language reference for more information on the boolean type.
+
+>> See also [[Language reference#types]]

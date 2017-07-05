@@ -88,10 +88,10 @@ BBHtml5Game.prototype.connectGamepad = function(gamepad) {
 		if (slot != -1) {
 			this._gamepadLookup[slot] = gamepad.index;
 			
-			//console.log("gamepad at html5 index "+gamepad.index+" mapped to monkey gamepad unit "+slot);
+			//console.log("gamepad at html5 index "+gamepad.index+" mapped to Cerberus gamepad unit "+slot);
 		}
 	} else {
-		console.log('Monkey has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
+		console.log('Cerberus has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
 	}
 }
 
@@ -123,7 +123,7 @@ BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
 	  return false;
 	}
 	
-	//so use the monkey port to find the correct raw data
+	//so use the Cerberus port to find the correct raw data
 	var index = this._gamepadLookup[port];
 	if (index == -1) {
 		return false;
@@ -155,7 +155,7 @@ BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
 		buttons[index] = false;
 	}
 	
-	//map html5 "standard" mapping to monkeys joy codes
+	//map html5 "standard" mapping to Cerberuss joy codes
 	/*
 	Const JOY_A=0
 	Const JOY_B=1
@@ -268,8 +268,8 @@ BBHtml5Game.prototype.SetUpdateRate=function( updateRate ){
 }
 
 BBHtml5Game.prototype.GetMetaData=function( path,key ){
-	if( path.indexOf( "monkey://data/" )!=0 ) return "";
-	path=path.slice(14);
+	if( path.indexOf( "cerberus://data/" )!=0 ) return "";
+	path=path.slice(16);
 
 	var i=META_DATA.indexOf( "["+path+"]" );
 	if( i==-1 ) return "";
@@ -289,10 +289,10 @@ BBHtml5Game.prototype.GetMetaData=function( path,key ){
 }
 
 BBHtml5Game.prototype.PathToUrl=function( path ){
-	if( path.indexOf( "monkey:" )!=0 ){
+	if( path.indexOf( "cerberus:" )!=0 ){
 		return path;
-	}else if( path.indexOf( "monkey://data/" )==0 ) {
-		return "data/"+path.slice( 14 );
+	}else if( path.indexOf( "cerberus://data/" )==0 ) {
+		return "data/"+path.slice( 16 );
 	}
 	return "";
 }
@@ -424,7 +424,7 @@ BBHtml5Game.prototype.Run=function(){
 		game.KeyEvent( BBGameEvent.KeyDown,e.keyCode );
 		var chr=keyToChar( e.keyCode );
 		if( chr ) game.KeyEvent( BBGameEvent.KeyChar,chr );
-		if( (e.keyCode>0 && e.keyCode<48) || (e.keyCode>111 && e.keyCode<122) ) eatEvent( e );
+		if( e.keyCode<48 || (e.keyCode>111 && e.keyCode<122) ) eatEvent( e );
 	}
 
 	canvas.onkeyup=function( e ){

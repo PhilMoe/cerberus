@@ -265,11 +265,11 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>MonkeyView</string>
+					<string>CerberusView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>MonkeyViewController</string>
+					<string>CerberusViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>MonkeyWindow</string>
+					<string>CerberusWindow</string>
 					<object class="NSMutableDictionary">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference key="dict.sortedKeys" ref="0"/>
@@ -277,7 +277,7 @@
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>MonkeyAppDelegate</string>
+					<string>CerberusAppDelegate</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				</object>
 			</object>
@@ -299,7 +299,7 @@
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">BBMonkeyAppDelegate</string>
+					<string key="className">BBCerberusAppDelegate</string>
 					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -312,10 +312,10 @@
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>MonkeyWindow</string>
+							<string>CerberusWindow</string>
 							<string>UITextField</string>
-							<string>MonkeyView</string>
-							<string>MonkeyViewController</string>
+							<string>CerberusView</string>
+							<string>CerberusViewController</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -331,7 +331,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
 								<string key="name">_window</string>
-								<string key="candidateClassName">MonkeyWindow</string>
+								<string key="candidateClassName">CerberusWindow</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">textField</string>
@@ -339,73 +339,73 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">view</string>
-								<string key="candidateClassName">MonkeyView</string>
+								<string key="candidateClassName">CerberusView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">viewController</string>
-								<string key="candidateClassName">MonkeyViewController</string>
+								<string key="candidateClassName">CerberusViewController</string>
 							</object>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/BBMonkeyAppDelegate.h</string>
+						<string key="minorKey">./Classes/BBCerberusAppDelegate.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">BBMonkeyView</string>
+					<string key="className">BBCerberusView</string>
 					<string key="superclassName">UIView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/BBMonkeyView.h</string>
+						<string key="minorKey">./Classes/BBCerberusView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">BBMonkeyViewController</string>
+					<string key="className">BBCerberusViewController</string>
 					<string key="superclassName">UIViewController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/BBMonkeyViewController.h</string>
+						<string key="minorKey">./Classes/BBCerberusViewController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">BBMonkeyWindow</string>
+					<string key="className">BBCerberusWindow</string>
 					<string key="superclassName">UIWindow</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/BBMonkeyWindow.h</string>
+						<string key="minorKey">./Classes/BBCerberusWindow.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">MonkeyAppDelegate</string>
-					<string key="superclassName">BBMonkeyAppDelegate</string>
+					<string key="className">CerberusAppDelegate</string>
+					<string key="superclassName">BBCerberusAppDelegate</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/MonkeyAppDelegate.h</string>
+						<string key="minorKey">./Classes/CerberusAppDelegate.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">MonkeyView</string>
-					<string key="superclassName">BBMonkeyView</string>
+					<string key="className">CerberusView</string>
+					<string key="superclassName">BBCerberusView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/MonkeyView.h</string>
+						<string key="minorKey">./Classes/CerberusView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">MonkeyViewController</string>
-					<string key="superclassName">BBMonkeyViewController</string>
+					<string key="className">CerberusViewController</string>
+					<string key="superclassName">BBCerberusViewController</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/MonkeyViewController.h</string>
+						<string key="minorKey">./Classes/CerberusViewController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">MonkeyWindow</string>
-					<string key="superclassName">BBMonkeyWindow</string>
+					<string key="className">CerberusWindow</string>
+					<string key="superclassName">BBCerberusWindow</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/MonkeyWindow.h</string>
+						<string key="minorKey">./Classes/CerberusWindow.h</string>
 					</object>
 				</object>
 			</object>

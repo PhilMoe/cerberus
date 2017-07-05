@@ -1,0 +1,16 @@
+
+> Type Int
+
+The built-in int type.
+
+Module: [[cerberus.lang]]
+
+>> Description
+
+The Int type is a fundamental Cerberus X type used to represent signed integer values.
+
+Please see the Types section of the Cerberus X language reference for more information on the int type.
+
+>> See also
+
+[Language reference](Language reference#types)

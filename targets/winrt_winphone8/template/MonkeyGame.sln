@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Phone
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyGame", "MonkeyGame.csproj", "{42853767-395F-447E-8342-C069C23B3AB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CerberusGame", "CerberusGame.csproj", "{42853767-395F-447E-8342-C069C23B3AB9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonkeyGame.PhoneComponent", "MonkeyGame.PhoneComponent.vcxproj", "{55139588-5B90-4B05-AD7F-80485FE55338}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CerberusGame.PhoneComponent", "CerberusGame.PhoneComponent.vcxproj", "{55139588-5B90-4B05-AD7F-80485FE55338}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

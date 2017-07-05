@@ -1,0 +1,9 @@
+> The Cerberus X application
+
+The Cerberus X app appears in the main directory of your Cerberus X installation, and is used to launch [[Ted]], the Cerberus X text editor/IDE found in the Cerberus X 'bin' directory. 
+
+When called with command line parameters, Cerberus X passes these parameters on to Ted.
+
+On Windows, Cerberus X also updates itself in the Windows registry if it is a newer version than the version currently registered. In addition, if no registry key is found for the .cxs file extension, one is created and associated with Cerberus X.
+
+On MacOS, Cerberus X starts a new instance of Ted if it is called with command line parameters.

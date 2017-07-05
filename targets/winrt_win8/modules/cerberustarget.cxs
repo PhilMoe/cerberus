@@ -1,0 +1,7 @@
+
+#BRL_GAMETARGET_IMPLEMENTED=True
+
+Import brl.gametarget
+
+Import "native/winrtgame.cpp"
+Import "native/cerberustarget.cpp"

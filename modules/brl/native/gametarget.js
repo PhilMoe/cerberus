@@ -98,12 +98,12 @@ BBGame.prototype.GetDate=function( date ){
 }
 
 BBGame.prototype.SaveState=function( state ){
-	localStorage.setItem( "monkeystate@"+document.URL,state );	//key can't start with dot in Chrome!
+	localStorage.setItem( "cerberusstate@"+document.URL,state );	//key can't start with dot in Chrome!
 	return 1;
 }
 
 BBGame.prototype.LoadState=function(){
-	var state=localStorage.getItem( "monkeystate@"+document.URL );
+	var state=localStorage.getItem( "cerberusstate@"+document.URL );
 	if( state ) return state;
 	return "";
 }
@@ -210,7 +210,7 @@ BBGame.prototype.Die=function( ex ){
 	}
 	
 	if( this._debugExs ){
-		print( "Monkey Runtime Error : "+ex.toString() );
+		print( "Cerberus Runtime Error : "+ex.toString() );
 		print( stackTrace() );
 	}
 	

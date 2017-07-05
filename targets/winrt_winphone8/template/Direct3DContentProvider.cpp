@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Direct3DContentProvider.h"
 
-using namespace MonkeyGame_PhoneComponent;
+using namespace CerberusGame_PhoneComponent;
 
 Direct3DContentProvider::Direct3DContentProvider(Direct3DBackground^ controller) :
     m_controller(controller)

@@ -1,0 +1,19 @@
+> Target SDKs
+
+In order to build output target projects, the correct SDKs for each target must be installed. 
+
+In addition, a special config file used by [[Trans]], the Cerberus X translator, may have to be edited so that trans can locate target SDK components.
+
+This config file is named "config.winnt.txt" or "config.macos.txt" and is located in your Cerberus X installation's "bin" directory.
+
+Please refer to the following installation guides: 
+
+* [[The Desktop target]]
+* [[The Stdcpp target]]
+* [[The HTML5 target]]
+* [[The Flash target]]
+* [[The Android target]]
+* [[The iOS target]]
+* [[The WinRT target]]
+* [[The PSM target]] (discontinued)
+* [[The XNA target]] (discontinued)

@@ -1,5 +1,5 @@
 
-'Monkey launcher app for win32
+'Cerberus launcher app for win32
 
 Strict
 
@@ -98,18 +98,18 @@ Local app$=AppFile.Replace("/","\")
 'Local root=HKEY_LOCAL_MACHINE
 
 Local root=HKEY_CURRENT_USER
-Local type_path$="Software\Classes\.monkey"
-Local tool_path$="Software\Classes\Monkey.monkeycoder.co.nz"
+Local type_path$="Software\Classes\.cxs"
+Local tool_path$="Software\Classes\cerberus-x.com"
 
 If VERSION>Int( GetKey( root,tool_path+"\Version","" ) )
-	SetKey( root,tool_path,"","Simple Monkey IDE" )
+	SetKey( root,tool_path,"","Simple Cerberus IDE" )
 	SetKey( root,tool_path+"\Version","",String(VERSION) )
 	SetKey( root,tool_path+"\DefaultIcon","",app )
 	SetKey(root,tool_path+"\Shell\Open\Command","","~q"+app+"~q ~q%1~q" )
 EndIf
 
 If GetKey( root,type_path,"" )=""
-	SetKey( root,type_path,"","Monkey.monkeycoder.co.nz" )
+	SetKey( root,type_path,"","cerberus-x.com" )
 EndIf
 
 system_ "bin\Ted.exe"+args

@@ -1,0 +1,14 @@
+> Type Float
+
+The built-in float type.
+
+Module: [[cerberus.lang]]
+
+>> Description
+
+The Float type is a fundamental Cerberus X type used to represent floating point values.
+
+Please see the Types section of the Cerberus X language reference for more information on the float type.
+
+>> See also
+[Language reference](Language reference#types)

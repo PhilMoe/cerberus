@@ -115,14 +115,14 @@ class BBGame{
 	}
 	
 	public function SaveState( state:String ):int{
-		var file:SharedObject=SharedObject.getLocal( "monkeystate" );
+		var file:SharedObject=SharedObject.getLocal( "cerberusstate" );
 		file.data.state=state;
 		file.close();
 		return 0;
 	}
 	
 	public function LoadState():String{
-		var file:SharedObject=SharedObject.getLocal( "monkeystate" );
+		var file:SharedObject=SharedObject.getLocal( "cerberusstate" );
 		var state:String=file.data.state;
 		file.close();
 		if( state ) return state;
@@ -201,7 +201,7 @@ class BBGame{
 			return;
 		}
 		if( _debugExs ){
-			print( "Monkey Runtime Error : "+ex.toString() );
+			print( "Cerberus Runtime Error : "+ex.toString() );
 			print( stackTrace() );
 		}
 		throw ex;

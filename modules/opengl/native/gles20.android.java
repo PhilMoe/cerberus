@@ -19,7 +19,7 @@ class bb_opengl_gles20{
 		Class c=null;
 		
 		try{
-			c=Class.forName( "com.monkey.NativeGL" );
+			c=Class.forName( "com.cerberus.NativeGL" );
 		}catch( ClassNotFoundException ex ){
 			c=GLES20.class;
 		}

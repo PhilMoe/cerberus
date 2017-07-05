@@ -95,7 +95,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		@Override
 		public void write( int b ) throws IOException{
 			if( b==(int)'\n' ){
-				Log.i( "[Monkey]",new String( this.out.toByteArray() ) );
+				Log.i( "[Cerberus]",new String( this.out.toByteArray() ) );
 				this.out=new ByteArrayOutputStream();
 			}else{
 				this.out.write(b);
@@ -190,7 +190,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			}catch( Exception ex ){
 			}
 			
-			if( MonkeyConfig.ANDROID_GAMEPAD_ENABLED.equals( "1" ) ){
+			if( CerberusConfig.ANDROID_GAMEPAD_ENABLED.equals( "1" ) ){
 				try{
 					//get gamepad methods
 					Class cls=Class.forName( "android.view.MotionEvent" );
@@ -446,14 +446,14 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	public int SaveState( String state ){
 		SharedPreferences prefs=_activity.getPreferences( 0 );
 		SharedPreferences.Editor editor=prefs.edit();
-		editor.putString( ".monkeystate",state );
+		editor.putString( ".cerberusstate",state );
 		editor.commit();
 		return 1;
 	}
 	
 	public String LoadState(){
 		SharedPreferences prefs=_activity.getPreferences( 0 );
-		String state=prefs.getString( ".monkeystate","" );
+		String state=prefs.getString( ".cerberusstate","" );
 		if( state.equals( "" ) ) state=prefs.getString( "gxtkAppState","" );
 		return state;
 	}
@@ -489,12 +489,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 	
 	String PathToFilePath( String path ){
-		if( !path.startsWith( "monkey://" ) ){
+		if( !path.startsWith( "cerberus://" ) ){
 			return path;
-		}else if( path.startsWith( "monkey://internal/" ) ){
+		}else if( path.startsWith( "cerberus://internal/" ) ){
 			File f=_activity.getFilesDir();
 			if( f!=null ) return f+"/"+path.substring(18);
-		}else if( path.startsWith( "monkey://external/" ) ){
+		}else if( path.startsWith( "cerberus://external/" ) ){
 			File f=Environment.getExternalStorageDirectory();
 			if( f!=null ) return f+"/"+path.substring(18);
 		}
@@ -502,12 +502,12 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 
 	String PathToAssetPath( String path ){
-		if( path.startsWith( "monkey://data/" ) ) return "monkey/"+path.substring(14);
+		if( path.startsWith( "cerberus://data/" ) ) return "cerberus/"+path.substring(14);
 		return "";
 	}
 
 	public InputStream OpenInputStream( String path ){
-		if( !path.startsWith( "monkey://data/" ) ) return super.OpenInputStream( path );
+		if( !path.startsWith( "cerberus://data/" ) ) return super.OpenInputStream( path );
 		try{
 			return _activity.getAssets().open( PathToAssetPath( path ) );
 		}catch( IOException ex ){
@@ -556,7 +556,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 
 	public int LoadSound( String path,SoundPool pool ){
 		try{
-			if( path.startsWith( "monkey://data/" ) ){
+			if( path.startsWith( "cerberus://data/" ) ){
 				return pool.load( _activity.getAssets().openFd( PathToAssetPath( path ) ),1 );
 			}else{
 				return pool.load( PathToFilePath( path ),1 );
@@ -570,7 +570,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		try{
 			MediaPlayer mp;
 			
-			if( path.startsWith( "monkey://data/" ) ){
+			if( path.startsWith( "cerberus://data/" ) ){
 				AssetFileDescriptor fd=_activity.getAssets().openFd( PathToAssetPath( path ) );
 				mp=new MediaPlayer();
 				mp.setDataSource( fd.getFileDescriptor(),fd.getStartOffset(),fd.getLength() );
@@ -630,7 +630,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		_activity.setVolumeControlStream( AudioManager.STREAM_MUSIC );
 
 		//GL version
-		if( MonkeyConfig.OPENGL_GLES20_ENABLED.equals( "1" ) ){
+		if( CerberusConfig.OPENGL_GLES20_ENABLED.equals( "1" ) ){
 			//
 			//_view.setEGLContextClientVersion( 2 );	//API 8 only!
 			//

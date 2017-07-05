@@ -1,0 +1,18 @@
+> The CServer app
+
+CServer is a simple, lightweight web server for testing HTML5 apps, and is located in the Cerberus X 'bin' directory.
+
+CServer is automatically used by [[Trans]] (and therefore [[Ted]]) when you 'run' an html5 app, so you don't normally need to worry about it.
+
+However, if you want to manually run an HTML5 app yourself you can use CServer directly, eg:
+<pre>
+bin\cserver_winnt test.html
+</pre>
+
+...for Windows, or for MacOS...
+
+<pre>
+bin/cserver_macos test.html
+</pre>
+
+CServer will run the given html file using the default OS browser.

@@ -1,0 +1,35 @@
+
+(New to Cerberus X? Try the [[Getting started]] page or check out the [[Samples]])
+
+>> New stuff!
+
+* Mojo2 [[mojo2|overview]] and [[Mojo2 samples|samples]].
+* [[brl.requesters|Requesters]] module for Windows and MacOS.
+
+>> Programming Guide
+
+* [[Target SDKs]]
+* [[API Reference]]
+* [[3rd party modules]]
+* [[Programming/File formats]]
+* [[Programming/Resource paths]]
+* [[Programming/App config settings]]
+* [[Programming/Language reference]]
+* [[Programming/Keywords|Keyword reference]]
+* [[Tutorials]]
+* [[Samples]]
+
+>> Tools
+
+* [[Tools/Cerberus_X]]
+* [[Tools/Ted]]
+* [[Tools/Trans]]
+* [[Tools/CServer]]
+* [[Tools/Makedocs]]
+
+>> Online resources
+
+* [Learn Cerberus](https://www.cerberus-x.com/community/files/learnmonkey.pdf) with this friendly beginners guide by James Boyd (pdf).
+* View the [Cerberus Pixels](https://www.cerberus-x.com/community/files/monkeypixels_tutorial.pdf) tutorial by Robbert Prins (pdf).
+* Follow the [Path of the Cerberus](https://www.cerberus-x.com/community/files/PathOfTheMonkey/index.html) by Patrick Strandell.
+* Check out invaderJim's great new [[http://www.youtube.com/user/smalltimeoutlaws/videos?view=1|YouTube tutorials]].

@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "NativeGame.h"
 
-using namespace MonkeyGameNative;
+using namespace CerberusGameNative;
 
 using namespace Microsoft::WRL;
 
@@ -26,11 +26,11 @@ using namespace Windows::UI::Xaml::Navigation;
 
 using namespace concurrency;
 
-#include "MonkeyGame.cpp"
+#include "CerberusGame.cpp"
 
 NativeGame::NativeGame( SwapChainBackgroundPanel ^swapChainPanel ){
 
-	_game=new BBMonkeyGame();
+	_game=new BBCerberusGame();
 	_swapChainPanel=swapChainPanel;
 	
 	try{

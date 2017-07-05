@@ -1,0 +1,24 @@
+> The HTML5 target
+
+HTML5 is an emerging standard for writing web based apps.
+
+>> You will need:
+
+* An HTML5 capable browser such as Chrome, Firefox, Opera, Safari or IE9.
+
+>> Notes
+
+HTML5 apps use a canvas element for graphics rendering. To change the size and layout of this canvas, you will need to modify the CerberusGame.html and/or main.js files in the app's .build/html5 directory.
+
+>> Cross domain http requests
+
+In order for an html app to make cross domain http requests (for example, using the [[HttpRequest]] class), the request server must be correctly configured.
+
+More information can be found here: [[http://en.wikipedia.org/wiki/Cross-origin_resource_sharing]]
+
+For example, you could use php to configure the server to send the following HTTP headers:
+
+`Access-Control-Allow-Headers: origin, content-type, access-control-allow-origin`~n
+`Access-Control-Allow-Origin: *`~n
+`Access-Control-Max-Age: 86400`~n
+`Allow: GET, POST, OPTIONS`~n

@@ -1,0 +1,29 @@
+> The iOS target
+
+iOS is Apple's OS for iTouch, iPhone and iPad devices.
+
+>> You will need
+
+* Apple Mac computer runnning OS X 10.9 or better.
+
+* [XCode](http://developer.apple.com/xcode) developer tools with iOS SDK. XCode is also available via the Mac 'App Store' app.
+
+>> Notes
+
+You can develop programs on the iPhone simulator free of charge.
+
+To be able to download iOS programs to actual iOS devices, you will need to join Apple's developer program which currently costs about $100USD per year.
+
+To actually run a Cerberus X app on a real iDevice, you will need to manually open the output xcode project (.buid/ios/CerberusGame.xcodeproj) in xcode, select 'device' as the target and build and run.
+
+>> Adding in-app purchases
+
+In-app purchases can be added to your app using the [[CerberusStore]] class.
+
+Testing IAP is a bit tricky. The general idea on both Android/iOS is that you create 'test' accounts to test with, and add these test accounts to GooglePlay Dev Console and/or iTunes Connect. Test are accounts are generally just email address/password combos, although on Android you'll have to provide more details the first time you use the test account.
+
+* On IOS, your app's 'BundleId' must match the BundleId in iTunes Connect. Currently, the only way to change BundleId is in xcode.
+
+* On iOS, DO NOT TO LOGIN TO THE APP STORE VIA SETTINGS USING YOUR TEST ACCOUNT! Instead, login when making a test purchase. Otherwise, you'll end up in a strange [sanbox environment] loop when trying to test IAP.
+
+There's a bananas/mak/iaptest demo in the release, but it wont work 'as-is' - you'll need to add a keystore file for android and change the BundleID for ios, and change the CONSUMABLES and NON_CONSUMABLES arrays to match your product ids.

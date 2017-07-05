@@ -5,7 +5,7 @@
 cd `dirname $0`
 cd ../../bin
 #macdeployqt-4.8 Ted.app
-~/Qt/5.5/clang_64/bin/macdeployqt Ted.app
+/Users/Martin/Desktop/Qt/5.5/clang_64/bin/macdeployqt Ted.app
 cd Ted.app/Contents/PlugIns
 rm -r -f audio
 rm -r -f bearer

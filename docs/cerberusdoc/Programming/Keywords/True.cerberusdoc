@@ -1,0 +1,11 @@
+> Operator True
+
+Represents boolean true value.
+
+>> Definition
+
+Boolean expressions evaluate to either true or false. In Cerberus X the operators True and False represent these two states.
+
+>> See also
+[[False]]~n
+[Language reference](Language reference#expressions)

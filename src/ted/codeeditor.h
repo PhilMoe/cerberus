@@ -37,7 +37,7 @@ public:
 
     bool isTxt(){ return _txt; }
     bool isCode(){ return _code; }
-    bool isMonkey(){ return _monkey; }
+    bool isCerberus(){ return _cerberus; }
     bool isMonkey2(){ return _monkey2; }
 
     void gotoLine( int line );
@@ -77,7 +77,7 @@ private:
     QString _fileType;
     bool _txt;
     bool _code;
-    bool _monkey;
+    bool _cerberus;
     bool _monkey2;
 
     int _modified;

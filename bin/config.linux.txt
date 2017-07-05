@@ -1,10 +1,10 @@
 
 '--------------------
-'Monkey modules path
+'Cerberus modules path
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
@@ -12,7 +12,7 @@ MODPATH="${MONKEYDIR}/modules;${MONKEYDIR}/modules_ext"
 '
 'Must be set for HTML5 target support.
 '
-HTML_PLAYER="${MONKEYDIR}/bin/mserver_linux"
+HTML_PLAYER="${CERBERUSDIR}/bin/mserver_linux"
 '--------------------
 
 '--------------------
@@ -34,7 +34,7 @@ JDK_PATH="${HOME}/jdk1.7.0_09"
 '
 FLEX_PATH="${HOME}/flex_sdk_4.6"
 '
-'for opening .swf files...monkey will use HTML_PLAYER if this is not set.
+'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
 'FLASH_PLAYER="...?..."
 '--------------------
 

@@ -89,7 +89,7 @@ int BBWinrtGame::Millisecs(){
 }
 
 int BBWinrtGame::SaveState( String state ){
-	if( FILE *f=OpenFile( "monkey://internal/.monkeystate","wb" ) ){
+	if( FILE *f=OpenFile( "cerberus://internal/.cerberusstate","wb" ) ){
 		bool ok=state.Save( f );
 		fclose( f );
 		return ok ? 0 : -2;
@@ -98,7 +98,7 @@ int BBWinrtGame::SaveState( String state ){
 }
 
 String BBWinrtGame::LoadState(){
-	if( FILE *f=OpenFile( "monkey://internal/.monkeystate","rb" ) ){
+	if( FILE *f=OpenFile( "cerberus://internal/.cerberusstate","rb" ) ){
 		String str=String::Load( f );
 		fclose( f );
 		return str;
@@ -118,14 +118,14 @@ void BBWinrtGame::OpenUrl( String url ){
 
 String BBWinrtGame::PathToFilePath( String path ){
 	String fpath;
-	if( !path.StartsWith( "monkey:" ) ){
+	if( !path.StartsWith( "cerberus:" ) ){
 		fpath=path;
-	}else if( path.StartsWith( "monkey://data/" ) ){
+	}else if( path.StartsWith( "cerberus://data/" ) ){
 		auto folder=Windows::ApplicationModel::Package::Current->InstalledLocation;
-		fpath=String( folder->Path )+"/Assets/monkey/"+path.Slice( 14 );
-	}else if( path.StartsWith( "monkey://internal/" ) ){
+		fpath=String( folder->Path )+"/Assets/cerberus/"+path.Slice( 16 );
+	}else if( path.StartsWith( "cerberus://internal/" ) ){
 		auto folder=Windows::Storage::ApplicationData::Current->LocalFolder;
-		fpath=String( folder->Path )+"/"+path.Slice( 18 );
+		fpath=String( folder->Path )+"/"+path.Slice( 20 );
 	}
 	return fpath;
 }

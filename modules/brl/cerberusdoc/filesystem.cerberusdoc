@@ -1,0 +1,211 @@
+
+# Module brl.filesystem
+
+The filesystem module allows you to inspect and modify files on the filesystem.
+
+The filesystem module is currently only available for the android, ios, win8, glfw and stdcpp targets.
+
+Example:
+<pre>
+#If TARGET<>"android" And TARGET<>"ios" And TARGET<>"winrt" And TARGET<>"glfw"
+#Error "Invalid target"
+#Endif
+
+Import mojo
+
+Import brl.FileSystem
+
+Class MyApp Extends App
+
+	Method OnCreate()
+	
+		DeleteDir  "cerberus://internal/dir1",True
+		DeleteDir  "cerberus://internal/dir2",True
+		DeleteDir  "cerberus://internal/dir3",True
+		
+		CreateDir  "cerberus://internal/dir1"
+		CreateFile "cerberus://internal/dir1/file1"
+		CreateFile "cerberus://internal/dir1/file2"
+		CreateDir  "cerberus://internal/dir1/dir2"
+		CreateFile "cerberus://internal/dir1/dir2/file5"
+		
+		CreateDir  "cerberus://internal/dir2"
+		CreateFile "cerberus://internal/dir2/file3"
+		CreateFile "cerberus://internal/dir2/file4"
+		
+		CopyDir    "cerberus://internal/dir1","cerberus://internal/dir3",True
+		DeleteFile "cerberus://internal/dir1/file1"
+		DeleteFile "cerberus://internal/dir3/dir2/file5"
+		
+		SetUpdateRate 60
+	End
+	
+	Method OnUpdate()
+	End
+	
+	Method OnRender()
+		Scale 2,2
+		Cls
+		Local y:=0
+		For Local f:=Eachin LoadDir( "cerberus://internal/",True )
+			Local p:="cerberus://internal/"+f
+			Local nm:=(f+"                    ")[..20]
+			Local ty:=""
+			If FileType( p )=FILETYPE_FILE
+				ty=FileSize( p )
+			Else
+				ty="(dir)"
+			Endif
+			DrawText nm+ty,0,y
+			y+=12
+		Next
+	End
+End
+
+Function Main()
+
+	New MyApp
+	
+End
+</pre>
+
+# Const FILETYPE_NONE:Int
+
+
+# Const FILETYPE_FILE:Int
+
+
+# Const FILETYPE_DIR:Int
+
+
+# Function FileType:Int(path:String)
+
+Returns an integer representing the type of a file, one of: FILETYPE_NONE for no file, FILETYPE_FILE for a normal file, FILETYPE_DIR for a directory.
+
+Params: 
+
+path - a file system path.
+
+
+# Function FileSize:Int(path:String)
+
+Return the length of a file, in bytes, or 0 if the file does not exist.
+
+Params: 
+
+path - a file system path.
+
+
+# Function FileTime:Int(path:String)
+
+Return the time the file was last modified, or 0 if the file does not exist.
+
+The returned value is the number of seconds since Jan 1 1970.
+
+Params: 
+
+path - a file system path.
+
+
+# Function RealPath:String(path:String)
+
+Converts @path to an absolute filesystem path.
+
+
+# Function CreateFile:Bool(path:String)
+
+Creates a new file at @path.
+
+If the file already exists, it's contents are discarded and a new empty file is created.
+
+Returns True if the file was successfully created.
+
+
+# Function DeleteFile:Bool(path:String)
+
+Deletes the specified file.
+
+Returns True if the file was successfully deleted.
+
+Params: 
+
+path - a file system path.
+
+
+# Function CopyFile:Bool(src:String,dst:String)
+
+Copies a file from srcpath to dstpath.
+
+Returns True if the file was successfully copied.
+
+Params: 
+
+srcpath - file system path of source file.
+
+dstpath - file system path of destination file.
+
+
+# Function CreateDir:Bool(path:String)
+
+Create a new directory at path.
+
+Returns True if the directory was successfully created.
+
+Params: 
+
+path - a file system path.
+
+
+# Function DeleteDir:Bool(path:String,recursive:Bool=False)
+
+Deletes the directory at path.
+
+If recursive is True, then subdirectories are also deleted - use with care!
+
+If recursive if False and the directory contains files, DeleteDir will fail.
+
+Returns True if the directory was successfully deleted.
+
+Params: 
+
+path - file system path of directory to delete.
+
+recursive - a flag indicating whether subdirectories should also be deleted.
+
+
+# Function CopyDir:Bool(srcpath:String,dstpath:String,recursive:Bool=True,hidden:Bool=False)
+
+Copies the directory at srcpath to dstpath, creating dstpath if necessary.
+
+If recursive is True, then subdirectories are also copied.
+
+If hidden is True, then hidden files - files starting with a dot - are also copied.
+
+Returns True if the directory was successfully copied.
+
+Params: 
+
+srcpath - file system path of source directory.
+
+dstpath - file system path of destination directory.
+
+recursive - flag indicating whether subdirectories should also be copied.
+
+hidden - flag indicating whther hidden files should also be copied.
+
+
+# Function LoadDir:String[](path:String,recursive:Bool=False,hidden:Bool=False)
+
+Loads the file names in the directory specified by @path into a string array.
+
+If @recursive is True, LoadDir will also load file and directory names in subdirectories.
+
+If @hidden is True, then hidden files - files starting with a dot - are also loaded.
+
+Params: 
+
+path - a file system path.
+
+recursive - a flag indicating whether subdirectories should also be loaded.
+
+hidden - a flag indicating whether hidden files should also be loaded.

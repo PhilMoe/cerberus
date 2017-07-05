@@ -6,9 +6,9 @@ using System.Windows.Markup;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using MonkeyGame.Resources;
+using CerberusGame.Resources;
 
-namespace MonkeyGame
+namespace CerberusGame
 {
     public partial class App : Application
     {

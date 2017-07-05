@@ -1,0 +1,102 @@
+> Keyword Return
+
+The Return keyword causes program flow to exit a function or method and return a value to the calling statement.  
+
+>> Syntax
+
+Return *value*~n
+
+>> Description
+
+The Return keyword is used to exit a function or method while providing a return value.
+
+In *Strict* mode, all functions and methods *must* explicitly return a value.  
+
+In *non-Strict* mode, Return may be used with or without a value to simply exit a function or method at any point. When the return value is omitted in this way, a default zero or Null value, or an empty string, will be returned, depending on the function or method's return type.  
+
+Note that Return can be omitted completely in non-Strict mode; a default zero or Null value, or an empty string, will be returned to the caller at the natural end of the function or method.  
+
+>> See also
+
+[[Function]] | [[Method]]~n
+[Language reference](Language reference#functions)  
+
+>> Examples
+
+This runnable example returns a string dependent on the animal passed to the MakeSound function; try changing "dog" to "cat" or "cow":
+
+<pre>
+
+Function Main ()
+
+	Local animal:String = "dog"
+	
+	Print "The " + animal + " says " + MakeSound (animal)
+	
+End
+
+Function MakeSound:String (animal_type:String)
+	
+	Select animal_type
+	
+		Case "dog"
+			Return "Woof!"
+		Case "cat"
+			Return "Meeow!"
+		Case "cow"
+			Return "Moo!"
+	End
+	
+End
+
+</pre>
+
+In non-Strict mode, you can call Return without a value, in which case a default value will be returned. (See description.)  
+
+In this example, if *level* is zero we simply exit the function early with a Return call.  
+
+However, note that if *level* is *non*-zero, the example doesn't call Return at all; in this case, a default value would be returned at the end of the function.  
+
+<pre>
+
+Function PassedTest (level)
+	
+	If level = 0 Then Return
+	
+	If level = 1 Then Print "Top dog!"
+	If level = 2 Then Print "Not bad!"
+	If level = 3 Then Print "Loser!"
+
+End
+
+</pre>
+
+(You could of course add a *Return* at the end of this function if you wanted to. *Return 1*, for example, would allow the function to return 0 for a test failure and 1 for a pass.)
+
+Here's the same example updated for Strict mode. Note that we *must* return a value here; in this case, the Return at the end is *not* optional (though the value could be anything).  
+
+<pre>
+
+Function PassedTest:Int (level:Int)
+	
+	If level = 0 Then Return 0
+	
+	If level = 1 Then Print "Top dog!"
+	If level = 2 Then Print "Not bad!"
+	If level = 3 Then Print "Loser!"
+
+	Return 1
+	
+End
+
+</pre>
+
+In Strict mode, a minimal Cerberus X program would look like this, with the Main function explicitly returning an integer value:  
+
+<pre>
+
+Function Main:Int ()
+	Return 1
+End
+
+</pre>

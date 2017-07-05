@@ -1,0 +1,13 @@
+> The Stdcpp target
+
+The stdcpp (standard c++) target allows you to write command line utilities in Cerberus.
+
+>> You will need
+
+* (Windows) [MinGW 4.9.2](https://www.cerberus-x/downloads/tdm-gcc-4.9.2.exe).
+
+* [XCode](http://developer.apple.com/xcode) developer tools.
+
+>> Notes
+
+On Windows, you will need to set the `MINGW_PATH` var in your [[Trans]] config file. This should point to the actual MinGW directory, not the 'bin' sub-directory.

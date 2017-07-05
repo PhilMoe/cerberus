@@ -9,7 +9,7 @@
 	android:layout_height="fill_parent"
 	>
 	
-	<view class="${ANDROID_APP_PACKAGE}.MonkeyGame$GameView"
+	<view class="${ANDROID_APP_PACKAGE}.CerberusGame$GameView"
 	
 	    android:id="@+id/gameView"
 		android:keepScreenOn="true"

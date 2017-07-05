@@ -26,8 +26,8 @@ void FindInFilesDialog::readSettings(){
     QSettings settings;
 
     if( settings.value( "settingsVersion" ).toInt()<2 ){
-        _ui->typesLineEdit->setText( "*.monkey" );
-        _ui->dirLineEdit->setText( Prefs::prefs()->getString( "monkeyPath" ) );
+        _ui->typesLineEdit->setText( "*.cxs" );
+        _ui->dirLineEdit->setText( Prefs::prefs()->getString( "cerberusPath" ) );
         return;
     }
 

@@ -68,7 +68,7 @@ int PrefsDialog::exec(){
     _ui->highlightColorWidget->setColor( _prefs->getColor( "highlightColor" ) );
     _ui->tabSizeWidget->setValue( _prefs->getInt( "tabSize" ) );
 
-    _ui->monkeyPathWidget->setText( _prefs->getString( "monkeyPath" ) );
+    _ui->cerberusPathWidget->setText( _prefs->getString( "cerberusPath" ) );
     _ui->blitzmaxPathWidget->setText( _prefs->getString( "blitzmaxPath" ) );
 
     return QDialog::exec();
@@ -105,14 +105,14 @@ void PrefsDialog::onColorChanged(){
 
 void PrefsDialog::onBrowseForPath(){
 
-    if( sender()==_ui->monkeyPathButton ){
+    if( sender()==_ui->cerberusPathButton ){
 
-        QString path=QFileDialog::getExistingDirectory( this,"Select Monkey directory","",QFileDialog::ShowDirsOnly|QFileDialog::DontResolveSymlinks );
+        QString path=QFileDialog::getExistingDirectory( this,"Select Cerberus directory","",QFileDialog::ShowDirsOnly|QFileDialog::DontResolveSymlinks );
         if( path.isEmpty() ) return;
         path=fixPath( path );
 
-        _prefs->setValue( "monkeyPath",path );
-        _ui->monkeyPathWidget->setText( path );
+        _prefs->setValue( "cerberusPath",path );
+        _ui->cerberusPathWidget->setText( path );
 
     }else if( sender()==_ui->blitzmaxPathButton ){
 

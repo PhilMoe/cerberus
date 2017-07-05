@@ -6,7 +6,7 @@
             Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>MonkeyGame</DisplayName>
+    <DisplayName>CerberusGame</DisplayName>
     <PublisherDisplayName>Mark</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -23,12 +23,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="MonkeyGame.App">
+        EntryPoint="CerberusGame.App">
         <VisualElements
-            DisplayName="MonkeyGame"
+            DisplayName="CerberusGame"
             Logo="Assets\Logo.png"
             SmallLogo="Assets\SmallLogo.png"
-            Description="MonkeyGame"
+            Description="CerberusGame"
             ForegroundText="light"
             BackgroundColor="#464646">
             <DefaultTile ShowName="allLogos" />

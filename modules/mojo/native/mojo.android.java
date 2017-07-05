@@ -71,7 +71,7 @@ class gxtkGraphics{
 		width=game.GetGameView().getWidth();
 		height=game.GetGameView().getHeight();
 		
-		gles20=MonkeyConfig.OPENGL_GLES20_ENABLED.equals( "1" );
+		gles20=CerberusConfig.OPENGL_GLES20_ENABLED.equals( "1" );
 		if( gles20 ) return;
 	
 		for( int i=0;i<MAX_RENDEROPS;++i ){
@@ -700,7 +700,7 @@ class gxtkSurface{
 		
 		GLES11.glBindTexture( GLES11.GL_TEXTURE_2D,texId );
 		
-		if( MonkeyConfig.MOJO_IMAGE_FILTERING_ENABLED.equals( "1" ) ){
+		if( CerberusConfig.MOJO_IMAGE_FILTERING_ENABLED.equals( "1" ) ){
 			GLES11.glTexParameteri( GLES11.GL_TEXTURE_2D,GLES11.GL_TEXTURE_MAG_FILTER,GLES11.GL_LINEAR );
 			GLES11.glTexParameteri( GLES11.GL_TEXTURE_2D,GLES11.GL_TEXTURE_MIN_FILTER,GLES11.GL_LINEAR );
 		}else{
@@ -771,7 +771,7 @@ class gxtkSurface{
 		
 		GLES11.glBindTexture( GLES11.GL_TEXTURE_2D,texId );
 		
-		if( MonkeyConfig.MOJO_IMAGE_FILTERING_ENABLED.equals( "1" ) ){
+		if( CerberusConfig.MOJO_IMAGE_FILTERING_ENABLED.equals( "1" ) ){
 			GLES11.glTexParameteri( GLES11.GL_TEXTURE_2D,GLES11.GL_TEXTURE_MAG_FILTER,GLES11.GL_LINEAR );
 			GLES11.glTexParameteri( GLES11.GL_TEXTURE_2D,GLES11.GL_TEXTURE_MIN_FILTER,GLES11.GL_LINEAR );
 		}else{
@@ -806,7 +806,7 @@ class gxtkSurface{
 		
 		GLES11.glPixelStorei( GLES11.GL_UNPACK_ALIGNMENT,1 );
 		
-		boolean hicolor_textures=MonkeyConfig.MOJO_HICOLOR_TEXTURES.equals( "1" );
+		boolean hicolor_textures=CerberusConfig.MOJO_HICOLOR_TEXTURES.equals( "1" );
 		
 		if( hicolor_textures && hasAlpha ){
 

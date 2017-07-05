@@ -1,5 +1,5 @@
 
-//***** monkeygame.h *****
+//***** cerberusgame.h *****
 
 class BBIosGame : public BBGame{
 public:
@@ -23,7 +23,7 @@ public:
 	virtual unsigned char *LoadAudioData( String path,int *length,int *channels,int *format,int *hertz );
 	virtual AVAudioPlayer *OpenAudioPlayer( String path );
 	
-	virtual BBMonkeyAppDelegate *GetUIAppDelegate();
+	virtual BBCerberusAppDelegate *GetUIAppDelegate();
 	
 	//***** INTERNAL *****
 	
@@ -41,7 +41,7 @@ protected:
 	static BBIosGame *_iosGame;
 	
 	UIApplication *_app;
-	BBMonkeyAppDelegate *_appDelegate;
+	BBCerberusAppDelegate *_appDelegate;
 	
 	bool _displayLinkAvail;
 	UIAccelerometer *_accelerometer;
@@ -78,7 +78,7 @@ _displayLink( 0 ){
 	_iosGame=this;
 	
 	_app=[UIApplication sharedApplication];
-	_appDelegate=(BBMonkeyAppDelegate*)[_app delegate];
+	_appDelegate=(BBCerberusAppDelegate*)[_app delegate];
 	
 	NSString *reqSysVer=@"3.1";
 	NSString *currSysVer=[[UIDevice currentDevice] systemVersion];
@@ -178,14 +178,14 @@ int BBIosGame::Millisecs(){
 int BBIosGame::SaveState( String state ){
 	NSString *nsstr=state.ToNSString();
 	NSUserDefaults *prefs=[NSUserDefaults standardUserDefaults];
-	[prefs setObject:nsstr forKey:@".monkeystate"];
+	[prefs setObject:nsstr forKey:@".cerberusstate"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	return 0;
 }
 
 String BBIosGame::LoadState(){
 	NSUserDefaults *prefs=[NSUserDefaults standardUserDefaults];
-	NSString *nsstr=[prefs stringForKey:@".monkeystate"];
+	NSString *nsstr=[prefs stringForKey:@".cerberusstate"];
 	if( nsstr ) return String( nsstr );
 	return "";
 }
@@ -202,17 +202,17 @@ NSURL *BBIosGame::PathToNSURL( String path ){
 }
 
 String BBIosGame::PathToFilePath( String path ){
-	if( path.StartsWith( "monkey://data/" ) ){
-		path=path.Slice( 14 );
+	if( path.StartsWith( "cerberus://data/" ) ){
+		path=path.Slice( 16 );
 		NSString *nspath=path.ToNSString();
 		NSString *ext=[nspath pathExtension];
 		NSString *file=[[nspath lastPathComponent] stringByDeletingPathExtension];
 		NSString *dir=[@"data/" stringByAppendingString:[nspath stringByDeletingLastPathComponent]];
 		NSString *rpath=[[NSBundle mainBundle] pathForResource:file ofType:ext inDirectory:dir];
 		return String( rpath );
-	}else if( path.StartsWith( "monkey://internal/" ) ){
+	}else if( path.StartsWith( "cerberus://internal/" ) ){
 		NSString *docs=[@"~/Documents" stringByExpandingTildeInPath];
-		return String( docs )+"/"+path.Slice( 18 );
+		return String( docs )+"/"+path.Slice( 20 );
 	}
 	return "";
 }
@@ -224,9 +224,9 @@ unsigned char *BBIosGame::LoadImageData( String path,int *width,int *height,int 
 
 	UIImage *image=0;
 	
-	if( path.StartsWith( "monkey://data/" ) ){
+	if( path.StartsWith( "cerberus://data/" ) ){
 
-		path=String( "data/" )+path.Slice(14);
+		path=String( "data/" )+path.Slice(16);
 		image=[UIImage imageNamed:path.ToNSString()];
 
 	}else{
@@ -358,7 +358,7 @@ AVAudioPlayer *BBIosGame::OpenAudioPlayer( String path ){
 	return player;
 }
 
-BBMonkeyAppDelegate *BBIosGame::GetUIAppDelegate(){
+BBCerberusAppDelegate *BBIosGame::GetUIAppDelegate(){
 	return _appDelegate;
 }
 
@@ -472,9 +472,9 @@ void BBIosGame::ViewDisappeared(){
 	memset( _touches,0,sizeof(_touches) );
 }
 
-//***** BBMonkeyView implementation *****
+//***** BBCerberusView implementation *****
 
-@implementation BBMonkeyView
+@implementation BBCerberusView
 
 +(Class)layerClass{
 	return [CAEAGLLayer class];
@@ -612,9 +612,9 @@ void BBIosGame::ViewDisappeared(){
 
 @end
 
-//***** BBMonkeyWindow implementation *****
+//***** BBCerberusWindow implementation *****
 
-@implementation BBMonkeyWindow
+@implementation BBCerberusWindow
 
 -(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event{
 	BBIosGame::IosGame()->TouchesEvent( event );
@@ -634,9 +634,9 @@ void BBIosGame::ViewDisappeared(){
 
 @end
 
-//***** BBMonkeyViewController implementation *****
+//***** BBCerberusViewController implementation *****
 
-@implementation BBMonkeyViewController
+@implementation BBCerberusViewController
 
 //ios 2
 -(void)viewDidAppear:(BOOL)animated{
@@ -692,9 +692,9 @@ void BBIosGame::ViewDisappeared(){
 
 @end
 
-//***** BBMonkeyAppDelegate implementation *****
+//***** BBCerberusAppDelegate implementation *****
 
-@implementation BBMonkeyAppDelegate
+@implementation BBCerberusAppDelegate
 
 @synthesize _window;
 @synthesize view;

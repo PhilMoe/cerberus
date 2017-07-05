@@ -1,25 +1,25 @@
 
-RebuildTranscc
+'RebuildTranscc
 'RebuildMakedocs
 'RebuildMServer
-'RebuildLauncher	'Note: On Windows, kill process Monkey.exe before rebuilding launcher!
+RebuildLauncher	'Note: On Windows, kill process Cerberus.exe before rebuilding launcher!
 
 End
 
 ?Win32
-Const bin$="..\bin\"
+Const Bin$="..\bin\"
 Const ext$="_winnt.exe"
 ?MacOS
-Const bin$="../bin/"
+Const Bin$="../bin/"
 Const ext$="_macos"
 ?Linux
-Const bin$="../bin/"
+Const Bin$="../bin/"
 Const ext$="_linux"
 ?
 
-Const trans$=bin+"transcc"+ext
+Const trans$=Bin+"transcc"+ext
 
-Const makedocs$=bin+"makedocs"+ext
+Const makedocs$=Bin+"makedocs"+ext
 
 Function Error( msg$ )
 	Print "***** ERROR ***** "+msg
@@ -54,7 +54,7 @@ Function RebuildTranscc()
 '	opts:+" -clean -config=debug +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0"
 	opts:+" -clean -config=release +CPP_DOUBLE_PRECISION_FLOATS=1 +CPP_GC_MODE=0"
 	
-	Local make$=trans+" "+opts+" transcc/transcc.monkey"
+	Local make$=trans+" "+opts+" transcc/transcc.cxs"
 	Print make
 	If Execute( make ) Error "Failed to build transcc"
 
@@ -72,7 +72,7 @@ Function RebuildMakedocs()
 	opts:+" -target=C++_Tool -builddir=makedocs.build"
 	opts:+" -clean -config=release +CPP_GC_MODE=0"
 	
-	Local make$=trans+" "+opts+" makedocs/makedocs.monkey"
+	Local make$=trans+" "+opts+" makedocs/makedocs.cxs"
 	Print make
 	If Execute( make ) Error "Failed to build makedocs"
 	
@@ -84,9 +84,9 @@ End Function
 
 Function RebuildMServer()
 
-	Print "~nRebuild all: rebuilding mserver..."
+	Print "~nRebuild all: rebuilding cserver..."
 
-	If Execute( "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -h -t gui -a -r -o "+bin+"mserver"+ext+" mserver/mserver.bmx" ) Error "Failed to build mserver"
+	If Execute( "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -h -t gui -a -r -o "+Bin+"cserver"+ext+" cserver/cserver.bmx" ) Error "Failed to build cserver"
 	
 	Print "mserver built OK!"
 	
@@ -99,11 +99,11 @@ Function RebuildLauncher()
 ?Win32
 	Execute "windres launcher/resource.rc launcher/resource.o"
 ?
-	Execute "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -t gui -a -r -o ../Monkey launcher/launcher.bmx"
+	Execute "~q"+BlitzMaxPath()+"/bin/bmk~q makeapp -t gui -a -r -o ../launcher/launcher.bmx"
 ?MacOS
-	Execute "cp launcher/info.plist ../Monkey.app/Contents"
-	Execute "rm ../Monkey.app/Contents/Resources/monkey.icns"
-	Execute "cp launcher/monkey.icns ../Monkey.app/Contents/Resources"
+	Execute "cp launcher/info.plist ../Cerberus.app/Contents"
+	Execute "rm ../Cerberus.app/Contents/Resources/cerberus.icns"
+	Execute "cp launcher/cerberus.icns ../Cerberus.app/Contents/Resources"
 ?	
 	Print "launcher built OK!"
 	

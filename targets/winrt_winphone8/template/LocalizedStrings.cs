@@ -1,6 +1,6 @@
-﻿using MonkeyGame.Resources;
+﻿using CerberusGame.Resources;
 
-namespace MonkeyGame
+namespace CerberusGame
 {
     /// <summary>
     /// Provides access to string resources.

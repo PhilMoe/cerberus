@@ -1,0 +1,61 @@
+> Directive Strict
+
+Enables Cerberus X's Strict syntax mode.
+
+>> Syntax
+
+Strict
+
+>> Description
+
+By default, Cerberus X allows you to take certain shortcuts when programming. However, Cerberus X also offers a special Strict mode for programmers who prefer a stricter language definition.
+
+The differences between the Strict and non-Strict modes are:
+
+>> Strict mode
+
+* You must always specify the type of all variables, function return values and function parameters.
+
+* All function call parameters must be enclosed in brackets.
+
+* A function that does not return Void must end with a Return statement.
+
+>> Non-Strict mode
+
+* Variable type, function return type and function parameter types can be optionally omitted. In this case they will default to Int.
+
+* Return statements can be omitted at the end of a function. In this case, a Return statement will be automatically generated that will return an appropriate default value for the function type. That is, False for bool, 0 for int and float, "" for string, [] for arrays and Null for objects.
+
+* The brackets around function call parameters are optional if the function is being used as a statement, or if the function can be called with no parameters.
+
+To use Strict mode, the Strict directive must be placed at the very top of your module. Note that Strict is applied on a per-module basis and that Strict and non-Strict modules can legitimately import each other.
+
+*While syntax is shown in Strict mode, the examples in this documentation will normally be presented in non-Strict form.*
+
+>> See also
+
+[[Return]] | [[Int]] | [[Float]] | [[String]] | [[Bool]] | [[Void]]
+
+>> Example
+
+<pre>
+Strict
+
+' In Strict mode...
+
+Function Main:Int()											' the :Int type definition is compulsory...
+	Print( "Strict mode is...different!" )	' all function calls require brackets...
+	Return 0																' and we MUST return a value.
+End
+</pre>
+
+>> Example 2
+
+<pre>
+' Non-Strict version of first example, declaring no Return
+' type, no brackets for Print statement and no Return value.
+
+Function Main ()
+	Print "Non-Strict mode is...forgiving!"
+End
+</pre>

@@ -56,7 +56,7 @@ abstract class BBGame{
 	
 	public BBGame(){
 		_game=this;
-		_debugExs=MonkeyConfig.CONFIG.equals( "debug" );
+		_debugExs=CerberusConfig.CONFIG.equals( "debug" );
 		_startms=System.currentTimeMillis();
 	}
 	
@@ -239,7 +239,7 @@ abstract class BBGame{
 		}
 		if( _debugExs ){
 			if( msg==null ) msg=ex.toString();
-			bb_std_lang.print( "Monkey Runtime Error : "+msg );
+			bb_std_lang.print( "Cerberus Runtime Error : "+msg );
 			bb_std_lang.print( bb_std_lang.stackTrace() );
 		}
 		throw ex;

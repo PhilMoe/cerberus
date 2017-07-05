@@ -1,20 +1,20 @@
 #include "pch.h"
 #include "Direct3DContentProvider.h"
-#include "MonkeyGame.PhoneComponent.h"
+#include "CerberusGame.PhoneComponent.h"
 
 using namespace Microsoft::WRL;
 using namespace Windows::Phone::Input::Interop;
 using namespace Windows::Phone::Graphics::Interop;
 
-using namespace MonkeyGame_PhoneComponent;
+using namespace CerberusGame_PhoneComponent;
 
-#include "MonkeyGame.cpp"
+#include "CerberusGame.cpp"
 
 Direct3DBackground::Direct3DBackground():_get( 0 ),_put( 0 )
 {
 	KeyChar=0;
 
-	_game=new BBMonkeyGame( this );
+	_game=new BBCerberusGame( this );
 	
 	try{
 

@@ -158,13 +158,13 @@ public class gxtkGraphics{
 		device.DepthStencilState=DepthStencilState.None;
 		device.BlendState=BlendState.NonPremultiplied;
 		
-		if( MonkeyConfig.MOJO_IMAGE_FILTERING_ENABLED=="1" ){
+		if( CerberusConfig.MOJO_IMAGE_FILTERING_ENABLED=="1" ){
 			device.SamplerStates[0]=SamplerState.LinearClamp;
 		}else{
 			device.SamplerStates[0]=SamplerState.PointClamp;
 		}
 		
-		if( MonkeyConfig.MOJO_BACKBUFFER_ACCESS_ENABLED=="1" ){
+		if( CerberusConfig.MOJO_BACKBUFFER_ACCESS_ENABLED=="1" ){
 			if( renderTarget!=null && (renderTarget.Width!=Width() || renderTarget.Height!=Height()) ){
 				renderTarget.Dispose();
 				renderTarget=null;

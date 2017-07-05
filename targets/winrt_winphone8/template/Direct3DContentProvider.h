@@ -5,7 +5,7 @@
 #include <Windows.Phone.Graphics.Interop.h>
 #include <DrawingSurfaceNative.h>
 
-#include "MonkeyGame.PhoneComponent.h"
+#include "CerberusGame.PhoneComponent.h"
 
 class Direct3DContentProvider : public Microsoft::WRL::RuntimeClass <
     Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::WinRtClassicComMix>,
@@ -13,7 +13,7 @@ class Direct3DContentProvider : public Microsoft::WRL::RuntimeClass <
     IDrawingSurfaceBackgroundContentProviderNative >
 {
 public:
-    Direct3DContentProvider(MonkeyGame_PhoneComponent::Direct3DBackground^ controller);
+    Direct3DContentProvider(CerberusGame_PhoneComponent::Direct3DBackground^ controller);
 
     // IDrawingSurfaceContentProviderNative
     HRESULT STDMETHODCALLTYPE Connect(_In_ IDrawingSurfaceRuntimeHostNative* host, _In_ ID3D11Device1* device);
@@ -23,6 +23,6 @@ public:
     HRESULT STDMETHODCALLTYPE Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceContext1* context, _In_ ID3D11RenderTargetView* renderTargetView);
 
 private:
-    MonkeyGame_PhoneComponent::Direct3DBackground^ m_controller;
+    CerberusGame_PhoneComponent::Direct3DBackground^ m_controller;
     Microsoft::WRL::ComPtr<IDrawingSurfaceRuntimeHostNative> m_host;
 };

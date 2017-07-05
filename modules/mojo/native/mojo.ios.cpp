@@ -121,7 +121,7 @@ static BOOL CheckForExtension( NSString *name ){
 
 gxtkGraphics::gxtkGraphics(){
 
-	MonkeyAppDelegate *appDelegate=(MonkeyAppDelegate*)[[UIApplication sharedApplication] delegate];
+	CerberusAppDelegate *appDelegate=(CerberusAppDelegate*)[[UIApplication sharedApplication] delegate];
 	width=appDelegate->view->backingWidth;
 	height=appDelegate->view->backingHeight;
 	vertCount=0;
@@ -224,7 +224,7 @@ gxtkSurface *gxtkGraphics::CreateSurface( int width,int height ){
 
 int gxtkGraphics::BeginRender(){
 
-	MonkeyAppDelegate *appDelegate=(MonkeyAppDelegate*)[[UIApplication sharedApplication] delegate];
+	CerberusAppDelegate *appDelegate=(CerberusAppDelegate*)[[UIApplication sharedApplication] delegate];
 	width=appDelegate->view->backingWidth;
 	height=appDelegate->view->backingHeight;
 
@@ -259,7 +259,7 @@ int gxtkGraphics::BeginRender(){
 
 void gxtkGraphics::EndRender(){
 	if( !CFG_OPENGL_GLES20_ENABLED ) Flush();
-	MonkeyAppDelegate *appDelegate=(MonkeyAppDelegate*)[[UIApplication sharedApplication] delegate];
+	CerberusAppDelegate *appDelegate=(CerberusAppDelegate*)[[UIApplication sharedApplication] delegate];
 	[appDelegate->view presentRenderbuffer];
 }
 

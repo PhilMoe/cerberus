@@ -1,0 +1,208 @@
+
+# Module cerberus.boxes
+
+The boxes module provides a set of classes that allow you to use 'box' objects.
+
+A box object is an object that provides a container for non-object values. This is sometimes useful in situations when you would like to use non-object values with code designed to work solely with objects.
+
+
+
+
+# Class cerberus.boxes.BoolObject
+
+The BoolObject box class can be used to encapsulate an bool value inside an object.
+
+
+# Field value:Bool
+
+The bool value contained in this BoolObject.
+
+
+# Method New()
+
+Creates a new BoolObject that contains the value false.
+
+
+# Method New(value:Bool)
+
+Creates a new BoolObject with the given value.
+
+
+# Method ToBool:Bool()
+
+Returns the bool value contained in the BoolObject.
+
+
+# Method Equals:Bool(box:BoolObject)
+
+Returns 'true' if the value contained in the BoolObject equals the value contained in @box.
+
+
+
+
+# Class cerberus.boxes.IntObject
+
+The IntObject box class can be used to encapsulate an int value inside an object.
+
+
+# Field value:Int
+
+The value contained in the IntObject.
+
+# Method New()
+
+Creates a new IntObject with the value 0.
+
+
+# Method New(value:Int)
+
+Creates a new IntObject with the given value.
+
+
+# Method New(value:Float)
+
+Creates a new IntObject with the given float value converted to an int.
+
+
+# Method ToInt:Int()
+
+Returns the int value contained in the IntObject.
+
+
+# Method ToFloat:Float()
+
+Returns the int value contained in the IntObject converted to a float.
+
+
+# Method ToString:String()
+
+Returns the int value contained in the IntObject converted to a string.
+
+
+# Method Equals:Bool(box:IntObject)
+
+Tests IntObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:IntObject)
+
+Compares IntObjects. Returns a value \<0 if this int value is less than @box, a value \>0 if this int value is greater than @box, or 0 if both int values are equal.
+
+
+
+# Class cerberus.boxes.FloatObject
+
+The FloatObject box class can be used to encapsulate a float value inside an object.
+
+
+# Field value:Float
+
+The float value contined in the FloatObject.
+
+
+# Method New()
+
+Creates a new FloatObject with the value 0.0
+
+
+# Method New(value:Int)
+
+Creates a new FloatObject with the given int value converted to a float.
+
+
+# Method New(value:Float)
+
+Creates a new FloatObject with the given float value.
+
+
+# Method ToInt:Int()
+
+Returns the float value contained in the FloatObject converted to an int.
+
+
+# Method ToFloat:Float()
+
+Returns the float value contained in the FloatObject.
+
+
+# Method ToString:String()
+
+Returns the float value contained in the FloatObject converted to a string.
+
+
+# Method Equals:Bool(box:FloatObject)
+
+Tests FloatObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:FloatObject)
+
+Compares FloatObjects. Returns a value \<0 if this float value is less than @box, a value \>0 if this float value is greater than @box, or 0 if both float values are equal.
+
+
+
+# Class cerberus.boxes.StringObject
+
+The StringObject box class can be used to encapsulate a string value inside an object.
+
+
+# Field value:String
+
+The string value contained in the StringObject.
+
+
+# Method New()
+
+Creates a new StringObject containing an empty string.
+
+
+# Method New(value:Int)
+
+Creates a new StringObject containing a string representing the given int value.
+
+
+# Method New(value:Float)
+
+Creates a new StringObject containing a string representing the given float value.
+
+
+# Method New(value:String)
+
+Creates a new StringObject containing the given string value.
+
+
+# Method ToString:String()
+
+Returns the string value contained in the StringObject.
+
+
+# Method Equals:Bool(box:StringObject)
+
+Tests StringObjects for equality. Returns true if the values are equal, else false.
+
+
+# Method Compare:Int(box:StringObject)
+
+Compares StringObjects. Returns a value \<0 if this string value is less than @box, a value \>0 if this string value is greater than @box, or 0 if both string values are equal.
+
+
+
+# Class cerberus.boxes.ArrayObject<T>
+
+The ArrayObject box class is a generic class that can be used to encapsulate an array inside an object.
+
+
+# Field value:T[]
+
+The array contained in the ArrayObject.
+
+
+# Method New(value:T[])
+
+Creates a new ArrayObject with the given array.
+
+# Method ToArray:T[]()
+
+Returns the array contained in the ArrayObject.
+
+

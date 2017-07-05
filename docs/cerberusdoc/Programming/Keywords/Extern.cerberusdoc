@@ -1,0 +1,29 @@
+> Directive Extern
+
+External code directive.
+
+>> Syntax
+
+Extern [Private]
+
+>> Description
+
+The Extern directive is used to connect Cerberus X code to non-Cerberus X code. It lets you mix Cerberus X code (to be translated into the target platform language) with native target platform code.
+
+The optional Private modifier can be used to prevent external declarations from being visible outside the current module.
+
+For further information on Extern, please see the Extern section of the Cerberus X language reference.
+
+>> See also
+[[Public]]~n
+[Language reference](Language reference#extern)
+
+>> Example
+
+<pre>
+Extern
+	' External declarations
+
+Public
+	' Return to public declarations
+</pre>

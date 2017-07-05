@@ -53,7 +53,7 @@ void BBAdmob::ShowAdView( int style,int layout ){
     
 	_view.adUnitID=@_STRINGIZE(CFG_ADMOB_PUBLISHER_ID);
 	
-	BBMonkeyAppDelegate *appDelegate=(BBMonkeyAppDelegate*)[[UIApplication sharedApplication] delegate];
+	BBCerberusAppDelegate *appDelegate=(BBCerberusAppDelegate*)[[UIApplication sharedApplication] delegate];
     
 	_view.rootViewController=appDelegate->viewController;
 	

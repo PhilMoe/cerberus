@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Cerberus X Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/cerberusx.png"/></a>Cerberus X Documentation</td>
+				      
+				      ${IF ICONLINKS}
+					      <td style="text-align: right;">
+					      	${FOR ICONLINKS}
+					      		<a href='${URL}'><img src='${ICON}'></a>
+					      	${NEXT}
+					      </td>
+					  ${ENDIF}
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				${IF NAVLINKS}
+					${FOR NAVLINKS}
+						<li ${IF LAST} class="active" ${ENDIF}>${IF NOT LAST}<a href='${URL}'>${IDENT}</a> <span class="divider">/</span>${ENDIF} ${IF LAST} ${IDENT} ${ENDIF}</li>
+					${NEXT}
+				${ENDIF}
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				${CONTENT}
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

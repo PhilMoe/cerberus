@@ -7,13 +7,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MonkeyGame.PhoneComponent.cpp" />
+    <ClCompile Include="CerberusGame.PhoneComponent.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Direct3DContentProvider.cpp" />
     <ClCompile Include="stb\stb_image.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MonkeyGame.PhoneComponent.h" />
+    <ClInclude Include="CerberusGame.PhoneComponent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Direct3DContentProvider.h" />
   </ItemGroup>

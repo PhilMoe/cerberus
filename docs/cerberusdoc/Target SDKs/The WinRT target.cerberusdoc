@@ -1,0 +1,42 @@
+
+> The WinRT target
+
+The WinRT target allows you to develop games for the Windows 8 and Windows Phone 8.
+
+>> You will need
+
+* A PC running Windows 8.
+
+* Microsoft Visual Studio Express 2012 for Window 8 to develop Windows Store games (or 2013 for apps with IAP support).
+
+* Microsoft Visual Studio Express 2012 for Windows Phone to develop Windows Phone 8 games.
+
+>> Notes
+
+Cerberus X is currently unable to launch games built for WinRT targets.
+
+Once you have built a WinRT target, you will need to locate the '.sln' file in your projects winrt_win8.build or winrt_winphone8.build folder and open it with Visual Studio Express.
+
+>> Testing in-app purchases
+
+* Windows 8
+
+To test in-app purchases on Windows 8 you will need to set the app config var WINRT_TEST_IAP to true before importing brl.cerberusstore, eg:
+
+<pre>
+#WINRT_TEST_IAP=True
+
+import brl.cerberusstore
+</pre>
+
+You will also need to modify the Assets/WindowsStoreProxy.xml file in the target project to reflect the items available for purchase by your app - there is no way to test Windows 8 IAP live/online.
+
+Note: In-app purchases are only supported on Windows 8.1. You will need to use Visual Studio Express 2013 to develop for Windows 8.1.
+
+
+* Windows Phone 8
+
+To test in-app purchases on Windows Phone 8, you will need to create a 'beta app submission' in the Windows Phone Dev Center. This basically involves the same steps you would need to make to set up a 'real' app submission. Please visit this page for more information: http://go.microsoft.com/fwlink/?LinkId=223181
+
+Make sure that your app's Product Id matches the Product Id shown in the Windows Phone Dev Center!
+

@@ -2,7 +2,7 @@
 
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US"/>
-  <App xmlns="" ProductID="{42853767-395f-447e-8342-c069c23b3ab9}" Title="MonkeyGame" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="MonkeyGame author" Description="Sample description" Publisher="MonkeyGame" PublisherID="{c6b47929-e160-464b-8bfa-ba262a48f9d8}">
+  <App xmlns="" ProductID="{42853767-395f-447e-8342-c069c23b3ab9}" Title="CerberusGame" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="CerberusGame author" Description="Sample description" Publisher="CerberusGame" PublisherID="{c6b47929-e160-464b-8bfa-ba262a48f9d8}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING"/>
@@ -15,12 +15,12 @@
       <DefaultTask  Name ="_default" NavigationPage="MainPage.xaml"/>
     </Tasks>
     <Tokens>
-      <PrimaryToken TokenID="MonkeyGameToken" TaskName="_default">
+      <PrimaryToken TokenID="CerberusGameToken" TaskName="_default">
         <TemplateFlip>
           <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileSmall.png</SmallImageURI>
           <Count>0</Count>
           <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileMedium.png</BackgroundImageURI>
-          <Title>MonkeyGame</Title>
+          <Title>CerberusGame</Title>
           <BackContent></BackContent>
           <BackBackgroundImageURI></BackBackgroundImageURI>
           <BackTitle></BackTitle>

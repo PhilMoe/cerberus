@@ -309,11 +309,11 @@ String BBGlfwGame::PathToFilePath( String path ){
 //		bbPrint( String( "_baseDir=" )+_baseDir );
 	}
 	
-	if( !path.StartsWith( "monkey:" ) ){
+	if( !path.StartsWith( "cerberus:" ) ){
 		return path;
-	}else if( path.StartsWith( "monkey://data/" ) ){
-		return _baseDir+"/data/"+path.Slice( 14 );
-	}else if( path.StartsWith( "monkey://internal/" ) ){
+	}else if( path.StartsWith( "cerberus://data/" ) ){
+		return _baseDir+"/data/"+path.Slice( 16 );
+	}else if( path.StartsWith( "cerberus://internal/" ) ){
 		if( !_internalDir.Length() ){
 #ifdef CFG_GLFW_APP_LABEL
 
@@ -347,9 +347,9 @@ String BBGlfwGame::PathToFilePath( String path ){
 #endif			
 //			bbPrint( String( "_internalDir=" )+_internalDir );
 		}
-		return _internalDir+"/"+path.Slice( 18 );
-	}else if( path.StartsWith( "monkey://external/" ) ){
-		return _baseDir+"/external/"+path.Slice( 18 );
+		return _internalDir+"/"+path.Slice( 20 );
+	}else if( path.StartsWith( "cerberus://external/" ) ){
+		return _baseDir+"/external/"+path.Slice( 20 );
 	}
 	return "";
 }
@@ -386,7 +386,7 @@ unsigned char *BBGlfwGame::LoadAudioData( String path,int *length,int *channels,
 	return data;
 }
 
-//glfw key to monkey key!
+//glfw key to cerberus key!
 int BBGlfwGame::TransKey( int key ){
 
 	if( key>='0' && key<='9' ) return key;
@@ -466,7 +466,7 @@ int BBGlfwGame::TransKey( int key ){
 	return 0;
 }
 
-//monkey key to special monkey char
+//cerberus key to special cerberus char
 int BBGlfwGame::KeyToChar( int key ){
 	switch( key ){
 	case VKEY_BACKSPACE:

@@ -56,7 +56,7 @@ public class BBGame{
 	
 	public BBGame(){
 		_game=this;
-		_debugExs=(MonkeyConfig.CONFIG=="debug");
+		_debugExs=(CerberusConfig.CONFIG=="debug");
 		_stopwatch=Stopwatch.StartNew();
 		
 	}
@@ -222,7 +222,7 @@ public class BBGame{
 			return false;
 		}
 		if( _debugExs ){
-			bb_std_lang.Print( "Monkey Runtime Error : "+ex.Message );
+			bb_std_lang.Print( "Cerberus Runtime Error : "+ex.Message );
 			bb_std_lang.Print( bb_std_lang.StackTrace() );
 		}
 		return true;

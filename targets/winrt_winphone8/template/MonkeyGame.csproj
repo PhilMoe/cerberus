@@ -9,8 +9,8 @@
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MonkeyGame</RootNamespace>
-    <AssemblyName>MonkeyGame</AssemblyName>
+    <RootNamespace>CerberusGame</RootNamespace>
+    <AssemblyName>CerberusGame</AssemblyName>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -19,9 +19,9 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>MonkeyGame_$(Configuration)_$(Platform).xap</XapFilename>
+    <XapFilename>CerberusGame_$(Configuration)_$(Platform).xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>MonkeyGame.App</SilverlightAppEntry>
+    <SilverlightAppEntry>CerberusGame.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
@@ -150,9 +150,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MonkeyGame.PhoneComponent.vcxproj">
+    <ProjectReference Include="CerberusGame.PhoneComponent.vcxproj">
       <Project>{55139588-5B90-4B05-AD7F-80485FE55338}</Project>
-      <Name>MonkeyGame.PhoneComponent</Name>
+      <Name>CerberusGame.PhoneComponent</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />

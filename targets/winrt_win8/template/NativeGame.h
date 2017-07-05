@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-class BBMonkeyGame;
+class BBCerberusGame;
 
-namespace MonkeyGameNative{
+namespace CerberusGameNative{
 
 	public ref class NativeGame sealed{
 
@@ -12,7 +12,7 @@ namespace MonkeyGameNative{
 
 	private:
 	
-		BBMonkeyGame *_game;
+		BBCerberusGame *_game;
 		Windows::UI::Xaml::Controls::SwapChainBackgroundPanel ^_swapChainPanel;
 		
 		void OnVisibilityChanged( Windows::UI::Core::CoreWindow ^sender,Windows::UI::Core::VisibilityChangedEventArgs ^args );

@@ -54,10 +54,10 @@ class BBFlashGame extends BBGame{
 	}
 	
 	public override function PathToUrl( path:String ):String {
-		if( path.indexOf( "monkey:" )!=0 ){
+		if( path.indexOf( "cerberus:" )!=0 ){
 			return path;
-		}else if( path.indexOf( "monkey://data/" )==0 ){
-			return "data/"+path.slice( 14 );
+		}else if( path.indexOf( "cerberus://data/" )==0 ){
+			return "data/"+path.slice( 16 );
 		}
 		return "";
 	}
@@ -73,9 +73,9 @@ class BBFlashGame extends BBGame{
 	}
 
 	public function GetAsset( path:String ):Class{
-		if( path.indexOf( "monkey://data/" )!=0 ) return null;
+		if( path.indexOf( "cerberus://data/" )!=0 ) return null;
 
-		path=path.slice(14);
+		path=path.slice(16);
 		
 		var i:int=path.indexOf( "." ),ext:String="";
 		if( i!=-1 ){

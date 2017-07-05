@@ -2,7 +2,7 @@
 #include <jni.h>
 #include <stdlib.h>
 
-jint Java_com_monkey_LangUtil_parseInt( JNIEnv *env,jclass c,jstring str ){
+jint Java_com_cerberus_LangUtil_parseInt( JNIEnv *env,jclass c,jstring str ){
 
 	int i,len;
 	char buf[64];
@@ -18,7 +18,7 @@ jint Java_com_monkey_LangUtil_parseInt( JNIEnv *env,jclass c,jstring str ){
 	return atoi( buf );
 }
 
-jfloat Java_com_monkey_LangUtil_parseFloat( JNIEnv *env,jclass c,jstring str ){
+jfloat Java_com_cerberus_LangUtil_parseFloat( JNIEnv *env,jclass c,jstring str ){
 
 	int i,len;
 	char buf[128];

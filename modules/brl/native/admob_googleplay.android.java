@@ -80,7 +80,7 @@ class BBAdmob implements Runnable{
 		
 		_adView=new AdView( activity );
 		_adView.setAdSize( sz );
-		_adView.setAdUnitId( MonkeyConfig.ADMOB_PUBLISHER_ID );
+		_adView.setAdUnitId( CerberusConfig.ADMOB_PUBLISHER_ID );
 
 		//weird voodoo to make adView appear instantly(ish). Without this, you have to wait about 60 seconds regardless of ad timeout setting.
 		_adView.setBackgroundColor( Color.BLACK );
@@ -105,10 +105,10 @@ class BBAdmob implements Runnable{
 		
 		AdRequest.Builder builder=new AdRequest.Builder();
 		
-		addTestDevice( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE1,builder );
-		addTestDevice( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE2,builder );
-		addTestDevice( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE3,builder );
-		addTestDevice( MonkeyConfig.ADMOB_ANDROID_TEST_DEVICE4,builder );
+		addTestDevice( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE1,builder );
+		addTestDevice( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE2,builder );
+		addTestDevice( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE3,builder );
+		addTestDevice( CerberusConfig.ADMOB_ANDROID_TEST_DEVICE4,builder );
 		
 		AdRequest req=builder.build();
 

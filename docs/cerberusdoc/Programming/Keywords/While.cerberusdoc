@@ -1,0 +1,42 @@
+> Keyword While
+
+Marks the start of a While loop.
+
+>> Syntax
+
+While *expression*~n
+	*Statements...*~n
+Wend
+
+While *expression*~n
+	*Statements...*~n
+End
+
+While *expression*~n
+	*Statements...*~n
+End While
+
+>> Description
+
+A While loop repeatedly executes the statements within as long as the expression to be tested is True. If the expression is not True, the code within will not be executed and program flow will exit the loop. (Note that this contrasts with a [[Repeat]] loop, in that the expression is tested at the *end* of a Repeat loop, meaning the code within is always executed once.)
+
+The Wend keyword, short for *While [loop] End*, marks the end of a While loop, but Cerberus X allows the alternative closing keywords End or End While, depending on preference.
+
+The Exit keyword can be used to 'jump out' of a While loop, continuing execution after the closing Wend.
+
+>> See also
+
+[[Wend]] | [[Repeat]] | [[Exit]]~n
+[Language reference](Language reference#statements)
+>> Example
+
+<pre>
+' Count to ten:
+
+Local a = 1
+
+While a < 10
+		a = a + 1
+		Print a
+Wend
+</pre>

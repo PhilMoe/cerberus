@@ -32,12 +32,12 @@
 
 class BBIosGame;
 
-@class MonkeyView;
-@class MonkeyWindow;
-@class MonkeyViewController;
-@class MonkeyAppDelegate;
+@class CerberusView;
+@class CerberusWindow;
+@class CerberusViewController;
+@class CerberusAppDelegate;
 
-@interface BBMonkeyView : UIView{
+@interface BBCerberusView : UIView{
 @public
 	EAGLContext *context;
 	
@@ -59,7 +59,7 @@ class BBIosGame;
 
 @end
 
-@interface BBMonkeyWindow : UIWindow{
+@interface BBCerberusWindow : UIWindow{
 @public
 }
 
@@ -70,7 +70,7 @@ class BBIosGame;
 
 @end
 
-@interface BBMonkeyViewController : UIViewController{
+@interface BBCerberusViewController : UIViewController{
 @public
 }
 
@@ -87,12 +87,12 @@ class BBIosGame;
 
 @end
 
-@interface BBMonkeyAppDelegate : NSObject<UIApplicationDelegate,UIAccelerometerDelegate>{
+@interface BBCerberusAppDelegate : NSObject<UIApplicationDelegate,UIAccelerometerDelegate>{
 @public
 	BBIosGame *game;
-	MonkeyWindow *_window;	//Ugly '_' to fix clash with UIApplicationDelegate window property
-	MonkeyView *view;
-	MonkeyViewController *viewController;
+	CerberusWindow *_window;	//Ugly '_' to fix clash with UIApplicationDelegate window property
+	CerberusView *view;
+	CerberusViewController *viewController;
 	UITextField *textField;
 	int textFieldState;
 }
@@ -104,27 +104,27 @@ class BBIosGame;
 -(void)updateTimerFired;
 -(void)dealloc;
 	
-@property (nonatomic, retain) IBOutlet MonkeyWindow *_window;
-@property (nonatomic, retain) IBOutlet MonkeyView *view;
-@property (nonatomic, retain) IBOutlet MonkeyViewController *viewController;
+@property (nonatomic, retain) IBOutlet CerberusWindow *_window;
+@property (nonatomic, retain) IBOutlet CerberusView *view;
+@property (nonatomic, retain) IBOutlet CerberusViewController *viewController;
 @property (nonatomic, retain) IBOutlet UITextField *textField;
 
 @end
 
-//monkeytarget.h
+//cerberustarget.h
 
-@interface MonkeyView : BBMonkeyView{
+@interface CerberusView : BBCerberusView{
 }
 @end
 
-@interface MonkeyWindow : BBMonkeyWindow{
+@interface CerberusWindow : BBCerberusWindow{
 }
 @end
 
-@interface MonkeyViewController : BBMonkeyViewController{
+@interface CerberusViewController : BBCerberusViewController{
 }
 @end
 
-@interface MonkeyAppDelegate : BBMonkeyAppDelegate{
+@interface CerberusAppDelegate : BBCerberusAppDelegate{
 }
 @end

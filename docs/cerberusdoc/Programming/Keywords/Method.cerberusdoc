@@ -1,0 +1,89 @@
+> Keyword Method
+
+Declares the beginning of a class method.
+
+>> Syntax
+
+Method *Identifier*: *ReturnType* ( *Parameters* ) [ Property ] [ Abstract ] [ Final ]~n 
+	*Statements...*~n
+End [ Method ]
+
+>> Description
+
+The Method keyword begins the declaration of a class method.
+
+Please see the Methods section of the Cerberus X language reference for more information on methods.
+
+>> See also
+
+[[End]] | [[Class]] | [[Property]] | [[Abstract]] | [[Final]]~n
+[Language reference (Classes)](Language reference#classes)~n
+[Language reference (Methods)](Language reference#methods)
+
+>> Examples
+
+An example of methods as statements.
+
+<pre>
+Class GameObject
+
+	Field x:Float
+	Field y:Float
+
+	Method PrintX ()
+		Print x
+	End
+
+	Method PrintY ()
+		Print y
+	End
+
+End
+
+Local g:GameObject = New GameObject
+
+p.x = 100
+p.y = 200
+
+' Accessing method...
+
+p.PrintX
+p.PrintY
+</pre>
+
+Strict mode version of above GameObject class. (Note use of Void return type.)
+
+<pre>
+Class GameObject
+
+	Field x:Float
+	Field y:Float
+
+	Method PrintX:Void ()
+		Print x
+	End
+
+	Method PrintY:Void ()
+		Print y
+	End
+
+End
+</pre>
+
+Method returning value of Float type.
+
+<pre>
+Class GameObject
+
+	Method AddFloats:Float (value1:Float, value2:Float)
+		Return value1 + value2
+	End
+
+End
+
+Local g:GameObject = New GameObject
+
+' Accessing method...
+
+Print g.AddFloats (1.5, 2.0)
+</pre>

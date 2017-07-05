@@ -1,0 +1,88 @@
+> Keyword Class
+
+Declares the beginning of an object class.
+
+>> Syntax
+
+Class *Identifier* [ < *Parameters* > ] [ Extends *Class* ] [ Implements *Interfaces* ] [ Final ]  
+	' Declarations...  
+End [ Class ]
+
+>> Description
+
+The Class keyword begins the declaration of a custom class. Classes can contain fields, methods, constants, globals and functions.
+
+To access an object's fields, methods, constants, globals and functions, use the syntax *object.identifier*. (See example.)
+
+Please see the Classes section of the Cerberus X language reference for more information on classes.
+
+>> See also
+
+[[End]] | [[Extends]] | [[Final]] | [[Method]] | [[Field]] | [[Function]] | [[Interface]]~n
+[Language reference](Language reference#classes)
+
+>> Example
+
+<pre>
+' Declaring class and fields...
+
+Class GameObject
+	Field x:Float
+	Field y:Float
+End
+
+' Creating object "g" of type "GameObject"...
+
+Local g:GameObject = New GameObject
+
+' Accessing fields...
+
+g.x = 100
+g.y = 200
+
+Print g.x
+Print g.y
+</pre>
+
+
+>> Example 2
+
+*Simple Extends example.*
+
+<pre>
+Class GameObject
+	Field x:Float
+	Field y:Float
+End
+
+Class Player Extends GameObject
+
+	Field name:String
+	Field points:Int = 0
+
+	Method PrintName ()
+		Print name
+	End
+
+End
+
+Local p:Player = New Player
+
+' Accessing fields, including those defined by
+' the class being extended...
+
+p.x = 100
+p.y = 200
+
+p.name = "Mary"
+p.points = 100
+
+Print p.x
+Print p.y
+
+Print p.points
+
+' Accessing method...
+
+p.PrintName
+</pre>

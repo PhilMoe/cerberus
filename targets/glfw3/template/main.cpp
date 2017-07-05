@@ -9,5 +9,5 @@
 
 int main( int argc,const char *argv[] ){
 
-	BBMonkeyGame::Main( argc,argv );
+	BBCerberusGame::Main( argc,argv );
 }

@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55139588-5b90-4b05-ad7f-80485fe55338}</ProjectGuid>
-    <RootNamespace>MonkeyGame_PhoneComponent</RootNamespace>
+    <RootNamespace>CerberusGame_PhoneComponent</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <WinMDAssembly>true</WinMDAssembly>
@@ -128,12 +128,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Direct3DContentProvider.h" />
-    <ClInclude Include="MonkeyGame.PhoneComponent.h" />
+    <ClInclude Include="CerberusGame.PhoneComponent.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3DContentProvider.cpp" />
-    <ClCompile Include="MonkeyGame.PhoneComponent.cpp" />
+    <ClCompile Include="CerberusGame.PhoneComponent.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -7,20 +7,20 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>monkey</string>
+				<string>cxs</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Monkey source file</string>
+			<string>Cerberus source file</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>monkey</string>
+			<string>cerberus</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>Monkey</string>
+	<string>Cerberus</string>
 	<key>CFBundleIconFile</key>
-	<string>monkey</string>
+	<string>cerberus</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 </dict>

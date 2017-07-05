@@ -1,0 +1,89 @@
+> Keyword Select
+
+Marks the start of a conditional Select block.  
+
+>> Syntax
+
+Select *expression*~n
+		*Case statements...*~n
+End Select~n
+
+Select *expression*~n
+		*Case statements...*~n
+End~n
+
+>> Description
+
+Select marks the start of a conditional block containing multiple Case statements, only one of which will be executed if its expression exactly matches the Select expression. After executing the code in the selected Case block, program flow will exit the entire Select block and continue.  
+
+A Select block is closed with End Select or simply End.  
+
+A Select block may also contain a single Default statement; that is, a statement which will be executed if *none* of the Case expressions matches that of the Select expression.  
+
+A range of comma-separated values can be handled in a single Case statement to avoid duplication of code; see the examples below.  
+
+>> See also
+
+[[Case]] | [[Default]]~n
+[Language reference](Language reference#statements)  
+
+>> Examples
+
+Try changing the value of apples here to see the different results:  
+
+<pre>
+
+Print "Counting apples..."
+
+Local apples:Int = 1
+
+Select apples  
+	Case 1
+		Print "You have one apple!"
+	Case 2
+		Print "You have two apples!"
+	Case 3
+		Print "You have three apples!"
+End Select
+
+Print "Done counting!"
+
+</pre>
+
+Here's an example that uses a Default statement to handle unexpected values:  
+
+<pre>
+
+Local bananas:Int = 0
+
+Select bananas
+	Case 0
+		Print "No bananas? I feel bad for you."
+	Case 1
+		Print "You have one banana."
+	Case 2
+		Print "You have two bananas. Nice!"
+	Case 3
+		Print "You have three bananas! Amazing!"
+	Default
+		Print "You have too many bananas! Nobody can eat " + bananas + " bananas!"
+End
+
+</pre>
+
+Cerberus X can also handle multiple values, separated by commas, in a single Case statement:  
+<pre>
+
+Local bananas:Int = 2
+
+Select bananas
+	Case 0
+		Print "No bananas? I feel bad for you."
+	Case 1, 2, 3
+		Print "You have between one and three bananas. That's reasonable."
+	Default
+		Print "You have too many bananas! Nobody can eat " + bananas + " bananas!"
+End
+
+</pre>
+
