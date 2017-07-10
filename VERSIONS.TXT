@@ -1,6 +1,6 @@
-***** v2017-??-?? *****
+***** v2017-07-10 *****
 
-FIX: [EXAMPLE] Fixed bouncyaliens.cxs example reagarding the decorated window flag
+FIX: [EXAMPLE] Fixed bouncyaliens.cxs example regarding the decorated window flag
 FIX: [MOJO2] Fixed not using MAX_LIGHTS constant in Canvas:Init(Void)
 
 ***** v2017-07-04 *****
