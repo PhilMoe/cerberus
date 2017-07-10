@@ -3,6 +3,8 @@
 
 '#GLFW_GCC_MSIZE_WINNT="64"	'to force 64 bit mingw builds. Needs mingw64.
 
+#GLFW_WINDOW_TITLE="Cerberus X Game"
+
 Import mojo
 
 Public
@@ -55,7 +57,7 @@ Class MyApp Extends App
 			SetSwapInterval 1			'I reckon there's a 98% chance this will give us 60fps on YOUR PC!
 			SetUpdateRate 0
 		Else
-			SetDeviceWindow 640,480,0
+			SetDeviceWindow 640,480,4   '<=== Flag 4 makes sure a decorated window is used again
 			SetSwapInterval 0			'As for windowed mode...
 			SetUpdateRate 60
 		Endif

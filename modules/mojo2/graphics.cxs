@@ -2543,7 +2543,8 @@ Class Canvas Extends DrawList
 	
 	Method Init:Void()
 		_dirty=-1
-		For Local i:=0 Until 4
+		'For Local i:=0 Until 4
+		For Local i:=0 Until MAX_LIGHTS
 			_lights[i]=New LightData
 		Next
 	End
