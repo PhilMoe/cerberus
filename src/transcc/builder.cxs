@@ -94,7 +94,7 @@ Class Builder
 		Endif
 		
 		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
-
+		
 		If tcc.opt_clean
 			DeleteDir targetPath,True
 			If FileType( targetPath )<>FILETYPE_NONE Die "Failed to clean target dir"

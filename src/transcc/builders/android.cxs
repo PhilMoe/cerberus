@@ -42,7 +42,8 @@ Class AndroidBuilder Extends Builder
 	Method MakeTarget:Void()
 
 		'create data dir
-		CreateDataDir "assets/cerberus"
+		CreateDirRecursive "app/src/main/assets"
+		CreateDataDir "app/src/main/assets/cerberus"
 
 		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
@@ -54,7 +55,7 @@ Class AndroidBuilder Extends Builder
 		SetConfigVar "ANDROID_MANIFEST_ACTIVITY",GetConfigVar( "ANDROID_MANIFEST_ACTIVITY" ).Replace( ";","~n" )+"~n"
 		
 		'create package
-		Local jpath:="src"
+		Local jpath:="app/src/main/java"
 		DeleteDir jpath,True
 		CreateDir jpath
 		For Local t:=Eachin app_package.Split(".")
@@ -64,7 +65,7 @@ Class AndroidBuilder Extends Builder
 		jpath+="/CerberusGame.java"
 		
 		'template files
-		For Local file:=Eachin LoadDir( "templates",True )
+		For Local file:=Eachin LoadDir( "gradletemplate", True )
 	
 			'Recursive CreateDir...	
 			Local i:=0
@@ -81,12 +82,12 @@ Class AndroidBuilder Extends Builder
 			If Not file Continue
 			
 			Select ExtractExt( file ).ToLower()
-			Case "xml","properties","java"
-				Local str:=LoadString( "templates/"+file )
+			Case "xml","properties","java","gradle"
+				Local str:=LoadString( "gradletemplate/"+file )
 				str=ReplaceEnv( str )
 				SaveString str,file
 			Default
-				CopyFile "templates/"+file,file
+				CopyFile "gradletemplate/"+file,file
 			End
 		Next
 		
@@ -155,10 +156,7 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		If GetConfigVar( "ANDROID_LANGUTIL_ENABLED" )="1"
-			CopyDir "langutil/libs","libs",True
-			CreateDir "src/com"
-			CreateDir "src/com/cerberus"
-			CopyFile "langutil/LangUtil.java","src/com/cerberus/LangUtil.java"
+			CopyFile "langutil/LangUtil.java","app/src/main/java/com/cerberus/LangUtil.java"
 		Endif
 		
 		If GetConfigVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
@@ -170,14 +168,13 @@ Class AndroidBuilder Extends Builder
 
 		If tcc.opt_build
 		
-			Local antcfg:="debug"
+			Local gradlecfg:="assembleDebug installDebug"
 			
-			If GetConfigVar( "ANDROID_SIGN_APP" )="1" antcfg="release"
+			If tcc.opt_config = "release" gradlecfg = "assembleRelease"
 			
-			Local ant:="ant"
-			If tcc.ANT_PATH ant="~q"+tcc.ANT_PATH+"/bin/ant~q"
+			Local gradle:="gradlew"
 
-			If Not (Execute( ant+" clean",False ) And Execute( ant+" "+antcfg+" install",False ))
+			If Not( Execute( gradle+" clean " + gradlecfg, False ) )
 
 				Die "Android build failed."
 				

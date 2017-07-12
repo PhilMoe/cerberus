@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion ${ANDROID_TARGET_SDK_VERSION}
+    buildToolsVersion "${ANDROID_BUILD_TOOLS_VERSION}"
+
+    defaultConfig {
+        applicationId "${ANDROID_APP_PACKAGE}"
+        minSdkVersion ${ANDROID_MIN_SDK_VERSION}
+        targetSdkVersion ${ANDROID_TARGET_SDK_VERSION}
+        versionCode ${ANDROID_VERSION_CODE}
+        versionName "${ANDROID_VERSION_NAME}"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("${ANDROID_KEY_STORE}")
+            storePassword '${ANDROID_KEY_STORE_PASSWORD}'
+            keyAlias '${ANDROID_KEY_ALIAS}'
+            keyPassword '${ANDROID_KEY_ALIAS_PASSWORD}'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            debuggable true
+        }
+    }
+}
+
+dependencies {
+    ${ANDROID_LIBRARY_REFERENCE_1}
+    ${ANDROID_LIBRARY_REFERENCE_2}
+}

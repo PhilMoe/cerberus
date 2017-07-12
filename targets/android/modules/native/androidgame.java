@@ -439,16 +439,16 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			return path;
 		}else if( path.startsWith( "cerberus://internal/" ) ){
 			File f=_activity.getFilesDir();
-			if( f!=null ) return f+"/"+path.substring(18);
+			if( f!=null ) return f+"/"+path.substring(20);
 		}else if( path.startsWith( "cerberus://external/" ) ){
 			File f=Environment.getExternalStorageDirectory();
-			if( f!=null ) return f+"/"+path.substring(18);
+			if( f!=null ) return f+"/"+path.substring(20);
 		}
 		return "";
 	}
 
 	String PathToAssetPath( String path ){
-		if( path.startsWith( "cerberus://data/" ) ) return "cerberus/"+path.substring(14);
+		if( path.startsWith( "cerberus://data/" ) ) return "cerberus/"+path.substring(16);
 		return "";
 	}
 
@@ -489,7 +489,6 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 
 			BitmapFactory.Options opts=new BitmapFactory.Options();
 			opts.inPreferredConfig=Bitmap.Config.ARGB_8888;
-			opts.inPurgeable=true;
 
 			Bitmap bitmap=BitmapFactory.decodeStream( in,null,opts );
 			in.close();
@@ -653,8 +652,6 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		Sensor sensor=event.sensor;
 		float x,y,z;
 		switch( sensor.getType() ){
-		case Sensor.TYPE_ORIENTATION:
-			break;
 		case Sensor.TYPE_ACCELEROMETER:
 //			switch( _display.getRotation() ){
 			switch( _display.getOrientation() ){	//deprecated in API 8, but we support 3...
@@ -682,6 +679,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			z=event.values[2]/-9.81f;
 			MotionEvent( BBGameEvent.MotionAccel,-1,x,y,z );
 			break;
+    default:
+      break;
 		}
 	}
 }
