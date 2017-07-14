@@ -129,6 +129,11 @@ Returns the height of the ad view, or 0 if the ad view is hidden.
 Links: [[AdViewWidth]]
 
 
+# Class brl.admob.AdmobInterstitial
+
+The AdmobInterstitial class provides simple support for  Interstitial advertising with the Google Admob advertising system.
+
+
 # Function GetAdmobInterstitial:AdmobInterstitial(adUnitId:String)
 
 Get the global AdmobInterstitial object. The @adUnitId parameter needs your Admob Interstitial Publisher Id.
