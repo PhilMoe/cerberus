@@ -1,5 +1,6 @@
 ***** v2017-07-14 *****
 
+NEW: [ANDROID] added Admob Interstitials
 MOD: [ANDROID] Moved to Gradle build system - removed deprecated ANT stuff
 FIX: [EXAMPLE] Fixed bouncyaliens.cxs example regarding the decorated window flag
 FIX: [MOJO2] Fixed not using MAX_LIGHTS constant in Canvas:Init(Void)
