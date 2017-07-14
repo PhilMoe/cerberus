@@ -4,15 +4,13 @@ Android is Google's hugely popular cellphone and tablet OS.
 
 >> You will need
 
-* The [Android SDK](http://developer.android.com/sdk/index.html). You will also need to install the API24 SDK.
+* The [Android Studio]( https://developer.android.com/studio/index.html ). You will also need to install the API24 SDK.
 
-* The [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-
-* On Windows and MacOS, you will also need [ANT](http://ant.apache.org/bindownload.cgi).
+* The [Java SE JDK]( http://www.oracle.com/technetwork/java/javase/downloads ).
 
 >> Getting started
 
-The `ANDROID_PATH` (Windows/MacOS), `JDK_PATH` (Windows) and `ANT_PATH` (Windows/MacOS) vars in your [[Trans]] config file must be correctly set to use the android target.
+The `ANDROID_PATH` (Windows/MacOS) and `JDK_PATH` (Windows) vars in your [[Trans]] config file must be correctly set to use the android target.
 
 To run apps on real hardware on MacOS, you should be able to just 'plug and play'. Make sure to enable 'USB debugging' on the device first though.
 

@@ -16,6 +16,17 @@ HTML_PLAYER=open -n "${CERBERUSDIR}/bin/cserver_macos.app" --args
 '--------------------
 
 '--------------------
+'Ant build tool path
+'
+'Must be set to a valid dir for ANDROID target support on Mavericks ('coz Mavericks no longer includes Ant).
+'
+'Ant is currently available here: 
+'	http://ant.apache.org/bindownload.cgi
+'
+ANT_PATH="${HOME}/apache-ant-1.9.7"
+'--------------------
+
+'--------------------
 'Flex SDK and flash player path.
 '
 'Must be set for FLASH target support.

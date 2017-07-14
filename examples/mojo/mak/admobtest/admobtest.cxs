@@ -13,32 +13,38 @@ Import brl.admob
 Class MyApp Extends App
 
     Field admob:Admob
+	Field interstitialAdmob:AdmobInterstitial
     Field layout:=1
-    Field enabled:=True
+    Field state:=1
     
     Method OnCreate()
         admob=Admob.GetAdmob()
         admob.ShowAdView 1,layout
+		interstitialAdmob=AdmobInterstitial.GetAdmobInterstitial("ca-app-pub-3940256099942544/1033173712")
         SetUpdateRate 60
     End
     
     Method OnUpdate()
         If MouseHit( 0 )
-            If enabled
+            If state = 3
                 admob.HideAdView
-                enabled=False
-            Else
+                state+=1
+            Else If state = 1
                 layout+=1
                 If layout=7 layout=1
                 admob.ShowAdView 1,layout
-                enabled=True
+                state+=1
+			Else If state = 2
+				admob.HideAdView
+				interstitialAdmob.ShowAdViewInterstitial
+				state+=1
             Endif
         End
     End
     
     Method OnRender()
     	Local en:="disabled"
-    	If enabled en="enabled"
+    	If state=2 en="enabled"
         Cls
         PushMatrix
         Scale 2,2

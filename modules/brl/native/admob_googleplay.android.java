@@ -1,7 +1,5 @@
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.*;
 
 class BBAdmob implements Runnable{
 
@@ -119,4 +117,85 @@ class BBAdmob implements Runnable{
 		updateAdView();
 	}
 	
+}
+
+class BBAdmobInterstitial implements Runnable {
+
+	// the kind of "singleton"
+	static BBAdmobInterstitial _admob;
+	// the ad
+	InterstitialAd interstitialAd;
+	// ad Unit ID
+	String adUnitId;
+	
+	boolean loaded;
+	
+	// creates an instance of the object and start the thread
+	static public BBAdmobInterstitial GetAdmobInterstitial(String adUnitId){
+		if( _admob==null ) _admob=new BBAdmobInterstitial();
+		_admob.startAd(adUnitId);
+		return _admob;
+	}
+
+	// displays the ad to the user if it is ready
+	public void ShowAdViewInterstitial( ){
+		if (interstitialAd != null ) {
+			if( loaded ){
+				loaded=false;
+				BBAndroidGame.AndroidGame().GetGameView().post(this);
+			}
+		}
+	}
+	
+	// start the thread 
+	private void startAd(String adUnitId){
+		this.adUnitId = adUnitId;
+		BBAndroidGame.AndroidGame().GetGameView().post(this);
+	}
+	
+	// loads an ad
+	private void loadAd(){
+		if (interstitialAd != null ) {
+			AdRequest.Builder adRequest = new AdRequest.Builder();
+			interstitialAd.loadAd(adRequest.build());
+		}
+	}
+	
+	// the runner
+	public void run(){
+	
+		if( interstitialAd != null ){
+			interstitialAd.show();
+			return;
+		}
+		
+		Activity activity = BBAndroidGame.AndroidGame().GetActivity();
+		interstitialAd = new InterstitialAd( activity );
+		interstitialAd.setAdUnitId(adUnitId);
+		
+		// set listener so we load a new ad when the user closes one
+		interstitialAd.setAdListener(new AdListener() {
+		
+			public void onAdFailedToLoad(int errorCode) {
+			}			
+			
+			public void onAdClosed() {
+				loadAd();
+			}
+			
+			public void onAdLeftApplication() {
+			}
+			
+			public void onAdLoaded() {
+				loaded=true;
+			}
+			
+			public void onAdOpened() {
+			}
+
+		});
+		
+		// load the first ad
+		loadAd();
+	}
 }

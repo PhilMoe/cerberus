@@ -1,7 +1,7 @@
 
 # Module brl.admob
 
-The admob module provides simple support for the Google Admob advertising system, which allows you to add advertising to your games.
+The admob module provides simple support for the Google Admob advertising system including interstitial ads, which allows you to add advertising to your games.
 
 Please see the [[Admob]] class for more information.
 
@@ -35,40 +35,52 @@ Import brl.admob
 
 Class MyApp Extends App
 
-    Field admob:Admob
-    Field layout:=1
-    Field enabled:=True
-    
-    Method OnCreate()
-        admob=Admob.GetAdmob()
+  Field admob:Admob
+  Field interstitialAdmob:AdmobInterstitial
+  Field layout:=1
+  Field state:=1
+
+  Method OnCreate()
+    admob=Admob.GetAdmob()
+    admob.ShowAdView 1,layout
+    interstitialAdmob=AdmobInterstitial.GetAdmobInterstitial("ca-app-pub-3940256099942544/1033173712")
+    SetUpdateRate 60
+  End
+
+  Method OnUpdate()
+    If MouseHit( 0 )
+      If state = 3
+        admob.HideAdView
+        state+=1
+      Else If state = 1
+        layout+=1
+        If layout=7 layout=1
         admob.ShowAdView 1,layout
-        SetUpdateRate 60
+        state+=1
+      Else If state = 2
+        admob.HideAdView
+        interstitialAdmob.ShowAd
+        state+=1
+      End
     End
-    
-    Method OnUpdate()
-        If MouseHit( 0 )
-            If enabled
-                admob.HideAdView
-                enabled=False
-            Else
-                layout+=1
-                If layout=7 layout=1
-                admob.ShowAdView 1,layout
-                enabled=True
-            Endif
-        End
-    End
-    
-    Method OnRender()
-        Cls
-        DrawText "Click to toggle ads!",DeviceWidth/2,DeviceHeight/2,.5,.5
-    End
-    
+  End
+
+  Method OnRender()
+    Local en:="disabled"
+    If state=2 en="enabled"
+    Cls
+    PushMatrix
+      Scale 2,2
+      DrawText "Click to toggle ads! ads are currently "+en,DeviceWidth/4,DeviceHeight/4,.5,.5
+    PopMatrix
+  End
+
 End
 
 Function Main()
-    New MyApp
+  New MyApp
 End
+
 
 # Function GetAdmob:Admob()
 
@@ -116,3 +128,14 @@ Returns the height of the ad view, or 0 if the ad view is hidden.
 
 Links: [[AdViewWidth]]
 
+
+# Function GetAdmobInterstitial:AdmobInterstitial(adUnitId:String)
+
+Get the global AdmobInterstitial object. The @adUnitId parameter needs your Admob Interstitial Publisher Id.
+
+Get the global Admob object.
+
+
+# Method ShowAdViewInterstitial:Void()
+
+Shows the interstitial ad view.

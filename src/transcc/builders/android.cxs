@@ -172,7 +172,13 @@ Class AndroidBuilder Extends Builder
 			
 			If tcc.opt_config = "release" gradlecfg = "assembleRelease"
 			
-			Local gradle:="gradlew"
+			Local gradle:String
+			If HostOS = "winnt"
+				gradle="gradlew"
+			Else
+				gradle="./gradlew"
+			Endif
+
 
 			If Not( Execute( gradle+" clean " + gradlecfg, False ) )
 

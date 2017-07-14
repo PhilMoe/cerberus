@@ -27,7 +27,7 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
 
 '***** 64 bit mingw *****
-MINGW_PATH="d:\devtools\TDM-GCC-64"
+MINGW_PATH="d:\programme\TDM-GCC-64"
 '--------------------
 
 '--------------------
@@ -37,7 +37,7 @@ MINGW_PATH="d:\devtools\TDM-GCC-64"
 '
 'The Java JDK is currently available here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 '
-JDK_PATH="d:\devtools\JavaSDK"
+JDK_PATH="d:\programme\JavaSDK"
 '--------------------
 
 '--------------------
@@ -45,7 +45,7 @@ JDK_PATH="d:\devtools\JavaSDK"
 '
 'Must be set to a valid dir for ANDROID target support
 '
-ANDROID_PATH="d:\devtools\Android\sdk"
+ANDROID_PATH="d:\programme\AndroidSDK"
 '--------------------
 
 '--------------------
@@ -54,6 +54,16 @@ ANDROID_PATH="d:\devtools\Android\sdk"
 'Must be set to a valid dir for ANDROID NDK target support
 '
 ANDROID_NDK_PATH="d:\devtools\android-ndk-r9"
+'--------------------
+
+'--------------------
+'Ant build tool path
+'
+'Must be set to a valid dir for FLASH target support
+'
+'Ant is currently available here: http://ant.apache.org/bindownload.cgi
+'
+ANT_PATH="D:\Programme\apache-ant-1.9.7"
 '--------------------
 
 '--------------------
@@ -85,3 +95,5 @@ PSM_PATH="d:\devtools\PSM_SDK"
 'MSBUILD_PATH="${PROGRAMFILES}\MSBuild\12.0\Bin\MSBuild.exe"
 MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 '--------------------
+'--->> BEGIN OF JUNGLE IDE GENERATED CONFIG
+'--->> END OF JUNGLE IDE GENERATED CONFIG

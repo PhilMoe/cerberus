@@ -1,4 +1,0 @@
-
-#TARGET_NAME="Xna Game"
-#TARGET_SYSTEM="xna"
-#TARGET_BUILDER="xna"

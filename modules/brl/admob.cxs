@@ -57,3 +57,8 @@ Class Admob Extends Null="BBAdmob"
 	Method AdViewHeight:Int()
 	
 End
+
+Class AdmobInterstitial Extends Null = "BBAdmobInterstitial"
+	Function GetAdmobInterstitial:AdmobInterstitial(adUnitId:String)
+	Method ShowAdViewInterstitial:Void()
+End

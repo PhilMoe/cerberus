@@ -1,4 +1,4 @@
-***** v2017-07-12 *****
+***** v2017-07-14 *****
 
 MOD: [ANDROID] Moved to Gradle build system - removed deprecated ANT stuff
 FIX: [EXAMPLE] Fixed bouncyaliens.cxs example regarding the decorated window flag
