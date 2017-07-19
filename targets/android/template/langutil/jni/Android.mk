@@ -16,9 +16,9 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := libnativegl
-LOCAL_CFLAGS    := -Werror
-LOCAL_SRC_FILES := nativegl.c
-LOCAL_LDLIBS    := -llog -lGLESv2
+LOCAL_MODULE	:= liblangutil
+LOCAL_CFLAGS	:= -Werror
+LOCAL_SRC_FILES	:= langutil.c
+LOCAL_LDLIBS	:= -llog
 
 include $(BUILD_SHARED_LIBRARY)

@@ -49,6 +49,7 @@ Class AndroidBuilder Extends Builder
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		
 		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+        SetEnv "ANDROID_NDK_DIR",tcc.ANDROID_NDK_PATH.Replace( "\","\\" )
 		
 		SetConfigVar "ANDROID_MANIFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
 		SetConfigVar "ANDROID_MANIFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
@@ -156,7 +157,7 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		If GetConfigVar( "ANDROID_LANGUTIL_ENABLED" )="1"
-			CopyFile "langutil/LangUtil.java","app/src/main/java/com/cerberus/LangUtil.java"
+            CopyFile "langutil/LangUtil.java","app/src/main/java/com/cerberus/LangUtil.java"
 		Endif
 		
 		If GetConfigVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
