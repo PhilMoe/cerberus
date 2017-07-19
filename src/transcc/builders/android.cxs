@@ -157,6 +157,8 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		If GetConfigVar( "ANDROID_LANGUTIL_ENABLED" )="1"
+			CreateDir "src/com"
+			CreateDir "src/com/cerberus"
             CopyFile "langutil/LangUtil.java","app/src/main/java/com/cerberus/LangUtil.java"
 		Endif
 		
