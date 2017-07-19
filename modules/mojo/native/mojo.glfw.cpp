@@ -592,10 +592,22 @@ void gxtkSurface::SetData( unsigned char *data,int width,int height,int depth ){
 	
 	switch( depth ){
 	case 1:
+#if _WIN32
 		format=GL_LUMINANCE;
+#elif __APPLE__
+		format=GL_RED;
+#elif __linux
+		format=GL_LUMINANCE;
+#endif
 		break;
 	case 2:
+#if _WIN32
 		format=GL_LUMINANCE_ALPHA;
+#elif __APPLE__
+		format=GL_RG;
+#elif __linux
+		format=GL_LUMINANCE_ALPHA;
+#endif
 		if( data ){
 			while( n-- ){	//premultiply alpha
 				p[0]=p[0]*p[1]/255;

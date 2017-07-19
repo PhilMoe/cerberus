@@ -18,6 +18,7 @@
 #undef LoadString
 
 #elif __APPLE__
+#define GLFW_INCLUDE_GLCOREARB
 #include <ApplicationServices/ApplicationServices.h>
 #include <mach-o/dyld.h>
 #include <sys/stat.h>
