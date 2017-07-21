@@ -12,6 +12,8 @@ CPPFLAGS=$(CCOPTS) \
 -I../glfw3/include \
 -I../openal/include \
 -I../stb \
+-I../glfw3/deps \
+-I../glfw3/deps/vulkan \
 -D_GLFW_HAS_GLXGETPROCADDRESS \
 -pthread
 
@@ -34,8 +36,11 @@ x11_init.o \
 x11_monitor.o \
 x11_window.o \
 posix_time.o \
-posix_tls.o \
+posix_thread.o \
 linux_joystick.o \
+vulkan.o \
+egl_context.o \
+osmesa_context.o \
 xkb_unicode.o \
 stb_vorbis.o \
 stb_image.o \

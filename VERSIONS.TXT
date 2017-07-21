@@ -1,8 +1,10 @@
+***** v2017-07-21 *****
+
+FIX: [ANDROID] fixed Android build error when using different package name
+
 ***** v2017-07-19 *****
 
-
-FIX: 
-[ANDROID] fixed missing langutil libs which are needed in some cases
+FIX: [ANDROID] fixed missing langutil libs which are needed in some cases
 FIX: [DESKTOP] fixed mojo2 for GLFW under MacOS
 FIX: [ALL] fixed some documentation issues
 

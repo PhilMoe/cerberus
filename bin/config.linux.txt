@@ -12,7 +12,7 @@ MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '
 'Must be set for HTML5 target support.
 '
-HTML_PLAYER="${CERBERUSDIR}/bin/mserver_linux"
+HTML_PLAYER="${CERBERUSDIR}/bin/cserver_linux"
 '--------------------
 
 '--------------------
