@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST winnt
+#define CFG_HOST macos
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -5946,7 +5946,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2017-07-21",35));
+	bbPrint(String(L"TRANS cerberus compiler V2017-07-31",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"TRANSDIR",8),m_cerberusdir+String(L"/bin",4));
@@ -8199,11 +8199,24 @@ void c_GlfwBuilder::p_MakeGcc(){
 				t_ccopts=t_ccopts+String(L" -O3 -DNDEBUG",13);
 			}
 		}
+		if(HostOS()==String(L"winnt",5)){
+			if(t_msize==String(L"64",2)){
+				t_ldopts=t_ldopts+String(L" -L../openal/libs/Win64 -L../curl/lib/Win64",43);
+			}else{
+				t_ldopts=t_ldopts+String(L" -L../openal/libs/Win32 -L../curl/lib/Win32",43);
+			}
+		}
 		String t_cmd=String(L"make",4);
 		if(HostOS()==String(L"winnt",5) && ((FileType(m_tcc->m_MINGW_PATH+String(L"/bin/mingw32-make.exe",21)))!=0)){
 			t_cmd=String(L"mingw32-make",12);
 		}
 		p_Execute(t_cmd+String(L" CCOPTS=\"",9)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
+		if(bb_config_GetConfigVar(String(L"GLFW_USE_HTTPS",14))==String(L"1",1)){
+			if(HostOS()==String(L"winnt",5)){
+				String t_targetPath=CurrentDir()+String(L"\\",1)+t_tconfig;
+				bb_os_CopyDir(String(L"../curl/dll",11),t_targetPath,true,false);
+			}
+		}
 		if(m_tcc->m_opt_run){
 			ChangeDir(t_tconfig);
 			if(HostOS()==String(L"winnt",5)){
@@ -8471,9 +8484,10 @@ String c_IosBuilder::p_FileRefs(){
 			}else{
 				if(t_3==String(L"framework",9)){
 					if((t_dir).Length()!=0){
-						bb_transcc_Die(String(L"System frameworks only supported",32));
+						t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ",74)+t_name+String(L"; path = ",9)+t_name+String(L"; sourceTree = \"<group>\"; };",28));
+					}else{
+						t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ",74)+t_name+String(L"; path = System/Library/Frameworks/",35)+t_name+String(L"; sourceTree = SDKROOT; };",26));
 					}
-					t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ",74)+t_name+String(L"; path = System/Library/Frameworks/",35)+t_name+String(L"; sourceTree = SDKROOT; };",26));
 				}
 			}
 		}
@@ -8624,6 +8638,10 @@ void c_IosBuilder::p_MakeTarget(){
 				p_AddBuildFile(t_path);
 			}else{
 				if(t_7==String(L"framework",9)){
+					if(FileType(t_lib)==2){
+						String t_path2=String(L"libs/",5)+bb_os_StripDir(t_lib);
+						bb_os_CopyDir(t_lib,t_path2,true,false);
+					}
 					p_AddBuildFile(t_lib);
 				}else{
 					bb_transcc_Die(String(L"Unrecognized lib file type:",27)+t_lib);

@@ -37,4 +37,5 @@ android {
 dependencies {
     ${ANDROID_LIBRARY_REFERENCE_1}
     ${ANDROID_LIBRARY_REFERENCE_2}
+    compile 'com.android.support:appcompat-v7:26.+'
 }

@@ -72,8 +72,13 @@ Class IosBuilder Extends Builder
 			Case "h"				
 				buf.Push "~t~t"+id+" = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "+name+"; sourceTree = ~q<group>~q; };"
 			Case "framework"
-				If dir Die "System frameworks only supported"
-				buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "+name+"; path = System/Library/Frameworks/"+name+"; sourceTree = SDKROOT; };"
+				If dir
+					'Print "FILEREF DIR: " + name + " " + id
+					buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "+name+"; path = "+name+"; sourceTree = ~q<group>~q; };"
+				Else
+					'Print "SYS FILEREF: " + name + " " + id
+					buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "+name+"; path = System/Library/Frameworks/"+name+"; sourceTree = SDKROOT; };"
+				Endif
 			End				
 		Next
 		If buf.Length buf.Push ""
@@ -116,6 +121,15 @@ Class IosBuilder Extends Builder
 			Select ExtractExt( path )
 			Case "a","h"
 				buf.Push "~t~t~t~t"+id
+			'Case "framework"
+			'	Print "***IS FRAMEWORK LIB!"
+			'	Print "path: " + path
+			'	Print "id: " + id
+			'	Print "EXT DIR: " + ExtractDir( path )
+			'	If ExtractDir( path )
+			'		Print "EXT DIR OK"
+			'	buf.Push "~t~t~t~t"+id
+			'	Endif
 			End
 		Next
 		If buf.Length buf.Push ""
@@ -228,6 +242,10 @@ Class IosBuilder Extends Builder
 					CopyFile lib,path
 					AddBuildFile path
 				Case "framework"
+					If FileType( lib ) = FILETYPE_DIR
+						Local path:="libs/"+StripDir( lib )
+						CopyDir lib,path
+					Endif						
 					AddBuildFile lib
 				Default
 					Die "Unrecognized lib file type:"+lib

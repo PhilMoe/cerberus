@@ -25,20 +25,23 @@
 
   Import "native/admob.ios.cpp"
 
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/libGoogleAdMobAds.a"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADBannerView.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADBannerViewDelegate.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADAdSize.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADRequest.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADRequestError.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADInterstitial.h"
-  #LIBS+="${CD}/native/GoogleAdMobAdsSdkiOS-6.8.0/GADInterstitialDelegate.h"
+  #LIBS+="${CD}/native/GoogleMobileAds.framework"
 
-  #LIBS+="StoreKit.framework"
-  #LIBS+="MessageUI.framework"
-  #LIBS+="SystemConfiguration.framework"
   #LIBS+="AdSupport.framework"
-  #LIBS+="CoreTelephony.framework"	'added for admob 6.8.0
+  #LIBS+="CFNetwork.framework"
+  #LIBS+="CoreMedia.framework"
+  #LIBS+="CoreMotion.framework"
+  #LIBS+="CoreTelephony.framework"
+  #LIBS+="CoreVideo.framework"
+  #LIBS+="EventKit.framework"
+  #LIBS+="EventKitUI.framework"
+  #LIBS+="GLKit.framework"
+  #LIBS+="MediaPlayer.framework"
+  #LIBS+="MessageUI.framework"
+  #LIBS+="MobileCoreServices.framework"
+  #LIBS+="OpenGLES.framework"
+  #LIBS+="StoreKit.framework"
+  #LIBS+="SystemConfiguration.framework"
 
 #End
 

@@ -11,6 +11,7 @@
 #include <signal.h>
 
 #if _WIN32
+#include <winsock2.h>
 #include <windows.h>
 #include <shlobj.h>
 #include <direct.h>
@@ -25,6 +26,7 @@
 #include <dirent.h>
 #include <copyfile.h>
 #include <pthread.h>
+#include <OpenGl/gl.h>  // header include necessary for mojo 1
 
 #elif __linux
 #define GL_GLEXT_PROTOTYPES

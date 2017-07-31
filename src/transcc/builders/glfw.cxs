@@ -57,11 +57,27 @@ Class GlfwBuilder Extends Builder
 				ccopts+=" -O3 -DNDEBUG"
 			End
 			
+			If HostOS="winnt"
+				If msize="64"
+					ldopts+=" -L../openal/libs/Win64 -L../curl/lib/Win64"
+				Else
+					ldopts+=" -L../openal/libs/Win32 -L../curl/lib/Win32"
+				Endif
+			Endif
+
 			Local cmd:="make"
 			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
 			
 			Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
 			
+			If GetConfigVar( "GLFW_USE_HTTPS" )="1"
+				If HostOS="winnt"
+					'Copy DLLs for curl
+					Local targetPath:=CurrentDir()+"\"+tconfig
+					CopyDir "../curl/dll", targetPath
+				Endif
+			Endif
+
 			If tcc.opt_run
 
 				ChangeDir tconfig

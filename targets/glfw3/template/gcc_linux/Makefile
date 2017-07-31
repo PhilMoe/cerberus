@@ -9,6 +9,7 @@ CPPFLAGS=$(CCOPTS) \
 -Wno-int-to-pointer-cast \
 -Wno-free-nonheap-object \
 -Wno-unused-result \
+-I../curl/include \
 -I../glfw3/include \
 -I../openal/include \
 -I../stb \
@@ -18,8 +19,8 @@ CPPFLAGS=$(CCOPTS) \
 -pthread
 
 LD=g++
-LDFLAGS=
-LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread -ldl
+LDFLAGS=-L../curl/lib/Linux
+LDLIBS=-lGL -lopenal -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor -lpthread -ldl -lcurl
 
 vpath %.c ../glfw3/src
 vpath %.c ../stb

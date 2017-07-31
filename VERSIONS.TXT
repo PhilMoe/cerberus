@@ -1,3 +1,9 @@
+***** v2017-07-31 *****
+
+FIX: [IOS] fixed Admob errors and updated to latest SDK
+FIX: [DESKTOP] fixed compile errors for mojo 1 under Mac OS
+NEW: [DESKTOP] added HTTPS support using curl
+
 ***** v2017-07-21 *****
 
 FIX: [ANDROID] fixed Android build error when using different package name

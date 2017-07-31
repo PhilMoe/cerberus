@@ -2,10 +2,10 @@
 Import brl.asyncevent
 
 #If Not BRL_HTTPREQUEST_IMPLEMENTED
-#If TARGET="android" Or TARGET="ios" Or TARGET="winrt" Or TARGET="html5" Or TARGET="flash"
-#BRL_HTTPREQUEST_IMPLEMENTED=True
-Import "native/httprequest.${TARGET}.${LANG}"
-#Endif
+  #If TARGET="android" Or TARGET="ios" Or TARGET="winrt" Or TARGET="html5" Or TARGET="flash" Or TARGET="glfw"
+    #BRL_HTTPREQUEST_IMPLEMENTED=True
+    Import "native/httprequest.${TARGET}.${LANG}"
+  #Endif
 #Endif
 
 #If BRL_HTTPREQUEST_IMPLEMENTED
@@ -13,7 +13,7 @@ Import "native/httprequest.${TARGET}.${LANG}"
 Extern Private
 
 Class BBHttpRequest
-	Method Open:Void( req:String,url:String )
+	Method Open:Void( req:String, url:String, timeout:Int = 10, httpsVerifyCertificate:Bool = False, httpsVerifyHost:Bool = False )
 	Method SetHeader:Void( name:String,value:String )
 	Method Send:Void()
 	Method SendText:Void( data:String,encoding:String )
@@ -34,13 +34,13 @@ Class HttpRequest Implements IAsyncEventSource
 		Open req,url,onComplete
 	End
 	
-	Method Open:Void( req:String,url:String,onComplete:IOnHttpRequestComplete )
+	Method Open:Void( req:String, url:String, onComplete:IOnHttpRequestComplete, timeout:Int = 10, httpsVerifyCertificate:Bool = False, httpsVerifyHost:Bool = False )
 		If _req And _req.IsRunning() Error "HttpRequest in progress"
 
 		_req=New BBHttpRequest
 		_onComplete=onComplete
 
-		_req.Open( req,url )
+		_req.Open( req, url, timeout, httpsVerifyCertificate, httpsVerifyHost )
 	End
 	
 	Method SetHeader:Void( name:String,value:String )

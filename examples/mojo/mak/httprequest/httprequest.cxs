@@ -22,12 +22,12 @@ Class MyApp Extends App Implements IOnHttpRequestComplete
 	
 	Method OnCreate()
 	
-		get_req=New HttpRequest( "GET","http://posttestserver.com",Self )
+		get_req=New HttpRequest( "GET","https://posttestserver.com",Self )
 		get_req.Send
-		
-		post_req=New HttpRequest( "POST","http://posttestserver.com/post.php",Self )
+
+		post_req=New HttpRequest( "POST","https://posttestserver.com/post.php",Self )
 		post_req.Send "Hello World!"
-			
+
 		SetUpdateRate 60
 	End
 	
@@ -42,8 +42,8 @@ Class MyApp Extends App Implements IOnHttpRequestComplete
 	
 		Cls
 		
-		DrawText "Http GET bytes received="+get_req.BytesReceived(),0,0
-		DrawText "Http POST bytes received="+post_req.BytesReceived(),0,12
+		DrawText "Https GET bytes received="+get_req.BytesReceived(),0,0
+		DrawText "Https POST bytes received="+post_req.BytesReceived(),0,12
 
 	End	
 End

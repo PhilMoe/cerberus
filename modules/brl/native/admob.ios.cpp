@@ -1,7 +1,7 @@
 
 //admob.ios.h
 
-#import "GADBannerView.h"
+#import <GoogleMobileAds/GoogleMobileAds.h>
 
 class BBAdmob{
 
@@ -119,4 +119,63 @@ int BBAdmob::AdViewWidth(){
 
 int BBAdmob::AdViewHeight(){
 	return _view ? _view.bounds.size.height : 0;
+}
+
+class BBAdmobInterstitial
+{
+
+  static BBAdmobInterstitial *_admobInterstitial;
+
+  GADInterstitial *_interstitialAd;
+  NSString *adUnitId;
+
+  void loadAd();
+
+public:
+  BBAdmobInterstitial();
+
+  static BBAdmobInterstitial *GetAdmobInterstitial( String adUnitID );
+
+  void ShowAdViewInterstitial();
+};
+
+BBAdmobInterstitial *BBAdmobInterstitial::_admobInterstitial;
+
+BBAdmobInterstitial::BBAdmobInterstitial(): _interstitialAd(0)
+{
+}
+
+BBAdmobInterstitial *BBAdmobInterstitial::GetAdmobInterstitial( String adUnitId )
+{
+  if( !_admobInterstitial ) _admobInterstitial = new BBAdmobInterstitial();
+  _admobInterstitial->adUnitId = adUnitId.ToNSString();
+  _admobInterstitial->loadAd();
+  return _admobInterstitial;
+}
+
+void BBAdmobInterstitial::loadAd()
+{
+  _interstitialAd = [[GADInterstitial alloc] init];
+
+  if( _interstitialAd )
+  {
+    _interstitialAd.adUnitID = adUnitId;
+    [_interstitialAd loadRequest:[GADRequest request]];
+  }
+}
+
+void BBAdmobInterstitial::ShowAdViewInterstitial()
+{
+  if( _interstitialAd )
+  {
+    if( _interstitialAd.isReady )
+    {
+      BBCerberusAppDelegate *appDelegate=(BBCerberusAppDelegate*)[[UIApplication sharedApplication] delegate];
+      UIViewController *rootViewController = appDelegate->viewController;
+      [_interstitialAd presentFromRootViewController:rootViewController];
+
+      // load the next ad
+      _admobInterstitial->loadAd();
+    }
+  }
 }

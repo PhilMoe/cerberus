@@ -13,6 +13,8 @@
 		5B5444E51F0BC72800A09B8D /* osmesa_context.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444D71F0BC72800A09B8D /* osmesa_context.c */; };
 		5B5444E81F0BC72800A09B8D /* vulkan.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444DD1F0BC72800A09B8D /* vulkan.c */; };
 		5B5444F01F0BC88300A09B8D /* posix_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444EE1F0BC88300A09B8D /* posix_thread.c */; };
+		5B9A66EA1F2F246600EF062C /* include in Resources */ = {isa = PBXBuildFile; fileRef = 5B9A66E91F2F246600EF062C /* include */; };
+		5BD341471F2F293200608B7B /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BD341461F2F293200608B7B /* libcurl.a */; };
 		7C17EE5212BAD553007B72A6 /* stb_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C17EE5112BAD553007B72A6 /* stb_image.c */; };
 		7C83FECA15730D2B007D5B80 /* stb_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C83FEC915730D2B007D5B80 /* stb_vorbis.c */; };
 		7C8AF373199985960016C22B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8AF372199985960016C22B /* CoreVideo.framework */; };
@@ -52,6 +54,8 @@
 		5B5444DD1F0BC72800A09B8D /* vulkan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vulkan.c; path = ../glfw3/src/vulkan.c; sourceTree = "<group>"; };
 		5B5444EE1F0BC88300A09B8D /* posix_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = posix_thread.c; path = ../glfw3/src/posix_thread.c; sourceTree = "<group>"; };
 		5B5444EF1F0BC88300A09B8D /* posix_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = posix_thread.h; path = ../glfw3/src/posix_thread.h; sourceTree = "<group>"; };
+		5B9A66E91F2F246600EF062C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../curl/include; sourceTree = "<group>"; };
+		5BD341461F2F293200608B7B /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../curl/lib/MacOS/libcurl.a; sourceTree = "<group>"; };
 		7C17EE5112BAD553007B72A6 /* stb_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stb_image.c; path = ../stb/stb_image.c; sourceTree = SOURCE_ROOT; };
 		7C73309C1999832400988833 /* glfw_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw_config.h; path = ../glfw3/src/glfw_config.h; sourceTree = "<group>"; };
 		7C7330A01999832400988833 /* nsgl_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nsgl_context.h; path = ../glfw3/src/nsgl_context.h; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BD341471F2F293200608B7B /* libcurl.a in Frameworks */,
 				7C8AF373199985960016C22B /* CoreVideo.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				7C8DB52F12AF2C210090FC6E /* OpenGL.framework in Frameworks */,
@@ -144,6 +149,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				5B9A66E91F2F246600EF062C /* include */,
 				5B5444EE1F0BC88300A09B8D /* posix_thread.c */,
 				5B5444EF1F0BC88300A09B8D /* posix_thread.h */,
 				5B5444D21F0BC72800A09B8D /* cocoa_joystick.h */,
@@ -190,6 +196,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5BD341461F2F293200608B7B /* libcurl.a */,
 				7C8AF372199985960016C22B /* CoreVideo.framework */,
 				7CDF25451602B81600B598F3 /* IOKit.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
@@ -256,6 +263,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				7CACF8E812B5D1AF002E52F2 /* data in Resources */,
 				7CD5046E165B1A60009581D7 /* external in Resources */,
+				5B9A66EA1F2F246600EF062C /* include in Resources */,
 				7CD5046F165B1A60009581D7 /* internal in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

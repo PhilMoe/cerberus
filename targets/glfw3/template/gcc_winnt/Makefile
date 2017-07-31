@@ -7,6 +7,7 @@ CXXFLAGS=
 
 CPPFLAGS=$(CCOPTS) \
 -Wno-free-nonheap-object \
+-I../curl/include \
 -I../glfw3/include \
 -I../glfw3/src \
 -I../openal/include \
@@ -15,8 +16,8 @@ CPPFLAGS=$(CCOPTS) \
 -I../lpng1610
 
 LD=g++
-LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows -L../openal/libs/Win64
-LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 -lOpenAL32 -lws2_32
+LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
+LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 -lOpenAL32 -lcurldll -lws2_32
 
 vpath %.c ../glfw3/src
 vpath %.c ../stb
