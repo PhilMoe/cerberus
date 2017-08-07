@@ -7,7 +7,7 @@ class BBHttpRequest : public BBThread{
 
 	BBHttpRequest();
 		
-	void Open( String req,String url );
+	void Open( String req,String url,int timeout,bool httpsVerifyCertificate, bool httpsVerifyHost );
 	void SetHeader( String name,String value );
 	void Send();
 	void SendText( String text,String encoding );
