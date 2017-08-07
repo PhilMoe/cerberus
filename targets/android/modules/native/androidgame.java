@@ -7,6 +7,7 @@ import android.graphics.*;
 import android.content.*;
 import android.util.*;
 import android.hardware.*;
+import android.net.*;
 import android.widget.*;
 import android.view.inputmethod.*;
 import android.content.res.*;

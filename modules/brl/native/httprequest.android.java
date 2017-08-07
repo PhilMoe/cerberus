@@ -8,7 +8,7 @@ class BBHttpRequest extends BBThread{
 	
 	String _sendText,_encoding;
 	
-	void Open( String req,String url,int timeout,bool httpsVerifyCertificate, bool httpsVerifyHost ){
+	void Open( String req,String url,int timeout,boolean httpsVerifyCertificate, boolean httpsVerifyHost ){
 		try{
 			ConnectivityManager connMgr = (ConnectivityManager)BBAndroidGame.AndroidGame().GetActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -23,10 +23,11 @@ class BBHttpRequest extends BBThread{
 			}
     }
     catch( Exception ex ){
-		_response="";
-		_status=-1;
-		_recv=0;
-	}
+      _response="";
+      _status=-1;
+      _recv=0;
+    }
+  }
 	
 	void SetHeader( String name,String value ){
 		_con.setRequestProperty( name,value );
