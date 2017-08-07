@@ -30,12 +30,13 @@ class BBHttpRequest : public BBThread{
 BBHttpRequest::BBHttpRequest():_req( 0 ),_status( -1 ),_recv( 0 ){
 }
 
-void BBHttpRequest::Open( String req,String url ){
+void BBHttpRequest::Open( String req,String url,int timeout,bool httpsVerifyCertificate, bool httpsVerifyHost ){
 	
 	_req=[[NSMutableURLRequest alloc] init];
 	
 	[_req setHTTPMethod:req.ToNSString()];
 	[_req setURL:[NSURL URLWithString:url.ToNSString()]];
+  [_req setTimeoutInterval:(timeout/1000)];
 
 	if( [_req respondsToSelector:@selector(setAllowsCellularAccess:)] ){
 		[_req setAllowsCellularAccess:YES];
