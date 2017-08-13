@@ -532,7 +532,7 @@ Class ApiDoccer Implements ILinkResolver
 		Local src:=LoadString( srcpath ).Replace( "~r","" )
 		
 		Local srcline:=0
-		
+		Local parserbump:String
 		For Local line:=Eachin src.Split( "~n" )
 		
 			srcline+=1
@@ -542,7 +542,32 @@ Class ApiDoccer Implements ILinkResolver
 			If parser.Toke="#"
 				Select parser.Bump()
 				Case "rem"
-					If parser.Bump()="cerberusdoc"
+					parserbump = parser.Bump()
+					If parserbump="cerberusdoc"
+						Local opt:=parser.Bump()
+						If opt="on"
+							mdoc=True
+						Else If opt="off"
+							mdoc=False
+						Else
+							mdoc=True
+							If Not mdecl 
+								If opt<>"module" Return
+								parser.Bump()
+								Local id:=parser.ParseIdent()
+								If id<>modpath
+									george.Err "Modpath ("+modpath+") does not match module ident ("+id+")"
+									Return
+								Endif
+							Endif
+							docs=New StringMap<StringStack>
+							sect="description"
+							docs.Set sect,New StringStack
+							Local text:=parser.GetText().Trim()
+							If text docs.Get( sect ).Push text
+						Endif
+					Endif
+					If parserbump="monkeydoc"
 						Local opt:=parser.Bump()
 						If opt="on"
 							mdoc=True
@@ -697,6 +722,10 @@ Class ApiDoccer Implements ILinkResolver
 		If FileType( egdir )<>FILETYPE_DIR And StripDir( ExtractDir( srcpath ) )="cerberusdoc"
 			egdir=ExtractDir( ExtractDir( srcpath ) )+"/examples"
 			If FileType( egdir )<>FILETYPE_DIR egdir=""
+		Endif		
+		If FileType( egdir )<>FILETYPE_DIR And StripDir( ExtractDir( srcpath ) )="monkeydoc"
+			egdir=ExtractDir( ExtractDir( srcpath ) )+"/examples"
+			If FileType( egdir )<>FILETYPE_DIR egdir=""
 		Endif
 
 		LoadExample doccing,egdir
@@ -846,6 +875,26 @@ Class ApiDoccer Implements ILinkResolver
 					Endif
 					
 					t=dir+"/cerberusdoc/"+name+".cerberusdoc"
+					If FileType( t )=FILETYPE_FILE
+						ParseCerberusdocFile t,q
+						Continue
+					Endif
+
+					ParseCerberusFile p,q
+
+				Endif
+				If ext="monkey"
+				
+					Local q:=modpath
+					If name<>StripDir( dir ) q+="."+name
+					
+					Local t:=dir+"/"+name+".monkeydoc"
+					If FileType( t )=FILETYPE_FILE
+						ParseCerberusdocFile t,q
+						Continue
+					Endif
+					
+					t=dir+"/monkeydoc/"+name+".monkeydoc"
 					If FileType( t )=FILETYPE_FILE
 						ParseCerberusdocFile t,q
 						Continue
