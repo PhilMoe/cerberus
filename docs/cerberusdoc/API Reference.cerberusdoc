@@ -2,11 +2,11 @@
 >> The Mojo framework
 
 | Module 					| Contains																|Availability
-| [[mojo.app]]				| The base [[App]] class and functions for controlling app behavior	|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
-| [[mojo.graphics]]			| 2D rendering functions and the [[Image]] class						|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
-| [[mojo.audio]]			| Sound and music playback functions									|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
-| [[mojo.input]]			| User input functions													|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
-| [[mojo.asyncloaders]]		| Functions for loading images and sounds asynchronously				|Android, iOS, Win8, Glfw, Html5, Flash, Xna, Psm
+| [[mojo.app]]				| The base [[App]] class and functions for controlling app behavior	|Android, iOS, Win8, Glfw, Html5, Flash
+| [[mojo.graphics]]			| 2D rendering functions and the [[Image]] class						|Android, iOS, Win8, Glfw, Html5, Flash
+| [[mojo.audio]]			| Sound and music playback functions									|Android, iOS, Win8, Glfw, Html5, Flash
+| [[mojo.input]]			| User input functions													|Android, iOS, Win8, Glfw, Html5, Flash
+| [[mojo.asyncloaders]]		| Functions for loading images and sounds asynchronously				|Android, iOS, Win8, Glfw, Html5, Flash
 | [[mojo2]]					| Advanced 2D rendering API												|Glfw, iOS, Android, Html5
 
 >> Data I/O and filesystem
