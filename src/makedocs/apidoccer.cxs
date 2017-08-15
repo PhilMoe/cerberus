@@ -504,6 +504,7 @@ Class ApiDoccer Implements ILinkResolver
 	Method LoadExample:Bool( decl:Decl,dir:String )
 		If Not dir Or decl.ident<>decl.uident Return False
 		Local src:=LoadString( dir+"/"+decl.ident+"_example.cxs" )
+		If Not src Then LoadString( dir+"/"+decl.ident+"_example.monkey" )
 		If Not src Return False
 		decl.docs.Set "example",src
 		decl.egdir=dir+"/"+decl.ident+"_example.data"
