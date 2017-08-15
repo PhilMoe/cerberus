@@ -1,6 +1,7 @@
-***** v2017-08-13 *****
+***** v2017-08-15 *****
 
 FIX: [makeDocs] fixed makeDocs not recognising MonkeyDoc folders and .monkey files.
+FIX: Fixed wrong naming of config file in GLFW_Angle target.
 
 ***** v2017-07-31 *****
 
