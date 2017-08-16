@@ -575,7 +575,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwWindowHint( GLFW_RED_BITS,8 );
 	glfwWindowHint( GLFW_GREEN_BITS,8 );
 	glfwWindowHint( GLFW_BLUE_BITS,8 );
-	glfwWindowHint( GLFW_ALPHA_BITS,0 );
+	glfwWindowHint( GLFW_ALPHA_BITS,8 );
 	glfwWindowHint( GLFW_DEPTH_BITS,depthbuffer ? 32 : 0 );
 	glfwWindowHint( GLFW_STENCIL_BITS,usestencil ? 8 : 0 );
 	glfwWindowHint( GLFW_RESIZABLE,resizable );
