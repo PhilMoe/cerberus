@@ -191,7 +191,7 @@ class BBFlashGame extends BBGame{
 	}
 
 	public function OnMouseMove( e:flash.events.MouseEvent ):void{
-		MouseEvent( BBGameEvent.MouseMove,-1,e.localX,e.localY );
+		MouseEvent( BBGameEvent.MouseMove,-1,e.localX,e.localY,0 );
 	}
 
 }

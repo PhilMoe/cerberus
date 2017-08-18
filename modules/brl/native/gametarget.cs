@@ -20,7 +20,7 @@ public class BBGameDelegate{
 	public virtual void UpdateGame(){}
 	public virtual void RenderGame(){}
 	public virtual void KeyEvent( int ev,int data ){}
-	public virtual void MouseEvent( int ev,int data,float x,float y ){}
+	public virtual void MouseEvent( int ev,int data,float x,float y,float z ){}
 	public virtual void TouchEvent( int ev,int data,float x,float y ){}
 	public virtual void MotionEvent( int ev,int data,float x,float y,float z ){}
 	public virtual void DiscardGraphics(){}
@@ -297,12 +297,12 @@ public class BBGame{
 		}
 	}
 	
-	public virtual void MouseEvent( int ev,int data,float x,float y ){
+	public virtual void MouseEvent( int ev,int data,float x,float y,float z ){
 
 		if( !_started ) return;
 		
 		try{
-			_delegate.MouseEvent( ev,data,x,y );
+			_delegate.MouseEvent( ev,data,x,y,z );
 		}catch( Exception ex ){
 			if( Die( ex ) ) throw;
 		}

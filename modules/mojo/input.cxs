@@ -62,6 +62,10 @@ Function MouseY#()
 	Return device.MouseY()
 End
 
+Function MouseZ#()
+	Return device.MouseZ()
+End
+
 Function MouseDown( button=MOUSE_LEFT )
 	Return device.KeyDown( KEY_LMB+button )
 End

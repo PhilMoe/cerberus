@@ -458,7 +458,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	canvas.onmousemove=function( e ){
-		game.MouseEvent( BBGameEvent.MouseMove,-1,mouseX(e),mouseY(e) );
+		game.MouseEvent( BBGameEvent.MouseMove,-1,mouseX(e),mouseY(e),0 );
 		eatEvent( e );
 	}
 

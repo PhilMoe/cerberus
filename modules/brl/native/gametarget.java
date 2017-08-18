@@ -26,7 +26,7 @@ class BBGameDelegate{
 	void UpdateGame(){}
 	void RenderGame(){}
 	void KeyEvent( int event,int data ){}
-	void MouseEvent( int event,int data,float x,float y ){}
+	void MouseEvent( int event,int data,float x,float y, float z ){}
 	void TouchEvent( int event,int data,float x,float y ){}
 	void MotionEvent( int event,int data,float x,float y,float z ){}
 	void DiscardGraphics(){}
@@ -326,13 +326,13 @@ abstract class BBGame{
 		}
 	}
 	
-	void MouseEvent( int event,int data,float x,float y ){
+	void MouseEvent( int event,int data,float x,float y, float z ){
 
 		if( !_started ) return;
 		
 		try{
 			synchronized( _delegate ){
-				_delegate.MouseEvent( event,data,x,y );
+				_delegate.MouseEvent( event,data,x,y,z );
 			}
 		}catch( RuntimeException ex ){
 			Die( ex );

@@ -27,7 +27,7 @@ class BBGameDelegate{
 	public function UpdateGame():void{}
 	public function RenderGame():void{}
 	public function KeyEvent( event:int,data:int ):void{}
-	public function MouseEvent( event:int,data:int,x:Number,y:Number ):void{}
+	public function MouseEvent( event:int,data:int,x:Number,y:Number,z:Number ):void{}
 	public function TouchEvent( event:int,data:int,x:Number,y:Number ):void{}
 	public function MotionEvent( event:int,data:int,x:Number,y:Number,z:Number ):void{}
 	public function DiscardGraphics():void{}
@@ -276,12 +276,12 @@ class BBGame{
 		}
 	}
 	
-	public function MouseEvent( ev:int,data:int,x:Number,y:Number ):void{
+	public function MouseEvent( ev:int,data:int,x:Number,y:Number,z:Number ):void{
 
 		if( !_started ) return;
 		
 		try{
-			_delegate.MouseEvent( ev,data,x,y );
+			_delegate.MouseEvent( ev,data,x,y,z );
 		}catch( ex:Object ){
 			Die( ex );
 		}

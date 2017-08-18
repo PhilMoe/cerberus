@@ -1,0 +1,23 @@
+
+'Very simple mouse wheel test
+'
+
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		SetUpdateRate 60
+	End
+	
+	Method OnUpdate()
+		Print MouseZ()
+	End
+	
+	Method OnRender()
+	End
+End
+
+Function Main()
+	New MyApp
+End

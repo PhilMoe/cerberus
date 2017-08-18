@@ -18,7 +18,7 @@ BBGameDelegate.prototype.ResumeGame=function(){}
 BBGameDelegate.prototype.UpdateGame=function(){}
 BBGameDelegate.prototype.RenderGame=function(){}
 BBGameDelegate.prototype.KeyEvent=function( ev,data ){}
-BBGameDelegate.prototype.MouseEvent=function( ev,data,x,y ){}
+BBGameDelegate.prototype.MouseEvent=function( ev,data,x,y,z ){}
 BBGameDelegate.prototype.TouchEvent=function( ev,data,x,y ){}
 BBGameDelegate.prototype.MotionEvent=function( ev,data,x,y,z ){}
 BBGameDelegate.prototype.DiscardGraphics=function(){}
@@ -310,18 +310,18 @@ BBGame.prototype.KeyEvent=function( ev,data ){
 	}
 }
 
-BBGame.prototype.MouseEvent=function( ev,data,x,y ){
+BBGame.prototype.MouseEvent=function( ev,data,x,y,z ){
 
 	if( !this._started ) return;
 	
 	if( this._debugExs ){
 		try{
-			this._delegate.MouseEvent( ev,data,x,y );
+			this._delegate.MouseEvent( ev,data,x,y,z );
 		}catch( ex ){
 			this.Die( ex );
 		}
 	}else{
-		this._delegate.MouseEvent( ev,data,x,y );
+		this._delegate.MouseEvent( ev,data,x,y,z );
 	}
 }
 

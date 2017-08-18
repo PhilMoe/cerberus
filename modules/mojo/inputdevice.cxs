@@ -73,6 +73,12 @@ Class InputDevice
 		Return _mouseY
 	End
 
+	Method MouseZ:Float()
+    Local mZ:Float = _mouseZ
+    _mouseZ = 0.0
+		Return mZ
+	End
+
 	Method TouchX#( index )
 		If index>=0 And index<32 Return _touchX[index]
 		Return 0
@@ -142,7 +148,7 @@ Class InputDevice
 		End
 	End
 	
-	Method MouseEvent:Void( event:Int,data:Int,x:Float,y:Float )
+	Method MouseEvent:Void( event:Int,data:Int,x:Float,y:Float,z:Float )
 		Select event
 		Case BBGameEvent.MouseDown
 			KeyEvent BBGameEvent.KeyDown,KEY_LMB+data
@@ -155,6 +161,7 @@ Class InputDevice
 		End
 		_mouseX=x
 		_mouseY=y
+    _mouseZ=z
 		_touchX[0]=x
 		_touchY[0]=y
 	End
@@ -230,6 +237,7 @@ Private
 	Field _charGet:Int
 	Field _mouseX:Float
 	Field _mouseY:Float
+	Field _mouseZ:Float
 	Field _touchX:Float[32]
 	Field _touchY:Float[32]
 	Field _accelX:Float
