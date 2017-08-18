@@ -1,8 +1,9 @@
-***** v2017-08-16 *****
+***** v2017-08-18 *****
 
-FIX: [GLFW target] Fixed alpha channel drawing on OSX showing color banding.
+FIX: [DESKTOP] Fixed alpha channel drawing on OSX showing color banding.
 FIX: [makeDocs] Fixed makeDocs not recognising MonkeyDoc folders and .monkey files.
 FIX: Fixed wrong naming of config file in GLFW_Angle target.
+NEW: [DESKTOP] Added mouse wheel support for GLFW
 
 ***** v2017-07-31 *****
 
