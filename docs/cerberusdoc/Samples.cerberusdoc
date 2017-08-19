@@ -45,6 +45,12 @@
 + [[../../examples/mojo/skn3/config/configdemo.cxs|Config demo]]
 + [[../../examples/mojo/skn3/iconfun/iconfun.cxs|Async icon fun!]]
 
+>> Martin Leidel
++ [[../../examples/mojo/martin/mousetest/mousetest.cxs|Mousewheel test]]
+
+>> Michael Hartlef
++ [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
+
 >> James Boyd
 
 + [[../../examples/mojo/hitoro/autofit/autofitdemo.cxs|Auto-fit]]
