@@ -298,7 +298,7 @@ Draws an image at coordinates x, y, offset by the image's handle.
 
 The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Links: [[LoadImage]], [[DrawImageRect]]
+Links: [[LoadImage]], [[DrawImage9P]], [[DrawImageRect]]
 
 
 # Function DrawImage:Int(image:Image,x:Float,y:Float,rotation:Float,scaleX:Float,scaleY:Float,frame:Int=0)
@@ -309,7 +309,21 @@ The image is drawn using the current color, alpha, blend mode and matrix, and is
 
 The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
 
-Links: [[LoadImage]], [[DrawImageRect]]
+Links: [[LoadImage]], [[DrawImage9P]], [[DrawImageRect]]
+
+
+# Function DrawImage9P(image:Image,x:Float,y:Float,patchSize,rotation:Float,scaleX:Float,scaleY:Float,frame:Int=0 )
+
+Draws an 9-Patch image at coordinates x, y, offset by the image's handle.
+
+The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+
+The rotation, scaleX and scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
+
+The scaling is done via the 9-Patch method. The patchSize determines the width and height of the top-height, bottom-height, 
+left-width and right-width of the image. These are not scaled. The rest is.
+
+Links: [[LoadImage]], [[DrawImage]], [[DrawImageRect]]
 
 
 # Function DrawImageRect:Int(image:Image,x:Float,y:Float,srcX:Int,srcY:Int,srcWidth:Int,srcHeight:Int,frame:Int=0)
@@ -318,7 +332,7 @@ Draws a sub-rectangle of an image at coordinates x, y, offset by the image's han
 
 The image is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Links: [[LoadImage]], [[DrawImage]]
+Links: [[LoadImage]], [[DrawImage]], [[DrawImage9P]]
 
 
 # Function DrawImageRect:Int(image:Image,x:Float,y:Float,srcX:Int,srcY:Int,srcWidth:Int,srcHeight:Int,rotation:Float,scaleX:Float,scaleY:Float,frame:Int=0)
@@ -329,7 +343,7 @@ The image is drawn using the current color, alpha, blend mode and matrix, and is
 
 The rotation and scaleX, scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
 
-Links: [[LoadImage]], [[DrawImage]]
+Links: [[LoadImage]], [[DrawImage]], [[DrawImage9P]]
 
 
 # Function SetFont:Int(font:Image,firstChar:Int=32)

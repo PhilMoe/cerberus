@@ -1,0 +1,66 @@
+Strict
+
+#rem
+	Script:			DrawImage9Patch.cxs
+	Description:	Draw an image via the 9-Patch algorythm
+	Author: 		Michael Hartlef
+#End
+
+' Import the mojo framework
+Import mojo
+    
+'*******************************************************************    
+' Define the myClass that extends the App Class.    
+Class myClass Extends App
+	'Create some class fields
+	Field window:Image			' A field to store ...
+	Field canvasWidth:Int		' A field to store the width of the canvas.
+	Field canvasHeight:Int		' Holds the height of the canvas.
+		
+	'---------------------------------------------------------------
+ 	' The OnCreate Method inside the App class is always called at the start of your app.
+ 	' It is a perfect place to load resources into your app.
+    Method OnCreate:Int()
+        ' By setting the update rate to 0, there will be always an OnRender call after OnUpdate. No matter how long it takes.
+        ' It will also run as fast as your sync rate of your hardware runs.
+        SetUpdateRate(60)				
+        ' Determine the width of the device canvas.
+        canvasWidth = DeviceWidth()		
+        ' Determine the height of the device canvas.
+        canvasHeight = DeviceHeight()	
+        ' Load the image.
+        window = LoadImage("window.png",1,Image.MidHandle)	
+        Return 0
+    End
+    
+	'---------------------------------------------------------------
+ 	' The OnUpdate Method is called at the beginning of a new frame.
+ 	' The interval it is called depends on how you have set the update rate, which by default is set to 60 times a second.
+ 	' The mojo framework tries to make sure that it will be able to call OnUpdate this many times in a second. And if needed, skip
+ 	' calls to OnRender to reach the goal.
+    Method OnUpdate:Int()
+		'
+        Return 0
+    End
+    
+	'---------------------------------------------------------------
+    ' The OnRender method will be called after the OnUpdate method.
+    ' It is the place to draw your images or other visual elements.
+    Method OnRender:Int()
+	    ' Clear the canvas with a black color.
+        Cls (0,0,0)		
+        ' Draw a cross hair
+        DrawLine(0,canvasHeight/2, canvasWidth,canvasHeight/2)	
+        DrawLine(canvasWidth/2,0, canvasWidth/2,canvasHeight)	
+        DrawImage9P(window, MouseX(),MouseY(), 32,0.0, 2.0, 1.0 )	
+        Return 0
+    End
+End
+
+'---------------------------------------------------------------
+' The Main function is the starting point of every Cerberus X app.
+Function Main:Int()
+	' Create an instance of your class that you have defined above.
+    New myClass()		
+    Return 0
+End

@@ -1759,6 +1759,43 @@ Class DrawList
 		#end
 	End
 	
+	Method DrawImage9P:Void( image:Image,tx:Float,ty:Float, patchSize:Int,rz:Float,scaleX:Float,scaleY:Float )
+		Local patchS2 = patchSize * 2.0
+		Local tsX# = ((image.Width*scaleX)-patchS2) / ((image.Width-patchS2))
+		Local tsY# = ((image.Height*scaleY)-patchS2) / ((image.Height-patchS2))
+
+		PushMatrix
+		TranslateRotate tx,ty,rz
+
+		Local xo2:Float
+		xo2 = - image.Width*image.HandleX*scaleX
+		Local yo2:Float
+		yo2 =  - image.Height*image.HandleY*scaleY
+		
+		'TopLeft
+		DrawRect(0+xo2 , 0+yo2 , image, 0, 0, patchSize, patchSize )
+		'TopMid
+		DrawRect(patchSize +xo2 , 0 +yo2, image.Width*scaleX - patchSize - patchSize, patchSize, image, patchSize, 0, image.Width - patchSize - patchSize, patchSize )
+		'TopRight
+		DrawRect(image.Width*scaleX - patchSize +xo2 , 0 +yo2, image, image.Width - patchSize, 0, patchSize, patchSize )
+		
+		'MiddleLeft
+		DrawRect(0 +xo2 , patchSize +yo2, patchSize, image.Height*scaleY - patchSize - patchSize, image, 0, patchSize, patchSize, image.Height -patchSize - patchSize )
+		'MiddleMid
+		DrawRect(patchSize +xo2 , patchSize +yo2, image.Width*scaleX -patchSize - patchSize, image.Height*scaleY - patchSize - patchSize,image, patchSize , patchSize, image.Width - patchSize - patchSize, image.Height - patchSize - patchSize )
+		'MiddleRight
+		DrawRect(image.Width*scaleX - patchSize +xo2 , patchSize +yo2, patchSize, image.Height*scaleY - patchSize - patchSize, image, image.Width - patchSize, patchSize, patchSize,  image.Height -patchSize - patchSize )
+		
+		'BottomLeft
+		DrawRect(0 +xo2 , image.Height*scaleY - patchSize +yo2, image, 0, image.Height - patchSize, patchSize, patchSize )
+		'BottomMid
+		DrawRect(patchSize +xo2 , image.Height*scaleY - patchSize +yo2, image.Width*scaleX-patchSize-patchSize, patchSize, image, patchSize, image.Height - patchSize, image.Width - patchSize - patchSize, patchSize )
+		'BottomRight
+		DrawRect(image.Width*scaleX - patchSize +xo2 , image.Height*scaleY - patchSize +yo2, image, image.Width - patchSize, image.Height - patchSize, patchSize, patchSize )
+
+		PopMatrix
+	End
+	
 	Method DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 		x-=_font.TextWidth( text )*xhandle
 		y-=_font.TextHeight( text )*yhandle

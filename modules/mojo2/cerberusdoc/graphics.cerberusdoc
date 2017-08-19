@@ -864,6 +864,16 @@ Draw an image at @tx,@ty rotated by @rz and scaled by @sx,@sy.
 If the image has a shadow caster attached, the shadow caster will also be added to the drawlist.
 
 
+# Method DrawImage9P:Void( image:Image,tx:Float,ty:Float,patchSize:Int,rz:Float,scaleX:Float,scaleY:Float )
+
+Draws an 9-Patch image at coordinates @tx, @ty.
+
+The @rz, @scaleX and @scaleY parameters provide a convenient way for you to 'locally' rotate and scale the image.
+
+The scaling is done via the 9-Patch method. The @patchSize determines the width and height of the top-height, bottom-height, 
+left-width and right-width of the image. These are not scaled. The rest is.
+
+
 # Method DrawText:Void( text:String,x:float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 
 Draw @text at @x,@y in the current font.
