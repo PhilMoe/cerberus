@@ -5,6 +5,7 @@
 .DS_Store
 *.buildv*
 desktop.ini
+Thumbs.db
 
 /Monkey
 /Monkey.app
