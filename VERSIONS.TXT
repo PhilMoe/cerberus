@@ -1,9 +1,10 @@
-***** v2017-08-18 *****
+***** v2017-08-19 *****
 
 FIX: [DESKTOP] Fixed alpha channel drawing on OSX showing color banding.
 FIX: [makeDocs] Fixed makeDocs not recognising MonkeyDoc folders and .monkey files.
 FIX: Fixed wrong naming of config file in GLFW_Angle target.
-NEW: [DESKTOP] Added mouse wheel support for GLFW
+NEW: [DESKTOP] Added mouse wheel support for GLFW.
+NEW: [MOJO/MOJO2] Added DrawImage9P to draw images via the 9-Patch algorithm.
 
 ***** v2017-07-31 *****
 
