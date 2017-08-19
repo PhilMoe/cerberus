@@ -6,7 +6,7 @@ The identifiers below are language keywords and are reserved for use by the Cerb
 [[Strict]] | [[Import]] | [[Extern]]
 
 >> Declarations
-[[Const]] | [[Local]] | [[Global]] | [[Field]]
+[[Const]] | [[Local]] | [[Global]] | [[Field]] | [[Alias]]
 
 >> Basic types
 [[Void]] | [[Bool]] | [[Int]] | [[Float]] | [[String]] | [[Array]] | [[Object]] | [[Throwable]]

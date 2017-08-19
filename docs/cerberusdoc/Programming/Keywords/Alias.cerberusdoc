@@ -1,0 +1,38 @@
+> Keyword Alias
+
+The Alias directive allows you to assign a local name to a constant, global, function or class declared in another module. This can be used to create 'shortcuts' for clashing identifiers.
+
+>> Syntax
+
+>> Description
+
+Alias *Identifier* = *ModulePath* . *Identifier*
+
+>> Description
+
+Alias directives must appear in the 'import' section of a module, before any code.
+
+>> See also
+
+[[Local]] | [[Global]] | [[Field]]~n
+[Language reference](Language reference#alias)
+
+>> Example
+
+<pre>
+'----- file1.cxs  -----
+Import file2
+Import file3
+
+Alias T=file2.T                'which 'T' to use
+
+Function Main()
+    Print T                   'Prints '1'
+End
+
+'----- file2.cxs  -----
+Global T:=1
+
+'----- file3.cxs -----
+Global T:=2
+</pre>
