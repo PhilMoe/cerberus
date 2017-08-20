@@ -1501,6 +1501,7 @@ Note that the directory path (in this case, 'util') is not used in any way excep
 
 <a name="alias">
 >>> The Alias directive
+</a>
 
 The Alias directive allows you to assign a local name to a constant, global, function or class declared in another module. This can be used to create 'shortcuts' for clashing identifiers.
 
