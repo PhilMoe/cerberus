@@ -1641,7 +1641,7 @@ The following built in constants may be used in preprocessor expressions:
 | Constant	| Description
 | HOST		| Host operatintg system, one of: winnt macos linux
 | LANG		| Target language, one of: js as cs cpp java
-| TARGET	| Target system, one of: ios android winrt glfw html5 flash xna psm
+| TARGET	| Target system, one of: ios android winrt glfw html5 flash
 | CONFIG	| Target build config, one of: debug release
 | CD		| Directory of source file being built
 | MODPATH	| Module being built

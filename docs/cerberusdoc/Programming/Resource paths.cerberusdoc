@@ -22,10 +22,10 @@ Also, note that Mojo module load commands will automatically insert a "cerberus:
 * *data* = cerberus://data/
 * *file* = cerberus://internal/
 
-| Function														| Android 			| iOS				| Win8			| Glfw			| Html5		| Flash	| Xna	| Psm	| Stdcpp
-| [[Modules/mojo.app#LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
-| [[Modules/mojo.graphics#LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| data	| data	| NA
-| [[Modules/mojo.audio#LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
-| [[Modules/mojo.audio#PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| data	| data	| NA
-| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| data	| data	| file
-| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file	| file	| file
+| Function														| Android 			| iOS				| Win8			| Glfw			| Html5		| Flash	| Stdcpp
+| [[Modules/mojo.app#LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[Modules/mojo.graphics#LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| NA
+| [[Modules/mojo.audio#LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[Modules/mojo.audio#PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| file
+| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file

@@ -41,8 +41,6 @@ Mojo is designed primarily for writing simple 2D games. It is highly portable, l
 
 Mojo is most likely what you will use when you start programming Cerberus X, but it is not part of the Cerberus X language - it is an optional module, and in future other such framework modules may also appear.
 
-Mojo is freely available for the Html5 target, and may be licensed from Blitz Research Ltd for use on the Glfw, Android, iOS, Xna, Psm and Win8 targets.
-
 >>> Mojo quick tips
 
 * Mojo applications must extend the Mojo [[App]] class and create a new instance of this class somewhere inside the Cerberus X Main() function. This is what actually creates the application.
