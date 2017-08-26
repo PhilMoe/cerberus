@@ -272,7 +272,7 @@ If @shader is null, the [[Shader.DefaultShader]] is used.
 
 # Class Font
 
-The mojo2 Font class provides support for simple fixed width bitmap fonts.
+The mojo2 Font class provides support for bitmap fonts.
 
 See also:
 
@@ -291,11 +291,27 @@ Get height of @text drawn in this font.
 
 # Function Load:Font( imagePath:String,firstChar:Int,numChars:int,padded:bool )
 
-Load a fixed width font from @chars.
+Load a fixed width font from @imagePath.
 
 Glyphs should be laid out horizontally within the source image.
 
+@firstChar represents the ASCII code of the first char.
+
 If @padded is true, then each glyph is assumed to have a transparent one pixel padding border around it.
+
+
+# Function Load:Font( path:String,cellWidth:Int,cellHeight:Int,glyphX:Int,glyphY:Int,glyphWidth:Int,glyphHeight:Int,firstChar:Int,numChars:Int )
+
+Load a fixed width font from @path.
+
+@firstChar represents the ASCII code of the first char.
+
+
+# Function Load:Font(path:String)
+
+Loads a bitmap font file created in tools like GlyphDesigner and alike. 
+
+@path represents the filename of the texfile that defines the font and its individual glyphs.
 
 
 # Class ShadowCaster

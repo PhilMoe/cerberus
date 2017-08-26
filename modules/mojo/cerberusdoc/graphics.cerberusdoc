@@ -346,18 +346,16 @@ The rotation and scaleX, scaleY parameters provide a convenient way for you to '
 Links: [[LoadImage]], [[DrawImage]], [[DrawImage9P]]
 
 
-# Function SetFont:Int(font:Image,firstChar:Int=32)
+# Function SetFont:Void( font:Font )
 
 Sets the font for use with DrawText.
 
-The font parameter may be Null, in which case an internal 7x11 white-on-black font is used and the firstChar parameter is ignored.
+The font parameter may be Null, in which case an internal 7x11 white-on-black font is used.
 
-Note: The font functionality in mojo is very limited and intended mainly for debugging purposes
-
-Links: [[GetFont]]
+Links: [[Font.Load|Font.Load]], [[GetFont]]
 
 
-# Function GetFont:Image()
+# Function GetFont:Font()
 
 Returns the current font.
 
@@ -386,7 +384,16 @@ xalign and yalign allow you to control the alignment of the text and should be i
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
-Note: The font functionality in mojo is very limited and intended mainly for debugging purposes.
+
+# Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+
+Draws a multiline text beginning at coordinates x, y in the current font.
+
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+
+xalign and yalign allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
 
 '# Function InvTransform:Float[](coords:Float[])
@@ -409,6 +416,50 @@ The pixel data is stored in int-per-pixel ARGB format, with the alpha component 
 The optional @arrayOffset parameter allows you to specify an index into the array at which to start writing pixel values.
 
 The optional @arrayPitch parameter allows you to specify a 'pitch'. This is the number of array elements between successive rows in the array. If this is 0, then @width is used as pitch, meaning pixel data is assumed to be 'tightly packed'.
+
+
+# Class mojo.graphics.Font
+
+The mojo Font class provides support for bitmap fonts.
+
+See also:
+
+[[SetFont]], [[DrawText]]
+
+
+# Method TextWidth:Int( text:String )
+
+Get width of @text drawn in this font.
+
+
+# Method TextHeight:Int( text:String )
+
+Get height of @text drawn in this font.
+
+
+# Function Load:Font( imagePath:String,firstChar:Int,numChars:int,padded:bool )
+
+Load a fixed width font from @imagePath.
+
+Glyphs should be laid out horizontally within the source image.
+
+@firstChar represents the ASCII code of the first char.
+
+If @padded is true, then each glyph is assumed to have a transparent one pixel padding border around it.
+
+
+# Function Load:Font( path:String,cellWidth:Int,cellHeight:Int,glyphX:Int,glyphY:Int,glyphWidth:Int,glyphHeight:Int,firstChar:Int,numChars:Int )
+
+Load a fixed width font from @path.
+
+@firstChar represents the ASCII code of the first char.
+
+
+# Function Load:Font(path:String)
+
+Loads a bitmap font file created in tools like GlyphDesigner and alike. 
+
+@path represents the filename of the texfile that defines the font and its individual glyphs.
 
 
 # Class mojo.graphics.Image

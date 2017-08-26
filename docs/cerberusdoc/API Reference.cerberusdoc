@@ -64,7 +64,7 @@
 | [[brl.cerberusstore]]		| The [[CerberusStore]] class for making in-app purchases				|Android, iOS
 | [[brl.gamecenter]]		| The [[GameCenter]] class for using Apple's Game Center service		|iOS
 
->> Misecellaneous
+>> Miscellaneous
 
 | Module					| Contains																|Availability
 | [[opengl.gles11]]			| A wrapper module for the OpenGL ES 1.1 API							|Android, iOS, Glfw

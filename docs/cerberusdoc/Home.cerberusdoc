@@ -5,6 +5,9 @@
 
 * Mojo2 [[mojo2|overview]] and [[Mojo2 samples|samples]].
 * [[brl.requesters|Requesters]] module for Windows and MacOS.
+* [[../../examples/mojo/martin/mousetest/mousetest.cxs|Reading the mouse wheel in GLFW and HTML.]]
+* [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing a 9-Patch image.]]
+* [[../../examples/mojo/mikehart/BitmapFont/BitmapFont.cxs|Draw multiline text via a bitmap font]]
 
 >> Programming Guide
 
@@ -17,7 +20,8 @@
 * [[Programming/Language reference]]
 * [[Programming/Keywords|Keyword reference]]
 * [[Tutorials]]
-* [[Samples]]
+* [[Samples|Mojo1 samples]]
+* [[Mojo2 samples|Mojo2 samples]]
 
 >> Tools
 
