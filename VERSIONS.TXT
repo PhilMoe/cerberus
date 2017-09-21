@@ -1,5 +1,6 @@
-***** v2017-08-26 *****
+***** v2017-09-21 *****
 
+FIX: [MOJO2] Fixed memory leak when discarding an image
 FIX: [DESKTOP] Fixed alpha channel drawing on OSX showing color banding.
 FIX: [makeDocs] Fixed makeDocs not recognising MonkeyDoc folders and .monkey files.
 FIX: Fixed wrong naming of config file in GLFW_Angle target.
