@@ -227,7 +227,7 @@ Function Main()
 			#If HOST="winnt"
 				Execute "start ~q~q ~q"+AppPath+"~q GO  1>NUL 2>NUL &"
 			#Else
-				Execute "~q"+AppPath+"~q GO  >/dev/Null 2>/dev/Null &"
+				Execute "~q"+AppPath+"~q GO  >/dev/null 2>/dev/null &"
 			#End
 
 '			Local proc:=New Process

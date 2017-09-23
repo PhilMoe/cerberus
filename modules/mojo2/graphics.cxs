@@ -1077,7 +1077,6 @@ Class Image
 	
 	Method New( image:Image,x:Int,y:Int,width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5 )
 		_material=image._material
-		_material.Retain
 		_x=image._x+x
 		_y=image._y+y
 		_width=width
@@ -1089,7 +1088,6 @@ Class Image
 		Local texture:=material.ColorTexture
 		If Not texture Error "Material has no ColorTexture"
 		_material=material
-		_material.Retain
 		_width=_material.Width
 		_height=_material.Height
 		SetHandle xhandle,yhandle
@@ -1099,7 +1097,6 @@ Class Image
 		Local texture:=material.ColorTexture
 		If Not texture Error "Material has no ColorTexture"
 		_material=material
-		_material.Retain
 		_x=x
 		_y=y
 		_width=width
