@@ -17,7 +17,7 @@ CPPFLAGS=$(CCOPTS) \
 
 LD=g++
 LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
-LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 -lOpenAL32 -lcurldll -lws2_32
+LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32
 
 vpath %.c ../glfw3/src
 vpath %.c ../stb

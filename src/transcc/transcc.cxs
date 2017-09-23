@@ -7,7 +7,7 @@
 Import trans
 Import builders
 
-Const VERSION:="2017-07-31"
+Const VERSION:="2017-9-23 alpha-02"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -166,6 +166,7 @@ Class TransCC
 	
 	Field _builders:=New StringMap<Builder>
 	Field _targets:=New StringMap<Target>
+	Field _libs:String
 	
 	Method Run:Void( args:String[] )
 
@@ -403,10 +404,14 @@ Class TransCC
 			If FLEX_PATH path+=";"+FLEX_PATH+"/bin"
 			
 			If MINGW_PATH path=MINGW_PATH+"/bin;"+path	'override existing mingw path if any...
-	
+
 			SetEnv "PATH",path
-			
+
 			If JDK_PATH SetEnv "JAVA_HOME",JDK_PATH
+
+			' Get path to external dlls
+			_libs = AppPath()
+			_libs = _libs[.. _libs.Find("bin/transcc_winnt.exe")] + "libs/"
 	
 		Case "macos"
 

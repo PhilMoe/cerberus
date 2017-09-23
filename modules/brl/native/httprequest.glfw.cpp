@@ -1,7 +1,13 @@
 
 // ***** HttpRequest.h *****
 
+// Libcurl for Linux will be in a system repository when installed
+#ifdef __linux__
+#include <curl/curl.h>
+#else
 #include "curl/include/curl.h"
+#endif
+
 #include <string>
 
 class BBHttpRequest : public BBThread

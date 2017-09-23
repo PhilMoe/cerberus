@@ -1,5 +1,6 @@
 
-Import mojo
+Import mojo.app
+Import mojo.graphics
 Import cerberus.math
 
 ' The overall Game object, handling loading, mouse position, high-level game control and rendering...

@@ -5,8 +5,8 @@
 '
 #CSERVER_VERSION="17.7.3"
 
-#If HOST<>"linux" And HOST<>"macos"
-#Error "Host<>linux/macos"
+#If HOST<>"linux" And HOST<>"macos" And HOST<>"winnt"
+#Error "Host<>linux/macos/winnt"
 #Endif
 
 #If TARGET<>"glfw"
@@ -207,8 +207,8 @@ Function Main()
 	
 #If CONFIG="debug"	
 	If AppArgs.Length=1
-		AppArgs=[ AppArgs[0],"/Users/marksibly/Desktop/bouncyaliens/bouncyaliens.buildv81b/html5/CerberusGame.html" ]
-'		AppArgs=[ AppArgs[0],"/home/marksibly/desktop/audiotest/audiotest.buildv81b/html5/MonkeyGame.html" ]
+		AppArgs=[ AppArgs[0], RealPath(AppPath+"../../../../../../test/CerberusGame.html") ]
+		Print "Test Path: " + RealPath(AppPath+"../../../../../../test/CerberusGame.html")
 	Endif
 #Endif
 
@@ -224,8 +224,11 @@ Function Main()
 		Local socket:=New Socket( "stream" )
 		
 		If Not socket.Connect( "localhost",CSERVER_PORT )
-		
-			Execute "~q"+AppPath+"~q GO  >/dev/null 2>/dev/null &"
+			#If HOST="winnt"
+				Execute "start ~q~q ~q"+AppPath+"~q GO  1>NUL 2>NUL &"
+			#Else
+				Execute "~q"+AppPath+"~q GO  >/dev/Null 2>/dev/Null &"
+			#End
 
 '			Local proc:=New Process
 '			If Not proc.Start( AppPath+" GO" ) Error "Error starting CServer process"

@@ -27,7 +27,7 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
 
 '***** 64 bit mingw *****
-MINGW_PATH="d:\programme\TDM-GCC-64"
+MINGW_PATH="D:\Applications\Compilers\TDM-GCC-64"
 '--------------------
 
 '--------------------
