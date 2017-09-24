@@ -64,6 +64,7 @@ These are located in the Qt SDK under the mkspecs directory
 'qtspec_directory_for_compiler' would be for example
 win32-msvc2013 for Visual Studio 2013
 
+To build a debug version of Ted add -qtdbg 1
 
 ======= MAC OSX =======
 TO DO
