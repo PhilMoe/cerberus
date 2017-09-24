@@ -404,9 +404,9 @@ Class TransCC
 			If FLEX_PATH path+=";"+FLEX_PATH+"/bin"
 			
 			If MINGW_PATH path=MINGW_PATH+"/bin;"+path	'override existing mingw path if any...
-
+	
 			SetEnv "PATH",path
-
+			
 			If JDK_PATH SetEnv "JAVA_HOME",JDK_PATH
 
 			' Get path to external dlls

@@ -105,6 +105,7 @@ Class Builder
 			If FileType( buildPath )<>FILETYPE_DIR Die "Failed to create build dir: "+buildPath
 			If Not CopyDir( tcc.cerberusdir+"/targets/"+tcc.target.dir+"/template",targetPath,True,False ) Die "Failed to copy target dir"
 		Endif
+		
 		If FileType( targetPath )<>FILETYPE_DIR Die "Failed to create target dir: "+targetPath
 		
 		Local cfgPath:=targetPath+"/config.cxs"
