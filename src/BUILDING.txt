@@ -15,6 +15,7 @@ sudo apt-get -y install libqt5webkit5-dev qtlocation5-dev qtsensors5-dev libxslt
 libsqlite3-dev libgstreamer-plugins-base0.10-dev qt5-default libicu-dev
 
 Special not for 64 bit users of Debian/Ubuntu and their derivatives:
+Please be aware that you will of course need the g++-multilib package installed to do the following.
 It is posible to cross compile and test for 32 bit builds by linking the required development libraries like so
 
 Debian
@@ -31,7 +32,6 @@ sudo ln -s /usr/lib/i386-linux-gnu/libXi.so.6 /usr/lib32/libXi.so
 sudo ln -s /usr/lib/i386-linux-gnu/libXrandr.so.2 /usr/lib32/libXrandr.so
 sudo ln -s /usr/lib/i386-linux-gnu/libXinerama.so.1 /usr/lib32/libXinerama.so
 sudo ln -s /usr/lib/i386-linux-gnu/libXcursor.so.1 /usr/lib32/libXcursor.so
-
 
 ======= WINDOWS VISTA/WIN&/8/X =======
 You will require the Window version of GCC, either MinGW (http://www.mingw.org/) or TDM (http://tdm-gcc.tdragon.net/)
