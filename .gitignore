@@ -27,3 +27,7 @@ Thumbs.db
 /src/launcher/codeblocks/obj
 /src/launcher/codeblocks/launcher.depend
 /src/launcher/codeblocks/launcher.layout
+
+/src/transcc/transcc.build/cpptool/main_winnt.exe
+/src/transcc/transcc.build/cpptool/main_linux
+/src/transcc/transcc.build/cpptool/main_macos
