@@ -1,4 +1,4 @@
-***** v2017-9-23  *****
+***** v2017-9-23 *****
 
 FIX: [HTTP] Linux libcurl now use repository development files instead of the templates files.
 FIX: [DESKTOP] Pass addition CC, LD and LIB parameters to GLFW GCC compilers.
