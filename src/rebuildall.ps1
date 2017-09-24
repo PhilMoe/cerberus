@@ -4,7 +4,8 @@ param(
     [string]$mingw = "C:\Mingw",
     [string]$qtsdk = "C:\Qt\5.5\msvc2013_64",
     [string]$visualstudio = "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC",
-    [string]$qtspec = "win32-msvc2013"
+    [string]$qtspec = "win32-msvc2013",
+    [bool]$qtdbg = 0
 )
 
 # NOTE: This script requires that the execution policy for the current user be set to unrestricted.
@@ -156,13 +157,22 @@ if(Test-Path build-ted-Desktop-Release) {
 
 New-Item build-ted-Desktop-Release -type directory
 cd build-ted-Desktop-Release
+
 qmake -spec $qtspec ../ted/ted.pro
-cmd /c nmake -f Makefile.Release
+
+if($qtdbg) {
+    cmd /c nmake -f Makefile.Debug
+    $deploy = "--debug"
+} else {
+    cmd /c nmake -f Makefile.Release
+    $deploy = "--release"
+}
+
 cd ..
 Remove-Item build-ted-Desktop-Release -force -recurse
 
 # Deploy and clean
-windeployqt --no-svg --no-angle --no-compiler-runtime --no-system-d3d-compiler --no-quick-import --no-translations --core ..\bin\Ted.exe
+windeployqt $deplpoy --no-svg --no-angle --no-compiler-runtime --no-system-d3d-compiler --no-quick-import --no-translations --core ..\bin\Ted.exe
 $folders = "audio","bearer","imageformats","mediaservice","playlistformats","position","printsupport","sensors","sensorgestures","sqldrivers","opengl32sw.dll"
 foreach($folder in $folders){
     Remove-Item ..\bin\$folder -Force -Recurse
