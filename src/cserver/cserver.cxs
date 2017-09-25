@@ -204,14 +204,14 @@ Function Main()
 
 	Local AppPath:=Process.AppPath()
 	Local AppArgs:=Process.AppArgs()
-	
+	Local proc:Process
 #If CONFIG="debug"	
 	If AppArgs.Length=1
 		AppArgs=[ AppArgs[0], RealPath(AppPath+"../../../../../../test/CerberusGame.html") ]
 		Print "Test Path: " + RealPath(AppPath+"../../../../../../test/CerberusGame.html")
 	Endif
 #Endif
-
+	
 	If AppArgs.Length=1 Or (AppArgs.Length=2 And AppArgs[1]="GO")
 	
 		Local socket:=New Socket( "server" )
@@ -225,14 +225,14 @@ Function Main()
 		
 		If Not socket.Connect( "localhost",CSERVER_PORT )
 			#If HOST="winnt"
-				Execute "start ~q~q ~q"+AppPath+"~q GO  1>NUL 2>NUL &"
+				'Execute "start ~q~q ~q"+AppPath+"~q GO  1>NUL 2>NUL &"
+				proc = New Process
+				If Not proc.Start( AppPath+" GO" ) Error "Error starting CServer process"
+			
 			#Else
 				Execute "~q"+AppPath+"~q GO  >/dev/null 2>/dev/null &"
 			#End
 
-'			Local proc:=New Process
-'			If Not proc.Start( AppPath+" GO" ) Error "Error starting CServer process"
-			
 			Local err:=True
 			For Local i:=0 Until 50
 				Process.Sleep 100
@@ -265,7 +265,12 @@ Function Main()
 		Error "CServer command line error"
 	
 	Endif
-		
+	
+	' Cludge fix for Ted. Not ideal but should stop zombie threads.
+	If proc<>Null
+		While proc.IsRunning
+		Wend
+	EndIf	
 End
 
 Function MimeType:String( ext:String )
