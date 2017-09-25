@@ -1,11 +1,16 @@
 ﻿# Windows Powershell build script
 # TO DO: The cserver needs to be rewritten so it doesn't need BlitzMax
 param(
-    [string]$mingw = "C:\Mingw",
-    [string]$qtsdk = "C:\Qt\5.5\msvc2013_64",
+    [string]$mingw = "D:\Applications\Compilers\TDM-GCC-64", #"C:\Mingw",
+    [string]$qtsdk = "D:\dev\sdk\qt\windows\Qt5\5.5\msvc2013_64", #"C:\Qt\5.5\msvc2013_64",
     [string]$visualstudio = "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC",
     [string]$qtspec = "win32-msvc2013",
-    [bool]$qtdbg = 0
+    [bool]$qtdbg = 0,
+    [bool]$buildtrans = 1,
+    [bool]$buildLauncher = 1,
+    [bool]$buildmakedocs = 1,
+    [bool]$buildcserver = 1,
+    [bool]$buildted = 1
 )
 
 # NOTE: This script requires that the execution policy for the current user be set to unrestricted.
@@ -60,24 +65,28 @@ if(-not (Test-Path "$visualstudio")){
 # Build transcc first
 if(Test-Path $mingw\bin\g++.exe)
 {
-    write-host "Building transcc"
-    write-host "Please wait"
-    if(Test-Path ..\bin\transcc_winnt.exe){
-        remove-item ..\bin\transcc_winnt.exe -force
+    if($buildtrans) {
+        write-host "Building transcc"
+        write-host "Please wait"
+        if(Test-Path ..\bin\transcc_winnt.exe){
+            remove-item ..\bin\transcc_winnt.exe -force
+        }
+
+        g++ -O3 -DNDEBUG -o ..\bin\transcc_winnt transcc\transcc.build\cpptool\main.cpp -lpthread -s
     }
 
-    g++ -O3 -DNDEBUG -o ..\bin\transcc_winnt transcc\transcc.build\cpptool\main.cpp -lpthread -s
+    if($buildlauncher) {
+        write-host "Building launcher"
+        if(Test-Path ..\Cerberus.exe){
+            remove-item ..\Cerberus.exe -force
+        }
 
-    write-host "Building launcher"
-    if(Test-Path ..\Cerberus.exe){
-        remove-item ..\Cerberus.exe -force
-    }
+        windres launcher\resource.rc -O coff -o launcher\res.o
+        g++ -Os -DNDEBUG -o ..\Cerberus.exe launcher\codeblocks\launcher.cpp launcher\res.o -ladvapi32 -s
 
-    windres launcher\resource.rc -O coff -o launcher\res.o
-    g++ -Os -DNDEBUG -o ..\Cerberus.exe launcher\codeblocks\launcher.cpp launcher\res.o -ladvapi32 -s
-
-    if(-Not (Test-Path ..\Cerberus.exe)){
-        ErrorMgs "ERROR: Failed to build Cerberus launcher."
+        if(-Not (Test-Path ..\Cerberus.exe)){
+            ErrorMgs "ERROR: Failed to build Cerberus launcher."
+        }
     }
 
 } else {
@@ -88,94 +97,100 @@ Write-Host ""
 # Only continue if transcc was successfully built
 if(Test-Path ..\bin\transcc_winnt.exe){
     
-    # Before continuing, fix the location of MinGw in \bin\config.winnt.txt so that transcc knows where it is.
-    $file = '..\bin\config.winnt.txt'
-    $regex = '(?<=MINGW_PATH=")[^"]*'
-    (Get-Content $file) -replace $regex, $mingw | Set-Content $file
+    if($buildmakedocs) {
+        # Before continuing, fix the location of MinGw in \bin\config.winnt.txt so that transcc knows where it is.
+        $file = '..\bin\config.winnt.txt'
+        $regex = '(?<=MINGW_PATH=")[^"]*'
+        (Get-Content $file) -replace $regex, $mingw | Set-Content $file
 
-    #Make makedocs
-    write-host "makedocs"
-    if(Test-Path ..\bin\makedocs_winnt.exe) {
-        remove-item ..\bin\makedocs_winnt.exe -force
-    }
+        #Make makedocs
+        write-host "makedocs"
+        if(Test-Path ..\bin\makedocs_winnt.exe) {
+            remove-item ..\bin\makedocs_winnt.exe -force
+        }
 
-    ../bin/transcc_winnt -target="C++_Tool" -builddir="makedocs.build" -clean -config="release" +CPP_GC_MODE=0 "makedocs\makedocs.cxs"
-    move-item makedocs\makedocs.build\cpptool\main_winnt.exe ..\bin\makedocs_winnt.exe
-    remove-item makedocs\makedocs.build -force -recurse
+        ../bin/transcc_winnt -target="C++_Tool" -builddir="makedocs.build" -clean -config="release" +CPP_GC_MODE=0 "makedocs\makedocs.cxs"
+        move-item makedocs\makedocs.build\cpptool\main_winnt.exe ..\bin\makedocs_winnt.exe
+        remove-item makedocs\makedocs.build -force -recurse
 
-    if(-Not (Test-Path ..\bin\makedocs_winnt.exe)){
-        ErrorMsg "ERROR: Failed to build makedocs!"
-    }
-
-    Write-Host ""
-    #Make cserver
-    if(Test-Path ..\bin\cserver_winnt.exe) {
-        remove-item ..\bin\cserver_winnt.exe -force
-    }
-
-    write-host "building cserver"
-    ../bin/transcc_winnt -target="Desktop_Game_(Glfw3)" -builddir="cserver.build" -clean -config="release" +CPP_GC_MODE=1 "cserver\cserver.cxs"
-    Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\CerberusGame.exe ..\bin\cserver_winnt.exe
-
-    # Move the openal dll and licence text
-    if(-Not (Test-Path ..\bin\openal.dll)) {
-        Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\OpenAL32.dll ..\bin\OpenAL32.DLL
-        if(-Not (Test-Path ..\bin\OpenAL_COPYING)) {
-            Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\Openal32_COPYING ..\bin\OPENAL32_COPYING
+        if(-Not (Test-Path ..\bin\makedocs_winnt.exe)){
+            ErrorMsg "ERROR: Failed to build makedocs!"
         }
     }
 
-    Remove-Item cserver\cserver.build -force -recurse
+    if($buildcserver) {
+        Write-Host ""
+        #Make cserver
+        if(Test-Path ..\bin\cserver_winnt.exe) {
+            remove-item ..\bin\cserver_winnt.exe -force
+        }
 
-    # Clean out openal if failed to build cserver
-    if(-Not (Test-Path ..\bin\cserver_winnt.exe)){
-        if(Test-Path ..\bin\openal.dll) {
-            Remove-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\OpenAL32.dll ..\bin\OpenAL32.DLL
-            if(Test-Path ..\bin\OpenAL_COPYING) {
-                Remove-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\Openal32_COPYING ..\bin\OPENAL32_COPYING
+        write-host "building cserver"
+        ../bin/transcc_winnt -target="Desktop_Game_(Glfw3)" -builddir="cserver.build" -clean -config="release" +CPP_GC_MODE=1 "cserver\cserver.cxs"
+        Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\CerberusGame.exe ..\bin\cserver_winnt.exe
+
+        # Move the openal dll and licence text
+        if(-Not (Test-Path ..\bin\openal.dll)) {
+            Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\OpenAL32.dll ..\bin\OpenAL32.DLL
+            if(-Not (Test-Path ..\bin\OpenAL_COPYING)) {
+                Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\Openal32_COPYING ..\bin\OPENAL32_COPYING
             }
         }
-        ErrorMsg "ERROR: Failed to build cserver!"
+
+        Remove-Item cserver\cserver.build -force -recurse
+
+        # Clean out openal if failed to build cserver
+        if(-Not (Test-Path ..\bin\cserver_winnt.exe)){
+            if(Test-Path ..\bin\openal.dll) {
+                Remove-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\OpenAL32.dll ..\bin\OpenAL32.DLL
+                if(Test-Path ..\bin\OpenAL_COPYING) {
+                    Remove-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\Openal32_COPYING ..\bin\OPENAL32_COPYING
+                }
+            }
+            ErrorMsg "ERROR: Failed to build cserver!"
+        }
     }
     
 } else {
     ErrorMsg "Error: Failed to start transcc. Was it built successfully?"
 }
 
-Write-Host ""
-#Make ted
-write-host "building ted"
-if(Test-Path ..\bin\Tedt.exe){
-    Remove-Item ..\bin\Ted.exe -Force
-    Remove-Item ..\bin\*.dll -Force
-    Remove-Item ..\bin\plugins -Force -Recurse
-}
+if($buildted) {
+    Write-Host ""
+    #Make ted
+    write-host "building ted"
+    if(Test-Path ..\bin\Tedt.exe){
+        Remove-Item ..\bin\Ted.exe -Force
+        Remove-Item ..\bin\*.dll -Force
+        Remove-Item ..\bin\plugins -Force -Recurse
+    }
 
-if(Test-Path build-ted-Desktop-Release) {
+    if(Test-Path build-ted-Desktop-Release) {
+        Remove-Item build-ted-Desktop-Release -force -recurse
+    }
+
+    New-Item build-ted-Desktop-Release -type directory
+    cd build-ted-Desktop-Release
+
+    qmake -spec $qtspec ../ted/ted.pro
+
+    if($qtdbg) {
+         cmd /c nmake -f Makefile.Debug
+        $deploy = "--debug"
+    } else {
+        cmd /c nmake -f Makefile.Release
+        $deploy = "--release"
+    }
+
+    cd ..
     Remove-Item build-ted-Desktop-Release -force -recurse
-}
 
-New-Item build-ted-Desktop-Release -type directory
-cd build-ted-Desktop-Release
-
-qmake -spec $qtspec ../ted/ted.pro
-
-if($qtdbg) {
-    cmd /c nmake -f Makefile.Debug
-    $deploy = "--debug"
-} else {
-    cmd /c nmake -f Makefile.Release
-    $deploy = "--release"
-}
-
-cd ..
-Remove-Item build-ted-Desktop-Release -force -recurse
-
-# Deploy and clean
-windeployqt $deplpoy --no-svg --no-angle --no-compiler-runtime --no-system-d3d-compiler --no-quick-import --no-translations --core ..\bin\Ted.exe
-$folders = "audio","bearer","imageformats","mediaservice","playlistformats","position","printsupport","sensors","sensorgestures","sqldrivers","opengl32sw.dll"
-foreach($folder in $folders){
-    Remove-Item ..\bin\$folder -Force -Recurse
+    # Deploy and clean
+    windeployqt $deplpoy --no-svg --no-angle --no-compiler-runtime --no-system-d3d-compiler --no-quick-import --no-translations --core ..\bin\Ted.exe
+    $folders = "audio","bearer","imageformats","mediaservice","playlistformats","position","printsupport","sensors","sensorgestures","sqldrivers","opengl32sw.dll"
+    foreach($folder in $folders){
+        Remove-Item ..\bin\$folder -Force -Recurse
+    }
 }
 
 exit 0
