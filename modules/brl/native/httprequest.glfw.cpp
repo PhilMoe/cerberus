@@ -1,7 +1,7 @@
 
 // ***** HttpRequest.h *****
 
-// Libcurl for Linux will be in a system repository when installed
+// Libcurl for Linux will be from a system repository when installed
 #ifdef __linux__
 #include <curl/curl.h>
 #else
