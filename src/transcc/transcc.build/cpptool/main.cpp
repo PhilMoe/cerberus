@@ -1772,7 +1772,7 @@ public:
 	virtual void UpdateGame(){}
 	virtual void RenderGame(){}
 	virtual void KeyEvent( int event,int data ){}
-	virtual void MouseEvent( int event,int data,Float x,Float y ){}
+	virtual void MouseEvent( int event,int data,Float x,Float y, Float z ){}
 	virtual void TouchEvent( int event,int data,Float x,Float y ){}
 	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
@@ -1840,7 +1840,7 @@ public:
 	virtual void UpdateGame();
 	virtual void RenderGame();
 	virtual void KeyEvent( int ev,int data );
-	virtual void MouseEvent( int ev,int data,float x,float y );
+	virtual void MouseEvent( int ev,int data,float x,float y, float z );
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
@@ -2118,12 +2118,12 @@ void BBGame::KeyEvent( int ev,int data ){
 	gc_collect();
 }
 
-void BBGame::MouseEvent( int ev,int data,float x,float y ){
+void BBGame::MouseEvent( int ev,int data,float x,float y, float z ){
 
 	if( !_started ) return;
 	
 	try{
-		_delegate->MouseEvent( ev,data,x,y );
+		_delegate->MouseEvent( ev,data,x,y,z );
 	}catch( ThrowableObject *ex ){
 		Die( ex );
 	}
