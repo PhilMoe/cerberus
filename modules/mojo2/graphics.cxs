@@ -1502,7 +1502,10 @@ Class BlendMode
 	Const Alpha:=1
 	Const Additive:=2
 	Const Multiply:=3
-	Const Multiply2:=4
+	Const Multiply2:= 4
+	Const Alpha2:= 5
+	Const Opaque2:= 6
+	Const AlphaStamp:= 7
 End
 
 Class DrawList
@@ -2113,7 +2116,24 @@ Class DrawList
 			Case .BlendMode.Multiply2
 				glEnable GL_BLEND
 				glBlendFunc GL_DST_COLOR,GL_ZERO
-			End
+			Case.BlendMode.Alpha2
+'				glClearColor(0, 0, 0, 0)
+'				glEnable GL_BLEND
+'				glBlendEquation GL_FUNC_ADD
+'				glBlendFunc GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA
+					glEnable(GL_BLEND)
+					glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
+					
+					'glBlendEquation(GL_FUNC_ADD)
+			Case.BlendMode.Opaque2
+				glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+			Case.BlendMode.AlphaStamp
+				glEnable(GL_BLEND);
+				'glBlendFuncSeparate(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE, GL_ZERO);
+				glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO);
+				'glBlendFuncSeparate(GL_ZERO, GL_DST_COLOR, GL_ONE, GL_ZERO);
+				glBlendEquation(GL_FUNC_ADD);
+			End			
 		End
 		
 		Select op.order

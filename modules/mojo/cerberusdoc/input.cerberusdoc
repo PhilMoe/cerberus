@@ -150,7 +150,7 @@ On devices with a touch screen but no mouse, MouseX will instead return TouchX( 
 
 Links: 
 
-[[MouseY]], [[TouchX]]
+[[MouseY]], [[MouseZ]], [[TouchX]]
 
 Example: 
 
@@ -187,7 +187,43 @@ On devices with a touch screen but no mouse, MouseY will instead return TouchY( 
 
 Links: 
 
-[[MouseX]], [[TouchY]]
+[[MouseX]], [[MouseZ]], [[TouchY]]
+
+
+# Function MouseZ:Float()
+
+Returns 1 or -1 if the mouse wheel was used since last update.
+
+Works only for GLFW target.
+
+Links: 
+
+[[MouseX]], [[MouseY]], [[TouchX]]
+
+Example: 
+
+<pre>
+Import mojo
+
+Class MyApp Extends App
+
+	Method OnCreate()
+		SetUpdateRate 30
+	End
+	
+	Method OnUpdate()
+	End
+	
+	Method OnRender()
+		Cls
+		DrawText "MouseX="+MouseX+", MouseY="+MouseY+", MouseZ="+MouseZ,0,0
+	End
+End
+
+Function Main()
+	New MyApp
+End
+</pre>
 
 
 # Function MouseDown:Int(button:Int)
