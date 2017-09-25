@@ -1,0 +1,14 @@
+***** v2017-9-23 *****
+
+FIX: [HTTP] Linux libcurl now use repository development files instead of the templates files.
+FIX: [DESKTOP] Pass addition CC, LD and LIB parameters to GLFW GCC compilers.
+FIX: Updated GLFW GCC Windows and Linux Makefiles for additional parameters.
+NEW: Powershell build script for building Cerberus from scratch and instructions.
+NEW: Added a new libs directory for external libraries.
+NEW: [DESKTOP] Copy dynamic libaries from new libs directory to final build directory. GCC Windows only for now.
+UPDATE: [MOJO] audio.cxs now uses GLFW_GCC_LIB_OPTS & GLFW_COPY_LIBS to pass options to the Makefiles instead of them being hard coded.
+UPDATE: Updated documentation for new pre-processor directives.
+UPDATE: Updated cserver.cxs for use with Windows. Note that TED has a problem releasing the cserver process.
+NEW: CServer test files added to cserver source directory.
+NEW: Windows launcher now written in C/C++ and CodeBlock project files.
+
