@@ -1,10 +1,11 @@
-***** v2017-09-21 *****
+***** v2017-09-25 *****
 
 FIX: [MOJO2] Fixed memory leak when discarding an image
 FIX: [DESKTOP] Fixed alpha channel drawing on OSX showing color banding.
 FIX: [makeDocs] Fixed makeDocs not recognising MonkeyDoc folders and .monkey files.
 FIX: Fixed wrong naming of config file in GLFW_Angle target.
 NEW: [DESKTOP] Added mouse wheel support for GLFW.
+NEW: [MOJO2] Added new blend modes Alpha2, Opaque2, AlphaStamp to mojo2 (thanks Soap!)
 NEW: [MOJO/MOJO2] Added DrawImage9P to draw images via the 9-Patch algorithm.
 NEW: [MOJO/MOJO2] Added bitmap font drawing.
 NEW: [MOJO] Added Font + Glyph classes to support bitmap font drawing
