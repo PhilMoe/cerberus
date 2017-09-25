@@ -56,6 +56,7 @@ Class GlfwBuilder Extends Builder
 				ccopts+=" -O0"
 			Case "release"
 				ccopts+=" -O3 -DNDEBUG"
+				ldopts+=" -s"
 			End
 
 			' Process external libs to copy over

@@ -1772,7 +1772,7 @@ public:
 	virtual void UpdateGame(){}
 	virtual void RenderGame(){}
 	virtual void KeyEvent( int event,int data ){}
-	virtual void MouseEvent( int event,int data,Float x,Float y ){}
+	virtual void MouseEvent( int event,int data,Float x,Float y, Float z ){}
 	virtual void TouchEvent( int event,int data,Float x,Float y ){}
 	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
@@ -1840,7 +1840,7 @@ public:
 	virtual void UpdateGame();
 	virtual void RenderGame();
 	virtual void KeyEvent( int ev,int data );
-	virtual void MouseEvent( int ev,int data,float x,float y );
+	virtual void MouseEvent( int ev,int data,float x,float y, float z );
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
@@ -2118,12 +2118,12 @@ void BBGame::KeyEvent( int ev,int data ){
 	gc_collect();
 }
 
-void BBGame::MouseEvent( int ev,int data,float x,float y ){
+void BBGame::MouseEvent( int ev,int data,float x,float y, float z ){
 
 	if( !_started ) return;
 	
 	try{
-		_delegate->MouseEvent( ev,data,x,y );
+		_delegate->MouseEvent( ev,data,x,y,z );
 	}catch( ThrowableObject *ex ){
 		Die( ex );
 	}
@@ -5951,7 +5951,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2017-9-23 alpha-02",43));
+	bbPrint(String(L"TRANS cerberus compiler V2017-9-23 alpha-03",43));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"TRANSDIR",8),m_cerberusdir+String(L"/bin",4));
@@ -8278,6 +8278,7 @@ void c_GlfwBuilder::p_MakeGcc(){
 		}else{
 			if(t_1==String(L"release",7)){
 				t_ccopts=t_ccopts+String(L" -O3 -DNDEBUG",13);
+				t_ldopts=t_ldopts+String(L" -s",3);
 			}
 		}
 		p_ProcessExternalLibs(CurrentDir()+String(L"\\",1)+m_casedConfig,t_msize,t_libopts);
