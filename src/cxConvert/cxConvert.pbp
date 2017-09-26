@@ -7,12 +7,12 @@
   <section name="data">
     <explorer view="C:\Program Files (x86)\PureBasic\Examples\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2017-09-23 21:52" user="Micha" host="MICHA-PC"/>
+    <lastopen date="2017-09-25 22:22" user="Micha" host="MICHA-PC"/>
   </section>
   <section name="files">
     <file name="cxConvert.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="2fda0f7b42343b181498b84c9f350abd"/>
+      <fingerprint md5="4fd6135b2ab18b61fbeae44a1d914dae"/>
     </file>
   </section>
   <section name="targets">
@@ -23,12 +23,12 @@
       <options xpskin="1"/>
       <icon enable="1">cxConvert.ico</icon>
       <versioninfo enable="1">
-        <field0 value="1.0.0.0"/>
-        <field1 value="1.0.0.0"/>
+        <field0 value="1.0.0.1"/>
+        <field1 value="1.0.0.1"/>
         <field2 value="Kraut Apps"/>
         <field3 value="cxConvert"/>
-        <field4 value="1.0.0.0"/>
-        <field5 value="1.0.0.0"/>
+        <field4 value="1.0.0.1"/>
+        <field5 value="1.0.0.1"/>
         <field6 value="Converts Monkey X files to Cerberus X"/>
         <field7 value="cxConvert"/>
         <field8 value="cxConvert"/>

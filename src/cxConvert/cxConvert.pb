@@ -4,7 +4,7 @@
 
 ; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ; Utility to convert Monkey X files/projects to Cerberus X
-; Author: Michae Hartlef
+; Author: Michael Hartlef
 ; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Global Window_0
@@ -28,7 +28,7 @@ Procedure OpenWindow_0(x = 0, y = 0, width = 600, height = 130)
   btnFolder = ButtonGadget(#PB_Any, 560, 20, 30, 25, "...")
   
   ckbBackup = CheckBoxGadget(#PB_Any, 50, 55, 150, 25, "Backup directory")
-  ckbRenameImport = CheckBoxGadget(#PB_Any, 250, 55, 150, 25, "Rename Monkey. imports")
+  ckbRenameImport = CheckBoxGadget(#PB_Any, 160, 55, 250, 25, "Rename Monkey. imports, resource prefixes")
   SetGadgetState(ckbBackup,#PB_Checkbox_Checked)
   SetGadgetState(ckbRenameImport,#PB_Checkbox_Checked)
   
@@ -43,11 +43,12 @@ Procedure OpenWindow_0(x = 0, y = 0, width = 600, height = 130)
 EndProcedure
 
 ; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Procedure FixImport(name$)
+Procedure FixFile(name$)
   Protected format
   Protected copyFName$
   Protected line$
   Protected lineNew$
+  Protected lineNew2$
   copyFName$ = GetPathPart(name$)+"zz_"+GetFilePart(name$)
   ;Debug "Fix imports..."+ name$
   If CopyFile(name$,copyFName$)
@@ -58,6 +59,8 @@ Procedure FixImport(name$)
           While Not Eof(0)
             line$ = ReadString(0, format)
             lineNew$ = ReplaceString(line$,"Import monkey","Import cerberus", #PB_String_NoCase,1,1)
+            lineNew2$ = ReplaceString(lineNew$,"monkey://","cerberus://", #PB_String_NoCase,1,99)
+            lineNew$ = ReplaceString(lineNew2$,".monkey",".cxs", #PB_String_NoCase,1,99)
             WriteStringN(1, lineNew$)
           Wend
           
@@ -78,12 +81,11 @@ Procedure ConvertFile(file$, newExt$)
   SetGadgetText(txtStatus, "Rename: "+file$)
   newFName$ = GetPathPart(file$)+GetFilePart(file$, #PB_FileSystem_NoExtension)+"."+newExt$
   RenameFile(file$, newFName$)
-  SetGadgetText(txtStatus, "Rename: "+file$+"  -> DONE!")
   If GetGadgetState(ckbRenameImport) = #PB_Checkbox_Checked
-    ; Import monkey.
-    
-    FixImport(newFName$)
+    SetGadgetText(txtStatus, "Fix: "+file$)
+    FixFile(newFName$)
   EndIf
+  SetGadgetText(txtStatus, "Conversion: "+file$+"  -> DONE!")
 EndProcedure
 
 ; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -225,7 +227,8 @@ End
 ;   IncludeBinary "cog.png"
 ; EndDataSection
 ; IDE Options = PureBasic 5.61 (Windows - x64)
-; CursorPosition = 2
+; CursorPosition = 85
+; FirstLine = 62
 ; Folding = --
 ; EnableXP
 ; Executable = cxConverter.exe
