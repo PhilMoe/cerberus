@@ -1,0 +1,71 @@
+Building instructions
+
+======= LINUX =======
+You should find all the developer packages in your distributions online repository.
+
+E.G. for Ubuntu/Linux Mint
+sudo apt-get -y install g++ libglu1-mesa-dev libopenal-dev libxi-dev libxrandr-dev
+libxinerama-dev libxcursor-dev libxxf86vm-dev libx11-dev libgl1-mesa-dev
+
+Qt4
+sudo apt-get install libqt4-dev libqtwebkit-dev qt4-default
+
+Qt5
+sudo apt-get -y install libqt5webkit5-dev qtlocation5-dev qtsensors5-dev libxslt-dev
+libsqlite3-dev libgstreamer-plugins-base0.10-dev qt5-default libicu-dev
+
+Special not for 64 bit users of Debian/Ubuntu and their derivatives:
+Please be aware that you will of course need the g++-multilib package installed to do the following.
+It is posible to cross compile and test for 32 bit builds by linking the required development libraries like so
+
+Debian
+sudo ln -s /usr/lib/i386-linux-gnu/libGL.so.1 /usr/lib32/libGL.so
+
+Ubuntu
+sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib32/libGL.so
+
+All
+sudo ln -s /usr/lib/i386-linux-gnu/libopenal.so.1 /usr/lib32/libopenal.so
+sudo ln -s /usr/lib/i386-linux-gnu/libX11.so.6 /usr/lib32/libX11.so
+sudo ln -s /usr/lib/i386-linux-gnu/libXxf86vm.so.1 /usr/lib32/libXxf86vm.so
+sudo ln -s /usr/lib/i386-linux-gnu/libXi.so.6 /usr/lib32/libXi.so
+sudo ln -s /usr/lib/i386-linux-gnu/libXrandr.so.2 /usr/lib32/libXrandr.so
+sudo ln -s /usr/lib/i386-linux-gnu/libXinerama.so.1 /usr/lib32/libXinerama.so
+sudo ln -s /usr/lib/i386-linux-gnu/libXcursor.so.1 /usr/lib32/libXcursor.so
+
+======= WINDOWS VISTA/WIN&/8/X =======
+You will require the Window version of GCC, either MinGW (http://www.mingw.org/) or TDM (http://tdm-gcc.tdragon.net/)
+You will need Visual Studio 2013 and the corresponding Qt 5.5.1 SDK for Visual Studio 2013 to build Ted
+
+You will find a power-shell script called rebuildall.ps1 that should work on Win7+.
+To use it open a power shell (not the noraml command shell) and type
+.\rebuildall.ps1 -mingw "path_to_mingw_root_directory" -qtsdk "path_to_qtsdk_root_directory" -qtspec "qtspec_directory_for_compiler"
+
+NOTE: This script requires that the execution policy for the current user be set to unrestricted.
+to do this open a power shell as administrator and use:
+    get-executionpolicy -list
+    set-executionpolicy -scope currentuser unrestricted
+If the file is still blocked use:
+    unblock-file -path "full_path_to_this_script"
+You should reset the execution policy back to it's original state e.g.:
+    set-executionpolicy -scope currentuser undefined
+
+ALSO NOTE:
+The parameters -mingw and -qtsdk are optional if you already have both paths set correctly in your system paths.
+The defaults are shown
+'path_to_mingw_root_directory' would be for example:
+C:\MinGW
+
+'path_to_qtsdk_root_directory' would be for example:
+C:\Qt5\5.5\msvc2013_64
+
+If you are using a different compiler, you need to tell qmake which pre-built binaries you wish to use.
+These are located in the Qt SDK under the mkspecs directory
+'qtspec_directory_for_compiler' would be for example
+win32-msvc2013 for Visual Studio 2013
+
+To build a debug version of Ted add -qtdbg 1
+
+======= MAC OSX =======
+TO DO
+ 

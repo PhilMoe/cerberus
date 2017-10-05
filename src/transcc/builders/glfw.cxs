@@ -43,40 +43,34 @@ Class GlfwBuilder Extends Builder
 			CreateDir "build"
 			CreateDir "build/"+tconfig
 			
-			Local ccopts:="",ldopts:=""
+			Local ccopts:="",ldopts:="", libopts:="", libcopy:=""
 
 			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
-			
+
 			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
 			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
-			
+			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " )
+
 			Select ENV_CONFIG
 			Case "debug"
 				ccopts+=" -O0"
 			Case "release"
 				ccopts+=" -O3 -DNDEBUG"
+				ldopts+=" -s"
 			End
-			
+
+			' Process external libs to copy over
+			ProcessExternalLibs( CurrentDir()+"\"+casedConfig, msize, libopts )
+
+			' Point the linker in the direction of the prebuilt share libraries
 			If HostOS="winnt"
-				If msize="64"
-					ldopts+=" -L../openal/libs/Win64 -L../curl/lib/Win64"
-				Else
-					ldopts+=" -L../openal/libs/Win32 -L../curl/lib/Win32"
-				Endif
+				ldopts+=" -L"+tcc._libs+"Win"+msize
 			Endif
 
 			Local cmd:="make"
 			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
-			
-			Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
-			
-			If GetConfigVar( "GLFW_USE_HTTPS" )="1"
-				If HostOS="winnt"
-					'Copy DLLs for curl
-					Local targetPath:=CurrentDir()+"\"+tconfig
-					CopyDir "../curl/dll", targetPath
-				Endif
-			Endif
+
+			Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
 
 			If tcc.opt_run
 
@@ -219,5 +213,43 @@ Class GlfwBuilder Extends Builder
 			MakeGcc
 		End
 	End
-	
+
+	' Process external shared libraries	to copy
+	Method ProcessExternalLibs( config:String, arch:String, link:String )
+		Local libStr:String = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		If libStr = "" Then Return
+
+		Local libcopy:String[] = libStr.Split( ";" )
+		Local dst:String = config+arch
+
+		For Local i:= Eachin libcopy
+			If HostOS="winnt"
+				If i <> ""
+					If FileType( dst+"/"+i+".dll" ) = FILETYPE_FILE Continue
+
+					If CopyFile( tcc._libs+"Win"+arch+"/"+i+".dll", dst+"/"+i+".dll" ) = 1
+						Print "Copied "+i+".dll to "+dst
+					Else
+						Print "Failed to copy "+i+" to "+dst
+					EndIf
+
+					If FileType( tcc._libs+"/"+i+"_COPYING" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_COPYING", dst+"/"+i+"_COPYING" ) = 1
+							Print "Copied "+i+"_COPYING to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_LICENCE" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_LICENCE", dst+"/"+i+"_LICENCE" ) = 1
+							Print "Copied "+i+"_LICENCE to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+				Endif
+			EndIf
+		Next
+	End
 End

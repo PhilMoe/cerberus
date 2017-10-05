@@ -7,19 +7,27 @@
 desktop.ini
 Thumbs.db
 
-/Monkey
-/Monkey.app
-/Monkey.exe
+/Cerberus
+/Cerberus.app
+/Cerberus.exe
 
 /docs/html
 
 /modules/brl/native/GoogleAdMobAdsSdkiOS-6.8.0
 /modules/brl/native/GoogleAdMobAdsSdk-6.4.1.jar
 
-/src/rebuildall*
+!/src/rebuildall*
 /src/createrelease
 /src/ted-build-*
 /src/build-ted-*
 /src/ted/ted.pro.user*
 
 /targets/__deprecated__/android_ndk
+
+/src/launcher/codeblocks/obj
+/src/launcher/codeblocks/launcher.depend
+/src/launcher/codeblocks/launcher.layout
+
+/src/transcc/transcc.build/cpptool/main_winnt.exe
+/src/transcc/transcc.build/cpptool/main_linux
+/src/transcc/transcc.build/cpptool/main_macos

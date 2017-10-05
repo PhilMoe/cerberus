@@ -40,6 +40,11 @@ The following app config settings are currently supported:
 #GLFW_GCC_MSIZE_WINNT="32"				'When building glfw apps with mingw/gcc, controls whether 32 or 64 bit apps are generated.
 										'Set to "64" to force 64 bit builds on Windows (needs mingw64), or "" to use compiler default.
 #GLFW_GCC_MSIZE_LINUX=""				'Ditto for Linux.
+#GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
+#GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers
+#GLFW_GCC_LIB_OPTS=""				    'Pass additional libraries to link against for GCC type compilers.
+#GLFW_COPY_LIBS=""						'Copy external libraries to build directory. Windows GCC only for now!
+
 #GLFW_WINDOW_TITLE="Cerberus X Game"
 #GLFW_WINDOW_WIDTH=640					'Set this and HEIGHT to 0 for a 'windowless' glfw app
 #GLFW_WINDOW_HEIGHT=480	

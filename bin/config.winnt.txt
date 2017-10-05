@@ -27,7 +27,7 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
 
 '***** 64 bit mingw *****
-MINGW_PATH="d:\programme\TDM-GCC-64"
+MINGW_PATH="D:\Applications\Compilers\TDM-GCC-64"
 '--------------------
 
 '--------------------
@@ -96,4 +96,5 @@ PSM_PATH="d:\devtools\PSM_SDK"
 MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 '--------------------
 '--->> BEGIN OF JUNGLE IDE GENERATED CONFIG
+MINGW_PATH= "D:\Applications\Compilers\TDM-GCC-64"
 '--->> END OF JUNGLE IDE GENERATED CONFIG

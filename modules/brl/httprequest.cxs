@@ -10,6 +10,15 @@ Import brl.asyncevent
 
 #If BRL_HTTPREQUEST_IMPLEMENTED
 
+' Link libraries for curl
+#If HOST="linux"
+  #GLFW_GCC_LIB_OPTS+="-lcurl"
+#Endif
+
+#If HOST="winnt"
+  #GLFW_GCC_LIB_OPTS+="-lcurldll"
+#Endif
+
 Extern Private
 
 Class BBHttpRequest
