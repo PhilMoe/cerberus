@@ -446,7 +446,7 @@ String BBProcess::CurrentDir(){
 	return String( buf ).Replace( "\\","/" );
 #else
 	char buf[PATH_MAX];
-	if( getcwd( buf,PATH_MAX )<0 ) return -1;
+	if( !getcwd( buf,PATH_MAX ) ) return -1;
 	buf[PATH_MAX-1]=0;
 	return buf;
 #endif
