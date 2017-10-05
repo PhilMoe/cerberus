@@ -177,6 +177,7 @@ Class TransCC
 		cerberusdir=RealPath( ExtractDir( AppPath )+"/.." )
 
 		SetEnv "CERBERUSDIR",cerberusdir
+		SetEnv "MONKEYDIR",cerberusdir 'this is for Jungle compatibility
 		SetEnv "TRANSDIR",cerberusdir+"/bin"
 	
 		ParseArgs
