@@ -4,7 +4,7 @@
 
 ### Cerberus X is a game development language, made for hobbyists, indies and professionals.
 
-#### With Cerberus X anyone can code and build games and apps for multiple platforms very fast. Only very little code is needed to have your creations up and running on supported devices in no time.
+#### With Cerberus X anyone can code and build games and apps for multiple platforms very fast. Only very little code is needed to have your creations up and running on supported devices (Windows/Linux/Mac, Android, iOS, HTML5) in no time.
 
 ### Introduction
 
@@ -30,7 +30,7 @@ Cerberus X is based on Monkey X programming language created by [Mark Sibly](htt
 
 Cerberus X code is published under [zlib/libpng license](https://opensource.org/licenses/Zlib).
 
-### Demos
+### HTML5 Demos
 
 #### [Very simple accelerometer demo!](http://libcx.s3.amazonaws.com/acceltest/CerberusGame.html)
 ![Very simple accelerometer demo!](http://libcx.s3.amazonaws.com/acceltest/icon.png)
