@@ -1,17 +1,33 @@
-License:
+## Cerberus X
 
-Cerberus is based on Monkey which was created by Mark Sibly / Blitz Research Ltd. Both are released under the zlib/libpng license.
+![Cerberus X Logo](https://www.cerberus-x.com/community/styles/xenfracture/xenfracture/CBX_Logo_small.png)
 
-The zlib/libpng License
+### Cerberus X is a game development language, made for hobbyists, indies and professionals.
 
-Copyright (c) 2013 Blitz Research Ltd
+#### With Cerberus X anyone can code and build games and apps for multiple platforms very fast. Only very little code is needed to have your creations up and running on supported devices in no time.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+### Introduction
 
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+Cerberus X is based on Monkey X programming language created by [Mark Sibly](https://github.com/marksibly/monkey)/Blitz Research Ltd.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
 
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+### Useful links
 
-3. This notice may not be removed or altered from any source distribution.
+* Official **website**:
+	* https://www.cerberus-x.com/wordpress/
+
+* Official community **forum**:
+	* https://www.cerberus-x.com/community/
+
+* Online **documentation**:
+	* https://www.cerberus-x.com/community/cxDocs/Home.html
+
+* Download pre-built **Cerberus X** for **Windows/Linux/Mac OS**:
+	* https://krautapps.itch.io/cerberus-x
+
+
+### License:
+
+Cerberus X code is published under [zlib/libpng license](https://opensource.org/licenses/Zlib).
+
+
