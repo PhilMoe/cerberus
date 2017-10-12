@@ -9,7 +9,8 @@ body{
 	font-family: arial,sans-serif;
 	font-size: 13px;
 	color: #000;
-	background-color: #EEE;
+	color: #fff;
+	background-color: #000;
 	border: 0 none white;
 	padding: 0;
 	margin: 0;
@@ -17,24 +18,30 @@ body{
 canvas{
 	border: 0;
 	padding: 0;
-    margin: auto;
-    display: block;
+	margin: auto;
+	display: block;
 	outline: none;
 }
 textarea{
-    background-color: #DDD;
+	background-color: #000;
+	color:rgb(221, 153, 51);
 	border: 0;
 	padding: 0;
 	margin: 0;
 	outline: none;
-    width: 100%;
+	width: 100%;
 }
+
 div.splitter{
-    background-color: #FFF;
 	border: 0;
 	padding: 0;
 	margin: 0;
-	height: 8px;
+	height: 17px;
+	cursor:row-resize;
+	background: #343436;
+	border-bottom: 1px solid black;
+	box-shadow: 0 0 1px black;
+
 }
 </style>
 <script>
@@ -167,11 +174,14 @@ window.onload=function( e ){
 
 <body>
 
-<div><canvas id="GameCanvas" width=640 height=480 tabindex=1></canvas></div>
+<div><canvas id="GameCanvas" width="640" height="480" tabindex="1"></canvas></div>
 
-<div id="Splitter" class=splitter></div>
+<div id="Splitter" class="splitter"></div>
 
 <div><textarea id="GameConsole" readonly></textarea></div>
+<div style='position:absolute;bottom:10px;right:30px;'>
+	<button onclick="document.getElementById('GameConsole').value=''" style='background: #343436; padding:10px;color:white;border:0px;cursor:pointer;cursor:hand;'>Clear console</button>
+</div>
 
 <script language="javascript" src="main.js">Javascript not supported!</script>
 
