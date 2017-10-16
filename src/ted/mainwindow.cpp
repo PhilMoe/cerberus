@@ -1847,7 +1847,8 @@ void MainWindow::onHelpAbout(){
 //            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")\n\n"
             "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
             "Copyright Blitz Research Ltd for Monkey X.\n\n"
-            "Cerberus X maintained by Michael Hartlef & Martin Leidel.\n\n"
+            "Cerberus X maintained by Michael Hartlef & Martin Leidel.\n"
+            "Furtehr additions done by user  dawlane, Muruba and PixelPaladin.\n"
             "A simple editor/IDE for the Cerberus programming language.\n\n"
             "Please visit www.cerberus-x.com for more information on Cerberus."
             ;

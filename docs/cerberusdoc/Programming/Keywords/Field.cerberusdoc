@@ -20,7 +20,7 @@ The alternative syntax provided allows the variable's type to be deduced from th
 
 >> See also
 
-[[Const]] | [[Local]] | [[Global]]~n
+[[Const]] | [[Local]] | [[Global]] | [[Alias]]  | [[Enumerate]]~n
 [Language reference](Language reference#variables)
 
 >> Example

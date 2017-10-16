@@ -14,7 +14,7 @@ Alias directives must appear in the 'import' section of a module, before any cod
 
 >> See also
 
-[[Local]] | [[Global]] | [[Field]]~n
+[[Const]] | [[Local]] | [[Global]] | [[Field]] | [[Enumerate]]~n
 [Language reference](Language reference#alias)
 
 >> Example

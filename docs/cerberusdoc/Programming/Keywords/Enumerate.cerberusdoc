@@ -1,0 +1,33 @@
+> Keyword Enumerate
+
+Declares an enumeration of constant integer values.
+
+>> Syntax
+
+>> Description
+
+Enumerate *Identifier*, *Identifier*, *Identifier*, etc.
+
+Enumerate *Identifier* = *Startvalue*, *Identifier*, *Identifier*, etc.
+
+>> Description
+
+The *Enumerate* keyword declares an enumeration of constant integer values which start with 0.. 
+
+The alternative syntax shows how to add a different start value to an element.
+
+>> See also
+
+[[Local]] | [[Global]] | [[Field]] | [[Const]] | [[Alias]]~n
+[Language reference](Language reference#enumerates)
+
+>> Example
+
+<pre>
+Enumerate 
+	f1,
+	f2,
+	f3
+Enumerate
+	f4=100, f5, f6, f7 = 1000
+</pre>

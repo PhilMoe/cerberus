@@ -1,4 +1,4 @@
-***** v2017-10-05 *****
+***** v2017-10-16 *****
 
 FIX: [ANDROID] Fixed missing in app purchase interface
 FIX: [MOJO2] Fixed memory leak when discarding an image
@@ -10,7 +10,18 @@ NEW: [DESKTOP] Added mouse wheel support for GLFW.
 NEW: [MOJO2] Added new blend modes Alpha2, Opaque2, AlphaStamp to mojo2 (thanks Soap!)
 NEW: [MOJO/MOJO2] Added DrawImage9P to draw images via the 9-Patch algorithm.
 NEW: [MOJO/MOJO2] Added bitmap font drawing.
-NEW: [MOJO] Added Font + Glyph classes to support bitmap font drawing
+NEW: [MOJO] Added Font + Glyph classes to support bitmap font drawing.
+MOD: [TED] Syntax highlighting of the Enumerate keyword.
+MOD: [Docs] Added Enumerate keyword.
+
+Changes made by muruba (THANKS SO MUCH!)
+
+MOD: Visual beautifying of the HTML5 target.
+MOD: Readme.MD changed and runable demos added to it.
+
+Changes made by pixelpaladin (THANKS SO MUCH!)
+
+NEW: Added Enumerate keyword so you can do enumerations.
 
 Changes made by dawlane (THANKS SO MUCH!)
 

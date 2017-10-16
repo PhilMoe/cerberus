@@ -287,9 +287,21 @@ Class IdentExpr Extends Expr
 		If fdecl
 			If Not fdecl.IsStatic()
 				If static Err "Method '"+ident+"' cannot be accessed from here."
+'If expr <> Null Then Print expr.ToString() Else Print "expr = NULL"
 				If expr Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
 			Endif
 			Return New InvokeExpr( fdecl,args ).Semant()
+		'--------
+		'TODO .,-
+'		Else
+'			expr=New IdentExpr(ident).Semant
+'			Print expr.ToString()
+'			scope=expr.SemantScope()
+'			Print scope.ToString()
+			'scope=...
+			'fdecl=scope.FindFuncDecl( "Invoke",args )
+			'Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
+		'--------
 		Endif
 		
 		Local type:=scope.FindType( ident,[] )
@@ -297,6 +309,16 @@ Class IdentExpr Extends Expr
 			If args.Length=1 And args[0] Return args[0].Cast( type,CAST_EXPLICIT )
 			Err "Illegal number of arguments for type conversion"
 		Endif
+		
+		
+		
+		'TODO .,-
+		'fdecl:FuncDecl=scope.FindFuncDecl( ident,args )
+		'Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
+		''Print ident
+		''If expr <> Null Then Print expr.ToString() Else Print "expr = NULL"
+		''If scope <> Null Then Print scope.ToString() Else Print "scope = NULL"
+		''If static Then Print "stytic" Else Print "not static"
 		
 		IdentErr
 	End
@@ -625,6 +647,9 @@ Class Parser
 				expr=ParseExpr()
 				Parse ")"
 			Case "["
+'.,-
+'If ObjectType(expr.exprType) Then Err "!!!OK!!!"
+'Print("(1)>>> "+expr.ToString)
 				expr=ParseArrayExpr()
 			Case "[]"
 				NextToke
@@ -727,6 +752,12 @@ Class Parser
 					expr=New FuncCallExpr( expr,ParseArgs( stmt ) )
 
 				Case "["
+'.,-
+'Print("(2)>>> "+expr.ToString)
+'Local semantExpr:Expr=expr.Semant()
+'If semantExpr.exprType <> Null Then Print semantExpr.exprType.ToString() Else Print "NULL"
+'If ObjectType(expr.exprType) Then Err "!!!OK!!!"
+'If ObjectType(semantExpr.exprType) Then Err "!!!OK!!!"
 			
 					NextToke
 					If CParse( ".." )
@@ -980,6 +1011,15 @@ Class Parser
 		_block.AddStmt stmt
 	End
 	
+'	Method ParseDeclStmts()
+'		Local toke$=_toke
+'		NextToke
+'		Repeat
+'			Local decl:Decl=ParseDecl( toke,0 )
+'			_block.AddStmt New DeclStmt( decl )
+'		Until Not CParse(",")
+'	End
+	
 	Method ParseForStmt()
 	
 		Parse "for"
@@ -1208,6 +1248,8 @@ Class Parser
 				NextToke
 			Case "const","local"
 				ParseDeclStmts
+			Case "enumerate"
+				ParseEnumStmt()
 			Case "return"
 				ParseReturnStmt()
 			Case "exit"
@@ -1307,6 +1349,10 @@ Class Parser
 		Return decl
 	End
 	
+	Method ParseEnum:List<Decl>( toke$,attrs )
+		Return ParseEnumStmt(attrs, True)
+	End
+	
 	Method ParseDecls:List<Decl>( toke$,attrs )
 		If toke Parse toke
 
@@ -1316,6 +1362,45 @@ Class Parser
 			decls.AddLast decl
 			If Not CParse(",") Return decls
 		Forever
+	End
+	
+	Method ParseEnumStmt:List<Decl>(attrs=0, createDeclList:Bool=False)
+		If attrs & DECL_EXTERN Err "Enumerations cannot be extern."
+		Local declList:List<Decl>=Null
+		If createDeclList Then declList=New List<Decl>
+		Local toke$=_toke
+		NextToke
+		Local i:Int=0
+		Local isFirst:Bool=True
+		Local lastInit:Expr=Null
+		
+		SkipEols
+		Repeat
+			Local id$=ParseIdent
+			Local init:Expr
+			Local decl:Decl
+			If _toke<>"=" Then
+				If lastInit=Null
+					init=New ConstExpr(Type.intType, i)
+				Else
+					init=New BinaryMathExpr( "+",lastInit.Copy(),New ConstExpr(Type.intType, i) )
+				End
+				decl=New ConstDecl( id,attrs,Type.intType,init )
+			Else
+				Parse "="
+				init=ParseExpr()
+				lastInit=init
+				i=0
+				decl=New ConstDecl( id,attrs,Type.intType,init )
+			Endif
+			i +=1
+			If createDeclList Then
+				declList.AddLast(decl)
+			Else
+				_block.AddStmt New DeclStmt( decl )
+			End
+		Until Not CParse(",")
+		Return declList
 	End
 	
 	Method ParseDeclStmts()
@@ -1522,6 +1607,8 @@ Class Parser
 				Case "const","global","field"
 					If (attrs & CLASS_INTERFACE) And _toke<>"const" Err "Interfaces can only contain constants and methods."
 					classDecl.InsertDecls ParseDecls( _toke,decl_attrs )
+				Case "enumerate"
+					classDecl.InsertDecls ParseEnum( _toke,decl_attrs )
 				Case "method"
 					classDecl.InsertDecl ParseFuncDecl( decl_attrs|func_attrs )
 				Case "function"
@@ -1677,6 +1764,8 @@ Class Parser
 					If CParse( "private" ) attrs|=DECL_PRIVATE
 				Case "const","global"
 					_module.InsertDecls ParseDecls( _toke,attrs )
+				Case "enumerate"
+					_module.InsertDecls ParseEnum( _toke,attrs )
 				Case "class"
 					_module.InsertDecl ParseClassDecl( attrs )
 				Case "interface"

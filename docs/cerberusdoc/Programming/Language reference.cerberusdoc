@@ -12,6 +12,7 @@ This manual describes the syntax and general concepts behind the core Cerberus X
 [Types](#types)~n
 [Variables](#variables)~n
 [Constants](#constants)~n
+[Enumerations](#enumerates)~n
 [Expressions](#expressions)~n
 [Statements](#statements)~n
 [Functions](#functions)~n
@@ -70,6 +71,7 @@ Cerberus X supports the following kinds of declarations:
 
 * Modules
 * Constants
+* Integer enumerations
 * Local, Global and Field variables
 * Classes
 * Functions 
@@ -580,6 +582,24 @@ The syntax for declaring a constant is:
 Or...
 
 *Const* %Identifier% *:=* %Expression%
+
+<a name="enumerates">
+>> Integer enumerations
+</a>
+
+An enumeration are constant integer values that are evaluated at compile time, and that do not change throughout the execution of a program.
+
+Enumerations may be declared at module scope, within class scope or within any local scope. 
+
+Their corresponding values are assigned automatically and unless you state a specific value, start with 0.
+
+The syntax for declaring an enumeration is:
+
+*Enumerate* %Identifier%, %Identifier%, %Identifier%, etc.
+
+Or...
+
+*Enumerate* %Identifier% *=* %Startvalue%, %Identifier%, %Identifier% *=* %Startvalue%, etc.
 
 <a name="expressions">
 >> Expressions

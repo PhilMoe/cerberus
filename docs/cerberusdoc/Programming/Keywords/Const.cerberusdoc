@@ -18,7 +18,7 @@ The alternative syntax provided allows the variable's type to be deduced from th
 
 >> See also
 
-[[Local]] | [[Global]] | [[Field]]~n
+[[Local]] | [[Global]] | [[Field]] | [[Alias]]  | [[Enumerate]]~n
 [Language reference](Language reference#constants)
 
 >> Example
