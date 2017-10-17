@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2017-07-04"
+#define TED_VERSION "2017-10-17"
 
 #define SETTINGS_VERSION 2
 
@@ -1848,7 +1848,7 @@ void MainWindow::onHelpAbout(){
             "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
             "Copyright Blitz Research Ltd for Monkey X.\n\n"
             "Cerberus X maintained by Michael Hartlef & Martin Leidel.\n"
-            "Furtehr additions done by user  dawlane, Muruba and PixelPaladin.\n"
+            "Further additions done by user  dawlane, Muruba and PixelPaladin.\n"
             "A simple editor/IDE for the Cerberus programming language.\n\n"
             "Please visit www.cerberus-x.com for more information on Cerberus."
             ;
