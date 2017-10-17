@@ -1287,8 +1287,11 @@ Class Font
 	End
 	
 	Function Load:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )
-
+'Print("Font load-> "+path)
 		Local image:=Image.Load( path )
+'	If image=Null
+'	Print("Image = NULL")
+'	Endif
 		Local _pages:Image[] = New Image[1]
 		_pages[0] = image
 		Local _charMap:IntMap<Glyph> = New IntMap<Glyph> 
@@ -1303,7 +1306,7 @@ Class Font
 
 		Local w:=image.Width/cellWidth
 		Local h:=image.Height/cellHeight
-
+'Print(w+":"+h+"         "+image.Width+":"+image.Height+"         "+cellWidth+":"+cellHeight)
 		For Local i:=0 Until numChars
 			Local y:=i / w
 			Local x:=i Mod w
@@ -1502,10 +1505,7 @@ Class BlendMode
 	Const Alpha:=1
 	Const Additive:=2
 	Const Multiply:=3
-	Const Multiply2:= 4
-	Const Alpha2:= 5
-	Const Opaque2:= 6
-	Const AlphaStamp:= 7
+	Const Multiply2:=4
 End
 
 Class DrawList
@@ -1789,6 +1789,7 @@ Class DrawList
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=1 )
+'Print("DrawRect1")
 		Local x1:=x0+width,y1:=y0+height
 		BeginPrim material,4
 		PrimVert x0,y0,s0,t0
@@ -1798,19 +1799,27 @@ Class DrawList
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image )
+'Print("DrawRect2")
 		DrawRect x0,y0,width,height,image._material,image._s0,image._t0,image._s1,image._t1
 	End
 	
 	Method DrawRect:Void( x:Float,y:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
+'Print("DrawRect3       "+sourceWidth+":"+sourceHeight+"         "+sourceX+":"+sourceY+"         "+sourceWidth+":"+sourceHeight)
 		DrawRect( x,y,sourceWidth,sourceHeight,image,sourceX,sourceY,sourceWidth,sourceHeight )
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
+'Print("DrawRect4       "+image._material.Width+":"+image._material.Height+"         "+width+":"+height)
 		Local material:=image._material
+'If material = Null
+'Print("material = null")
+'Endif
 		Local s0:=Float(image._x+sourceX)/Float(material.Width)
 		Local t0:=Float(image._y+sourceY)/Float(material.Height)
 		Local s1:=Float(image._x+sourceX+sourceWidth)/Float(material.Width)
 		Local t1:=Float(image._y+sourceY+sourceHeight)/Float(material.Height)
+'DebugStop
+'Print ("DrawRect4       "+s0+":"+t0+":"+s1+":"+t1)		
 		DrawRect x0,y0,width,height,material,s0,t0,s1,t1
 	End
 	
@@ -1957,7 +1966,14 @@ Class DrawList
 
 		For char = Eachin text
 			Local tmpChar:=_font._charMap.Get(char)
-			If Not tmpChar Continue
+			If Not tmpChar 
+'Print("no tmpchar")			
+			   Continue
+			Endif
+'			If _font._pages[tmpChar.page]=Null
+'Print("no _font._pages")			
+'Endif			
+'Print ("char="+(char)+"   "+ tmpChar.width+":"+ tmpChar.height+"("+tmpChar.page+")")			
 			DrawRect( x + tmpChar.xoff, y + tmpChar.yoff, _font._pages[tmpChar.page], tmpChar.x, tmpChar.y, tmpChar.width, tmpChar.height )
 			x += tmpChar.advance
 		Next
@@ -2116,24 +2132,7 @@ Class DrawList
 			Case .BlendMode.Multiply2
 				glEnable GL_BLEND
 				glBlendFunc GL_DST_COLOR,GL_ZERO
-			Case.BlendMode.Alpha2
-'				glClearColor(0, 0, 0, 0)
-'				glEnable GL_BLEND
-'				glBlendEquation GL_FUNC_ADD
-'				glBlendFunc GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA
-					glEnable(GL_BLEND)
-					glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
-					
-					'glBlendEquation(GL_FUNC_ADD)
-			Case.BlendMode.Opaque2
-				glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
-			Case.BlendMode.AlphaStamp
-				glEnable(GL_BLEND);
-				'glBlendFuncSeparate(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE, GL_ZERO);
-				glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO);
-				'glBlendFuncSeparate(GL_ZERO, GL_DST_COLOR, GL_ONE, GL_ZERO);
-				glBlendEquation(GL_FUNC_ADD);
-			End			
+			End
 		End
 		
 		Select op.order
