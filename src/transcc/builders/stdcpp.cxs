@@ -58,7 +58,7 @@ Class StdcppBuilder Extends Builder
 				LIBS+=" -lwinmm -lws2_32"
 			Case "macos"
 				OPTS+=" -Wno-parentheses -Wno-dangling-else"
-				OPTS+=" -mmacosx-version-min=10.6"
+				OPTS+=" -mmacosx-version-min=10.9 -std=gnu++0x -stdlib=libc++"
 			Case "linux"
 				OPTS+=" -Wno-unused-result"
 				LIBS+=" -lpthread"
@@ -77,7 +77,11 @@ Class StdcppBuilder Extends Builder
 			Local cc_libs:=GetConfigVar( "CC_LIBS" )
 			If cc_libs LIBS+=" "+cc_libs.Replace( ";"," " )
 			
-			Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS
+      If HostOS="macos"
+        Execute "clang++"+OPTS+" -o "+out+" main.cpp"+LIBS
+      Else
+        Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS
+      Endif
 			
 			If tcc.opt_run
 				Execute "~q"+RealPath( out )+"~q"
