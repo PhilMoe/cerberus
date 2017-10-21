@@ -8,7 +8,7 @@
 
 ### Introduction
 
-Cerberus X is based on Monkey X programming language created by [Mark Sibly](https://github.com/marksibly/monkey)/Blitz Research Ltd.
+Cerberus X is based on Monkey X programming language created by [Mark Sibly](https://github.com/blitz-research/monkey)/Blitz Research Ltd.
 
 
 ### Useful links
