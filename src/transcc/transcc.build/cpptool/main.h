@@ -21,6 +21,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <copyfile.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #elif __linux
 #include <unistd.h>

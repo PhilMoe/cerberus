@@ -3020,6 +3020,7 @@ class c_GlobalDecl;
 class c_FieldDecl;
 class c_LocalDecl;
 class c_Enumerator2;
+class c_DeclStmt;
 class c_Stack5;
 class c_ObjectType;
 class c_List6;
@@ -3030,7 +3031,6 @@ class c_Stack6;
 class c_List7;
 class c_Node12;
 class c_HeadNode7;
-class c_DeclStmt;
 class c_ReturnStmt;
 class c_BreakStmt;
 class c_ContinueStmt;
@@ -3188,8 +3188,8 @@ class c_Decl : public Object{
 	c_FuncDecl* p_FuncScope();
 	int p_CheckAccess();
 	int p_IsExtern();
-	int p_IsAbstract();
 	virtual String p_ToString();
+	int p_IsAbstract();
 	int p_IsSemanting();
 	virtual int p_OnSemant()=0;
 	c_AppDecl* p_AppScope();
@@ -3299,6 +3299,7 @@ class c_Expr : public Object{
 	c_Type* m_exprType;
 	c_Expr();
 	c_Expr* m_new();
+	virtual c_Expr* p_Copy();
 	virtual c_Expr* p_Semant();
 	Array<c_Expr* > p_SemantArgs(Array<c_Expr* >);
 	c_Expr* p_Cast(c_Type*,int);
@@ -3307,7 +3308,6 @@ class c_Expr : public Object{
 	virtual String p_Eval();
 	virtual c_Expr* p_EvalConst();
 	c_Expr* p_Semant2(c_Type*,int);
-	virtual c_Expr* p_Copy();
 	c_Expr* p_CopyExpr(c_Expr*);
 	Array<c_Expr* > p_CopyArgs(Array<c_Expr* >);
 	c_Type* p_BalanceTypes(c_Type*,c_Type*);
@@ -3935,6 +3935,8 @@ class c_Parser : public Object{
 	c_Expr* p_ParseExpr();
 	c_Decl* p_ParseDecl(String,int);
 	c_List3* p_ParseDecls(String,int);
+	c_List3* p_ParseEnumStmt(int,bool);
+	c_List3* p_ParseEnum(String,int);
 	int p_PushBlock(c_BlockDecl*);
 	int p_ParseDeclStmts();
 	int p_ParseReturnStmt();
@@ -4028,9 +4030,9 @@ class c_BlockDecl : public c_ScopeDecl{
 	public:
 	c_List5* m_stmts;
 	c_BlockDecl();
+	int p_AddStmt(c_Stmt*);
 	c_BlockDecl* m_new(c_ScopeDecl*);
 	c_BlockDecl* m_new2();
-	int p_AddStmt(c_Stmt*);
 	c_Decl* p_OnCopy();
 	int p_OnSemant();
 	c_BlockDecl* p_CopyBlock(c_ScopeDecl*);
@@ -4499,6 +4501,18 @@ class c_Enumerator2 : public Object{
 	c_Decl* p_NextObject();
 	void mark();
 };
+class c_DeclStmt : public c_Stmt{
+	public:
+	c_Decl* m_decl;
+	c_DeclStmt();
+	c_DeclStmt* m_new(c_Decl*);
+	c_DeclStmt* m_new2(String,c_Type*,c_Expr*);
+	c_DeclStmt* m_new3();
+	c_Stmt* p_OnCopy2(c_ScopeDecl*);
+	int p_OnSemant();
+	String p_Trans();
+	void mark();
+};
 class c_Stack5 : public Object{
 	public:
 	Array<c_IdentType* > m_data;
@@ -4601,18 +4615,6 @@ class c_HeadNode7 : public c_Node12{
 	public:
 	c_HeadNode7();
 	c_HeadNode7* m_new();
-	void mark();
-};
-class c_DeclStmt : public c_Stmt{
-	public:
-	c_Decl* m_decl;
-	c_DeclStmt();
-	c_DeclStmt* m_new(c_Decl*);
-	c_DeclStmt* m_new2(String,c_Type*,c_Expr*);
-	c_DeclStmt* m_new3();
-	c_Stmt* p_OnCopy2(c_ScopeDecl*);
-	int p_OnSemant();
-	String p_Trans();
 	void mark();
 };
 class c_ReturnStmt : public c_Stmt{
@@ -5951,7 +5953,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2017-10-05",35));
+	bbPrint(String(L"TRANS cerberus compiler V2017-10-24",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -6161,14 +6163,14 @@ int c_Decl::p_CheckAccess(){
 int c_Decl::p_IsExtern(){
 	return (((m_attrs&256)!=0)?1:0);
 }
-int c_Decl::p_IsAbstract(){
-	return (((m_attrs&1024)!=0)?1:0);
-}
 String c_Decl::p_ToString(){
 	if((dynamic_cast<c_ClassDecl*>(m_scope))!=0){
 		return m_scope->p_ToString()+String(L".",1)+m_ident;
 	}
 	return m_ident;
+}
+int c_Decl::p_IsAbstract(){
+	return (((m_attrs&1024)!=0)?1:0);
 }
 int c_Decl::p_IsSemanting(){
 	return (((m_attrs&2097152)!=0)?1:0);
@@ -6832,6 +6834,10 @@ c_Expr::c_Expr(){
 c_Expr* c_Expr::m_new(){
 	return this;
 }
+c_Expr* c_Expr::p_Copy(){
+	bb_config_InternalErr(String(L"Internal error",14));
+	return 0;
+}
 c_Expr* c_Expr::p_Semant(){
 	bb_config_InternalErr(String(L"Internal error",14));
 	return 0;
@@ -6885,10 +6891,6 @@ c_Expr* c_Expr::p_Semant2(c_Type* t_ty,int t_castFlags){
 		return t_expr;
 	}
 	return ((new c_CastExpr)->m_new(t_ty,t_expr,t_castFlags))->p_Semant();
-}
-c_Expr* c_Expr::p_Copy(){
-	bb_config_InternalErr(String(L"Internal error",14));
-	return 0;
 }
 c_Expr* c_Expr::p_CopyExpr(c_Expr* t_expr){
 	if(!((t_expr)!=0)){
@@ -9022,7 +9024,7 @@ void c_StdcppBuilder::p_MakeTarget(){
 		}else{
 			if(t_3==String(L"macos",5)){
 				t_OPTS=t_OPTS+String(L" -Wno-parentheses -Wno-dangling-else",36);
-				t_OPTS=t_OPTS+String(L" -mmacosx-version-min=10.6",26);
+				t_OPTS=t_OPTS+String(L" -mmacosx-version-min=10.9 -std=gnu++0x -stdlib=libc++",54);
 			}else{
 				if(t_3==String(L"linux",5)){
 					t_OPTS=t_OPTS+String(L" -Wno-unused-result",19);
@@ -9046,7 +9048,11 @@ void c_StdcppBuilder::p_MakeTarget(){
 		if((t_cc_libs).Length()!=0){
 			t_LIBS=t_LIBS+(String(L" ",1)+t_cc_libs.Replace(String(L";",1),String(L" ",1)));
 		}
-		p_Execute(String(L"g++",3)+t_OPTS+String(L" -o ",4)+t_out+String(L" main.cpp",9)+t_LIBS,true);
+		if(HostOS()==String(L"macos",5)){
+			p_Execute(String(L"clang++",7)+t_OPTS+String(L" -o ",4)+t_out+String(L" main.cpp",9)+t_LIBS,true);
+		}else{
+			p_Execute(String(L"g++",3)+t_OPTS+String(L" -o ",4)+t_out+String(L" main.cpp",9)+t_LIBS,true);
+		}
 		if(m_tcc->m_opt_run){
 			p_Execute(String(L"\"",1)+RealPath(t_out)+String(L"\"",1),true);
 		}
@@ -9875,7 +9881,7 @@ int c_Toker::p__init(){
 		return 0;
 	}
 	m__keywords=(new c_StringSet)->m_new();
-	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable",427).Split(String(L" ",1));
+	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",437).Split(String(L" ",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
 		String t_t=t_[t_2];
@@ -11286,6 +11292,50 @@ c_List3* c_Parser::p_ParseDecls(String t_toke,int t_attrs){
 		}
 	}while(!(false));
 }
+c_List3* c_Parser::p_ParseEnumStmt(int t_attrs,bool t_createDeclList){
+	if((t_attrs&256)!=0){
+		bb_config_Err(String(L"Enumerations cannot be extern.",30));
+	}
+	c_List3* t_declList=0;
+	if(t_createDeclList){
+		t_declList=(new c_List3)->m_new();
+	}
+	String t_toke=m__toke;
+	p_NextToke();
+	int t_i=0;
+	bool t_isFirst=true;
+	c_Expr* t_lastInit=0;
+	p_SkipEols();
+	do{
+		String t_id=p_ParseIdent();
+		c_Expr* t_init=0;
+		c_Decl* t_decl=0;
+		if(m__toke!=String(L"=",1)){
+			if(t_lastInit==0){
+				t_init=((new c_ConstExpr)->m_new((c_Type::m_intType),String(t_i)));
+			}else{
+				t_init=((new c_BinaryMathExpr)->m_new(String(L"+",1),t_lastInit->p_Copy(),((new c_ConstExpr)->m_new((c_Type::m_intType),String(t_i)))));
+			}
+			t_decl=((new c_ConstDecl)->m_new(t_id,t_attrs,(c_Type::m_intType),t_init));
+		}else{
+			p_Parse(String(L"=",1));
+			t_init=p_ParseExpr();
+			t_lastInit=t_init;
+			t_i=0;
+			t_decl=((new c_ConstDecl)->m_new(t_id,t_attrs,(c_Type::m_intType),t_init));
+		}
+		t_i+=1;
+		if(t_createDeclList){
+			t_declList->p_AddLast3(t_decl);
+		}else{
+			m__block->p_AddStmt((new c_DeclStmt)->m_new(t_decl));
+		}
+	}while(!(!((p_CParse(String(L",",1)))!=0)));
+	return t_declList;
+}
+c_List3* c_Parser::p_ParseEnum(String t_toke,int t_attrs){
+	return p_ParseEnumStmt(t_attrs,true);
+}
 int c_Parser::p_PushBlock(c_BlockDecl* t_block){
 	m__blockStack->p_AddLast7(m__block);
 	m__errStack->p_AddLast(bb_config__errInfo);
@@ -11610,61 +11660,65 @@ int c_Parser::p_ParseStmt(){
 		if(t_19==String(L"const",5) || t_19==String(L"local",5)){
 			p_ParseDeclStmts();
 		}else{
-			if(t_19==String(L"return",6)){
-				p_ParseReturnStmt();
+			if(t_19==String(L"enumerate",9)){
+				p_ParseEnumStmt(0,false);
 			}else{
-				if(t_19==String(L"exit",4)){
-					p_ParseExitStmt();
+				if(t_19==String(L"return",6)){
+					p_ParseReturnStmt();
 				}else{
-					if(t_19==String(L"continue",8)){
-						p_ParseContinueStmt();
+					if(t_19==String(L"exit",4)){
+						p_ParseExitStmt();
 					}else{
-						if(t_19==String(L"if",2)){
-							p_ParseIfStmt(String());
+						if(t_19==String(L"continue",8)){
+							p_ParseContinueStmt();
 						}else{
-							if(t_19==String(L"while",5)){
-								p_ParseWhileStmt();
+							if(t_19==String(L"if",2)){
+								p_ParseIfStmt(String());
 							}else{
-								if(t_19==String(L"repeat",6)){
-									p_ParseRepeatStmt();
+								if(t_19==String(L"while",5)){
+									p_ParseWhileStmt();
 								}else{
-									if(t_19==String(L"for",3)){
-										p_ParseForStmt();
+									if(t_19==String(L"repeat",6)){
+										p_ParseRepeatStmt();
 									}else{
-										if(t_19==String(L"select",6)){
-											p_ParseSelectStmt();
+										if(t_19==String(L"for",3)){
+											p_ParseForStmt();
 										}else{
-											if(t_19==String(L"try",3)){
-												p_ParseTryStmt();
+											if(t_19==String(L"select",6)){
+												p_ParseSelectStmt();
 											}else{
-												if(t_19==String(L"throw",5)){
-													p_ParseThrowStmt();
+												if(t_19==String(L"try",3)){
+													p_ParseTryStmt();
 												}else{
-													c_Expr* t_expr=p_ParsePrimaryExpr(1);
-													String t_20=m__toke;
-													if(t_20==String(L"=",1) || t_20==String(L"*=",2) || t_20==String(L"/=",2) || t_20==String(L"+=",2) || t_20==String(L"-=",2) || t_20==String(L"&=",2) || t_20==String(L"|=",2) || t_20==String(L"~=",2) || t_20==String(L"mod",3) || t_20==String(L"shl",3) || t_20==String(L"shr",3)){
-														if(((dynamic_cast<c_IdentExpr*>(t_expr))!=0) || ((dynamic_cast<c_IndexExpr*>(t_expr))!=0)){
-															String t_op=m__toke;
-															p_NextToke();
-															if(!t_op.EndsWith(String(L"=",1))){
-																p_Parse(String(L"=",1));
-																t_op=t_op+String(L"=",1);
-															}
-															m__block->p_AddStmt((new c_AssignStmt)->m_new(t_op,t_expr,p_ParseExpr()));
-														}else{
-															bb_config_Err(String(L"Assignment operator '",21)+m__toke+String(L"' cannot be used this way.",26));
-														}
-														return 0;
-													}
-													if((dynamic_cast<c_IdentExpr*>(t_expr))!=0){
-														t_expr=((new c_FuncCallExpr)->m_new(t_expr,p_ParseArgs2(1)));
+													if(t_19==String(L"throw",5)){
+														p_ParseThrowStmt();
 													}else{
-														if(((dynamic_cast<c_FuncCallExpr*>(t_expr))!=0) || ((dynamic_cast<c_InvokeSuperExpr*>(t_expr))!=0) || ((dynamic_cast<c_NewObjectExpr*>(t_expr))!=0)){
-														}else{
-															bb_config_Err(String(L"Expression cannot be used as a statement.",41));
+														c_Expr* t_expr=p_ParsePrimaryExpr(1);
+														String t_20=m__toke;
+														if(t_20==String(L"=",1) || t_20==String(L"*=",2) || t_20==String(L"/=",2) || t_20==String(L"+=",2) || t_20==String(L"-=",2) || t_20==String(L"&=",2) || t_20==String(L"|=",2) || t_20==String(L"~=",2) || t_20==String(L"mod",3) || t_20==String(L"shl",3) || t_20==String(L"shr",3)){
+															if(((dynamic_cast<c_IdentExpr*>(t_expr))!=0) || ((dynamic_cast<c_IndexExpr*>(t_expr))!=0)){
+																String t_op=m__toke;
+																p_NextToke();
+																if(!t_op.EndsWith(String(L"=",1))){
+																	p_Parse(String(L"=",1));
+																	t_op=t_op+String(L"=",1);
+																}
+																m__block->p_AddStmt((new c_AssignStmt)->m_new(t_op,t_expr,p_ParseExpr()));
+															}else{
+																bb_config_Err(String(L"Assignment operator '",21)+m__toke+String(L"' cannot be used this way.",26));
+															}
+															return 0;
 														}
+														if((dynamic_cast<c_IdentExpr*>(t_expr))!=0){
+															t_expr=((new c_FuncCallExpr)->m_new(t_expr,p_ParseArgs2(1)));
+														}else{
+															if(((dynamic_cast<c_FuncCallExpr*>(t_expr))!=0) || ((dynamic_cast<c_InvokeSuperExpr*>(t_expr))!=0) || ((dynamic_cast<c_NewObjectExpr*>(t_expr))!=0)){
+															}else{
+																bb_config_Err(String(L"Expression cannot be used as a statement.",41));
+															}
+														}
+														m__block->p_AddStmt((new c_ExprStmt)->m_new(t_expr));
 													}
-													m__block->p_AddStmt((new c_ExprStmt)->m_new(t_expr));
 												}
 											}
 										}
@@ -11917,16 +11971,20 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 							}
 							t_classDecl->p_InsertDecls(p_ParseDecls(m__toke,t_decl_attrs));
 						}else{
-							if(t_22==String(L"method",6)){
-								t_classDecl->p_InsertDecl(p_ParseFuncDecl(t_decl_attrs|t_func_attrs));
+							if(t_22==String(L"enumerate",9)){
+								t_classDecl->p_InsertDecls(p_ParseEnum(m__toke,t_decl_attrs));
 							}else{
-								if(t_22==String(L"function",8)){
-									if((t_attrs&4096)!=0){
-										bb_config_Err(String(L"Interfaces can only contain constants and methods.",50));
-									}
+								if(t_22==String(L"method",6)){
 									t_classDecl->p_InsertDecl(p_ParseFuncDecl(t_decl_attrs|t_func_attrs));
 								}else{
-									bb_config_Err(String(L"Syntax error - expecting class member declaration.",50));
+									if(t_22==String(L"function",8)){
+										if((t_attrs&4096)!=0){
+											bb_config_Err(String(L"Interfaces can only contain constants and methods.",50));
+										}
+										t_classDecl->p_InsertDecl(p_ParseFuncDecl(t_decl_attrs|t_func_attrs));
+									}else{
+										bb_config_Err(String(L"Syntax error - expecting class member declaration.",50));
+									}
 								}
 							}
 						}
@@ -12057,16 +12115,20 @@ int c_Parser::p_ParseMain(){
 						if(t_25==String(L"const",5) || t_25==String(L"global",6)){
 							m__module->p_InsertDecls(p_ParseDecls(m__toke,t_attrs));
 						}else{
-							if(t_25==String(L"class",5)){
-								m__module->p_InsertDecl(p_ParseClassDecl(t_attrs));
+							if(t_25==String(L"enumerate",9)){
+								m__module->p_InsertDecls(p_ParseEnum(m__toke,t_attrs));
 							}else{
-								if(t_25==String(L"interface",9)){
+								if(t_25==String(L"class",5)){
 									m__module->p_InsertDecl(p_ParseClassDecl(t_attrs));
 								}else{
-									if(t_25==String(L"function",8)){
-										m__module->p_InsertDecl(p_ParseFuncDecl(t_attrs));
+									if(t_25==String(L"interface",9)){
+										m__module->p_InsertDecl(p_ParseClassDecl(t_attrs));
 									}else{
-										bb_config_Err(String(L"Syntax error - expecting declaration.",37));
+										if(t_25==String(L"function",8)){
+											m__module->p_InsertDecl(p_ParseFuncDecl(t_attrs));
+										}else{
+											bb_config_Err(String(L"Syntax error - expecting declaration.",37));
+										}
 									}
 								}
 							}
@@ -12425,6 +12487,10 @@ void c_HeadNode3::mark(){
 c_BlockDecl::c_BlockDecl(){
 	m_stmts=(new c_List5)->m_new();
 }
+int c_BlockDecl::p_AddStmt(c_Stmt* t_stmt){
+	m_stmts->p_AddLast5(t_stmt);
+	return 0;
+}
 c_BlockDecl* c_BlockDecl::m_new(c_ScopeDecl* t_scope){
 	c_ScopeDecl::m_new();
 	this->m_scope=t_scope;
@@ -12433,10 +12499,6 @@ c_BlockDecl* c_BlockDecl::m_new(c_ScopeDecl* t_scope){
 c_BlockDecl* c_BlockDecl::m_new2(){
 	c_ScopeDecl::m_new();
 	return this;
-}
-int c_BlockDecl::p_AddStmt(c_Stmt* t_stmt){
-	m_stmts->p_AddLast5(t_stmt);
-	return 0;
 }
 c_Decl* c_BlockDecl::p_OnCopy(){
 	c_BlockDecl* t_t=(new c_BlockDecl)->m_new2();
@@ -14853,6 +14915,37 @@ c_Decl* c_Enumerator2::p_NextObject(){
 void c_Enumerator2::mark(){
 	Object::mark();
 }
+c_DeclStmt::c_DeclStmt(){
+	m_decl=0;
+}
+c_DeclStmt* c_DeclStmt::m_new(c_Decl* t_decl){
+	c_Stmt::m_new();
+	this->m_decl=t_decl;
+	return this;
+}
+c_DeclStmt* c_DeclStmt::m_new2(String t_id,c_Type* t_ty,c_Expr* t_init){
+	c_Stmt::m_new();
+	this->m_decl=((new c_LocalDecl)->m_new(t_id,0,t_ty,t_init));
+	return this;
+}
+c_DeclStmt* c_DeclStmt::m_new3(){
+	c_Stmt::m_new();
+	return this;
+}
+c_Stmt* c_DeclStmt::p_OnCopy2(c_ScopeDecl* t_scope){
+	return ((new c_DeclStmt)->m_new(m_decl->p_Copy()));
+}
+int c_DeclStmt::p_OnSemant(){
+	m_decl->p_Semant();
+	bb_decl__env->p_InsertDecl(m_decl);
+	return 0;
+}
+String c_DeclStmt::p_Trans(){
+	return bb_translator__trans->p_TransDeclStmt(this);
+}
+void c_DeclStmt::mark(){
+	c_Stmt::mark();
+}
 c_Stack5::c_Stack5(){
 	m_data=Array<c_IdentType* >();
 	m_length=0;
@@ -15138,37 +15231,6 @@ c_HeadNode7* c_HeadNode7::m_new(){
 }
 void c_HeadNode7::mark(){
 	c_Node12::mark();
-}
-c_DeclStmt::c_DeclStmt(){
-	m_decl=0;
-}
-c_DeclStmt* c_DeclStmt::m_new(c_Decl* t_decl){
-	c_Stmt::m_new();
-	this->m_decl=t_decl;
-	return this;
-}
-c_DeclStmt* c_DeclStmt::m_new2(String t_id,c_Type* t_ty,c_Expr* t_init){
-	c_Stmt::m_new();
-	this->m_decl=((new c_LocalDecl)->m_new(t_id,0,t_ty,t_init));
-	return this;
-}
-c_DeclStmt* c_DeclStmt::m_new3(){
-	c_Stmt::m_new();
-	return this;
-}
-c_Stmt* c_DeclStmt::p_OnCopy2(c_ScopeDecl* t_scope){
-	return ((new c_DeclStmt)->m_new(m_decl->p_Copy()));
-}
-int c_DeclStmt::p_OnSemant(){
-	m_decl->p_Semant();
-	bb_decl__env->p_InsertDecl(m_decl);
-	return 0;
-}
-String c_DeclStmt::p_Trans(){
-	return bb_translator__trans->p_TransDeclStmt(this);
-}
-void c_DeclStmt::mark(){
-	c_Stmt::mark();
 }
 c_ReturnStmt::c_ReturnStmt(){
 	m_expr=0;

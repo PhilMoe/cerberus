@@ -4,6 +4,7 @@
 'Mainly just so we can get 64bit linux versions up and running...
 '
 #CSERVER_VERSION="17.7.3"
+#GLFW_WINDOW_TITLE="cserver_macos"
 
 #If HOST<>"linux" And HOST<>"macos" And HOST<>"winnt"
 #Error "Host<>linux/macos/winnt"

@@ -1,4 +1,4 @@
-***** v2017-10-16 *****
+***** v2017-10-24 *****
 
 FIX: [ANDROID] Fixed missing in app purchase interface
 FIX: [MOJO2] Fixed memory leak when discarding an image
@@ -28,6 +28,7 @@ Changes made by dawlane (THANKS SO MUCH!)
 FIX: [HTTP] Linux libcurl now use repository development files instead of the templates files.
 FIX: [DESKTOP] Pass addition CC, LD and LIB parameters to GLFW GCC compilers.
 FIX: Updated GLFW GCC Windows and Linux Makefiles for additional parameters.
+FIX: fixed deprecation warnings for mac os (stdlibc++)
 NEW: Powershell build script for building Cerberus from scratch and instructions.
 NEW: Added a new libs directory for external libraries.
 NEW: [DESKTOP] Copy dynamic libaries from new libs directory to final build directory. GCC Windows only for now.
