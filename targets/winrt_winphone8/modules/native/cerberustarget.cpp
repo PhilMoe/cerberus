@@ -190,7 +190,7 @@ unsigned char *BBCerberusGame::LoadAudioData( String path,int *length,int *chann
 
 void BBCerberusGame::MouseEvent( int event,int data,float x,float y ){
 	RotateCoords( x,y );
-	BBWinrtGame::MouseEvent( event,data,x,y );
+	BBWinrtGame::MouseEvent( event,data,x,y,0 );
 }
 
 void BBCerberusGame::TouchEvent( int event,int data,float x,float y ){
