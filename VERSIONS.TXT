@@ -1,3 +1,7 @@
+***** v2017-11-06 *****
+
+FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
+
 ***** v2017-10-24 *****
 
 FIX: [ANDROID] Fixed missing in app purchase interface
