@@ -194,13 +194,13 @@ void BBWinrtGame::OnPointerPressed( PointerPoint ^p ){
 			float y=DipsToPixels( p->Position.Y );
 			switch( p->Properties->PointerUpdateKind ){
 			case Windows::UI::Input::PointerUpdateKind::LeftButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,0,x,y );
+				MouseEvent( BBGameEvent::MouseDown,0,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::RightButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,1,x,y );
+				MouseEvent( BBGameEvent::MouseDown,1,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::MiddleButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,2,x,y );
+				MouseEvent( BBGameEvent::MouseDown,2,x,y,0 );
 				break;
 			}
 		}
@@ -234,13 +234,13 @@ void BBWinrtGame::OnPointerReleased( PointerPoint ^p ){
 			float y=DipsToPixels( p->Position.Y );
 			switch( p->Properties->PointerUpdateKind ){
 			case Windows::UI::Input::PointerUpdateKind::LeftButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,0,x,y );
+				MouseEvent( BBGameEvent::MouseUp,0,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::RightButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,1,x,y );
+				MouseEvent( BBGameEvent::MouseUp,1,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::MiddleButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,2,x,y );
+				MouseEvent( BBGameEvent::MouseUp,2,x,y,0 );
 				break;
 			}
 		}
@@ -273,25 +273,25 @@ void BBWinrtGame::OnPointerMoved( PointerPoint ^p ){
 			float y=DipsToPixels( p->Position.Y );
 			switch( p->Properties->PointerUpdateKind ){
 			case Windows::UI::Input::PointerUpdateKind::LeftButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,0,x,y );
+				MouseEvent( BBGameEvent::MouseDown,0,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::RightButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,1,x,y );
+				MouseEvent( BBGameEvent::MouseDown,1,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::MiddleButtonPressed:
-				MouseEvent( BBGameEvent::MouseDown,2,x,y );
+				MouseEvent( BBGameEvent::MouseDown,2,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::LeftButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,0,x,y );
+				MouseEvent( BBGameEvent::MouseUp,0,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::RightButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,1,x,y );
+				MouseEvent( BBGameEvent::MouseUp,1,x,y,0 );
 				break;
 			case Windows::UI::Input::PointerUpdateKind::MiddleButtonReleased:
-				MouseEvent( BBGameEvent::MouseUp,2,x,y );
+				MouseEvent( BBGameEvent::MouseUp,2,x,y,0 );
 				break;
 			default:
-				MouseEvent( BBGameEvent::MouseMove,-1,x,y );
+				MouseEvent( BBGameEvent::MouseMove,-1,x,y,0 );
 			}
 		}
 		break;
