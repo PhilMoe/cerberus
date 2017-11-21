@@ -867,7 +867,7 @@ End
 Function SetFont:Void( font:Font )
 	If Not font
 		If Not context.defaultFont
-			context.defaultFont=Font.Load( "mojo_font.png",32,96, False )
+			context.defaultFont=Font.Load( "mojo_font.png",32,96, True )
 		Endif
 		font = context.defaultFont
 	Endif

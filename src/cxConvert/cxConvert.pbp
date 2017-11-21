@@ -7,28 +7,28 @@
   <section name="data">
     <explorer view="C:\Program Files (x86)\PureBasic\Examples\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2017-09-25 22:22" user="Micha" host="MICHA-PC"/>
+    <lastopen date="2017-11-13 22:01" user="Micha" host="MICHA-PC"/>
   </section>
   <section name="files">
     <file name="cxConvert.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="4fd6135b2ab18b61fbeae44a1d914dae"/>
+      <fingerprint md5="f4ce24a021b74fb8dcd9593ac0daa505"/>
     </file>
   </section>
   <section name="targets">
     <target name="Default Target" enabled="1" default="1">
       <inputfile value="cxConvert.pb"/>
       <outputfile value="cxConvert.exe"/>
-      <executable value="cxConvert.exe"/>
+      <executable value="C:\Users\Micha\Desktop\cxConvert.exe"/>
       <options xpskin="1"/>
       <icon enable="1">cxConvert.ico</icon>
       <versioninfo enable="1">
-        <field0 value="1.0.0.1"/>
-        <field1 value="1.0.0.1"/>
+        <field0 value="1.0.0.2"/>
+        <field1 value="1.0.0.2"/>
         <field2 value="Kraut Apps"/>
         <field3 value="cxConvert"/>
-        <field4 value="1.0.0.1"/>
-        <field5 value="1.0.0.1"/>
+        <field4 value="1.0.0.2"/>
+        <field5 value="1.0.0.2"/>
         <field6 value="Converts Monkey X files to Cerberus X"/>
         <field7 value="cxConvert"/>
         <field8 value="cxConvert"/>
