@@ -31,5 +31,38 @@
 *.xml text eol=lf
 *.ini text eol=lf
 
+# Visual Studio/Windows lf => crlf
+*.bat text eol=crlf
+*.sln text eof=crlf
+*.vcxproj text eof=crlf
+*.filters text eof=crlf
+*.txt text eof=crlf
+*.csproj text eol=crlf
+*.ps1 text eol=crlf
+
+# Image files
+*.bmp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.icns binary
+
+# Other binrary types
+*.pdf binary
+*.a binary
+*.lib binary
+
+# Compression
+*.gz binary
+*.zip binary
+*.jar binary
+
+
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitconfig text eol=lf
+
+
 
 
