@@ -1,4 +1,5 @@
 *.cxs linguist-language=CerberusX
 
 *.cerberusdoc text eol=lf
+*.cxs text eol=lf
 
