@@ -1,5 +1,35 @@
-*.cxs linguist-language=CerberusX
+*.cxs linguist-language=cerberus
 
 *.cerberusdoc text eol=lf
 *.cxs text eol=lf
+*.monkey text eol=lf
+*.monkeydocs text eol=lf
+*.c text eol=lf
+*.cc text eol=lf
+*.cxx text eol=lf
+*.c++ text eol=lf
+*.hpp text eol=lf
+*.h text eol=lf
+*.h++ text eol=lf
+*.hh text eol=lf
+*.cs text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.df text eol=lf
+*.as text eol=lf
+*.css text eol=lf
+*.htm text eol=lf
+*.html text eol=lf
+*.xhtml text eol=lf
+*.php text eol=lf
+*.css text eol=lf
+*.java text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+*.tld text eol=lf
+*.xml text eol=lf
+*.ini text eol=lf
+
+
 
