@@ -483,7 +483,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
             "Include;Import;Module;Extern;"
             "New;Self;Super;Eachin;True;False;Null;Not;"
             "Extends;Abstract;Final;Native;Select;Case;Default;"
-            "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;Enumerate"
+            "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;Enumerate;"
             "And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"
             "Try;Catch;Throw;Throwable;"
             "Print;Error;Alias";
