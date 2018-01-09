@@ -4,7 +4,7 @@ This is just an interface provided for easy integration with other font librarie
 The real bitmapfont objects used by this module are defined as [b]BitmapFont[/b] class objects.
 [a ../.docs/bitmapfont.monkey.html]See the documentation here.[/a]
 #end
-Interface Font 
+Interface fmFont 
 	'summary: This is the method to draw text on the canvas.
 	Method DrawText(text:String, x#,y#) 
 

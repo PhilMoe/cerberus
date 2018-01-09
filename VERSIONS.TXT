@@ -1,7 +1,8 @@
-***** v2017-11-25 *****
+***** v2018-01-09 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
+FIX: [EXAMPLES] Fixed missing class prefix for fontmachine implementation in the matchup example    (Author: MikeHart)
 
 ***** v2017-10-24 *****
 
