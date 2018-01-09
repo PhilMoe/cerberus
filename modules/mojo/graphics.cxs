@@ -935,7 +935,6 @@ Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhand
 		y += context.font.TextHeight( text )
 		x = currX 
 	Next
-	'DrawImage(context.font._pages[0],10,10)
 End
 
 
