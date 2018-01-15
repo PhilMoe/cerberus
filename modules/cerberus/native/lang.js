@@ -51,8 +51,19 @@ function error( err ){
 	throw err;
 }
 
-function debugLog( str ){
-	if( window.console!=undefined ) window.console.log( str );
+//function debugLog( str ){
+//	if( window.console!=undefined ) window.console.log( str );
+//}
+
+function debuglog( str ){
+	var cons=document.getElementById( "GameConsole" );
+	if( cons ){
+		cons.value+=str+"\n";
+		cons.scrollTop=cons.scrollHeight-cons.clientHeight;
+	}else if( window.console!=undefined ){
+		window.console.log( str );
+	}
+	return 0;
 }
 
 function debugStop(){
