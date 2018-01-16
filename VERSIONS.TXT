@@ -1,4 +1,4 @@
-***** v2018-01-15 *****
+***** v2018-01-16 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)

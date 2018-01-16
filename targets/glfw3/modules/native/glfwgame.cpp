@@ -688,7 +688,7 @@ void BBGlfwGame::UpdateEvents(){
 			ResumeGame();
 			_nextUpdate=0;
 		}
-	}else if( glfwGetWindowAttrib( _window,GLFW_ICONIFIED ) || CFG_MOJO_AUTO_SUSPEND_ENABLED ){
+	}else if( !glfwGetWindowAttrib( _window,GLFW_FOCUSED ) && CFG_MOJO_AUTO_SUSPEND_ENABLED ){
 		if( _focus && !_suspended ){
 			SuspendGame();
 			_nextUpdate=0;
