@@ -6,6 +6,7 @@ FIX: [EXAMPLES] Fixed missing class prefix for fontmachine implementation in the
 FIX: [MAKEDOCS] Fixed Makedocs to allow module documentation starting within a module.    (Author: Holzchopf)
 FIX: [Language] DebugLog/DebugStop won't effect release builds anymore. They hit dummy functions now.
 FIX: [HTML5] DebugLog will output to the game console now.
+FIX: [DESKTOP] MOJO_AUTO_SUSPEND_ENABLED=False will be recognized when the window loses its focus.
 
 
 ***** v2017-10-24 *****
