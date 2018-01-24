@@ -1,4 +1,4 @@
-***** v2018-01-18 *****
+***** v2018-01-24 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
@@ -7,7 +7,8 @@ FIX: [MAKEDOCS] Fixed Makedocs to allow module documentation starting within a m
 FIX: [Language] DebugLog/DebugStop won't effect release builds anymore. They hit dummy functions now.
 FIX: [HTML5] DebugLog will output to the game console now.
 FIX: [DESKTOP] MOJO_AUTO_SUSPEND_ENABLED=False will be recognized when the window loses its focus.
-FIX: [DESKTOP] Updated stb_image.h file cause big images didn't load.
+FIX: [DESKTOP] Updated stb_image.h file in GLFW template because big images didn't load.
+FIX: [MOJO] Fixed TextWidth() reporting the wrong length.
 
 ***** v2017-10-24 *****
 

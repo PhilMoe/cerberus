@@ -879,7 +879,7 @@ Function GetFont:Font()
 End
 
 Function TextWidth#( text$ )
-	If context.font Return text.Length * context.font.TextWidth(text)
+	If context.font Return context.font.TextWidth(text)
 End
 
 Function TextHeight#()
