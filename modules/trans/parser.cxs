@@ -287,21 +287,9 @@ Class IdentExpr Extends Expr
 		If fdecl
 			If Not fdecl.IsStatic()
 				If static Err "Method '"+ident+"' cannot be accessed from here."
-'If expr <> Null Then Print expr.ToString() Else Print "expr = NULL"
 				If expr Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
 			Endif
 			Return New InvokeExpr( fdecl,args ).Semant()
-		'--------
-		'TODO .,-
-'		Else
-'			expr=New IdentExpr(ident).Semant
-'			Print expr.ToString()
-'			scope=expr.SemantScope()
-'			Print scope.ToString()
-			'scope=...
-			'fdecl=scope.FindFuncDecl( "Invoke",args )
-			'Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
-		'--------
 		Endif
 		
 		Local type:=scope.FindType( ident,[] )
@@ -309,16 +297,6 @@ Class IdentExpr Extends Expr
 			If args.Length=1 And args[0] Return args[0].Cast( type,CAST_EXPLICIT )
 			Err "Illegal number of arguments for type conversion"
 		Endif
-		
-		
-		
-		'TODO .,-
-		'fdecl:FuncDecl=scope.FindFuncDecl( ident,args )
-		'Return New InvokeMemberExpr( expr,fdecl,args ).Semant()
-		''Print ident
-		''If expr <> Null Then Print expr.ToString() Else Print "expr = NULL"
-		''If scope <> Null Then Print scope.ToString() Else Print "scope = NULL"
-		''If static Then Print "stytic" Else Print "not static"
 		
 		IdentErr
 	End
@@ -647,9 +625,6 @@ Class Parser
 				expr=ParseExpr()
 				Parse ")"
 			Case "["
-'.,-
-'If ObjectType(expr.exprType) Then Err "!!!OK!!!"
-'Print("(1)>>> "+expr.ToString)
 				expr=ParseArrayExpr()
 			Case "[]"
 				NextToke
@@ -752,12 +727,6 @@ Class Parser
 					expr=New FuncCallExpr( expr,ParseArgs( stmt ) )
 
 				Case "["
-'.,-
-'Print("(2)>>> "+expr.ToString)
-'Local semantExpr:Expr=expr.Semant()
-'If semantExpr.exprType <> Null Then Print semantExpr.exprType.ToString() Else Print "NULL"
-'If ObjectType(expr.exprType) Then Err "!!!OK!!!"
-'If ObjectType(semantExpr.exprType) Then Err "!!!OK!!!"
 			
 					NextToke
 					If CParse( ".." )
@@ -1010,15 +979,6 @@ Class Parser
 		
 		_block.AddStmt stmt
 	End
-	
-'	Method ParseDeclStmts()
-'		Local toke$=_toke
-'		NextToke
-'		Repeat
-'			Local decl:Decl=ParseDecl( toke,0 )
-'			_block.AddStmt New DeclStmt( decl )
-'		Until Not CParse(",")
-'	End
 	
 	Method ParseForStmt()
 	
