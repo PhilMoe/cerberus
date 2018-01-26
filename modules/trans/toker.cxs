@@ -46,7 +46,6 @@ Class Toker
 		"for to step next return "+
 		"interface implements inline alias try catch throw throwable "+
 		"enumerate"
-		'Print(keywords)
 
 		_keywords=New StringSet
 		For Local t:=Eachin keywords.Split( " " )
