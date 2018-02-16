@@ -589,6 +589,7 @@ Set blend mode. The @blendMode parameter should be one of:
 | BlendMode.Alpha	| Alpha blending
 | BlendMode.Additive	| Additive blending
 | BlendMode.Multiply	| Multiply blending
+| BlendMode.Alpha2	| Alpha blending for non-premultiplied images
 
 
 # Method BlendMode:Int() Property
