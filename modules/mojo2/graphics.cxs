@@ -1505,9 +1505,10 @@ Class BlendMode
 	Const Alpha:=1
 	Const Additive:=2
 	Const Multiply:=3
-	Const Multiply2:=4
-' 20180208, Holzchopf - ADDED Alpha2 for non-premultiplied images
-	Const Alpha2:=5
+	Const Multiply2:= 4
+	Const Alpha2:= 5
+	Const Opaque2:= 6
+	Const AlphaStamp:= 7	
 End
 
 Class DrawList
@@ -2134,10 +2135,16 @@ Class DrawList
 			Case .BlendMode.Multiply2
 				glEnable GL_BLEND
 				glBlendFunc GL_DST_COLOR,GL_ZERO
-' 20180208, Holzchopf - ADDED Alpha2 for non-premultiplied images
-			Case .BlendMode.Alpha2
-				glEnable GL_BLEND
-				glBlendFunc GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA
+			Case.BlendMode.Alpha2
+				glEnable(GL_BLEND)
+				glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
+			Case.BlendMode.Opaque2
+				glEnable(GL_BLEND)
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+			Case.BlendMode.AlphaStamp
+				glEnable(GL_BLEND)
+				glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO)
+				glBlendEquation(GL_FUNC_ADD)
 			End
 		End
 		

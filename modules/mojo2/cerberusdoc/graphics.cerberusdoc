@@ -584,12 +584,15 @@ Copy current color to @color.
 
 Set blend mode. The @blendMode parameter should be one of:
 
-| @Mode				| @Description
-| BlendMode.Opaque	| Opaque - no blending
-| BlendMode.Alpha	| Alpha blending
-| BlendMode.Additive	| Additive blending
-| BlendMode.Multiply	| Multiply blending
-| BlendMode.Alpha2	| Alpha blending for non-premultiplied images
+| @Mode				| @Description	| @BlendFunc
+| BlendMode.Opaque	| Opaque - no blending	| -
+| BlendMode.Alpha	| Alpha blending	| glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA)
+| BlendMode.Additive	| Additive blending	| glBlendFunc(GL_ONE,GL_ONE)
+| BlendMode.Multiply	| Multiply blending	| glBlendFunc(GL_DST_COLOR,GL_ONE_MINUS_SRC_ALPHA)
+| BlendMode.Multiply2	| ...	| glBlendFunc(GL_DST_COLOR,GL_ZERO)
+| BlendMode.Alpha2	| ...	| glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
+| BlendMode.Opaque2	| ...	| glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+| BlendMode.AlphaStamp	| ...	| glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO); glBlendEquation(GL_FUNC_ADD);
 
 
 # Method BlendMode:Int() Property
