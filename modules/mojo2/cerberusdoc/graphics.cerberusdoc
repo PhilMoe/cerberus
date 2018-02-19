@@ -797,6 +797,26 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
+# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],material:Material=Null )
+
+Draw a batch of primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data, and must be at least @count \* @order \* 2 long.
+
+The @texcoords array contains s,t texture coordinate data, and must be at least @count \* @order \* 2 long.
+
+The @vertcols array contains *abgr* (rgba in reverse order) vertex color data, and must be at least @count \* @order long.
+Remember to always set alpha. Also, if alpha is not 100\% (0xFF), rgb components have to be multiplied, e.g. white (0xFFFFFFFF) becomes gray (0x80808080) when 50\% transparent. Otherwise bleeding will occur when blending with BlendMode.Alpha.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
 # Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],indices:Int[],material:Material=Null )
 
 Draw a batch of indexed primtives.
@@ -825,6 +845,28 @@ Draw a batch of indexed primtives.
 The @vertices array contains x,y vertex data.
 
 The @texcoords array contains s,t texture coordinate data.
+
+The @indices array contains vertex indices, and must be at least @count \* @order long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
+
+
+# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],indices:Int[],material:Material=Null )
+
+Draw a batch of indexed primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data.
+
+The @texcoords array contains s,t texture coordinate data.
+
+The @vertcols array contains *abgr* (rgba in reverse order) vertex color data, and must be at least @count \* @order long.
+Remember to always set alpha. Also, if alpha is not 100\% (0xFF), rgb components have to be multiplied, e.g. white (0xFFFFFFFF) becomes gray (0x80808080) when 50\% transparent. Otherwise bleeding will occur when blending with BlendMode.Alpha.
 
 The @indices array contains vertex indices, and must be at least @count \* @order long.
 

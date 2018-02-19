@@ -1763,6 +1763,26 @@ Class DrawList
 		Next
 	End
 	
+' 20180218, Holzchopf - ADDED drawing primitives with individual vertex color
+	Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],material:Material=Null )
+		' save current color for later
+		Local tmpcolor := _pmcolor
+		' draw primitives
+		BeginPrims material,order,count
+		Local p:=0
+		For Local i:=0 Until count
+			For Local j:=0 Until order
+				' write vertex color
+				_pmcolor = vertcols[i*order+j]
+				' write vertex data
+				PrimVert vertices[p],vertices[p+1],texcoords[p],texcoords[p+1]
+				p+=2
+			Next
+		Next
+		' restoree color
+		_pmcolor = tmpcolor
+	End
+	
 	Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],indices:Int[],material:Material=Null )
 	
 		BeginPrims material,order,count
@@ -1789,6 +1809,31 @@ Class DrawList
 			p+=order
 		Next
 	
+	End
+	
+' 20180218, Holzchopf - ADDED drawing primitives with individual vertex color
+	Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],indices:Int[],material:Material=Null )
+		' save current color for later
+		Local tmpcolor := _pmcolor
+		' draw primitives
+		BeginPrims material,order,count
+		Local p:=0
+		Local v:Int		' vertex index
+		Local k:Int		' index in vertices array
+		For Local i:=0 Until count
+			For Local j:=0 Until order
+				' index
+				v = indices[p+j]
+				k = v*2
+				' write vertex color
+				_pmcolor = vertcols[v]
+				' write vertex data
+				PrimVert vertices[k],vertices[k+1],texcoords[k],texcoords[k+1]
+			Next
+			p+=order
+		Next
+		' restoree color
+		_pmcolor = tmpcolor
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=1 )
