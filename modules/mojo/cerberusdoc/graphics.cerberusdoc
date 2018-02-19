@@ -374,7 +374,7 @@ Returns the width of the given text.
 Returns the height of the current font.
 
 
-# Function DrawText:Int(text:String,x:Float,y:Float,xalign:Float=0,yalign:Float=0)
+# Function DrawText:Int(text:String,x:Int,y:Int,xalign:Float=0,yalign:Float=0)
 
 Draws text at coordinates x, y in the current font.
 
@@ -385,7 +385,7 @@ xalign and yalign allow you to control the alignment of the text and should be i
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
 
-# Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+# Function DrawText:Void( textLines:String[],x:Int,y:Int,xhandle:Float=0,yhandle:Float=0 )
 
 Draws a multiline text beginning at coordinates x, y in the current font.
 
