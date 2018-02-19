@@ -1,6 +1,6 @@
 
 /*
-Ted,imple text editor/IDE.
+Ted, simple text editor/IDE.
 
 Copyright 2012, Blitz Research Ltd.
 
@@ -8,8 +8,8 @@ See LICENSE.TXT for licensing terms.
 */
 
 #include "codeeditor.h"
-
 #include "prefs.h"
+#include <QtGui>
 
 static CodeEditor *extraSelsEditor;
 static QList<QTextEdit::ExtraSelection> extraSels;
@@ -21,27 +21,8 @@ static void flushExtraSels(){
     extraSelsEditor=0;
 }
 
-//***** BlockData *****
 
-class BlockData : public QTextBlockUserData{
-public:
-    BlockData( Highlighter *highlighter,const QTextBlock &block,const QString &decl,const QString &ident,int indent );
-    ~BlockData();
 
-    QTextBlock block(){ return _block; }
-    const QString &decl(){ return _decl; }
-    const QString &ident(){ return _ident; }
-    int indent(){ return _indent; }
-
-    void invalidate();
-
-private:
-    Highlighter *_highlighter;
-    QTextBlock _block;
-    QString _decl;
-    QString _ident;
-    int _indent;
-};
 
 //***** CodeTreeItem *****
 
@@ -63,18 +44,46 @@ private:
     BlockData *_data;
 };
 
+//***** LineNumber Area *****
+class LineNumberArea : public QWidget
+{
+public:
+    LineNumberArea(CodeEditor *editor) : QWidget(editor) {
+        codeEditor = editor;
+    }
+
+    QSize sizeHint() const override {
+        return QSize(codeEditor->lineNumberAreaWidth(), 0);
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event) override {
+        codeEditor->lineNumberAreaPaintEvent(event);
+    }
+
+private:
+    CodeEditor *codeEditor;
+};
+
 //***** CodeEditor *****
 
 CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 ),_capitalize( false ){
+    imgBookmark.load(QCoreApplication::applicationDirPath()+"/icons/Bookmark.png");
 
     _highlighter=new Highlighter( this );
 
+    lineNumberArea = new LineNumberArea(this);
+
     _codeTreeModel=new QStandardItemModel( 0 );//this );
+    _codeTreeModel->setSortRole(Qt::AscendingOrder);
 
     _codeTreeView=new QTreeView( 0 );
     _codeTreeView->setHeaderHidden( true );
     _codeTreeView->setModel( _codeTreeModel );
     _codeTreeView->setFocusPolicy( Qt::NoFocus );
+    _codeTreeView->setSortingEnabled(true);
+
+    _modSignal = false;
 
 #ifdef Q_OS_WIN
     _codeTreeView->setFrameStyle( QFrame::NoFrame );
@@ -88,10 +97,18 @@ CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 
 
     connect( Prefs::prefs(),SIGNAL(prefsChanged(const QString&)),SLOT(onPrefsChanged(const QString&)) );
 
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
+
     setLineWrapMode( QPlainTextEdit::NoWrap );
 
-    onPrefsChanged( "" );
+    doHighlightCurrLine = Prefs::prefs()->getBool( "highlightCurrLine" );
+    doLineNumbers = Prefs::prefs()->getBool( "showLineNumbers" );
+    doSortCodeBrowser = Prefs::prefs()->getBool( "sortCodeBrowser" );
 
+    onPrefsChanged( "" );
+    updateLineNumberAreaWidth(0);
+    highlightCurrentLine();
     flushExtraSels();
 }
 
@@ -103,10 +120,204 @@ CodeEditor::~CodeEditor(){
 
     delete _codeTreeModel;
 
-    //delete _codeTreeModel;
-
     //delete _highlighter;
 }
+
+int CodeEditor::lineNumberAreaWidth()
+{
+    int digits = 1;
+    int max = qMax(1, blockCount());
+    while (max >= 10) {
+        max /= 10;
+        ++digits;
+    }
+
+    int space = 0;
+    if ( doLineNumbers ) {
+        space = 40 + fontMetrics().width(QLatin1Char('9')) * digits;
+    }
+
+    return space;
+}
+
+void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+{
+    //if ( doLineNumbers ) {
+        setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+    //}
+}
+
+void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
+{
+    //if ( doLineNumbers ) {
+        if (dy)
+            lineNumberArea->scroll(0, dy);
+        else
+            lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+
+        if (rect.contains(viewport()->rect()))
+            updateLineNumberAreaWidth(0);
+    //}
+}
+
+void CodeEditor::resizeEvent(QResizeEvent *e)
+{
+    QPlainTextEdit::resizeEvent(e);
+
+    QRect cr = contentsRect();
+    //if ( doLineNumbers ) {
+        lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    //} else {
+    //    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), 20, cr.height()));
+    //}
+}
+
+void CodeEditor::bookmarkToggle() {
+    qDebug("CodeEditor::bookmarkToggle");
+    QTextBlock block = textCursor().block();
+    if( block.isValid() ) {
+        //BlockData *data = BlockData::data(block, true);
+        BlockData *data = dynamic_cast<BlockData*>(block.userData());
+        if (data) {
+            data->toggleBookmark();
+        }
+    }
+}
+
+void CodeEditor::bookmarkPrev() {
+    qDebug("CodeEditor::bookmarkPrev");
+    bookmarkFind(-1);
+}
+
+void CodeEditor::bookmarkNext() {
+    qDebug("CodeEditor::bookmarkNext");
+    bookmarkFind(1);
+}
+
+void CodeEditor::bookmarkFind(int dir , int start) {
+    int line = -1;
+    QTextBlock block;
+    if(start == -1)
+        block = textCursor().block();
+    else
+        block = document()->findBlockByLineNumber(start);
+    if( !block.isValid() )
+        return;
+    int startFrom = block.blockNumber();
+    block = (dir == 1 ? block.next() : block.previous());
+    while( block.isValid() ) {
+        //BlockData *data = BlockData::data(block);
+        BlockData *data = dynamic_cast<BlockData*>(block.userData());
+        if( data && data->isBookmarked() ) {
+            line = block.blockNumber();
+            break;
+        }
+        block = (dir == 1 ? block.next() : block.previous());
+    }
+    //do cyclic search
+    if(line < 0) {
+        int i = (dir == 1 ? 0 : document()->blockCount()-1);
+        block = document()->findBlockByLineNumber(i);
+        while( block.isValid() && block.blockNumber() != startFrom ) {
+            BlockData *data = dynamic_cast<BlockData*>(block.userData());
+            if( data && data->isBookmarked() ) {
+                line = block.blockNumber();
+                break;
+            }
+            block = (dir == 1 ? block.next() : block.previous());
+        }
+    }
+    if(line >= 0) {
+        /*
+        QTextBlock b = document()->findBlockByNumber( line );
+        CodeItem *i = CodeAnalyzer::scopeAt(b);
+        if(i) {
+            unfoldBlock(i->block());
+            if(i->parent())
+                unfoldBlock(i->parent()->block());
+        }
+        */
+        highlightLine(line);
+        //highlightLine(line, HlCaretRowCentered);
+    }
+}
+
+
+void CodeEditor::commentUncommentBlock() {
+    QTextCursor c = textCursor();
+    if(!c.hasSelection())
+        return;
+    int i1 = c.selectionStart();
+    int i2 = c.selectionEnd();
+    if(i1 > i2) {//swap
+        int tmp = i1;
+        i1 = i2;
+        i2 = tmp;
+    }
+    QTextBlock b = document()->findBlock(i1);
+    QTextBlock end = document()->findBlock(i2);
+    c.beginEditBlock();
+    while(b.isValid()) {
+        QString t = b.text();
+        if(t.startsWith('\'')) {
+            c.setPosition(b.position());
+            c.setPosition(b.position()+1,QTextCursor::KeepAnchor);
+            setTextCursor(c);
+            insertPlainText("");
+        }
+        else {
+            c.setPosition(b.position());
+            setTextCursor(c);
+            insertPlainText("'");
+        }
+        if(b == end)
+            break;
+        b = b.next();
+    }
+    c.endEditBlock();
+}
+
+
+void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+{
+
+    if ( doLineNumbers ) {
+        QPainter painter(lineNumberArea);
+        painter.fillRect(event->rect(), Qt::NoBrush);
+
+        QTextBlock block = firstVisibleBlock();
+        int blockNumber = block.blockNumber();
+        int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+        int bottom = top + (int) blockBoundingRect(block).height();
+
+        while (block.isValid() && top <= event->rect().bottom()) {
+            if (block.isVisible() && bottom >= event->rect().top()) {
+                QString number = QString::number(blockNumber + 1);
+                painter.setPen(Qt::darkGray);
+                painter.drawText(0, top, lineNumberArea->width()-20, fontMetrics().height(),
+                                 Qt::AlignRight, number);
+                // Paint modified markers
+                BlockData *data = dynamic_cast<BlockData*>(block.userData());
+                if (data) {
+                    if (data->_modified == 1 && _modSignal==true) {
+                        painter.fillRect(lineNumberArea->width()-2, top, lineNumberArea->width(), fontMetrics().height(), Qt::red ); //(document()->isModified()==1 ? Qt::red : Qt::green) );
+                    }
+                    bool bkmrk = (data && data->isBookmarked());
+                    if( bkmrk ) {
+                        painter.drawImage(lineNumberArea->width()-15, top, imgBookmark);
+                    }                }
+            }
+
+            block = block.next();
+            top = bottom;
+            bottom = top + (int) blockBoundingRect(block).height();
+            ++blockNumber;
+
+        }
+    }
+    QWidget::paintEvent(event);
+}
+
 
 bool CodeEditor::open( const QString &path ){
 
@@ -150,6 +361,18 @@ bool CodeEditor::save( const QString &path ){
     document()->setModified( false );
     _modified=0;
 
+    //flush all 'modified' marks
+    QTextBlock block = document()->firstBlock();
+    while( block.isValid() ) {
+        //BlockData *data = BlockData::data(block);
+        BlockData *data = dynamic_cast<BlockData*>(block.userData());
+        if(data) {
+            //data->_modified = false;
+            data->setModified(0);
+        }
+        block = block.next();
+    }
+
     return true;
 }
 
@@ -183,8 +406,30 @@ void CodeEditor::gotoLine( int line ){
     ensureCursorVisible();
 }
 
-void CodeEditor::highlightLine( int line ){
+void CodeEditor::highlightCurrentLine()
+{
+qDebug( "CodeEditor::highlightCurrentLine" );
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    if (doHighlightCurrLine) {
+        if (!isReadOnly()) {
+            QTextEdit::ExtraSelection selection;
 
+            //QColor lineColor = QColor(Qt::gray).lighter(40);
+            QColor lineColor=Prefs::prefs()->getColor( "highlightColor" );
+
+            selection.format.setBackground(lineColor);
+            selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+            selection.cursor = textCursor();
+            selection.cursor.clearSelection();
+            extraSelections.append(selection);
+        }
+    }
+    setExtraSelections(extraSelections);
+
+}
+
+void CodeEditor::highlightLine( int line ){
+qDebug( "CodeEditor::highlightLine = %d",line );
     flushExtraSels();
 
     QTextBlock block=document()->findBlockByLineNumber( line );
@@ -202,6 +447,7 @@ void CodeEditor::highlightLine( int line ){
         selection.cursor.clearSelection();
 
         extraSels.append( selection );
+        setTextCursor( QTextCursor( block ) );
     }
 
     setExtraSelections( extraSels );
@@ -214,7 +460,7 @@ void CodeEditor::onPrefsChanged( const QString &name ){
 
     Prefs *prefs=Prefs::prefs();
 
-    if( t=="" || t=="backgroundColor" || t=="fontFamily" || t=="fontSize" || t=="tabSize" || t=="smoothFonts" ){
+    if( t=="" || t=="backgroundColor" || t=="fontFamily" || t=="fontSize" || t=="tabSize" || t=="smoothFonts" || t=="highlightCurrLine" || t=="showLineNumbers" || t=="sortCodeBrowser" ){
 
         QColor bg=prefs->getColor( "backgroundColor" );
         QColor fg( 255-bg.red(),255-bg.green(),255-bg.blue() );
@@ -234,6 +480,15 @@ void CodeEditor::onPrefsChanged( const QString &name ){
             font.setStyleStrategy( QFont::NoAntialias );
         }
 
+        doHighlightCurrLine = prefs->getBool("highlightCurrLine");
+        doLineNumbers = prefs->getBool("showLineNumbers");
+        doSortCodeBrowser = prefs->getBool("sortCodeBrowser");
+
+        updateLineNumberAreaWidth(0);
+        highlightCurrentLine();
+        _highlighter->validateCodeTreeModel();
+
+
         setFont( font );
 
         QFontMetrics fm( font );
@@ -242,23 +497,36 @@ void CodeEditor::onPrefsChanged( const QString &name ){
 }
 
 void CodeEditor::onCursorPositionChanged(){
-
+    qDebug("CodeEditor::onCursorPositionChanged");
+    highlightCurrentLine();
     return;
 }
 
 void CodeEditor::onTextChanged(){
+    qDebug("CodeEditor::onTextChanged");
 
     if( document()->isModified() ){
         ++_modified;
     }else{
         _modified=0;
-    }
 
+        //flush all 'modified' marks
+        QTextBlock block = document()->firstBlock();
+        while( block.isValid() ) {
+            //BlockData *data = BlockData::data(block);
+            BlockData *data = dynamic_cast<BlockData*>(block.userData());
+            if(data) {
+                data->setModified(0);
+            }
+            block = block.next();
+        }
+    }
+    _modSignal = true;
     _highlighter->validateCodeTreeModel();
 }
 
 void CodeEditor::onCodeTreeViewClicked( const QModelIndex &index ){
-
+    qDebug("CodeEditor::onCodeTreeViewClicked");
     CodeTreeItem *item=dynamic_cast<CodeTreeItem*>( _codeTreeModel->itemFromIndex( index ) );
     if( !item ) return;
 
@@ -271,14 +539,16 @@ void CodeEditor::onCodeTreeViewClicked( const QModelIndex &index ){
 }
 
 void CodeEditor::keyPressEvent( QKeyEvent *e ){
-
+    qDebug( "CodeEditor::keyPressEvent = %d",e->key() );
     flushExtraSels();
 
     QTextCursor cursor=textCursor();
     QTextBlock block=cursor.block();
     bool hasSel=cursor.hasSelection();
+    //BlockData *data = dynamic_cast<BlockData*>(block.userData());
 
     int key=e->key();
+
 
     if( key==Qt::Key_Tab || key==Qt::Key_Backtab ){
         //block tab/untab
@@ -371,6 +641,7 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
         _highlighter->capitalize( block,textCursor() );
         */
     }
+
 }
 
 bool CodeEditor::findNext( const QString &findText,bool cased,bool wrap ){
@@ -529,19 +800,54 @@ Highlighter::~Highlighter(){
     }
 }
 
+QIcon Highlighter::identIcon( const QString &ident ) {
+    static QIcon iconst( QCoreApplication::applicationDirPath()+"/icons/const.png" );
+    static QIcon iglob( QCoreApplication::applicationDirPath()+"/icons/global.png" );
+    static QIcon ifield( QCoreApplication::applicationDirPath()+"/icons/property.png" );
+    static QIcon imethod( QCoreApplication::applicationDirPath()+"/icons/method.png" );
+    static QIcon ifunc( QCoreApplication::applicationDirPath()+"/icons/function.png" );
+    static QIcon iclass(QCoreApplication::applicationDirPath()+"/icons/class.png" );
+    static QIcon iinterf( QCoreApplication::applicationDirPath()+"/icons/interface.png" );
+    static QIcon ienum( QCoreApplication::applicationDirPath()+"/icons/enumerate.png" );
+    static QIcon iother( QCoreApplication::applicationDirPath()+"/icons/other.png" );
+    QString s = ident;//.toLower();
+    if(s == "const")
+        return iconst;
+    if(s == "global")
+        return iglob;
+    if(s == "field")
+        return ifield;
+    if(s == "method")
+        return imethod;
+    if(s == "function")
+        return ifunc;
+    if(s == "class")
+        return iclass;
+    if(s == "interface")
+        return iinterf;
+    if(s == "enumerate")
+        return ienum;
+    return iother;
+}
+
+
 void Highlighter::insert( BlockData *data ){
+    qDebug() << "Highlighter::insert -> "<<data->block().text().toStdString().c_str() << " line=" << data->block().firstLineNumber();
+
     _blocks.insert( data );
     _blocksDirty=true;
 }
 
 void Highlighter::remove( BlockData *data ){
+    qDebug() << "Highlighter::remove -> "<<data->block().text().toStdString().c_str() << " line=" << data->block().firstLineNumber();
+
     _blocks.remove( data );
     _blocksDirty=true;
 }
 
 void Highlighter::validateCodeTreeModel(){
-
     if( !_blocksDirty ) return;
+    qDebug("Highlighter::validateCodeTreeModel");
 
     QStandardItem *root=_editor->_codeTreeModel->invisibleRootItem();
 
@@ -560,6 +866,10 @@ void Highlighter::validateCodeTreeModel(){
 
         if( !_blocks.contains( data ) ){
             qDebug()<<"Highlighter::validateCodeTreeModel Block error!";
+            continue;
+        }
+
+        if (data->_code == 1) {
             continue;
         }
 
@@ -582,7 +892,13 @@ void Highlighter::validateCodeTreeModel(){
             parent->appendRow( item );
         }
         item->setData( data );
-        item->setText( data->ident() );
+        item->setText(data->ident() );
+
+        QIcon icon = identIcon(data->decl());
+        item->setIcon(icon);
+        //item->setToolTip(data->decl()+" <b>"+data->ident()+"</b> "+data->block().text());
+        item->setToolTip(data->block().text().trimmed());
+
         rowStack.push( row );
         parentStack.push( parent );
         row=0;
@@ -597,10 +913,14 @@ void Highlighter::validateCodeTreeModel(){
     }
 
     _blocksDirty=false;
+    if ( _editor->doSortCodeBrowser ) {
+        _editor->_codeTreeModel->sort(0);
+    }
 }
 
 void Highlighter::onPrefsChanged( const QString &name ){
     QString t(name);
+    qDebug()<<"Highlighter::onPrefsChanged ->"<<t.toStdString().c_str();
     if( t=="" || t.endsWith( "Color" ) ){
         Prefs *prefs=Prefs::prefs();
         _backgroundColor=prefs->getColor( "backgroundColor" );
@@ -724,8 +1044,8 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 }
 
 void Highlighter::highlightBlock( const QString &ctext ){
-
     QString text=ctext;
+    qDebug()<<"Highlighter::highlightBlock -> "+text;
 
     int i=0,n=text.length();
     while( i<n && text[i]<=' ' ) ++i;
@@ -811,7 +1131,7 @@ void Highlighter::highlightBlock( const QString &ctext ){
         QString decl=tokes.size()>0 ? tokes[0].toLower() : "";
         QString ident=tokes.size()>1 ? tokes[1] : "";
 
-        if( (decl=="class" || decl=="interface" || decl=="method" || decl=="function") && !ident.isEmpty() ){
+        if( (decl=="class" || decl=="interface" || decl=="method" || decl=="function" || decl=="field" || decl=="const" || decl=="global" || decl=="enumerate") && !ident.isEmpty() ){
             QTextBlock block=currentBlock();
             data=dynamic_cast<BlockData*>( currentBlockUserData() );
             if( data && data->block()==block && data->decl()==decl && data->ident()==ident && data->indent()==indent ){
@@ -821,8 +1141,26 @@ void Highlighter::highlightBlock( const QString &ctext ){
                 insert( data );
             }
         }else{
-            setCurrentBlockUserData( 0 );
+            //setCurrentBlockUserData( 0 );
+
+            QTextBlock block=currentBlock();
+            data=dynamic_cast<BlockData*>( currentBlockUserData() );
+            if( data && data->block()==block && data->decl()==decl && data->ident()==ident && data->indent()==indent ){
+            }else{
+                data=new BlockData( this,block,decl,ident,indent );
+                data->_code = 1;
+                setCurrentBlockUserData( data );
+                insert( data );
+            }
         }
+        if ( data && _editor->_modSignal == true ) {
+            data->setModified(1);
+        }
+        if ( _editor->_modSignal == false) {
+            qDebug("Highlighter::highlightBlock    _modSignal = false");
+        }
+
+
     }
 }
 
@@ -830,6 +1168,16 @@ void Highlighter::highlightBlock( const QString &ctext ){
 
 BlockData::BlockData( Highlighter *highlighter,const QTextBlock &block,const QString &decl,const QString &ident,int indent )
 :_highlighter( highlighter ),_block( block ),_decl( decl ),_ident( ident ),_indent(indent){
+    _modified = 0;
+    _marked = false;
+    _code = 0;
+    /*
+    QMessageBox msgBox;
+    //msgBox.setText("current: "+QDir::currentPath());
+    //msgBox.exec();
+    msgBox.setText("xxxx");
+    msgBox.exec();
+    */
 }
 
 void BlockData::invalidate(){

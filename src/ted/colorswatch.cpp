@@ -13,6 +13,7 @@ ColorSwatch::ColorSwatch( QWidget *parent ):QLabel( parent ),_color( 0,0,0 ){
     setAutoFillBackground( true );
 
     setPalette( QPalette( _color ) );
+    this->setStyleSheet("background: "+_color.name()+";");
 }
 
 QColor ColorSwatch::color(){
@@ -23,12 +24,15 @@ void ColorSwatch::setColor( const QColor &color ){
     _color=color;
 
     setPalette( QPalette( _color ) );
+    this->setStyleSheet("background: "+_color.name()+";");
 
     emit colorChanged();
 }
 
 void ColorSwatch::mousePressEvent( QMouseEvent *ev ){
     (void)ev;
-
+    //QColorDialog::setStyleSheet("");
+    this->setStyleSheet("");
     setColor( QColorDialog::getColor( _color,this ) );
+
 }

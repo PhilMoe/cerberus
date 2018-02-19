@@ -11,11 +11,48 @@ See LICENSE.TXT for licensing terms.
 
 #include "std.h"
 
+#include <QSyntaxHighlighter>
+#include <QVector>
+
 class CodeDocument;
 class CodeEditor;
 class Highlighter;
 class Prefs;
 class BlockData;
+class QString;
+class QTextDocument;
+
+
+//***** BlockData *****
+class BlockData : public QTextBlockUserData{
+public:
+    BlockData( Highlighter *highlighter,const QTextBlock &block,const QString &decl,const QString &ident,int indent );
+    ~BlockData();
+
+    QTextBlock block(){ return _block; }
+    const QString &decl(){ return _decl; }
+    const QString &ident(){ return _ident; }
+    int indent(){ return _indent; }
+
+    bool isBookmarked(){ return _marked; }
+    void setBookmark(bool mark) { qDebug("BlockData::setBookmark"); _marked = mark; }
+    void toggleBookmark() { qDebug("BlockData::toggleBookmark"); _marked = !_marked; }
+    void setModified(int mod) { _modified = mod; }
+    void invalidate();
+
+    int _modified;
+    bool _marked;
+    int _code;
+
+private:
+    Highlighter *_highlighter;
+    QTextBlock _block;
+    QString _decl;
+    QString _ident;
+    int _indent;
+
+};
+
 
 //***** CodeEditor *****
 
@@ -32,6 +69,10 @@ public:
     void rename( const QString &path );
     const QString &path(){ return _path; }
     int modified(){ return _modified; }
+    bool doHighlightCurrLine;
+    bool doLineNumbers;
+    bool doSortCodeBrowser;
+    bool _modSignal;
 
     QString fileType(){ return _fileType; }
 
@@ -42,6 +83,11 @@ public:
 
     void gotoLine( int line );
     void highlightLine( int line );
+    void commentUncommentBlock();
+    void bookmarkToggle();
+    void bookmarkNext();
+    void bookmarkPrev();
+    void bookmarkFind( int dir, int start=-1 );
 
     bool findNext( const QString &findText,bool cased,bool wrap );
     bool replace( const QString &findText,const QString &replaceText,bool cased );
@@ -49,15 +95,19 @@ public:
 
     QString identAtCursor();
 
+    void lineNumberAreaPaintEvent(QPaintEvent *event);
+    int lineNumberAreaWidth();
     Highlighter *highlighter(){ return _highlighter; }
     QTreeView *codeTreeView(){ return _codeTreeView; }
+
+    QImage imgBookmark;
 
 public slots:
 
     void onTextChanged();
     void onCursorPositionChanged();
     void onPrefsChanged( const QString &name );
-
+void highlightCurrentLine();
     void onCodeTreeViewClicked( const QModelIndex &index );
 
 signals:
@@ -66,7 +116,13 @@ signals:
 
 protected:
 
+    void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent( QKeyEvent *e );
+
+private slots:
+    void updateLineNumberAreaWidth(int newBlockCount);
+    //void highlightCurrentLine();
+    void updateLineNumberArea(const QRect &, int);
 
 private:
     Highlighter *_highlighter;
@@ -84,6 +140,8 @@ private:
     bool _capitalize;
 
     friend class Highlighter;
+
+    QWidget *lineNumberArea;
 };
 
 //***** Highlighter *****
@@ -100,17 +158,22 @@ public:
     bool capitalize( const QTextBlock &block,QTextCursor cursor );
 
     void validateCodeTreeModel();
+    QIcon identIcon( const QString &ident );
+
+protected:
+    void highlightBlock( const QString &text );
+
 
 public slots:
 
     void onPrefsChanged( const QString &name );
 
-protected:
 
-    void highlightBlock( const QString &text );
+
 
 private:
     CodeEditor *_editor;
+    QWidget *lineNumberArea;
 
     QColor _backgroundColor;
     QColor _defaultColor;

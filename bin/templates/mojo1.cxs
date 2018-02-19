@@ -1,0 +1,43 @@
+Strict
+
+'Simple mojo(1) script
+'It should behave the same on all targets
+
+Import mojo
+
+'-----------------------------------------------------------------
+Class myClass Extends App
+	Field angle:Float = 0.0
+	'-----------------------------------------------------------------
+	Method OnCreate:Int()
+		SetUpdateRate 60
+		' load your assets here
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnUpdate:Int()
+		' update your content here
+		angle += 0.5
+		If angle > 360.0 Then angle -= 360.0
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnRender:Int()
+		' here you render your app
+		Cls 0,0,128
+		SetColor 128,128,128
+		PushMatrix
+		Translate DeviceWidth()/2,DeviceHeight()/2
+		Scale 2.0,2.0
+		Rotate 360.0-angle
+		DrawText "Cerberus X - Mojo template", 0, 0, .5, .5
+		PopMatrix
+		Return 0
+	End
+End
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	New myClass
+	Return 0
+End

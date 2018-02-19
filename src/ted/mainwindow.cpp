@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2017-10-24"
+#define TED_VERSION "2018-02-19"
 
 #define SETTINGS_VERSION 2
 
@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     QWebSettings::globalSettings()->setAttribute( QWebSettings::PluginsEnabled,true );
 
     //setIconSize( QSize(20,20) );
+
 
     _ui->setupUi( this );
 
@@ -227,6 +228,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _dirPopupMenu->addSeparator();
     _dirPopupMenu->addAction( _ui->actionRenameFile );
     _dirPopupMenu->addAction( _ui->actionDeleteFile );
+
+    _editorPopupMenu = new QMenu;
+    _editorPopupMenu->addAction( _ui->actionEditUndo );
+    _editorPopupMenu->addAction( _ui->actionEditRedo );
+    _editorPopupMenu->addSeparator();
+    _editorPopupMenu->addAction( _ui->actionEditUn_Comment_block);
+    _editorPopupMenu->addSeparator();
+    QMenu *bm = new QMenu("Bookmarks",_editorPopupMenu);
+    bm->addAction( _ui->actionToggleBookmark );
+    bm->addAction( _ui->actionPreviousBookmark );
+    bm->addAction( _ui->actionNextBookmark );
+    _editorPopupMenu->addMenu(bm);
+    _editorPopupMenu->addSeparator();
+    _editorPopupMenu->addAction( _ui->actionEditCut );
+    _editorPopupMenu->addAction( _ui->actionEditCopy );
+    _editorPopupMenu->addAction( _ui->actionEditPaste );
+    _editorPopupMenu->addAction( _ui->actionEditDelete );
+    _editorPopupMenu->addSeparator();
+    _editorPopupMenu->addAction( _ui->actionEditSelectAll );
+
 
     connect( _ui->actionFileQuit,SIGNAL(triggered()),SLOT(onFileQuit()) );
 
@@ -379,6 +400,34 @@ QWidget *MainWindow::newFile( const QString &cpath ){
     return openFile( path,true );
 }
 
+QWidget *MainWindow::newFileTemplate( const QString &cpath ){
+
+    QString path="";
+
+    if( path.isEmpty() ){
+
+        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
+
+        path=fixPath( QFileDialog::getSaveFileName( this,"New File from template",_defaultDir,"Source Files ("+srcTypes+")" ) );
+        if( path.isEmpty() ) return 0;
+    }
+    QFile::copy(cpath, path);
+
+    QFile file( path );
+    if( !file.open( QIODevice::ReadOnly ) ){
+        QMessageBox::warning( this,"New file","Failed to create new file from template: "+path );
+        return 0;
+    }
+
+    file.close();
+
+    if( CodeEditor *editor=editorWithPath( path ) ) closeFile( editor );
+
+    return openFile( path,true );
+}
+
+
 QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     QString path=cpath;
@@ -440,7 +489,13 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
     connect( editor,SIGNAL(textChanged()),SLOT(onTextChanged()) );
     connect( editor,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChanged()) );
 
+    editor->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect( editor,SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(onEditorMenu(const QPoint&)) );
+
+
     _mainTabWidget->addTab( editor,stripDir( path ) );
+    //int tabindex = _mainTabWidget->count() - 1;
+    //_mainTabWidget->setTabToolTip(tabindex,path);
     _mainTabWidget->setCurrentWidget( editor );
 
     if( addToRecent ){
@@ -645,6 +700,7 @@ void MainWindow::enumTargets(){
             }
         }
     }
+
 }
 
 void MainWindow::readSettings(){
@@ -652,6 +708,9 @@ void MainWindow::readSettings(){
     QSettings settings;
 
     Prefs *prefs=Prefs::prefs();
+
+
+
 
     if( settings.value( "settingsVersion" ).toInt()<1 ){
 
@@ -667,6 +726,10 @@ void MainWindow::readSettings(){
         prefs->setValue( "commentsColor",QColor( 0,128,128 ) );
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
         prefs->setValue( "smoothFonts",true );
+        prefs->setValue( "highlightCurrLine",true );
+        prefs->setValue( "showLineNumbers",true );
+        prefs->setValue( "theme","default" );
+        prefs->setValue( "sortCodeBrowser",true );
 
         _cerberusPath=defaultCerberusPath();
         prefs->setValue( "cerberusPath",_cerberusPath );
@@ -681,6 +744,10 @@ void MainWindow::readSettings(){
         enumTargets();
 
         onHelpHome();
+
+
+
+
 
         return;
     }
@@ -787,6 +854,51 @@ void MainWindow::readSettings(){
     }
 
     _defaultDir=fixPath( settings.value( "defaultDir" ).toString() );
+
+
+
+
+
+/*
+    QMessageBox msgBox;
+    //msgBox.setText("current: "+QDir::currentPath());
+    //msgBox.exec();
+    msgBox.setText("app: "+QCoreApplication::applicationDirPath());
+    msgBox.exec();
+*/
+    //QString currPath ="";
+    //currPath = QDir::currentPath();
+    //QDir::setCurrent(QCoreApplication::applicationDirPath());
+
+    QString css = "";
+    QString cssFile = "";
+    cssFile = prefs->getString( "theme" );
+    QFile f(QCoreApplication::applicationDirPath()+"/themes/"+cssFile+"/"+cssFile+".css");
+    if(f.open(QFile::ReadOnly)) {
+        css = f.readAll();
+    }
+    f.close();
+
+    css += "QDockWidget::title{text-align:center;}";
+
+    css.replace("url(:","url("+QCoreApplication::applicationDirPath()+"/themes/"+cssFile);
+
+    qApp->setStyleSheet(css);
+    //qApp->setStyleSheet("file:///" + QCoreApplication::applicationDirPath()+"/themes/"+cssFile+"/"+cssFile+".css");
+
+    QApplication::processEvents();
+    //QDir::setCurrent(currPath);
+
+    QString tempPath ="";
+    tempPath = QCoreApplication::applicationDirPath()+"/templates/mojo1.cxs";
+    //if( QFile::exists( tempPath ) ) _ui->menuNewTemplate->addAction( tempPath,this,SLOT(onFileNewTemplate())) ;
+
+    QDir recoredDir(QCoreApplication::applicationDirPath()+"/templates/");
+    QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
+    foreach (const QString &str, allFiles) {
+        tempPath = QCoreApplication::applicationDirPath()+"/templates/"+str;
+        if( QFile::exists( tempPath ) ) _ui->menuNewTemplate->addAction( QFileInfo(tempPath).baseName(),this,SLOT(onFileNewTemplate())) ;
+    }
 }
 
 void MainWindow::writeSettings(){
@@ -826,7 +938,7 @@ void MainWindow::writeSettings(){
     settings.endArray();
 
     settings.beginGroup( "buildSettings" );
-    settings.setValue( "target",_targetsWidget->currentText() );
+    settings.setValue( "target",_activeCerberusTarget );
     settings.setValue( "config",_configsWidget->currentText() );
     settings.setValue( "locked",_lockedEditor ? _lockedEditor->path() : "" );
     settings.endGroup();
@@ -901,6 +1013,7 @@ void MainWindow::updateActions(){
     _ui->actionEditFind->setEnabled( ed );
     _ui->actionEditFindNext->setEnabled( ed );
     _ui->actionEditGoto->setEnabled( ed );
+    _ui->actionEditUn_Comment_block->setEnabled( ed );
 
     //view menu - not totally sure why !isHidden works but isVisible doesn't...
     _ui->actionViewFile->setChecked( !_ui->fileToolBar->isHidden() );
@@ -909,6 +1022,9 @@ void MainWindow::updateActions(){
     _ui->actionViewHelp->setChecked( !_ui->helpToolBar->isHidden() );
     _ui->actionViewConsole->setChecked( !_consoleDockWidget->isHidden() );
     _ui->actionViewBrowser->setChecked( !_browserDockWidget->isHidden() );
+    _ui->actionToggleBookmark->setEnabled( ed );
+    _ui->actionNextBookmark->setEnabled( ed );
+    _ui->actionPreviousBookmark->setEnabled( ed );
 
     //build menu
     CodeEditor *buildEditor=_lockedEditor ? _lockedEditor : _codeEditor;
@@ -1206,7 +1322,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 
     _consoleTextWidget->clear();
     _consoleDockWidget->show();
-    _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "keywordsColor" ) );
     print( cmd );
 
     if( !_consoleProc->start( cmd ) ){
@@ -1226,7 +1342,7 @@ void MainWindow::onProcStdout(){
 
     QString text=_consoleProc->readLine( 0 );
 
-    _consoleTextWidget->setTextColor( QColor( 0,0,0 ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "defaultColor" ) );
     print( text );
 
     if( text.contains( comerr )){
@@ -1269,7 +1385,7 @@ void MainWindow::onProcStderr(){
             int line=info.mid( i+1,info.length()-i-2 ).toInt()-1;
             onShowCode( path,line );
         }else{
-            _consoleTextWidget->setTextColor( QColor( 255,128,0 ) );
+            _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "numbersColor" ) );
             print( info );
         }
 
@@ -1296,7 +1412,7 @@ void MainWindow::onProcStderr(){
         return;
     }
 
-    _consoleTextWidget->setTextColor( QColor( 128,0,0 ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "stringsColor" ) );
     print( text );
 }
 
@@ -1334,7 +1450,7 @@ void MainWindow::onProcFinished(){
 
 //    qDebug()<<"Done.";
 
-    _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
+    _consoleTextWidget->setTextColor( QColor( Prefs::prefs()->getColor( "stringsColor" ) ) );
     print( "Done." );
 
     if( _rebuildingHelp ){
@@ -1416,6 +1532,11 @@ void MainWindow::build( QString mode ){
 
 void MainWindow::onFileNew(){
     newFile( "" );
+}
+void MainWindow::onFileNewTemplate(){
+    if( QAction *action=qobject_cast<QAction*>( sender() ) ){
+        newFileTemplate(QCoreApplication::applicationDirPath()+"/templates/"+action->text()+".cxs");
+    }
 }
 
 void MainWindow::onFileOpen(){
@@ -1564,6 +1685,10 @@ void MainWindow::onEditCopy(){
     _codeEditor->copy();
 }
 
+void MainWindow::onEditorMenu(const QPoint &pos) {
+    _editorPopupMenu->exec( _codeEditor->mapToGlobal( pos ) );
+}
+
 void MainWindow::onEditPaste(){
     if( !_codeEditor ) return;
 
@@ -1574,6 +1699,26 @@ void MainWindow::onEditDelete(){
     if( !_codeEditor ) return;
 
     _codeEditor->textCursor().removeSelectedText();
+}
+
+void MainWindow::onEditCommentUncommentBlock() {
+    if( !_codeEditor ) return;
+    _codeEditor->commentUncommentBlock();
+}
+
+void MainWindow::onToggleBookmark() {
+    if( _codeEditor )
+        _codeEditor->bookmarkToggle();
+}
+
+void MainWindow::onPreviousBookmark() {
+    if( _codeEditor )
+        _codeEditor->bookmarkPrev();
+}
+
+void MainWindow::onNextBookmark() {
+    if( _codeEditor )
+        _codeEditor->bookmarkNext();
 }
 
 void MainWindow::onEditSelectAll(){
@@ -1717,7 +1862,7 @@ void MainWindow::onDebugStepOut(){
 void MainWindow::onDebugKill(){
     if( !_consoleProc ) return;
 
-    _consoleTextWidget->setTextColor( QColor( 0,0,255 ) );
+    _consoleTextWidget->setTextColor( QColor( 50,50,255 ) );
     print( "Killing process..." );
 
     _consoleProc->kill();
@@ -1819,6 +1964,11 @@ void MainWindow::onHelpQuickHelp(){
     onShowHelp( ident );
 }
 
+void MainWindow::onHelpCerberusHomepage() {
+    QString s = "https://www.cerberus-x.com/";
+    QDesktopServices::openUrl( s );
+}
+
 void MainWindow::onHelpAbout(){
 
     QString CERBERUS_VERSION="?????";
@@ -1846,10 +1996,10 @@ void MainWindow::onHelpAbout(){
     QString ABOUT=
 //            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")\n\n"
             "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
-            "Copyright Blitz Research Ltd for Monkey X.\n\n"
-            "Cerberus X maintained by Michael Hartlef & Martin Leidel.\n"
-            "Further additions done by user  dawlane, Muruba and PixelPaladin.\n"
             "A simple editor/IDE for the Cerberus programming language.\n\n"
+            "Copyright Blitz Research Ltd for Monkey X.\n\n"
+            "Cerberus X is maintained by Michael Hartlef & Martin Leidel.\n\n"
+            "Further additions done by serveral member of the Cerberus X community.\n"
             "Please visit www.cerberus-x.com for more information on Cerberus."
             ;
 

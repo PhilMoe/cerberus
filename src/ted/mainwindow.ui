@@ -18,6 +18,9 @@
   <property name="windowTitle">
    <string>Big Ted</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="documentMode">
    <bool>false</bool>
   </property>
@@ -98,10 +101,16 @@
      <x>0</x>
      <y>0</y>
      <width>996</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QMenu" name="menuFile">
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
@@ -110,7 +119,16 @@
       <string>Recent Files...</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menuNewTemplate">
+     <property name="tearOffEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>New from template</string>
+     </property>
+    </widget>
     <addaction name="actionNew"/>
+    <addaction name="menuNewTemplate"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecent_Files"/>
     <addaction name="separator"/>
@@ -163,6 +181,8 @@
     <addaction name="actionEditPaste"/>
     <addaction name="actionEditDelete"/>
     <addaction name="separator"/>
+    <addaction name="actionEditUn_Comment_block"/>
+    <addaction name="separator"/>
     <addaction name="actionEditSelectAll"/>
     <addaction name="separator"/>
     <addaction name="actionEditFind"/>
@@ -193,6 +213,10 @@
     </widget>
     <addaction name="menuToolbars"/>
     <addaction name="menuWindows"/>
+    <addaction name="separator"/>
+    <addaction name="actionToggleBookmark"/>
+    <addaction name="actionNextBookmark"/>
+    <addaction name="actionPreviousBookmark"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -206,6 +230,7 @@
     <addaction name="separator"/>
     <addaction name="actionHelpRebuild"/>
     <addaction name="separator"/>
+    <addaction name="actionHelpCerberusHomepage"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
@@ -667,6 +692,48 @@
   <action name="actionHelpRebuild">
    <property name="text">
     <string>Rebuild Help</string>
+   </property>
+  </action>
+  <action name="actionEditUn_Comment_block">
+   <property name="text">
+    <string>Un/Comment block</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionNew_from_template">
+   <property name="text">
+    <string>New from template</string>
+   </property>
+  </action>
+  <action name="actionToggleBookmark">
+   <property name="text">
+    <string>Toggle bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionNextBookmark">
+   <property name="text">
+    <string>Next bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="actionPreviousBookmark">
+   <property name="text">
+    <string>Previous bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="actionHelpCerberusHomepage">
+   <property name="text">
+    <string>Cerberus X Homepage</string>
    </property>
   </action>
  </widget>
@@ -1427,6 +1494,86 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionEditUn_Comment_block</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onEditCommentUncommentBlock()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionToggleBookmark</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onToggleBookmark()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPreviousBookmark</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onPreviousBookmark()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNextBookmark</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNextBookmark()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHelpCerberusHomepage</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onHelpCerberusHomepage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>497</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onFileOpen()</slot>
@@ -1473,5 +1620,10 @@
   <slot>onBuildUpdate()</slot>
   <slot>onFileCloseOthers()</slot>
   <slot>onHelpRebuild()</slot>
+  <slot>onEditCommentUncommentBlock()</slot>
+  <slot>onToggleBookmark()</slot>
+  <slot>onNextBookmark()</slot>
+  <slot>onPreviousBookmark()</slot>
+  <slot>onHelpCerberusHomepage()</slot>
  </slots>
 </ui>

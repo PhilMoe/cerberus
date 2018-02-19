@@ -1,8 +1,9 @@
-***** v2018-01-26 *****
+***** v2018-02-19 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
-FIX: [EXAMPLES] Fixed missing class prefix for fontmachine implementation in the matchup example.  
+FIX: [TED] Huge additions to TED (themes, bookmarks, etc.)
+FIX: [EXAMPLES] Fixed missing class prefix for fontmachine implementation in the matchup example.
 FIX: [MAKEDOCS] Fixed Makedocs to allow module documentation starting within a module.    (Author: Holzchopf)
 FIX: [Language] DebugLog/DebugStop won't effect release builds anymore. They hit dummy functions now.
 FIX: [HTML5] DebugLog will output to the game console now.
