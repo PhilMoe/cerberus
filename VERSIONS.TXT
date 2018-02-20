@@ -1,4 +1,4 @@
-***** v2018-02-19 *****
+***** v2018-02-20 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
@@ -11,6 +11,7 @@ FIX: [DESKTOP] MOJO_AUTO_SUSPEND_ENABLED=False will be recognized when the windo
 FIX: [DESKTOP] Updated stb_image.h file in GLFW template because big images didn't load.
 FIX: [MOJO] Fixed TextWidth() reporting the wrong length.
 MOD: [MOJO/MOJO2] Changed X/Y parameter of DrawText to INT so it doesn't draw blurry fonts anymore.
+NEW: [MAKEDOCS] Added image links to Makedocs.
 
 ***** v2017-10-24 *****
 

@@ -34,7 +34,7 @@ Class George Implements ILinkResolver,IPrettifier
 		"Include;Import;Module;Extern;"+
 		"New;Self;Super;Eachin;True;False;Null;Not;"+
 		"Extends;Abstract;Final;Native;Select;Case;Default;"+
-		"Const;Local;Global;Field;Method;Function;Class;Interface;Implements;"+
+		"Const;Local;Global;Field;Method;Function;Class;Interface;Implements;Enumerate;"+
 		"And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"+
 		"Try;Catch;Throw;Throwable;"+
 		"Print;Error;Alias;").ToLower()
@@ -69,14 +69,26 @@ Class George Implements ILinkResolver,IPrettifier
 	#end
 	
 	Method MakeLink:String( url:String,text:String )
+		Local isImg:Bool = False
+		'Check if it is an image link
+		If url.Find("<img>",0) > -1
+			isImg = True
+			url = url[5..]
+		Endif
 		If Not text text=url
-		If url Return "<a href=~q"+url+"~q>"+text+"</a>"
+		If url 
+			If isImg = True
+				Return "<img src=~q"+url+"~q alt=~q"+text+"~q />"
+			Else
+				Return "<a href=~q"+url+"~q>"+text+"</a>"
+			Endif
+		Endif
 		Return text
 	End
 	
 	Method ResolveLink:String( link:String,text:String )
 		
-		If link.StartsWith( "#" ) Or link.StartsWith( "http:" ) Or link.StartsWith( "https:" ) Return MakeLink( link,text )
+		If link.StartsWith( "#" ) Or link.StartsWith( "<img>" ) Or link.StartsWith( "http:" ) Or link.StartsWith( "https:" ) Return MakeLink( link,text )
 		
 		Local url:=""
 		Local path:=link,hash:=""
