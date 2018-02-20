@@ -195,7 +195,7 @@ Get texture flags.
 
 Write pixel data to texture.
 
-Pixels should be in premultiplied alpha format.
+Pixels should be in premultiplied alpha format. Use the [[PremultiplyArgb2Abgr]] function to premultiply a color and convert the byte format from argb (commonly used) to abgr (used internally).
 
 
 # Function BlackTexture:Texture()
@@ -584,15 +584,27 @@ Copy current color to @color.
 
 Set blend mode. The @blendMode parameter should be one of:
 
-| @Mode				| @Description	| @BlendFunc
-| BlendMode.Opaque	| Opaque - no blending	| -
-| BlendMode.Alpha	| Alpha blending	| glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA)
-| BlendMode.Additive	| Additive blending	| glBlendFunc(GL_ONE,GL_ONE)
-| BlendMode.Multiply	| Multiply blending	| glBlendFunc(GL_DST_COLOR,GL_ONE_MINUS_SRC_ALPHA)
-| BlendMode.Multiply2	| ...	| glBlendFunc(GL_DST_COLOR,GL_ZERO)
-| BlendMode.Alpha2	| ...	| glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
-| BlendMode.Opaque2	| ...	| glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-| BlendMode.AlphaStamp	| ...	| glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO); glBlendEquation(GL_FUNC_ADD);
+| @Mode					| @BlendFunc	| Render to back buffer	| Render to texture
+| BlendMode.Opaque		| -	| <img src="../../modules/mojo2/cerberusdoc/data/bb_opaque.png" /><br/> opaque - no blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_opaque.png" /><br/> overwrites everything, even alpha
+| BlendMode.Alpha		| glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alpha.png" /><br/> alpha blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alpha.png" /><br/> mixes rgb
+| BlendMode.Additive	| glBlendFunc( GL_ONE, GL_ONE )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_additive.png" /><br/> additive blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_additive.png" /><br/> adds rgb
+| BlendMode.Multiply	| glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_multiply.png" /><br/> multiply blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_multiply.png" /><br/> multiplies rgb
+| BlendMode.Multiply2	| glBlendFunc( GL_DST_COLOR, GL_ZERO )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_multiply2.png" /><br/> multiply blending ignoring alpha	| <img src="../../modules/mojo2/cerberusdoc/data/rt_multiply2.png" /><br/> multiplies rgb ingoring alpha, overwrites alpha
+| BlendMode.Alpha2		| glBlendFuncSeparate( GL_ZERO, GL_ONE, GL_ONE, GL_ZERO )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alpha2.png" /><br/> no effect	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alpha2.png" /><br/> no effect on rgb, overwrites alpha
+| BlendMode.Opaque2		| glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_opaque2.png" /><br/> alpha blending for images that aren't premultiplied	| <img src="../../modules/mojo2/cerberusdoc/data/rt_opaque2.png" /><br/> mixes rgb and mixes alpha depending on alpha (yeah, weird)
+| BlendMode.AlphaStamp	| glBlendFuncSeparate( GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO );<br/>glBlendEquation(GL_FUNC_ADD);	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alphastamp.png" /><br/> multiplies rgb with alpha	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alphastamp.png" /><br/> multiplies rgb with alpha, overwrites alpha
+
+Technically, the effects when rendering to back buffer are the same as when rendering to texture. But because the back buffer's alpha channel is ignored, the effects are perceived differently.
+
+For the demonstration of the effects, these three images have been used (put on a checkered background to show transparency):
+
+*Image1:* <img src="../../modules/mojo2/cerberusdoc/data/image1.png" />
+*Image2:* <img src="../../modules/mojo2/cerberusdoc/data/image2.png" />
+*Image3:* <img src="../../modules/mojo2/cerberusdoc/data/image3.png" />
+
+Image1 has no alpha, Image2 has alpha and is premultiplied (happens automatically in mojo2 when loading an image) Image3 has alpha but is not premultiplied.
+Image1 is rendered opaque, then Image2 and Image3 are rendered on top with indicated @BlendMode.
+For the *Render to back buffer*, background is first cleared with a brownish color.
 
 
 # Method BlendMode:Int() Property
@@ -797,6 +809,25 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
+# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],material:Material=Null )
+
+Draw a batch of primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data, and must be at least @count \* @order \* 2 long.
+
+The @texcoords array contains s,t texture coordinate data, and must be at least @count \* @order \* 2 long.
+
+The @vertcols array contains premultiplied abgr color values, and must be at least @count \* @order long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]], [[PremultiplyArgb2Abgr]]
+
+
 # Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],indices:Int[],material:Material=Null )
 
 Draw a batch of indexed primtives.
@@ -831,6 +862,27 @@ The @indices array contains vertex indices, and must be at least @count \* @orde
 If @material is null, the current default material is used.
 
 See also: [[SetDefaultMaterial]]
+
+
+# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],indices:Int[],material:Material=Null )
+
+Draw a batch of indexed primtives.
+
+@order is the number of vertices for each primitive, eg: 1 for points, 2 for lines, 3 for triangles etc.
+
+@count is the number of primitives to draw.
+
+The @vertices array contains x,y vertex data.
+
+The @texcoords array contains s,t texture coordinate data.
+
+The @vertcols array contains premultiplied abgr color values, and must be at least @count \* @order long.
+
+The @indices array contains vertex indices, and must be at least @count \* @order long.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]], [[PremultiplyArgb2Abgr]]
 
 
 # Method DrawRect:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
@@ -912,6 +964,24 @@ Draw multiple shadow volumes.
 # Method AddShadowCaster:Void( shadowCaster:ShadowCaster,tx:Float=0,ty:Float=0,rz:Float=0,sx:Float=1,sy:Float=1 )
 
 Add a shadow caster to the drawlist.
+
+
+# Function PremultiplyArgb2Abgr:Int( color:Int )
+
+Returns a color that is premultiplied (rgb components multiplied by alpha) and has byte format reordered from argb (commonly used) to abgr (used internally).
+
+<pre>
+color = DrawList.PremultiplyArgb2Abgr( color )
+</pre>
+
+
+# Function PremultiplyArgb2Abgr:Void( colors:Int[] )
+
+Premultiplies colors (multiplies rgb components by alpha) and reorders the byte format from argb (commonly used) to abgr (used internally).
+
+<pre>
+DrawList.PremultiplyArgb2Abgr( colors )
+</pre>
 
 
 # Class Canvas Extends DrawList
@@ -1307,3 +1377,4 @@ Flush rendering operations.
 | 0		| Transform window space x,y coords to canvas space.
 
 Use mode 0 to transform MouseX, MouseY to canvas coords.
+
