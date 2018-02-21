@@ -513,8 +513,6 @@ Class ApiDoccer Implements ILinkResolver
 	
 	Method ParseCerberusFile:Void( srcpath:String,modpath:String )
 	
-		'Print "doccing:"+srcpath+" "+modpath
-		
 		george.SetErrInfo srcpath
 		
 		Local parser:=New Parser( "" )
@@ -841,7 +839,6 @@ Class ApiDoccer Implements ILinkResolver
 	End
 	
 	Method ParseModules:Void( dir:String,modpath:String )
-	
 		Local tmp:=scopeTemplate
 		
 		Local p:=dir+"/scope_template.html"
@@ -870,6 +867,9 @@ Class ApiDoccer Implements ILinkResolver
 						End
 					Next
 					Continue
+				Endif
+				If p.Find(".data",0)>-1
+					george.dataDirs.Add(p,StripExt(modpath))
 				Endif
 			
 				If ignore_mods.Contains( f ) Continue

@@ -29,6 +29,8 @@ Class George Implements ILinkResolver,IPrettifier
 	
 	Field ptoker:=New Toker
 	
+	Field dataDirs:=New StringMap<String>
+	
 	Global CerberusKeywords:=(";Void;Strict;Public;Private;Property;"+
 		"Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"+
 		"Include;Import;Module;Extern;"+
@@ -302,6 +304,20 @@ Class George Implements ILinkResolver,IPrettifier
 		inrem=0
 	End
 	
+	Method CopyDataDirs()
+		For Local dir:= Eachin dataDirs
+			If CreateDir("docs/html/data/"+dir.Value) = True 
+				Local subDir:String =""
+				subDir = StripDir(StripExt(dir.Key))
+				If CopyDir(dir.Key, "docs/html/data/"+dir.Value+"/"+subDir, True) = False
+					Print ("... error in copying data directory: "+dir.Key+"  to  docs/html/data/"+dir.Value+"/"+subDir)
+				Endif
+			Else
+				Print ("... error in creating data directory -> docs/html/data/"+dir.Value)
+			Endif
+		Next
+	End
+	
 	Method EndPrettyBlock:String()
 		Return "</div>"
 	End
@@ -422,6 +438,9 @@ Function Main:Int()
 	george.MakeDocs
 	
 	DeleteDir "docs/cerberusdoc/3rd party modules",True
+	
+	Print "Copy module data dirs..."
+	george.CopyDataDirs()
 	
 	Print "Makedocs finished!"
 	Return 0
