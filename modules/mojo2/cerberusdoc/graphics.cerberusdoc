@@ -585,22 +585,22 @@ Copy current color to @color.
 Set blend mode. The @blendMode parameter should be one of:
 
 | @Mode					| @BlendFunc	| Render to back buffer	| Render to texture
-| BlendMode.Opaque		| -	| <img src="../../modules/mojo2/cerberusdoc/data/bb_opaque.png" /><br/> opaque - no blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_opaque.png" /><br/> overwrites everything, even alpha
-| BlendMode.Alpha		| glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alpha.png" /><br/> alpha blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alpha.png" /><br/> mixes rgb
-| BlendMode.Additive	| glBlendFunc( GL_ONE, GL_ONE )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_additive.png" /><br/> additive blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_additive.png" /><br/> adds rgb
-| BlendMode.Multiply	| glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_multiply.png" /><br/> multiply blending	| <img src="../../modules/mojo2/cerberusdoc/data/rt_multiply.png" /><br/> multiplies rgb
-| BlendMode.Multiply2	| glBlendFunc( GL_DST_COLOR, GL_ZERO )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_multiply2.png" /><br/> multiply blending ignoring alpha	| <img src="../../modules/mojo2/cerberusdoc/data/rt_multiply2.png" /><br/> multiplies rgb ingoring alpha, overwrites alpha
-| BlendMode.Alpha2		| glBlendFuncSeparate( GL_ZERO, GL_ONE, GL_ONE, GL_ZERO )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alpha2.png" /><br/> no effect	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alpha2.png" /><br/> no effect on rgb, overwrites alpha
-| BlendMode.Opaque2		| glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )	| <img src="../../modules/mojo2/cerberusdoc/data/bb_opaque2.png" /><br/> alpha blending for images that aren't premultiplied	| <img src="../../modules/mojo2/cerberusdoc/data/rt_opaque2.png" /><br/> mixes rgb and mixes alpha depending on alpha (yeah, weird)
-| BlendMode.AlphaStamp	| glBlendFuncSeparate( GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO );<br/>glBlendEquation(GL_FUNC_ADD);	| <img src="../../modules/mojo2/cerberusdoc/data/bb_alphastamp.png" /><br/> multiplies rgb with alpha	| <img src="../../modules/mojo2/cerberusdoc/data/rt_alphastamp.png" /><br/> multiplies rgb with alpha, overwrites alpha
+| BlendMode.Opaque		| -	| ![Opaque on back buffer](data/mojo2/graphics/bb_opaque.png)<br/> opaque - no blending	| ![Opaque on texture](data/mojo2/graphics/rt_opaque.png)<br/> overwrites everything, even alpha
+| BlendMode.Alpha		| glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA )	| ![Alpha on back buffer](data/mojo2/graphics/bb_alpha.png)<br/> alpha blending	| ![Alpha on texture](data/mojo2/graphics/rt_alpha.png)<br/> mixes rgb
+| BlendMode.Additive	| glBlendFunc( GL_ONE, GL_ONE )	| ![Additive on back buffer](data/mojo2/graphics/bb_additive.png)<br/> additive blending	| ![Additive on texture](data/mojo2/graphics/rt_additive.png)<br/> adds rgb
+| BlendMode.Multiply	| glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA )	| ![Multiply on back buffer](data/mojo2/graphics/bb_multiply.png)<br/> multiply blending	| ![Multiply on texture](data/mojo2/graphics/rt_multiply.png)<br/> multiplies rgb
+| BlendMode.Multiply2	| glBlendFunc( GL_DST_COLOR, GL_ZERO )	| ![Multiply2 on back buffer](data/mojo2/graphics/bb_multiply2.png)<br/> multiply blending ignoring alpha	| ![Multiply2 on texture](data/mojo2/graphics/rt_multiply2.png)<br/> multiplies rgb ingoring alpha, overwrites alpha
+| BlendMode.Alpha2		| glBlendFuncSeparate( GL_ZERO, GL_ONE, GL_ONE, GL_ZERO )	| ![Alpha2 on back buffer](data/mojo2/graphics/bb_alpha2.png)<br/> no effect	| ![Alpha2 on texture](data/mojo2/graphics/rt_alpha2.png)<br/> no effect on rgb, overwrites alpha
+| BlendMode.Opaque2		| glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA )	| ![Opaque2 on back buffer](data/mojo2/graphics/bb_opaque2.png)<br/> alpha blending for images that aren't premultiplied	| ![Opaque2 on texture](data/mojo2/graphics/rt_opaque2.png)<br/> mixes rgb and mixes alpha depending on alpha (yeah, weird)
+| BlendMode.AlphaStamp	| glBlendFuncSeparate( GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO );<br/>glBlendEquation(GL_FUNC_ADD);	| ![AlphaStamp on back buffer](data/mojo2/graphics/bb_alphastamp.png)<br/> multiplies rgb with alpha	| ![AlphaStamp on texture](data/mojo2/graphics/rt_alphastamp.png)<br/> multiplies rgb with alpha, overwrites alpha
 
 Technically, the effects when rendering to back buffer are the same as when rendering to texture. But because the back buffer's alpha channel is ignored, the effects are perceived differently.
 
 For the demonstration of the effects, these three images have been used (put on a checkered background to show transparency):
 
-*Image1:* <img src="../../modules/mojo2/cerberusdoc/data/image1.png" />
-*Image2:* <img src="../../modules/mojo2/cerberusdoc/data/image2.png" />
-*Image3:* <img src="../../modules/mojo2/cerberusdoc/data/image3.png" />
+*Image1:* ![Image1](data/mojo2/graphics/image1.png)
+*Image2:* ![Image2](data/mojo2/graphics/image2.png)
+*Image3:* ![Image3](data/mojo2/graphics/image3.png)
 
 Image1 has no alpha, Image2 has alpha and is premultiplied (happens automatically in mojo2 when loading an image) Image3 has alpha but is not premultiplied.
 Image1 is rendered opaque, then Image2 and Image3 are rendered on top with indicated @BlendMode.
