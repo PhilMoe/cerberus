@@ -57,7 +57,7 @@ QListView {
 	/*margin: 0;*/
 }
 QListView::item:selected {
-	background: #0D293E;
+	background: #4477AA;
 }
 QListView::item:alternate {
 	border: 1px solid dark;
@@ -66,11 +66,11 @@ QListView::item:selected:!active {
 	color: #c8c8c8;
 }
 QListView::item:selected:active {
-    background: #4B6EAF;
+    background: #4477AA;
 }
 QListView::item:hover {
-	background: #4B6EAF;
-	border: 1px solid #4B6EAF;
+	background: #4477AA;
+	border: 1px solid #4477AA;
 }
 
 /*****************************************/

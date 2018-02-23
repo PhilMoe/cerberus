@@ -55,7 +55,7 @@ function error( err ){
 //	if( window.console!=undefined ) window.console.log( str );
 //}
 
-function debuglog( str ){
+function debugLog( str ){
 	var cons=document.getElementById( "GameConsole" );
 	if( cons ){
 		cons.value+=str+"\n";
