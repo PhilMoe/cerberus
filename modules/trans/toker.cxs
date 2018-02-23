@@ -17,6 +17,7 @@ Const TOKE_STRINGLIT=6
 Const TOKE_STRINGLITEX=7
 Const TOKE_SYMBOL=8
 Const TOKE_LINECOMMENT=9
+Const TOKE_INTLITEX=10
 
 '***** Tokenizer *****
 Class Toker
@@ -164,6 +165,12 @@ Class Toker
 				_tokePos+=1
 			Wend
 			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_STRINGLITEX
+		Else If str="`"
+			_tokeType=TOKE_INTLIT
+			While _tokePos<_length And TSTR()<>"`"
+				_tokePos+=1
+			Wend
+			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_INTLITEX
 		Else If str="'"
 			_tokeType=TOKE_LINECOMMENT
 			While _tokePos<_length And TSTR()<>"~n"
