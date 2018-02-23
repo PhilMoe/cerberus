@@ -207,7 +207,7 @@ Function Dequote$( str$,lang$ )
 					Case "n" ch="~n"
 					Case "r" ch="~r"
 					Case "t" ch="~t"
-					Case "b" ch="`"
+					Case "g" ch="`"
 					Case "u"
 						Local t:=str[i+2..i+6]
 						If t.Length<>4 Err "Invalid unicode hex value in string"
@@ -242,7 +242,7 @@ Function Dequote$( str$,lang$ )
 					Case "n" ch="~n"
 					Case "r" ch="~r"
 					Case "t" ch="~t"
-					Case "b" ch="`"
+					Case "g" ch="`"
 					Case "u"
 						Local t:=str[i+2..i+6]
 						If t.Length<>4 Err "Invalid unicode hex value in string"
