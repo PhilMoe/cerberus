@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>396</width>
-    <height>581</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,20 +18,58 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="grpMisc">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Misc</string>
+      <string>GroupBox</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="themeLabel">
-        <property name="text">
-         <string>Theme</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="themeWidget"/>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0" colspan="2">
+       <layout class="QFormLayout" name="formLayout_5">
+        <item row="1" column="0">
+         <widget class="QLabel" name="themeLabel">
+          <property name="text">
+           <string>UI Theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="themeWidget">
+          <property name="toolTip">
+           <string>Sets the UI theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="console1ColorLabel">
+          <property name="text">
+           <string>Console color#1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="ColorSwatch" name="console1ColorWidget" native="true"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="console2ColorLabel">
+          <property name="text">
+           <string>Console color#2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="ColorSwatch" name="console2ColorWidget" native="true"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="console3ColorLabel">
+          <property name="text">
+           <string>Console color#3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="ColorSwatch" name="console3ColorWidget" native="true"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -368,6 +406,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="btnLoadColors">
+       <property name="toolTip">
+        <string>Load the editor colors from the theme</string>
+       </property>
        <property name="text">
         <string>Load Colors</string>
        </property>
@@ -375,6 +416,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSaveColors">
+       <property name="toolTip">
+        <string>Save the editor colors with the theme</string>
+       </property>
        <property name="text">
         <string>Save Colors</string>
        </property>
@@ -419,13 +463,21 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>themeWidget</tabstop>
   <tabstop>fontComboBox</tabstop>
   <tabstop>fontSizeWidget</tabstop>
   <tabstop>tabSizeWidget</tabstop>
-  <tabstop>cerberusPathButton</tabstop>
-  <tabstop>blitzmaxPathButton</tabstop>
+  <tabstop>smoothFontsWidget</tabstop>
+  <tabstop>highlightCaretRowWidget</tabstop>
+  <tabstop>showLineNumbersWidget</tabstop>
+  <tabstop>sortCodeBrowserWidget</tabstop>
   <tabstop>cerberusPathWidget</tabstop>
+  <tabstop>cerberusPathButton</tabstop>
   <tabstop>blitzmaxPathWidget</tabstop>
+  <tabstop>blitzmaxPathButton</tabstop>
+  <tabstop>btnLoadColors</tabstop>
+  <tabstop>btnSaveColors</tabstop>
+  <tabstop>okayButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -762,6 +814,54 @@
     <hint type="destinationlabel">
      <x>493</x>
      <y>565</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console1ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console2ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console3ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
     </hint>
    </hints>
   </connection>

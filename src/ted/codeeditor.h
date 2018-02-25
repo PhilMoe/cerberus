@@ -159,6 +159,7 @@ public:
 
     void validateCodeTreeModel();
     QIcon identIcon( const QString &ident );
+    QColor _keywordsColor;
 
 protected:
     void highlightBlock( const QString &text );
@@ -176,11 +177,14 @@ private:
     QWidget *lineNumberArea;
 
     QColor _backgroundColor;
+    QColor _console1Color;
+    QColor _console2Color;
+    QColor _console3Color;
     QColor _defaultColor;
     QColor _numbersColor;
     QColor _stringsColor;
     QColor _identifiersColor;
-    QColor _keywordsColor;
+
     QColor _commentsColor;
     QColor _highlightColor;
 

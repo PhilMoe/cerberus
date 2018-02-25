@@ -232,7 +232,7 @@ QDockWidget {
 }
 QDockWidget::title {
 	margin: 4px 0 0 0;
-	text-align: left;
+	text-align: center;
 	padding: 1px 6px;
 	border: 1px solid #114477;
 	color: #c8c8c8;

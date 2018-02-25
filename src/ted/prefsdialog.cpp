@@ -47,16 +47,23 @@ void PrefsDialog::writeSettings(){
 
 void PrefsDialog::onSaveThemeColor(){
     qDebug("onSaveThemeColor");
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Store theme colors", "Do you want to save/overwrite the theme colors?",
+    reply = QMessageBox::question(this, "Store theme colors", "Do you want to save/overwrite the theme's editor colors?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         QString theme = "";
         theme = _prefs->getString( "theme" );
-        QSettings themeColor(QCoreApplication::applicationDirPath()+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
+        QSettings themeColor(appPath+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
         themeColor.beginGroup("Colors");
         themeColor.setValue( "backgroundColor", Prefs::prefs()->getColor( "backgroundColor" ) );
+        themeColor.setValue( "console1Color", Prefs::prefs()->getColor( "console1Color" ) );
+        themeColor.setValue( "console2Color", Prefs::prefs()->getColor( "console2Color" ) );
+        themeColor.setValue( "console3Color", Prefs::prefs()->getColor( "console3Color" ) );
         themeColor.setValue( "defaultColor", Prefs::prefs()->getColor( "defaultColor" ) );
         themeColor.setValue( "numbersColor", Prefs::prefs()->getColor( "numbersColor" ) );
         themeColor.setValue( "stringsColor", Prefs::prefs()->getColor( "stringsColor" ) );
@@ -72,27 +79,40 @@ void PrefsDialog::onSaveThemeColor(){
 
 void PrefsDialog::onLoadThemeColor(){
     qDebug("onLoadThemeColor");
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Load theme colors", "Do you want to load the theme colors?",
+    reply = QMessageBox::question(this, "Load theme colors", "Do you want to load the theme's editor colors?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
 
         QString theme = "";
         theme = _prefs->getString( "theme" );
-        QSettings themeColor(QCoreApplication::applicationDirPath()+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
+        QSettings themeColor(appPath+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
 
-        _ui->backgroundColorWidget->setColor( themeColor.value( "colors/backgroundColor").toString() );
-        _ui->defaultColorWidget->setColor( themeColor.value( "colors/defaultColor" ).toString() );
-        _ui->numbersColorWidget->setColor( themeColor.value( "colors/numbersColor" ).toString());
-        _ui->stringsColorWidget->setColor( themeColor.value( "colors/stringsColor" ).toString() );
-        _ui->identifiersColorWidget->setColor( themeColor.value( "colors/identifiersColor" ).toString() );
-        _ui->keywordsColorWidget->setColor( themeColor.value( "colors/keywordsColor" ).toString() );
-        _ui->commentsColorWidget->setColor( themeColor.value( "colors/commentsColor" ).toString() );
-        _ui->highlightColorWidget->setColor( themeColor.value( "colors/highlightColor" ).toString() );
+        _ui->backgroundColorWidget->setColor( themeColor.value( "Colors/backgroundColor").toString() );
+        _ui->console1ColorWidget->setColor( themeColor.value( "Colors/console1Color" ).toString() );
+        _ui->console2ColorWidget->setColor( themeColor.value( "Colors/console2Color" ).toString() );
+        _ui->console3ColorWidget->setColor( themeColor.value( "Colors/console3Color" ).toString() );
+        _ui->defaultColorWidget->setColor( themeColor.value( "Colors/defaultColor" ).toString() );
+        _ui->numbersColorWidget->setColor( themeColor.value( "Colors/numbersColor" ).toString());
+        _ui->stringsColorWidget->setColor( themeColor.value( "Colors/stringsColor" ).toString() );
+        _ui->identifiersColorWidget->setColor( themeColor.value( "Colors/identifiersColor" ).toString() );
+        _ui->keywordsColorWidget->setColor( themeColor.value( "Colors/keywordsColor" ).toString() );
+        _ui->commentsColorWidget->setColor( themeColor.value( "Colors/commentsColor" ).toString() );
+        _ui->highlightColorWidget->setColor( themeColor.value( "Colors/highlightColor" ).toString() );
     }
 }
 
 int PrefsDialog::exec(){
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+
     QDialog::show();
 
     if( !_used ){
@@ -106,6 +126,9 @@ int PrefsDialog::exec(){
     _ui->smoothFontsWidget->setChecked( _prefs->getBool( "smoothFonts" ) );
 
     _ui->backgroundColorWidget->setColor( _prefs->getColor( "backgroundColor" ) );
+    _ui->console1ColorWidget->setColor( _prefs->getColor( "console1Color" ) );
+    _ui->console2ColorWidget->setColor( _prefs->getColor( "console2Color" ) );
+    _ui->console3ColorWidget->setColor( _prefs->getColor( "console3Color" ) );
     _ui->defaultColorWidget->setColor( _prefs->getColor( "defaultColor" ) );
     _ui->numbersColorWidget->setColor( _prefs->getColor( "numbersColor" ) );
     _ui->stringsColorWidget->setColor( _prefs->getColor( "stringsColor" ) );
@@ -124,7 +147,7 @@ int PrefsDialog::exec(){
     _themeSignal = false;
     _ui->themeWidget->clear();
 
-    QDir recoredDir(QCoreApplication::applicationDirPath()+"/themes/");
+    QDir recoredDir(appPath+"/themes/");
     QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
     foreach (const QString &str, allFiles) {
         _ui->themeWidget->addItem(str);
@@ -168,18 +191,23 @@ void PrefsDialog::onSortCodeBrowserChanged( bool state ){
 }
 
 void PrefsDialog::onThemeChanged( QString theme ){
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+
     if ( _themeSignal ) {
         _prefs->setValue( "theme",theme );
 
         QString css = "";
         QString cssFile = "";
         cssFile = _prefs->getString( "theme" );
-        QFile f(QCoreApplication::applicationDirPath()+"/themes/"+cssFile+"/"+cssFile+".css");
+        QFile f(appPath+"/themes/"+cssFile+"/"+cssFile+".css");
         if(f.open(QFile::ReadOnly)) {
             css = f.readAll();
             //css += "QDockWidget::title{text-align:center;}";
 
-            css.replace("url(:","url("+QCoreApplication::applicationDirPath()+"/themes/"+cssFile);
+            css.replace("url(:","url("+appPath+"/themes/"+cssFile);
 /*
             QMessageBox msgBox;
             //msgBox.setText("current: "+QDir::currentPath());
@@ -191,6 +219,7 @@ void PrefsDialog::onThemeChanged( QString theme ){
 
         }
         f.close();
+        onLoadThemeColor();
     }
 }
 

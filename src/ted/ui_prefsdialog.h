@@ -38,10 +38,17 @@ class Ui_PrefsDialog
 {
 public:
     QVBoxLayout *verticalLayout;
-    QGroupBox *grpMisc;
+    QGroupBox *groupBox;
+    QFormLayout *formLayout_2;
     QFormLayout *formLayout_5;
     QLabel *themeLabel;
     QComboBox *themeWidget;
+    QLabel *console1ColorLabel;
+    ColorSwatch *console1ColorWidget;
+    QLabel *console2ColorLabel;
+    ColorSwatch *console2ColorWidget;
+    QLabel *console3ColorLabel;
+    ColorSwatch *console3ColorWidget;
     QGroupBox *grpOptions;
     QGridLayout *gridLayout_2;
     QFormLayout *formLayout_3;
@@ -102,26 +109,61 @@ public:
     {
         if (PrefsDialog->objectName().isEmpty())
             PrefsDialog->setObjectName(QStringLiteral("PrefsDialog"));
-        PrefsDialog->resize(396, 581);
+        PrefsDialog->resize(396, 646);
         PrefsDialog->setStyleSheet(QStringLiteral(""));
         verticalLayout = new QVBoxLayout(PrefsDialog);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        grpMisc = new QGroupBox(PrefsDialog);
-        grpMisc->setObjectName(QStringLiteral("grpMisc"));
-        formLayout_5 = new QFormLayout(grpMisc);
+        groupBox = new QGroupBox(PrefsDialog);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        formLayout_2 = new QFormLayout(groupBox);
+        formLayout_2->setObjectName(QStringLiteral("formLayout_2"));
+        formLayout_5 = new QFormLayout();
         formLayout_5->setObjectName(QStringLiteral("formLayout_5"));
-        themeLabel = new QLabel(grpMisc);
+        themeLabel = new QLabel(groupBox);
         themeLabel->setObjectName(QStringLiteral("themeLabel"));
 
-        formLayout_5->setWidget(0, QFormLayout::LabelRole, themeLabel);
+        formLayout_5->setWidget(1, QFormLayout::LabelRole, themeLabel);
 
-        themeWidget = new QComboBox(grpMisc);
+        themeWidget = new QComboBox(groupBox);
         themeWidget->setObjectName(QStringLiteral("themeWidget"));
 
-        formLayout_5->setWidget(0, QFormLayout::FieldRole, themeWidget);
+        formLayout_5->setWidget(1, QFormLayout::FieldRole, themeWidget);
+
+        console1ColorLabel = new QLabel(groupBox);
+        console1ColorLabel->setObjectName(QStringLiteral("console1ColorLabel"));
+
+        formLayout_5->setWidget(2, QFormLayout::LabelRole, console1ColorLabel);
+
+        console1ColorWidget = new ColorSwatch(groupBox);
+        console1ColorWidget->setObjectName(QStringLiteral("console1ColorWidget"));
+
+        formLayout_5->setWidget(2, QFormLayout::FieldRole, console1ColorWidget);
+
+        console2ColorLabel = new QLabel(groupBox);
+        console2ColorLabel->setObjectName(QStringLiteral("console2ColorLabel"));
+
+        formLayout_5->setWidget(3, QFormLayout::LabelRole, console2ColorLabel);
+
+        console2ColorWidget = new ColorSwatch(groupBox);
+        console2ColorWidget->setObjectName(QStringLiteral("console2ColorWidget"));
+
+        formLayout_5->setWidget(3, QFormLayout::FieldRole, console2ColorWidget);
+
+        console3ColorLabel = new QLabel(groupBox);
+        console3ColorLabel->setObjectName(QStringLiteral("console3ColorLabel"));
+
+        formLayout_5->setWidget(4, QFormLayout::LabelRole, console3ColorLabel);
+
+        console3ColorWidget = new ColorSwatch(groupBox);
+        console3ColorWidget->setObjectName(QStringLiteral("console3ColorWidget"));
+
+        formLayout_5->setWidget(4, QFormLayout::FieldRole, console3ColorWidget);
 
 
-        verticalLayout->addWidget(grpMisc);
+        formLayout_2->setLayout(0, QFormLayout::SpanningRole, formLayout_5);
+
+
+        verticalLayout->addWidget(groupBox);
 
         grpOptions = new QGroupBox(PrefsDialog);
         grpOptions->setObjectName(QStringLiteral("grpOptions"));
@@ -399,12 +441,20 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_3);
 
+        QWidget::setTabOrder(themeWidget, fontComboBox);
         QWidget::setTabOrder(fontComboBox, fontSizeWidget);
         QWidget::setTabOrder(fontSizeWidget, tabSizeWidget);
-        QWidget::setTabOrder(tabSizeWidget, cerberusPathButton);
-        QWidget::setTabOrder(cerberusPathButton, blitzmaxPathButton);
-        QWidget::setTabOrder(blitzmaxPathButton, cerberusPathWidget);
-        QWidget::setTabOrder(cerberusPathWidget, blitzmaxPathWidget);
+        QWidget::setTabOrder(tabSizeWidget, smoothFontsWidget);
+        QWidget::setTabOrder(smoothFontsWidget, highlightCaretRowWidget);
+        QWidget::setTabOrder(highlightCaretRowWidget, showLineNumbersWidget);
+        QWidget::setTabOrder(showLineNumbersWidget, sortCodeBrowserWidget);
+        QWidget::setTabOrder(sortCodeBrowserWidget, cerberusPathWidget);
+        QWidget::setTabOrder(cerberusPathWidget, cerberusPathButton);
+        QWidget::setTabOrder(cerberusPathButton, blitzmaxPathWidget);
+        QWidget::setTabOrder(blitzmaxPathWidget, blitzmaxPathButton);
+        QWidget::setTabOrder(blitzmaxPathButton, btnLoadColors);
+        QWidget::setTabOrder(btnLoadColors, btnSaveColors);
+        QWidget::setTabOrder(btnSaveColors, okayButton);
 
         retranslateUi(PrefsDialog);
         QObject::connect(stringsColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
@@ -428,6 +478,9 @@ public:
         QObject::connect(sortCodeBrowserWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onSortCodeBrowserChanged(bool)));
         QObject::connect(btnSaveColors, SIGNAL(clicked()), PrefsDialog, SLOT(onSaveThemeColor()));
         QObject::connect(btnLoadColors, SIGNAL(clicked()), PrefsDialog, SLOT(onLoadThemeColor()));
+        QObject::connect(console1ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(console2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(console3ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
 
         QMetaObject::connectSlotsByName(PrefsDialog);
     } // setupUi
@@ -435,8 +488,14 @@ public:
     void retranslateUi(QDialog *PrefsDialog)
     {
         PrefsDialog->setWindowTitle(QApplication::translate("PrefsDialog", "IDE Options", 0));
-        grpMisc->setTitle(QApplication::translate("PrefsDialog", "Misc", 0));
-        themeLabel->setText(QApplication::translate("PrefsDialog", "Theme", 0));
+        groupBox->setTitle(QApplication::translate("PrefsDialog", "GroupBox", 0));
+        themeLabel->setText(QApplication::translate("PrefsDialog", "UI Theme", 0));
+#ifndef QT_NO_TOOLTIP
+        themeWidget->setToolTip(QApplication::translate("PrefsDialog", "Sets the UI theme", 0));
+#endif // QT_NO_TOOLTIP
+        console1ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#1", 0));
+        console2ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#2", 0));
+        console3ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#3", 0));
         grpOptions->setTitle(QApplication::translate("PrefsDialog", "Code Editor Options", 0));
         familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", 0));
         pointSizeLabel->setText(QApplication::translate("PrefsDialog", "Font Size", 0));
@@ -462,7 +521,13 @@ public:
         blitzMaxLabel->setText(QApplication::translate("PrefsDialog", "BlitzMax", 0));
         cerberusPathButton->setText(QApplication::translate("PrefsDialog", "...", 0));
         blitzmaxPathButton->setText(QApplication::translate("PrefsDialog", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        btnLoadColors->setToolTip(QApplication::translate("PrefsDialog", "Load the editor colors from the theme", 0));
+#endif // QT_NO_TOOLTIP
         btnLoadColors->setText(QApplication::translate("PrefsDialog", "Load Colors", 0));
+#ifndef QT_NO_TOOLTIP
+        btnSaveColors->setToolTip(QApplication::translate("PrefsDialog", "Save the editor colors with the theme", 0));
+#endif // QT_NO_TOOLTIP
         btnSaveColors->setText(QApplication::translate("PrefsDialog", "Save Colors", 0));
         okayButton->setText(QApplication::translate("PrefsDialog", "Okay", 0));
     } // retranslateUi

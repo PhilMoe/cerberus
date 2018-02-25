@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-02-19"
+#define TED_VERSION "2018-02-21"
 
 #define SETTINGS_VERSION 2
 
@@ -718,6 +718,9 @@ void MainWindow::readSettings(){
         prefs->setValue( "fontSize",12 );
         prefs->setValue( "tabSize",4 );
         prefs->setValue( "backgroundColor",QColor( 255,255,255 ) );
+        prefs->setValue( "console1Color",QColor( 70,70,70 ) );
+        prefs->setValue( "console2Color",QColor( 70,170,70 ) );
+        prefs->setValue( "console3Color",QColor( 70,70,170 ) );
         prefs->setValue( "defaultColor",QColor( 0,0,0 ) );
         prefs->setValue( "numbersColor",QColor( 0,0,255 ) );
         prefs->setValue( "stringsColor",QColor( 170,0,255 ) );
@@ -855,48 +858,33 @@ void MainWindow::readSettings(){
 
     _defaultDir=fixPath( settings.value( "defaultDir" ).toString() );
 
-
-
-
-
-/*
-    QMessageBox msgBox;
-    //msgBox.setText("current: "+QDir::currentPath());
-    //msgBox.exec();
-    msgBox.setText("app: "+QCoreApplication::applicationDirPath());
-    msgBox.exec();
-*/
-    //QString currPath ="";
-    //currPath = QDir::currentPath();
-    //QDir::setCurrent(QCoreApplication::applicationDirPath());
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
 
     QString css = "";
     QString cssFile = "";
     cssFile = prefs->getString( "theme" );
-    QFile f(QCoreApplication::applicationDirPath()+"/themes/"+cssFile+"/"+cssFile+".css");
+    QFile f(appPath+"/themes/"+cssFile+"/"+cssFile+".css");
     if(f.open(QFile::ReadOnly)) {
         css = f.readAll();
     }
     f.close();
 
-    css += "QDockWidget::title{text-align:center;}";
+    //css += "QDockWidget::title{text-align:center;}";
 
-    css.replace("url(:","url("+QCoreApplication::applicationDirPath()+"/themes/"+cssFile);
+    css.replace("url(:","url("+appPath+"/themes/"+cssFile);
 
     qApp->setStyleSheet(css);
-    //qApp->setStyleSheet("file:///" + QCoreApplication::applicationDirPath()+"/themes/"+cssFile+"/"+cssFile+".css");
 
     QApplication::processEvents();
-    //QDir::setCurrent(currPath);
 
     QString tempPath ="";
-    tempPath = QCoreApplication::applicationDirPath()+"/templates/mojo1.cxs";
-    //if( QFile::exists( tempPath ) ) _ui->menuNewTemplate->addAction( tempPath,this,SLOT(onFileNewTemplate())) ;
-
-    QDir recoredDir(QCoreApplication::applicationDirPath()+"/templates/");
+    QDir recoredDir(appPath+"/templates/");
     QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
     foreach (const QString &str, allFiles) {
-        tempPath = QCoreApplication::applicationDirPath()+"/templates/"+str;
+        tempPath = appPath+"/templates/"+str;
         if( QFile::exists( tempPath ) ) _ui->menuNewTemplate->addAction( QFileInfo(tempPath).baseName(),this,SLOT(onFileNewTemplate())) ;
     }
 }
@@ -1322,7 +1310,7 @@ void MainWindow::runCommand( QString cmd,QWidget *fileWidget ){
 
     _consoleTextWidget->clear();
     _consoleDockWidget->show();
-    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "keywordsColor" ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console1Color" ) );
     print( cmd );
 
     if( !_consoleProc->start( cmd ) ){
@@ -1342,7 +1330,7 @@ void MainWindow::onProcStdout(){
 
     QString text=_consoleProc->readLine( 0 );
 
-    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "defaultColor" ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console2Color" ) );
     print( text );
 
     if( text.contains( comerr )){
@@ -1385,7 +1373,7 @@ void MainWindow::onProcStderr(){
             int line=info.mid( i+1,info.length()-i-2 ).toInt()-1;
             onShowCode( path,line );
         }else{
-            _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "numbersColor" ) );
+            _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console3Color" ) );
             print( info );
         }
 
@@ -1450,7 +1438,7 @@ void MainWindow::onProcFinished(){
 
 //    qDebug()<<"Done.";
 
-    _consoleTextWidget->setTextColor( QColor( Prefs::prefs()->getColor( "stringsColor" ) ) );
+    _consoleTextWidget->setTextColor( QColor( Prefs::prefs()->getColor( "console3Color" ) ) );
     print( "Done." );
 
     if( _rebuildingHelp ){
@@ -1534,8 +1522,13 @@ void MainWindow::onFileNew(){
     newFile( "" );
 }
 void MainWindow::onFileNewTemplate(){
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+
     if( QAction *action=qobject_cast<QAction*>( sender() ) ){
-        newFileTemplate(QCoreApplication::applicationDirPath()+"/templates/"+action->text()+".cxs");
+        newFileTemplate(appPath+"/templates/"+action->text()+".cxs");
     }
 }
 
