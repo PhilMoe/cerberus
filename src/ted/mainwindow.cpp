@@ -887,6 +887,56 @@ void MainWindow::readSettings(){
         tempPath = appPath+"/templates/"+str;
         if( QFile::exists( tempPath ) ) _ui->menuNewTemplate->addAction( QFileInfo(tempPath).baseName(),this,SLOT(onFileNewTemplate())) ;
     }
+    // Set the actions icons depending on the theme
+    setIcons();
+}
+
+QIcon MainWindow::getThemeIcon(const QString &theme, const QString &ic, const QString &icd){
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+    QIcon icon = QIcon(QPixmap(appPath+"/themes/"+theme+"/icons/ui/"+ic));
+    if (icd != "") icon.addPixmap(QPixmap(appPath+"/themes/"+theme+"/icons/ui/"+icd),QIcon::Disabled);
+    return icon;
+}
+
+void MainWindow::setIcons(){
+qDebug("MainWindow::setIcons()");
+    QSettings settings;
+
+    Prefs *prefs=Prefs::prefs();
+
+    QString appPath=QCoreApplication::applicationDirPath();
+#ifdef Q_OS_MAC
+    appPath = extractDir(extractDir(extractDir(appPath)));
+#endif
+
+    QString css = "";
+    QString theme = "";
+    theme = prefs->getString( "theme" );
+
+    _ui->actionNew->setIcon(getThemeIcon(theme, "New.png","New_off.png"));
+    _ui->actionOpen->setIcon(getThemeIcon(theme, "Open.png","Open_off.png"));
+    _ui->actionClose->setIcon(getThemeIcon(theme, "Close.png","Close_off.png"));
+    _ui->actionSave->setIcon(getThemeIcon(theme, "Save.png","Save_off.png"));
+
+    _ui->actionEditCopy->setIcon(getThemeIcon(theme, "Copy.png","Copy_off.png"));
+    _ui->actionEditCut->setIcon(getThemeIcon(theme, "Cut.png","Cut_off.png"));
+    _ui->actionEditPaste->setIcon(getThemeIcon(theme, "Paste.png","Paste_off.png"));
+    _ui->actionEditFind->setIcon(getThemeIcon(theme, "Find.png","Find_off.png"));
+
+    _ui->actionBuildBuild->setIcon(getThemeIcon(theme, "Build.png","Build_off.png"));
+    _ui->actionBuildRun->setIcon(getThemeIcon(theme, "Build-Run.png","Build-Run_off.png"));
+
+    _ui->actionStep->setIcon(getThemeIcon(theme, "Step.png","Step_off.png"));
+    _ui->actionStep_In->setIcon(getThemeIcon(theme, "Step-In.png","Step-In_off.png"));
+    _ui->actionStep_Out->setIcon(getThemeIcon(theme, "Step-Out.png","Step-Out_off.png"));
+    _ui->actionKill->setIcon(getThemeIcon(theme, "Stop.png","Stop_off.png"));
+
+    _ui->actionHelpHome->setIcon(getThemeIcon(theme, "Home.png","Home_off.png"));
+    _ui->actionHelpBack->setIcon(getThemeIcon(theme, "Back.png","Back_off.png"));
+    _ui->actionHelpForward->setIcon(getThemeIcon(theme, "Forward.png","Forward_off.png"));
 }
 
 void MainWindow::writeSettings(){
@@ -1646,6 +1696,7 @@ void MainWindow::onFilePrefs(){
     }
 
     updateActions();
+    setIcons();
 }
 
 void MainWindow::onFileQuit(){

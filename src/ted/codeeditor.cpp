@@ -69,10 +69,16 @@ private:
 
 CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ),_modified( 0 ),_capitalize( false ){
     QString appPath=QCoreApplication::applicationDirPath();
-#ifdef Q_OS_MAC
-    appPath = extractDir(extractDir(extractDir(appPath)));
-#endif
-    imgBookmark.load(appPath+"/icons/Bookmark.png");
+    #ifdef Q_OS_MAC
+        appPath = extractDir(extractDir(extractDir(appPath)));
+    #endif
+    //QSettings settings;
+
+    Prefs *prefs=Prefs::prefs();
+    QString theme = "";
+    theme = prefs->getString( "theme" );
+
+    imgBookmark.load(appPath+"/themes/"+theme+"/icons/editor/Bookmark.png");
 
     _highlighter=new Highlighter( this );
 
@@ -807,19 +813,29 @@ Highlighter::~Highlighter(){
 }
 
 QIcon Highlighter::identIcon( const QString &ident ) {
-    QString appPath=QCoreApplication::applicationDirPath();
+qDebug() << "Highlighter::identIcon(" << ident << ")";
+QString appPath=QCoreApplication::applicationDirPath();
 #ifdef Q_OS_MAC
     appPath = extractDir(extractDir(extractDir(appPath)));
 #endif
-    static QIcon iconst( appPath+"/icons/const.png" );
-    static QIcon iglob( appPath+"/icons/global.png" );
-    static QIcon ifield( appPath+"/icons/property.png" );
-    static QIcon imethod( appPath+"/icons/method.png" );
-    static QIcon ifunc( appPath+"/icons/function.png" );
-    static QIcon iclass(appPath+"/icons/class.png" );
-    static QIcon iinterf( appPath+"/icons/interface.png" );
-    static QIcon ienum( appPath+"/icons/enumerate.png" );
-    static QIcon iother( appPath+"/icons/other.png" );
+    //QSettings settings;
+
+    Prefs *prefs=Prefs::prefs();
+    QString theme = "";
+    theme = prefs->getString( "theme" );
+
+    //static
+    QIcon iconst( appPath+"/themes/"+theme+"/icons/editor/const.png" );
+    QIcon iglob( appPath+"/themes/"+theme+"/icons/editor/global.png" );
+    QIcon ifield( appPath+"/themes/"+theme+"/icons/editor/property.png" );
+    QIcon imethod( appPath+"/themes/"+theme+"/icons/editor/method.png" );
+    QIcon ifunc( appPath+"/themes/"+theme+"/icons/editor/function.png" );
+    QIcon iclass(appPath+"/themes/"+theme+"/icons/editor/class.png" );
+    QIcon iinterf( appPath+"/themes/"+theme+"/icons/editor/interface.png" );
+    QIcon ienum( appPath+"/themes/"+theme+"/icons/editor/enumerate.png" );
+    QIcon iother( appPath+"/themes/"+theme+"/icons/editor/other.png" );
+
+
     QString s = ident;//.toLower();
     if(s == "const")
         return iconst;
@@ -1062,7 +1078,7 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
 void Highlighter::highlightBlock( const QString &ctext ){
     QString text=ctext;
-    qDebug()<<"Highlighter::highlightBlock -> "+text;
+    //qDebug()<<"Highlighter::highlightBlock -> "+text;
 
     int i=0,n=text.length();
     while( i<n && text[i]<=' ' ) ++i;

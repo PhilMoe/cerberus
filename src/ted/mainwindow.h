@@ -45,6 +45,9 @@ public:
     void updateHelp();
     void onShowHelp();
 
+    void setIcons();
+    QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
+
 private:
 
     void parseAppArgs();
