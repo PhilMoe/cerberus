@@ -1906,7 +1906,7 @@ void MainWindow::onDebugStepOut(){
 void MainWindow::onDebugKill(){
     if( !_consoleProc ) return;
 
-    _consoleTextWidget->setTextColor( QColor( 50,50,255 ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console1Color" ) );
     print( "Killing process..." );
 
     _consoleProc->kill();
