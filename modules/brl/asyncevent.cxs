@@ -30,3 +30,10 @@ Function UpdateAsyncEvents()
 	Wend
 	_current=Null
 End
+
+Function AsyncActive:Bool()
+	If _sources.Length() >= 1
+		Return True
+	End If
+	Return False
+End Function
