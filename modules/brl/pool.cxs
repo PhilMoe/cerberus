@@ -1,24 +1,75 @@
 
 Class Pool<T>
-
-	Method New( initialCapacity:Int=10 )
-		For Local i:=0 Until initialCapacity
-			_pool.Push New T
-		Next
-	End
-
-	Method Allocate:T()
-		If _pool.IsEmpty() Return New T
-		Return _pool.Pop()
-	End
-	
-	Method Free:Void( t:T )
-		_pool.Push t
-	End
 	
 	Private
 	
-	Field _pool:=New Stack<T>
+	Field _pool := New Stack<T>
+	
+	Global _HasOnPoolAllocate:Int = Pool<T>._UNKNOWN
+	Global _HasOnPoolFree:Int     = Pool<T>._UNKNOWN
+	
+	Const _UNKNOWN:Int = 0
+	Const _YES:Int     = 1
+	Const _NO:Int      = 2
+	
+	Public
+	
+	Method New(initialCapacity:Int = 10)
+		For Local i:Int = 0 Until initialCapacity
+			_pool.Push New T
+		Next
+	End
+	
+	Method Allocate:T()
+		Local o:T
+		If _pool.IsEmpty() Then
+			o = New T
+		Else
+			o = _pool.Pop()
+		End
+		
+		Select _HasOnPoolAllocate
+		Case _YES
+			IOnPoolAllocate(o).OnPoolAllocate()
+		Case _UNKNOWN
+			_HasOnPoolAllocate = _NO
+			If IOnPoolAllocate(o) Then
+				_HasOnPoolAllocate = _YES
+				IOnPoolAllocate(o).OnPoolAllocate()
+			End
+		End
+		
+		Return o
+	End
+	
+	Method Free:Void(o:T)
+		Select _HasOnPoolFree
+		Case _YES
+			IOnPoolFree(o).OnPoolFree()
+		Case _UNKNOWN
+			_HasOnPoolFree = _NO
+			If IOnPoolFree(o) Then
+				_HasOnPoolFree = _YES
+				IOnPoolFree(o).OnPoolFree()
+			End
+		End
+		
+		_pool.Push(o)
+	End
+	
+End
 
+
+Interface IOnPoolAllocate
+	
+	Method OnPoolAllocate:Void()
+	
+End
+
+
+Interface IOnPoolFree
+	
+	Method OnPoolFree:Void()
+	
 End
 
