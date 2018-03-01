@@ -97,12 +97,74 @@ Creates a pool containing @initialCapacity objects.
 
 # Method Allocate:T()
 
-Allocates an object from the pool.
+Allocates an object from the pool and calls [[IOnPoolAllocate.OnPoolAllocate]] if the object implements [[IOnPoolAllocate]].
 
 If the pool is empty, an object created using [[Programming/Keywords/New]] is returned instead.
 
 
 # Method Free:Void( t:T )
 
-Adds an object to the pool. This object is then available for future use by [[Allocate]].
+Adds an object to the pool and calls [[IOnPoolFree.OnPoolFree]] if the object implements [[IOnPoolFree]]. This object is then available for future use by [[Allocate]].
+
+
+# Interface IOnPoolAllocate
+
+When implemented by a class pools will automatically call [[OnPoolAllocate]] when an object gets allocated.
+
+See also: [[IOnPoolFree]]
+
+# Method OnPoolAllocate:Void()
+
+Will be called when an object gets allocated by a pool using the [[Pool.Allocate]] method.
+
+Example:
+<pre>
+Import brl.pool
+
+Class Actor Implements IOnPoolAllocate
+	Method OnPoolAllocate:Void()
+		Print( "A new actor appeared on the stage." )
+	End
+End
+
+Function Main:Int()
+	Local actorPool := New Pool<Actor>
+	
+	' create a new actor object
+	Local actor := actorPool.Allocate()
+End
+</pre>
+
+
+# Interface IOnPoolFree
+
+When implemented by a class pools will automatically call [[OnPoolFree]] when an object gets freed.
+
+See also: [[IOnPoolAllocate]]
+
+# Method OnPoolFree:Void()
+
+Will be called when an object gets freed by a pool using the [[Pool.Free]] method.
+
+Example:
+<pre>
+Import brl.pool
+
+Class Actor Implements IOnPoolFree
+	Method OnPoolFree:Void()
+		Print( "An actor has left the stage." )
+	End
+End
+
+Function Main:Int()
+	Local actorPool := New Pool<Actor>
+	
+	' create a new actor object
+	Local actor := actorPool.Allocate()
+	
+	' free the actor
+	actorPool.Free(actor)
+End
+</pre>
+
 
