@@ -29,6 +29,11 @@ Calls the [[IAsyncEventSource.UpdateAsyncEvents|UpdateAsyncEvents]] method for e
 You must call this function repeatedly (for example, at the start of OnUpdate) for the various OnComplete handlers to continue to execute.
 
 
+# Function AsyncActive:Bool()
+
+Returns True if the async event is currently active.
+
+
 # Interface brl.asyncevent.IAsyncEventSource
 
 # Method UpdateAsyncEvents:Void()

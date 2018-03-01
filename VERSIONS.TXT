@@ -1,4 +1,4 @@
-***** v2018-02-23 *****
+***** v2018-03-01 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
 FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
@@ -13,6 +13,7 @@ MOD: [MOJO/MOJO2] Changed X/Y parameter of DrawText to INT so it doesn't draw bl
 FIX: [MAKEDOCS] Fixed Makedocs to allow module documentation starting within a module.    (Author: Holzchopf)
 NEW: [MAKEDOCS] Added image links to Makedocs.
 NEW: [TRANS] Added character literals to the language.    (Author: Pixelpaladin)
+NEW: [brl.asyncevents] Added AsyncActive:Bool().    (Author: Soap)
 
 ***** v2017-10-24 *****
 
