@@ -35,8 +35,8 @@ public:
     int indent(){ return _indent; }
 
     bool isBookmarked(){ return _marked; }
-    void setBookmark(bool mark) { qDebug("BlockData::setBookmark"); _marked = mark; }
-    void toggleBookmark() { qDebug("BlockData::toggleBookmark"); _marked = !_marked; }
+    void setBookmark(bool mark) { _marked = mark; }
+    void toggleBookmark() { _marked = !_marked; }
     void setModified(int mod) { _modified = mod; }
     void invalidate();
 
@@ -160,6 +160,7 @@ public:
     void validateCodeTreeModel();
     QIcon identIcon( const QString &ident );
     QColor _keywordsColor;
+    QColor _lineNumberColor;
 
 protected:
     void highlightBlock( const QString &text );

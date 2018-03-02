@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-02-21"
+#define TED_VERSION "2018-03-02"
 
 #define SETTINGS_VERSION 2
 
@@ -726,6 +726,7 @@ void MainWindow::readSettings(){
         prefs->setValue( "stringsColor",QColor( 170,0,255 ) );
         prefs->setValue( "identifiersColor",QColor( 0,0,0 ) );
         prefs->setValue( "keywordsColor",QColor( 0,85,255 ) );
+        prefs->setValue( "lineNumberColor",QColor( 0,85,255 ) );
         prefs->setValue( "commentsColor",QColor( 0,128,128 ) );
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
         prefs->setValue( "smoothFonts",true );
@@ -902,7 +903,6 @@ QIcon MainWindow::getThemeIcon(const QString &theme, const QString &ic, const QS
 }
 
 void MainWindow::setIcons(){
-qDebug("MainWindow::setIcons()");
     QSettings settings;
 
     Prefs *prefs=Prefs::prefs();
@@ -1457,8 +1457,6 @@ void MainWindow::onProcStderr(){
 void MainWindow::onProcLineAvailable( int channel ){
 
     (void)channel;
-
-//    qDebug()<<"onProcLineAvailable";
 
     while( _consoleProc ){
         if( _consoleProc->isLineAvailable( 0 ) ){

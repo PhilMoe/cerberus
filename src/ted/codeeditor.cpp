@@ -298,11 +298,11 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         int bottom = top + (int) blockBoundingRect(block).height();
 
         painter.setFont(this->font());
-
+        int bmHeight = imgBookmark.height();
         while (block.isValid() && top <= event->rect().bottom()) {
             if (block.isVisible() && bottom >= event->rect().top()) {
                 QString number = QString::number(blockNumber + 1);
-                painter.setPen(_highlighter->_keywordsColor);
+                painter.setPen(_highlighter->_lineNumberColor);
                 painter.drawText(0, top, lineNumberArea->width()-20, fontMetrics().height(),
                     Qt::AlignRight, number);
                 // Paint modified markers
@@ -313,7 +313,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
                     }
                     bool bkmrk = (data && data->isBookmarked());
                     if( bkmrk ) {
-                        painter.drawImage(lineNumberArea->width()-15, top, imgBookmark);
+                        painter.drawImage(lineNumberArea->width()-15, top+((fontMetrics().height()-bmHeight)/2), imgBookmark);
                     }                }
             }
 
@@ -909,7 +909,7 @@ void Highlighter::validateCodeTreeModel(){
         QIcon icon = identIcon(data->decl());
         item->setIcon(icon);
         //item->setToolTip(data->decl()+" <b>"+data->ident()+"</b> "+data->block().text());
-        item->setToolTip(data->block().text().trimmed()+" ("+QString::number(data->indent())+")");
+        item->setToolTip(data->block().text().trimmed());
 
         rowStack.push( row );
         parentStack.push( parent );
@@ -938,6 +938,7 @@ void Highlighter::onPrefsChanged( const QString &name ){
     if( t=="" || t.endsWith( "Color" ) ){
         Prefs *prefs=Prefs::prefs();
         _backgroundColor=prefs->getColor( "backgroundColor" );
+        _lineNumberColor=prefs->getColor("lineNumberColor");
         _console1Color=prefs->getColor("console1Color");
         _console2Color=prefs->getColor("console2Color");
         _console3Color=prefs->getColor("console3Color");

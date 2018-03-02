@@ -49,6 +49,8 @@ public:
     ColorSwatch *console2ColorWidget;
     QLabel *console3ColorLabel;
     ColorSwatch *console3ColorWidget;
+    QLabel *lineNumberColorLabel;
+    ColorSwatch *lineNumberColorWidget;
     QGroupBox *grpOptions;
     QGridLayout *gridLayout_2;
     QFormLayout *formLayout_3;
@@ -58,10 +60,10 @@ public:
     QSpinBox *fontSizeWidget;
     QLabel *tabSizeLabel_2;
     QSpinBox *tabSizeWidget;
-    QLabel *highlightLabel;
-    QCheckBox *highlightCaretRowWidget;
     QLabel *smoothFontsLabel;
     QCheckBox *smoothFontsWidget;
+    QLabel *highlightLabel;
+    QCheckBox *highlightCaretRowWidget;
     QLabel *showLineNumbersLabel;
     QCheckBox *showLineNumbersWidget;
     QLabel *sortCodeBrowserLabel;
@@ -109,7 +111,7 @@ public:
     {
         if (PrefsDialog->objectName().isEmpty())
             PrefsDialog->setObjectName(QStringLiteral("PrefsDialog"));
-        PrefsDialog->resize(396, 646);
+        PrefsDialog->resize(396, 665);
         PrefsDialog->setStyleSheet(QStringLiteral(""));
         verticalLayout = new QVBoxLayout(PrefsDialog);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -159,6 +161,16 @@ public:
 
         formLayout_5->setWidget(4, QFormLayout::FieldRole, console3ColorWidget);
 
+        lineNumberColorLabel = new QLabel(groupBox);
+        lineNumberColorLabel->setObjectName(QStringLiteral("lineNumberColorLabel"));
+
+        formLayout_5->setWidget(5, QFormLayout::LabelRole, lineNumberColorLabel);
+
+        lineNumberColorWidget = new ColorSwatch(groupBox);
+        lineNumberColorWidget->setObjectName(QStringLiteral("lineNumberColorWidget"));
+
+        formLayout_5->setWidget(5, QFormLayout::FieldRole, lineNumberColorWidget);
+
 
         formLayout_2->setLayout(0, QFormLayout::SpanningRole, formLayout_5);
 
@@ -203,16 +215,6 @@ public:
 
         formLayout_3->setWidget(2, QFormLayout::FieldRole, tabSizeWidget);
 
-        highlightLabel = new QLabel(grpOptions);
-        highlightLabel->setObjectName(QStringLiteral("highlightLabel"));
-
-        formLayout_3->setWidget(4, QFormLayout::LabelRole, highlightLabel);
-
-        highlightCaretRowWidget = new QCheckBox(grpOptions);
-        highlightCaretRowWidget->setObjectName(QStringLiteral("highlightCaretRowWidget"));
-
-        formLayout_3->setWidget(4, QFormLayout::FieldRole, highlightCaretRowWidget);
-
         smoothFontsLabel = new QLabel(grpOptions);
         smoothFontsLabel->setObjectName(QStringLiteral("smoothFontsLabel"));
 
@@ -228,6 +230,16 @@ public:
         smoothFontsWidget->setLayoutDirection(Qt::LeftToRight);
 
         formLayout_3->setWidget(3, QFormLayout::FieldRole, smoothFontsWidget);
+
+        highlightLabel = new QLabel(grpOptions);
+        highlightLabel->setObjectName(QStringLiteral("highlightLabel"));
+
+        formLayout_3->setWidget(4, QFormLayout::LabelRole, highlightLabel);
+
+        highlightCaretRowWidget = new QCheckBox(grpOptions);
+        highlightCaretRowWidget->setObjectName(QStringLiteral("highlightCaretRowWidget"));
+
+        formLayout_3->setWidget(4, QFormLayout::FieldRole, highlightCaretRowWidget);
 
         showLineNumbersLabel = new QLabel(grpOptions);
         showLineNumbersLabel->setObjectName(QStringLiteral("showLineNumbersLabel"));
@@ -481,6 +493,7 @@ public:
         QObject::connect(console1ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
         QObject::connect(console2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
         QObject::connect(console3ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(lineNumberColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
 
         QMetaObject::connectSlotsByName(PrefsDialog);
     } // setupUi
@@ -496,13 +509,14 @@ public:
         console1ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#1", 0));
         console2ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#2", 0));
         console3ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#3", 0));
+        lineNumberColorLabel->setText(QApplication::translate("PrefsDialog", "Line numbers", 0));
         grpOptions->setTitle(QApplication::translate("PrefsDialog", "Code Editor Options", 0));
         familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", 0));
         pointSizeLabel->setText(QApplication::translate("PrefsDialog", "Font Size", 0));
         tabSizeLabel_2->setText(QApplication::translate("PrefsDialog", "Tab size", 0));
+        smoothFontsLabel->setText(QApplication::translate("PrefsDialog", "Smooth fonts", 0));
         highlightLabel->setText(QApplication::translate("PrefsDialog", "Highlight:", 0));
         highlightCaretRowWidget->setText(QApplication::translate("PrefsDialog", "Caret Row", 0));
-        smoothFontsLabel->setText(QApplication::translate("PrefsDialog", "Smooth fonts", 0));
         showLineNumbersLabel->setText(QApplication::translate("PrefsDialog", "Show line numbers", 0));
         showLineNumbersWidget->setText(QString());
         sortCodeBrowserLabel->setText(QApplication::translate("PrefsDialog", "Sort Code Browser", 0));

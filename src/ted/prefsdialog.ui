@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>396</width>
-    <height>646</height>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,6 +69,16 @@
         <item row="4" column="1">
          <widget class="ColorSwatch" name="console3ColorWidget" native="true"/>
         </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="lineNumberColorLabel">
+          <property name="text">
+           <string>Line numbers</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="ColorSwatch" name="lineNumberColorWidget" native="true"/>
+        </item>
        </layout>
       </item>
      </layout>
@@ -119,20 +129,6 @@
         <item row="2" column="1">
          <widget class="QSpinBox" name="tabSizeWidget"/>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="highlightLabel">
-          <property name="text">
-           <string>Highlight:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QCheckBox" name="highlightCaretRowWidget">
-          <property name="text">
-           <string>Caret Row</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="smoothFontsLabel">
           <property name="text">
@@ -150,6 +146,20 @@
           </property>
           <property name="layoutDirection">
            <enum>Qt::LeftToRight</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="highlightLabel">
+          <property name="text">
+           <string>Highlight:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="highlightCaretRowWidget">
+          <property name="text">
+           <string>Caret Row</string>
           </property>
          </widget>
         </item>
@@ -489,7 +499,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>379</y>
+     <y>463</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -505,7 +515,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>417</y>
+     <y>501</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -521,7 +531,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>322</y>
+     <y>406</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -537,7 +547,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>360</y>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -553,7 +563,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>303</y>
+     <y>387</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -569,7 +579,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>398</y>
+     <y>482</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -585,7 +595,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>436</y>
+     <y>520</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -601,7 +611,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>106</y>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -617,7 +627,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>127</y>
+     <y>221</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -633,7 +643,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>496</y>
+     <y>580</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -649,7 +659,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>522</y>
+     <y>606</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -665,7 +675,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>147</y>
+     <y>247</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -681,7 +691,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>341</y>
+     <y>425</y>
     </hint>
     <hint type="destinationlabel">
      <x>143</x>
@@ -697,7 +707,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>182</y>
+     <y>266</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
@@ -713,7 +723,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>385</x>
-     <y>570</y>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>182</x>
@@ -729,7 +739,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>205</y>
+     <y>289</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -745,7 +755,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>375</x>
-     <y>230</y>
+     <y>314</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -776,8 +786,8 @@
    <slot>onSortCodeBrowserChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>346</x>
-     <y>249</y>
+     <x>375</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -792,8 +802,8 @@
    <slot>onSaveThemeColor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>559</y>
+     <x>165</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>235</x>
@@ -808,11 +818,11 @@
    <slot>onLoadThemeColor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>43</x>
-     <y>555</y>
+     <x>53</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
-     <x>493</x>
+     <x>395</x>
      <y>565</y>
     </hint>
    </hints>
@@ -862,6 +872,22 @@
     <hint type="destinationlabel">
      <x>197</x>
      <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineNumberColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>613</x>
+     <y>129</y>
     </hint>
    </hints>
   </connection>

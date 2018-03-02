@@ -46,7 +46,6 @@ void PrefsDialog::writeSettings(){
 }
 
 void PrefsDialog::onSaveThemeColor(){
-    qDebug("onSaveThemeColor");
     QString appPath=QCoreApplication::applicationDirPath();
 #ifdef Q_OS_MAC
     appPath = extractDir(extractDir(extractDir(appPath)));
@@ -61,6 +60,7 @@ void PrefsDialog::onSaveThemeColor(){
         QSettings themeColor(appPath+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
         themeColor.beginGroup("Colors");
         themeColor.setValue( "backgroundColor", Prefs::prefs()->getColor( "backgroundColor" ) );
+        themeColor.setValue( "lineNumberColor", Prefs::prefs()->getColor( "lineNumberColor" ) );
         themeColor.setValue( "console1Color", Prefs::prefs()->getColor( "console1Color" ) );
         themeColor.setValue( "console2Color", Prefs::prefs()->getColor( "console2Color" ) );
         themeColor.setValue( "console3Color", Prefs::prefs()->getColor( "console3Color" ) );
@@ -78,7 +78,6 @@ void PrefsDialog::onSaveThemeColor(){
 }
 
 void PrefsDialog::onLoadThemeColor(){
-    qDebug("onLoadThemeColor");
     QString appPath=QCoreApplication::applicationDirPath();
 #ifdef Q_OS_MAC
     appPath = extractDir(extractDir(extractDir(appPath)));
@@ -94,6 +93,7 @@ void PrefsDialog::onLoadThemeColor(){
         QSettings themeColor(appPath+"/themes/"+theme+"/"+theme+".ini", QSettings::IniFormat);
 
         _ui->backgroundColorWidget->setColor( themeColor.value( "Colors/backgroundColor").toString() );
+        _ui->lineNumberColorWidget->setColor( themeColor.value( "Colors/lineNumberColor" ).toString() );
         _ui->console1ColorWidget->setColor( themeColor.value( "Colors/console1Color" ).toString() );
         _ui->console2ColorWidget->setColor( themeColor.value( "Colors/console2Color" ).toString() );
         _ui->console3ColorWidget->setColor( themeColor.value( "Colors/console3Color" ).toString() );
@@ -126,6 +126,7 @@ int PrefsDialog::exec(){
     _ui->smoothFontsWidget->setChecked( _prefs->getBool( "smoothFonts" ) );
 
     _ui->backgroundColorWidget->setColor( _prefs->getColor( "backgroundColor" ) );
+    _ui->lineNumberColorWidget->setColor( _prefs->getColor( "lineNumberColor" ) );
     _ui->console1ColorWidget->setColor( _prefs->getColor( "console1Color" ) );
     _ui->console2ColorWidget->setColor( _prefs->getColor( "console2Color" ) );
     _ui->console3ColorWidget->setColor( _prefs->getColor( "console3Color" ) );
