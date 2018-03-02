@@ -183,7 +183,6 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 }
 
 void CodeEditor::bookmarkToggle() {
-    qDebug("CodeEditor::bookmarkToggle");
     QTextBlock block = textCursor().block();
     if( block.isValid() ) {
         //BlockData *data = BlockData::data(block, true);
@@ -195,12 +194,10 @@ void CodeEditor::bookmarkToggle() {
 }
 
 void CodeEditor::bookmarkPrev() {
-    qDebug("CodeEditor::bookmarkPrev");
     bookmarkFind(-1);
 }
 
 void CodeEditor::bookmarkNext() {
-    qDebug("CodeEditor::bookmarkNext");
     bookmarkFind(1);
 }
 
@@ -299,6 +296,8 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         int blockNumber = block.blockNumber();
         int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
         int bottom = top + (int) blockBoundingRect(block).height();
+
+        painter.setFont(this->font());
 
         while (block.isValid() && top <= event->rect().bottom()) {
             if (block.isVisible() && bottom >= event->rect().top()) {
@@ -416,9 +415,7 @@ void CodeEditor::gotoLine( int line ){
     ensureCursorVisible();
 }
 
-void CodeEditor::highlightCurrentLine()
-{
-qDebug( "CodeEditor::highlightCurrentLine" );
+void CodeEditor::highlightCurrentLine(){
     QList<QTextEdit::ExtraSelection> extraSelections;
     if (doHighlightCurrLine) {
         if (!isReadOnly()) {
@@ -439,7 +436,6 @@ qDebug( "CodeEditor::highlightCurrentLine" );
 }
 
 void CodeEditor::highlightLine( int line ){
-qDebug( "CodeEditor::highlightLine = %d",line );
     flushExtraSels();
 
     QTextBlock block=document()->findBlockByLineNumber( line );
@@ -507,14 +503,11 @@ void CodeEditor::onPrefsChanged( const QString &name ){
 }
 
 void CodeEditor::onCursorPositionChanged(){
-    qDebug("CodeEditor::onCursorPositionChanged");
     highlightCurrentLine();
     return;
 }
 
 void CodeEditor::onTextChanged(){
-    qDebug("CodeEditor::onTextChanged");
-
     if( document()->isModified() ){
         ++_modified;
     }else{
@@ -536,7 +529,6 @@ void CodeEditor::onTextChanged(){
 }
 
 void CodeEditor::onCodeTreeViewClicked( const QModelIndex &index ){
-    qDebug("CodeEditor::onCodeTreeViewClicked");
     CodeTreeItem *item=dynamic_cast<CodeTreeItem*>( _codeTreeModel->itemFromIndex( index ) );
     if( !item ) return;
 
@@ -551,7 +543,6 @@ void CodeEditor::onCodeTreeViewClicked( const QModelIndex &index ){
 }
 
 void CodeEditor::keyPressEvent( QKeyEvent *e ){
-    qDebug( "CodeEditor::keyPressEvent = %d",e->key() );
     flushExtraSels();
 
     QTextCursor cursor=textCursor();
@@ -657,7 +648,6 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
 }
 
 bool CodeEditor::findNext( const QString &findText,bool cased,bool wrap ){
-qDebug("CodeEditor::findNext");
     QTextDocument::FindFlags flags=0;
     if( cased ) flags|=QTextDocument::FindCaseSensitively;
 
@@ -813,8 +803,7 @@ Highlighter::~Highlighter(){
 }
 
 QIcon Highlighter::identIcon( const QString &ident ) {
-qDebug() << "Highlighter::identIcon(" << ident << ")";
-QString appPath=QCoreApplication::applicationDirPath();
+    QString appPath=QCoreApplication::applicationDirPath();
 #ifdef Q_OS_MAC
     appPath = extractDir(extractDir(extractDir(appPath)));
 #endif
@@ -858,22 +847,17 @@ QString appPath=QCoreApplication::applicationDirPath();
 
 
 void Highlighter::insert( BlockData *data ){
-    //qDebug() << "Highlighter::insert -> "<<data->block().text().toStdString().c_str() << " line=" << data->block().firstLineNumber();
-
     _blocks.insert( data );
     _blocksDirty=true;
 }
 
 void Highlighter::remove( BlockData *data ){
-    //qDebug() << "Highlighter::remove -> "<<data->block().text().toStdString().c_str() << " line=" << data->block().firstLineNumber();
-
     _blocks.remove( data );
     _blocksDirty=true;
 }
 
 void Highlighter::validateCodeTreeModel(){
     if( !_blocksDirty ) return;
-    qDebug("Highlighter::validateCodeTreeModel");
 
     QStandardItem *root=_editor->_codeTreeModel->invisibleRootItem();
 
@@ -950,7 +934,7 @@ void Highlighter::validateCodeTreeModel(){
 
 void Highlighter::onPrefsChanged( const QString &name ){
     QString t(name);
-    qDebug()<<"Highlighter::onPrefsChanged ->"<<t.toStdString().c_str();
+
     if( t=="" || t.endsWith( "Color" ) ){
         Prefs *prefs=Prefs::prefs();
         _backgroundColor=prefs->getColor( "backgroundColor" );
@@ -1078,7 +1062,6 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
 void Highlighter::highlightBlock( const QString &ctext ){
     QString text=ctext;
-    //qDebug()<<"Highlighter::highlightBlock -> "+text;
 
     int i=0,n=text.length();
     while( i<n && text[i]<=' ' ) ++i;
@@ -1197,11 +1180,6 @@ void Highlighter::highlightBlock( const QString &ctext ){
         if ( data && _editor->_modSignal == true ) {
             data->setModified(1);
         }
-        //if ( _editor->_modSignal == false) {
-        //    qDebug("Highlighter::highlightBlock    _modSignal = false");
-        //}
-
-
     }
 }
 
