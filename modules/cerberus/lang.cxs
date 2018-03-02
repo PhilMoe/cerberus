@@ -8,12 +8,26 @@
 Import "native/lang.${LANG}"
 #Endif
 
+#If CONFIG="debug"
+#Else
+Function DebugLog( message$ )
+	'
+	Local b:Int
+End
+Function DebugStop()
+	'
+End
+#Endif
+
 Extern
 
 Function Print( message$ )="$print"
 Function Error( message$ )="$error"
+#If CONFIG="debug"
 Function DebugLog( message$ )="$debuglog"
 Function DebugStop()="$debugstop"
+#Endif
+
 
 Class @String Extends Null="String"
 

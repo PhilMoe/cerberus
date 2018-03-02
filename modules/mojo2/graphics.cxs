@@ -1505,7 +1505,10 @@ Class BlendMode
 	Const Alpha:=1
 	Const Additive:=2
 	Const Multiply:=3
-	Const Multiply2:=4
+	Const Multiply2:= 4
+	Const Alpha2:= 5
+	Const Opaque2:= 6
+	Const AlphaStamp:= 7	
 End
 
 Class DrawList
@@ -1759,6 +1762,26 @@ Class DrawList
 			Next
 		Next
 	End
+
+' 20180218, Holzchopf - ADDED drawing primitives with individual vertex color
+	Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],material:Material=Null )
+		' save current color for later
+		Local tmpcolor := _pmcolor
+		' draw primitives
+		BeginPrims material,order,count
+		Local p:=0
+		For Local i:=0 Until count
+			For Local j:=0 Until order
+				' write vertex color
+				_pmcolor = vertcols[i*order+j]
+				' write vertex data
+				PrimVert vertices[p],vertices[p+1],texcoords[p],texcoords[p+1]
+				p+=2
+			Next
+		Next
+		' restoree color
+		_pmcolor = tmpcolor
+	End
 	
 	Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],indices:Int[],material:Material=Null )
 	
@@ -1786,6 +1809,31 @@ Class DrawList
 			p+=order
 		Next
 	
+	End
+	
+' 20180218, Holzchopf - ADDED drawing primitives with individual vertex color
+	Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],indices:Int[],material:Material=Null )
+		' save current color for later
+		Local tmpcolor := _pmcolor
+		' draw primitives
+		BeginPrims material,order,count
+		Local p:=0
+		Local v:Int		' vertex index
+		Local k:Int		' index in vertices array
+		For Local i:=0 Until count
+			For Local j:=0 Until order
+				' index
+				v = indices[p+j]
+				k = v*2
+				' write vertex color
+				_pmcolor = vertcols[v]
+				' write vertex data
+				PrimVert vertices[k],vertices[k+1],texcoords[k],texcoords[k+1]
+			Next
+			p+=order
+		Next
+		' restoree color
+		_pmcolor = tmpcolor
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=1 )
@@ -2132,6 +2180,16 @@ Class DrawList
 			Case .BlendMode.Multiply2
 				glEnable GL_BLEND
 				glBlendFunc GL_DST_COLOR,GL_ZERO
+			Case.BlendMode.Alpha2
+				glEnable(GL_BLEND)
+				glBlendFuncSeparate(GL_ZERO, GL_ONE, GL_ONE, GL_ZERO)
+			Case.BlendMode.Opaque2
+				glEnable(GL_BLEND)
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+			Case.BlendMode.AlphaStamp
+				glEnable(GL_BLEND)
+				glBlendFuncSeparate(GL_ZERO, GL_SRC_ALPHA, GL_ONE, GL_ZERO)
+				glBlendEquation(GL_FUNC_ADD)
 			End
 		End
 		
@@ -2233,6 +2291,33 @@ Class DrawList
 	Method Flush:Void()
 		Render
 		Reset
+	End
+	
+' 20180220, Holzchopf - ADDED premultiplying and reordering function for colors
+	' Converts color from argb to abgr and premultiplies rgb
+	' Returns abgr color
+	Function PremultiplyArgb2Abgr:Int(color:Int)
+		Local a:Int, r:Int, g:Int, b:Int
+		Local fa:Float
+		' extract color components
+		a = (color Shr 24) & $ff
+		r = (color Shr 16) & $ff
+		g = (color Shr 08) & $ff
+		b = (color       ) & $ff
+		' premultiply
+		fa = Float(a) / 255.0
+		r *= fa
+		g *= fa
+		b *= fa
+		' reorder
+		Return (a Shl 24) | (b Shl 16) | (g Shl 08) | r
+	End
+
+	' Converts all colors from argb to abgr and premultiplies rgb
+	Function PremultiplyArgb2Abgr:Void(colors:Int[])
+		For Local i:Int = 0 Until colors.Length
+			colors[i] = PremultiplyArgb2Abgr( colors[i] )
+		Next
 	End
 	
 	Protected

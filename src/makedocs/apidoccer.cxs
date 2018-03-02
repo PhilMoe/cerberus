@@ -513,8 +513,6 @@ Class ApiDoccer Implements ILinkResolver
 	
 	Method ParseCerberusFile:Void( srcpath:String,modpath:String )
 	
-'		Print "doccing:"+srcpath+" "+modpath
-		
 		george.SetErrInfo srcpath
 		
 		Local parser:=New Parser( "" )
@@ -525,13 +523,16 @@ Class ApiDoccer Implements ILinkResolver
 		Local docs:StringMap<StringStack>
 		Local sect:String
 		
-		Local pub:=True,mdoc:=true
+		' CHANGED 2018-01-10 Holzchopf
+		' mdoc is initially false
+		' added "comment" which tells if parser is in block comment or not
+		Local pub:=True,mdoc:=False,comment:=False
 		
 		Local egdir:=ExtractDir( srcpath )+"/examples"
 		If FileType( egdir )<>FILETYPE_DIR egdir=""
 
 		Local src:=LoadString( srcpath ).Replace( "~r","" )
-		
+				
 		Local srcline:=0
 		Local parserbump:String
 		For Local line:=Eachin src.Split( "~n" )
@@ -543,6 +544,7 @@ Class ApiDoccer Implements ILinkResolver
 			If parser.Toke="#"
 				Select parser.Bump()
 				Case "rem"
+					comment = True		' block comment begins
 					parserbump = parser.Bump()
 					If parserbump="cerberusdoc"
 						Local opt:=parser.Bump()
@@ -593,6 +595,7 @@ Class ApiDoccer Implements ILinkResolver
 						Endif
 					Endif
 				Case "end"
+					comment = False		' block comment ends
 					If sect
 						If Not mdecl
 							mdecl=New ModuleDecl( New parser.Decl( "module",modpath ),Self )
@@ -628,66 +631,81 @@ Class ApiDoccer Implements ILinkResolver
 				Continue
 			Endif
 			
-			If line.Trim() And Not mdecl Return
+			' CHANGED 2018-01-10 Holzchopf
+			' no NOT return on non-blank line without mdecl,
+			' mdecl start may follow later on
+			'If line.Trim() And Not mdecl Return
 			
-			Select parser.Toke
-			Case "public"
-				pub=True
-			Case "private"
-				pub=False
-			Case "extern"
-				pub=parser.Bump()<>"private"
-			Case "import"
-				If pub And mdoc
-					Local pdecl:=parser.ParseDecl()
-					If pdecl
-						Local ident:=pdecl.ident
-						Local p:=ExtractDir( srcpath )+"/"+ident.Replace( ".","/" )
-'						Print "Looking for module:"+p
-						If FileType( p+".cxs" )=FILETYPE_FILE Or FileType( p+"/"+p+".cxs" )=FILETYPE_FILE
-							If StripDir( ExtractDir( srcpath ) )=StripAll( srcpath )
-								pdecl.ident=modpath+"."+ident
-							Else If modpath.Contains( "." )
-								Local id:=StripExt( modpath )
-								If id.Contains( "." ) id=ExtractExt( id )
-								If id<>ident pdecl.ident=id+"."+ident
+			' CHANGED 2018-01-10 Holzchopf
+			' only check for keywords if not in comment block
+			If Not comment Then
+				Select parser.Toke
+				Case "public"
+					pub=True
+				Case "private"
+					pub=False
+				Case "extern"
+					pub=parser.Bump()<>"private"
+				Case "import"
+					If pub And mdoc
+						Local pdecl:=parser.ParseDecl()
+						If pdecl
+							Local ident:=pdecl.ident
+							Local p:=ExtractDir( srcpath )+"/"+ident.Replace( ".","/" )
+	'						Print "Looking for module:"+p
+							If FileType( p+".cxs" )=FILETYPE_FILE Or FileType( p+"/"+p+".cxs" )=FILETYPE_FILE
+								If StripDir( ExtractDir( srcpath ) )=StripAll( srcpath )
+									pdecl.ident=modpath+"."+ident
+								Else If modpath.Contains( "." )
+									Local id:=StripExt( modpath )
+									If id.Contains( "." ) id=ExtractExt( id )
+									If id<>ident pdecl.ident=id+"."+ident
+								Endif
+	'							Print "Found! module="+pdecl.ident
+							Else
+	'							Print "Not found..."
 							Endif
-'							Print "Found! module="+pdecl.ident
-						Else
-'							Print "Not found..."
+							New ImportDecl( pdecl,mdecl )
 						Endif
-						New ImportDecl( pdecl,mdecl )
 					Endif
-				Endif
-			Case "class","interface"
-				If (pub Or docs) And mdoc
-				
-					Local cdecl:=New ClassDecl( parser.ParseDecl(),mdecl )
-					cdecl.srcinfo=srcpath+":"+srcline
-					scopes.Set cdecl.path,cdecl
-					AddDocsToDecl docs,cdecl
-					docscope=cdecl
+				Case "class","interface"
+					If (pub Or docs) And mdoc
 					
-					george.AddPage cdecl.PagePath()
-					If cdecl.kind="class" george.AddToIndex "Classes",cdecl.ident,cdecl.PagePath()
-					If cdecl.kind="interface" george.AddToIndex "Interfaces",cdecl.ident,cdecl.PagePath()
+						Local cdecl:=New ClassDecl( parser.ParseDecl(),mdecl )
+						cdecl.srcinfo=srcpath+":"+srcline
+						scopes.Set cdecl.path,cdecl
+						AddDocsToDecl docs,cdecl
+						docscope=cdecl
+						
+						george.AddPage cdecl.PagePath()
+						If cdecl.kind="class" george.AddToIndex "Classes",cdecl.ident,cdecl.PagePath()
+						If cdecl.kind="interface" george.AddToIndex "Interfaces",cdecl.ident,cdecl.PagePath()
+						
+						LoadExample cdecl,egdir
+					' CHANGED 2018-01-10 Holzchopf
+					' stop parsing if first declaration isn't preceded by cerberusdoc
+					Elseif Not mdoc
+						Return
+					Endif
+					docs=Null
+				Case "function","method","global","field","const","property","ctor"
+					If (pub Or docs) And mdoc
 					
-					LoadExample cdecl,egdir
-				Endif
-				docs=Null
-			Case "function","method","global","field","const","property","ctor"
-				If (pub Or docs) And mdoc
-				
-					Local decl:=New Decl( parser.ParseDecl(),docscope )
-					decl.srcinfo=srcpath+":"+srcline
-					AddDocsToDecl docs,decl
-					
-					george.AddPage decl.PagePath()
-					If decl.kind="function" And docscope=mdecl george.AddToIndex "Functions",decl.ident,decl.PagePath()
-					
-					LoadExample decl,egdir
-				Endif
-				docs=Null
+						Local decl:=New Decl( parser.ParseDecl(),docscope )
+						decl.srcinfo=srcpath+":"+srcline
+						AddDocsToDecl docs,decl
+						
+						george.AddPage decl.PagePath()
+						If decl.kind="function" And docscope=mdecl george.AddToIndex "Functions",decl.ident,decl.PagePath()
+						
+						LoadExample decl,egdir
+					' CHANGED 2018-01-10 Holzchopf
+					' stop parsing if first declaration isn't preceded by cerberusdoc
+					Elseif Not mdoc
+						Return
+					Endif
+					docs=Null
+				End
 			End
 
 		Next
@@ -821,7 +839,6 @@ Class ApiDoccer Implements ILinkResolver
 	End
 	
 	Method ParseModules:Void( dir:String,modpath:String )
-	
 		Local tmp:=scopeTemplate
 		
 		Local p:=dir+"/scope_template.html"
@@ -850,6 +867,9 @@ Class ApiDoccer Implements ILinkResolver
 						End
 					Next
 					Continue
+				Endif
+				If p.Find(".data",0)>-1
+					george.dataDirs.Add(p,StripExt(modpath))
 				Endif
 			
 				If ignore_mods.Contains( f ) Continue

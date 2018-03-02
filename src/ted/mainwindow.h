@@ -45,6 +45,9 @@ public:
     void updateHelp();
     void onShowHelp();
 
+    void setIcons();
+    QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
+
 private:
 
     void parseAppArgs();
@@ -55,6 +58,7 @@ private:
     CodeEditor *editorWithPath( const QString &path );
 
     QWidget *newFile( const QString &path );
+    QWidget *newFileTemplate( const QString &path );
     QWidget *openFile( const QString &path,bool addToRecent );
     bool saveFile( QWidget *widget,const QString &path );
     bool closeFile( QWidget *widget,bool remove=true );
@@ -83,6 +87,7 @@ public slots:
 
     //File menu
     void onFileNew();
+    void onFileNewTemplate();
     void onFileOpen();
     void onFileOpenRecent();
     void onFileClose();
@@ -101,6 +106,7 @@ public slots:
     void onEditRedo();
     void onEditCut();
     void onEditCopy();
+    void onEditCommentUncommentBlock();
     void onEditPaste();
     void onEditDelete();
     void onEditSelectAll();
@@ -113,6 +119,9 @@ public slots:
     //View menu
     void onViewToolBar();
     void onViewWindow();
+    void onToggleBookmark();
+    void onPreviousBookmark();
+    void onNextBookmark();
 
     //Build/Debug menu
     void onBuildBuild();
@@ -134,6 +143,7 @@ public slots:
     void onHelpBack();
     void onHelpForward();
     void onHelpQuickHelp();
+    void onHelpCerberusHomepage();
     void onHelpAbout();
     void onHelpRebuild();
 
@@ -162,6 +172,7 @@ private slots:
     void onProcStderr();
     void onProcLineAvailable( int channel );
     void onProcFinished();
+    void onEditorMenu(const QPoint &pos);
 
 private:
 
@@ -205,6 +216,8 @@ private:
     QMenu *_projectPopupMenu;
     QMenu *_dirPopupMenu;
     QMenu *_filePopupMenu;
+
+    QMenu *_editorPopupMenu;
 
     QLabel *_statusWidget;
 

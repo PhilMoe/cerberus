@@ -162,6 +162,9 @@ Class ConstExpr Extends Expr
 				value=StringToInt( value[1..],2 )
 			Else If value.StartsWith( "$" )
 				value=StringToInt( value[1..],16 )
+			Else If value.StartsWith( "`" ) And value.EndsWith( "`" )
+				value=Dequote(value, "cerberus")
+				If value.Length<1 value=0 Else value=value[0]
 			Else
 				'strip leading 0's or we can end up with an octal const!
 				While value.Length>1 And value.StartsWith( "0" )

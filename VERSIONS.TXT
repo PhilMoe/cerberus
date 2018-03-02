@@ -1,3 +1,21 @@
+***** v2018-03-02 *****
+
+FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
+FIX: [TED] Fixed last selected target.    (Author: Pixelpaladin)
+FIX: [TED] Huge additions to TED (themes, bookmarks, etc.)
+FIX: [EXAMPLES] Fixed missing class prefix for fontmachine implementation in the matchup example.
+FIX: [Language] DebugLog/DebugStop won't effect release builds anymore. They hit dummy functions now.
+FIX: [HTML5] DebugLog will output to the game console now.
+FIX: [DESKTOP] MOJO_AUTO_SUSPEND_ENABLED=False will be recognized when the window loses its focus.
+FIX: [DESKTOP] Updated stb_image.h file in GLFW template because big images didn't load.
+FIX: [MOJO] Fixed TextWidth() reporting the wrong length.
+MOD: [MOJO/MOJO2] Changed X/Y parameter of DrawText to INT so it doesn't draw blurry fonts anymore.
+FIX: [MAKEDOCS] Fixed Makedocs to allow module documentation starting within a module.    (Author: Holzchopf)
+NEW: [MAKEDOCS] Added image links to Makedocs.
+NEW: [TRANS] Added character literals to the language.    (Author: Pixelpaladin)
+NEW: [brl.asyncevents] Added AsyncActive:Bool().    (Author: Soap)
+NEW: [brl.pool]	added IOnPoolAllocate and IOnPoolFree interfaces.    (Author: Pixelpaladin)
+
 ***** v2017-10-24 *****
 
 FIX: [ANDROID] Fixed missing in app purchase interface

@@ -6,21 +6,91 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>455</height>
+    <width>396</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>IDE Options</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0" colspan="2">
+       <layout class="QFormLayout" name="formLayout_5">
+        <item row="1" column="0">
+         <widget class="QLabel" name="themeLabel">
+          <property name="text">
+           <string>UI Theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="themeWidget">
+          <property name="toolTip">
+           <string>Sets the UI theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="console1ColorLabel">
+          <property name="text">
+           <string>Console color#1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="ColorSwatch" name="console1ColorWidget" native="true"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="console2ColorLabel">
+          <property name="text">
+           <string>Console color#2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="ColorSwatch" name="console2ColorWidget" native="true"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="console3ColorLabel">
+          <property name="text">
+           <string>Console color#3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="ColorSwatch" name="console3ColorWidget" native="true"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="lineNumberColorLabel">
+          <property name="text">
+           <string>Line numbers</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="ColorSwatch" name="lineNumberColorWidget" native="true"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grpOptions">
      <property name="title">
       <string>Code Editor Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <layout class="QFormLayout" name="formLayout_3">
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -68,8 +138,56 @@
         </item>
         <item row="3" column="1">
          <widget class="QCheckBox" name="smoothFontsWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="layoutDirection">
            <enum>Qt::LeftToRight</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="highlightLabel">
+          <property name="text">
+           <string>Highlight:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="highlightCaretRowWidget">
+          <property name="text">
+           <string>Caret Row</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="showLineNumbersLabel">
+          <property name="text">
+           <string>Show line numbers</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QCheckBox" name="showLineNumbersWidget">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="sortCodeBrowserLabel">
+          <property name="text">
+           <string>Sort Code Browser</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QCheckBox" name="sortCodeBrowserWidget">
+          <property name="text">
+           <string/>
           </property>
          </widget>
         </item>
@@ -79,7 +197,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="grpColors">
      <property name="title">
       <string>Code Editor Colors</string>
      </property>
@@ -116,7 +234,11 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="ColorSwatch" name="defaultColorWidget" native="true"/>
+         <widget class="ColorSwatch" name="defaultColorWidget" native="true">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="highlightColorLabel">
@@ -184,7 +306,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QGroupBox" name="grpTools">
      <property name="title">
       <string>Tool Paths</string>
      </property>
@@ -293,6 +415,26 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
+      <widget class="QPushButton" name="btnLoadColors">
+       <property name="toolTip">
+        <string>Load the editor colors from the theme</string>
+       </property>
+       <property name="text">
+        <string>Load Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSaveColors">
+       <property name="toolTip">
+        <string>Save the editor colors with the theme</string>
+       </property>
+       <property name="text">
+        <string>Save Colors</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -307,6 +449,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="okayButton">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Okay</string>
        </property>
@@ -328,14 +473,21 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>themeWidget</tabstop>
   <tabstop>fontComboBox</tabstop>
   <tabstop>fontSizeWidget</tabstop>
   <tabstop>tabSizeWidget</tabstop>
   <tabstop>smoothFontsWidget</tabstop>
-  <tabstop>cerberusPathButton</tabstop>
-  <tabstop>blitzmaxPathButton</tabstop>
+  <tabstop>highlightCaretRowWidget</tabstop>
+  <tabstop>showLineNumbersWidget</tabstop>
+  <tabstop>sortCodeBrowserWidget</tabstop>
   <tabstop>cerberusPathWidget</tabstop>
+  <tabstop>cerberusPathButton</tabstop>
   <tabstop>blitzmaxPathWidget</tabstop>
+  <tabstop>blitzmaxPathButton</tabstop>
+  <tabstop>btnLoadColors</tabstop>
+  <tabstop>btnSaveColors</tabstop>
+  <tabstop>okayButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -346,8 +498,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>320</y>
+     <x>375</x>
+     <y>463</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -362,8 +514,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>372</y>
+     <x>375</x>
+     <y>501</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -378,8 +530,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>242</y>
+     <x>375</x>
+     <y>406</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -394,8 +546,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>294</y>
+     <x>375</x>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -410,8 +562,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>216</y>
+     <x>375</x>
+     <y>387</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -426,8 +578,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>346</y>
+     <x>375</x>
+     <y>482</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -442,8 +594,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>340</x>
-     <y>398</y>
+     <x>375</x>
+     <y>520</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -458,8 +610,8 @@
    <slot>onFontChanged(QFont)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>42</y>
+     <x>375</x>
+     <y>195</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -474,8 +626,8 @@
    <slot>onFontSizeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>68</y>
+     <x>375</x>
+     <y>221</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -490,8 +642,8 @@
    <slot>onBrowseForPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>307</x>
-     <y>472</y>
+     <x>375</x>
+     <y>580</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -506,8 +658,8 @@
    <slot>onBrowseForPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>307</x>
-     <y>505</y>
+     <x>375</x>
+     <y>606</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -522,8 +674,8 @@
    <slot>onTabSizeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>244</x>
-     <y>123</y>
+     <x>375</x>
+     <y>247</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -538,8 +690,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>282</x>
-     <y>268</y>
+     <x>375</x>
+     <y>425</y>
     </hint>
     <hint type="destinationlabel">
      <x>143</x>
@@ -554,8 +706,8 @@
    <slot>onSmoothFontsChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>226</x>
-     <y>139</y>
+     <x>375</x>
+     <y>266</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
@@ -570,12 +722,172 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>318</x>
-     <y>546</y>
+     <x>385</x>
+     <y>654</y>
     </hint>
     <hint type="destinationlabel">
      <x>182</x>
      <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highlightCaretRowWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onHighlightCaretRowChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>289</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showLineNumbersWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onShowLineNumbersChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>themeWidget</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onThemeChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>354</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>43</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sortCodeBrowserWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onSortCodeBrowserChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveColors</sender>
+   <signal>clicked()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onSaveThemeColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>165</x>
+     <y>654</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>235</x>
+     <y>559</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnLoadColors</sender>
+   <signal>clicked()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onLoadThemeColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>654</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>565</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console1ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console2ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console3ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineNumberColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>613</x>
+     <y>129</y>
     </hint>
    </hints>
   </connection>
@@ -587,5 +899,11 @@
   <slot>onBrowseForPath()</slot>
   <slot>onTabSizeChanged(int)</slot>
   <slot>onSmoothFontsChanged(bool)</slot>
+  <slot>onHighlightCaretRowChanged(bool)</slot>
+  <slot>onShowLineNumbersChanged(bool)</slot>
+  <slot>onThemeChanged(QString)</slot>
+  <slot>onSortCodeBrowserChanged(bool)</slot>
+  <slot>onSaveThemeColor()</slot>
+  <slot>onLoadThemeColor()</slot>
  </slots>
 </ui>

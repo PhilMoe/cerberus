@@ -192,7 +192,8 @@ End
 Function Dequote$( str$,lang$ )
 	Select lang
 		Case "cerberus"
-			If str.Length<2 Or Not str.StartsWith("~q") Or Not str.EndsWith("~q") InternalErr
+			If str.Length<2 Or (Not (str.StartsWith("~q") And str.EndsWith("~q")) And Not(str.StartsWith("`") And str.EndsWith("`"))) InternalErr
+			Local isChar:=str.StartsWith("`")
 			str=str[1..-1]
 			Local i:=0
 			Repeat
@@ -206,6 +207,7 @@ Function Dequote$( str$,lang$ )
 					Case "n" ch="~n"
 					Case "r" ch="~r"
 					Case "t" ch="~t"
+					Case "g" ch="`"
 					Case "u"
 						Local t:=str[i+2..i+6]
 						If t.Length<>4 Err "Invalid unicode hex value in string"
@@ -222,9 +224,11 @@ Function Dequote$( str$,lang$ )
 				str=str[..i]+ch+str[i+2..]
 				i+=ch.Length
 			Forever
+			If isChar And str.Length>1 InternalErr
 			Return str
 		Case "monkey" 'backwards compatibility
-			If str.Length<2 Or Not str.StartsWith("~q") Or Not str.EndsWith("~q") InternalErr
+			If str.Length<2 Or (Not (str.StartsWith("~q") And str.EndsWith("~q")) And Not(str.StartsWith("`") And str.EndsWith("`"))) InternalErr
+			Local isChar:=str.StartsWith("`")
 			str=str[1..-1]
 			Local i:=0
 			Repeat
@@ -238,6 +242,7 @@ Function Dequote$( str$,lang$ )
 					Case "n" ch="~n"
 					Case "r" ch="~r"
 					Case "t" ch="~t"
+					Case "g" ch="`"
 					Case "u"
 						Local t:=str[i+2..i+6]
 						If t.Length<>4 Err "Invalid unicode hex value in string"
@@ -254,6 +259,7 @@ Function Dequote$( str$,lang$ )
 				str=str[..i]+ch+str[i+2..]
 				i+=ch.Length
 			Forever
+			If isChar And str.Length>1 InternalErr
 			Return str
 	End
 	InternalErr

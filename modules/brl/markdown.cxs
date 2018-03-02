@@ -27,6 +27,7 @@
 
 \[[Target]]
 \[[Target|Label]]
+![altText](Link to image)
 
 >>>misc
 
@@ -35,6 +36,7 @@ escape any leading char with \
 >>>table:
 
 | cell | cell | cell
+
 
 
 By default, first row is a header row. Start a table with a single | for a 'headerless' table.
@@ -167,6 +169,26 @@ Class Markdown
 			Local r:=_resolver.ResolveLink(p,t)
 			
 			src=src[..i0]+r+src[i1+2..]
+			i=i0+r.Length
+		Forever
+		'
+		' Image link
+		'![alttext](link)
+		'
+		i=0
+		Repeat
+			Local i0:=Find(src,"![",i)
+			If i0=-1 Exit
+			Local i1:=Find(src,"](",i0+1)
+			If i1=-1 Or i1=i0+1 Exit
+			Local i2:=Find(src,")",i1+2)
+			If i2=-1 Or i2=i1+2 Exit
+			'
+			Local t:=src[i0+2..i1]
+			Local p:=src[i1+2..i2]
+			'
+			Local r:=_resolver.ResolveLink("<img>"+p,t)
+			src=src[..i0]+r+src[i2+1..]
 			i=i0+r.Length
 		Forever
 		'

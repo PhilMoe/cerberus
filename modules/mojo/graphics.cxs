@@ -110,7 +110,8 @@ Class Font
 	
 	Method TextWidth:Float( text:String )
 		Local w:=0.0
-		For Local char:=Eachin text
+		Local char:Int 
+		For char = Eachin text
 			Local glyph:=GetGlyph( char )
 			If Not glyph Continue
 			w+=glyph.advance
@@ -132,17 +133,22 @@ Class Font
 		Local _pageCount:Int = 1
 		If Not image Return Null
 		
-		Local cellWidth:=image.Width/numChars
-		Local cellHeight:=image.Height
+		Local cellWidth:Int =image.Width/numChars
+		Local cellHeight:Int =image.Height
 		Local glyphX:=0,glyphY:=0,glyphWidth:=cellWidth,glyphHeight:=cellHeight
-		If padded glyphX+=1;glyphY+=1;glyphWidth-=2;glyphHeight-=2
+		If padded = True
+			glyphX+=1
+			glyphY+=1
+			glyphWidth-=2
+			glyphHeight-=2
+		Endif
 
-		Local w:=image.Width/cellWidth
-		Local h:=image.Height/cellHeight
+		Local w:Int = image.Width/cellWidth
+		Local h:Int = image.Height/cellHeight
 
 		For Local i:=0 Until numChars
-			Local y:=i / w
-			Local x:=i Mod w
+			Local y:Int =i / w
+			Local x:Int =i Mod w
 			Local glyph:=New Glyph( 0,firstChar+i,x*cellWidth+glyphX,y*cellHeight+glyphY,glyphWidth,glyphHeight,glyphWidth )
 			_charMap.Add(firstChar+i, glyph)
 		Next
@@ -159,12 +165,12 @@ Class Font
 		Local _pageCount:Int = 1
 		If Not image Return Null
 
-		Local w:=image.Width/cellWidth
-		Local h:=image.Height/cellHeight
+		Local w:Int =image.Width/cellWidth
+		Local h:Int =image.Height/cellHeight
 
 		For Local i:=0 Until numChars
-			Local y:=i / w
-			Local x:=i Mod w
+			Local y:Int =i / w
+			Local x:Int =i Mod w
 			Local glyph:=New Glyph( 0,firstChar+i,x*cellWidth+glyphX,y*cellHeight+glyphY,glyphWidth,glyphHeight,glyphWidth )
 			_charMap.Add(firstChar+i, glyph)
 		Next
@@ -524,7 +530,7 @@ Function GetColor( color#[] )
 	color[2]=context.color_b
 End
 
-Function SetAlpha( alpha# )
+Function SetAlpha( alpha#)
 	context.alpha=alpha
 	renderDevice.SetAlpha alpha
 End
@@ -867,7 +873,7 @@ End
 Function SetFont:Void( font:Font )
 	If Not font
 		If Not context.defaultFont
-			context.defaultFont=Font.Load( "mojo_font.png",32,96, False )
+			context.defaultFont=Font.Load( "mojo_font.png",32,96, True )
 		Endif
 		font = context.defaultFont
 	Endif
@@ -879,7 +885,7 @@ Function GetFont:Font()
 End
 
 Function TextWidth#( text$ )
-	If context.font Return text.Length * context.font.TextWidth(text)
+	If context.font Return context.font.TextWidth(text)
 End
 
 Function TextHeight#()
@@ -890,7 +896,7 @@ Function FontHeight#()
 	If context.font Return context.font.TextHeight("")
 End
 
-Function DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+Function DrawText:Void( text:String,x:Int,y:Int,xhandle:Float=0,yhandle:Float=0 )
 #If CONFIG="debug"
 	DebugRenderDevice
 #End
@@ -909,7 +915,7 @@ Function DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Floa
 	Next
 End
 
-Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+Function DrawText:Void( textLines:String[],x:Int,y:Int,xhandle:Float=0,yhandle:Float=0 )
 #If CONFIG="debug"
 	DebugRenderDevice
 #End
@@ -935,7 +941,6 @@ Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhand
 		y += context.font.TextHeight( text )
 		x = currX 
 	Next
-	DrawImage(context.font._pages[0],10,10)
 End
 
 

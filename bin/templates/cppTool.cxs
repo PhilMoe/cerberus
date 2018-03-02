@@ -1,0 +1,9 @@
+Strict
+
+'Simple C++ tool script
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	Print ("Cerberus X - C++ tool template")
+	Return 0
+End
