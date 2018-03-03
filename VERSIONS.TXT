@@ -15,6 +15,7 @@ NEW: [MAKEDOCS] Added image links to Makedocs.
 NEW: [TRANS] Added character literals to the language.    (Author: Pixelpaladin)
 NEW: [brl.asyncevents] Added AsyncActive:Bool().    (Author: Soap)
 NEW: [brl.pool]	added IOnPoolAllocate and IOnPoolFree interfaces.    (Author: Pixelpaladin)
+NEW: [MOJO2] Additional blend modes, DrawList.DrawPrimitives and DrawList.DrawIndexedPrimitives can use vertex colors now (Author: Holzchopf)
 
 ***** v2017-10-24 *****
 

@@ -121,9 +121,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _mainTabWidget=new QTabWidget;
     _mainTabWidget->setMovable( true );
     _mainTabWidget->setTabsClosable( true );
+    //_mainTabWidget->tabBar()->setUsesScrollButtons(true);
 
 #ifdef Q_OS_MAC
-    _mainTabWidget->setDocumentMode( true );
+//    _mainTabWidget->setDocumentMode( true );
 #endif
 
     setCentralWidget( _mainTabWidget );
@@ -181,7 +182,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _browserTabWidget->addTab( _emptyCodeWidget,"Code" );
     _browserTabWidget->addTab( _debugTreeWidget,"Debug" );
 #ifdef Q_OS_MAC
-//  _browserTabWidget->setDocumentMode( true );
+// _browserTabWidget->setDocumentMode( true );
 #endif
 
     _browserDockWidget=new QDockWidget;
@@ -521,6 +522,8 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
             connect( action,SIGNAL(triggered()),this,SLOT(onFileOpenRecent()) );
         }
     }
+    if (_mainTabWidget->count() > 1)
+        _mainTabWidget->tabBar()->setUsesScrollButtons(true);
 
     return editor;
 }
@@ -599,6 +602,9 @@ bool MainWindow::closeFile( QWidget *widget,bool really ){
     _mainTabWidget->removeTab( _mainTabWidget->indexOf( widget ) );
 
     delete widget;
+
+    if (_mainTabWidget->count() <= 1)
+        _mainTabWidget->tabBar()->setUsesScrollButtons(false);
 
     return true;
 }
