@@ -5953,7 +5953,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2017-10-24",35));
+	bbPrint(String(L"TRANS cerberus compiler V2018-03-02",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -10024,33 +10024,45 @@ String c_Toker::p_NextToke(){
 									m__tokeType=7;
 								}
 							}else{
-								if(t_str==String(L"'",1)){
-									m__tokeType=9;
-									while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
+								if(t_str==String(L"`",1)){
+									m__tokeType=4;
+									while(m__tokePos<m__length && p_TSTR(0)!=String(L"`",1)){
 										m__tokePos+=1;
 									}
 									if(m__tokePos<m__length){
 										m__tokePos+=1;
-										m__line+=1;
+									}else{
+										m__tokeType=10;
 									}
 								}else{
-									if(t_str==String(L"[",1)){
-										m__tokeType=8;
-										int t_i=0;
-										while(m__tokePos+t_i<m__length){
-											if(p_TSTR(t_i)==String(L"]",1)){
-												m__tokePos+=t_i+1;
-												break;
-											}
-											if(p_TSTR(t_i)==String(L"\n",1) || !((bb_config_IsSpace(p_TCHR(t_i)))!=0)){
-												break;
-											}
-											t_i+=1;
+									if(t_str==String(L"'",1)){
+										m__tokeType=9;
+										while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
+											m__tokePos+=1;
+										}
+										if(m__tokePos<m__length){
+											m__tokePos+=1;
+											m__line+=1;
 										}
 									}else{
-										m__tokeType=8;
-										if(m__symbols->p_Contains(m__source.Slice(m__tokePos-1,m__tokePos+1))){
-											m__tokePos+=1;
+										if(t_str==String(L"[",1)){
+											m__tokeType=8;
+											int t_i=0;
+											while(m__tokePos+t_i<m__length){
+												if(p_TSTR(t_i)==String(L"]",1)){
+													m__tokePos+=t_i+1;
+													break;
+												}
+												if(p_TSTR(t_i)==String(L"\n",1) || !((bb_config_IsSpace(p_TCHR(t_i)))!=0)){
+													break;
+												}
+												t_i+=1;
+											}
+										}else{
+											m__tokeType=8;
+											if(m__symbols->p_Contains(m__source.Slice(m__tokePos-1,m__tokePos+1))){
+												m__tokePos+=1;
+											}
 										}
 									}
 								}
@@ -12191,9 +12203,10 @@ int bb_config_StringToInt(String t_str,int t_base){
 String bb_config_Dequote(String t_str,String t_lang){
 	String t_4=t_lang;
 	if(t_4==String(L"cerberus",8)){
-		if(t_str.Length()<2 || !t_str.StartsWith(String(L"\"",1)) || !t_str.EndsWith(String(L"\"",1))){
+		if(t_str.Length()<2 || !(t_str.StartsWith(String(L"\"",1)) && t_str.EndsWith(String(L"\"",1))) && !(t_str.StartsWith(String(L"`",1)) && t_str.EndsWith(String(L"`",1)))){
 			bb_config_InternalErr(String(L"Internal error",14));
 		}
+		bool t_isChar=t_str.StartsWith(String(L"`",1));
 		t_str=t_str.Slice(1,-1);
 		int t_i=0;
 		do{
@@ -12221,24 +12234,28 @@ String bb_config_Dequote(String t_str,String t_lang){
 							if(t_5==String(L"t",1)){
 								t_ch=String(L"\t",1);
 							}else{
-								if(t_5==String(L"u",1)){
-									String t_t=t_str.Slice(t_i+2,t_i+6);
-									if(t_t.Length()!=4){
-										bb_config_Err(String(L"Invalid unicode hex value in string",35));
-									}
-									for(int t_j=0;t_j<4;t_j=t_j+1){
-										if(!((bb_config_IsHexDigit((int)t_t[t_j]))!=0)){
-											bb_config_Err(String(L"Invalid unicode hex digit in string",35));
-										}
-									}
-									t_str=t_str.Slice(0,t_i)+String((Char)(bb_config_StringToInt(t_t,16)),1)+t_str.Slice(t_i+6);
-									t_i+=1;
-									continue;
+								if(t_5==String(L"g",1)){
+									t_ch=String(L"`",1);
 								}else{
-									if(t_5==String(L"0",1)){
-										t_ch=String((Char)(0),1);
+									if(t_5==String(L"u",1)){
+										String t_t=t_str.Slice(t_i+2,t_i+6);
+										if(t_t.Length()!=4){
+											bb_config_Err(String(L"Invalid unicode hex value in string",35));
+										}
+										for(int t_j=0;t_j<4;t_j=t_j+1){
+											if(!((bb_config_IsHexDigit((int)t_t[t_j]))!=0)){
+												bb_config_Err(String(L"Invalid unicode hex digit in string",35));
+											}
+										}
+										t_str=t_str.Slice(0,t_i)+String((Char)(bb_config_StringToInt(t_t,16)),1)+t_str.Slice(t_i+6);
+										t_i+=1;
+										continue;
 									}else{
-										bb_config_Err(String(L"Invalid escape character in string: '",37)+t_ch+String(L"'",1));
+										if(t_5==String(L"0",1)){
+											t_ch=String((Char)(0),1);
+										}else{
+											bb_config_Err(String(L"Invalid escape character in string: '",37)+t_ch+String(L"'",1));
+										}
 									}
 								}
 							}
@@ -12249,12 +12266,16 @@ String bb_config_Dequote(String t_str,String t_lang){
 			t_str=t_str.Slice(0,t_i)+t_ch+t_str.Slice(t_i+2);
 			t_i+=t_ch.Length();
 		}while(!(false));
+		if(t_isChar && t_str.Length()>1){
+			bb_config_InternalErr(String(L"Internal error",14));
+		}
 		return t_str;
 	}else{
 		if(t_4==String(L"monkey",6)){
-			if(t_str.Length()<2 || !t_str.StartsWith(String(L"\"",1)) || !t_str.EndsWith(String(L"\"",1))){
+			if(t_str.Length()<2 || !(t_str.StartsWith(String(L"\"",1)) && t_str.EndsWith(String(L"\"",1))) && !(t_str.StartsWith(String(L"`",1)) && t_str.EndsWith(String(L"`",1)))){
 				bb_config_InternalErr(String(L"Internal error",14));
 			}
+			bool t_isChar2=t_str.StartsWith(String(L"`",1));
 			t_str=t_str.Slice(1,-1);
 			int t_i2=0;
 			do{
@@ -12282,24 +12303,28 @@ String bb_config_Dequote(String t_str,String t_lang){
 								if(t_6==String(L"t",1)){
 									t_ch2=String(L"\t",1);
 								}else{
-									if(t_6==String(L"u",1)){
-										String t_t2=t_str.Slice(t_i2+2,t_i2+6);
-										if(t_t2.Length()!=4){
-											bb_config_Err(String(L"Invalid unicode hex value in string",35));
-										}
-										for(int t_j2=0;t_j2<4;t_j2=t_j2+1){
-											if(!((bb_config_IsHexDigit((int)t_t2[t_j2]))!=0)){
-												bb_config_Err(String(L"Invalid unicode hex digit in string",35));
-											}
-										}
-										t_str=t_str.Slice(0,t_i2)+String((Char)(bb_config_StringToInt(t_t2,16)),1)+t_str.Slice(t_i2+6);
-										t_i2+=1;
-										continue;
+									if(t_6==String(L"g",1)){
+										t_ch2=String(L"`",1);
 									}else{
-										if(t_6==String(L"0",1)){
-											t_ch2=String((Char)(0),1);
+										if(t_6==String(L"u",1)){
+											String t_t2=t_str.Slice(t_i2+2,t_i2+6);
+											if(t_t2.Length()!=4){
+												bb_config_Err(String(L"Invalid unicode hex value in string",35));
+											}
+											for(int t_j2=0;t_j2<4;t_j2=t_j2+1){
+												if(!((bb_config_IsHexDigit((int)t_t2[t_j2]))!=0)){
+													bb_config_Err(String(L"Invalid unicode hex digit in string",35));
+												}
+											}
+											t_str=t_str.Slice(0,t_i2)+String((Char)(bb_config_StringToInt(t_t2,16)),1)+t_str.Slice(t_i2+6);
+											t_i2+=1;
+											continue;
 										}else{
-											bb_config_Err(String(L"Invalid escape character in string: '",37)+t_ch2+String(L"'",1));
+											if(t_6==String(L"0",1)){
+												t_ch2=String((Char)(0),1);
+											}else{
+												bb_config_Err(String(L"Invalid escape character in string: '",37)+t_ch2+String(L"'",1));
+											}
 										}
 									}
 								}
@@ -12310,6 +12335,9 @@ String bb_config_Dequote(String t_str,String t_lang){
 				t_str=t_str.Slice(0,t_i2)+t_ch2+t_str.Slice(t_i2+2);
 				t_i2+=t_ch2.Length();
 			}while(!(false));
+			if(t_isChar2 && t_str.Length()>1){
+				bb_config_InternalErr(String(L"Internal error",14));
+			}
 			return t_str;
 		}
 	}
@@ -13584,8 +13612,17 @@ c_ConstExpr* c_ConstExpr::m_new(c_Type* t_ty,String t_value){
 			if(t_value.StartsWith(String(L"$",1))){
 				t_value=String(bb_config_StringToInt(t_value.Slice(1),16));
 			}else{
-				while(t_value.Length()>1 && t_value.StartsWith(String(L"0",1))){
-					t_value=t_value.Slice(1);
+				if(t_value.StartsWith(String(L"`",1)) && t_value.EndsWith(String(L"`",1))){
+					t_value=bb_config_Dequote(t_value,String(L"cerberus",8));
+					if(t_value.Length()<1){
+						t_value=String(L"0",1);
+					}else{
+						t_value=String((int)t_value[0]);
+					}
+				}else{
+					while(t_value.Length()>1 && t_value.StartsWith(String(L"0",1))){
+						t_value=t_value.Slice(1);
+					}
 				}
 			}
 		}
