@@ -1,48 +1,77 @@
+Strict
 
+' >>
 Private
 
 Function ThrowError:Void()
-'	DebugStop
 	Throw New JsonError
 End
 
+' <<
 Public
 
 Class JsonError Extends Throwable
 End
 
+' base class for json nodes
 Class JsonValue Abstract
+	' sorry, not using Enumerate for increased autocompletability
+	Const OBJECTTYPE	:= 0
+	Const ARRAYTYPE		:= 1
+	Const NULLTYPE		:= 2
+	Const BOOLTYPE		:= 3
+	Const NUMBERTYPE	:= 4
+	Const STRINGTYPE	:= 5
+	' returns the specific type of a JsonValue, is one of the above
+	Method Type:Int() Property Abstract
 
+	' when trying to retrieve any value from an unspecific class, throw error
+	' base to bool - undefined
 	Method BoolValue:Bool()
 		ThrowError
+		Return False		' to comply with strict
 	End
-	
+	' base to int - undefined
 	Method IntValue:Int()
 		ThrowError
+		Return 0			' to comply with strict
 	End
-	
+	' base to float - undefined
 	Method FloatValue:Float()
 		ThrowError
+		Return 0.0			' to comply with strict
 	End
-	
+	' base to string - undefined
 	Method StringValue:String()
 		ThrowError
+		Return ""			' to comply with strict
 	End
 	
+	' base to json string - infinite loop *
+	' (actually, return what PushJson did to buf)
 	Method ToJson:String()
 		Local buf:=New StringStack
 		PushJson( buf )
 		Return buf.Join()
 	End
-		
+	' push base to stringstack - infinite loop *
+	' (actually, push to buf what ToJson returns)
 	Method PushJson:Void( buf:StringStack )
 		buf.Push ToJson()
 	End
-
+	' * infinite loop won't ever happen, because specific classes either
+	' implement a proper ToJson OR a proper PushJson.
+	' Nodes that can contain childs (Object and Array) implement PushJson
+	' Nodes that only have value (Null, Bool, Number, String) implement ToJson
 End
 
+' object - can contain 'string : value' pairs
 Class JsonObject Extends JsonValue
+	Method Type:Int() Property
+		Return JsonValue.OBJECTTYPE
+	End
 
+	' new objects (empty, from json string or json stringmap)
 	Method New()
 		_data=New StringMap<JsonValue>
 	End
@@ -55,10 +84,12 @@ Class JsonObject Extends JsonValue
 		_data=data
 	End
 	
+	' returns if object contains a value named key
 	Method Contains:Bool( key:String )
 		Return _data.Contains( key )
 	End
 	
+	' set value of pair named key
 	Method Set:Void( key:String,value:JsonValue )
 		_data.Set( key,value )
 	End
@@ -79,6 +110,7 @@ Class JsonObject Extends JsonValue
 		Set( key,New JsonString( value ) )
 	End
 	
+	' get value of pair named key
 	Method Get:JsonValue( key:String,defval:JsonValue=Null )
 		If Not _data.Contains( key ) Return defval
 		Local val:=_data.Get( key )
@@ -109,27 +141,41 @@ Class JsonObject Extends JsonValue
 	Method GetData:StringMap<JsonValue>()
 		Return _data
 	End
-		
+	
+	' proper PushJson - pushes { string : value [, more pairs] } to buf
 	Method PushJson:Void( buf:StringStack )
 		buf.Push "{"
-		Local t:=False
+		Local t:=False	' if what's in buf has to be terminated by "," first
+		' push pair by pair to buf
 		For Local it:=Eachin _data
 			If t buf.Push ","
+			' push string :
 			buf.Push "~q"+it.Key.Replace( "~q","\~q" )+"~q:"
-			If it.Value<>Null it.Value.PushJson( buf ) Else buf.Push "null"
+			' push value
+			If it.Value<>Null Then
+				it.Value.PushJson( buf )
+			Else
+				buf.Push "null"
+			End
 			t=True
 		Next
 		buf.Push "}"
 	End
 	
+	' >>
 	Private
 	
 	Field _data:StringMap<JsonValue>
 	
 End
 
+' object - ordered collections of values
 Class JsonArray Extends JsonValue
-
+	Method Type:Int() Property
+		Return JsonValue.ARRAYTYPE
+	End
+	
+	' new arrays (empty or from value array)
 	Method New( length:Int )
 		_data=New JsonValue[length]
 	End
@@ -138,10 +184,12 @@ Class JsonArray Extends JsonValue
 		_data=data
 	End
 	
+	' returns length of array
 	Method Length:Int() Property
 		Return _data.Length
 	End
 	
+	' set value at index
 	Method Set:Void( index:Int,value:JsonValue )
 		If index<0 Or index>=_data.Length ThrowError
 		_data[index]=value
@@ -163,6 +211,7 @@ Class JsonArray Extends JsonValue
 		Set( index,New JsonString( value ) )
 	End
 	
+	' get value at index
 	Method Get:JsonValue( index:Int )
 		If index<0 Or index>=_data.Length ThrowError
 		Local val:=_data[index]
@@ -190,41 +239,60 @@ Class JsonArray Extends JsonValue
 		Return _data
 	End
 	
+	' proper PushJson - pushes "[" value [, more values] "]" to buf
 	Method PushJson:Void( buf:StringStack )
 		buf.Push "["
-		Local t:=False
+		Local t:=False	' if what's in buf has to be terminated by "," first
+		' push value by value to buf
 		For Local value:=Eachin _data
 			If t buf.Push ","
-			If value<>Null value.PushJson( buf ) Else buf.Push "null"
+			' push value
+			If value<>Null Then
+				value.PushJson( buf )
+			Else
+				buf.Push "null"
+			End
 			t=True
 		Next
 		buf.Push "]"
 	End
 
+	' >>
 	Private
 	
 	Field _data:JsonValue[]
 	
 End
 
+' value representing null
 Class JsonNull Extends JsonValue
+	Method Type:Int() Property
+		Return JsonValue.NULLTYPE
+	End
 
+	' proper ToJson - returns "null"
 	Method ToJson:String()
 		Return "null"
 	End
 	
+	' always returns the same null value
 	Function Instance:JsonNull()
 		Return _instance
 	End
 	
+	' >>
 	Private
 	
 	Global _instance:=New JsonNull
 	
 End
 
+' value representing a bool
 Class JsonBool Extends JsonValue
-
+	Method Type:Int() Property
+		Return JsonValue.BOOLTYPE
+	End
+	
 	Method New( value:Bool )
 		_value=value
 	End
@@ -233,16 +301,19 @@ Class JsonBool Extends JsonValue
 		Return _value
 	End
 	
+	' proper ToJson - returns "true" or "false"
 	Method ToJson:String()
 		If _value Return "true"
 		Return "false"
 	End
 	
+	' always returns the same true or false bool value
 	Function Instance:JsonBool( value:Bool )
 		If value Return _true
 		Return _false
 	End
 	
+	' >>
 	Private
 	
 	Field _value:Bool
@@ -252,8 +323,12 @@ Class JsonBool Extends JsonValue
 	
 End
 
+' value representing a string
 Class JsonString Extends JsonValue
-
+	Method Type:Int() Property
+		Return JsonValue.STRINGTYPE
+	End
+	
 	Method New( value:String )
 		_value=value
 	End
@@ -262,15 +337,19 @@ Class JsonString Extends JsonValue
 		Return _value
 	End
 	
+	' proper ToJson - returns "string"
 	Method ToJson:String()
 		Return "~q"+_value.Replace( "~q","\~q" )+"~q"
 	End
 	
+	' returns value as string OR
+	' if value is empty, always the same empty string value
 	Function Instance:JsonString( value:String )
 		If value Return New JsonString( value )
 		Return _null
 	End
 	
+	' >>
 	Private
 	
 	Field _value:String
@@ -279,8 +358,13 @@ Class JsonString Extends JsonValue
 	
 End
 
+' value representing a number (float or int)
+' internally, numbers are stored as strings to store number with full precision
 Class JsonNumber Extends JsonValue
-
+	Method Type:Int() Property
+		Return JsonValue.NUMBERTYPE
+	End
+	
 	Method New( value:String )
 		'error check value!
 		_value=value
@@ -294,15 +378,19 @@ Class JsonNumber Extends JsonValue
 		Return Float( _value )
 	End	
 	
+	' proper ToJson - returns actual number containing string
 	Method ToJson:String()
 		Return _value
 	End
 	
+	' returns value as number OR
+	' if value is 0, always the same zero number value
 	Function Instance:JsonNumber( value:String )
 		If value<>"0" Return New JsonNumber( value )
 		Return _zero
 	End
 	
+	' >>
 	Private
 	
 	Field _value:String
@@ -310,6 +398,7 @@ Class JsonNumber Extends JsonValue
 	Global _zero:=New JsonNumber( "0" )
 End
 
+' parser for json strings
 Class JsonParser
 
 	Method New( json:String )
@@ -317,6 +406,8 @@ Class JsonParser
 		Bump
 	End
 	
+	' returns the value of _toke (which points at root after just have
+	' created the JsonParser)
 	Method ParseValue:JsonValue()
 		If TokeType=T_STRING Return JsonString.Instance( ParseString() )
 		If TokeType=T_NUMBER Return JsonNumber.Instance( ParseNumber() )
@@ -326,8 +417,11 @@ Class JsonParser
 		If CParse("false") Return JsonBool.Instance( False )
 		If CParse("null") Return JsonNull.Instance()
 		ThrowError
+		' this line will never execute but is necessary for strict code
+		Return JsonNull.Instance()
 	End
 
+	' >>
 	Private
 	
 	Const T_EOF:=0
@@ -341,28 +435,32 @@ Class JsonParser
 	Field _type:Int
 	Field _pos:Int
 	
+	' get next char from _text
 	Method GetChar:Int()
 		If _pos=_text.Length ThrowError
 		_pos+=1
 		Return _text[_pos-1]
 	End
 	
+	' peek at next char from _text
 	Method PeekChar:Int()
 		If _pos=_text.Length Return 0
 		Return _text[_pos]
 	End
 	
+	' can followup in _text be parsed as chr? if so, skip over it,
+	' otherwise throw error
 	Method ParseChar:Void( chr:Int )
 		If _pos>=_text.Length Or _text[_pos]<>chr ThrowError
 		_pos+=1
 	End
-	
+	' return if followup in _text can be parsed as chr and skip over
 	Method CParseChar:Bool( chr:Int )
 		If _pos>=_text.Length Or _text[_pos]<>chr Return False
 		_pos+=1
 		Return True
 	End
-	
+	' return if followup in _text can be parsed as digit and skip over
 	Method CParseDigits:Bool()
 		Local p:=_pos
 		While _pos<_text.Length And _text[_pos]>=48 And _text[_pos]<=57
@@ -371,44 +469,54 @@ Class JsonParser
 		Return _pos>p
 	End
 	
+	' bump token from _text
 	Method Bump:String()
-	
+		' skip white space
 		While _pos<_text.Length And _text[_pos]<=32
 			_pos+=1
 		Wend
-		
+		' return eof token
 		If _pos=_text.Length
 			_toke=""
 			_type=T_EOF
 			Return _toke
 		Endif
-		
+		' remember starting _pos
 		Local pos:=_pos
 		Local chr:=GetChar()
-		
-		If chr=34
+		' T_STRING
+		If chr=34 ' "
 			Repeat
 				Local chr:=GetChar()
-				If chr=34 Exit
-				If chr=92 GetChar()
+				If chr=34 Exit			' "
+				If chr=92 GetChar()		' \ (escape char)
 			Forever
 			_type=T_STRING
+		' T_NUMBER
 		Else If chr=45 Or (chr>=48 And chr<=57)
+			' negative numbers
 			If chr=45 '-
 				chr=GetChar()
 				If chr<48 Or chr>57 ThrowError
 			Endif
+			' according to json, a number may only start with 0 if it's
+			' followed by "."
+			' this construct ensures numbers are only read when matching this
+			' rule. But don't ask me, why it shouldn't throw an errow if it
+			' doesn't match the rule.
 			If chr<>48 '0
 				CParseDigits()
 			End
 			If CParseChar( 46 )	'.
 				CParseDigits()
 			Endif
+			' scientific notation
 			If CParseChar( 69 ) Or CParseChar( 101 ) 'e E
 				If PeekChar()=43 Or PeekChar()=45 GetChar()	'+ -
 				If Not CParseDigits() ThrowError
 			Endif
 			_type=T_NUMBER
+		' true / false / null
 		Else If (chr>=65 And chr<91) Or (chr>=97 And chr<123)
 			chr=PeekChar()
 			While (chr>=65 And chr<91) Or (chr>=97 And chr<123)
@@ -416,6 +524,7 @@ Class JsonParser
 				chr=PeekChar()
 			Wend
 			_type=T_IDENT
+		' { } [ ]
 		Else
 			_type=T_SYMBOL
 		Endif
@@ -431,16 +540,18 @@ Class JsonParser
 		Return _type
 	End
 	
+	' goes on if _toke matches toke
 	Method CParse:Bool( toke:String )
 		If toke<>_toke Return False
 		Bump
 		Return True
 	End
-	
+	' goes on if _toke matches toke - throws error otherwise
 	Method Parse:Void( toke:String )
 		If Not CParse( toke ) ThrowError
 	End
 
+	' parse json object from _toke
 	Method ParseObject:StringMap<JsonValue>()
 		Parse( "{" )
 		Local map:=New StringMap<JsonValue>
@@ -455,6 +566,7 @@ Class JsonParser
 		Return map
 	End
 	
+	' parse json array from _toke
 	Method ParseArray:JsonValue[]()
 		Parse( "[" )
 		If CParse( "]" ) Return []
@@ -467,9 +579,11 @@ Class JsonParser
 		Return stack.ToArray()
 	End
 	
+	' parse json string from _toke
 	Method ParseString:String()
 		If TokeType<>T_STRING ThrowError
-		Local toke:=Toke[1..-1]
+		Local toke:=Toke[1..-1]			' cut off delimiting ""
+		' escaping
 		Local i:=toke.Find( "\" )
 		If i<>-1
 			Local frags:=New StringStack,p:=0,esc:=""
@@ -517,6 +631,7 @@ Class JsonParser
 		Return toke
 	End
 	
+	' parse json number from _toke
 	Method ParseNumber:String()
 		If TokeType<>T_NUMBER ThrowError
 		Local toke:=Toke
