@@ -1,3 +1,8 @@
+***** v2018-03-09 *****
+MOD: [brl.json] Enhanced the json module and its documentation    (Author: Holzchopf)
+MOD: [CSERVER] Updated cserver to 18.03.05, its faster now and fixed a font issue    (Author: Holzchopf)
+FIX: [TRANSCC] Readded missing build files for linux.
+
 ***** v2018-03-02 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)
