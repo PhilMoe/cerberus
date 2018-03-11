@@ -227,8 +227,7 @@ QCheckBox::indicator:checked {
 /*****************************************/
 QDockWidget {
 	color: #c8c8c8;
-	background-color: #2b2e30;
-
+	background-color: #3c3f41;
 	titlebar-close-icon: url(:/images/dock_close.png);
 	titlebar-normal-icon: url(:/images/dock_undock.png);
 }
@@ -236,7 +235,8 @@ QDockWidget::title {
 	margin: 4px 0 0 0;
 	text-align: left;
 	padding: 1px 6px;
-	background-color: #2b2e30;
+}
+QDockWidget::title:hover {
 }
 
 QDockWidget::close-button, QDockWidget::float-button {
