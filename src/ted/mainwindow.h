@@ -48,6 +48,8 @@ public:
     void setIcons();
     QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
 
+    QStringList _completeList;
+
 private:
 
     void parseAppArgs();
@@ -122,6 +124,7 @@ public slots:
     void onToggleBookmark();
     void onPreviousBookmark();
     void onNextBookmark();
+    void onToggleFullscreen();
 
     //Build/Debug menu
     void onBuildBuild();

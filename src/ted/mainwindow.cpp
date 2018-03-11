@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-03-02"
+#define TED_VERSION "2018-03-10"
 
 #define SETTINGS_VERSION 2
 
@@ -255,7 +255,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     readSettings();
 
     if( _buildFileType.isEmpty() ){
-        updateTargetsWidget( "cerberus" );
+        updateTargetsWidget( "default" );
     }
 
     QString home2=_cerberusPath+"/docs/html/Home2.html";
@@ -332,7 +332,8 @@ void MainWindow::loadHelpIndex(){
         QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
 
         _indexWidget->addItem( topic );
-
+        //_completeList << topic;
+        //qDebug() << topic << "    " <<  url;
         _helpUrls.insert( topic,url );
     }
 
@@ -722,7 +723,10 @@ void MainWindow::readSettings(){
 
         prefs->setValue( "fontFamily","Courier" );
         prefs->setValue( "fontSize",12 );
+        prefs->setValue( "smoothFonts",true );
         prefs->setValue( "tabSize",4 );
+        prefs->setValue( "tabs4spaces",true );
+        prefs->setValue( "theme","default" );
         prefs->setValue( "backgroundColor",QColor( 255,255,255 ) );
         prefs->setValue( "console1Color",QColor( 70,70,70 ) );
         prefs->setValue( "console2Color",QColor( 70,170,70 ) );
@@ -735,10 +739,10 @@ void MainWindow::readSettings(){
         prefs->setValue( "lineNumberColor",QColor( 0,85,255 ) );
         prefs->setValue( "commentsColor",QColor( 0,128,128 ) );
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
-        prefs->setValue( "smoothFonts",true );
         prefs->setValue( "highlightCurrLine",true );
+        prefs->setValue( "highlightCurrWord",true );
+        prefs->setValue( "highlightBrackets",true );
         prefs->setValue( "showLineNumbers",true );
-        prefs->setValue( "theme","default" );
         prefs->setValue( "sortCodeBrowser",true );
 
         _cerberusPath=defaultCerberusPath();
@@ -1870,6 +1874,13 @@ void MainWindow::onViewWindow(){
     }
 }
 
+void MainWindow::onToggleFullscreen() {
+    if(windowState() != Qt::WindowFullScreen)
+        this->setWindowState(Qt::WindowFullScreen);
+    else
+        this->setWindowState(Qt::WindowActive);
+}
+
 //***** Build menu *****
 
 void MainWindow::onBuildBuild(){
@@ -2040,16 +2051,16 @@ void MainWindow::onHelpAbout(){
             }
         }
     }
-
-    QString ABOUT=
-//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")\n\n"
-            "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
-            "A simple editor/IDE for the Cerberus programming language.\n\n"
-            "Copyright Blitz Research Ltd for Monkey X.\n\n"
-            "Cerberus X is maintained by Michael Hartlef & Martin Leidel.\n\n"
-            "Further additions done by serveral member of the Cerberus X community.\n"
-            "Please visit www.cerberus-x.com for more information on Cerberus."
-            ;
+    QString webSite = "https://www.cerberus-x.com";
+    QString ABOUT= "<html><head><style>a{color:#FFEE00;}</style></head><body>"
+//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")<br><br>"
+            "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")<br><br>"
+            "A simple editor/IDE for the Cerberus programming language.<br><br>"
+            "Copyright Blitz Research Ltd for Monkey X.<br><br>"
+            "Cerberus X is maintained by Michael Hartlef & Martin Leidel.<br<br>"
+            "Further additions done by serveral member of the Cerberus X community.<br>"
+            "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus."
+            "</body></html>";
 
     QMessageBox::information( this,"About Ted",ABOUT );
 }

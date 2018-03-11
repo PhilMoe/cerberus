@@ -13,6 +13,10 @@ See LICENSE.TXT for licensing terms.
 
 #include <QSyntaxHighlighter>
 #include <QVector>
+#include <QCompleter>
+#include <QStringListModel>
+#include <QScrollBar>
+#include <QShortcut>
 
 class CodeDocument;
 class CodeEditor;
@@ -21,7 +25,8 @@ class Prefs;
 class BlockData;
 class QString;
 class QTextDocument;
-
+class QCompleter;
+class QStringListModel;
 
 //***** BlockData *****
 class BlockData : public QTextBlockUserData{
@@ -70,9 +75,13 @@ public:
     const QString &path(){ return _path; }
     int modified(){ return _modified; }
     bool doHighlightCurrLine;
+    bool doHighlightCurrWord;
+    bool doHighlightBrackets;
     bool doLineNumbers;
     bool doSortCodeBrowser;
     bool _modSignal;
+    bool _tabs4spaces;
+    QString _tabSpaceText;
 
     QString fileType(){ return _fileType; }
 
@@ -107,7 +116,7 @@ public slots:
     void onTextChanged();
     void onCursorPositionChanged();
     void onPrefsChanged( const QString &name );
-void highlightCurrentLine();
+    void highlightCurrentLine();
     void onCodeTreeViewClicked( const QModelIndex &index );
 
 signals:
@@ -123,7 +132,9 @@ private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     //void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-
+    void insertCompletion(const QString &completion,
+                          bool singleWord=false);
+    void performCompletion();
 private:
     Highlighter *_highlighter;
     QStandardItemModel *_codeTreeModel;
@@ -142,6 +153,15 @@ private:
     friend class Highlighter;
 
     QWidget *lineNumberArea;
+    int indexOfClosedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
+    int indexOfOpenedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
+
+    void performCompletion(const QString &completionPrefix);
+    bool handledCompletedAndSelected(QKeyEvent *event);
+    void populateModel(const QString &completionPrefix);
+    bool completedAndSelected;
+    QCompleter *completer;
+    QStringListModel *model;
 };
 
 //***** Highlighter *****

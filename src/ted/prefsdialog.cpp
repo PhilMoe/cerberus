@@ -142,8 +142,11 @@ int PrefsDialog::exec(){
     _ui->cerberusPathWidget->setText( _prefs->getString( "cerberusPath" ) );
     _ui->blitzmaxPathWidget->setText( _prefs->getString( "blitzmaxPath" ) );
     _ui->highlightCaretRowWidget->setChecked( _prefs->getBool("highlightCurrLine" ) );
+    _ui->highlightCaretWordWidget->setChecked( _prefs->getBool("highlightCurrWord" ) );
+    _ui->highlightBracketsWidget->setChecked( _prefs->getBool("highlightBrackets" ) );
     _ui->showLineNumbersWidget->setChecked( _prefs->getBool("showLineNumbers" ) );
     _ui->sortCodeBrowserWidget->setChecked( _prefs->getBool("sortCodeBrowser" ) );
+    _ui->tabs4spacesWidget->setChecked( _prefs->getBool("tabs4spaces" ) );
 
     _themeSignal = false;
     _ui->themeWidget->clear();
@@ -183,8 +186,20 @@ void PrefsDialog::onHighlightCaretRowChanged( bool state ){
     _prefs->setValue( "highlightCurrLine",state );
 }
 
+void PrefsDialog::onHighlightCaretWordChanged( bool state ){
+    _prefs->setValue( "highlightCurrWord",state );
+}
+
+void PrefsDialog::onHighlightBracketsChanged( bool state ){
+    _prefs->setValue( "highlightBrackets",state );
+}
+
 void PrefsDialog::onShowLineNumbersChanged( bool state ){
     _prefs->setValue( "showLineNumbers",state );
+}
+
+void PrefsDialog::onTabs4SpacesChanged( bool state ){
+    _prefs->setValue( "tabs4spaces",state );
 }
 
 void PrefsDialog::onSortCodeBrowserChanged( bool state ){

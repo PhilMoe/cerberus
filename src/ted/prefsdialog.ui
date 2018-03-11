@@ -142,13 +142,30 @@
          <widget class="QSpinBox" name="tabSizeWidget"/>
         </item>
         <item row="3" column="0">
+         <widget class="QLabel" name="tabs4spacesLabel">
+          <property name="text">
+           <string>Tabs or Spaces</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="tabs4spacesWidget">
+          <property name="toolTip">
+           <string>Uses tabs instead of spaces</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
          <widget class="QLabel" name="smoothFontsLabel">
           <property name="text">
            <string>Smooth fonts</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QCheckBox" name="smoothFontsWidget">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -161,45 +178,59 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="highlightLabel">
           <property name="text">
            <string>Highlight:</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="5" column="1">
          <widget class="QCheckBox" name="highlightCaretRowWidget">
           <property name="text">
            <string>Caret Row</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="6" column="1">
+         <widget class="QCheckBox" name="highlightCaretWordWidget">
+          <property name="text">
+           <string>Word under caret</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
          <widget class="QLabel" name="showLineNumbersLabel">
           <property name="text">
            <string>Show line numbers</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="8" column="1">
          <widget class="QCheckBox" name="showLineNumbersWidget">
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="sortCodeBrowserLabel">
           <property name="text">
            <string>Sort Code Browser</string>
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="9" column="1">
          <widget class="QCheckBox" name="sortCodeBrowserWidget">
           <property name="text">
            <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QCheckBox" name="highlightBracketsWidget">
+          <property name="text">
+           <string>Matching brackets</string>
           </property>
          </widget>
         </item>
@@ -513,8 +544,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>591</y>
+     <x>390</x>
+     <y>538</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -529,8 +560,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>643</y>
+     <x>390</x>
+     <y>576</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -545,8 +576,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>513</y>
+     <x>390</x>
+     <y>481</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -561,8 +592,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>565</y>
+     <x>390</x>
+     <y>519</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -577,8 +608,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>487</y>
+     <x>390</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -593,8 +624,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>617</y>
+     <x>390</x>
+     <y>557</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -609,8 +640,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>669</y>
+     <x>390</x>
+     <y>595</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -625,8 +656,8 @@
    <slot>onFontChanged(QFont)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>244</y>
+     <x>390</x>
+     <y>211</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -641,8 +672,8 @@
    <slot>onFontSizeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>274</y>
+     <x>390</x>
+     <y>237</y>
     </hint>
     <hint type="destinationlabel">
      <x>138</x>
@@ -657,8 +688,8 @@
    <slot>onBrowseForPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>742</y>
+     <x>390</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -673,8 +704,8 @@
    <slot>onBrowseForPath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>774</y>
+     <x>390</x>
+     <y>681</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -689,8 +720,8 @@
    <slot>onTabSizeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>308</y>
+     <x>390</x>
+     <y>263</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -705,8 +736,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>385</x>
-     <y>539</y>
+     <x>390</x>
+     <y>500</y>
     </hint>
     <hint type="destinationlabel">
      <x>143</x>
@@ -721,8 +752,8 @@
    <slot>onSmoothFontsChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
-     <y>333</y>
+     <x>390</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
@@ -737,8 +768,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>398</x>
-     <y>848</y>
+     <x>400</x>
+     <y>881</y>
     </hint>
     <hint type="destinationlabel">
      <x>182</x>
@@ -753,8 +784,8 @@
    <slot>onHighlightCaretRowChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
-     <y>361</y>
+     <x>390</x>
+     <y>324</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -769,8 +800,8 @@
    <slot>onShowLineNumbersChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
-     <y>395</y>
+     <x>390</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -801,8 +832,8 @@
    <slot>onSortCodeBrowserChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
-     <y>419</y>
+     <x>390</x>
+     <y>408</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -817,8 +848,8 @@
    <slot>onSaveThemeColor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>242</x>
-     <y>848</y>
+     <x>165</x>
+     <y>881</y>
     </hint>
     <hint type="destinationlabel">
      <x>235</x>
@@ -833,8 +864,8 @@
    <slot>onLoadThemeColor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>65</x>
-     <y>848</y>
+     <x>75</x>
+     <y>881</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -849,8 +880,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>375</x>
-     <y>89</y>
+     <x>390</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
      <x>197</x>
@@ -865,8 +896,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>375</x>
-     <y>115</y>
+     <x>390</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
      <x>197</x>
@@ -881,8 +912,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>375</x>
-     <y>141</y>
+     <x>390</x>
+     <y>115</y>
     </hint>
     <hint type="destinationlabel">
      <x>197</x>
@@ -897,12 +928,60 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>167</y>
+     <x>390</x>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>613</x>
      <y>129</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabs4spacesWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onTabs4SpacesChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>390</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>488</x>
+     <y>291</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highlightCaretWordWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onHighlightCaretWordChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>390</x>
+     <y>347</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>535</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highlightBracketsWidget</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onHighlightBracketsChanged(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>250</x>
+     <y>363</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>363</y>
     </hint>
    </hints>
   </connection>
@@ -920,5 +999,8 @@
   <slot>onSortCodeBrowserChanged(bool)</slot>
   <slot>onSaveThemeColor()</slot>
   <slot>onLoadThemeColor()</slot>
+  <slot>onTabs4SpacesChanged(bool)</slot>
+  <slot>onHighlightCaretWordChanged(bool)</slot>
+  <slot>onHighlightBracketsChanged(bool)</slot>
  </slots>
 </ui>

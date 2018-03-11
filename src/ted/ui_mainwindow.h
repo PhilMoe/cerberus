@@ -90,6 +90,7 @@ public:
     QAction *actionNextBookmark;
     QAction *actionPreviousBookmark;
     QAction *actionHelpCerberusHomepage;
+    QAction *actionToggle_Fullscreen;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QToolBar *fileToolBar;
@@ -302,6 +303,8 @@ public:
         actionPreviousBookmark->setObjectName(QStringLiteral("actionPreviousBookmark"));
         actionHelpCerberusHomepage = new QAction(MainWindow);
         actionHelpCerberusHomepage->setObjectName(QStringLiteral("actionHelpCerberusHomepage"));
+        actionToggle_Fullscreen = new QAction(MainWindow);
+        actionToggle_Fullscreen->setObjectName(QStringLiteral("actionToggle_Fullscreen"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -432,6 +435,8 @@ public:
         menuView->addAction(actionToggleBookmark);
         menuView->addAction(actionNextBookmark);
         menuView->addAction(actionPreviousBookmark);
+        menuView->addSeparator();
+        menuView->addAction(actionToggle_Fullscreen);
         menuToolbars->addAction(actionViewFile);
         menuToolbars->addAction(actionViewEdit);
         menuToolbars->addAction(actionViewBuild);
@@ -502,6 +507,7 @@ public:
         QObject::connect(actionPreviousBookmark, SIGNAL(triggered()), MainWindow, SLOT(onPreviousBookmark()));
         QObject::connect(actionNextBookmark, SIGNAL(triggered()), MainWindow, SLOT(onNextBookmark()));
         QObject::connect(actionHelpCerberusHomepage, SIGNAL(triggered()), MainWindow, SLOT(onHelpCerberusHomepage()));
+        QObject::connect(actionToggle_Fullscreen, SIGNAL(triggered()), MainWindow, SLOT(onToggleFullscreen()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -616,6 +622,8 @@ public:
         actionPreviousBookmark->setText(QApplication::translate("MainWindow", "Previous bookmark", 0));
         actionPreviousBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0));
         actionHelpCerberusHomepage->setText(QApplication::translate("MainWindow", "Cerberus X Homepage", 0));
+        actionToggle_Fullscreen->setText(QApplication::translate("MainWindow", "Toggle Fullscreen", 0));
+        actionToggle_Fullscreen->setShortcut(QApplication::translate("MainWindow", "F11", 0));
         editToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
         buildToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
         helpToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
