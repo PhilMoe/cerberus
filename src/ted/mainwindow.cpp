@@ -986,7 +986,7 @@ void MainWindow::writeSettings(){
     settings.endArray();
 
     settings.beginGroup( "buildSettings" );
-    settings.setValue( "target",_activeCerberusTarget );
+    settings.setValue( "target",_targetsWidget->currentText() );
     settings.setValue( "config",_configsWidget->currentText() );
     settings.setValue( "locked",_lockedEditor ? _lockedEditor->path() : "" );
     settings.endGroup();
