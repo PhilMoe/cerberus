@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-03-10"
+#define TED_VERSION "2018-04-07"
 
 #define SETTINGS_VERSION 2
 
@@ -35,7 +35,8 @@ See LICENSE.TXT for licensing terms.
 #endif
 
 #define _QUOTE(X) #X
-#define _STRINGIZE( X ) _QUOTE(X)
+//xxxxxxx
+//#define _STRINGIZE( X ) _QUOTE(X)
 
 static MainWindow *mainWindow;
 
@@ -255,7 +256,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     readSettings();
 
     if( _buildFileType.isEmpty() ){
-        updateTargetsWidget( "default" );
+        updateTargetsWidget( "cerberus" );
     }
 
     QString home2=_cerberusPath+"/docs/html/Home2.html";
@@ -272,7 +273,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _findInFilesDialog->readSettings();
     connect( _findInFilesDialog,SIGNAL(showCode(QString,int,int)),SLOT(onShowCode(QString,int,int)) );
 
-    loadHelpIndex();
+    //loadHelpIndex();
 
     parseAppArgs();
 
@@ -291,8 +292,9 @@ MainWindow::~MainWindow(){
 //***** private methods *****
 
 void MainWindow::onTargetChanged( int index ){
-
-    QString target=_targetsWidget->currentText();
+//xxxxxxx
+    //QString target=_targetsWidget->currentText();
+    QString target=_targetsWidget->itemText(index);
 
     if( _buildFileType=="cerberus" || _buildFileType=="monkey" ){
         _activeCerberusTarget=target;
@@ -321,6 +323,8 @@ void MainWindow::loadHelpIndex(){
 
     _indexWidget->clear();
 
+    _completeList.clear();
+
     for( int i=0;i<lines.count();++i ){
 
         QString line=lines.at( i );
@@ -329,13 +333,57 @@ void MainWindow::loadHelpIndex(){
         if( j==-1 ) continue;
 
         QString topic=line.left(j);
-        QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
 
+        QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
+        QString status = line;
         _indexWidget->addItem( topic );
-        //_completeList << topic;
-        //qDebug() << topic << "    " <<  url;
+        _completeList.append(topic);
+
         _helpUrls.insert( topic,url );
     }
+
+
+    // Read in declarations for the F! Status bar help
+    QFile file2( _cerberusPath+"/docs/html/decls.txt" );
+    if( !file2.open( QIODevice::ReadOnly ) ) return;
+
+    QTextStream stream2( &file2 );
+
+    stream2.setCodec( "UTF-8" );
+
+    QString text2=stream2.readAll();
+
+    file2.close();
+
+    QStringList lines2=text2.split('\n');
+
+    for( int i=0;i<lines2.count();++i ){
+
+        QString line2=lines2.at( i );
+
+        if ( line2.startsWith("Class ") ) continue;
+        if ( line2.startsWith("Property ") ) continue;
+        if ( line2.startsWith("Module ") ) continue;
+        if ( line2.startsWith("Inherited_method  ") ) continue;
+        if ( line2.startsWith("Const ") ) continue;
+
+        line2 = line2.left(line2.length()-1);
+
+        int j2=line2.indexOf( '#' );
+        if( j2==-1 ) continue;
+
+        QString topic2=line2.right(line2.length()-j2-1);
+
+        int j3=line2.indexOf( ':' );
+        int j4=line2.indexOf( ')' );
+        QString status = topic2 + line2.mid(j3,j4-j3+1);
+        //status = status.replace(":", " : ");
+        status = status.replace("(", " (");
+        status = status.replace(",", ", ");
+        _helpF1.insert(topic2, status);
+    }
+
+
 
     connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
 }
@@ -371,11 +419,32 @@ QString MainWindow::widgetPath( QWidget *widget ){
 CodeEditor *MainWindow::editorWithPath( const QString &path ){
     for( int i=0;i<_mainTabWidget->count();++i ){
         if( CodeEditor *editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) ) ){
-            if( editor->path()==path ) return editor;
+            if( editor->path()==path ){
+                editor->_mainWnd = this;
+                return editor;
+            }
         }
     }
     return 0;
 }
+
+void MainWindow::showImage(const QString &path) {
+    if (extractExt(path).toLower()== "png") {
+       QLabel* label = new QLabel();
+       QPixmap pix(path);
+
+       label->setPixmap(pix);
+       label->setAlignment(Qt::AlignCenter);
+       int imagewidth = pix.toImage().width();
+       int imageheight = pix.toImage().height();
+       QString imgSize = QString::number(imagewidth)+"x"+ QString::number(imageheight);
+       label->setMinimumWidth(250);
+       label->setMinimumHeight(200);
+       label->setWindowTitle("CX Image Viewer-> "+ imgSize+" : "+path);
+       label->show();
+    } else QDesktopServices::openUrl( "file:/"+path );
+}
+
 
 QWidget *MainWindow::newFile( const QString &cpath ){
 
@@ -383,7 +452,7 @@ QWidget *MainWindow::newFile( const QString &cpath ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files ("+srcTypes+")" ) );
@@ -408,7 +477,7 @@ QWidget *MainWindow::newFileTemplate( const QString &cpath ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"New File from template",_defaultDir,"Source Files ("+srcTypes+")" ) );
@@ -433,6 +502,11 @@ QWidget *MainWindow::newFileTemplate( const QString &cpath ){
 QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     QString path=cpath;
+
+    if (isImageFile(path)) {
+        showImage(path);
+        return 0;
+    }
 
     if( isUrl( path ) ){
 /*
@@ -466,7 +540,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getOpenFileName( this,"Open File",_defaultDir,"Source Files ("+srcTypes+");;Image Files(*.jpg *.png *.bmp);;All Files(*.*)" ) );
@@ -477,23 +551,25 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     CodeEditor *editor=editorWithPath( path );
     if( editor ){
+        editor->_mainWnd = this;
         _mainTabWidget->setCurrentWidget( editor );
         return editor;
     }
 
-    editor=new CodeEditor;
+    editor=new CodeEditor(0,this);
+
     if( !editor->open( path ) ){
         delete editor;
         QMessageBox::warning( this,"Open File Error","Error opening file: "+path );
         return 0;
     }
 
+    editor->_mainWnd = this;
     connect( editor,SIGNAL(textChanged()),SLOT(onTextChanged()) );
     connect( editor,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChanged()) );
 
     editor->setContextMenuPolicy(Qt::CustomContextMenu);
     connect( editor,SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(onEditorMenu(const QPoint&)) );
-
 
     _mainTabWidget->addTab( editor,stripDir( path ) );
     //int tabindex = _mainTabWidget->count() - 1;
@@ -526,6 +602,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
     if (_mainTabWidget->count() > 1)
         _mainTabWidget->tabBar()->setUsesScrollButtons(true);
 
+    editor->_mainWnd = this;
     return editor;
 }
 
@@ -540,7 +617,7 @@ bool MainWindow::saveFile( QWidget *widget,const QString &cpath ){
 
         _mainTabWidget->setCurrentWidget( editor );
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"Save File As",editor->path(),"Source Files ("+srcTypes+")" ) );
@@ -736,6 +813,7 @@ void MainWindow::readSettings(){
         prefs->setValue( "stringsColor",QColor( 170,0,255 ) );
         prefs->setValue( "identifiersColor",QColor( 0,0,0 ) );
         prefs->setValue( "keywordsColor",QColor( 0,85,255 ) );
+        prefs->setValue( "keywords2Color",QColor( 0,85,255 ) );
         prefs->setValue( "lineNumberColor",QColor( 0,85,255 ) );
         prefs->setValue( "commentsColor",QColor( 0,128,128 ) );
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
@@ -759,10 +837,7 @@ void MainWindow::readSettings(){
 
         onHelpHome();
 
-
-
-
-
+        loadHelpIndex();
         return;
     }
 
@@ -793,7 +868,7 @@ void MainWindow::readSettings(){
     }
 
     enumTargets();
-
+    loadHelpIndex();
     settings.beginGroup( "mainWindow" );
     restoreGeometry( settings.value( "geometry" ).toByteArray() );
     restoreState( settings.value( "state" ).toByteArray() );
@@ -890,7 +965,6 @@ void MainWindow::readSettings(){
     qApp->setStyleSheet(css);
 
     QApplication::processEvents();
-
     QString tempPath ="";
     QDir recoredDir(appPath+"/templates/");
     QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
@@ -1488,13 +1562,9 @@ void MainWindow::onProcLineAvailable( int channel ){
 
 void MainWindow::onProcFinished(){
 
-//    qDebug()<<"onProcFinished. Flushing...";
-
     while( _consoleProc->waitLineAvailable( 0,100 ) ){
         onProcLineAvailable( 0 );
     }
-
-//    qDebug()<<"Done.";
 
     _consoleTextWidget->setTextColor( QColor( Prefs::prefs()->getColor( "console3Color" ) ) );
     print( "Done." );
@@ -2076,7 +2146,7 @@ void MainWindow::onShowHelp(){
     QString url=_helpUrls.value( tmp );
 
     if( url.isEmpty() ){
-        //qDebug()<<"Help not found for"<<tmp;
+
         url=_helpUrls.value( _helpTopic );
         if( url.isEmpty() ){
             _helpTopic="";
@@ -2091,7 +2161,13 @@ void MainWindow::onShowHelp(){
 void MainWindow::onShowHelp( const QString &topic ){
 
     QString url=_helpUrls.value( topic );
+    QString status = _helpF1.value( topic );
 
+    if ( !status.isEmpty() && _helpTopic!=topic) {
+        statusBar()->showMessage( "Help->  " + status );
+        _helpTopic=topic;
+        return;
+    }
     if( url.isEmpty() ){
         _helpTopic="";
         return;

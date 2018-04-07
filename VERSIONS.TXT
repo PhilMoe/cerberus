@@ -1,11 +1,18 @@
-***** v2018-03-14 *****
+***** v2018-04-07 *****
 
 MOD: [brl.json] Enhanced the json module and its documentation    (Author: Holzchopf)
 MOD: [CSERVER] Updated cserver to 18.03.05, its faster now and fixed a font issue    (Author: Holzchopf)
 FIX: [TRANSCC] Readded missing build files for linux.
 FIX: [FLASH] added the missing 5th parameter of 2 mouseevent calls inside the flashgames.as native file.
 FIX: [TED] Readded Fix for last selected target by PixelPaladin. It was MIA for some unknown reason.
-
+FIX: [TED] Performance issue with big files.
+NEW: [TED] Added highlighting word under caret.
+NEW: [TED] Added highlighting matching brackets.
+NEW: [TED] Background color works now in all themes.
+NEW: [TED] Added highlighting and autocapitalization of the complete API.
+NEW: [TED] Double clicking on an image file in the project browser will preview the file externally.
+MOD: [TED] F1 displays now a short help text in the statusbar at first before with a second press, open the help document.
+ 
 ***** v2018-03-02 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)

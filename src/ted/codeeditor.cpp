@@ -71,7 +71,7 @@ private:
 
 //***** CodeEditor *****
 
-CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ), completedAndSelected(false) ,_modified( 0 ),_capitalize( false ){
+CodeEditor::CodeEditor( QWidget *parent, MainWindow *wnd ):QPlainTextEdit( parent ), completedAndSelected(false) ,_modified( 0 ),_capitalize( false ), _mainWnd( wnd ) {
     QString appPath=QCoreApplication::applicationDirPath();
     #ifdef Q_OS_MAC
         appPath = extractDir(extractDir(extractDir(appPath)));
@@ -131,7 +131,10 @@ CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ), completedAnd
     highlightCurrentLine();
     flushExtraSels();
 
+    // Setting the completer
     model = new QStringListModel(this);
+    model2 = new CompleterListModel(this);
+
     completer = new QCompleter(this);
     completer->setWidget(this);
     completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -143,7 +146,7 @@ CodeEditor::CodeEditor( QWidget *parent ):QPlainTextEdit( parent ), completedAnd
 
     connect(completer, SIGNAL(activated(const QString&)),
             this, SLOT(insertCompletion(const QString&)));
-    (void) new QShortcut(QKeySequence(tr("Ctrl+I", "Complete")),
+    (void) new QShortcut(QKeySequence(tr("Ctrl+Space", "Complete")),
                          this, SLOT(performCompletion()));
 
 }
@@ -499,7 +502,7 @@ void CodeEditor::highlightCurrentLine(){
 
             i = 0;
 
-            int len = _wordunderCursor.length();
+            //int len = _wordunderCursor.length();
 
             while (b.isValid() && i < n) {
                 QString s = b.text();
@@ -747,6 +750,27 @@ void CodeEditor::onCodeTreeViewClicked( const QModelIndex &index ){
     }
 }
 
+QString CodeEditor::identAtCursor(bool fullWord) {
+    QTextCursor c = textCursor();
+    QString s;
+    if(fullWord) {
+        c.select(QTextCursor::WordUnderCursor);
+        s = c.selectedText();
+    }
+    else {
+        QString text = c.block().text();
+        int i0 = c.positionInBlock();
+        int i = i0-1;
+        while( i >= 0 && isIdent(text[i])) {
+            --i;
+        }
+        ++i;
+        s = text.mid(i, i0-i);
+    }
+
+    return (isAlpha(s[0]) ? s : "");
+}
+
 void CodeEditor::keyPressEvent( QKeyEvent *e ){
     if (completedAndSelected && handledCompletedAndSelected(e))
         return;
@@ -759,7 +783,7 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
             case Qt::Key_Enter:   // Fallthrough
             case Qt::Key_Return:  // Fallthrough
             case Qt::Key_Escape: e->ignore(); return;
-            default: completer->popup()->hide(); break;
+           // default: completer->popup()->hide(); break;
         }
     }
 
@@ -842,7 +866,18 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
 
     if( e ) QPlainTextEdit::keyPressEvent( e );
 
+    if (completer->popup()->isVisible()) performCompletion();
+
     if( _cerberus && block.userState()==-1 ){
+
+        if( key>=32 && key<=255 ){
+            if (!block.text().trimmed().startsWith("'")) {
+                QString ident = identAtCursor(false);
+                if (ident.length() >= 3 || key == 56) {
+                    //performCompletion();
+                }
+            }
+        }
 
         if( key>=32 && key<=255 ){
             if( (key>=Qt::Key_A && key<=Qt::Key_Z) || (key>=Qt::Key_0 && key<=Qt::Key_9) || (key==Qt::Key_Underscore) ){
@@ -873,7 +908,9 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
 
         _highlighter->capitalize( block,textCursor() );
         */
+
     }
+
 
 }
 
@@ -901,6 +938,8 @@ void CodeEditor::performCompletion()
 
     if (!completionPrefix.isEmpty() && completionPrefix.length() >= 3 ) {
         performCompletion(completionPrefix);
+    } else if (completionPrefix.isEmpty()) {
+        //performCompletion("");
     }
 }
 
@@ -921,7 +960,7 @@ void CodeEditor::performCompletion(const QString &completionPrefix)
         QRect rect = cursorRect();
         rect.setWidth(completer->popup()->sizeHintForColumn(0) +
                 completer->popup()->verticalScrollBar()->
-                sizeHint().width());
+                sizeHint().width()+50);
         completer->complete(rect);
     }
 }
@@ -930,10 +969,17 @@ void CodeEditor::populateModel(const QString &completionPrefix)
 {
     QStringList strings = toPlainText().split(QRegExp("\\W+"));
     strings.removeAll(completionPrefix);
+    if ( _mainWnd != 0) {
+        for( int i=0;i < _mainWnd->_completeList.count();++i ){
 
+            QString command=_mainWnd->_completeList.at( i );
+            strings << command;
+        }
+    }
     strings.removeDuplicates();
     qSort(strings.begin(), strings.end(), caseInsensitiveLessThan);
     model->setStringList(strings);
+    model2->setList(strings);
 }
 
 
@@ -941,10 +987,12 @@ void CodeEditor::insertCompletion(const QString &completion,
                                bool singleWord)
 {
     QTextCursor cursor = textCursor();
-    int numberOfCharsToComplete = completion.length() -
-            completer->completionPrefix().length();
+    //int numberOfCharsToComplete = completion.length() -
+    //        completer->completionPrefix().length();
     int insertionPosition = cursor.position();
-    cursor.insertText(completion.right(numberOfCharsToComplete));
+    //cursor.insertText(completion.right(numberOfCharsToComplete));
+    cursor.select(QTextCursor::WordUnderCursor);
+    cursor.insertText(completion);
     if (singleWord) {
         cursor.setPosition(insertionPosition);
         cursor.movePosition(QTextCursor::EndOfWord,
@@ -956,7 +1004,7 @@ void CodeEditor::insertCompletion(const QString &completion,
 
 
 bool CodeEditor::findNext( const QString &findText,bool cased,bool wrap ){
-qDebug()<<" CodeEditor::findNext";
+
     QTextDocument::FindFlags flags=0;
     if( cased ) flags|=QTextDocument::FindCaseSensitively;
 
@@ -1055,6 +1103,7 @@ QString CodeEditor::identAtCursor(){
 
 QMap<QString,QString> Highlighter::_keyWords;
 QMap<QString,QString> Highlighter::_keyWords2;
+QMap<QString,QString> Highlighter::_keyWords3;
 
 Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->document() ),_editor( editor ){
 
@@ -1096,6 +1145,13 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
         bits=kws2.split( ";" );
         for( int i=0;i<bits.size();++i ){
             _keyWords2.insert( bits.at(i).toLower(),bits.at(i) );
+        }
+
+    }
+
+    if( _keyWords3.isEmpty() ){
+        for( int i=0;i<_editor->_mainWnd->_completeList.count();++i ){
+            _keyWords3.insert( _editor->_mainWnd->_completeList.at(i).toLower(),_editor->_mainWnd->_completeList.at(i) );
         }
     }
 
@@ -1184,7 +1240,6 @@ void Highlighter::validateCodeTreeModel(){
         if( !data ) continue;
 
         if( !_blocks.contains( data ) ){
-            qDebug()<<"Highlighter::validateCodeTreeModel Block error!";
             continue;
         }
 
@@ -1257,6 +1312,7 @@ void Highlighter::onPrefsChanged( const QString &name ){
         _stringsColor=prefs->getColor("stringsColor");
         _identifiersColor=prefs->getColor("identifiersColor");
         _keywordsColor=prefs->getColor("keywordsColor");
+        _keywords2Color=prefs->getColor("keywords2Color");
         _commentsColor=prefs->getColor("commentsColor");
         _highlightColor=prefs->getColor("highlightColor");
         rehighlight();
@@ -1276,7 +1332,10 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
     }else if( isAlpha(c) ){
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
-        if( cerberusFile && keyWords().contains( text.left(i).toLower()  ) ) color=_keywordsColor;
+        if( cerberusFile &&  keyWords().contains( text.left(i).toLower() ) ) {
+            color=_keywordsColor;
+        } else if( cerberusFile &&  keyWords3().contains( text.left(i).toLower() ) ) color=_keywords2Color;
+
     }else if( c=='0' && !cerberusFile ){
         if( i<n && text[i]=='x' ){
             for( ++i;i<n && isHexDigit( text[i] );++i ){}
@@ -1352,6 +1411,9 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
         if( t.isEmpty() ) break;
 
         QString kw=keyWords().value( t.toLower() );
+        QString kw3=keyWords3().value( t.toLower() );
+
+        if ( kw.isEmpty() ) kw = kw3;
 
         if( !kw.isEmpty() && t!=kw ){
             int i0=block.position()+i;
@@ -1493,6 +1555,91 @@ void Highlighter::highlightBlock( const QString &ctext ){
         }
     }
 }
+
+//***** CompleterListModel *****
+
+int CompleterListModel::rowCount(const QModelIndex & /* parent */) const
+{
+    return _commandList.count();
+}
+
+QVariant CompleterListModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    if (index.row() >= _commandList.size())
+        return QVariant();
+
+    if (role == Qt::DisplayRole)
+        return _commandList.at(index.row());
+    else
+        return QVariant();
+}
+
+QVariant CompleterListModel::headerData(int section, Qt::Orientation orientation,
+                                     int role) const
+{
+    if (role != Qt::DisplayRole)
+        return QVariant();
+
+    if (orientation == Qt::Horizontal)
+        return QString("Column %1").arg(section);
+    else
+        return QString("Row %1").arg(section);
+}
+
+Qt::ItemFlags CompleterListModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return Qt::ItemIsEnabled;
+
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
+bool CompleterListModel::setData(const QModelIndex &index,
+                              const QVariant &value, int role)
+{
+    if (index.isValid() && role == Qt::EditRole) {
+
+        _commandList.replace(index.row(), value.toString());
+        emit dataChanged(index, index);
+        return true;
+    }
+
+    return false;
+}
+
+bool CompleterListModel::insertRows(int position, int rows, const QModelIndex &parent)
+{
+    beginInsertRows(QModelIndex(), position, position+rows-1);
+
+    for (int row = 0; row < rows; ++row) {
+        _commandList.insert(position, "");
+    }
+
+    endInsertRows();
+    return true;
+
+}
+
+bool CompleterListModel::removeRows(int position, int rows, const QModelIndex &parent)
+{
+    beginRemoveRows(QModelIndex(), position, position+rows-1);
+
+    for (int row = 0; row < rows; ++row) {
+        _commandList.removeAt(position);
+    }
+
+    endRemoveRows();
+    return true;
+
+}
+
+void CompleterListModel::setList(QStringList cmdlist){
+    _commandList << cmdlist;
+}
+
 
 //***** BlockUserData *****
 
