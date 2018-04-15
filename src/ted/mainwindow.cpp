@@ -1182,7 +1182,7 @@ void MainWindow::updateWindowTitle(){
     }else if( HelpView *helpView=qobject_cast<HelpView*>( widget ) ){
         setWindowTitle( helpView->url().toString() );
     }else{
-        setWindowTitle( "Ted V"TED_VERSION );
+        setWindowTitle( "Ted V" TED_VERSION );
     }
 }
 
@@ -2123,8 +2123,8 @@ void MainWindow::onHelpAbout(){
     }
     QString webSite = "https://www.cerberus-x.com";
     QString ABOUT= "<html><head><style>a{color:#FFEE00;}</style></head><body>"
-//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")<br><br>"
-            "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")<br><br>"
+//            "Ted V" TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")<br><br>"
+            "Ted V" TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")<br><br>"
             "A simple editor/IDE for the Cerberus programming language.<br><br>"
             "Copyright Blitz Research Ltd for Monkey X.<br><br>"
             "Cerberus X is maintained by Michael Hartlef & Martin Leidel.<br<br>"
