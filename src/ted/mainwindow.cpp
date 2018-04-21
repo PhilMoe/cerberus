@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-04-07"
+#define TED_VERSION "2018-04-21"
 
 #define SETTINGS_VERSION 2
 
@@ -803,6 +803,7 @@ void MainWindow::readSettings(){
         prefs->setValue( "smoothFonts",true );
         prefs->setValue( "tabSize",4 );
         prefs->setValue( "tabs4spaces",true );
+        prefs->setValue( "capitalizeAPI",false );
         prefs->setValue( "theme","default" );
         prefs->setValue( "backgroundColor",QColor( 255,255,255 ) );
         prefs->setValue( "console1Color",QColor( 70,70,70 ) );

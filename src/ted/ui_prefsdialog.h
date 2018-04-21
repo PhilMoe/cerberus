@@ -72,6 +72,8 @@ public:
     QLabel *sortCodeBrowserLabel;
     QCheckBox *sortCodeBrowserWidget;
     QCheckBox *highlightBracketsWidget;
+    QLabel *capitalizeAPILabel;
+    QCheckBox *capitalizeAPIWidget;
     QGroupBox *grpColors;
     QGridLayout *gridLayout;
     QFormLayout *formLayout;
@@ -88,6 +90,8 @@ public:
     ColorSwatch *identifiersColorWidget;
     QLabel *keywordsColorLabel;
     ColorSwatch *keywordsColorWidget;
+    QLabel *keywords2ColorLabel;
+    ColorSwatch *keywords2ColorWidget;
     QLabel *commentsColorLabel;
     ColorSwatch *commentsColorWidget;
     QLabel *identifiersColorLabel;
@@ -266,27 +270,37 @@ public:
         showLineNumbersLabel = new QLabel(grpOptions);
         showLineNumbersLabel->setObjectName(QStringLiteral("showLineNumbersLabel"));
 
-        formLayout_3->setWidget(8, QFormLayout::LabelRole, showLineNumbersLabel);
+        formLayout_3->setWidget(10, QFormLayout::LabelRole, showLineNumbersLabel);
 
         showLineNumbersWidget = new QCheckBox(grpOptions);
         showLineNumbersWidget->setObjectName(QStringLiteral("showLineNumbersWidget"));
 
-        formLayout_3->setWidget(8, QFormLayout::FieldRole, showLineNumbersWidget);
+        formLayout_3->setWidget(10, QFormLayout::FieldRole, showLineNumbersWidget);
 
         sortCodeBrowserLabel = new QLabel(grpOptions);
         sortCodeBrowserLabel->setObjectName(QStringLiteral("sortCodeBrowserLabel"));
 
-        formLayout_3->setWidget(9, QFormLayout::LabelRole, sortCodeBrowserLabel);
+        formLayout_3->setWidget(11, QFormLayout::LabelRole, sortCodeBrowserLabel);
 
         sortCodeBrowserWidget = new QCheckBox(grpOptions);
         sortCodeBrowserWidget->setObjectName(QStringLiteral("sortCodeBrowserWidget"));
 
-        formLayout_3->setWidget(9, QFormLayout::FieldRole, sortCodeBrowserWidget);
+        formLayout_3->setWidget(11, QFormLayout::FieldRole, sortCodeBrowserWidget);
 
         highlightBracketsWidget = new QCheckBox(grpOptions);
         highlightBracketsWidget->setObjectName(QStringLiteral("highlightBracketsWidget"));
 
         formLayout_3->setWidget(7, QFormLayout::FieldRole, highlightBracketsWidget);
+
+        capitalizeAPILabel = new QLabel(grpOptions);
+        capitalizeAPILabel->setObjectName(QStringLiteral("capitalizeAPILabel"));
+
+        formLayout_3->setWidget(8, QFormLayout::LabelRole, capitalizeAPILabel);
+
+        capitalizeAPIWidget = new QCheckBox(grpOptions);
+        capitalizeAPIWidget->setObjectName(QStringLiteral("capitalizeAPIWidget"));
+
+        formLayout_3->setWidget(8, QFormLayout::FieldRole, capitalizeAPIWidget);
 
 
         gridLayout_2->addLayout(formLayout_3, 1, 0, 1, 1);
@@ -369,15 +383,25 @@ public:
 
         formLayout->setWidget(6, QFormLayout::FieldRole, keywordsColorWidget);
 
+        keywords2ColorLabel = new QLabel(grpColors);
+        keywords2ColorLabel->setObjectName(QStringLiteral("keywords2ColorLabel"));
+
+        formLayout->setWidget(7, QFormLayout::LabelRole, keywords2ColorLabel);
+
+        keywords2ColorWidget = new ColorSwatch(grpColors);
+        keywords2ColorWidget->setObjectName(QStringLiteral("keywords2ColorWidget"));
+
+        formLayout->setWidget(7, QFormLayout::FieldRole, keywords2ColorWidget);
+
         commentsColorLabel = new QLabel(grpColors);
         commentsColorLabel->setObjectName(QStringLiteral("commentsColorLabel"));
 
-        formLayout->setWidget(7, QFormLayout::LabelRole, commentsColorLabel);
+        formLayout->setWidget(8, QFormLayout::LabelRole, commentsColorLabel);
 
         commentsColorWidget = new ColorSwatch(grpColors);
         commentsColorWidget->setObjectName(QStringLiteral("commentsColorWidget"));
 
-        formLayout->setWidget(7, QFormLayout::FieldRole, commentsColorWidget);
+        formLayout->setWidget(8, QFormLayout::FieldRole, commentsColorWidget);
 
         identifiersColorLabel = new QLabel(grpColors);
         identifiersColorLabel->setObjectName(QStringLiteral("identifiersColorLabel"));
@@ -525,6 +549,8 @@ public:
         QObject::connect(tabs4spacesWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onTabs4SpacesChanged(bool)));
         QObject::connect(highlightCaretWordWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onHighlightCaretWordChanged(bool)));
         QObject::connect(highlightBracketsWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onHighlightBracketsChanged(bool)));
+        QObject::connect(keywords2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(capitalizeAPIWidget, SIGNAL(clicked(bool)), PrefsDialog, SLOT(onCapitalizeAPIChanged(bool)));
 
         QMetaObject::connectSlotsByName(PrefsDialog);
     } // setupUi
@@ -559,6 +585,8 @@ public:
         sortCodeBrowserLabel->setText(QApplication::translate("PrefsDialog", "Sort Code Browser", 0));
         sortCodeBrowserWidget->setText(QString());
         highlightBracketsWidget->setText(QApplication::translate("PrefsDialog", "Matching brackets", 0));
+        capitalizeAPILabel->setText(QApplication::translate("PrefsDialog", "Capitalize API", 0));
+        capitalizeAPIWidget->setText(QString());
         grpColors->setTitle(QApplication::translate("PrefsDialog", "Code Editor Colors", 0));
         backgroundColorLabel->setText(QApplication::translate("PrefsDialog", "Background", 0));
         defaultColorLabel->setText(QApplication::translate("PrefsDialog", "Default", 0));
@@ -566,6 +594,13 @@ public:
         numbersColorLabel->setText(QApplication::translate("PrefsDialog", "Numbers", 0));
         stringsColorLabel->setText(QApplication::translate("PrefsDialog", "Strings", 0));
         keywordsColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords", 0));
+#ifndef QT_NO_TOOLTIP
+        keywordsColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the CX language keywords", 0));
+#endif // QT_NO_TOOLTIP
+        keywords2ColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords2", 0));
+#ifndef QT_NO_TOOLTIP
+        keywords2ColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the API", 0));
+#endif // QT_NO_TOOLTIP
         commentsColorLabel->setText(QApplication::translate("PrefsDialog", "Comments", 0));
         identifiersColorLabel->setText(QApplication::translate("PrefsDialog", "Identifiers", 0));
         grpTools->setTitle(QApplication::translate("PrefsDialog", "Tool Paths", 0));

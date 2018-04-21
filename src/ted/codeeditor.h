@@ -108,6 +108,7 @@ public:
     bool doSortCodeBrowser;
     bool _modSignal;
     bool _tabs4spaces;
+    bool _capitalizeAPI;
     QString _tabSpaceText;
     MainWindow *_mainWnd;
 

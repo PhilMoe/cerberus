@@ -151,6 +151,7 @@ int PrefsDialog::exec(){
     _ui->showLineNumbersWidget->setChecked( _prefs->getBool("showLineNumbers" ) );
     _ui->sortCodeBrowserWidget->setChecked( _prefs->getBool("sortCodeBrowser" ) );
     _ui->tabs4spacesWidget->setChecked( _prefs->getBool("tabs4spaces" ) );
+    _ui->capitalizeAPIWidget->setChecked( _prefs->getBool("capitalizeAPI" ) );
 
     _ui->themeWidget->clear();
 
@@ -203,6 +204,10 @@ void PrefsDialog::onShowLineNumbersChanged( bool state ){
 
 void PrefsDialog::onTabs4SpacesChanged( bool state ){
     _prefs->setValue( "tabs4spaces",state );
+}
+
+void PrefsDialog::onCapitalizeAPIChanged( bool state ){
+    _prefs->setValue( "capitalizeAPI",state );
 }
 
 void PrefsDialog::onSortCodeBrowserChanged( bool state ){

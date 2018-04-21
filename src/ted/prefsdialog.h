@@ -40,6 +40,7 @@ public slots:
     void onHighlightCaretWordChanged( bool state );
     void onHighlightBracketsChanged( bool state );
     void onShowLineNumbersChanged( bool state );
+    void onCapitalizeAPIChanged( bool state );
     void onTabs4SpacesChanged( bool state );
     void onSortCodeBrowserChanged( bool state );
     void onColorChanged();

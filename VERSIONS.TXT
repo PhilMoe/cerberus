@@ -1,4 +1,4 @@
-***** v2018-04-07 *****
+***** v2018-04-21 *****
 
 MOD: [brl.json] Enhanced the json module and its documentation    (Author: Holzchopf)
 MOD: [CSERVER] Updated cserver to 18.03.05, its faster now and fixed a font issue    (Author: Holzchopf)
@@ -13,6 +13,7 @@ NEW: [TED] Background color works now in all themes.
 NEW: [TED] Added highlighting and autocapitalization of the complete API.
 NEW: [TED] Double clicking on an image file in the project browser will preview the file externally.
 MOD: [TED] F1 displays now a short help text in the statusbar at first before with a second press, open the help document.
+NEW: [AGK] Added support for AppGameKit Windows 64bit Desktop platform.
  
 ***** v2018-03-02 *****
 

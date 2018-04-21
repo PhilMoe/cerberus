@@ -1,0 +1,122 @@
+
+Import builder
+Import os
+
+Class AGKBuilder Extends Builder
+
+	Method New( tcc:TransCC )
+		Super.New( tcc )
+	End
+	
+	Method Config:String()
+		Local config:=New StringStack
+		Local l:Int
+		For Local kv:=Eachin GetConfigVars()
+			If kv.Key.StartsWith("AGK_")
+				l = kv.Key.Length()
+				config.Push "#define " + kv.Key[4..l] +" "+kv.Value
+			Else
+				config.Push "#define CFG_"+kv.Key+" "+kv.Value
+			Endif
+		Next
+		Return config.Join( "~n" )
+	End
+	
+	'***** Vc2017 *****
+	Method MakeVc2017:Void()
+
+		Local buildpath:String  
+		buildpath = os.CurrentDir()+"\AGKTemplate\apps\template_windows_vs2017_64"		
+		
+		Local template:=LoadString( buildpath+"\template.cpp" )
+		Local templateh:=LoadString( buildpath+"\template.h" )
+		
+		template=ReplaceBlock( template,"TRANSCODE",transCode )
+		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
+		
+		SaveString template,( buildpath+"\template.cpp" )
+		SaveString templateh,( buildpath+"\template.h" )
+		
+		If tcc.opt_build
+
+			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" "+buildpath+"\Template.sln"
+			CreateDataDir buildpath+"\Final"+"/data"			
+			If tcc.opt_run
+			
+				ChangeDir buildpath+"\Final"
+
+				Execute "Template64"
+				
+			Endif
+		Endif
+	End
+
+	'***** Builder *****	
+	Method IsValid:Bool()
+		Select HostOS
+		Case "winnt"
+		'Print("~q"+tcc.AGK_PATH.Replace("\","/")+"/Tier1/Compiler/AGKBroadcaster.exe~q")
+		'Print(RealPath(tcc.AGK_PATH))
+		'Print(FileType(RealPath(tcc.AGK_PATH)))
+		'Print(FileType(RealPath(tcc.AGK_PATH)+"/Tier 1/Compiler/AGKBroadcaster.exe"))
+			If FileType(tcc.AGK_PATH+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_FILE And tcc.MSBUILD_PATH Return True
+	
+		Default
+			Return True
+		End
+		Return False
+	End
+	
+	Method Begin:Void()
+		ENV_LANG="cpp"
+		_trans=New CppTranslator
+	End
+	
+	Method MakeTarget:Void()
+		Select HostOS
+		Case "winnt"
+			MakeVc2017
+		End
+	End
+
+	' Process external shared libraries	to copy
+#rem
+	Method ProcessExternalLibs( config:String, arch:String, link:String )
+		Local libStr:String = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		If libStr = "" Then Return
+
+		Local libcopy:String[] = libStr.Split( ";" )
+		Local dst:String = config+arch
+
+		For Local i:= Eachin libcopy
+			If HostOS="winnt"
+				If i <> ""
+					If FileType( dst+"/"+i+".dll" ) = FILETYPE_FILE Continue
+
+					If CopyFile( tcc._libs+"Win"+arch+"/"+i+".dll", dst+"/"+i+".dll" ) = 1
+						Print "Copied "+i+".dll to "+dst
+					Else
+						Print "Failed to copy "+i+" to "+dst
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_COPYING" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_COPYING", dst+"/"+i+"_COPYING" ) = 1
+							Print "Copied "+i+"_COPYING to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_LICENCE" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_LICENCE", dst+"/"+i+"_LICENCE" ) = 1
+							Print "Copied "+i+"_LICENCE to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+				Endif
+			Endif
+		Next
+	End
+#end
+End

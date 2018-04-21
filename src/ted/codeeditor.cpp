@@ -124,7 +124,7 @@ CodeEditor::CodeEditor( QWidget *parent, MainWindow *wnd ):QPlainTextEdit( paren
     _tabs4spaces = Prefs::prefs()->getBool( "tabs4spaces" );
     _tabSpaceText = " ";
     _tabSpaceText = _tabSpaceText.repeated(Prefs::prefs()->getInt( "tabSize" ));
-
+    _capitalizeAPI = Prefs::prefs()->getBool( "capitalizeAPI" );
 
     onPrefsChanged( "" );
     updateLineNumberAreaWidth(0);
@@ -658,7 +658,7 @@ void CodeEditor::onPrefsChanged( const QString &name ){
     Prefs *prefs=Prefs::prefs();
 
     if( t=="" || t=="backgroundColor" || t=="highlightColor" || t=="fontFamily" || t=="fontSize" || t=="tabSize" || t=="smoothFonts"
-              || t=="highlightCurrLine" || t=="highlightCurrWord" || t=="highlightBrackets" || t=="showLineNumbers" || t=="sortCodeBrowser" || t=="tabs4spaces" ){
+              || t=="highlightCurrLine" || t=="highlightCurrWord" || t=="highlightBrackets" || t=="showLineNumbers" || t=="sortCodeBrowser" || t=="tabs4spaces" || t=="capitalizeAPI" ){
 
         QColor bg=prefs->getColor( "backgroundColor" );
         QColor fg( 255-bg.red(),255-bg.green(),255-bg.blue() );
@@ -707,6 +707,7 @@ void CodeEditor::onPrefsChanged( const QString &name ){
         _tabs4spaces = prefs->getBool("tabs4spaces");
         _tabSpaceText = " ";
         _tabSpaceText = _tabSpaceText.repeated(prefs->getInt( "tabSize" ));
+        _capitalizeAPI = prefs->getBool("capitalizeAPI");
     }
 }
 
@@ -1411,10 +1412,11 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
         if( t.isEmpty() ) break;
 
         QString kw=keyWords().value( t.toLower() );
-        QString kw3=keyWords3().value( t.toLower() );
+        if (_editor->_capitalizeAPI){
+            QString kw3=keyWords3().value( t.toLower() );
 
-        if ( kw.isEmpty() ) kw = kw3;
-
+            if ( kw.isEmpty() ) kw = kw3;
+        }
         if( !kw.isEmpty() && t!=kw ){
             int i0=block.position()+i;
             int i1=i0+t.length();

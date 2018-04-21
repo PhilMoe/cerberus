@@ -11,6 +11,7 @@ Import psm
 Import stdcpp
 Import winrt
 Import xna
+Import agk
 
 Function Builders:StringMap<Builder>( tcc:TransCC )
 	Local builders:=New StringMap<Builder>
@@ -25,6 +26,7 @@ Function Builders:StringMap<Builder>( tcc:TransCC )
 	builders.Set "stdcpp",New StdcppBuilder( tcc )
 	builders.Set "winrt",New WinrtBuilder( tcc )
 	builders.Set "xna",New XnaBuilder( tcc )
+	builders.Set "agk",New AGKBuilder( tcc )
 	
 	Return builders
 End
