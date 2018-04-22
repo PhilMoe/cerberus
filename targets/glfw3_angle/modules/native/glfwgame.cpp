@@ -64,6 +64,7 @@ private:
 	static void OnKey( GLFWwindow *window,int key,int scancode,int action,int mods );
 	static void OnChar( GLFWwindow *window,unsigned int chr );
 	static void OnMouseButton( GLFWwindow *window,int button,int action,int mods );
+	static void OnMouseWheel( GLFWwindow *window, double x, double y );
 	static void OnCursorPos( GLFWwindow *window,double x,double y );
 	static void OnWindowClose( GLFWwindow *window );
 	static void OnWindowSize( GLFWwindow *window,int width,int height );
@@ -523,16 +524,21 @@ void BBGlfwGame::OnMouseButton( GLFWwindow *window,int button,int action,int mod
 	glfwGetCursorPos( window,&x,&y );
 	switch( action ){
 	case GLFW_PRESS:
-		_glfwGame->MouseEvent( BBGameEvent::MouseDown,button,x,y );
+		_glfwGame->MouseEvent( BBGameEvent::MouseDown,button,x,y,0.0 );
 		break;
 	case GLFW_RELEASE:
-		_glfwGame->MouseEvent( BBGameEvent::MouseUp,button,x,y );
+		_glfwGame->MouseEvent( BBGameEvent::MouseUp,button,x,y,0.0 );
 		break;
 	}
 }
 
+void BBGlfwGame::OnMouseWheel( GLFWwindow *window, double x, double z )
+{
+  _glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,0.0,0.0,z );
+}
+
 void BBGlfwGame::OnCursorPos( GLFWwindow *window,double x,double y ){
-	_glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,x,y );
+	_glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,x,y,0.0 );
 }
 
 void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
@@ -628,6 +634,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwSetKeyCallback( _window,OnKey );
 	glfwSetCharCallback( _window,OnChar );
 	glfwSetMouseButtonCallback( _window,OnMouseButton );
+	glfwSetScrollCallback( _window, OnMouseWheel );
 	glfwSetCursorPosCallback( _window,OnCursorPos );
 	glfwSetWindowCloseCallback(	_window,OnWindowClose );
 	glfwSetWindowSizeCallback(_window,OnWindowSize );

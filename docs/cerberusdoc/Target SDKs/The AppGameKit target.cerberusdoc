@@ -15,6 +15,7 @@ which modules you want to install. Under the Workloads tab, tick Desktop develop
 Expand Desktop development with C++, and tick the optional components “Windows XP support for
 C++” and “C++/CLI support”, as well as the ones that are ticked by default. Then click install.
 
+Next you need to build and run the [[../../targets/appgamekit/tools/AGKBuildTarget.cxs|AGKBuildTarget]] C++ tool. This will actually create the agk2 module, the help files and the target. Please run it after you have installed AGK and set the AGK_PATH variable inside your [[Trans]] config file.
 
 >> Notes
 

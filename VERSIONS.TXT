@@ -1,3 +1,9 @@
+***** v2018-04-22 *****
+
+FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
+NEW: [GLFW.ANGLE] Added mousewheel event.
+
+
 ***** v2018-04-21 *****
 
 MOD: [brl.json] Enhanced the json module and its documentation    (Author: Holzchopf)
