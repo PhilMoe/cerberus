@@ -17,6 +17,22 @@ Global Seed=1234
 '
 'Should probably be & $ffffffff? Think about it later!
 '
+
+' Rnd() won't return 0:
+' for Rnd() to return 0, either one of those cases should arrive
+' * Seed Shr 8 = 0
+'	this is only possible, if previous Seed was approx -609.13,
+'	which can't be the case for 32bit integers
+' * Seed Shr 8 is a multiple of $1000000
+'	with Seed Shr 8 = (x*A+C) / 256 and $1000000 = 2^24, this leads to
+'	(x*A+C) = 2^32 * N
+'	this has solutions for
+'	x = -4294967296 n - 3660181531 and N = 1664525 n + 1418512
+'	x = 4294967296 n + 634785765 and N = 1664525 n + 246013
+'	with n being an integer > 0
+'	none of the solutions for x (old value of Seed) can be stored in a
+'	32bit integer
+' Therefore, this implementation of Rnd() will never return 0.0
 Function Rnd#()
 	Seed=(Seed*A+C)|0
 	Return Float(Seed Shr 8 & $ffffff)/$1000000

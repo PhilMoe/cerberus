@@ -4,9 +4,26 @@
 The random module provides functions to generate random numbers.
 
 
+<pre>
+Print Rnd()				' anything between 0.0 and 1.0
+Print Int(Rnd(10))		' any integer from 0 to 9
+Print Int(Rnd(5,10))	' any integer from 5 to 9
+Print (Int(Rnd(21))-10)	' any integer from -10 to 10
+</pre>
+
+
 # Global Seed:Int
 
 The current random number generator seed used by Rnd.
+
+A common way to initialize seed is to use the current system time, so the random number generator always generates different sequences after every start up:
+
+
+<pre>
+Local date := GetDate()
+Seed = date[3] * 3600000 + date[4] * 60000 + date[5] * 1000 + date[6]
+</pre>
+
 
 Links: 
 
@@ -15,7 +32,14 @@ Links:
 
 # Function Rnd:Float()
 
-Returns a random float in the range 0 (inclusive) to 1 (exclusive).
+Returns a random float in the range 0 (exclusive) to 1 (exclusive).
+
+
+<pre>
+Print Rnd()			' anything between 0.0 and 1.0
+Print Int(Rnd())	' always 0
+</pre>
+
 
 Links: 
 
@@ -24,7 +48,14 @@ Links:
 
 # Function Rnd:Float(range:Float)
 
-Returns a random float in the range 0 (inclusive) to range (exclusive).
+Returns a random float in the range 0 (exclusive) to range (exclusive).
+
+
+<pre>
+Print Rnd(10)			' anything between 0.0 and 10.0
+Print Int(Rnd(10))		' any integer from 0 to 9
+</pre>
+
 
 Links: 
 
@@ -33,7 +64,20 @@ Links:
 
 # Function Rnd:Float(low:Float,high:Float)
 
-Returns a random float in the range low (inclusive) to high (exclusive).
+Returns a random float in the range low (exclusive) to high (exclusive).
+
+
+<pre>
+Print Rnd(5,10)			' anything between 5.0 and 1.0
+Print Int(Rnd(5,10))	' any integer from 5 to 9
+</pre>
+
+
+Attention: When trying to generate integers around 0, don't write Int(Rnd(-10,10))! Because all numbers between -1.0 and +1.0 will get cast to 0, doubling the chance for a 0. Instead, write:
+<pre>
+Print (Int(Rnd(21))-10)	' any integer (from 0 to 20)-10 = from -10 to 10
+</pre>
+
 
 Links: 
 
