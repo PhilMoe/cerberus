@@ -68,11 +68,18 @@ Params:
 @x - floating point value in the range -1 to 1 (inclusive).
 
 
-# Function ATan2:Float(x:Float,y:Float)
+# Function ATan2:Float(y:Float,x:Float)
 
-Returns the arc tangent of @x / @y, in degrees.
+Returns the arc tangent of @x / @y, in degrees ranging from -180 to +180.
 
 The function uses the signs of @x and @y to compute the correct quadrant for the result.
+
+<pre>
+Print Atan2(0,1)	' 0
+Print Atan2(1,1)	' 45
+Print Atan2(1,0)	' 90
+Print Atan2(-1,0)	' -90
+</pre>
 
 Params: 
 
@@ -133,11 +140,18 @@ Params:
 @x - floating point value in the range -1 to 1 (inclusive).
 
 
-# Function ATan2r:Float(x:Float,y:Float)
+# Function ATan2r:Float(y:Float,x:Float)
 
-Returns the arc tangent of @x / @y, in radians.
+Returns the arc tangent of @x / @y, in radians ranging from -PI to +PI.
 
 The function uses the signs of @x and @y to compute the correct quadrant for the result.
+
+<pre>
+Print Atan2r(0,1)	' 0
+Print Atan2r(1,1)	' approx PI/4
+Print Atan2r(1,0)	' approx PI/2
+Print Atan2r(-1,0)	' approx -PI/2
+</pre>
 
 Params: 
 
