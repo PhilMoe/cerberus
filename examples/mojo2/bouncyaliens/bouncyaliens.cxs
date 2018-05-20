@@ -126,7 +126,7 @@ Class MyApp Extends App
 				Next
 			Else
 				If fullscreen ToggleFullscreen			
-				OpenUrl "http://www.blitzbasic.com"
+				OpenUrl "http://www.cerberus-x.com"
 			Endif
 		Endif
 	
