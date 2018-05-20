@@ -2,15 +2,19 @@
 ' This file a C++ Tool
 
 #If TARGET<>"stdcpp"
-#Error "Invalid target. Please select C++ Tool!"
+'#Error "Invalid target. Please select C++ Tool!"
 #Endif
 
 '#GLFW_USE_MINGW = False
 #TEXT_FILES+="*.html|*.htm"
 Strict
 
-Import brl
+Import brl.filestream
+Import brl.requesters
 Import os
+
+#GLFW_APP_LABEL="AGKBuildTarget V1.01"
+#GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
 Global _j:Int
@@ -66,31 +70,38 @@ Function Main:Int()
 
 	'Local currPath:= CurrentDir()
 	'Print RealPath("../../../../../bin/config.winnt.txt")
-	Local cerberusPath:= RealPath("../../../../..")
-	'Print cerberusPath
-	Local cfgFile := FileStream.Open(cerberusPath+"/bin/config.winnt.txt","r")
-	If cfgFile <> Null
-		Local cfgLines := cfgFile.ReadString()
-		Local lines:= cfgLines.Split("~n")
-		For Local line:= Eachin lines
-			If line.StartsWith( "AGK_PATH")
-				agk_path = line[9..].Replace("~q","").Replace("\","/")
-				Exit
-			Endif
-		Next
-		cfgFile.Close()
-	Else
-		Print("config file could not be opened!")
-	Endif
+	'Local cerberusPath:= RealPath("../../../../..")
+	Local cerberusPath := RequestDir("Please select the Cerberus X directory","C:\")
 	
-'	Print (agk_path)
-'	Print FileType(agk_path)
-'	Print (agk_path+helppath)
-'	Print FileType(agk_path+helppath)
-'	Print (agk_path+apipath)
-'	Print FileType(agk_path+apipath)
+	If FileType(cerberusPath+"/Cerberus.exe") = FILETYPE_NONE
+		Notify ("Error", "Cerberus directory was not selected!", True)
+		ExitApp(0)
+	Endif
+	Print cerberusPath
+'	Local cfgFile := FileStream.Open(cerberusPath+"/bin/config.winnt.txt","r")
+'	If cfgFile <> Null
+'		Local cfgLines := cfgFile.ReadString()
+'		Local lines:= cfgLines.Split("~n")
+'		For Local line:= Eachin lines
+'			If line.StartsWith( "AGK_PATH")
+'				agk_path = line[9..].Replace("~q","").Replace("\","/")
+'				Exit
+'			Endif
+'		Next
+'		cfgFile.Close()
+'	Else
+'		Print("config file could not be opened!")
+'	Endif
+	agk_path = RequestDir("Please select the AGK directory","C:/Program Files (x86)/The Game Creators/AGK2")
+	'Print (agk_path)
+	'Print FileType(agk_path)
+    'Print (agk_path+helppath)
+	'Print FileType(agk_path+helppath)
+	'Print (agk_path+apipath)
+	'Print FileType(agk_path+apipath)
 	If FileType(agk_path+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_NONE
-		Error ("AGK_PATH isn't set inside the config file!")
+		Notify ("Error", "AGK_PATH isn't set inside the config file!", True)
+		ExitApp(0)
 	Endif
 	
 	Local helpfile := FileStream.Open(agk_path+helppath, "r")
@@ -310,7 +321,7 @@ Function Main:Int()
 		sdocs += "~n"
 		Local helptxt:String
 		
-		Local fileh := FileStream.Open("../../agk2_help.txt","r")
+		Local fileh := FileStream.Open(cerberusPath+"/targets/appgamekit/tools/agk2_help.txt","r")
 		If fileh <> Null
 			helptxt = fileh.ReadString()
 			filec.Close()
@@ -373,40 +384,40 @@ Function Main:Int()
 
 
 		' Copy constants module file
-		CopyFile("../../agk2_constants.cxs",cerberusPath+"/modules/agk2/agk2_constants.cxs")
+		CopyFile(cerberusPath+"/targets/appgamekit/tools/agk2_constants.cxs",cerberusPath+"/modules/agk2/agk2_constants.cxs")
 	Endif
 	
-	BuildTemplate(agk_path)
-	
+	BuildTemplate(agk_path, cerberusPath)
+	Notify( "AGKBuildTarget.exe", "The AppGamekit Target was successfully build!", false )
 	Return 0
 End
 
-Function BuildTemplate:Void(_path:String)
-		If FileType(RealPath("../../../template/AGKTemplate"))=FILETYPE_NONE
+Function BuildTemplate:Void(_path:String, cerberusPath:string)
+		'If FileType(RealPath(cerberusPath"/targets/appgamekit/template/AGKTemplate"))=FILETYPE_NONE
 'Print RealPath("../../../")		 
-			CreateDir(RealPath("../../../template/AGKTemplate"))
-			CreateDir(RealPath("../../../template/AGKTemplate/apps"))
-			CreateDir(RealPath("../../../template/AGKTemplate/platform"))
-			CreateDir(RealPath("../../../template/AGKTemplate/platform/windows"))
-			CreateDir(RealPath("../../../template/AGKTemplate/platform/windows/Lib"))
-		Endif
-		CopyDir(_path+"/Tier 2/bullet",RealPath("../../../template/AGKTemplate/bullet"), True)
-		CopyDir(_path+"/Tier 2/common",RealPath("../../../template/AGKTemplate/common"), True)
-		CopyDir(_path+"/Tier 2/platform/windows/Lib/VS2017",RealPath("../../../template/AGKTemplate/platform/windows/Lib/VS2017"), True)
-		CopyDir(_path+"/Tier 2/platform/windows/Source",RealPath("../../../template/AGKTemplate/platform/windows/Source"), True)
-		CopyDir(_path+"/Tier 2/apps/template_windows_vs2017_64",RealPath("../../../template/AGKTemplate/apps/template_windows_vs2017_64"), True)
+			CreateDir((cerberusPath+"/targets/appgamekit/template/AGKTemplate"))
+			CreateDir((cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps"))
+			CreateDir((cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform"))
+			CreateDir((cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/windows"))
+			CreateDir((cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/windows/Lib"))
+		'Endif
+		CopyDir(_path+"/Tier 2/bullet",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/bullet"), True)
+		CopyDir(_path+"/Tier 2/common",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/common"), True)
+		CopyDir(_path+"/Tier 2/platform/windows/Lib/VS2017",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/windows/Lib/VS2017"), True)
+		CopyDir(_path+"/Tier 2/platform/windows/Source",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/windows/Source"), True)
+		CopyDir(_path+"/Tier 2/apps/template_windows_vs2017_64",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64"), True)
 		
 		' modify the template.h file
-		Local templateh:=LoadString("../../../template/AGKTemplate/apps/template_windows_vs2017_64/template.h" )
+		Local templateh:=LoadString(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.h" )
 
 		Local _starth:=templateh.Find( "#define DEVICE_WIDTH 1024" )
 		Local _endh:=templateh.Find( "// used to make a more unique folder for the write path" )
 		
 		templateh = templateh[0.._starth]+"//${CONFIG_BEGIN}~n//${CONFIG_END}~n~n"+templateh[_endh..templateh.Length()]
-		SaveString templateh,( "../../../template/AGKTemplate/apps/template_windows_vs2017_64/template.h" )
+		SaveString templateh,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.h" )
 
 		' modify the template.cpp file
-		Local template:=LoadString("../../../template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
+		Local template:=LoadString(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
 
 		Local _end:=template.Find( "// Namespace" )
 		Local _start:=_end-1
@@ -423,5 +434,7 @@ Function BuildTemplate:Void(_path:String)
 		
 		template = template[0.._start-1]+"~treturn bbMain(); "+template[_end..template.Length()]
 
-		SaveString template,( "../../../template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
+		SaveString template,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
+		
+		
 End
