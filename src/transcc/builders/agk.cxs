@@ -19,6 +19,7 @@ Class AGKBuilder Extends Builder
 				config.Push "#define CFG_"+kv.Key+" "+kv.Value
 			Endif
 		Next
+		config.Push "#define WINDOW_TITLE ~qCerberusGame~q"
 		Return config.Join( "~n" )
 	End
 	
@@ -51,18 +52,46 @@ Class AGKBuilder Extends Builder
 		Endif
 	End
 
+	'***** XCode *****
+	Method MakeXcode:Void()
+
+		Local buildpath:String  
+		buildpath = os.CurrentDir()+"/AGKTemplate/apps/template_mac"		
+	
+		Local template:=LoadString( buildpath+"/template.cpp" )
+		Local templateh:=LoadString( buildpath+"/template.h" )
+		
+		template=ReplaceBlock( template,"TRANSCODE",transCode )
+		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
+		
+		SaveString template,( buildpath+"/template.cpp" )
+		SaveString templateh,( buildpath+"/template.h" )
+		
+		If tcc.opt_build
+
+			ChangeDir buildpath
+			Execute "xcodebuild -configuration "+casedConfig+ " PRODUCT_NAME=CerberusGame"
+			CreateDataDir buildpath+"/build/"+casedConfig+"/CerberusGame.app/Contents/Resources/data"			
+			If tcc.opt_run
+			
+				ChangeDir buildpath+"/build/"+casedConfig
+				ChangeDir "CerberusGame.app/Contents/MacOS"
+'Print ("currDir= "+CurrentDir)				
+				Execute "./CerberusGame"				
+			Endif
+		Endif
+	End
+
+
 	'***** Builder *****	
 	Method IsValid:Bool()
 		Select HostOS
-		Case "winnt"
-		'Print("~q"+tcc.AGK_PATH.Replace("\","/")+"/Tier1/Compiler/AGKBroadcaster.exe~q")
-		'Print(RealPath(tcc.AGK_PATH))
-		'Print(FileType(RealPath(tcc.AGK_PATH)))
-		'Print(FileType(RealPath(tcc.AGK_PATH)+"/Tier 1/Compiler/AGKBroadcaster.exe"))
-			If FileType(tcc.AGK_PATH+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_FILE And tcc.MSBUILD_PATH Return True
-	
-		Default
-			Return True
+			Case "winnt"
+				If FileType(tcc.AGK_PATH+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_FILE And tcc.MSBUILD_PATH Return True
+			Case "macos"
+				If FileType(tcc.AGK_PATH+"/AppGameKit.app") = FILETYPE_DIR Return True
+			Default
+				Return True
 		End
 		Return False
 	End
@@ -74,8 +103,10 @@ Class AGKBuilder Extends Builder
 	
 	Method MakeTarget:Void()
 		Select HostOS
-		Case "winnt"
-			MakeVc2017
+			Case "winnt"
+				MakeVc2017		
+			Case "macos"
+				MakeXcode
 		End
 	End
 

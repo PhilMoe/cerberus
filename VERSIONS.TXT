@@ -1,7 +1,8 @@
-***** v2018-04-22 *****
+***** v2018-05-21 *****
 
 FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
 NEW: [GLFW.ANGLE] Added mousewheel event.
+NEW: [AGK] Added support for AppGameKit OSX 64bit Desktop platform.
 
 
 ***** v2018-04-21 *****

@@ -1,8 +1,12 @@
 ' To build the agk2 module and its documentation automatically, just build and run
-' This file a C++ Tool
+' this file as a GLFW Desktop Game
 
-#If TARGET<>"stdcpp"
-'#Error "Invalid target. Please select C++ Tool!"
+#If TARGET<>"glfw"
+#Error "Invalid target. Please select Desktop Game (Glfw3)!"
+#Endif
+
+#If HOST = "linux"
+#Error "Invalid platform! Currently not available in Linux!"
 #Endif
 
 '#GLFW_USE_MINGW = False
@@ -13,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.01"
+#GLFW_APP_LABEL="AGKBuildTarget V1.02"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -23,8 +27,10 @@ Global _j2:Int
 Global outs:String
 Global outcpp:String
 Global outdocs:String
+
 Global helppath:String ="/Tier 1/Help/keywordlinks.txt"		
 Global apipath:String ="/Tier 1/Editor/data/tags/main.agc.tags"		
+
 Global helpmap:StringMap<String>
 Global apiMap:StringMap<String>
 
@@ -64,45 +70,83 @@ Function Main:Int()
 	Local oldAPI:String
 	Local variant:Int = 0
 	Local agk_path:String
+	Local agk_EXE:String
 	Local helpMap2:StringMap<String> = New StringMap<String>
 	Local helpTopic:StringMap<String> = New StringMap<String>
 	Local transMap:StringMap<String> = New StringMap<String>
+	Local cerberusPath:String
+	Local cerberusEXE:String
 
-	'Local currPath:= CurrentDir()
-	'Print RealPath("../../../../../bin/config.winnt.txt")
-	'Local cerberusPath:= RealPath("../../../../..")
-	Local cerberusPath := RequestDir("Please select the Cerberus X directory","C:\")
+
+	' Select the cerberus directory
+	If HostOS() = "winnt" 
+		cerberusPath = "C:\"
+		cerberusEXE = "\Cerberus.exe"
+	Else
+		cerberusPath = "/Applications/Cerberus"
+		cerberusEXE = "/Cerberus.app"
+	Endif 
 	
-	If FileType(cerberusPath+"/Cerberus.exe") = FILETYPE_NONE
+	If HostOS() = "macos"
+		Notify ("AGKBuildTarget", "Please select the Cerberus X directory!", False)
+	Endif 
+	cerberusPath = RequestDir("Please select the Cerberus X directory",cerberusPath)
+	
+'Print (cerberusPath+cerberusEXE)	
+
+	If FileType(cerberusPath+cerberusEXE) = FILETYPE_NONE
 		Notify ("Error", "Cerberus directory was not selected!", True)
 		ExitApp(0)
 	Endif
-	Print cerberusPath
-'	Local cfgFile := FileStream.Open(cerberusPath+"/bin/config.winnt.txt","r")
-'	If cfgFile <> Null
-'		Local cfgLines := cfgFile.ReadString()
-'		Local lines:= cfgLines.Split("~n")
-'		For Local line:= Eachin lines
-'			If line.StartsWith( "AGK_PATH")
-'				agk_path = line[9..].Replace("~q","").Replace("\","/")
-'				Exit
-'			Endif
-'		Next
-'		cfgFile.Close()
-'	Else
-'		Print("config file could not be opened!")
-'	Endif
-	agk_path = RequestDir("Please select the AGK directory","C:/Program Files (x86)/The Game Creators/AGK2")
-	'Print (agk_path)
-	'Print FileType(agk_path)
-    'Print (agk_path+helppath)
-	'Print FileType(agk_path+helppath)
-	'Print (agk_path+apipath)
-	'Print FileType(agk_path+apipath)
-	If FileType(agk_path+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_NONE
-		Notify ("Error", "AGK_PATH isn't set inside the config file!", True)
+
+
+	' Select the AGK directory
+	If HostOS() = "winnt" 
+		agk_path = "C:/Program Files (x86)/The Game Creators/AGK2"
+		agk_EXE = "/Tier 1/Compiler/AGKBroadcaster.exe"
+	Else
+		agk_path = "/Applications/AGKMac"
+		agk_EXE = "/AppGameKit.app"
+	Endif 
+
+
+
+	If HostOS() = "macos"
+		Notify ("AGKBuildTarget", "Please select the AGK directory!", False)
+	Endif 
+	agk_path = RequestDir("Please select the AGK directory",agk_path)
+	
+'Print (agk_path+agk_EXE)
+
+	If FileType(agk_path+agk_EXE) = FILETYPE_NONE
+		Notify ("Error", "AGK Directory was not selected!", True)
 		ExitApp(0)
 	Endif
+	
+	' keywords.txt Datei finden
+	If HostOS() = "macos"
+		helppath ="/AppGameKit.app/Contents/Resources/share/Help/keywordlinks.txt"
+	Endif		
+
+	If FileType(agk_path+helppath) = FILETYPE_NONE
+		Notify ("Error", "AGK keywords.txt was not found!", True)
+		ExitApp(0)
+	Endif
+	
+	' main.agc.tags finden
+	If HostOS() = "macos"
+		apipath ="/AppGameKit.app/Contents/Resources/share/Geany/tags/main.agc.tags"	
+	Endif		
+	
+'Print(agk_path+apipath)
+
+	If FileType(agk_path+apipath) = FILETYPE_NONE
+		Notify ("Error", "AGK main.agc.tags was not found!", True)
+		ExitApp(0)
+	Endif
+
+	
+
 	
 	Local helpfile := FileStream.Open(agk_path+helppath, "r")
 	If helpfile <> Null
@@ -387,8 +431,12 @@ Function Main:Int()
 		CopyFile(cerberusPath+"/targets/appgamekit/tools/agk2_constants.cxs",cerberusPath+"/modules/agk2/agk2_constants.cxs")
 	Endif
 	
-	BuildTemplate(agk_path, cerberusPath)
-	Notify( "AGKBuildTarget.exe", "The AppGamekit Target was successfully build!", false )
+	If HostOS() = "winnt"
+		BuildTemplate(agk_path, cerberusPath)
+	Else
+		BuildTemplateOSX(agk_path, cerberusPath)
+	Endif
+	Notify( "AGKBuildTarget", "The AppGamekit Target was successfully build!", false )
 	Return 0
 End
 
@@ -435,6 +483,75 @@ Function BuildTemplate:Void(_path:String, cerberusPath:string)
 		template = template[0.._start-1]+"~treturn bbMain(); "+template[_end..template.Length()]
 
 		SaveString template,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
+		
+		
+End
+
+Function BuildTemplateOSX:Void(_path:String, cerberusPath:String)
+	Local tier2Path:String = ""
+	
+	Notify ("AGKBuildTarget", "Please select the Tier2 project directory", False)
+
+	tier2Path = RequestDir("Please select the Tier2 project directory",_path)
+Print(tier2Path)
+
+	
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/English.lproj")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/icons.iconset")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/media")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/bullet")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/common")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple/Lib")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple/Lib/Release")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple/Lib/ReleaseLite")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple/Source")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/apple/Source/Social Plugins")
+	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac/DDHidLib")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac/GLFW")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac/Lib")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac/Lib/Release")
+	'CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac/Source")
+
+	CopyDir(tier2Path+"/bullet",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/bullet"), True)
+	CopyDir(tier2Path+"/common",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/common"), True)
+	CopyDir(tier2Path+"/platform/mac",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/platform/mac"), True)
+	
+	CopyDir(tier2Path+"/apps/template_mac",(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac"), True)
+	
+	' modify the template.h file
+	Local templateh:=LoadString(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/template.h" )
+
+	Local _starth:=templateh.Find( "#define DEVICE_WIDTH 1024" )
+	Local _endh:=templateh.Find( "// used to make a more unique folder for the write path" )
+	
+	templateh = templateh[0.._starth]+"//${CONFIG_BEGIN}~n//${CONFIG_END}~n~n"+templateh[_endh..templateh.Length()]
+	SaveString templateh,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/template.h" )
+
+	' modify the template.cpp file
+	Local template:=LoadString(cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/template.cpp" )
+
+	Local _end:=template.Find( "// Namespace" )
+	Local _start:=_end-1
+	
+	template = template[0.._start-1]+"~n//${TRANSCODE_BEGIN}~n//${TRANSCODE_END}~n~n"+template[_end..template.Length()]
+
+	_start=template.Find( "agk::SetVirtualResolution" )
+	_end=template.Find( "int app::Loop" )-5
+	
+	template = template[0.._start-1]+"~tgc_init1();~n~tbbInit();~n~tgc_init2();~n"+template[_end..template.Length()]
+
+	_start=template.Find( "agk::Print( agk::ScreenFPS(" )
+	_end=template.Find( "// return 1 to close app" )
+	
+	template = template[0.._start-1]+"~treturn bbMain(); "+template[_end..template.Length()]
+
+	SaveString template,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/template.cpp" )
 		
 		
 End
