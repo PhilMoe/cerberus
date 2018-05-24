@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-04-21"
+#define TED_VERSION "2018-05-24"
 
 #define SETTINGS_VERSION 2
 
@@ -36,7 +36,7 @@ See LICENSE.TXT for licensing terms.
 
 #define _QUOTE(X) #X
 //xxxxxxx
-//#define _STRINGIZE( X ) _QUOTE(X)
+#define _STRINGIZE( X ) _QUOTE(X)
 
 static MainWindow *mainWindow;
 
@@ -183,7 +183,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _browserTabWidget->addTab( _emptyCodeWidget,"Code" );
     _browserTabWidget->addTab( _debugTreeWidget,"Debug" );
 #ifdef Q_OS_MAC
-// _browserTabWidget->setDocumentMode( true );
+    //_browserTabWidget->setDocumentMode( true );
 #endif
 
     _browserDockWidget=new QDockWidget;
@@ -959,7 +959,7 @@ void MainWindow::readSettings(){
     }
     f.close();
 
-    //css += "QDockWidget::title{text-align:center;}";
+    //css += "QDockWidget::title{text-align:center;background: #ff0000; }";
 
     css.replace("url(:","url("+appPath+"/themes/"+cssFile);
 
@@ -2124,13 +2124,15 @@ void MainWindow::onHelpAbout(){
     }
     QString webSite = "https://www.cerberus-x.com";
     QString ABOUT= "<html><head><style>a{color:#FFEE00;}</style></head><body>"
-//            "Ted V" TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")<br><br>"
-            "Ted V" TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")<br><br>"
+            "Ted V" TED_VERSION "<br><br>"
+            "Cerberus V" +CERBERUS_VERSION+ "<br>"
+            "Trans V"+ _transVersion +"<br>"
+            "QT V" +_STRINGIZE(QT_VERSION)+ "<br><br>"
             "A simple editor/IDE for the Cerberus programming language.<br><br>"
             "Copyright Blitz Research Ltd for Monkey X.<br><br>"
             "Cerberus X is maintained by Michael Hartlef & Martin Leidel.<br<br>"
             "Further additions done by serveral member of the Cerberus X community.<br>"
-            "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus."
+            "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus X."
             "</body></html>";
 
     QMessageBox::information( this,"About Ted",ABOUT );

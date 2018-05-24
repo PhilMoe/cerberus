@@ -1,12 +1,14 @@
 > The AppGameKit target
 
-The AppGameKit target is a wrapper for [AppGameKit](https://www.appgamekit.com) by [TheGameCreators](https://www.thegamecreators.com). It features a powerful API which covers a huge variety of topicsfor game developmet.
+The AppGameKit target is a wrapper for [AppGameKit](https://www.appgamekit.com) by [TheGameCreators](https://www.thegamecreators.com). It features a powerful API which covers a huge variety of topicsfor game development.
 
-Currently only Windows Desktop is supported as a target platform.
+Currently only Windows Desktop, OSX Desktop and iOS is supported as a target platform.
 
 >> You will need
 
-You need to install Microsoft Visual Studio Community 2017 edition
+For OSX and iOS you only need to install XCode from the Apple Appstore.
+
+On Windows you need to install Microsoft Visual Studio Community 2017 edition
  
 * [MSVC](https://www.visualstudio.com/de/downloads/)
 
@@ -15,7 +17,7 @@ which modules you want to install. Under the Workloads tab, tick Desktop develop
 Expand Desktop development with C++, and tick the optional components “Windows XP support for
 C++” and “C++/CLI support”, as well as the ones that are ticked by default. Then click install.
 
-Next you need to build and run the [[../../targets/appgamekit/tools/AGKBuildTarget.cxs|AGKBuildTarget]] C++ tool. This will actually create the agk2 module, the help files and the target. Please run it after you have installed AGK and set the AGK_PATH variable inside your [[Trans]] config file.
+Next you need to build and run the [[../../targets/appgamekit/tools/AGKBuildTarget.cxs|AGKBuildTarget]] script. This will actually create the agk2 module, the help files and the targets. Please run it after you have installed AGK and set the AGK_PATH variable inside your [[Trans]] config file.
 
 >> Notes
 
@@ -30,3 +32,8 @@ MSBUILD_PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBu
 </pre>
 
 For more details about the AGK API, please consult its [official documentation](https://www.appgamekit.com/documentation/home.html). This help file is just a quick solution to give you an inbuild quick help.
+
+>> Important
+
+In AGK targets, the all media has to be stored inside the media folder and also when you access them, add a "media/" prefix to the filename.
+It won't be set automatically.

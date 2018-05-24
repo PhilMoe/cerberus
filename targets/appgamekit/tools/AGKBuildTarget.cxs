@@ -17,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.02"
+#GLFW_APP_LABEL="AGKBuildTarget V1.03"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -435,6 +435,7 @@ Function Main:Int()
 		BuildTemplate(agk_path, cerberusPath)
 	Else
 		BuildTemplateOSX(agk_path, cerberusPath)
+		
 	Endif
 	Notify( "AGKBuildTarget", "The AppGamekit Target was successfully build!", false )
 	Return 0
@@ -484,7 +485,6 @@ Function BuildTemplate:Void(_path:String, cerberusPath:string)
 
 		SaveString template,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
 		
-		
 End
 
 Function BuildTemplateOSX:Void(_path:String, cerberusPath:String)
@@ -493,7 +493,7 @@ Function BuildTemplateOSX:Void(_path:String, cerberusPath:String)
 	Notify ("AGKBuildTarget", "Please select the Tier2 project directory", False)
 
 	tier2Path = RequestDir("Please select the Tier2 project directory",_path)
-Print(tier2Path)
+'Print(tier2Path)
 
 	
 	CreateDir(cerberusPath+"/targets/appgamekit/template/AGKTemplate")
@@ -552,6 +552,65 @@ Print(tier2Path)
 	template = template[0.._start-1]+"~treturn bbMain(); "+template[_end..template.Length()]
 
 	SaveString template,( cerberusPath+"/targets/appgamekit/template/AGKTemplate/apps/template_mac/template.cpp" )
+		
+	BuildTemplateIOS(tier2Path, cerberusPath)
+	
+End
+
+Function BuildTemplateIOS:Void(_path:String, cerberusPath:String)
+	Local tier2Path:String = ""
+	
+	'Notify ("AGKBuildTarget", "Please select the Tier2 project directory", False)
+
+	'tier2Path = RequestDir("Please select the Tier2 project directory",_path)
+	tier2Path = _path
+'Print(tier2Path)
+
+	
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate")
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps")
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios")
+
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/bullet")
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/platform")
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/common")
+
+	CreateDir(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/platform/apple")
+
+	CopyDir(tier2Path+"/bullet",(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/bullet"), True)
+	CopyDir(tier2Path+"/common",(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/common"), True)
+	CopyDir(tier2Path+"/platform/apple",(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/platform/apple"), True)
+	
+	CopyDir(tier2Path+"/apps/template_ios",(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios"), True)
+	
+	' modify the template.h file
+	Local templateh:=LoadString(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios/Classes/template.h" )
+
+	Local _starth:=templateh.Find( "//#define AGK_LANDSCAPE" )
+	Local _endh:=templateh.Find( "// Global values for the app" )
+	
+	templateh = templateh[0.._starth]+"//${CONFIG_BEGIN}~n//${CONFIG_END}~n~n"+templateh[_endh..templateh.Length()]
+	SaveString templateh,( cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios/Classes/template.h" )
+
+	' modify the template.cpp file
+	Local template:=LoadString(cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios/Classes/template.cpp" )
+
+	Local _end:=template.Find( "// Namespace" )
+	Local _start:=_end-1
+	
+	template = template[0.._start-1]+"~n//${TRANSCODE_BEGIN}~n//${TRANSCODE_END}~n~n"+template[_end..template.Length()]
+
+	_start=template.Find( "agk::SetVirtualResolution" )
+	_end=template.Find( "int app::Loop" )-5
+	
+	template = template[0.._start-1]+"~tgc_init1();~n~tbbInit();~n~tgc_init2();~n"+template[_end..template.Length()]
+
+	_start=template.Find( "agk::Print( agk::ScreenFPS(" )
+	_end=template.Find( "// can't close app on iOS" )
+	
+	template = template[0.._start-1]+"~treturn bbMain(); "+template[_end..template.Length()]
+
+	SaveString template,( cerberusPath+"/targets/appgamekit_ios/template/AGKTemplate/apps/template_ios/Classes/template.cpp" )
 		
 		
 End

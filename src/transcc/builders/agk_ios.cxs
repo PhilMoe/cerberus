@@ -2,7 +2,7 @@
 Import builder
 Import os
 
-Class AGKBuilder Extends Builder
+Class AGKBuilder_ios Extends Builder
 
 	Method New( tcc:TransCC )
 		Super.New( tcc )
@@ -13,73 +13,51 @@ Class AGKBuilder Extends Builder
 		Local l:Int
 		For Local kv:=Eachin GetConfigVars()
 			If kv.Key.StartsWith("AGK_")
-				l = kv.Key.Length()
-				config.Push "#define " + kv.Key[4..l] +" "+kv.Value
+				'l = kv.Key.Length()
+				'config.Push "#define " + kv.Key[4..l] +" "+kv.Value
+				config.Push "#define " + kv.Key +" "+kv.Value
 			Else
 				config.Push "#define CFG_"+kv.Key+" "+kv.Value
 			Endif
 		Next
-		config.Push "#define WINDOW_TITLE ~qCerberusGame~q"
+		'config.Push "#define AGK_PORTRAIT"
 		Return config.Join( "~n" )
 	End
 	
-	'***** Vc2017 *****
-	Method MakeVc2017:Void()
-
-		Local buildpath:String  
-		buildpath = os.CurrentDir()+"\AGKTemplate\apps\template_windows_vs2017_64"		
-		
-		Local template:=LoadString( buildpath+"\template.cpp" )
-		Local templateh:=LoadString( buildpath+"\template.h" )
-		
-		template=ReplaceBlock( template,"TRANSCODE",transCode )
-		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
-		
-		SaveString template,( buildpath+"\template.cpp" )
-		SaveString templateh,( buildpath+"\template.h" )
-		CreateDataDir buildpath+"\media"			
-		
-		If tcc.opt_build
-
-			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" "+buildpath+"\Template.sln"
-			'CreateDataDir buildpath+"\Final"+"/data"			
-			If tcc.opt_run
-			
-				ChangeDir buildpath+"\Final"
-
-				Execute "Template64"
-				
-			Endif
-		Endif
-	End
 
 	'***** XCode *****
 	Method MakeXcode:Void()
 
+		Local sim_path:="/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
+		If tcc.opt_run = True 
+			Print ("Starting iOS simulator...")
+			Execute "open ~q"+sim_path+"~q"
+		Endif
+
 		Local buildpath:String  
-		buildpath = os.CurrentDir()+"/AGKTemplate/apps/template_mac"		
-	
-		Local template:=LoadString( buildpath+"/template.cpp" )
-		Local templateh:=LoadString( buildpath+"/template.h" )
+		buildpath = os.CurrentDir()+"/AGKTemplate/apps/template_ios"		
+Print ("buildpath= "+buildpath)	
+		Local template:=LoadString( buildpath+"/Classes/template.cpp" )
+		Local templateh:=LoadString( buildpath+"/Classes/template.h" )
 		
 		template=ReplaceBlock( template,"TRANSCODE",transCode )
 		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
 		
-		SaveString template,( buildpath+"/template.cpp" )
-		SaveString templateh,( buildpath+"/template.h" )
+		SaveString template,( buildpath+"/Classes/template.cpp" )
+		SaveString templateh,( buildpath+"/Classes/template.h" )
 		CreateMediaDir buildpath+"/media"
-		
 		If tcc.opt_build
-
+			Local src:= buildpath+"/build/"+casedConfig+"/CerberusGame.app"
 			ChangeDir buildpath
-			Execute "xcodebuild -configuration "+casedConfig+ " PRODUCT_NAME=CerberusGame"
-			'CreateDataDir buildpath+"/build/"+casedConfig+"/CerberusGame.app/Contents/Resources/data"			
+			Execute "xcodebuild -scheme agk_interpreter -configuration " + casedConfig + " -sdk iphonesimulator" + " PRODUCT_NAME=CerberusGame" + " BUILD_DIR="+buildpath+"/build"
+			'CreateDataDir buildpath+"/build/"+casedConfig+"/CerberusGame.app/data"			
 			If tcc.opt_run
+				Print ("Installing GerberusGame.app")
+				Execute ("xcrun simctl install booted ~q"+src+"~q")
+				
+				Print ("Running CerberusGame.app")
+				Execute "xcrun simctl launch booted com.thegamecreators.AGKTemplate"
 			
-				ChangeDir buildpath+"/build/"+casedConfig
-				ChangeDir "CerberusGame.app/Contents/MacOS"
-'Print ("currDir= "+CurrentDir)				
-				Execute "./CerberusGame"				
 			Endif
 		Endif
 	End
@@ -88,8 +66,6 @@ Class AGKBuilder Extends Builder
 	'***** Builder *****	
 	Method IsValid:Bool()
 		Select HostOS
-			Case "winnt"
-				If FileType(tcc.AGK_PATH+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_FILE And tcc.MSBUILD_PATH Return True
 			Case "macos"
 				If FileType(tcc.AGK_PATH+"/AppGameKit.app") = FILETYPE_DIR Return True
 			Default
@@ -105,8 +81,6 @@ Class AGKBuilder Extends Builder
 	
 	Method MakeTarget:Void()
 		Select HostOS
-			Case "winnt"
-				MakeVc2017		
 			Case "macos"
 				MakeXcode
 		End
@@ -207,7 +181,6 @@ Class AGKBuilder Extends Builder
 		End
 		
 	End
-
 
 	' Process external shared libraries	to copy
 #rem

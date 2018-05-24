@@ -2953,6 +2953,7 @@ class c_StdcppBuilder;
 class c_WinrtBuilder;
 class c_XnaBuilder;
 class c_AGKBuilder;
+class c_AGKBuilder_ios;
 class c_NodeEnumerator;
 class c_List;
 class c_StringList;
@@ -3613,6 +3614,20 @@ class c_AGKBuilder : public c_Builder{
 	void p_Begin();
 	String p_Config();
 	void p_MakeVc2017();
+	void p_CreateMediaDir(String);
+	void p_MakeXcode();
+	void p_MakeTarget();
+	void mark();
+};
+class c_AGKBuilder_ios : public c_Builder{
+	public:
+	c_AGKBuilder_ios();
+	c_AGKBuilder_ios* m_new(c_TransCC*);
+	c_AGKBuilder_ios* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_Config();
+	void p_CreateMediaDir(String);
 	void p_MakeXcode();
 	void p_MakeTarget();
 	void mark();
@@ -5975,7 +5990,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2018-05-21",35));
+	bbPrint(String(L"TRANS cerberus compiler V2018-05-24",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -8682,6 +8697,11 @@ void c_IosBuilder::p_MungProj2(){
 	SaveString(t_proj,t_path);
 }
 void c_IosBuilder::p_MakeTarget(){
+	String t_sim_path=String(L"/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app",69);
+	if(m_tcc->m_opt_run==true){
+		bbPrint(String(L"Starting iOS simulator...",25));
+		p_Execute(String(L"open \"",6)+t_sim_path+String(L"\"",1),true);
+	}
 	p_CreateDataDir(String(L"data",4));
 	String t_main=LoadString(String(L"main.mm",7));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
@@ -8723,67 +8743,12 @@ void c_IosBuilder::p_MakeTarget(){
 	if(!m_tcc->m_opt_run){
 		return;
 	}
-	String t_home=GetEnv(String(L"HOME",4));
-	String t_uuid=String(L"00C69C9A-C9DE-11DF-B3BE-5540E0D72085",36);
 	String t_src=String(L"build/",6)+m_casedConfig+String(L"-iphonesimulator/CerberusGame.app",33);
-	String t_sim_path=String(L"/Applications/Xcode.app/Contents/Applications/iPhone Simulator.app",66);
-	if(FileType(t_sim_path)==0){
-		t_sim_path=String(L"/Applications/Xcode.app/Contents/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app",120);
-	}
 	if(FileType(t_sim_path)==2){
-		String t_dst=String();
-		Array<String > t_3=LoadDir(t_home+String(L"/Library/Application Support/iPhone Simulator",45));
-		int t_4=0;
-		while(t_4<t_3.Length()){
-			String t_f=t_3[t_4];
-			t_4=t_4+1;
-			if(t_f.Length()>2 && (int)t_f[0]>48 && (int)t_f[0]<58 && (int)t_f[1]==46 && (int)t_f[2]>=48 && (int)t_f[2]<58 && !t_f.Contains(String(L"-64",3)) && t_f>t_dst){
-				t_dst=t_f;
-			}
-		}
-		if(!((t_dst).Length()!=0)){
-			bb_transcc_Die(String(L"Can't find iPhone simulator app version dir",43));
-		}
-		t_dst=t_home+String(L"/Library/Application Support/iPhone Simulator/",46)+t_dst+String(L"/Applications",13);
-		CreateDir(t_dst);
-		if(FileType(t_dst)!=2){
-			bb_transcc_Die(String(L"Failed to create dir:",21)+t_dst);
-		}
-		t_dst=t_dst+(String(L"/",1)+t_uuid);
-		if(!((bb_os_DeleteDir(t_dst,true))!=0)){
-			bb_transcc_Die(String(L"Failed to delete dir:",21)+t_dst);
-		}
-		if(!((CreateDir(t_dst))!=0)){
-			bb_transcc_Die(String(L"Failed to create dir:",21)+t_dst);
-		}
-		p_Execute(String(L"cp -r \"",7)+t_src+String(L"\" \"",3)+t_dst+String(L"/CerberusGame.app\"",18),true);
-		CreateDir(t_dst+String(L"/Documents",10));
-		p_Execute(String(L"killall \"iPhone Simulator\" 2>/dev/null",38),false);
-		p_Execute(String(L"open \"",6)+t_sim_path+String(L"\"",1),true);
-		return;
-	}
-	t_sim_path=String(L"/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app",88);
-	if(FileType(t_sim_path)==2){
-		String t_dst2=t_home+String(L"/Library/Application Support/iPhone Simulator/4.3.2",51);
-		if(FileType(t_dst2)==0){
-			t_dst2=t_home+String(L"/Library/Application Support/iPhone Simulator/4.3",49);
-			if(FileType(t_dst2)==0){
-				t_dst2=t_home+String(L"/Library/Application Support/iPhone Simulator/4.2",49);
-			}
-		}
-		CreateDir(t_dst2);
-		t_dst2=t_dst2+String(L"/Applications",13);
-		CreateDir(t_dst2);
-		t_dst2=t_dst2+(String(L"/",1)+t_uuid);
-		if(!((bb_os_DeleteDir(t_dst2,true))!=0)){
-			bb_transcc_Die(String(L"Failed to delete dir:",21)+t_dst2);
-		}
-		if(!((CreateDir(t_dst2))!=0)){
-			bb_transcc_Die(String(L"Failed to create dir:",21)+t_dst2);
-		}
-		p_Execute(String(L"cp -r \"",7)+t_src+String(L"\" \"",3)+t_dst2+String(L"/CerberusGame.app\"",18),true);
-		p_Execute(String(L"killall \"iPhone Simulator\" 2>/dev/null",38),false);
-		p_Execute(String(L"open \"",6)+t_sim_path+String(L"\"",1),true);
+		bbPrint(String(L"Installing GerberusGame.app",27));
+		p_Execute(String(L"xcrun simctl install booted \"",29)+t_src+String(L"\"",1),true);
+		bbPrint(String(L"Running CerberusGame.app",24));
+		p_Execute(String(L"xcrun simctl launch booted com.yourcompany.CerberusGame",55),true);
 		return;
 	}
 }
@@ -9343,12 +9308,103 @@ void c_AGKBuilder::p_MakeVc2017(){
 	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_template,t_buildpath+String(L"\\template.cpp",13));
 	SaveString(t_templateh,t_buildpath+String(L"\\template.h",11));
+	p_CreateDataDir(t_buildpath+String(L"\\media",6));
 	if(m_tcc->m_opt_build){
 		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" ",1)+t_buildpath+String(L"\\Template.sln",13),true);
-		p_CreateDataDir(t_buildpath+String(L"\\Final",6)+String(L"/data",5));
 		if(m_tcc->m_opt_run){
 			ChangeDir(t_buildpath+String(L"\\Final",6));
 			p_Execute(String(L"Template64",10),true);
+		}
+	}
+}
+void c_AGKBuilder::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -9361,10 +9417,10 @@ void c_AGKBuilder::p_MakeXcode(){
 	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_template,t_buildpath+String(L"/template.cpp",13));
 	SaveString(t_templateh,t_buildpath+String(L"/template.h",11));
+	p_CreateMediaDir(t_buildpath+String(L"/media",6));
 	if(m_tcc->m_opt_build){
 		ChangeDir(t_buildpath);
 		p_Execute(String(L"xcodebuild -configuration ",26)+m_casedConfig+String(L" PRODUCT_NAME=CerberusGame",26),true);
-		p_CreateDataDir(t_buildpath+String(L"/build/",7)+m_casedConfig+String(L"/CerberusGame.app/Contents/Resources/data",41));
 		if(m_tcc->m_opt_run){
 			ChangeDir(t_buildpath+String(L"/build/",7)+m_casedConfig);
 			ChangeDir(String(L"CerberusGame.app/Contents/MacOS",31));
@@ -9385,6 +9441,173 @@ void c_AGKBuilder::p_MakeTarget(){
 void c_AGKBuilder::mark(){
 	c_Builder::mark();
 }
+c_AGKBuilder_ios::c_AGKBuilder_ios(){
+}
+c_AGKBuilder_ios* c_AGKBuilder_ios::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_AGKBuilder_ios* c_AGKBuilder_ios::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_AGKBuilder_ios::p_IsValid(){
+	String t_1=HostOS();
+	if(t_1==String(L"macos",5)){
+		if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
+			return true;
+		}
+	}else{
+		return true;
+	}
+	return false;
+}
+void c_AGKBuilder_ios::p_Begin(){
+	bb_config_ENV_LANG=String(L"cpp",3);
+	bb_translator__trans=((new c_CppTranslator)->m_new());
+}
+String c_AGKBuilder_ios::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	int t_l=0;
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+void c_AGKBuilder_ios::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_AGKBuilder_ios::p_MakeXcode(){
+	String t_sim_path=String(L"/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app",69);
+	if(m_tcc->m_opt_run==true){
+		bbPrint(String(L"Starting iOS simulator...",25));
+		p_Execute(String(L"open \"",6)+t_sim_path+String(L"\"",1),true);
+	}
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"/AGKTemplate/apps/template_ios",30);
+	bbPrint(String(L"buildpath= ",11)+t_buildpath);
+	String t_template=LoadString(t_buildpath+String(L"/Classes/template.cpp",21));
+	String t_templateh=LoadString(t_buildpath+String(L"/Classes/template.h",19));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"/Classes/template.cpp",21));
+	SaveString(t_templateh,t_buildpath+String(L"/Classes/template.h",19));
+	p_CreateMediaDir(t_buildpath+String(L"/media",6));
+	if(m_tcc->m_opt_build){
+		String t_src=t_buildpath+String(L"/build/",7)+m_casedConfig+String(L"/CerberusGame.app",17);
+		ChangeDir(t_buildpath);
+		p_Execute(String(L"xcodebuild -scheme agk_interpreter -configuration ",50)+m_casedConfig+String(L" -sdk iphonesimulator",21)+String(L" PRODUCT_NAME=CerberusGame",26)+String(L" BUILD_DIR=",11)+t_buildpath+String(L"/build",6),true);
+		if(m_tcc->m_opt_run){
+			bbPrint(String(L"Installing GerberusGame.app",27));
+			p_Execute(String(L"xcrun simctl install booted \"",29)+t_src+String(L"\"",1),true);
+			bbPrint(String(L"Running CerberusGame.app",24));
+			p_Execute(String(L"xcrun simctl launch booted com.thegamecreators.AGKTemplate",58),true);
+		}
+	}
+}
+void c_AGKBuilder_ios::p_MakeTarget(){
+	String t_2=HostOS();
+	if(t_2==String(L"macos",5)){
+		p_MakeXcode();
+	}
+}
+void c_AGKBuilder_ios::mark(){
+	c_Builder::mark();
+}
 c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	c_StringMap3* t_builders=(new c_StringMap3)->m_new();
 	t_builders->p_Set3(String(L"android",7),((new c_AndroidBuilder)->m_new(t_tcc)));
@@ -9398,6 +9621,7 @@ c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	t_builders->p_Set3(String(L"winrt",5),((new c_WinrtBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"xna",3),((new c_XnaBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
 	return t_builders;
 }
 c_NodeEnumerator::c_NodeEnumerator(){
