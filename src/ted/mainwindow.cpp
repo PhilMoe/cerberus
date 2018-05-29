@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-05-24"
+#define TED_VERSION "2018-05-26"
 
 #define SETTINGS_VERSION 2
 
@@ -103,11 +103,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     //targets combobox
     _targetsWidget=new QComboBox;
     _targetsWidget->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+#ifdef Q_OS_MAC
+    _targetsWidget->setObjectName("cbTarget");
+    _targetsWidget->view()->setObjectName("cbTargetView");
+#endif
     _ui->buildToolBar->addWidget( _targetsWidget );
 
     _configsWidget=new QComboBox;
     _configsWidget->addItem( "Debug" );
     _configsWidget->addItem( "Release" );
+#ifdef Q_OS_MAC
+    _configsWidget->setObjectName("cbConfig");
+    _configsWidget->view()->setObjectName("cbConfigView");
+#endif
     _ui->buildToolBar->addWidget( _configsWidget );
 
     _indexWidget=new QComboBox;
@@ -116,6 +124,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _indexWidget->setMinimumSize( 80,_indexWidget->minimumHeight() );
     _indexWidget->setMaximumSize( 240,_indexWidget->maximumHeight() );
 //    _indexWidget->setSizePolicy( QSizePolicy::Expanding,QSizePolicy::Preferred );
+#ifdef Q_OS_MAC
+    _indexWidget->setObjectName("cbIndex");
+    _indexWidget->view()->setObjectName("cbIndexView");
+#endif
     _ui->helpToolBar->addWidget( _indexWidget );
 
     //init central tab widget
@@ -975,6 +987,9 @@ void MainWindow::readSettings(){
     }
     // Set the actions icons depending on the theme
     setIcons();
+
+    _targetsWidget->adjustSize();
+    _configsWidget->adjustSize();
 }
 
 QIcon MainWindow::getThemeIcon(const QString &theme, const QString &ic, const QString &icd){
@@ -1097,6 +1112,7 @@ void MainWindow::updateTargetsWidget( QString fileType ){
         _buildFileType=fileType;
         connect( _targetsWidget,SIGNAL(currentIndexChanged(int)),SLOT(onTargetChanged(int)) );
     }
+     _targetsWidget->adjustSize();
 }
 
 //Actions...
