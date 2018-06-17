@@ -1188,7 +1188,10 @@ Class Image
 		flags&=_flagsMask
 	
 		Local material:=.Material.Load( path,flags|Texture.ClampST,shader )
-		If Not material Return Null
+		If Not material 
+			DebugLog ("Error - Unable to load image: " + path)
+			Return Null
+		Endif
 
 		Return New Image( material,xhandle,yhandle )
 	End
@@ -1197,7 +1200,10 @@ Class Image
 		flags&=_flagsMask
 	
 		Local material:=.Material.Load( path,flags|Texture.ClampST,shader )
-		If Not material Return []
+		If Not material 
+			DebugLog ("Error - Unable to load image frames: " + path)
+			Return []
+		Endif
 		
 		Local cellWidth:=material.Width/numFrames,cellHeight:=material.Height
 		

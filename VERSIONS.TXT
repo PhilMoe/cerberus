@@ -6,6 +6,8 @@ NEW: [AGK] Added support for AppGameKit OSX 64bit Desktop and the iOS platform.
 FIX: [IOS] When you build and run, the iOS Simulator opens up again and the app will be installed and run.
 MOD: [ANDROID] Updated to latest Gradle build tools and SDK
 NEW: [mojo] Added SetColor:Int(rgb:Int) command so you can use hex color rgb values.
+MOD: [mojo/mojo2] Added debugging log if loading an image failed.
+
 
 ***** v2018-04-21 *****
 

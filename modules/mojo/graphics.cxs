@@ -500,12 +500,20 @@ End
 
 Function LoadImage:Image( path$,frameCount=1,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
-	If surf Return (New Image).Init( surf,frameCount,flags )
+	If surf 
+		Return (New Image).Init( surf,frameCount,flags )
+	Else
+		DebugLog("Error - Unable to load image: " + path)
+	Endif
 End
 
 Function LoadImage:Image( path$,frameWidth,frameHeight,frameCount,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
-	If surf Return (New Image).Init( surf,0,0,frameWidth,frameHeight,frameCount,flags,Null,0,0,surf.Width,surf.Height )
+	If surf 
+		Return (New Image).Init( surf,0,0,frameWidth,frameHeight,frameCount,flags,Null,0,0,surf.Width,surf.Height )
+	Else
+		DebugLog("Error - Unable to load image: " + path)
+	Endif
 End
 
 Function CreateImage:Image( width,height,frameCount=1,flags=Image.DefaultFlags )
