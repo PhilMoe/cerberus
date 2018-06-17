@@ -1,10 +1,11 @@
-***** v2018-06-04 *****
+***** v2018-06-17 *****
 
 FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
 NEW: [GLFW.ANGLE] Added mousewheel event.
 NEW: [AGK] Added support for AppGameKit OSX 64bit Desktop and the iOS platform.
 FIX: [IOS] When you build and run, the iOS Simulator opens up again and the app will be installed and run.
 MOD: [ANDROID] Updated to latest Gradle build tools and SDK
+NEW: [mojo] Added SetColor:Int(rgb:Int) command so you can use hex color rgb values.
 
 ***** v2018-04-21 *****
 

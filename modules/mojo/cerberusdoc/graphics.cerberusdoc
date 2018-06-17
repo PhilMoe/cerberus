@@ -71,6 +71,15 @@ Note: Drawing images in any color other than 255,255,255 on the HTML5 target wil
 Links: [[GetColor]]
 
 
+# Function SetColor:Int(rgb:Int)
+
+Sets the current color using a hex color value.
+
+The current color is used by all drawing operations except Cls.
+
+Note: Drawing images in any color other than $FFFFFF on the HTML5 target will incur a major runtime overhead. For best results on the HTML5 target, either use colored images sparingly, or consider using 'pre-colored' images stored in multiple image files.
+
+
 # Function GetColor:Float[]()
 
 Returns the current color as a 3 component float array containg the current color's red, green and blue components respectively.

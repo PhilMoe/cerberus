@@ -520,6 +520,13 @@ Function SetColor( r#,g#,b# )
 	renderDevice.SetColor r,g,b
 End
 
+Function SetColor( rgb# )
+  context.color_r = ((rgb Shr 16) & $FF) ' Extract the RR byte
+  context.color_g = ((rgb Shr 8) & $FF)  ' Extract the GG byte
+  context.color_b = (rgb & $FF)       ' Extract the BB byte
+  renderDevice.SetColor context.color_r,context.color_g,context.color_b 
+End
+
 Function GetColor#[]()
 	Return [context.color_r,context.color_g,context.color_b]
 End
