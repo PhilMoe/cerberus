@@ -37,7 +37,7 @@ Class AGKBuilder Extends Builder
 		
 		SaveString template,( buildpath+"\template.cpp" )
 		SaveString templateh,( buildpath+"\template.h" )
-		CreateDataDir buildpath+"\media"			
+		CreateMediaDir buildpath+"\Final\media"			
 		
 		If tcc.opt_build
 
@@ -181,7 +181,7 @@ Class AGKBuilder Extends Builder
 			While Not dsts.IsEmpty()
 				
 				Local dst:=dsts.Pop()
-				
+
 				For Local f:=Eachin LoadDir( dst )
 					If f.StartsWith( "." ) Continue
 	

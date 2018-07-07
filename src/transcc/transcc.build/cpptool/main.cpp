@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST macos
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -3613,8 +3613,8 @@ class c_AGKBuilder : public c_Builder{
 	bool p_IsValid();
 	void p_Begin();
 	String p_Config();
-	void p_MakeVc2017();
 	void p_CreateMediaDir(String);
+	void p_MakeVc2017();
 	void p_MakeXcode();
 	void p_MakeTarget();
 	void mark();
@@ -5990,7 +5990,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2018-05-24",35));
+	bbPrint(String(L"TRANS cerberus compiler V2018-06-17",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -9299,24 +9299,6 @@ String c_AGKBuilder::p_Config(){
 	t_config->p_Push(String(L"#define WINDOW_TITLE \"CerberusGame\"",35));
 	return t_config->p_Join(String(L"\n",1));
 }
-void c_AGKBuilder::p_MakeVc2017(){
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_windows_vs2017_64",44);
-	String t_template=LoadString(t_buildpath+String(L"\\template.cpp",13));
-	String t_templateh=LoadString(t_buildpath+String(L"\\template.h",11));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"\\template.cpp",13));
-	SaveString(t_templateh,t_buildpath+String(L"\\template.h",11));
-	p_CreateDataDir(t_buildpath+String(L"\\media",6));
-	if(m_tcc->m_opt_build){
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" ",1)+t_buildpath+String(L"\\Template.sln",13),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(t_buildpath+String(L"\\Final",6));
-			p_Execute(String(L"Template64",10),true);
-		}
-	}
-}
 void c_AGKBuilder::p_CreateMediaDir(String t_dir){
 	t_dir=RealPath(t_dir);
 	if(!m_syncData){
@@ -9405,6 +9387,24 @@ void c_AGKBuilder::p_CreateMediaDir(String t_dir){
 					}
 				}
 			}
+		}
+	}
+}
+void c_AGKBuilder::p_MakeVc2017(){
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_windows_vs2017_64",44);
+	String t_template=LoadString(t_buildpath+String(L"\\template.cpp",13));
+	String t_templateh=LoadString(t_buildpath+String(L"\\template.h",11));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"\\template.cpp",13));
+	SaveString(t_templateh,t_buildpath+String(L"\\template.h",11));
+	p_CreateMediaDir(t_buildpath+String(L"\\Final\\media",12));
+	if(m_tcc->m_opt_build){
+		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" ",1)+t_buildpath+String(L"\\Template.sln",13),true);
+		if(m_tcc->m_opt_run){
+			ChangeDir(t_buildpath+String(L"\\Final",6));
+			p_Execute(String(L"Template64",10),true);
 		}
 	}
 }
