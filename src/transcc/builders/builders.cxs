@@ -12,6 +12,7 @@ Import stdcpp
 Import winrt
 Import xna
 Import agk
+Import agk_ios
 
 Function Builders:StringMap<Builder>( tcc:TransCC )
 	Local builders:=New StringMap<Builder>
@@ -27,6 +28,7 @@ Function Builders:StringMap<Builder>( tcc:TransCC )
 	builders.Set "winrt",New WinrtBuilder( tcc )
 	builders.Set "xna",New XnaBuilder( tcc )
 	builders.Set "agk",New AGKBuilder( tcc )
+	builders.Set "agk_ios",New AGKBuilder_ios( tcc )
 	
 	Return builders
 End

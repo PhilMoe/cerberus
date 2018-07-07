@@ -1,6 +1,11 @@
 The agk2 module is a wrapper for [AppGameKit](https://www.appgamekit.com) by [TheGameCreators](https://www.thegamecreators.com).
 
-To use it, you need to own AppGameKit and have the AGK_PATH variable set inside the bin/config file of your platform. Currently only Windows Desktop is supported as a target platform.
+To use it, you need to own AppGameKit and have the AGK_PATH variable set inside the bin/config file of your platform. 
+Currently the following platforms are supported as a target platforms for AGK:
+
+* Windows
+* OSX
+* iOS
 
 For more details about the AGK API, please consult its [official documentation](https://www.appgamekit.com/documentation/home.html). This help file is just a quick solution to give you an inbuild quick help.
 
@@ -62,6 +67,6 @@ End
 
 >> Media / Assets
 
-All your assets have to be stored inside the usual CX data folder. To access them when loading, just add a "data/" prefix to your filepath.
+All your assets have to be stored inside a media folder. To access them when loading, just add a "media/" prefix to your filepath.
 
 >> Below are the categories of the AppgameKit API

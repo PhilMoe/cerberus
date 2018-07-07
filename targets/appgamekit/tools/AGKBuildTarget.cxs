@@ -301,8 +301,8 @@ Function Main:Int()
 		Next
 
 		Local outs2:String
-		outs2 += "#If TARGET<>~qagk~q~n"
-		outs2 += "#Error ~qInvalid target. Please select Desktop (AppGameKit)!~q~n"
+		outs2 += "#If TARGET<>~qagk~q And TARGET<>~qagk_ios~q~n"
+		outs2 += "#Error ~qInvalid target!~q~n"
 		outs2 += "#Endif~n"
 		outs2 += "Import ~qnative/agk2.cpp~q~n"
 		
