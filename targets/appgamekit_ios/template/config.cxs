@@ -6,3 +6,5 @@
 
 #AGK_PORTRAIT = ""
 '#AGK_LANDSCAPE = ""
+
+#FAST_SYNC_PROJECT_DATA = True
