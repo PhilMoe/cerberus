@@ -8,6 +8,7 @@
 .bmx
 .DS_Store
 *.buildv*
+*.bak
 desktop.ini
 Thumbs.db
 
