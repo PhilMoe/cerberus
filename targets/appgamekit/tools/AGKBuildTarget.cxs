@@ -349,6 +349,7 @@ Function Main:Int()
 		outc += "~n"
 		outc += "static String::CString<char> C_STR( const String &t ){ return t.ToCString<char>(); };~n"
 		outc += "~n"
+		outcpp = outcpp.Replace("String _agk_String(String _Data)", "//String _agk_String(String _Data)")
 		
 		outcpp = outc + outcpp	
 		outcpp += "~n"

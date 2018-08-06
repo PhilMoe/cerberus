@@ -1,4 +1,4 @@
-***** v2018-07-15 *****
+***** v2018-08-06 *****
 
 FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
 NEW: [GLFW.ANGLE] Added mousewheel event.
@@ -8,6 +8,7 @@ MOD: [ANDROID] Updated to latest Gradle build tools and SDK
 NEW: [mojo] Added SetColor:Int(rgb:Int) command so you can use hex color rgb values.
 MOD: [mojo/mojo2] Added debugging log if loading an image failed.
 FIX: [AGK/AGK_IOS] Fixed media folder being deleted evey other compile run.
+FIX: [AGK/AGK_IOS] Fixed AGKBuildTarget creating an unusable native function.
 FIX: [example] Changed server to httpbin.org in the mak/httprequest example.
 
 
