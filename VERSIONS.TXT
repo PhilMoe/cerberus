@@ -1,4 +1,4 @@
-***** v2018-08-06 *****
+***** v2018-08-10 *****
 
 FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
 NEW: [GLFW.ANGLE] Added mousewheel event.
