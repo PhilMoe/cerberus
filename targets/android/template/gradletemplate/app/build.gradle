@@ -37,5 +37,6 @@ android {
 dependencies {
     ${ANDROID_LIBRARY_REFERENCE_1}
     ${ANDROID_LIBRARY_REFERENCE_2}
-    compile 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.google.android.ads.consent:consent-library:1.0.3'
 }

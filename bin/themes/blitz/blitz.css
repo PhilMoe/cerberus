@@ -1,3 +1,22 @@
+QComboBox#cbConfig {
+	min-width: 50px;
+}
+QComboBox#cbConfig QAbstractItemView#cbConfigView {
+	padding: 0px 0px 0px 0px;
+	min-width: 100px;
+	min-height: 40px;
+	
+}
+
+QComboBox#cbTarget {
+	min-width: 100px;
+}
+QComboBox#cbTarget QAbstractItemView#cbTargetView {
+	padding: 0px 0px 0px 0px;
+	min-width: 200px;
+	min-height: 120px;
+}
+
 /*****************************************/
 QMainWindow, QMenuBar, QToolBar, QTabWidget, QStatusBar, QTreeView, QListView, QTextEdit, QDialog, QGroupBox, QSpinBox {
 	color: #FFEE00;
@@ -74,8 +93,11 @@ QListView::item:hover {
 }
 
 /*****************************************/
+QTreeView {
+	background: transparent;
+}
 QTreeView::item {
-	
+
 }
 QTreeView::item:hover {
 	background: transparent;

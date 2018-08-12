@@ -222,6 +222,12 @@ Class IosBuilder Extends Builder
 	
 	Method MakeTarget:Void()
 	
+		Local sim_path:="/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
+		If tcc.opt_run = True 
+			Print ("Starting iOS simulator...")
+			Execute "open ~q"+sim_path+"~q"
+		Endif
+
 		CreateDataDir "data"
 
 		Local main:=LoadString( "main.mm" )
@@ -260,87 +266,97 @@ Class IosBuilder Extends Builder
 		
 		If Not tcc.opt_run Return
 
-		Local home:=GetEnv( "HOME" )
-
-		Local uuid:="00C69C9A-C9DE-11DF-B3BE-5540E0D72085"
-		
+'		Local home:=GetEnv( "HOME" )
+'
+'		Local uuid:="00C69C9A-C9DE-11DF-B3BE-5540E0D72085"
+'		
 		Local src:="build/"+casedConfig+"-iphonesimulator/CerberusGame.app"
 		
-		Local sim_path:="/Applications/Xcode.app/Contents/Applications/iPhone Simulator.app"
-		If FileType( sim_path )=FILETYPE_NONE sim_path="/Applications/Xcode.app/Contents/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app"
+		'Local sim_path:="/Applications/Xcode.app/Contents/Applications/iPhone Simulator.app"
+'		If FileType( sim_path )=FILETYPE_NONE sim_path="/Applications/Xcode.app/Contents/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app"
+		'If FileType( sim_path )=FILETYPE_NONE sim_path="/Applications/Xcode.app/Contents/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app"
 		
 		'New XCode in /Applications?
 		If FileType( sim_path )=FILETYPE_DIR
+
+			Print ("Installing GerberusGame.app")
+			Execute ("xcrun simctl install booted ~q"+src+"~q")
+			
+			Print ("Running CerberusGame.app")
+			Execute "xcrun simctl launch booted com.yourcompany.CerberusGame"
+
 		
-			Local dst:=""
-			
-			For Local f:=Eachin LoadDir( home+"/Library/Application Support/iPhone Simulator" )
+'			Local dst:=""
+'			
+'			For Local f:=Eachin LoadDir( home+"/Library/Application Support/iPhone Simulator" )
+'
+'				If f.Length>2 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Not f.Contains( "-64" ) And f>dst dst=f
+'				
+'				'X.Y?
+'				'If f.Length=3 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Float(f)>Float(dst) dst=f
+'			Next
+'			If Not dst Die "Can't find iPhone simulator app version dir"
+'			
+'			dst=home+"/Library/Application Support/iPhone Simulator/"+dst+"/Applications"
+'
+'			CreateDir dst
+'			If FileType( dst )<>FILETYPE_DIR Die "Failed to create dir:"+dst
+'			
+'			dst+="/"+uuid
+'			If Not DeleteDir( dst,True ) Die "Failed to delete dir:"+dst
+'			If Not CreateDir( dst ) Die "Failed to create dir:"+dst
+'			
+'			'Need to use this 'coz it does the permissions thang
+'			'
+'			Execute "cp -r ~q"+src+"~q ~q"+dst+"/CerberusGame.app~q"
+'			
+'			'Have to manually create documents dir for Cerberus://internal/?
+'			'
+'			CreateDir dst+"/Documents"
+'
+'			're-start emulator
+'			'
+'			'Execute "killall ~qiPhone Simulator~q 2>/dev/null",False
+'			Execute "killall ~qSimulator~q 2>/dev/null",False
 
-				If f.Length>2 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Not f.Contains( "-64" ) And f>dst dst=f
-				
-				'X.Y?
-				'If f.Length=3 And f[0]>48 And f[0]<58 And f[1]=46 And f[2]>=48 And f[2]<58 And Float(f)>Float(dst) dst=f
-			Next
-			If Not dst Die "Can't find iPhone simulator app version dir"
 			
-			dst=home+"/Library/Application Support/iPhone Simulator/"+dst+"/Applications"
-
-			CreateDir dst
-			If FileType( dst )<>FILETYPE_DIR Die "Failed to create dir:"+dst
-			
-			dst+="/"+uuid
-			If Not DeleteDir( dst,True ) Die "Failed to delete dir:"+dst
-			If Not CreateDir( dst ) Die "Failed to create dir:"+dst
-			
-			'Need to use this 'coz it does the permissions thang
-			'
-			Execute "cp -r ~q"+src+"~q ~q"+dst+"/CerberusGame.app~q"
-			
-			'Have to manually create documents dir for Cerberus://internal/?
-			'
-			CreateDir dst+"/Documents"
-
-			're-start emulator
-			'
-			Execute "killall ~qiPhone Simulator~q 2>/dev/null",False
-			Execute "open ~q"+sim_path+"~q"
 			
 			Return
 			
 		Endif
 
-		'Old xcode in /Developer				
-		sim_path="/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app"
-		
-		If FileType( sim_path )=FILETYPE_DIR
-		
-			Local dst:=home+"/Library/Application Support/iPhone Simulator/4.3.2"
-			If FileType( dst )=FILETYPE_NONE
-				dst=home+"/Library/Application Support/iPhone Simulator/4.3"
-				If FileType( dst )=FILETYPE_NONE
-					dst=home+"/Library/Application Support/iPhone Simulator/4.2"
-				Endif
-			Endif
-			
-			CreateDir dst
-			dst+="/Applications"
-			CreateDir dst
-			dst+="/"+uuid
-			If Not DeleteDir( dst,True ) Die "Failed to delete dir:"+dst
-			If Not CreateDir( dst ) Die "Failed to create dir:"+dst
-			
-			'Need to use this 'coz it does the permissions thang
-			'
-			Execute "cp -r ~q"+src+"~q ~q"+dst+"/CerberusGame.app~q"
-
-			're-start emulator
-			'
-			Execute "killall ~qiPhone Simulator~q 2>/dev/null",False
-			Execute "open ~q"+sim_path+"~q"
-			
-			Return
-		
-		Endif
+'		'Old xcode in /Developer				
+'		sim_path="/Developer/Builders/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app"
+'		
+'		If FileType( sim_path )=FILETYPE_DIR
+'		
+'			Local dst:=home+"/Library/Application Support/iPhone Simulator/4.3.2"
+'			If FileType( dst )=FILETYPE_NONE
+'				dst=home+"/Library/Application Support/iPhone Simulator/4.3"
+'				If FileType( dst )=FILETYPE_NONE
+'					dst=home+"/Library/Application Support/iPhone Simulator/4.2"
+'				Endif
+'			Endif
+'			
+'			CreateDir dst
+'			dst+="/Applications"
+'			CreateDir dst
+'			dst+="/"+uuid
+'			If Not DeleteDir( dst,True ) Die "Failed to delete dir:"+dst
+'			If Not CreateDir( dst ) Die "Failed to create dir:"+dst
+'			
+'			'Need to use this 'coz it does the permissions thang
+'			'
+'			Execute "cp -r ~q"+src+"~q ~q"+dst+"/CerberusGame.app~q"
+'
+'			're-start emulator
+'			'
+'			Execute "killall ~qiPhone Simulator~q 2>/dev/null",False
+'			Execute "open ~q"+sim_path+"~q"
+'			
+'			Return
+'		
+'		Endif
 		
 	End
 End

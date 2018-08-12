@@ -1,3 +1,22 @@
+QComboBox#cbConfig {
+	min-width: 50px;
+}
+QComboBox#cbConfig QAbstractItemView#cbConfigView {
+	padding: 0px 0px 0px 0px;
+	min-width: 100px;
+	min-height: 40px;
+	
+}
+
+QComboBox#cbTarget {
+	min-width: 100px;
+}
+QComboBox#cbTarget QAbstractItemView#cbTargetView {
+	padding: 0px 0px 0px 0px;
+	min-width: 200px;
+	min-height: 120px;
+}
+
 QToolTip
 {
      border: 1px solid black;

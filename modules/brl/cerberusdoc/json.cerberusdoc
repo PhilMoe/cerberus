@@ -1,30 +1,142 @@
 
-# Module brl.jon
+# Module brl.json
 
+Minimalistic JSON module.
+Fully functional on one hand, but on the other hand not very sophisticated
+concerning error correction or -handling when fed with faulty json strings.
+
+JSON is a form of markup language to store any kind of value in any complexity
+in objects and / or arrays. Here are some examples of valid JSON strings (each
+line is considered to be one JSON string):
+<pre>
+"Foobar"
+42
+true
+{"name":"John","age":55}
+[1,2,3,"four","five",false]
+</pre>
+
+Links: [[http://json.org]]
+
+Example:
+<pre>
+Strict
+
+Import brl.json
+
+Function Main:Int()
+	Local jsonTypes := ["OBJECT", "ARRAY", "NULL", "BOOL", "NUMBER", "STRING"]
+	
+	Local str:String
+	' try these different JSON inputs
+	'str = "foul!"							' invalid JSON
+	'str = "null"							' null value
+	'str = "true"							' boolean value
+	'str = "3.14"							' numerical value
+	'str = "~qtext~q"						' string value
+	'str = "{~qfoo~q:true,~qbar~q:false}"	' object
+	str = "[1,2,~qbla~q]"					' array
+	
+	' report what's fed into the parser
+	Print "json input:"
+	Print str
+	Print ""
+	
+	' try to parse JSON
+	Local json:JsonValue
+	Try
+		json = New JsonParser(str).ParseValue()
+	Catch e:JsonError
+		Print "invalid JSON"
+		Return 0
+	End
+	
+	' report how JSON is interpreted
+	Print "value is of type "+ jsonTypes[ json.Type ] +" and contains: "
+	
+	Select json.Type
+	' JsonObject
+	Case JsonValue.OBJECTTYPE
+		For Local jn := Eachin JsonObject( json ).GetData()
+			Print "node "+ jn.Key() +" containing "+ jn.Value().ToJson()
+		End
+	' JsonArray
+	Case JsonValue.ARRAYTYPE
+		For Local entry := Eachin JsonArray( json ).GetData()
+			Print entry.ToJson()
+		End
+	' JsonNull
+	Case JsonValue.NULLTYPE
+		Print JsonNull( json ).ToJson()
+	' JsonBool
+	Case JsonValue.BOOLTYPE
+		Print JsonBool( json ).ToJson()
+	' JsonNumber
+	Case JsonValue.NUMBERTYPE
+		Print JsonNumber( json ).ToJson()
+	' JsonString
+	Case JsonValue.STRINGTYPE
+		Print JsonString( json ).ToJson()
+	End
+	
+	Return 0
+End
+</pre>
 
 # Class JsonError Extends Throwable
+
+Object thrown when
+* JsonParser encounters a syntax error or
+* when trying to get the value from a JsonValue that doesn't match the type of the requested value
+
+E.g. invoking [[IntValue]] on a [[JsonString]] will throw a JsonError.
 
 
 # Class JsonValue Abstract
 
+This base class provides some fall-back functionality for the specific json value
+classes.
+
+
+# Method Type:Int() Property
+
+Indicates the type of the specific JsonValue object.
+Type is one of the following:
+| Type						| Meaning
+| JsonValue.OBJECTTYPE		| object is JsonObject
+| JsonValue.ARRAYTYPE		| object is JsonArray
+| JsonValue.NULLTYPE		| object is JsonNull
+| JsonValue.BOOLTYPE		| object is JsonBool
+| JsonValue.NUMBERTYPE		| object is JsonNumber
+| JsonValue.STRINGTYPE		| object is JsonString
+
+
 # Method BoolValue:Bool()
 
-Throws a [[JsonError]] if object is not a [[JsonBool]].
+For a [[JsonBool]], this will return its boolean value.
+
+Otherwise, it throws a [[JsonError]].
 
 
 # Method IntValue:Int()
 
-Throws a [[JsonError]] if object is not a [[JsonNumber]].
+For a [[JsonNumber]], this will return its numerical value as int.
+
+Otherwise, it throws a [[JsonError]].
 
 
-# Method FloatValue:Int()
+# Method FloatValue:Float()
 
-Throws a [[JsonError]] if object is not a [[JsonNumber]].
+For a [[JsonNumber]], this will return its numerical value as float.
+
+Otherwise, it throws a [[JsonError]].
 
 
 # Method StringValue:String()
 
-Throws a [[JsonError]] if object is not a [[JsonString]].
+For a [[JsonString]], this will return its string value.
+
+Otherwise, it throws a [[JsonError]].
 
 	
 # Method ToJson:String()
@@ -33,6 +145,12 @@ Converts value to a JSON string.
 
 
 # Class JsonObject Extends JsonValue
+
+JSON objects are collections of pairs in curly brackets, e.g.
+<pre>
+{"foo":"bar","answer":42}
+</pre>
+
 
 # Method New()
 
@@ -58,20 +176,47 @@ Returns true if the json object contains @key.
 
 # Method Set:Void( key:String,value:JsonValue )
 
+Set @key to specific @value.
+
+If @key is already a member of json object, its value is overwritten.
+Otherwise, the @key:@value pair is appended to the json object.
+
 
 # Method SetBool:Void( key:String,value:Bool )
+
+Set @key to boolean @value.
+
+If @key is already a member of json object, its value is overwritten.
+Otherwise, the @key:@value pair is appended to the json object.
 
 	
 # Method SetInt:Void( key:String,value:Int )
 
+Set @key to integer @value.
+
+If @key is already a member of json object, its value is overwritten.
+Otherwise, the @key:@value pair is appended to the json object.
+
 	
 # Method SetFloat:Void( key:String,value:Float )
+
+Set @key to float @value.
+
+If @key is already a member of json object, its value is overwritten.
+Otherwise, the @key:@value pair is appended to the json object.
 
 
 # Method SetString:Void( key:String,value:String )
 
+Set @key to string @value.
+
+If @key is already a member of json object, its value is overwritten.
+Otherwise, the @key:@value pair is appended to the json object.
+
 
 # Method Get:JsonValue( key:String,defval:JsonValue=null )
+
+Get json value of @key.
 
 Returns @defval if @key doesn't exist.
 
@@ -80,12 +225,16 @@ Returns a [[JsonNull]] object if @key is mapped to null.
 	
 # Method GetBool:Int( key:String,defval:Bool=False )
 
+Get boolean value of @key.
+
 Returns @defval if @key doesn't exist.
 
 Throws a [[JsonError]] if value mapped to @key is not a [[JsonBool]].
 
 
 # Method GetInt:Int( key:String,defval:Int=0 )
+
+Get integer value of @key.
 
 Returns @defval if @key doesn't exist.
 
@@ -94,12 +243,16 @@ Throws a [[JsonError]] if value mapped to @key is not a [[JsonNumber]].
 		
 # Method GetFloat:Float( key:String,defval:Float=0 )
 
+Get float value of @key.
+
 Returns @defval if @key doesn't exist.
 
 Throws a [[JsonError]] if value mapped to @key is not a [[JsonNumber]].
 
 
 # Method GetString:String( key:String,defval:String="" )
+
+Get string value of @key.
 
 Returns @defval if @key doesn't exist.
 
@@ -110,11 +263,25 @@ Throws a [[JsonError]] if value mapped to @key is not a [[JsonString]].
 
 Gets the internal map used to represent the object.
 
-
-# Method PushJson:Void( buf:StringStack )
+To iterate through the map, use
+<pre>
+For Local node := Eachin json.GetData()
+	Print node.Key() +" : "+ node.Value().ToJson()
+End
+</pre>
 
 
 # Class JsonArray Extends JsonValue
+
+JSON arrays are ordered lists of values in square brackets, e.g.
+<pre>
+["bar",42]
+</pre>
+
+*Note*: JsonArrays can't be resized. To achieve that, you have to retrieve the
+array using [[GetData]], resize the array manually and create a new JsonArray 
+with the resized array as argument.
+
 
 # Method New( length:Int )
 
@@ -133,30 +300,42 @@ Returns length of the array.
 	
 # Method Set:Void( index:Int,value:JsonValue )
 
+Set entry at @index to specific @value.
+
 Throws a [[JsonError]] if @index is out of bounds.
 
 	
 # Method SetBool:Void( index:Int,value:Bool )
+
+Set boolean @value at @index.
 
 Throws a [[JsonError]] if @index is out of bounds.
 
 	
 # Method SetInt:Void( index:Int,value:Int )
 
+Set integer @value at @index.
+
 Throws a [[JsonError]] if @index is out of bounds.
 
 	
 # Method SetFloat:Void( index:Int,value:Float )
+
+Set float @value at @index.
 
 Throws a [[JsonError]] if @index is out of bounds.
 
 	
 # Method SetString:Void( index:Int,value:String )
 
+Set string @value at @index.
+
 Throws a [[JsonError]] if @index is out of bounds.
 
 	
 # Method Get:JsonValue( index:Int )
+
+Get json value at @index.
 
 Throws a [[JsonError]] if @index is out of bounds.
 
@@ -165,20 +344,28 @@ Returns a [[JsonNull]] object if element at @index is null.
 	
 # Method GetBool:Bool( index:Int )
 
+Get boolean value at @index.
+
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonBool]].
 
 	
 # Method GetInt:Int( index:Int )
+
+Get integer value at @index.
 
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
 
 	
 # Method GetFloat:Float( index:Int )
 
+Get float value at @index.
+
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonNumber]].
 
 	
 # Method GetString:String( index:Int )
+
+Get string value at @index.
 
 Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[JsonString]].
 
@@ -187,54 +374,127 @@ Throws a [[JsonError]] if @index is out of bounds or value at @index is not a [[
 
 Gets internal array used to contain values.
 
-
-# Method PushJson:Void( buf:StringStack )
+To iterate through the array, use
+<pre>
+For Local entry := Eachin json.GetData()
+	Print entry.ToJson()
+End
+</pre>
 
 
 # Class JsonNull Extends JsonValue
 
+Value representing %null%.
+
+
 # Method ToJson:String()
 
+Returns a string literally containing %null%.
+
+
 # Function Instance:JsonNull()
+
+Returns an object of JsonNull.
 
 
 # Class JsonBool Extends JsonValue
 
+Value representing a bool.
+
+
 # Method New( value:Bool )
+
+New value from bool.
+
 
 # Method BoolValue:Bool()
 
+Returns boolen value.
+
+
 # Method ToJson:String()
 
+Returns either %true% or %false% as string.
+
+
 # Function Instance:JsonBool( value:Bool )
+
+Returns an object of either JsonBool with value true or JsonBool with value false.
 
 
 # Class JsonString Extends JsonValue
 
+Value representing a string.
+
+
 # Method New( value:String )
+
+New value from string.
+
 
 # Method StringValue:String()
 
+Returns string value.
+
+
 # Method ToJson:String()
 
+Returns value as quoted string with escaped quotation marks.
+
+
 # Function Instance:JsonString( value:String )
+
+Returns an object containing @string.
 	
 
 # Class JsonNumber Extends JsonValue
 
+Value representing a number.
+
+
 # Method New( value:String )
+
+New value from string.
+
+If @value does not represent a numerical value, it will always be interpreted as 0.
+
 	
 # Method IntValue:Int()
+
+Returns integer value.
+
 	
 # Method FloatValue:Float()
+
+Returns float value.
+
 	
 # Method ToJson:String()
 
+Returns value as string.
+
+
 # Function Instance:JsonNumber( value:String )
-	
+
+Returns an object containing @value.
+
 
 # Class JsonParser
 
+The json parser is used to translate a JSON string to json.
+
+
 # Method New( json:String )
 
+New json parser object parsing @json.
+
+
 # Method ParseValue:JsonValue()
+
+Used to return the value of the root object.
+
+<pre>
+Local json := New JsonParser("42").ParseValue()
+Print json.Type()		' prints 4 (equals to JsonValue.NUMBERTYPE)
+Print json.IntValue()	' prints 42
+</pre>

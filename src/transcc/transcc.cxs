@@ -7,7 +7,7 @@
 Import trans
 Import builders
 
-Const VERSION:="2018-03-02"
+Const VERSION:="2018-08-10"
 
 Function Main()
 	Local tcc:=New TransCC
@@ -157,6 +157,7 @@ Class TransCC
 	Field MSBUILD_PATH:String
 	Field PSS_PATH:String
 	Field PSM_PATH:String
+	Field AGK_PATH:String
 	Field HTML_PLAYER:String
 	Field FLASH_PLAYER:String
 	
@@ -383,6 +384,10 @@ Class TransCC
 			Case "MSBUILD_PATH"
 				If Not MSBUILD_PATH And FileType( path )=FILETYPE_FILE
 					MSBUILD_PATH=path
+				Endif			
+			Case "AGK_PATH"
+				If Not AGK_PATH And FileType( path )=FILETYPE_DIR
+					AGK_PATH=path
 				Endif
 			Case "HTML_PLAYER" 
 				HTML_PLAYER=rhs

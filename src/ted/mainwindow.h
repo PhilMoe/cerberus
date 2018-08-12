@@ -18,6 +18,8 @@ class FindDialog;
 class Process;
 class FindInFilesDialog;
 
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -47,7 +49,7 @@ public:
 
     void setIcons();
     QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
-
+    QStringList _completeList;
 private:
 
     void parseAppArgs();
@@ -82,6 +84,7 @@ private:
 
     bool confirmQuit();
     void closeEvent( QCloseEvent *event );
+    void showImage(const QString &path);
 
 public slots:
 
@@ -122,6 +125,7 @@ public slots:
     void onToggleBookmark();
     void onPreviousBookmark();
     void onNextBookmark();
+    void onToggleFullscreen();
 
     //Build/Debug menu
     void onBuildBuild();
@@ -177,6 +181,7 @@ private slots:
 private:
 
     QMap<QString,QString> _helpUrls;
+    QMap<QString,QString> _helpF1;
 
     Ui::MainWindow *_ui;
 

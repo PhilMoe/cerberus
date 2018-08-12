@@ -69,6 +69,7 @@ void PrefsDialog::onSaveThemeColor(){
         themeColor.setValue( "stringsColor", Prefs::prefs()->getColor( "stringsColor" ) );
         themeColor.setValue( "identifiersColor", Prefs::prefs()->getColor( "identifiersColor" ) );
         themeColor.setValue( "keywordsColor", Prefs::prefs()->getColor( "keywordsColor" ) );
+        themeColor.setValue( "keywords2Color", Prefs::prefs()->getColor( "keywords2Color" ) );
         themeColor.setValue( "commentsColor", Prefs::prefs()->getColor( "commentsColor" ) );
         themeColor.setValue( "highlightColor", Prefs::prefs()->getColor( "highlightColor" ) );
         themeColor.endGroup();
@@ -102,6 +103,7 @@ void PrefsDialog::onLoadThemeColor(){
         _ui->stringsColorWidget->setColor( themeColor.value( "Colors/stringsColor" ).toString() );
         _ui->identifiersColorWidget->setColor( themeColor.value( "Colors/identifiersColor" ).toString() );
         _ui->keywordsColorWidget->setColor( themeColor.value( "Colors/keywordsColor" ).toString() );
+        _ui->keywords2ColorWidget->setColor( themeColor.value( "Colors/keywords2Color" ).toString() );
         _ui->commentsColorWidget->setColor( themeColor.value( "Colors/commentsColor" ).toString() );
         _ui->highlightColorWidget->setColor( themeColor.value( "Colors/highlightColor" ).toString() );
     }
@@ -119,6 +121,7 @@ int PrefsDialog::exec(){
         restoreGeometry( saveGeometry() );
         _used=true;
     }
+    _themeSignal = false;
 
     _ui->fontComboBox->setCurrentFont( QFont( _prefs->getString( "fontFamily" ),_prefs->getInt("fontSize") ) );
     _ui->fontSizeWidget->setValue( _prefs->getInt("fontSize") );
@@ -135,6 +138,7 @@ int PrefsDialog::exec(){
     _ui->stringsColorWidget->setColor( _prefs->getColor( "stringsColor" ) );
     _ui->identifiersColorWidget->setColor( _prefs->getColor( "identifiersColor" ) );
     _ui->keywordsColorWidget->setColor( _prefs->getColor( "keywordsColor" ) );
+    _ui->keywords2ColorWidget->setColor( _prefs->getColor( "keywords2Color" ) );
     _ui->commentsColorWidget->setColor( _prefs->getColor( "commentsColor" ) );
     _ui->highlightColorWidget->setColor( _prefs->getColor( "highlightColor" ) );
     _ui->tabSizeWidget->setValue( _prefs->getInt( "tabSize" ) );
@@ -142,10 +146,13 @@ int PrefsDialog::exec(){
     _ui->cerberusPathWidget->setText( _prefs->getString( "cerberusPath" ) );
     _ui->blitzmaxPathWidget->setText( _prefs->getString( "blitzmaxPath" ) );
     _ui->highlightCaretRowWidget->setChecked( _prefs->getBool("highlightCurrLine" ) );
+    _ui->highlightCaretWordWidget->setChecked( _prefs->getBool("highlightCurrWord" ) );
+    _ui->highlightBracketsWidget->setChecked( _prefs->getBool("highlightBrackets" ) );
     _ui->showLineNumbersWidget->setChecked( _prefs->getBool("showLineNumbers" ) );
     _ui->sortCodeBrowserWidget->setChecked( _prefs->getBool("sortCodeBrowser" ) );
+    _ui->tabs4spacesWidget->setChecked( _prefs->getBool("tabs4spaces" ) );
+    _ui->capitalizeAPIWidget->setChecked( _prefs->getBool("capitalizeAPI" ) );
 
-    _themeSignal = false;
     _ui->themeWidget->clear();
 
     QDir recoredDir(appPath+"/themes/");
@@ -183,8 +190,24 @@ void PrefsDialog::onHighlightCaretRowChanged( bool state ){
     _prefs->setValue( "highlightCurrLine",state );
 }
 
+void PrefsDialog::onHighlightCaretWordChanged( bool state ){
+    _prefs->setValue( "highlightCurrWord",state );
+}
+
+void PrefsDialog::onHighlightBracketsChanged( bool state ){
+    _prefs->setValue( "highlightBrackets",state );
+}
+
 void PrefsDialog::onShowLineNumbersChanged( bool state ){
     _prefs->setValue( "showLineNumbers",state );
+}
+
+void PrefsDialog::onTabs4SpacesChanged( bool state ){
+    _prefs->setValue( "tabs4spaces",state );
+}
+
+void PrefsDialog::onCapitalizeAPIChanged( bool state ){
+    _prefs->setValue( "capitalizeAPI",state );
 }
 
 void PrefsDialog::onSortCodeBrowserChanged( bool state ){

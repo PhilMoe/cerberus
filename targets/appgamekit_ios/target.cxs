@@ -1,0 +1,4 @@
+
+#TARGET_NAME="iOS Game (AppGameKit)"
+#TARGET_SYSTEM="agk_ios"
+#TARGET_BUILDER="agk_ios"

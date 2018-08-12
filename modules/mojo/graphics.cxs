@@ -500,12 +500,20 @@ End
 
 Function LoadImage:Image( path$,frameCount=1,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
-	If surf Return (New Image).Init( surf,frameCount,flags )
+	If surf 
+		Return (New Image).Init( surf,frameCount,flags )
+	Else
+		DebugLog("Error - Unable to load image: " + path)
+	Endif
 End
 
 Function LoadImage:Image( path$,frameWidth,frameHeight,frameCount,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
-	If surf Return (New Image).Init( surf,0,0,frameWidth,frameHeight,frameCount,flags,Null,0,0,surf.Width,surf.Height )
+	If surf 
+		Return (New Image).Init( surf,0,0,frameWidth,frameHeight,frameCount,flags,Null,0,0,surf.Width,surf.Height )
+	Else
+		DebugLog("Error - Unable to load image: " + path)
+	Endif
 End
 
 Function CreateImage:Image( width,height,frameCount=1,flags=Image.DefaultFlags )
@@ -518,6 +526,13 @@ Function SetColor( r#,g#,b# )
 	context.color_g=g
 	context.color_b=b
 	renderDevice.SetColor r,g,b
+End
+
+Function SetColor( rgb# )
+  context.color_r = ((rgb Shr 16) & $FF) ' Extract the RR byte
+  context.color_g = ((rgb Shr 8) & $FF)  ' Extract the GG byte
+  context.color_b = (rgb & $FF)       ' Extract the BB byte
+  renderDevice.SetColor context.color_r,context.color_g,context.color_b 
 End
 
 Function GetColor#[]()

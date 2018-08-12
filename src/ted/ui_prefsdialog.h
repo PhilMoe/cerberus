@@ -38,8 +38,8 @@ class Ui_PrefsDialog
 {
 public:
     QVBoxLayout *verticalLayout;
-    QGroupBox *groupBox;
-    QFormLayout *formLayout_2;
+    QGroupBox *grpUI;
+    QGridLayout *gridLayout_5;
     QFormLayout *formLayout_5;
     QLabel *themeLabel;
     QComboBox *themeWidget;
@@ -60,14 +60,20 @@ public:
     QSpinBox *fontSizeWidget;
     QLabel *tabSizeLabel_2;
     QSpinBox *tabSizeWidget;
+    QLabel *tabs4spacesLabel;
+    QCheckBox *tabs4spacesWidget;
     QLabel *smoothFontsLabel;
     QCheckBox *smoothFontsWidget;
     QLabel *highlightLabel;
     QCheckBox *highlightCaretRowWidget;
+    QCheckBox *highlightCaretWordWidget;
     QLabel *showLineNumbersLabel;
     QCheckBox *showLineNumbersWidget;
     QLabel *sortCodeBrowserLabel;
     QCheckBox *sortCodeBrowserWidget;
+    QCheckBox *highlightBracketsWidget;
+    QLabel *capitalizeAPILabel;
+    QCheckBox *capitalizeAPIWidget;
     QGroupBox *grpColors;
     QGridLayout *gridLayout;
     QFormLayout *formLayout;
@@ -84,6 +90,8 @@ public:
     ColorSwatch *identifiersColorWidget;
     QLabel *keywordsColorLabel;
     ColorSwatch *keywordsColorWidget;
+    QLabel *keywords2ColorLabel;
+    ColorSwatch *keywords2ColorWidget;
     QLabel *commentsColorLabel;
     ColorSwatch *commentsColorWidget;
     QLabel *identifiersColorLabel;
@@ -111,71 +119,74 @@ public:
     {
         if (PrefsDialog->objectName().isEmpty())
             PrefsDialog->setObjectName(QStringLiteral("PrefsDialog"));
-        PrefsDialog->resize(396, 665);
+        PrefsDialog->resize(411, 892);
         PrefsDialog->setStyleSheet(QStringLiteral(""));
         verticalLayout = new QVBoxLayout(PrefsDialog);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        groupBox = new QGroupBox(PrefsDialog);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        formLayout_2 = new QFormLayout(groupBox);
-        formLayout_2->setObjectName(QStringLiteral("formLayout_2"));
+        grpUI = new QGroupBox(PrefsDialog);
+        grpUI->setObjectName(QStringLiteral("grpUI"));
+        gridLayout_5 = new QGridLayout(grpUI);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        gridLayout_5->setContentsMargins(9, -1, 9, -1);
         formLayout_5 = new QFormLayout();
         formLayout_5->setObjectName(QStringLiteral("formLayout_5"));
-        themeLabel = new QLabel(groupBox);
+        formLayout_5->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        themeLabel = new QLabel(grpUI);
         themeLabel->setObjectName(QStringLiteral("themeLabel"));
 
         formLayout_5->setWidget(1, QFormLayout::LabelRole, themeLabel);
 
-        themeWidget = new QComboBox(groupBox);
+        themeWidget = new QComboBox(grpUI);
         themeWidget->setObjectName(QStringLiteral("themeWidget"));
 
         formLayout_5->setWidget(1, QFormLayout::FieldRole, themeWidget);
 
-        console1ColorLabel = new QLabel(groupBox);
+        console1ColorLabel = new QLabel(grpUI);
         console1ColorLabel->setObjectName(QStringLiteral("console1ColorLabel"));
 
         formLayout_5->setWidget(2, QFormLayout::LabelRole, console1ColorLabel);
 
-        console1ColorWidget = new ColorSwatch(groupBox);
+        console1ColorWidget = new ColorSwatch(grpUI);
         console1ColorWidget->setObjectName(QStringLiteral("console1ColorWidget"));
 
         formLayout_5->setWidget(2, QFormLayout::FieldRole, console1ColorWidget);
 
-        console2ColorLabel = new QLabel(groupBox);
+        console2ColorLabel = new QLabel(grpUI);
         console2ColorLabel->setObjectName(QStringLiteral("console2ColorLabel"));
 
         formLayout_5->setWidget(3, QFormLayout::LabelRole, console2ColorLabel);
 
-        console2ColorWidget = new ColorSwatch(groupBox);
+        console2ColorWidget = new ColorSwatch(grpUI);
         console2ColorWidget->setObjectName(QStringLiteral("console2ColorWidget"));
 
         formLayout_5->setWidget(3, QFormLayout::FieldRole, console2ColorWidget);
 
-        console3ColorLabel = new QLabel(groupBox);
+        console3ColorLabel = new QLabel(grpUI);
         console3ColorLabel->setObjectName(QStringLiteral("console3ColorLabel"));
 
         formLayout_5->setWidget(4, QFormLayout::LabelRole, console3ColorLabel);
 
-        console3ColorWidget = new ColorSwatch(groupBox);
+        console3ColorWidget = new ColorSwatch(grpUI);
         console3ColorWidget->setObjectName(QStringLiteral("console3ColorWidget"));
 
         formLayout_5->setWidget(4, QFormLayout::FieldRole, console3ColorWidget);
 
-        lineNumberColorLabel = new QLabel(groupBox);
+        lineNumberColorLabel = new QLabel(grpUI);
         lineNumberColorLabel->setObjectName(QStringLiteral("lineNumberColorLabel"));
+        lineNumberColorLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         formLayout_5->setWidget(5, QFormLayout::LabelRole, lineNumberColorLabel);
 
-        lineNumberColorWidget = new ColorSwatch(groupBox);
+        lineNumberColorWidget = new ColorSwatch(grpUI);
         lineNumberColorWidget->setObjectName(QStringLiteral("lineNumberColorWidget"));
 
         formLayout_5->setWidget(5, QFormLayout::FieldRole, lineNumberColorWidget);
 
 
-        formLayout_2->setLayout(0, QFormLayout::SpanningRole, formLayout_5);
+        gridLayout_5->addLayout(formLayout_5, 0, 0, 1, 1);
 
 
-        verticalLayout->addWidget(groupBox);
+        verticalLayout->addWidget(grpUI);
 
         grpOptions = new QGroupBox(PrefsDialog);
         grpOptions->setObjectName(QStringLiteral("grpOptions"));
@@ -215,10 +226,20 @@ public:
 
         formLayout_3->setWidget(2, QFormLayout::FieldRole, tabSizeWidget);
 
+        tabs4spacesLabel = new QLabel(grpOptions);
+        tabs4spacesLabel->setObjectName(QStringLiteral("tabs4spacesLabel"));
+
+        formLayout_3->setWidget(3, QFormLayout::LabelRole, tabs4spacesLabel);
+
+        tabs4spacesWidget = new QCheckBox(grpOptions);
+        tabs4spacesWidget->setObjectName(QStringLiteral("tabs4spacesWidget"));
+
+        formLayout_3->setWidget(3, QFormLayout::FieldRole, tabs4spacesWidget);
+
         smoothFontsLabel = new QLabel(grpOptions);
         smoothFontsLabel->setObjectName(QStringLiteral("smoothFontsLabel"));
 
-        formLayout_3->setWidget(3, QFormLayout::LabelRole, smoothFontsLabel);
+        formLayout_3->setWidget(4, QFormLayout::LabelRole, smoothFontsLabel);
 
         smoothFontsWidget = new QCheckBox(grpOptions);
         smoothFontsWidget->setObjectName(QStringLiteral("smoothFontsWidget"));
@@ -229,37 +250,57 @@ public:
         smoothFontsWidget->setSizePolicy(sizePolicy);
         smoothFontsWidget->setLayoutDirection(Qt::LeftToRight);
 
-        formLayout_3->setWidget(3, QFormLayout::FieldRole, smoothFontsWidget);
+        formLayout_3->setWidget(4, QFormLayout::FieldRole, smoothFontsWidget);
 
         highlightLabel = new QLabel(grpOptions);
         highlightLabel->setObjectName(QStringLiteral("highlightLabel"));
 
-        formLayout_3->setWidget(4, QFormLayout::LabelRole, highlightLabel);
+        formLayout_3->setWidget(5, QFormLayout::LabelRole, highlightLabel);
 
         highlightCaretRowWidget = new QCheckBox(grpOptions);
         highlightCaretRowWidget->setObjectName(QStringLiteral("highlightCaretRowWidget"));
 
-        formLayout_3->setWidget(4, QFormLayout::FieldRole, highlightCaretRowWidget);
+        formLayout_3->setWidget(5, QFormLayout::FieldRole, highlightCaretRowWidget);
+
+        highlightCaretWordWidget = new QCheckBox(grpOptions);
+        highlightCaretWordWidget->setObjectName(QStringLiteral("highlightCaretWordWidget"));
+
+        formLayout_3->setWidget(6, QFormLayout::FieldRole, highlightCaretWordWidget);
 
         showLineNumbersLabel = new QLabel(grpOptions);
         showLineNumbersLabel->setObjectName(QStringLiteral("showLineNumbersLabel"));
 
-        formLayout_3->setWidget(6, QFormLayout::LabelRole, showLineNumbersLabel);
+        formLayout_3->setWidget(10, QFormLayout::LabelRole, showLineNumbersLabel);
 
         showLineNumbersWidget = new QCheckBox(grpOptions);
         showLineNumbersWidget->setObjectName(QStringLiteral("showLineNumbersWidget"));
 
-        formLayout_3->setWidget(6, QFormLayout::FieldRole, showLineNumbersWidget);
+        formLayout_3->setWidget(10, QFormLayout::FieldRole, showLineNumbersWidget);
 
         sortCodeBrowserLabel = new QLabel(grpOptions);
         sortCodeBrowserLabel->setObjectName(QStringLiteral("sortCodeBrowserLabel"));
 
-        formLayout_3->setWidget(7, QFormLayout::LabelRole, sortCodeBrowserLabel);
+        formLayout_3->setWidget(11, QFormLayout::LabelRole, sortCodeBrowserLabel);
 
         sortCodeBrowserWidget = new QCheckBox(grpOptions);
         sortCodeBrowserWidget->setObjectName(QStringLiteral("sortCodeBrowserWidget"));
 
-        formLayout_3->setWidget(7, QFormLayout::FieldRole, sortCodeBrowserWidget);
+        formLayout_3->setWidget(11, QFormLayout::FieldRole, sortCodeBrowserWidget);
+
+        highlightBracketsWidget = new QCheckBox(grpOptions);
+        highlightBracketsWidget->setObjectName(QStringLiteral("highlightBracketsWidget"));
+
+        formLayout_3->setWidget(7, QFormLayout::FieldRole, highlightBracketsWidget);
+
+        capitalizeAPILabel = new QLabel(grpOptions);
+        capitalizeAPILabel->setObjectName(QStringLiteral("capitalizeAPILabel"));
+
+        formLayout_3->setWidget(8, QFormLayout::LabelRole, capitalizeAPILabel);
+
+        capitalizeAPIWidget = new QCheckBox(grpOptions);
+        capitalizeAPIWidget->setObjectName(QStringLiteral("capitalizeAPIWidget"));
+
+        formLayout_3->setWidget(8, QFormLayout::FieldRole, capitalizeAPIWidget);
 
 
         gridLayout_2->addLayout(formLayout_3, 1, 0, 1, 1);
@@ -293,7 +334,7 @@ public:
 
         defaultColorWidget = new ColorSwatch(grpColors);
         defaultColorWidget->setObjectName(QStringLiteral("defaultColorWidget"));
-        defaultColorWidget->setStyleSheet(QStringLiteral("color: rgb(255, 255, 255);"));
+        defaultColorWidget->setStyleSheet(QStringLiteral(""));
 
         formLayout->setWidget(1, QFormLayout::FieldRole, defaultColorWidget);
 
@@ -342,15 +383,25 @@ public:
 
         formLayout->setWidget(6, QFormLayout::FieldRole, keywordsColorWidget);
 
+        keywords2ColorLabel = new QLabel(grpColors);
+        keywords2ColorLabel->setObjectName(QStringLiteral("keywords2ColorLabel"));
+
+        formLayout->setWidget(7, QFormLayout::LabelRole, keywords2ColorLabel);
+
+        keywords2ColorWidget = new ColorSwatch(grpColors);
+        keywords2ColorWidget->setObjectName(QStringLiteral("keywords2ColorWidget"));
+
+        formLayout->setWidget(7, QFormLayout::FieldRole, keywords2ColorWidget);
+
         commentsColorLabel = new QLabel(grpColors);
         commentsColorLabel->setObjectName(QStringLiteral("commentsColorLabel"));
 
-        formLayout->setWidget(7, QFormLayout::LabelRole, commentsColorLabel);
+        formLayout->setWidget(8, QFormLayout::LabelRole, commentsColorLabel);
 
         commentsColorWidget = new ColorSwatch(grpColors);
         commentsColorWidget->setObjectName(QStringLiteral("commentsColorWidget"));
 
-        formLayout->setWidget(7, QFormLayout::FieldRole, commentsColorWidget);
+        formLayout->setWidget(8, QFormLayout::FieldRole, commentsColorWidget);
 
         identifiersColorLabel = new QLabel(grpColors);
         identifiersColorLabel->setObjectName(QStringLiteral("identifiersColorLabel"));
@@ -369,6 +420,7 @@ public:
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         formLayout_4 = new QFormLayout();
         formLayout_4->setObjectName(QStringLiteral("formLayout_4"));
+        formLayout_4->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         cerberusLabel = new QLabel(grpTools);
         cerberusLabel->setObjectName(QStringLiteral("cerberusLabel"));
 
@@ -494,6 +546,11 @@ public:
         QObject::connect(console2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
         QObject::connect(console3ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
         QObject::connect(lineNumberColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(tabs4spacesWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onTabs4SpacesChanged(bool)));
+        QObject::connect(highlightCaretWordWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onHighlightCaretWordChanged(bool)));
+        QObject::connect(highlightBracketsWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onHighlightBracketsChanged(bool)));
+        QObject::connect(keywords2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
+        QObject::connect(capitalizeAPIWidget, SIGNAL(clicked(bool)), PrefsDialog, SLOT(onCapitalizeAPIChanged(bool)));
 
         QMetaObject::connectSlotsByName(PrefsDialog);
     } // setupUi
@@ -501,7 +558,7 @@ public:
     void retranslateUi(QDialog *PrefsDialog)
     {
         PrefsDialog->setWindowTitle(QApplication::translate("PrefsDialog", "IDE Options", 0));
-        groupBox->setTitle(QApplication::translate("PrefsDialog", "GroupBox", 0));
+        grpUI->setTitle(QApplication::translate("PrefsDialog", "Theme", 0));
         themeLabel->setText(QApplication::translate("PrefsDialog", "UI Theme", 0));
 #ifndef QT_NO_TOOLTIP
         themeWidget->setToolTip(QApplication::translate("PrefsDialog", "Sets the UI theme", 0));
@@ -514,13 +571,22 @@ public:
         familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", 0));
         pointSizeLabel->setText(QApplication::translate("PrefsDialog", "Font Size", 0));
         tabSizeLabel_2->setText(QApplication::translate("PrefsDialog", "Tab size", 0));
+        tabs4spacesLabel->setText(QApplication::translate("PrefsDialog", "Tabs or Spaces", 0));
+#ifndef QT_NO_TOOLTIP
+        tabs4spacesWidget->setToolTip(QApplication::translate("PrefsDialog", "Uses tabs instead of spaces", 0));
+#endif // QT_NO_TOOLTIP
+        tabs4spacesWidget->setText(QString());
         smoothFontsLabel->setText(QApplication::translate("PrefsDialog", "Smooth fonts", 0));
         highlightLabel->setText(QApplication::translate("PrefsDialog", "Highlight:", 0));
         highlightCaretRowWidget->setText(QApplication::translate("PrefsDialog", "Caret Row", 0));
+        highlightCaretWordWidget->setText(QApplication::translate("PrefsDialog", "Word under caret", 0));
         showLineNumbersLabel->setText(QApplication::translate("PrefsDialog", "Show line numbers", 0));
         showLineNumbersWidget->setText(QString());
         sortCodeBrowserLabel->setText(QApplication::translate("PrefsDialog", "Sort Code Browser", 0));
         sortCodeBrowserWidget->setText(QString());
+        highlightBracketsWidget->setText(QApplication::translate("PrefsDialog", "Matching brackets", 0));
+        capitalizeAPILabel->setText(QApplication::translate("PrefsDialog", "Capitalize API", 0));
+        capitalizeAPIWidget->setText(QString());
         grpColors->setTitle(QApplication::translate("PrefsDialog", "Code Editor Colors", 0));
         backgroundColorLabel->setText(QApplication::translate("PrefsDialog", "Background", 0));
         defaultColorLabel->setText(QApplication::translate("PrefsDialog", "Default", 0));
@@ -528,6 +594,13 @@ public:
         numbersColorLabel->setText(QApplication::translate("PrefsDialog", "Numbers", 0));
         stringsColorLabel->setText(QApplication::translate("PrefsDialog", "Strings", 0));
         keywordsColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords", 0));
+#ifndef QT_NO_TOOLTIP
+        keywordsColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the CX language keywords", 0));
+#endif // QT_NO_TOOLTIP
+        keywords2ColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords2", 0));
+#ifndef QT_NO_TOOLTIP
+        keywords2ColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the API", 0));
+#endif // QT_NO_TOOLTIP
         commentsColorLabel->setText(QApplication::translate("PrefsDialog", "Comments", 0));
         identifiersColorLabel->setText(QApplication::translate("PrefsDialog", "Identifiers", 0));
         grpTools->setTitle(QApplication::translate("PrefsDialog", "Tool Paths", 0));

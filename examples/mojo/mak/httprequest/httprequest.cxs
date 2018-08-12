@@ -22,10 +22,10 @@ Class MyApp Extends App Implements IOnHttpRequestComplete
 	
 	Method OnCreate()
 	
-		get_req=New HttpRequest( "GET","https://posttestserver.com",Self )
+		get_req=New HttpRequest( "GET","https://httpbin.org/",Self )
 		get_req.Send
 
-		post_req=New HttpRequest( "POST","https://posttestserver.com/post.php",Self )
+		post_req=New HttpRequest( "POST","https://httpbin.org/post.php",Self )
 		post_req.Send "Hello World!"
 
 		SetUpdateRate 60

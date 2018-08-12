@@ -1,0 +1,4 @@
+
+#TARGET_NAME="Desktop (AppGameKit)"
+#TARGET_SYSTEM="agk"
+#TARGET_BUILDER="agk"

@@ -18,7 +18,7 @@ See LICENSE.TXT for licensing terms.
 #endif
 
 static QString textFileTypes=";txt;cerberusdoc;monkeydoc;";
-static QString codeFileTypes=";cxs;monkey;bmx;cpp;java;js;as;cs;py;mx2;monkey2;";
+static QString codeFileTypes=";cxs;monkey;bmx;h;cpp;java;js;as;cs;py;mx2;monkey2;";
 
 inline bool isDigit( QChar ch ){
     return (ch>='0' && ch<='9');
@@ -57,5 +57,6 @@ bool removeDir( const QString &path );
 void replaceTabWidgetWidget( QTabWidget *tabWidget,int index,QWidget *widget );
 
 bool isUrl( const QString &path );
+bool isImageFile(const QString &path);
 
 #endif // STD_H

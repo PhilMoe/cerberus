@@ -1,19 +1,69 @@
+Strict
 
-'VERY simple Cserver!
-'
-'Mainly just so we can get 64bit linux versions up and running...
-'
-#CSERVER_VERSION="17.7.3"
-#GLFW_WINDOW_TITLE="cserver_macos"
+#Rem
+================================================================================
+Cerberus X MiniServer, used for local testing of HTML5 games
 
+usage:
+> cserver* file
+	- basically a launcher
+	- tries to connect to existing server app or creates new one
+		this prevents multiple server apps from running at the same time
+	- opens file in browser
+
+> cserver* [GO]
+	- starts server app
+
+Changelog
+--------------------------------------------------------------------------------
+2018-01-12
+	- now using Strict
+	- documented code a bit
+	- renamed CServer to CServerApp
+	- cleaned up CServerApp
+		all startup code now in OnCreate()
+	- moved server socket initialization to CServerApp.OnCreate()
+		(allows onscreen debug output)
+	- renamed FServer to HtmlServer
+	- renamed FClient to HtmlConnection
+	- added etag based on FileTime
+		prevents reloading of unmodified files
+	- added possibility to keep-alive connection
+		speeds up loading process
+	- added rendercall counter to minimize actual renderings
+		(lowers CPU usage)
+		
+2018-01-17
+	- changed way how to output debug lines
+		now stops once top of screen has been reached
+		output can now be controlled with preprocessor flags
+	- replaced rendercall counter by actually lowering the update rate while
+		no requests are queued
+		(lowers CPU usage again)
+	- added StripDir() to GET output for increased clarity
+	- changed #GLFW_WINDOW_RENDER_WHILE_RESIZING to False
+		prevents 100% CPU usage while resizing window
+	- added _timeout to close connection after a certain time
+	- added list of connections to server app
+	- fixed keep-alive (forgot to parse : in header)
+	
+2018-03-05
+	- removed "cludge fix for ted"
+		the problem this fix should solve was not reproducible anymore
+
+================================================================================
+#End
+
+' make sure code wants to be compiled right
 #If HOST<>"linux" And HOST<>"macos" And HOST<>"winnt"
-#Error "Host<>linux/macos/winnt"
+	#Error "Host<>linux/macos/winnt"
 #Endif
 
 #If TARGET<>"glfw"
-#Error "Target<>glfw"
+	#Error "Target<>glfw"
 #Endif
 
+' framework
 Import mojo
 
 Import brl.socket
@@ -21,101 +71,205 @@ Import brl.process
 Import brl.filepath
 Import brl.filesystem
 
+' settings
+#CSERVER_VERSION="18.03.05"
+#GLFW_WINDOW_TITLE="Cerberus X MiniServer V"+CSERVER_VERSION
+
 #MOJO_AUTO_SUSPEND_ENABLED=False
+#GLFW_WINDOW_RENDER_WHILE_RESIZING=False
+#GLFW_WINDOW_RESIZABLE=True
 
 #If CONFIG="debug"
-#GLFW_WINDOW_WIDTH=1024
-#GLFW_WINDOW_HEIGHT=768
+	#GLFW_WINDOW_WIDTH=1024
+	#GLFW_WINDOW_HEIGHT=768
 #Else
-#GLFW_WINDOW_WIDTH=320
-#GLFW_WINDOW_HEIGHT=240
+	#GLFW_WINDOW_WIDTH=320
+	#GLFW_WINDOW_HEIGHT=240
 #Endif
-#GLFW_WINDOW_RESIZABLE=True
-#GLFW_WINDOW_TITLE="Cerberus X MiniServer V"+CSERVER_VERSION
-#GLFW_WINDOW_RENDER_WHILE_RESIZING=True
 
-Const CSERVER_PORT:=50609
+' output settings for debuging
+#OUTPUT_HEADERS=False			' output headers (in and out)
+#OUTPUT_ON_FUNC_CALLS=False		' output timestamps of On*Complete calls
+#OUTPUT_CONN_CLOSE=False		' output when a connection is closed
 
-Class FClient Implements IOnSendComplete,IOnReceiveComplete
+' this port is used only for communication between launcher and actual server
+Const CSERVER_PORT:Int	= 50609
 
+Class HtmlConnection Implements IOnSendComplete, IOnReceiveComplete
 	Field _socket:Socket
-	Field _fserver:FServer
-	Field _data:=New DataBuffer( 4096 )
+	Field _server:HtmlServer
+	Field _datain := New DataBuffer(4096)
+	Field _dataout := New DataBuffer(1024)
 	Field _content:DataBuffer
+	Field _keepalive:Int = False
+	Field _timeout:Int
 	
-	Method New( socket:Socket,fserver:FServer )
-		_socket=socket
-		_fserver=fserver
-		_socket.ReceiveAsync _data,0,_data.Length,Self
+	' header data
+	Field path:String
+	Field connection:String = "close"
+	Field ifnonematch:String
+
+	Method New(pSocket:Socket, pServer:HtmlServer)
+		_socket = pSocket
+		_server = pServer
+		_socket.ReceiveAsync(_datain, 0, _datain.Length, Self)
+		_timeout = Millisecs() + 5000
+		CServerApp._connections.AddLast(Self)
+		' tell server app to become more attentive
+		CServerApp.ActionStrikes()
 	End
 	
-	Method OnSendComplete:Void( data:DataBuffer,offset:Int,count:Int,socket:Socket )
-
+	' when data (response) was sent to web browser
+	Method OnSendComplete:Void(pData:DataBuffer, pOffset:Int, pCount:Int, pSocket:Socket)
+		#If OUTPUT_ON_FUNC_CALLS=True
+			CServerApp.Debug("OSC "+Millisecs())
+		#End
+		' no more content in pipeline to send
 		If Not _content
-'			CServer.Debug "Closing FClient"
-			socket.Close
+			If Not _keepalive Then
+				Close()
+			End
+			Return
+		Endif
+		' send content in pipeline
+		_socket.SendAsync(_content, 0, _content.Length, Self)
+		_content = Null
+	End
+
+	' when requests come in from web browser
+	Method OnReceiveComplete:Void(pData:DataBuffer, pOffset:Int, pCount:Int, pSocket:Socket)
+		#If OUTPUT_ON_FUNC_CALLS=True
+			CServerApp.Debug("ORC "+Millisecs())
+		#End
+		' tell server app to become more attentive
+		CServerApp.ActionStrikes()
+		
+		' check if end of request is two blank lines
+		Local total:Int = pOffset + pCount
+		If total < 4 Or _datain.PeekString(total-4, 4) <> "~r~n~r~n" Then
+			' no? wait for more data
+			_socket.ReceiveAsync(_datain, total, _datain.Length - total, Self)
 			Return
 		Endif
 		
-		_socket.SendAsync _content,0,_content.Length,Self
-		_content=Null
-
+		' done. evaluate incoming stream of headers
+		Local header:String[] = _datain.PeekString(0, total).Split("~r~n")
+		Local hline:String, htokens:String[]
+		For Local i:Int = 0 Until header.Length
+			hline = header[i]
+			#If OUTPUT_HEADERS=True
+				CServerApp.Debug("< "+ hline)
+			#End
+			' text containin line = actual header data
+			If hline Then
+				htokens = hline.Split(" ")
+				If htokens.Length>1 Then
+					Local lhs:String = htokens[0].ToLower()
+					' request method
+					If lhs = "get" Then
+						path = _server.RootDir + htokens[1]
+					' connection
+					ElseIf lhs = "connection:" Then
+						_keepalive = (htokens[1].Trim().ToLower() = "keep-alive")
+					' if-none-match: etag
+					Elseif lhs = "if-none-match:" Then
+						ifnonematch = htokens[1]
+					End
+				End
+			' empty line = end of header ?
+			Elseif i>0
+				' ... actually it needs two empty lines
+				If header[i-1] = "" Then
+					Respond()
+					' reset header data for next header
+					path = ""
+					ifnonematch = ""
+				End
+			End
+		Next
+		
+		' keep-alive: reset cursor for datain and update timeout time
+		If _keepalive Then
+			_socket.ReceiveAsync(_datain, 0, _datain.Length, Self)
+			_timeout = Millisecs() + 5000
+		End
 	End
 	
-	Method OnReceiveComplete:Void( data:DataBuffer,offset:Int,count:Int,socket:Socket )
+	' take header data and respond
+	Method Respond:Void()
+		CServerApp.Debug("@"+ _server.Port +": GET "+ StripDir(path) )
 
-		offset+=count
-		If offset<4 Or data.PeekString( offset-4,4 )<>"~r~n~r~n"
-			socket.ReceiveAsync data,offset,data.Length-offset,Self
-			Return
-		Endif
-		
-		Local header:String[]=data.PeekString( 0,offset ).Split( "~r~n" ),req:String[]
-		If header.Length>0 req=header[0].Split( " " )
-		
-		Local response:=New StringStack
-		
-		If req.Length>1 And req[0].ToLower().Trim()="get"
-		
-			Local path:=_fserver.RootDir+req[1].Trim()
-						
-			If FileType( path )=FILETYPE_FILE
-			
-				CServer.Debug "@"+_fserver.Port()+" GET "+StripDir( path )
-
-				_content=DataBuffer.Load( path )
-				response.Push "HTTP/1.1 200 OK"
-				response.Push "Content-Type: "+MimeType( ExtractExt( path ) )
-				response.Push "Content-Length: "+_content.Length
-				response.Push "Connection: close"
+		Local response := New StringStack
+		' request was GET, file was requested
+		If path Then
+			' file exists
+			If FileType(path) = FILETYPE_FILE Then
+				Local etag:String = "~q"+ FileTime(path) +"~q"
+				' ... and was modified
+				If ifnonematch <> etag Then
+					' buffer file content in pipeline
+					_content = DataBuffer.Load(path)
+					CServerApp.Debug("HTTP/1.1 200 OK")
+					response.Push("HTTP/1.1 200 OK")
+					response.Push("Content-Type: "+ MimeType( ExtractExt(path) ))
+					response.Push("Content-Length: "+ _content.Length)
+					PushKeepAliveHeader(response)
+					response.Push("Etag: "+ etag)
+				' ... and was not modified
+				Else
+					CServerApp.Debug("HTTP/1.1 304 NOT MODIFIED")
+					response.Push("HTTP/1.1 304 NOT MODIFIED")
+					PushKeepAliveHeader(response)
+					response.Push("Etag: "+ etag)
+				End
 			Else
-				response.Push "HTTP/1.1 404 Not Found"
-				response.Push "Connection: close"
+				response.Push("HTTP/1.1 404 Not Found")
+				PushKeepAliveHeader(response)
 			Endif
 		Else
-			response.Push "HTTP/1.1 501 Not Implemented"
-			response.Push "Connection: close"
+			response.Push("HTTP/1.1 501 Not Implemented")
+			PushKeepAliveHeader(response)
 		Endif
 		
-		Local str:=response.Join( "~r~n" )+"~r~n~r~n"
-		
-'		CServer.Debug str
+		#If OUTPUT_HEADERS=True
+			For Local resp:String = Eachin response
+				CServerApp.Debug("> "+ resp)
+			Next
+		#End
 
-		socket.SendAsync _data,0,_data.PokeString( 0,str ),Self
-		
+		' send response to web browser
+		Local str:String = response.Join("~r~n") +"~r~n~r~n"
+		Local cnt:Int = _dataout.PokeString(0,str)
+		_socket.SendAsync(_dataout, 0, cnt, Self)
 	End
 	
+	Method PushKeepAliveHeader:Void(pResponse:StringStack)
+		If _keepalive Then
+			pResponse.Push("Connection: keep-alive")
+		Else
+			pResponse.Push("Connection: close")
+		End
+	End
+	
+	' close connection and remove from list in server app
+	Method Close:Void()
+		_socket.Close()
+		CServerApp._connections.RemoveEach(Self)
+		#If OUTPUT_CONN_CLOSE=True
+			CServerApp.Debug("Closing HtmlConnection")
+		#End
+	End
 End
 
-Class FServer Implements IOnAcceptComplete
-
+Class HtmlServer Implements IOnAcceptComplete
 	Field _rootDir:String
 	Field _socket:Socket
 	
-	Method New( rootDir:String,socket:Socket )
-		_rootDir=rootDir
-		_socket=socket
-		_socket.AcceptAsync Self
+	' init HtmlServer
+	Method New(pRootDir:String, pSocket:Socket)
+		_rootDir = pRootDir
+		_socket = pSocket
+		_socket.AcceptAsync(Self)
 	End
 	
 	Method RootDir:String() Property
@@ -126,152 +280,210 @@ Class FServer Implements IOnAcceptComplete
 		Return _socket.LocalAddress.Port
 	End
 	
-	Method OnAcceptComplete:Void( socket:Socket,source:Socket )
-		New FClient( socket,Self )
-		_socket.AcceptAsync Self
+	' accept messages from web browser
+	Method OnAcceptComplete:Void(pSocket:Socket, pSource:Socket)
+		#If OUTPUT_ON_FUNC_CALLS=True
+			CServerApp.Debug("OAC "+Millisecs())
+		#End
+		New HtmlConnection(pSocket, Self)
+		' accept more messages from web browser
+		_socket.AcceptAsync(Self)
 	End
-
 End
 
-Class CServer Extends App Implements IOnAcceptComplete
-
+Class CServerApp Extends App Implements IOnAcceptComplete
 	Field _socket:Socket
-	Field _data:=New DataBuffer( 4096 )
-	Field _fservers:=New StringMap<FServer>
-	global _debug:=New StringStack
+	Field _htmlservers := New StringMap<HtmlServer>
+	Field _data := New DataBuffer(4096)
+	Global _debug := New StringStack
+	Global _connections := New List<HtmlConnection>
 	
-	Method New( socket:Socket )
-		_socket=socket
-	End
+	Global _actiontime:Int, _attentive:Bool
 	
+	' create app, open server socket, start listening for connections
 	Method OnCreate:Int()
-		_socket.AcceptAsync Self
-		SetUpdateRate 10
-		Debug "CServer started."
-	End
-	
-	Method OnUpdate:Int()
-		UpdateAsyncEvents
-	End
-	
-	Method OnRender:Int()
-		Cls
-		SetColor 0,255,0
-		Local y:=DeviceHeight()-_debug.Length*12
-		For Local line:=Eachin _debug
-			DrawText line,0,y
-			y+=12
-		Next
-	End
-	
-	Method OnAcceptComplete:Void( socket:Socket,source:Socket )
-		Local msg:=_data.PeekString( 0,socket.Receive( _data,0,_data.Length ) ) 'bit naughty - msg might not fit in a buffer.
-		Local reply:="ERROR"
-		If msg.StartsWith( "NEW " )
-			Local dir:=msg[4..]
-			Local fserver:=_fservers.Get( dir )
-			If fserver
-				Debug "@"+fserver.Port+" OPEN"
-			Else
-				Local socket:=New Socket( "server" )
-				If socket.Bind( "",0 )
-					fserver=New FServer( dir,socket )
-					_fservers.Set dir,fserver
-					Debug "@"+fserver.Port+" NEW "+dir
-				Else
-					reply="ERROR: couldn't bind server socket"
-					Debug reply
-				Endif
-			Endif
-			If fserver reply="OK "+fserver.Port
+		' keep cpu usage low
+		SetUpdateRate(2)
+		' try to listen on CSERVER_PORT (act as server)
+		_socket = New Socket("server")
+		If _socket.Bind("localhost", CSERVER_PORT) Then
+			_socket.AcceptAsync(Self)
+			Debug("CServer started")
 		Else
-			reply="ERROR: Error in message"
-			Debug reply
-		Endif
-		socket.Send _data,0,_data.PokeString( 0,reply )
-		socket.Close
-		_socket.AcceptAsync Self
+			Debug("Failed to start CServer")
+		End
+		Return 0
 	End
 
-	Function Debug:Void( text:String )
-		For Local line:=Eachin text.Split( "~r~n" )
-			_debug.Push line
+	Method OnUpdate:Int()
+		UpdateAsyncEvents()
+		' control update rate: increase as soon as requests come in
+		If Not _attentive And Millisecs() <= _actiontime Then
+			SetUpdateRate(20)
+			_attentive = True
+		' decrease when no requests came for long enough
+		Elseif _attentive And Millisecs() > _actiontime Then
+			SetUpdateRate(4)
+			_attentive = False
+		End
+		' close timeouted connections
+		Local ms:Int = Millisecs()
+		For Local connection := Eachin _connections
+			If ms >= connection._timeout Then
+				connection.Close()
+			End
 		Next
+		Return 0
 	End
 	
+	' call this when action strikes - will increase update rate for a short time
+	Function ActionStrikes:Void()
+		_actiontime = Millisecs() + 1000
+	End
+
+	Method OnRender:Int()
+		' draw debug lines, starting at bottom of screen
+		Cls()
+		SetColor(0,255,0)
+		Local y:Int = DeviceHeight() - 12
+		For Local line := Eachin _debug.Backwards()
+			DrawText(line, 0, y)
+			y -= 12
+			' stop once lines are above top edge of window
+			If y <= -12 Then
+				Exit
+			End
+		Next
+		Return 0
+	End
+
+	' message from launcher
+	Method OnAcceptComplete:Void(pSocket:Socket, pSource:Socket)
+		' read incomming data (max _data.Length - ignore rest, msg contains
+		' path, very unlikely to be > 4KiB)
+		Local cnt:Int = pSocket.Receive(_data, 0, _data.Length)
+		Local msg:String = _data.PeekString(0, cnt)
+		Local reply:String
+		' evaluate message
+		If msg.StartsWith("NEW ") Then
+			' find or start "html" server for new game
+			Local dir:String = msg[4..]
+			Local server := _htmlservers.Get(dir)
+			' found
+			If server Then
+				Debug("@"+ server.Port +" OPEN: "+ dir)
+			' new
+			Else
+				' try binding new socket for html server
+				Local htmlsocket := New Socket("server")
+				If htmlsocket.Bind("localhost", 0) Then
+					server = New HtmlServer(dir, htmlsocket)
+					_htmlservers.Set(dir, server)
+					Debug("@"+ server.Port +" NEW: "+ dir)
+				Else
+					reply = "ERROR: couldn't bind server socket"
+					Debug(reply)
+				End
+			End
+			' tell launcher port of server
+			If server Then
+				reply = "OK "+ server.Port
+			End
+		' invalid message
+		Else
+			reply = "ERROR: Error in message"
+		End
+		' reply to launcher
+		cnt = _data.PokeString(0, reply)
+		pSocket.Send(_data, 0, cnt)
+		pSocket.Close()
+		' and now: listen again for launcher messages
+		_socket.AcceptAsync(Self)
+	End
+
+	' put a line of text on screen
+	Function Debug:Void(pText:String)
+		For Local line:=Eachin pText.Split("~r~n")
+			_debug.Push(line)
+		Next
+	End
 End
 
-Function Main()
-
-	Local AppPath:=Process.AppPath()
-	Local AppArgs:=Process.AppArgs()
+' main a.k.a. launcher
+Function Main:Int()
+	Local appPath:String = Process.AppPath()
+	Local appArgs:String[] = Process.AppArgs()
 	Local proc:Process
 #If CONFIG="debug"	
-	If AppArgs.Length=1
-		AppArgs=[ AppArgs[0], RealPath(AppPath+"../../../../../../test/CerberusGame.html") ]
-		Print "Test Path: " + RealPath(AppPath+"../../../../../../test/CerberusGame.html")
+	If appArgs.Length=1
+		appArgs=[ appArgs[0], RealPath(appPath+"../../../../../../test/CerberusGame.html") ]
+		Print "Test Path: " + RealPath(appPath+"../../../../../../test/CerberusGame.html")
 	Endif
 #Endif
 	
-	If AppArgs.Length=1 Or (AppArgs.Length=2 And AppArgs[1]="GO")
-	
-		Local socket:=New Socket( "server" )
-		If Not socket.Bind( "localhost",CSERVER_PORT ) Error "Failed to start CServer"
-		
-		New CServer( socket )
-		
-	Else If AppArgs.Length=2
-	
-		Local socket:=New Socket( "stream" )
-		
-		If Not socket.Connect( "localhost",CSERVER_PORT )
+	' called without arg or with arg = GO - become server app
+	If appArgs.Length=1 Or (appArgs.Length=2 And appArgs[1]="GO") Then
+		New CServerApp
+	' called with path - connect to server app and tell it to prepare
+	ElseIf appArgs.Length=2
+		Local path:String = appArgs[1]
+		' check if path is accessible
+		If FileType(path) = FILETYPE_NONE Then
+			Error "command line error: file does not exist: "+ path
+		End
+		' try connecting to server app
+		Local socket := New Socket("stream")
+		If Not socket.Connect("localhost", CSERVER_PORT) Then
+			' server app not yet running,
+			' start it...
 			#If HOST="winnt"
-				'Execute "start ~q~q ~q"+AppPath+"~q GO  1>NUL 2>NUL &"
 				proc = New Process
-				If Not proc.Start( AppPath+" GO" ) Error "Error starting CServer process"
-			
+				If Not proc.Start( appPath+" GO" ) Then
+					Error "Error starting CServer process"
+				End
 			#Else
-				Execute "~q"+AppPath+"~q GO  >/dev/null 2>/dev/null &"
+				Execute "~q"+appPath+"~q GO  >/dev/null 2>/dev/null &"
 			#End
-
-			Local err:=True
-			For Local i:=0 Until 50
-				Process.Sleep 100
-				socket.Close
-				socket=New Socket( "stream" )
-				If Not socket.Connect( "localhost",CSERVER_PORT ) Continue
-				err=False
-				Exit
+			' ... and try connecting to it (slowly)
+			Local err:Int = True
+			For Local i:Int = 0 Until 50
+				Process.Sleep(100)
+				' just in case: reopen socket
+				socket.Close()
+				socket=New Socket("stream")
+				' try connecting
+				If socket.Connect("localhost", CSERVER_PORT) Then
+					err = False
+					Exit
+				End
 			Next
 			
-			If err Error "Error connecting to CServer (1)"
-
+			If err Then
+				Error "Error connecting to CServer (1)"
+			End
 		Endif
-		
-		Local path:=AppArgs[1]
-		Local data:=New DataBuffer( 1024 )
-		
-		socket.Send data,0,data.PokeString( 0,"NEW "+ExtractDir( path ) )
-		Local reply:=data.PeekString( 0,socket.ReceiveAll( data,0,data.Length ) )
-		
-		If reply.StartsWith( "OK " )
-			Local port:=Int( reply[3..] )
-			OpenUrl "http://localhost:"+port+"/"+StripDir( path )
+	
+		' now that the connection is established, prepare server app
+		Local data := New DataBuffer(1024)
+		Local cnt:Int
+		cnt = data.PokeString(0, "NEW "+ ExtractDir(path))
+		socket.Send(data, 0, cnt)
+		' and listen to what it says
+		cnt = socket.ReceiveAll(data, 0, data.Length)
+		Local reply:String = data.PeekString(0, cnt)
+		' OK - start web browser and tell it to connect to server serving game
+		If reply.StartsWith("OK ") Then
+			Local port:Int = Int(reply[3..])
+			OpenUrl("http://localhost:"+ port +"/"+ StripDir(path))
 		Else
-			Error "Error connecting to CServer (2), reply="+reply
+			Error "Error connecting to CServer (2), reply=" +reply
 		Endif
-		
+	' called with invalid args
 	Else
-	
-		Error "CServer command line error"
-	
+		Error "command line error: too many arguments"
 	Endif
 	
-	' Cludge fix for Ted. Not ideal but should stop zombie threads.
-	If proc<>Null
-		While proc.IsRunning
-		Wend
-	EndIf	
+	Return 0
 End
 
 Function MimeType:String( ext:String )

@@ -82,3 +82,14 @@ void replaceTabWidgetWidget( QTabWidget *tabWidget,int index,QWidget *widget ){
 bool isUrl( const QString &path ){
     return path.startsWith( "file:" ) || path.startsWith( "http:" ) || path.startsWith( "https:" );
 }
+
+
+bool isImageFile(const QString &path)
+{
+    static QStringList list;
+    if (list.isEmpty()) {
+        list<<"jpg"<<"jpeg"<<"png"<<"ico"<<"bmp"<<"gif";
+    }
+    QString ext = extractExt(path);
+    return list.contains(ext);
+}

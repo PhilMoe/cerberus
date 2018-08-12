@@ -10,9 +10,16 @@ See LICENSE.TXT for licensing terms.
 #define CODEEDITOR_H
 
 #include "std.h"
+#include "mainwindow.h"
 
 #include <QSyntaxHighlighter>
 #include <QVector>
+#include <QScrollBar>
+#include <QShortcut>
+
+#include <QCompleter>
+#include <QStringListModel>
+#include <QAbstractListModel>
 
 class CodeDocument;
 class CodeEditor;
@@ -21,7 +28,32 @@ class Prefs;
 class BlockData;
 class QString;
 class QTextDocument;
+class QCompleter;
+class QStringListModel;
+class QAbstractListModel;
+class CompleterListModel;
+//class QStringList;
 
+//***** CompleterListModel *****
+class CompleterListModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+    CompleterListModel( QObject *parent=0 ): QAbstractListModel(parent){};
+
+    int	rowCount( const QModelIndex &parent=QModelIndex() )const ;
+
+    QVariant data( const QModelIndex &index,int role )const ;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
+    bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
+    void setList(QStringList cmdlist);
+private:
+    QStringList _commandList;
+};
 
 //***** BlockData *****
 class BlockData : public QTextBlockUserData{
@@ -60,7 +92,7 @@ class CodeEditor : public QPlainTextEdit{
     Q_OBJECT
 
 public:
-    CodeEditor( QWidget *parent=0 );
+    CodeEditor( QWidget *parent=0, MainWindow *wnd=0 );
     ~CodeEditor();
 
     //return true if successful and path updated
@@ -70,9 +102,15 @@ public:
     const QString &path(){ return _path; }
     int modified(){ return _modified; }
     bool doHighlightCurrLine;
+    bool doHighlightCurrWord;
+    bool doHighlightBrackets;
     bool doLineNumbers;
     bool doSortCodeBrowser;
     bool _modSignal;
+    bool _tabs4spaces;
+    bool _capitalizeAPI;
+    QString _tabSpaceText;
+    MainWindow *_mainWnd;
 
     QString fileType(){ return _fileType; }
 
@@ -107,7 +145,7 @@ public slots:
     void onTextChanged();
     void onCursorPositionChanged();
     void onPrefsChanged( const QString &name );
-void highlightCurrentLine();
+    void highlightCurrentLine();
     void onCodeTreeViewClicked( const QModelIndex &index );
 
 signals:
@@ -118,12 +156,15 @@ protected:
 
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent( QKeyEvent *e );
+    QString identAtCursor(bool fullWord);
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     //void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-
+    void insertCompletion(const QString &completion,
+                          bool singleWord=false);
+    void performCompletion();
 private:
     Highlighter *_highlighter;
     QStandardItemModel *_codeTreeModel;
@@ -142,6 +183,16 @@ private:
     friend class Highlighter;
 
     QWidget *lineNumberArea;
+    int indexOfClosedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
+    int indexOfOpenedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
+
+    void performCompletion(const QString &completionPrefix);
+    bool handledCompletedAndSelected(QKeyEvent *event);
+    void populateModel(const QString &completionPrefix);
+    bool completedAndSelected;
+    QCompleter *completer;
+    QStringListModel *model;
+    CompleterListModel *model2;
 };
 
 //***** Highlighter *****
@@ -160,6 +211,7 @@ public:
     void validateCodeTreeModel();
     QIcon identIcon( const QString &ident );
     QColor _keywordsColor;
+    QColor _keywords2Color;
     QColor _lineNumberColor;
 
 protected:
@@ -198,9 +250,11 @@ private:
     QString parseToke( QString &text,QColor &color );
 
     const QMap<QString,QString>&keyWords(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords; }
+    const QMap<QString,QString>&keyWords3(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords3; }
 
     static QMap<QString,QString> _keyWords;
     static QMap<QString,QString> _keyWords2;
+    static QMap<QString,QString> _keyWords3;
 
     friend class BlockData;
 };

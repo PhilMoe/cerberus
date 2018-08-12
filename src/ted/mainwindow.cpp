@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-03-02"
+#define TED_VERSION "2018-08-10"
 
 #define SETTINGS_VERSION 2
 
@@ -35,6 +35,7 @@ See LICENSE.TXT for licensing terms.
 #endif
 
 #define _QUOTE(X) #X
+//xxxxxxx
 #define _STRINGIZE( X ) _QUOTE(X)
 
 static MainWindow *mainWindow;
@@ -102,11 +103,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     //targets combobox
     _targetsWidget=new QComboBox;
     _targetsWidget->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+#ifdef Q_OS_MAC
+    _targetsWidget->setObjectName("cbTarget");
+    _targetsWidget->view()->setObjectName("cbTargetView");
+#endif
     _ui->buildToolBar->addWidget( _targetsWidget );
 
     _configsWidget=new QComboBox;
     _configsWidget->addItem( "Debug" );
     _configsWidget->addItem( "Release" );
+#ifdef Q_OS_MAC
+    _configsWidget->setObjectName("cbConfig");
+    _configsWidget->view()->setObjectName("cbConfigView");
+#endif
     _ui->buildToolBar->addWidget( _configsWidget );
 
     _indexWidget=new QComboBox;
@@ -115,6 +124,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _indexWidget->setMinimumSize( 80,_indexWidget->minimumHeight() );
     _indexWidget->setMaximumSize( 240,_indexWidget->maximumHeight() );
 //    _indexWidget->setSizePolicy( QSizePolicy::Expanding,QSizePolicy::Preferred );
+#ifdef Q_OS_MAC
+    _indexWidget->setObjectName("cbIndex");
+    _indexWidget->view()->setObjectName("cbIndexView");
+#endif
     _ui->helpToolBar->addWidget( _indexWidget );
 
     //init central tab widget
@@ -182,7 +195,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _browserTabWidget->addTab( _emptyCodeWidget,"Code" );
     _browserTabWidget->addTab( _debugTreeWidget,"Debug" );
 #ifdef Q_OS_MAC
-// _browserTabWidget->setDocumentMode( true );
+    //_browserTabWidget->setDocumentMode( true );
 #endif
 
     _browserDockWidget=new QDockWidget;
@@ -272,7 +285,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _findInFilesDialog->readSettings();
     connect( _findInFilesDialog,SIGNAL(showCode(QString,int,int)),SLOT(onShowCode(QString,int,int)) );
 
-    loadHelpIndex();
+    //loadHelpIndex();
 
     parseAppArgs();
 
@@ -291,8 +304,9 @@ MainWindow::~MainWindow(){
 //***** private methods *****
 
 void MainWindow::onTargetChanged( int index ){
-
-    QString target=_targetsWidget->currentText();
+//xxxxxxx
+    //QString target=_targetsWidget->currentText();
+    QString target=_targetsWidget->itemText(index);
 
     if( _buildFileType=="cerberus" || _buildFileType=="monkey" ){
         _activeCerberusTarget=target;
@@ -321,6 +335,8 @@ void MainWindow::loadHelpIndex(){
 
     _indexWidget->clear();
 
+    _completeList.clear();
+
     for( int i=0;i<lines.count();++i ){
 
         QString line=lines.at( i );
@@ -329,12 +345,57 @@ void MainWindow::loadHelpIndex(){
         if( j==-1 ) continue;
 
         QString topic=line.left(j);
-        QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
 
+        QString url="file:///"+_cerberusPath+"/docs/html/"+line.mid(j+1);
+        QString status = line;
         _indexWidget->addItem( topic );
+        _completeList.append(topic);
 
         _helpUrls.insert( topic,url );
     }
+
+
+    // Read in declarations for the F! Status bar help
+    QFile file2( _cerberusPath+"/docs/html/decls.txt" );
+    if( !file2.open( QIODevice::ReadOnly ) ) return;
+
+    QTextStream stream2( &file2 );
+
+    stream2.setCodec( "UTF-8" );
+
+    QString text2=stream2.readAll();
+
+    file2.close();
+
+    QStringList lines2=text2.split('\n');
+
+    for( int i=0;i<lines2.count();++i ){
+
+        QString line2=lines2.at( i );
+
+        if ( line2.startsWith("Class ") ) continue;
+        if ( line2.startsWith("Property ") ) continue;
+        if ( line2.startsWith("Module ") ) continue;
+        if ( line2.startsWith("Inherited_method  ") ) continue;
+        if ( line2.startsWith("Const ") ) continue;
+
+        line2 = line2.left(line2.length()-1);
+
+        int j2=line2.indexOf( '#' );
+        if( j2==-1 ) continue;
+
+        QString topic2=line2.right(line2.length()-j2-1);
+
+        int j3=line2.indexOf( ':' );
+        int j4=line2.indexOf( ')' );
+        QString status = topic2 + line2.mid(j3,j4-j3+1);
+        //status = status.replace(":", " : ");
+        status = status.replace("(", " (");
+        status = status.replace(",", ", ");
+        _helpF1.insert(topic2, status);
+    }
+
+
 
     connect( _indexWidget,SIGNAL(currentIndexChanged(QString)),SLOT(onShowHelp(QString)) );
 }
@@ -370,11 +431,32 @@ QString MainWindow::widgetPath( QWidget *widget ){
 CodeEditor *MainWindow::editorWithPath( const QString &path ){
     for( int i=0;i<_mainTabWidget->count();++i ){
         if( CodeEditor *editor=qobject_cast<CodeEditor*>( _mainTabWidget->widget( i ) ) ){
-            if( editor->path()==path ) return editor;
+            if( editor->path()==path ){
+                editor->_mainWnd = this;
+                return editor;
+            }
         }
     }
     return 0;
 }
+
+void MainWindow::showImage(const QString &path) {
+    if (extractExt(path).toLower()== "png") {
+       QLabel* label = new QLabel();
+       QPixmap pix(path);
+
+       label->setPixmap(pix);
+       label->setAlignment(Qt::AlignCenter);
+       int imagewidth = pix.toImage().width();
+       int imageheight = pix.toImage().height();
+       QString imgSize = QString::number(imagewidth)+"x"+ QString::number(imageheight);
+       label->setMinimumWidth(250);
+       label->setMinimumHeight(200);
+       label->setWindowTitle("CX Image Viewer-> "+ imgSize+" : "+path);
+       label->show();
+    } else QDesktopServices::openUrl( "file:/"+path );
+}
+
 
 QWidget *MainWindow::newFile( const QString &cpath ){
 
@@ -382,7 +464,7 @@ QWidget *MainWindow::newFile( const QString &cpath ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"New File",_defaultDir,"Source Files ("+srcTypes+")" ) );
@@ -407,7 +489,7 @@ QWidget *MainWindow::newFileTemplate( const QString &cpath ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"New File from template",_defaultDir,"Source Files ("+srcTypes+")" ) );
@@ -432,6 +514,11 @@ QWidget *MainWindow::newFileTemplate( const QString &cpath ){
 QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     QString path=cpath;
+
+    if (isImageFile(path)) {
+        showImage(path);
+        return 0;
+    }
 
     if( isUrl( path ) ){
 /*
@@ -465,7 +552,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     if( path.isEmpty() ){
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getOpenFileName( this,"Open File",_defaultDir,"Source Files ("+srcTypes+");;Image Files(*.jpg *.png *.bmp);;All Files(*.*)" ) );
@@ -476,23 +563,25 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
 
     CodeEditor *editor=editorWithPath( path );
     if( editor ){
+        editor->_mainWnd = this;
         _mainTabWidget->setCurrentWidget( editor );
         return editor;
     }
 
-    editor=new CodeEditor;
+    editor=new CodeEditor(0,this);
+
     if( !editor->open( path ) ){
         delete editor;
         QMessageBox::warning( this,"Open File Error","Error opening file: "+path );
         return 0;
     }
 
+    editor->_mainWnd = this;
     connect( editor,SIGNAL(textChanged()),SLOT(onTextChanged()) );
     connect( editor,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChanged()) );
 
     editor->setContextMenuPolicy(Qt::CustomContextMenu);
     connect( editor,SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(onEditorMenu(const QPoint&)) );
-
 
     _mainTabWidget->addTab( editor,stripDir( path ) );
     //int tabindex = _mainTabWidget->count() - 1;
@@ -525,6 +614,7 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
     if (_mainTabWidget->count() > 1)
         _mainTabWidget->tabBar()->setUsesScrollButtons(true);
 
+    editor->_mainWnd = this;
     return editor;
 }
 
@@ -539,7 +629,7 @@ bool MainWindow::saveFile( QWidget *widget,const QString &cpath ){
 
         _mainTabWidget->setCurrentWidget( editor );
 
-        QString srcTypes="*.cxs *.monkey *.cpp *.cs *.js *.as *.java *.txt";
+        QString srcTypes="*.cxs *.monkey *.cpp *.h *.cs *.js *.as *.java *.txt";
         if( !_monkey2Path.isEmpty() ) srcTypes+=" *.mx2 *.monkey2";
 
         path=fixPath( QFileDialog::getSaveFileName( this,"Save File As",editor->path(),"Source Files ("+srcTypes+")" ) );
@@ -722,7 +812,11 @@ void MainWindow::readSettings(){
 
         prefs->setValue( "fontFamily","Courier" );
         prefs->setValue( "fontSize",12 );
+        prefs->setValue( "smoothFonts",true );
         prefs->setValue( "tabSize",4 );
+        prefs->setValue( "tabs4spaces",true );
+        prefs->setValue( "capitalizeAPI",false );
+        prefs->setValue( "theme","default" );
         prefs->setValue( "backgroundColor",QColor( 255,255,255 ) );
         prefs->setValue( "console1Color",QColor( 70,70,70 ) );
         prefs->setValue( "console2Color",QColor( 70,170,70 ) );
@@ -732,13 +826,14 @@ void MainWindow::readSettings(){
         prefs->setValue( "stringsColor",QColor( 170,0,255 ) );
         prefs->setValue( "identifiersColor",QColor( 0,0,0 ) );
         prefs->setValue( "keywordsColor",QColor( 0,85,255 ) );
+        prefs->setValue( "keywords2Color",QColor( 0,85,255 ) );
         prefs->setValue( "lineNumberColor",QColor( 0,85,255 ) );
         prefs->setValue( "commentsColor",QColor( 0,128,128 ) );
         prefs->setValue( "highlightColor",QColor( 255,255,128 ) );
-        prefs->setValue( "smoothFonts",true );
         prefs->setValue( "highlightCurrLine",true );
+        prefs->setValue( "highlightCurrWord",true );
+        prefs->setValue( "highlightBrackets",true );
         prefs->setValue( "showLineNumbers",true );
-        prefs->setValue( "theme","default" );
         prefs->setValue( "sortCodeBrowser",true );
 
         _cerberusPath=defaultCerberusPath();
@@ -755,10 +850,7 @@ void MainWindow::readSettings(){
 
         onHelpHome();
 
-
-
-
-
+        loadHelpIndex();
         return;
     }
 
@@ -789,7 +881,7 @@ void MainWindow::readSettings(){
     }
 
     enumTargets();
-
+    loadHelpIndex();
     settings.beginGroup( "mainWindow" );
     restoreGeometry( settings.value( "geometry" ).toByteArray() );
     restoreState( settings.value( "state" ).toByteArray() );
@@ -879,14 +971,13 @@ void MainWindow::readSettings(){
     }
     f.close();
 
-    //css += "QDockWidget::title{text-align:center;}";
+    //css += "QDockWidget::title{text-align:center;background: #ff0000; }";
 
     css.replace("url(:","url("+appPath+"/themes/"+cssFile);
 
     qApp->setStyleSheet(css);
 
     QApplication::processEvents();
-
     QString tempPath ="";
     QDir recoredDir(appPath+"/templates/");
     QStringList allFiles = recoredDir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
@@ -896,6 +987,9 @@ void MainWindow::readSettings(){
     }
     // Set the actions icons depending on the theme
     setIcons();
+
+    _targetsWidget->adjustSize();
+    _configsWidget->adjustSize();
 }
 
 QIcon MainWindow::getThemeIcon(const QString &theme, const QString &ic, const QString &icd){
@@ -982,7 +1076,7 @@ void MainWindow::writeSettings(){
     settings.endArray();
 
     settings.beginGroup( "buildSettings" );
-    settings.setValue( "target",_activeCerberusTarget );
+    settings.setValue( "target",_targetsWidget->currentText() );
     settings.setValue( "config",_configsWidget->currentText() );
     settings.setValue( "locked",_lockedEditor ? _lockedEditor->path() : "" );
     settings.endGroup();
@@ -1018,6 +1112,7 @@ void MainWindow::updateTargetsWidget( QString fileType ){
         _buildFileType=fileType;
         connect( _targetsWidget,SIGNAL(currentIndexChanged(int)),SLOT(onTargetChanged(int)) );
     }
+     _targetsWidget->adjustSize();
 }
 
 //Actions...
@@ -1104,7 +1199,7 @@ void MainWindow::updateWindowTitle(){
     }else if( HelpView *helpView=qobject_cast<HelpView*>( widget ) ){
         setWindowTitle( helpView->url().toString() );
     }else{
-        setWindowTitle( "Ted V"TED_VERSION );
+        setWindowTitle( "Ted V" TED_VERSION );
     }
 }
 
@@ -1484,13 +1579,9 @@ void MainWindow::onProcLineAvailable( int channel ){
 
 void MainWindow::onProcFinished(){
 
-//    qDebug()<<"onProcFinished. Flushing...";
-
     while( _consoleProc->waitLineAvailable( 0,100 ) ){
         onProcLineAvailable( 0 );
     }
-
-//    qDebug()<<"Done.";
 
     _consoleTextWidget->setTextColor( QColor( Prefs::prefs()->getColor( "console3Color" ) ) );
     print( "Done." );
@@ -1870,6 +1961,13 @@ void MainWindow::onViewWindow(){
     }
 }
 
+void MainWindow::onToggleFullscreen() {
+    if(windowState() != Qt::WindowFullScreen)
+        this->setWindowState(Qt::WindowFullScreen);
+    else
+        this->setWindowState(Qt::WindowActive);
+}
+
 //***** Build menu *****
 
 void MainWindow::onBuildBuild(){
@@ -2040,16 +2138,18 @@ void MainWindow::onHelpAbout(){
             }
         }
     }
-
-    QString ABOUT=
-//            "Ted V"TED_VERSION"  (QT_VERSION "_STRINGIZE(QT_VERSION)"; Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+")\n\n"
-            "Ted V"TED_VERSION"  (Cerberus V"+CERBERUS_VERSION+"; Trans V"+_transVersion+"; QT_VERSION "_STRINGIZE(QT_VERSION)")\n\n"
-            "A simple editor/IDE for the Cerberus programming language.\n\n"
-            "Copyright Blitz Research Ltd for Monkey X.\n\n"
-            "Cerberus X is maintained by Michael Hartlef & Martin Leidel.\n\n"
-            "Further additions done by serveral member of the Cerberus X community.\n"
-            "Please visit www.cerberus-x.com for more information on Cerberus."
-            ;
+    QString webSite = "https://www.cerberus-x.com";
+    QString ABOUT= "<html><head><style>a{color:#FFEE00;}</style></head><body>"
+            "Ted V" TED_VERSION "<br><br>"
+            "Cerberus V" +CERBERUS_VERSION+ "<br>"
+            "Trans V"+ _transVersion +"<br>"
+            "QT V" +_STRINGIZE(QT_VERSION)+ "<br><br>"
+            "A simple editor/IDE for the Cerberus programming language.<br><br>"
+            "Copyright Blitz Research Ltd for Monkey X.<br><br>"
+            "Cerberus X is maintained by Michael Hartlef & Martin Leidel.<br<br>"
+            "Further additions done by serveral member of the Cerberus X community.<br>"
+            "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus X."
+            "</body></html>";
 
     QMessageBox::information( this,"About Ted",ABOUT );
 }
@@ -2065,7 +2165,7 @@ void MainWindow::onShowHelp(){
     QString url=_helpUrls.value( tmp );
 
     if( url.isEmpty() ){
-        //qDebug()<<"Help not found for"<<tmp;
+
         url=_helpUrls.value( _helpTopic );
         if( url.isEmpty() ){
             _helpTopic="";
@@ -2080,7 +2180,13 @@ void MainWindow::onShowHelp(){
 void MainWindow::onShowHelp( const QString &topic ){
 
     QString url=_helpUrls.value( topic );
+    QString status = _helpF1.value( topic );
 
+    if ( !status.isEmpty() && _helpTopic!=topic) {
+        statusBar()->showMessage( "Help->  " + status );
+        _helpTopic=topic;
+        return;
+    }
     if( url.isEmpty() ){
         _helpTopic="";
         return;

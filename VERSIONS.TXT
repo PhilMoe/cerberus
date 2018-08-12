@@ -1,3 +1,34 @@
+***** v2018-08-10 *****
+
+FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
+NEW: [GLFW.ANGLE] Added mousewheel event.
+NEW: [AGK] Added support for AppGameKit OSX 64bit Desktop and the iOS platform.
+FIX: [IOS] When you build and run, the iOS Simulator opens up again and the app will be installed and run.
+MOD: [ANDROID] Updated to latest Gradle build tools and SDK
+NEW: [mojo] Added SetColor:Int(rgb:Int) command so you can use hex color rgb values.
+MOD: [mojo/mojo2] Added debugging log if loading an image failed.
+FIX: [AGK/AGK_IOS] Fixed media folder being deleted evey other compile run.
+FIX: [AGK/AGK_IOS] Fixed AGKBuildTarget creating an unusable native function.
+FIX: [example] Changed server to httpbin.org in the mak/httprequest example.
+
+
+***** v2018-04-21 *****
+
+MOD: [brl.json] Enhanced the json module and its documentation    (Author: Holzchopf)
+MOD: [CSERVER] Updated cserver to 18.03.05, its faster now and fixed a font issue    (Author: Holzchopf)
+FIX: [TRANSCC] Readded missing build files for linux.
+FIX: [FLASH] added the missing 5th parameter of 2 mouseevent calls inside the flashgames.as native file.
+FIX: [TED] Readded Fix for last selected target by PixelPaladin. It was MIA for some unknown reason.
+FIX: [TED] Performance issue with big files.
+FIX: [TED] Fix for C++ 7.3.1 in mainwindow.cpp    (Author: linuxfranz)
+NEW: [TED] Added highlighting word under caret.
+NEW: [TED] Added highlighting matching brackets.
+NEW: [TED] Background color works now in all themes.
+NEW: [TED] Added highlighting and autocapitalization of the complete API.
+NEW: [TED] Double clicking on an image file in the project browser will preview the file externally.
+MOD: [TED] F1 displays now a short help text in the statusbar at first before with a second press, open the help document.
+NEW: [AGK] Added support for AppGameKit Windows 64bit Desktop platform.
+ 
 ***** v2018-03-02 *****
 
 FIX: [WINPHONE8] Fixed target template.    (Author: Muruba)

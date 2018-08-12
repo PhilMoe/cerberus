@@ -1,0 +1,225 @@
+
+Import builder
+Import os
+
+Class AGKBuilder_ios Extends Builder
+
+	Method New( tcc:TransCC )
+		Super.New( tcc )
+	End
+	
+	Method Config:String()
+		Local config:=New StringStack
+		Local l:Int
+		For Local kv:=Eachin GetConfigVars()
+			If kv.Key.StartsWith("AGK_")
+				'l = kv.Key.Length()
+				'config.Push "#define " + kv.Key[4..l] +" "+kv.Value
+				config.Push "#define " + kv.Key +" "+kv.Value
+			Else
+				config.Push "#define CFG_"+kv.Key+" "+kv.Value
+			Endif
+		Next
+		'config.Push "#define AGK_PORTRAIT"
+		Return config.Join( "~n" )
+	End
+	
+
+	'***** XCode *****
+	Method MakeXcode:Void()
+
+		Local sim_path:="/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
+		If tcc.opt_run = True 
+			Print ("Starting iOS simulator...")
+			Execute "open ~q"+sim_path+"~q"
+		Endif
+
+		Local buildpath:String  
+		buildpath = os.CurrentDir()+"/AGKTemplate/apps/template_ios"		
+Print ("buildpath= "+buildpath)	
+		Local template:=LoadString( buildpath+"/Classes/template.cpp" )
+		Local templateh:=LoadString( buildpath+"/Classes/template.h" )
+		
+		template=ReplaceBlock( template,"TRANSCODE",transCode )
+		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
+		
+		SaveString template,( buildpath+"/Classes/template.cpp" )
+		SaveString templateh,( buildpath+"/Classes/template.h" )
+		CreateMediaDir buildpath+"/media"
+		If tcc.opt_build
+			Local src:= buildpath+"/build/"+casedConfig+"/CerberusGame.app"
+			ChangeDir buildpath
+			Execute "xcodebuild -scheme agk_interpreter -configuration " + casedConfig + " -sdk iphonesimulator" + " PRODUCT_NAME=CerberusGame" + " BUILD_DIR="+buildpath+"/build"
+			'CreateDataDir buildpath+"/build/"+casedConfig+"/CerberusGame.app/data"			
+			If tcc.opt_run
+				Print ("Installing GerberusGame.app")
+				Execute ("xcrun simctl install booted ~q"+src+"~q")
+				
+				Print ("Running CerberusGame.app")
+				Execute "xcrun simctl launch booted com.thegamecreators.AGKTemplate"
+			
+			Endif
+		Endif
+	End
+
+
+	'***** Builder *****	
+	Method IsValid:Bool()
+		Select HostOS
+			Case "macos"
+				If FileType(tcc.AGK_PATH+"/AppGameKit.app") = FILETYPE_DIR Return True
+			Default
+				Return True
+		End
+		Return False
+	End
+	
+	Method Begin:Void()
+		ENV_LANG="cpp"
+		_trans=New CppTranslator
+	End
+	
+	Method MakeTarget:Void()
+		Select HostOS
+			Case "macos"
+				MakeXcode
+		End
+	End
+
+	Method CreateMediaDir:Void( dir:String )
+	
+		dir=RealPath( dir )
+	
+		If Not syncData DeleteDir dir,True
+		CreateDir dir
+		
+		If FileType( dir )<>FILETYPE_DIR Die "Failed to create target project data dir: "+dir
+		
+		Local dataPath:=ExtractDir(StripExt( tcc.opt_srcpath ))+"/media"
+		If FileType( dataPath )<>FILETYPE_DIR dataPath=""
+		
+		'all used data...
+		Local udata:=New StringSet
+		
+		'Copy data from cerberus project to target project
+		If dataPath
+		
+			Local srcs:=New StringStack
+			srcs.Push dataPath
+			
+			While Not srcs.IsEmpty()
+			
+				Local src:=srcs.Pop()
+				
+				For Local f:=Eachin LoadDir( src )
+					If f.StartsWith( "." ) Continue
+
+					Local p:=src+"/"+f
+					Local r:=p[dataPath.Length+1..]
+					Local t:=dir+"/"+r
+					
+					Select FileType( p )
+					Case FILETYPE_FILE
+						If MatchPath( r,DATA_FILES )
+							CCopyFile p,t
+							udata.Insert t
+							dataFiles.Set p,r
+						Endif
+					Case FILETYPE_DIR
+						CreateDir t
+						srcs.Push p
+					End
+				Next
+			
+			Wend
+		
+		Endif
+		
+		'Copy dodgy module data imports...
+		For Local p:=Eachin app.fileImports
+			Local r:=StripDir( p )
+			Local t:=dir+"/"+r
+			If MatchPath( r,DATA_FILES )
+				CCopyFile p,t
+				udata.Insert t
+				dataFiles.Set p,r
+			Endif
+		Next
+		
+		'Clean up...delete data in target project not in cerberus project.
+		If dataPath
+		
+			Local dsts:=New StringStack
+			dsts.Push dir
+			
+			While Not dsts.IsEmpty()
+				
+				Local dst:=dsts.Pop()
+				
+				For Local f:=Eachin LoadDir( dst )
+					If f.StartsWith( "." ) Continue
+	
+					Local p:=dst+"/"+f
+					Local r:=p[dir.Length+1..]
+					Local t:=dataPath+"/"+r
+					
+					Select FileType( p )
+					Case FILETYPE_FILE
+						If Not udata.Contains( p )
+							DeleteFile p
+						Endif
+					Case FILETYPE_DIR
+						If FileType( t )=FILETYPE_DIR
+							dsts.Push p
+						Else
+							DeleteDir p,True
+						Endif
+					End
+				Next
+				
+			Wend
+		End
+		
+	End
+
+	' Process external shared libraries	to copy
+#rem
+	Method ProcessExternalLibs( config:String, arch:String, link:String )
+		Local libStr:String = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		If libStr = "" Then Return
+
+		Local libcopy:String[] = libStr.Split( ";" )
+		Local dst:String = config+arch
+
+		For Local i:= Eachin libcopy
+			If HostOS="winnt"
+				If i <> ""
+					If FileType( dst+"/"+i+".dll" ) = FILETYPE_FILE Continue
+
+					If CopyFile( tcc._libs+"Win"+arch+"/"+i+".dll", dst+"/"+i+".dll" ) = 1
+						Print "Copied "+i+".dll to "+dst
+					Else
+						Print "Failed to copy "+i+" to "+dst
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_COPYING" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_COPYING", dst+"/"+i+"_COPYING" ) = 1
+							Print "Copied "+i+"_COPYING to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_LICENCE" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_LICENCE", dst+"/"+i+"_LICENCE" ) = 1
+							Print "Copied "+i+"_LICENCE to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+				Endif
+			Endif
+		Next
+	End
+#end
+End

@@ -1,0 +1,50 @@
+Strict
+
+Import agk2
+
+Global game:myGame = Null
+
+'-----------------------------------------------------------------
+Class myGame
+	'---------------------------------------------
+	Method New()
+		' This method is only called during the initialization of the class
+		SetWindowSize(320,480,0,0)
+		SetWindowTitle("Cerberus X -> AppGameKit")
+		SetVirtualResolution(GetDeviceWidth(),GetDeviceHeight())
+		SetWindowAllowResize( 1 )
+		SetClearColor(0,0,100)
+		SetAntialiasMode( 0 )
+		
+		SetSyncRate(9999,0)
+		SetVSync(1)
+		SetScissor(0,0,0,0)
+
+		SetPrintSize(20)
+		
+	End
+	
+	'---------------------------------------------
+	Method Update:Int()
+		' Update your assets here		
+		Return 0
+	End
+	
+	'---------------------------------------------
+	Method Render:Int()
+		' Render your output here
+		agk_PrintC( "ScreenFPS= " ) ; agk_Print( ScreenFPS() )
+		Sync()
+		Return 0
+	End
+End
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	' The Main function is called at every frame till it returns a value of 1.
+	If game = Null Then game = New myGame
+	game.Update()
+	game.Render()
+	
+	Return GetPointerPressed()
+End

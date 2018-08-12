@@ -1,3 +1,22 @@
+QComboBox#cbConfig {
+	min-width: 50px;
+}
+QComboBox#cbConfig QAbstractItemView#cbConfigView {
+	padding: 0px 0px 0px 0px;
+	min-width: 100px;
+	min-height: 40px;
+	
+}
+
+QComboBox#cbTarget {
+	min-width: 100px;
+}
+QComboBox#cbTarget QAbstractItemView#cbTargetView {
+	padding: 0px 0px 0px 0px;
+	min-width: 200px;
+	min-height: 120px;
+}
+
 /*****************************************/
 QMainWindow, QMenuBar, QToolBar, QTabWidget, QStatusBar, QTreeView, QListView, QTextEdit, QDialog, QGroupBox, QSpinBox {
 	color: #c8c8c8;
@@ -64,7 +83,7 @@ QListView::item:selected:active {
 	background: #4B6EAF;
 }
 QListView::item:hover {
-	background: #transparent;
+	background: transparent;
 	border: 1px solid #4B6EAF;
 }
 
@@ -73,7 +92,7 @@ QTreeView {
 	background: #333333;
 }
 QTreeView::item {
-	
+
 }
 QTreeView::item:hover {
 	background: #11FFFFFF;
@@ -227,8 +246,7 @@ QCheckBox::indicator:checked {
 /*****************************************/
 QDockWidget {
 	color: #c8c8c8;
-	background-color: #2b2e30;
-
+	background-color: #3c3f41;
 	titlebar-close-icon: url(:/images/dock_close.png);
 	titlebar-normal-icon: url(:/images/dock_undock.png);
 }
@@ -236,7 +254,10 @@ QDockWidget::title {
 	margin: 4px 0 0 0;
 	text-align: left;
 	padding: 1px 6px;
-	background-color: #2b2e30;
+	border: 1px solid #2E3032;
+	background-color: #36393B;
+}
+QDockWidget::title:hover {
 }
 
 QDockWidget::close-button, QDockWidget::float-button {
