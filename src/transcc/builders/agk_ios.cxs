@@ -68,8 +68,8 @@ Print ("buildpath= "+buildpath)
 		Select HostOS
 			Case "macos"
 				If FileType(tcc.AGK_PATH+"/AppGameKit.app") = FILETYPE_DIR Return True
-			Default
-				Return True
+			'Default
+				'Return True
 		End
 		Return False
 	End
