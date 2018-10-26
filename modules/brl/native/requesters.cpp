@@ -55,7 +55,7 @@ String bbRequestFile( String title,String exts,int save,String path ){
 	int i=path.FindLast( "\\" );
 	if( i!=-1 ){
 		dir=path.Slice( 0,i );
-		file=path.Slice( 1+1 );
+		file=path.Slice( i+1 );
 	}else{
 		file=path;
 	}
@@ -244,7 +244,7 @@ String bbRequestFile( String title,String filter,int save,String path ){
 	int i=path.FindLast( "\\" );
 	if( i!=-1 ){
 		dir=path.Slice( 0,i );
-		file=path.Slice( 1+1 );
+		file=path.Slice( i+1 );
 	}else{
 		file=path;
 	}

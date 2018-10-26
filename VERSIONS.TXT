@@ -1,7 +1,8 @@
-***** v2018-10-01 *****
+***** v2018-10-26 *****
 
 FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.
 FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.
+FIX: [brl.requesters] Fixed RequestFile not working with a set path.
 
 ***** v2018-08-10 *****
 
