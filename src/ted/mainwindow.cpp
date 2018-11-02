@@ -20,7 +20,7 @@ See LICENSE.TXT for licensing terms.
 
 #include <QHostInfo>
 
-#define TED_VERSION "2018-08-10"
+#define TED_VERSION "2018-11-02"
 
 #define SETTINGS_VERSION 2
 
@@ -2107,7 +2107,7 @@ void MainWindow::onHelpQuickHelp(){
     QString ident=_codeEditor->identAtCursor();
     if( ident.isEmpty() ) return;
 
-    onShowHelp( ident );
+    onShowHelpWithStatusbar( ident );
 }
 
 void MainWindow::onHelpCerberusHomepage() {
@@ -2155,7 +2155,6 @@ void MainWindow::onHelpAbout(){
 }
 
 void MainWindow::onShowHelp(){
-
     if( _helpTopic.isEmpty() ) return;
 
     if( !_helpTopicId ) _helpTopicId=1;
@@ -2178,7 +2177,21 @@ void MainWindow::onShowHelp(){
 }
 
 void MainWindow::onShowHelp( const QString &topic ){
+    QString url=_helpUrls.value( topic );
+    QString status = _helpF1.value( topic );
 
+    if( url.isEmpty() ){
+        _helpTopic="";
+        return;
+    }
+
+    _helpTopic=topic;
+    _helpTopicId=0;
+
+    openFile( url,false );
+}
+
+void MainWindow::onShowHelpWithStatusbar( const QString &topic ){
     QString url=_helpUrls.value( topic );
     QString status = _helpF1.value( topic );
 
@@ -2187,6 +2200,7 @@ void MainWindow::onShowHelp( const QString &topic ){
         _helpTopic=topic;
         return;
     }
+
     if( url.isEmpty() ){
         _helpTopic="";
         return;

@@ -156,6 +156,7 @@ private slots:
     void onTargetChanged( int index );
 
     void onShowHelp( const QString &text );
+    void onShowHelpWithStatusbar( const QString &text );
 
     void onLinkClicked( const QUrl &url );
 
