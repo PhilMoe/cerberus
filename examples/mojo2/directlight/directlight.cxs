@@ -1,58 +1,87 @@
+' Cerberus X - Direct Light example
+'
+' How to set up and manipulate simple scene lights
+
+Strict
 
 Import mojo2
 
-Import mojo2.glutil
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
-	Field tile:Image
+	Field myCanvas:Canvas
+	Field bgTile:Image
+	Field lRange:Int[] = [100, 30, 50, 70]
 	
-	Method Test()
+	Method OnCreate:Int()
+		
+		myCanvas = New Canvas()		
+		myCanvas.SetAmbientLight(0.2, 0.2, 0.2)
+		bgTile = Image.Load( "t3.png", 0, 0 )
+		Return(0)
 	End
 	
-	Method Test2()
-			Return Test()
-	End
 	
-	Method OnCreate()
-		
-		canvas = New Canvas
-		
-		canvas.SetAmbientLight .2, .2, .2
-		
-		tile = Image.Load( "t3.png", 0, 0 )
-		
-	End
+	Method OnRender:Int()
 	
-	Method OnRender()
-	
-		'If Texture.TexturesLoading Return
+		myCanvas.Clear(0, 0, 1, 1)
 		
-		canvas.Clear( 0, 0, 1, 1 )
+		Local dw:Int = DeviceWidth()
+		Local dh:Int = DeviceHeight()
+		Local mx:Float = MouseX()
+		Local my:Float = MouseY()		
 	
-		'Set light 0
-		canvas.SetLightType 0, 1
-		canvas.SetLightColor 0, .3, .3, .3
-		canvas.SetLightPosition 0, MouseX, MouseY, -100
-		canvas.SetLightRange 0,200
+		' Set the parameters for each light - 
+		' Move them around according to mouse cursor position.
+		myCanvas.SetLightType(0, 1)
+		myCanvas.SetLightColor(0, 0.3, 0.3, 0.3)
+		myCanvas.SetLightPosition(0, mx, my, -50)
+		myCanvas.SetLightRange(0, lRange[0])
+
+		myCanvas.SetLightType(1, 1)
+		myCanvas.SetLightColor(1, 1.0, 0.3, 0.3)
+		myCanvas.SetLightPosition(1, dw/2, dh - my, -20)
+		myCanvas.SetLightRange(1, lRange[1])
+
+		myCanvas.SetLightType(2, 1)
+		myCanvas.SetLightColor(2, 0.3, 1.0, 0.3)
+		myCanvas.SetLightPosition(2, mx, dh/2, -20)
+		myCanvas.SetLightRange(2, lRange[2])
+
+		myCanvas.SetLightType(3, 1)
+		myCanvas.SetLightColor(3, 0.3, 0.3, 1.0)
+		myCanvas.SetLightPosition(3, dw - mx, dh/4 * 3, -20)
+		myCanvas.SetLightRange(3, lRange[3])
 		
-		'Light will affect subsequent rendering...
-		For Local x:=0 Until DeviceWidth Step 128
-			For Local y:=0 Until DeviceHeight Step 128	
-				canvas.DrawImage tile, x, y
+		' The lights affect all subsequent rendering...
+		For Local x:=0 Until dw Step 128
+			For Local y:=0 Until DeviceHeight() Step 128	
+				myCanvas.DrawImage(bgTile, x, y)
 			Next
 		Next
+
+		myCanvas.DrawText("CERBERUS X HAS FOUR EASY TO USE LIGHTS", DeviceWidth()/2, DeviceHeight()/2, 0.5)
+		myCanvas.DrawText("TO ILLUMINATE YOUR GAMES", DeviceWidth()/2, DeviceHeight()/2 + 20, 0.5)
 		
-		canvas.Flush
-		
+		myCanvas.Flush
+		Return(0)	
+	End
+	
+	
+	Method OnUpdate:Int()	
+		' change the light range (diameter) of the three colored lights
+		For Local i:Int = 1 Until 4
+			lRange[i] += 1
+			If lRange[i] > 80 lRange[i] = 30
+		End
+		Return(0)
 	End
 
 End
 
-Function Main()
 
-	New MyApp
-
+Function Main:Int()
+	New MyApp()
+	Return(0)
 End
 
