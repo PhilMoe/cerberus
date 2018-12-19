@@ -1,83 +1,120 @@
+' Cerberus X - Bump Test example
+'
+' Demonstrates the technique for simple bump-mapping and light manipulation
 
+Strict
 
 Import mojo2
 
-Import mojo2.glutil
-
 Class MyApp Extends App
 
-	Field canvas:Canvas
-	Field image:Image
-	
-	Method OnCreate()
-	
-		'generate color texture
-		Local colortex:=New Texture( 256,256,4,Texture.ClampST|Texture.RenderTarget )
-		Local rcanvas:=New Canvas( colortex )
-		rcanvas.Clear( 1,1,1 )
-		rcanvas.Flush
-
-		'generate normal texture		
-		Local normtex:=New Texture( 256,256,4,Texture.ClampST|Texture.RenderTarget )
-		rcanvas.SetRenderTarget( normtex )
-		rcanvas.Clear( .5,.5,1.0,0.0 )
-		For Local x:=0 Until 256 'Step 32
-			For Local y:=0 Until 256 'Step 32
-				
-				Local dx:=x-127.5
-				Local dy:=y-127.5
-				Local dz:=127.5*127.5-dx*dx-dy*dy
-				
-				If dz<=0 Continue
-				
-				dz=Sqrt( dz )
-				
-				Local r:=(dx+127.5)/255.0
-				Local g:=(dy+127.5)/-255.0
-				Local b:=(dz+127.5)/255.0
-				
-				rcanvas.SetColor( r,g,b,1 )
-				rcanvas.DrawPoint( x,y )
-
-			Next
-		Next
-		rcanvas.Flush
-		
-		Local material:=New Material( Shader.BumpShader() )
-		material.SetTexture( "ColorTexture",colortex )
-		material.SetTexture( "NormalTexture",normtex )
-		material.SetVector( "AmbientColor",[0.0,0.0,0.0,1.0] )
-		
-		image=New Image( material,.5,.5 )
-	
-		canvas=New Canvas
-		canvas.SetAmbientLight .2,.2,.2
-	End
-	
+	Field myCanvas:Canvas
+	Field myImage:Image
 	Field rot:Float
+	Field lightZ:Float
+	Field beamWidth:Float
 	
-	Method OnRender()
+	Method OnCreate:Int()
 	
-		canvas.Clear 0,0,0
-		
-		'Set light 0
-		canvas.SetLightType 0,1
-		canvas.SetLightColor 0,.3,.3,.3
-		canvas.SetLightPosition 0,MouseX,MouseY,-100
-		canvas.SetLightRange 0,400
-		
-		rot+=1
-		
-		canvas.DrawImage image,DeviceWidth/2,DeviceHeight/2,rot,.5,.5
-		
-		canvas.Flush
-		
-	End
+		' generate color texture
+		' clamp co-ords and make it writeable using a canvas
+		Local colortex:Texture = New Texture(256, 256, 4, Texture.ClampST|Texture.RenderTarget)
+		' create a new canvas with colortex as the render target
+		Local rcanvas :Canvas = New Canvas(colortex)
+		rcanvas.Clear(1, 1, 1, 1)
+		rcanvas.Flush()
 
+		' generate a 'normal map' in a texture		
+		' normals are set to point as if on the surface of a hemisphere 
+		Local normtex := New Texture(256, 256, 4, Texture.ClampST|Texture.RenderTarget)
+		rcanvas.SetRenderTarget(normtex)
+		rcanvas.Clear(0.5, 0.5, 1.0, 0.0)
+		For Local x := 0 Until 256 
+			For Local y := 0 Until 256 
+				
+				Local dx:Float = x - 127.5
+				Local dy:Float = y - 127.5
+				Local dz:Float = 127.5 * 127.5 -  dx * dx - dy * dy
+				
+				If dz > 0 
+				
+					dz = Sqrt(dz)
+					
+					Local r:Float = (dx + 127.5) / 255.0
+					Local g:Float = (dy + 127.5) / -255.0
+					Local b:Float = (dz + 127.5) / 255.0
+					
+					rcanvas.SetColor(r, g, b, 1)
+					rcanvas.DrawPoint(x, y)
+				End
+			End
+		End
+		rcanvas.Flush
+		
+		' create a material using our texture and normal map
+		' and finally an image, using the material as its source
+		Local myMaterial := New Material(Shader.BumpShader())
+		myMaterial.SetTexture("ColorTexture", colortex)
+		myMaterial.SetTexture("NormalTexture", normtex)
+		myMaterial.SetVector("AmbientColor", [0.0, 0.0, 0.0, 1.0])
+		
+		myImage = New Image(myMaterial, 0.5, 0.5)
+	
+		myCanvas = New Canvas()
+		myCanvas.SetAmbientLight(0.2, 0.2, 0.2)
+		SetUpdateRate(60)
+		lightZ = -100
+		beamWidth = 200
+		
+		' Set up parameters for light #0
+		' ie the type of light (actually just enabled/disabled), its colour and the diameter of its beam
+		' position it at the mouse cursor as if it was 100 pixels from the view plane (z = -100).
+		myCanvas.SetLightType(0, 1)
+		myCanvas.SetLightColor(0, 0.5, 1.0, 0.5)
+		myCanvas.SetLightRange(0, beamWidth)
+		myCanvas.SetLightPosition(0, MouseX(), MouseY(), lightZ)
+		
+		Return(0)
+	End
+	
+	
+	Method OnRender:Int()
+	
+		myCanvas.Clear(0, 0, 0)
+		
+		' position the light and set its range
+		myCanvas.SetLightPosition(0, MouseX(), MouseY(), lightZ)
+		myCanvas.SetLightRange(0, beamWidth)
+		
+		' draw 3 copies of our image (containing texture, color and normal data) in a row
+		Local dw:Int = DeviceWidth()		
+		For Local x:Int = 128 Until dw Step 192 
+			myCanvas.DrawImage(myImage, x, DeviceHeight()/2, rot, 0.5, 0.5)
+		End
+		
+		myCanvas.DrawText("Left/Right", DeviceWidth()/3, 8, 0.5)
+		myCanvas.DrawText("Up/Down",  DeviceWidth()/3 * 2, 8, 0.5)
+		myCanvas.DrawText("Beam Width:" + beamWidth, DeviceWidth()/3, 28, 0.5)
+		myCanvas.DrawText("Light Z:" + lightZ, DeviceWidth()/3 * 2, 28, 0.5)
+
+		myCanvas.Flush
+		
+		Return(0)
+	End
+	
+	
+	Method OnUpdate:Int()
+		If KeyDown(KEY_UP) And lightZ	 < -10 lightZ += 1
+		If KeyDown(KEY_DOWN) And lightZ > -200 lightZ -= 1
+		If KeyDown(KEY_LEFT) And beamWidth > 150 beamWidth -= 1
+		If KeyDown(KEY_RIGHT) And beamWidth < 350 beamWidth += 1		
+		rot += 1.0
+		Return(0)	
+	End
 End
 
-Function Main()
 
+Function Main:Int()
 	New MyApp
-
+	Return(0)
 End
