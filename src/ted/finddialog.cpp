@@ -52,14 +52,15 @@ void FindDialog::writeSettings(){
     settings.endGroup();
 }
 
-int FindDialog::exec(){
+int FindDialog::exec(QString findText){
     QDialog::show();
 
     if( !_used ){
         restoreGeometry( saveGeometry() );
         _used=true;
     }
-
+    if (findText.length()>0)
+        _ui->findText->setText(findText);
     _ui->findText->setFocus( Qt::OtherFocusReason );
     _ui->findText->selectAll();
 

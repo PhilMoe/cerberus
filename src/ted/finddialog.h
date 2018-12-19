@@ -25,7 +25,7 @@ public:
     void readSettings();
     void writeSettings();
 
-    int exec();
+    int exec(QString findtext);
 
     QString findText();
     QString replaceText();

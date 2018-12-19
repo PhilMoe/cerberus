@@ -1,9 +1,10 @@
-***** v2018-10-26 *****
+***** v2018-12-19 *****
 
 FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.
 FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.
 FIX: [brl.requesters] Fixed RequestFile not working with a set path.
 FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.
+MOD: [example] Various changes to sample scripts     (Author: Paul59)
 
 ***** v2018-08-10 *****
 
