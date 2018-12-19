@@ -249,6 +249,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     _editorPopupMenu->addSeparator();
     _editorPopupMenu->addAction( _ui->actionEditUn_Comment_block);
     _editorPopupMenu->addSeparator();
+    _editorPopupMenu->addAction( _ui->actionEditFind);
+    _editorPopupMenu->addSeparator();
     QMenu *bm = new QMenu("Bookmarks",_editorPopupMenu);
     bm->addAction( _ui->actionToggleBookmark );
     bm->addAction( _ui->actionPreviousBookmark );
