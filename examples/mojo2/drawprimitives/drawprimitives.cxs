@@ -1,71 +1,100 @@
+' Cerberus X - Draw Primitives example
+'
+' Shows how to construct, draw and manipulate a list of primitive shapes
 
+Strict
 
-'Simple drawlist rendering demo.
 
 Import mojo2
+Import cerberus.random
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
+	Field myCanvas:Canvas
+	Field verts:Float[]
+	Field grabbed:Bool
 	
-	Field vertices:Float[]
-	
-	Field indices:Int[]
-	
-	Method OnCreate()
+	Method OnCreate:Int()
 
-		canvas=New Canvas
+		'randomise
+		Seed = Millisecs()
+		myCanvas = New Canvas()
 		
-		vertices=New Float[4*2*100]
-		
-		Local sz:=20.0,p:=0
+		' create 100 shapes consisting of 4 vertices, each vertex has an x and y co-ordinate
+		verts = New Float[100 * 4 * 2]
+		Local sz:Float = 20.0
+		Local p:Int = 0
 
-		For Local i:=0 Until 100
+		For Local i:Int = 0 Until 100
 		
-			Local x:=Rnd(DeviceWidth)-sz/2-DeviceWidth/2
-			Local y:=Rnd(DeviceHeight)-sz/2-DeviceHeight/2
+			' choose a random position, leaving a little space near the bottom of the window for a message
+			Local x:Float = Rnd(DeviceWidth()) 
+			Local y:Float = Rnd(DeviceHeight() - 36)
 			
-			vertices[p+0]=x
-			vertices[p+1]=y
+			' set the four verticeas for each shape - initially a 20x20 square
+			verts[p + 0] = x
+			verts[p + 1] = y
 			
-			vertices[p+2]=x+sz
-			vertices[p+3]=y
+			verts[p + 2] = x + sz
+			verts[p + 3] = y
 			
-			vertices[p+4]=x+sz
-			vertices[p+5]=y+sz
+			verts[p + 4] = x + sz
+			verts[p + 5] = y + sz
 			
-			vertices[p+6]=x
-			vertices[p+7]=y+sz
+			verts[p + 6] = x
+			verts[p + 7] = y + sz
 			
-			p+=8
-		Next
+			p += 8
+		end
 
-		'quick test of indices...
-		indices=New Int[400]
-		For Local i:=0 Until 400
-			indices[i]=i
-		Next
+		grabbed = False
+		
+		Return(0)		
 	End
 	
-	Method OnRender()
+	Method OnRender:Int()
 	
-		canvas.Clear 0,0,1
+		myCanvas.Clear(0, 0, 1)
 		
-		canvas.SetColor Sin( Millisecs*.01 )*.5+.5,Cos( Millisecs*.03 )*.5+.5,Sin( Millisecs*.05 )*.5+.5
+		Local m:Int = Millisecs()
+		myCanvas.SetColor(0, 0, 0) 
+		myCanvas.DrawText("CLICK TO GRAB CENTRE", DeviceWidth()/2, DeviceHeight() - 16, 0.5)		
+		myCanvas.SetColor(1, 1, 1) 
 		
-		canvas.PushMatrix
-		canvas.Translate MouseX,MouseY
+		' if grabbed by mouse translate the drawing of the list
+		If grabbed
+			myCanvas.PushMatrix()
+			myCanvas.Translate(MouseX() - DeviceWidth() / 2, MouseY() - DeviceHeight() / 2)
 		
-'		canvas.DrawPrimitives 4,100,vertices
-		canvas.DrawIndexedPrimitives 4,100,vertices,indices	'should draw same thing...
-		
-		canvas.PopMatrix
+			' First parameter is the 'order' or number of vertices per item: point, line, triangle, rectangle etc
+			' We have 100 sets, with their vertices in the verts[] array.
+			' Refer to Help for details of similar DrawIndexedPrimitives() method
+			myCanvas.DrawPrimitives(4, 100, verts)
+			myCanvas.PopMatrix()
+		Else
+			myCanvas.DrawPrimitives(4, 100, verts)
+		End
+
+		myCanvas.Flush()
+		Return(0)
+	End
 	
-		canvas.Flush
+	
+	Method OnUpdate:Int()
+		
+		If MouseHit(MOUSE_LEFT) Or MouseHit(MOUSE_RIGHT) grabbed = Not grabbed
+
+		' distort the shapes by moving each vertex a little
+		For Local i:Int = 0 Until verts.Length()			
+			verts[i] += Rnd(-0.25, 0.25)
+		End
+		
+		Return(0)
 	End
 
 End
 
-Function Main()
-	New MyApp
+Function Main:Int()
+	New MyApp()
+	Return(0)
 End
