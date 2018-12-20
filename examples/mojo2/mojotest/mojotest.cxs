@@ -1,112 +1,94 @@
-
-'Simple graphics compatibility test
+' Cerberus X - Simple graphics compatibility test
 '
-'Should behave the same on all targets
+' A test of various drawing operations which should show the same results on all build targets
+
+Strict
 
 Import mojo2
 
-Class Test Extends App
+Class myApp Extends App
 
-	Field canvas:Canvas
-	Field image:Image
+	Field myCanvas:Canvas
+	Field myImage:Image
 	
-	Field tx#,ty#
 
-	Field c=7,r=255,g=255,b=255
+	Method OnCreate:Int()
 	
-	Method OnCreate()
-	
-		canvas=New Canvas
-
-		LoadStuff
+		myCanvas = New Canvas()			
+		myImage = Image.Load("images/Logo.png")
 		
-		SetUpdateRate 0
-	End
+		'unthrottled frame rate
+		SetUpdateRate(0)
+		Return(0)
+	End	
+		
+
+	Method OnRender:Int()
 	
-	Method LoadStuff()
-		If image image.Discard
-		image=Image.Load( "images/RedbrushAlpha.png" )
-	End
+		' test various graphics effects using Millisecs() as the basis for animation
 	
-	Method OnUpdate()
-
-		If KeyHit( KEY_LMB )
-		
-			c+=1
-			If c=8 c=1
-			r=(c&1)* 255
-			g=(c&2) Shr 1 * 255
-			b=(c&4) Shr 2 * 255
-			
-			LoadStuff
-
-		Endif
-
-	End
-
-	Method OnRender()
+		myCanvas.SetScissor(0, 0, DeviceWidth(), DeviceHeight())
+		myCanvas.Clear(0.2, 0.2, 0.2)
 	
-		canvas.SetScissor 0,0,DeviceWidth,DeviceHeight
-		canvas.Clear 0,0,.5
-	
-		Local sz#=Sin(Millisecs*.1)*32
-		Local sx=32+sz,sy=32,sw=DeviceWidth-(64+sz*2),sh=DeviceHeight-(64+sz)
+		Local sz:Float = Sin(Millisecs() * 0.1) * 32
+		Local sx:Float = 32 + sz
+		Local sy:Float = 32
+		Local sw:Float = DeviceWidth() - (64 + sz * 2)
+		Local sh:Float = DeviceHeight() - (64 + sz)
 		
-		canvas.SetScissor sx,sy,sw,sh
-		canvas.Clear 1,32.0/255.0,0
+		myCanvas.SetScissor(sx, sy,sw, sh)
+		myCanvas.Clear(0.94, 0.4, 0)
 		
-		canvas.PushMatrix
-		canvas.Translate tx,ty
-		canvas.Scale DeviceWidth/640.0,DeviceHeight/480.0
-		canvas.Translate 320,240
-		canvas.Rotate Millisecs/1000.0*12
-		canvas.Translate -320,-240
+		myCanvas.PushMatrix()
+
+		myCanvas.Scale(DeviceWidth() / 640.0, DeviceHeight() / 480.0)
+		myCanvas.Translate(320, 240)
+		myCanvas.Rotate(Millisecs() / 1000.0 * 12)
+		myCanvas.Translate(-320, -240)
 		
-		canvas.SetColor .5,1,0
-		canvas.DrawRect 32,32,640-64,480-64
+		myCanvas.SetColor(0, 0, 0)
+		myCanvas.DrawRect(32, 32, 640-64, 480-64)
 
-		canvas.SetColor 1,1,0
-		For Local y=0 Until 480
-			For Local x=16 Until 640 Step 32
-				canvas.SetAlpha Min( Abs( y-240.0 )/120.0,1.0 )
-				canvas.DrawPoint x,y
-			Next
-		Next
-		canvas.SetAlpha 1
+		myCanvas.SetAlpha(1)
 		
-		canvas.SetColor 0,.5,1
-		canvas.DrawOval 64,64,640-128,480-128
+		myCanvas.SetColor(1, 1, 1)
+		myCanvas.DrawOval(64, 64, 640-128, 480-128)
 
-		canvas.SetColor 1,0,.5
-		canvas.DrawLine 32,32,640-32,480-32
-		canvas.DrawLine 640-32,32,32,480-32
+		myCanvas.SetColor(1,0, 0.5)
 
-		canvas.SetColor r/255.0,g/255.0,b/255.0,Sin(Millisecs*.3)*.5+.5
-		canvas.DrawImage image,320,240,0
-		canvas.SetAlpha 1
+		myCanvas.SetColor(1, 1, 1, Sin(Millisecs() * 0.3) * 0.5 + 0.5)
+		myCanvas.DrawImage(myImage, 320, 240, 0)
+		myCanvas.SetAlpha(1)
 
-		canvas.SetColor 1,0,.5
-		canvas.DrawPoly( [ 140.0,232.0, 320.0,224.0, 500.0,232.0, 500.0,248.0, 320.0,256.0, 140.0,248.0 ] )
+		
+		myCanvas.PushMatrix()
+		myCanvas.Translate(0, Cos(Millisecs()) * 10)
+		myCanvas.SetColor(0, 0, 0)
+		myCanvas.SetAlpha(0.25)
+		myCanvas.DrawPoly([140.0, 336.0, 320.0, 330.0, 500.0, 336.0, 500.0, 352.0, 320.0, 360.0, 140.0, 352.0])
+		myCanvas.SetAlpha(1)
 				
-		canvas.SetColor .5,.5,.5
-		canvas.DrawText "The Quick Brown Fox Jumps Over The Lazy Dog",320,240,.5,.5
+		myCanvas.SetColor(0, 0, 0)
+		myCanvas.DrawText(" ----=== Cerberus X ===----", 320, 344, 0.5, 0.5)
+		myCanvas.PopMatrix()
 		
-		canvas.PopMatrix
 		
-		canvas.SetScissor 0,0,DeviceWidth,DeviceHeight
-		canvas.SetColor 1,0,0'.5,0,0
-		canvas.DrawRect 0,0,DeviceWidth,1
-		canvas.DrawRect DeviceWidth-1,0,1,DeviceHeight
-		canvas.DrawRect 0,DeviceHeight-1,DeviceWidth,1
-		canvas.DrawRect 0,0,1,DeviceHeight-1
+		myCanvas.PopMatrix()
+		myCanvas.SetScissor(0, 0, DeviceWidth(), DeviceHeight())
+		myCanvas.SetColor(1, 0, 0)
+		myCanvas.DrawRect(0, 0, DeviceWidth(), 1)
+		myCanvas.DrawRect(DeviceWidth() - 1, 0, 1, DeviceHeight())
+		myCanvas.DrawRect(0, DeviceHeight() - 1, DeviceWidth(), 1)
+		myCanvas.DrawRect(0, 0, 1, DeviceHeight() - 1)
 		
-		canvas.Flush
+		myCanvas.Flush()
+		Return(0)
 	End
 
 End
 
-Function Main()
 
-	New Test
-
+Function Main:Int()
+	New myApp()
+	Return(0)
 End
