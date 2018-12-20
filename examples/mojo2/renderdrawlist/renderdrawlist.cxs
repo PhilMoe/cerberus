@@ -1,40 +1,57 @@
+' Cerberus X drawlist example
+'
+' A simple demo that shows how to draw all the items in a drawlist with a single command
 
-'Simple drawlist rendering demo. Note: RenderDrawListEx is experimental!
+Strict
 
 Import mojo2
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
+	Field myCanvas:Canvas
+	Field myDrawList:DrawList
+	Field myImage:Image
 	
-	Field drawList:DrawList
 	
-	Method OnCreate()
+	Method OnCreate:Int()
 
-		canvas=New Canvas
+		myCanvas = New Canvas()
+		myDrawList = New DrawList()
+		myImage = Image.Load("Logo.png")
 		
-		drawList=New DrawList
-		
-		For Local i:=0 Until 100
-		
-			drawList.SetColor Rnd(),Rnd(),Rnd()
-			
-			drawList.DrawCircle Rnd(DeviceWidth)-DeviceWidth/2,Rnd(DeviceHeight)-DeviceHeight/2,Rnd(10,20)
-		Next
+		' draw some circles into the list, rather than directly onto the canvas
+	
+		For Local i:Int = 0 Until 360 Step 5
+			myDrawList.SetAlpha(Rnd(0.1, 0.9))
+			myDrawList.SetColor(Rnd(), Rnd(), Rnd())
+			Local radius:Float = Rnd(40, 300)
+			Local cx:Float = radius * Cos(i)
+			Local cy:Float = radius * Sin(i)
+			myDrawList.DrawCircle(cx, cy, radius/10)		
+		End
+		myDrawList.SetAlpha(0.5)
+		myDrawList.SetColor(1, 1, 1)
+		myDrawList.DrawImage(myImage, 0, 0)			
 
+		Return(0)
 	End
 	
-	Method OnRender()
 	
-		canvas.Clear 0,0,1
-
-		canvas.RenderDrawList drawList,MouseX,MouseY,Millisecs*.01
-	
-		canvas.Flush
+	Method OnRender:Int()
+		myCanvas.Clear(0, 0, 0.25)
+		' draw everything in the list in one pass
+		' translate to the mouse position and rotate continuously
+		myCanvas.RenderDrawList(myDrawList, MouseX(), MouseY(), Millisecs() * 0.01)
+		' do the same again, but rotate in the opposite direction
+		myCanvas.RenderDrawList(myDrawList, MouseX(), MouseY(), Millisecs() * -0.01)
+		myCanvas.Flush()
+		Return(0)
 	End
 
 End
 
-Function Main()
-	New MyApp
+
+Function Main:Int()
+	New MyApp()
+	Return(0)
 End
