@@ -1,34 +1,60 @@
+' Cerberus X - Hello World example
+'
+' Illustrates basic program structure and the use of blending
 
-'minimal mojo2 app!
 
+' Strict mode means all fields and variables have to be given an explicit type, for example Field bulletCount:Int
+' Method and function parameters should be enclosed in parentheses (), for example myCanvas.Clear(1, 1, 1)
+' Return types must be specified (and returned!) for methods and functions, for example Method OnRender:Int() 
+Strict
+
+' We need access to things in the mojo2 module, for example the SetBlendmode() method
 Import mojo2
 
+' Our program extends or inherits from the built in App class
 Class MyApp Extends App
 
-	Field canvas:Canvas
+
+	' the canvas on which we'll be drawing
+	Field myCanvas:Canvas
 	
-	Method OnCreate()
+	
+	' OnCreate() is called once at the beginning of the program
+	' It's the usual place to set things up and create or load resources
+	Method OnCreate:Int()
 
-		canvas=New Canvas
-
+		' Create our canvas
+		myCanvas = New Canvas()
+		Return(0)
 	End
+
 	
-	Method OnRender()
+	' OnRender() is called every frame and is the place to put drawing code
+	Method OnRender:Int()
 	
-		canvas.Clear 0,0,1
+		' clear the canvas
+		myCanvas.Clear(0, 0, 1)
 		
-		canvas.SetBlendMode 3
-		canvas.SetColor 0,0,0,.5
-		canvas.DrawText "HELLO WORLD!",DeviceWidth/2+2,DeviceHeight/2+2,.5,.5
+		' Draw some text in the middle of the screen - offset it by +2 pixels to create a shadow effect
+		myCanvas.SetBlendMode(BlendMode.Multiply)
+		myCanvas.SetColor(0, 0, 0, 0.5)
+		myCanvas.DrawText("HELLO WORLD!", DeviceWidth() / 2 + 2, DeviceHeight() / 2 + 2, 0.5)
+	
 		
-		canvas.SetBlendMode 1
-		canvas.SetColor 1,1,0,1
-		canvas.DrawText "HELLO WORLD!",DeviceWidth/2,DeviceHeight/2,.5,.5
+		' Draw some more text in a different color and using a different blend mode
+		myCanvas.SetBlendMode(BlendMode.Alpha)
+		myCanvas.SetColor(1, 1, 0, 1)
+		myCanvas.DrawText("HELLO WORLD!", DeviceWidth() / 2, DeviceHeight() / 2, 0.5)
 		
-		canvas.Flush
+		' Everything we've told Cerberus X to draw so far has gone into a 'draw list' - Flush() draws everything in that list in one go
+		myCanvas.Flush()
+		Return(0)
 	End
 End
 
-Function Main()
-	New MyApp
+' This is where our program begins
+' We create an instance of the MyApp class defined above which runs our game
+Function Main:Int()
+	New MyApp()
+	Return(0)
 End
