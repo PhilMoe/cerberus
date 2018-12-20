@@ -1,93 +1,110 @@
+' Cerberus X - Letterbox example (GLFW)
+'
+' Demonstrates how to maintain aspect ratio, using letterboxing if necessary, when window size is changed
 
-'Run in glfw3 and resize window!
+Strict
 
 Import mojo2
 
-#GLFW_WINDOW_WIDTH=800
-#GLFW_WINDOW_HEIGHT=400
-#GLFW_WINDOW_RESIZABLE=True
-#GLFW_WINDOW_RENDER_WHILE_RESIZING=True
+' set the parameters for a GLFW window
+#GLFW_WINDOW_WIDTH = 800
+#GLFW_WINDOW_HEIGHT = 400
+#GLFW_WINDOW_RESIZABLE = True
+#GLFW_WINDOW_RENDER_WHILE_RESIZING = True
 
-Const VWIDTH:=320
-Const VHEIGHT:=240
+' the size and aspect ratio of our virtual window
+Const VWIDTH:Int = 320
+Const VHEIGHT:Int = 240
+Const VASPECT:Float = VWIDTH/VHEIGHT
+
+
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
+	Field myCanvas:Canvas
 	Field splitScreen:Bool
-		
-	Method OnCreate()
 	
-		canvas=New Canvas
 		
+	Method OnCreate:Int()
+		myCanvas = New Canvas()
+		Return(0)
 	End
 	
-	Method OnUpdate()
 	
-		If KeyHit( KEY_SPACE ) splitScreen=Not splitScreen
+	Method OnUpdate:Int()	
+		If KeyHit(KEY_SPACE) splitScreen = Not splitScreen
+		Return(0)
+	End
+	
+	
+	Method CalcLetterbox:String(devrect:Int[], vprect:Int[])
+	
+		' get the aspect ratio of the single or two player 'screens'
+		' this will change if the window is re-sized so unlike our 'virtual screen', constants cannot be used
+		Local daspect:Float = devrect[2] / devrect[3]
+		Local feedback:String = ""
 		
-	end
-	
-	Method CalcLetterbox:Void( vwidth:Float,vheight:Float,devrect:Int[],vprect:Int[] )
-	
-		Local vaspect:=vwidth/vheight
-		Local daspect:=Float(devrect[2])/devrect[3]
-
-		If daspect>vaspect
-			vprect[2]=devrect[3]*vaspect
-			vprect[3]=devrect[3]
-			vprect[0]=(devrect[2]-vprect[2])/2+devrect[0]
-			vprect[1]=devrect[1]
+		If daspect > VASPECT
+			feedback = "Too Wide! Using Horizontal Letterbox"
+			vprect[2] = devrect[3] * VASPECT
+			vprect[3] = devrect[3]
+			vprect[0] = (devrect[2] - vprect[2]) / 2 + devrect[0]
+			vprect[1] = devrect[1]
 		Else
-			vprect[2]=devrect[2]
-			vprect[3]=devrect[2]/vaspect
-			vprect[0]=devrect[0]
-			vprect[1]=(devrect[3]-vprect[3])/2+devrect[1]
-		Endif
+			feedback = "Too Tall! Using Vertical Letterbox"
+			vprect[2] = devrect[2]
+			vprect[3] = devrect[2] / VASPECT
+			vprect[0] = devrect[0]
+			vprect[1] = (devrect[3] - vprect[3]) / 2 + devrect[1]
+		End
+		Return(feedback)
 	
 	End
 	
-	Method RenderScene:Void( msg:String,devrect:Int[] )
-	
+
+	Method RenderScene:Void(msg:String, devrect:Int[])	
+		
 		Local vprect:Int[4]
 			
-		CalcLetterbox( VWIDTH,VHEIGHT,devrect,vprect )
+		' send the size of the single or each two player screen stored in devrect[] to the CalcLetterbox method
+		' vprect is set in that method
+		Local aspect:String = CalcLetterbox(devrect, vprect)
 
-		canvas.SetViewport vprect[0],vprect[1],vprect[2],vprect[3]
-		
-		canvas.SetProjection2d 0,VWIDTH,0,VHEIGHT
-
-		canvas.Clear 0,0,1
-		
-		canvas.DrawText msg,VWIDTH/2,VHEIGHT/2,.5,.5
-		
+		' project our virtual screen onto the canvas
+		myCanvas.SetViewport(vprect[0], vprect[1], vprect[2], vprect[3])
+		myCanvas.SetProjection2d(0, VWIDTH, 0, VHEIGHT)
+		myCanvas.Clear(0, 0, 1)
+		myCanvas.DrawText(msg, VWIDTH/2, VHEIGHT/2, 0.5, 0.5)
+		myCanvas.DrawText(aspect, VWIDTH/2, 8, 0.5)
 	End
+		
 	
-	Method OnRender()
+	Method OnRender:Int()
 	
-		canvas.SetViewport 0,0,DeviceWidth,DeviceHeight
-
-		canvas.Clear 0,0,0
+		' set viewport to fill the window
+		myCanvas.SetViewport(0, 0, DeviceWidth(), DeviceHeight())
+		myCanvas.Clear(0, 0, 0)
 	
 		If splitScreen
-		
-			Local h:=DeviceHeight/2
-
-			RenderScene( "PLAYER 1 READY",[0,0,DeviceWidth,h] )
-		
-			RenderScene( "PLAYER 2 READY",[0,h,DeviceWidth,h] )
-		
+			' for a vertical splitscreen
+			' get the height of each screen, ie half of the application window height
+			Local h:Int = DeviceHeight() / 2
+			' draw the two player screens
+			RenderScene("PLAYER 1 READY", [0, 0, DeviceWidth(), h])
+			RenderScene("PLAYER 2 READY", [0, h, DeviceWidth(), h])
 		Else
+			' draw single player screen
+			RenderScene("SPACE TO TOGGLE SPLITSCREEN", [0, 0, DeviceWidth(), DeviceHeight()])
+		End
 		
-			RenderScene( "SPACE TO TOGGLE SPLITSCREEN",[0,0,DeviceWidth,DeviceHeight] )
-
-		Endif
-		
-		canvas.Flush
+		myCanvas.Flush()
+		Return(0)
 	End
 	
 End
 
-Function Main()
+
+Function Main:Int()
 	New MyApp
+	Return(0)
 End
