@@ -25,7 +25,7 @@ Creates a new empty Stack object.
 
 Creates a new Stack object initialized with an array of values.
 
-Params: 
+Parameters: 
 
 values - an array of values.
 
@@ -93,7 +93,7 @@ Pushes a value on the top of the stack.
 
 This will increase the length of the stack by 1.
 
-Params: 
+Parameters: 
 
 @value - value to push.
 
@@ -104,7 +104,7 @@ Pushes an array of values on the top of the stack starting with element 0.
 
 This will increase the length of the stack by the length of the array.
 
-Params: 
+Parameters: 
 
 @values - values to push.
 
@@ -131,7 +131,7 @@ Overwrites the existing value at index with value.
 
 An index of 0 represents the bottom of the stack, and an index of stack length-1 represents the top.
 
-Params: 
+Parameters: 
 
 index - valid integer index. Must be >=0 and < stack length.
 
@@ -144,7 +144,7 @@ Returns the element at the specified index.
 
 An index of 0 represents the bottom of the stack, and an index of Length-1 represents the top.
 
-Params: 
+Parameters: 
 
 index - valid integer index. Must be >=0 and <length.
 
@@ -161,7 +161,7 @@ This will increase the length of the stack by 1.
 
 An index of 0 represents the bottom of the stack, and an index of length-1 represents the top.
 
-Params: 
+Parameters: 
 
 index - valid integer index. Must be >=0 and <length.
 
@@ -176,7 +176,7 @@ This will decrease the length of the stack by 1.
 
 An index of 0 represents the bottom of the stack, and an index of length-1 represents the top.
 
-Params: 
+Parameters: 
 
 index - valid integer index. Must be>=0 and <length.
 
@@ -218,7 +218,7 @@ Finds and removes all elements in the stack equal to value, shifting existing el
 
 This will decrease the length of the stack by the number of occurances of value in the stack.
 
-Params: 
+Parameters: 
 
 value - value to remove.
 
@@ -316,6 +316,6 @@ Implements the [[Stack.Compare]] method, which allows StringStacks to be sorted 
 
 Concatenates the elements of the stack and joins them together with separator.
 
-Params: 
+Parameters: 
 
 separator - string to use to separate elements.

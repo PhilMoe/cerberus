@@ -1,0 +1,13 @@
+Strict
+
+Class ThrowableString Extends Throwable
+	Field str:String
+	
+	Method New(pString:String)
+		str = pString
+	End
+	
+	Method ToString:String()
+		Return str
+	End
+End

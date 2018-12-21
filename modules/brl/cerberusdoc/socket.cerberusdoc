@@ -89,7 +89,7 @@ Links: [[Socket.ReceiveFromAsync]]
 Creates a new empty socket adress.
 
 
-# Method New( host:String,port:int )
+# Method New( host:String,port:Int )
 
 Creates a new socket address with the given @host and @port.
 

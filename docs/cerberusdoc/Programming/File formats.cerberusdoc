@@ -6,6 +6,6 @@ This table lists the file formats supported by Cerberus X targets.
 You should also specify the file formats your app uses via the [[App config settings]] TEXT_FILES, IMAGE_FILES, SOUND_FILES, MUSIC_FILES and BINARY_FILES.
 
 | Function | Html5 | Flash | Glfw | Android | iOS
-| [[Modules/mojo.graphics#LoadImage]] | png, jpg | png, jpg |png | png, jpg, bmp, gif | png, jpg, bmp, gif, tif
-| [[Modules/mojo.audio#LoadSound]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff
-| [[Modules/mojo.audio#PlayMusic]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff
+| [[mojo.graphics.LoadImage]] | png, jpg | png, jpg |png | png, jpg, bmp, gif | png, jpg, bmp, gif, tif
+| [[mojo.audio.LoadSound]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff
+| [[mojo.audio.PlayMusic]] | wav, ogg, mp3, m4a | mp3 | wav, ogg | wav, ogg, mp3, m4a | wav, mp3, m4a, caf, aiff

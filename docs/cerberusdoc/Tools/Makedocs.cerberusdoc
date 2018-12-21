@@ -3,31 +3,77 @@
 
 The Makedocs tool converts Cerberus X documentation to html.
 
-All documentation may use [[Modules/brl.markdown|markdown]] formatting.
+All documentation may use [[brl.markdown|markdown]] formatting. Please also read the additional sections about [link resolving](#linkresolver) and [data directories](#datadirs).
 
->> General documentation
+Cerberus X documentation comes in three forms:
++ [General documentation](#general) placed in Cerberus X' docs/cerberusdoc directory
++ [Module documentation](#module) in or distributed along your module
++ [3rd party documentation](#thirdparty) in a framework's 3rdparty.cerberusdoc directory
 
-General documentation files should have a '.cerberusdoc' extension, and should be placed in the docs/cerberusdoc directory.
+In general, you don't have to run the Makedocs tool on your own, instead, *your IDE calls Makedocs when selecting the %Rebuild Help% option*. However, if you want to run the tool from the command line for development or experiment purposes, read about [[Makedocs/Makedocs usage]].
 
->>> Markdown links in general documentation
-
-Documentation pages may be linked to using the relative filepath as a link target. For example, if you have added a Tools/MakeImages.cerberusdoc file, any file in the Tools directory can link to it using \[[MakeImages]].
-
-Files outside the Tools directory can also link to MakeTools using using \[[Tools/MakeImages]]. The link text will have the directory stripped so will appear simply as 'MakeImages'. 
-
-A plain \[[MakeImages]] is also likely to work even outside the Tools directory, as the link resolver will eventually find MakeTools in the main Index, but it may clash with other definitions of MakeImages so a fully qualified link is preferred.
+More about how the generated html doc files look can be found on the [[Makedocs/Makedocs templates]] page.
 
 
->> Module documentation
+>> <a name="linkresolver"></a> Link resolving in documentation
 
-There are two ways to document a module - either by placing documentation 'in source' within the actual module source code
-by way of 'cerberusdoc comments', or in a separate cerberusdoc file.
+The Makedocs tool tries to resolve all markdown links it finds. Links are *case sensitive* and *relative*. However, if it does not find the target in the current directory (for general and 3rd party documentation) or scope (for module documentation), the *fallback* method of Makedocs resolves to the first match it finds anywhere without warning, and failing even that, not resolve the link at all, generate a warning and highlight the link as unresolved in the generated document, like this: <a href="" class="unresolved">your link here</a>.
+
+Examples:
+
+* To link to the document `Tools/Makedocs.cerberusdoc` you simply write `\[[Makedocs\]]` in a file located in the `Tools` directory, and `\[[Tools/Makedocs\]]` in a file located in the root directory. You can also write absolute document paths by preceding a `/`, so `\[[/Tools/Makedocs\]]` will link to exactly that file no matter in which file it's located. Examples: `\[[Ted\]]` becomes [[Ted]],  `\[[/Programming/Keywords/New\]]` becomes [[/Programming/Keywords/New]].
+
+* To link to the declaration of the `Admob` class in the `brl.admob` module, you write `\[[Admob\]]` when documenting within the `brl.admob` module scope and `\[[brl.admob.Admob\]]` when documenting outside that scope. Example: `\[[brl.admob.Admob\]]` becomes [[brl.admob.Admob]].
+
+* To link to the declaration of the `AdViewHeight` method you write `\[[AdViewHeight\]]` when documenting within the `Admob` class, `\[[Admob.AdViewHeight\]]` when documenting within the `brl.admob` module and `\[[brl.admob.Admob.AdViewHeight\]]` when documenting outside that scope. Example: `\[[brl.admob.Admob.AdViewHeight\]]` becomes [[brl.admob.Admob.AdViewHeight]]
+
+* To specify the version of overloaded functions and methods, the parameter types can be appended - `\[[Min(Int,Int)\]]` will link to the integer Min overload and `\[[Min(Float,Float)\]]` to the float one. Examples: `\[[Min(Int,Int)\]]` becomes [[Min(Int,Int)]], `\[[Min(Float,Float)\]]` becomes [[Min(Float,Float)]].
+
+* *remember:* If you don't specify the scope it might also work, but once there are multiple targets matching that identifier, you can't control to which one the link is pointing. E.g. these might point somewhere else after every time you rebuild the help files: [[New]], [[New()]], [[Clear]]
+
+
+>> <a name="datadirs"></a> Data in documentation
+
+When Makedocs encounters a folder with a `.data` suffix, it will copy that folder and it's content to `docs/html/data/` including the scope, omitting the `.data` suffix. This is a convenient way to provide images and other media for your help files.
+
+For general documentation, the name of the data folder can be chosen freely, but for module documentation, the name of the data folder has to match the module name - e.g. the data for mojo2.graphics is located in `modules/mojo2/cerberusdoc/graphics.data` and gets copied to `docs/html/data/mojo2/graphics/`.
+
+Examples:
+
+The files under `docs/cerberusdoc/*Tools*/*Makedocs*.data/` get copied to `docs/html/data/*Tools*/*Makedocs*/` and can be inserted using e.g:
+
+`!\[image caption\](data/Tools/Makedocs/docsdata.png)`
+
+![Data for general documentation](data/Tools/Makedocs/docsdata.png)
+
+Similarly, the files under `modules/*mojo2*/cerberusdoc/*graphics*.data/` get copied to `docs/html/data/*mojo2*/*graphics*/`. *Note* that the `cerberusdoc` part gets omitted as the target path only consists of the scope:
+
+![Data for module documentation](data/Tools/Makedocs/modulesdata.png)
+
+All generated html files are written in `docs/html/`, that's why the relative path you use to link to your data only consists of `*data/* + %SCOPE% + %FILENAME%`
+
+
+>> <a name="general"></a> General documentation
+
+General documentation files have a `.cerberusdoc` extension and are placed in the `docs/cerberusdoc/` directory or subdirectories therein. Makedocs will automatically create index files for directories without matching `.cerberusdoc` file and in there, list the contents of that directory.
+
+The landing page for the Cerberus X documentation is `Home.cerberusdoc`.
+
+For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension.
+
+
+>> <a name="module"></a> Module documentation
+
+There are two ways to document a module - either by placing documentation 'in source' within the actual module source code by way of 'cerberusdoc comments', or in a separate `.cerberusdoc` file.
+
+All documented declarations Makedocs finds are sorted alphabetically in the resulting html document.
+
 
 >>> Documenting modules in Cerberus X source code
 
 To document a module declaration, you should precede the declaration with a cerberusdoc comment. A cerberusdoc comment is a block comment starting with the line `#Rem cerberusdoc`
 
-For example.
+For example:
 
 <pre>
 #Rem cerberusdoc
@@ -47,10 +93,26 @@ Documentation for my.module goes here...
 
 ...where my.module is the full module path of your module.
 
+In Cerberus X source code, Makedocs is greedy by default, meaning it will index every declaration no matter if it's documented or not. You can hide and display declarations using `#Rem cerberusdoc off` and `#Rem cerberusdoc on`:
+
+<pre>
+#Rem cerberusdoc off
+The following declarations won't show up in the docs.
+#End
+Field hidden0:Int
+Field hidden1:Int
+Field hidden2:Int
+#Rem cerberusdoc on
+Following declarations will show up in the docs.
+#End
+</pre>
+
+For backwards compatibility, the `.monkey` extension is treated like the `.cxs` extension.
+
 
 >>> Documenting modules using an external cerberusdoc file
 
-You may also document a module using an external cerberusdoc file. This file should either be in the same directory as the module Cerberus X source file, or in a cerberusdoc subdirectory, and must have the same name as the module source file but with a '.cerberusdoc' extension instead of '.cxs'.
+You may also document a module using an external `.cerberusdoc` file. This file should either be in the same directory as the module Cerberus X source file, or in a `cerberusdoc` subdirectory, and must have the same name as the module source file but with a `.cerberusdoc` extension instead of `.cxs`.
 
 For example, given the module source file:
 
@@ -64,38 +126,31 @@ The corresponding cerberusdoc file may be located either here...
 
 `modules/flixel/cerberusdoc/flixel.cerberusdoc`
 
-Declarations in a cerberusdoc file are normal Cerberus X declarations, but must be preceded by a '# '. Declarations must appear BEFORE the actual documentation.
+Declarations in a cerberusdoc file are normal Cerberus X declarations, but must be preceded by a '`# `'. Declarations must appear BEFORE the actual documentation.
 
-In addition, a cerberusdoc file must start with a '# Module my.module' declaration.
+In addition, a cerberusdoc file must start with a `# Module my.module` declaration, where my.module is the full module path of your module..
 
 For example:
 
-<pre>
-# Module my.module
-
+<div class="pretty">
+<code># Module my.module
+ 
 # Import brl.stream
 # Import brl.markdown
-
+ 
 Documentation for my.module goes here.
-
+ 
 # Function MyFunction:Void()
+ 
+Documentation for MyFunction goes here.</code>
+</div>
 
-Documentation for MyFunction goes here.
-</pre>
-
-
->>> Markdown links in module documentation
-
-Links to declarations may be created simply by specifying the declaration identifier. The link resolver will attempt to find the correct declaration given the scope of the source documentation.
-
-Links to declarations may also be absolute, in which case a full declaration path should be provided. For example, \[[mojo.graphics]] will link to the mojo.graphics module. Absolute links to non-scope declarations should use #identifier to specify the 'leaf' declaration, for example \[[mojo.graphics#DrawImage]] will link to the DrawImage function in the mojo.graphics module.
-
-Links may also be created to general documentation, using the same rules as given in the above section 'Markdown links in general documentation'.
+For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension and the `monkeydoc` directory like the `cerberusdoc` one.
 
 
->>> Adding examples to module documentation
+>>> Adding examples to declarations
 
-You may add examples using an 'Example:' section, eg:
+You may add examples using an `Example:` section to any type of declaration, eg:
 
 <pre>
 #Rem cerberusdoc
@@ -113,18 +168,119 @@ Function Frobozz:Void( str:String )
 '...etc...
 </pre>
 
+The example will then be emitted in a 'example' section and contents of the first `\<pre\> .. \</pre\>` therein provided as `.cxs` file:
+
+<span class="detail example"><b><a href="">Example</a></b></span>
+<pre>
+Function Main()
+	Print Frobozz( "Yes!" )
+End
+</pre>
+
+
 In addition, you can add example programs in Cerberus X source code form to an 'examples' directory located in the same directory as the .cxs or .cerberusdoc file the docs are located in.
 
 Such example programs should have the same name as the declaration they are providing an example for, with an '_example' suffix. For example, example code for the above function would be named 'Frobozz_example.cxs'.
 
 
->>> Adding links to module documentation
+>>> Adding links to declarations
 
-Documentation may also in include a links section, eg:
+You may add links using a `Links:` section to any type of declaration, eg:
 
-Links: \[[X]], \[[Y]], \[[Z]]
+<pre>
+#Rem cerberusdoc
 
-Links will be emitted in a 'links' or 'see also' section.
+Module documentation
 
+Links: [[mojo2]], [[brl]], [[os]]
+#End
+</pre>
+
+Links will be emitted in a 'see also' section:
+
+<span class="detail links">See also</span>
+
+[[mojo2]], [[brl]], [[os]]
+
+
+>>> Adding parameters to declarations
+
+You may add parameters using a `Parameters:` section to function and method declarations, eg:
+
+<pre>
+#Rem cerberusdoc
+
+Function documentation
+
+Parameters: @zoom - the zoom level. 1.0 is standard
+#End
+Function TakePicture:Void( zoom:Float )
+'...etc...
+</pre>
+
+Parameters will be emitted in a 'parameters' section:
+
+<span class="detail parameters">Parameters</span>
+
+@zoom - the zoom level. 1.0 is standard
+
+
+>>> Adding return values to declarations
+
+You may add infos about the returned value using a `Returns:` to function and method declarations, eg:
+
+<pre>
+#Rem cerberusdoc
+
+Function documentation
+
+Returns: the nth digit of Pi
+#End
+Function GetPiDigit:Int( index:Int )
+'...etc...
+</pre>
+
+Returns info will be emitted in a 'returns' section:
+
+<span class="detail returns">Returns</span>
+
+the nth digit of Pi
+
+
+>>> Note about scopes
+
+Makedocs does not know when a scope (Class, Interface) ends. This means you have to put all global declarations of your module before any class or interface declaration, otherwise Makedocs will treat them as members of those scopes.
+
+
+>> <a name="thirdparty"></a> 3rd party documentation
+
+3rd party documentation is meant for frameworks that come with their own booklet, tutorials, examples... in short: frameworks with multiple pages of documentation. 3rd party documentation is read from any `3rdparty.cerberusdoc` folder Makedocs encounters during scanning for modules. All documentation in these `3rdparty.cerberusdoc` folders are then treated as being located directly in `docs/cerberusdoc/` and will be listed in the '3rd Party Docs' index in your help files.
+
+Since they're virtually part of the general documentation, the rules from the [General documentation](#general) section also apply for 3rd party documentation.
+
+The standard structure of 3rd party documentation consists of:
+
++ a landing page named `\<mydoc\>*.cerberusdoc*`
++ a folder containing all sub pages named `\<mydoc\>`
++ a data folder containing all media you want to provide named `\<mydoc\>*.data*`
++ an icon named `\<mydoc\>*.png*`
+
+The icon will be listed in the top right of Cerberus X' help files and link to the landing page. The icon will be displayed at about 48x48 pixels. But since this can depend on user settings, it's recommended to provide a 128x128 pixels image that looks good when zoomed out to 48x48 pixels.
+
+>>> Example 3rd party documentation "mydoc"
+
+![3rd party structure](data/Tools/Makedocs/3rdparty.png)
+
+Assuming `mydoc` contained the pages `Introduction.cerberusdoc`, `Credits.cerberusdoc` and a folder `Tutorials` with different cerberusdoc files, you could then link from your starting page to the files and the index of `Tutorials` using
+
+\[[mydoc/Introduction\]], \[[mydoc/Credits\]] and \[[mydoc/Tutorials\]] respectively.
+
+Assuming `mydoc.data` contained an image called `docsdata.png`, you could then insert that image on any of your pages using
+
+`!\[image caption\](data/mydoc/docsdata.png)`
+
+*Note* that contents of every `3rdparty.cerberusdoc` directory are treated the same, independent of their scope. This means having `myframework/3rdparty.cerberusdoc/mydoc.cerberusdoc` will conflict with `others/unrelated/3rdparty.cerberusdoc/mydoc.cerberusdoc` since they share the same name, despite being in completely different scopes.
+
+For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension and the `3rdparty.monkeydoc` directory like the `3rdparty.cerberusdoc` one.
 
 

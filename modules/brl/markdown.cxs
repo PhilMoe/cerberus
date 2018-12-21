@@ -72,7 +72,10 @@ Class Markdown
 		If src.Contains( "~n" )
 			Local buf:=New StringStack
 			For Local line:=Eachin src.Split( "~n" )
-				buf.Push LineToHtml( line )
+				' 2018-11-14 - Holzchopf
+				' only push non-empty lines
+				html=LineToHtml( line )
+				If html Then buf.Push html
 			Next
 			
 			html=buf.Join( "~n" )
@@ -80,7 +83,9 @@ Class Markdown
 			html=LineToHtml( src )
 		Endif
 		
-		If _blk Return html+SetBlock( "" )
+		' 2018-11-14 - Holzchopf
+		' add a nice line break before closing last open tag
+		If _blk Return html+"~n"+SetBlock( "" )
 		Return html
 	End
 	
@@ -91,14 +96,26 @@ Class Markdown
 	Field _prettifier:IPrettifier
 	
 	Method Find:Int( src:String,text:String,start:Int )
-		Local i:=src.Find( text,start )
-		If i=-1 Return -1
-		Local j:=i
-		While j>0 And src[j-1]=92
-			j-=1
-		Wend
-		If j<>i And ((i-j)&1)=1 Return -1
-		Return i
+		' 2018-12-14 - Holzchopf
+		' escaping one sequence should not abort the finding method completely,
+		' that's why everything is in a loop. start gets adjusted to jump over
+		' escaped sequences.
+		Repeat
+			Local i:=src.Find( text,start )
+			If i=-1 Return -1
+			Local j:=i
+			While j>0 And src[j-1]=`\`
+				j-=1
+			Wend
+			' odd number of escaping chars (`\`) - whole sequence is escaped,
+			' look for next occurence
+			If j<>i And ((i-j)&1)=1 Then
+				start=i+text.Length
+			Else
+				Return i
+			End
+		Forever
+		Return -1
 	End
 	
 	Method ReplaceSpanTags:String( src:String,tag:String,html:String )
@@ -240,25 +257,28 @@ Class Markdown
 	end
 	
 	Method SetBlock:String( blk:String )
+		' 2018-11-14 - Holzchopf
+		' after block change, be nice and append ~n
 		Local t:=""
 		If _blk<>blk
 			If _blk="pre" And _prettifier
 				t=_prettifier.EndPrettyBlock()
 			Else If _blk
 				t="</"+_blk+">"
+				If blk Then t+="~n"
 			Endif
 			_blk=blk
 			If _blk="pre" And _prettifier
 				t+=_prettifier.BeginPrettyBlock()
 			Else If _blk
 				t+="<"+_blk+">"
+				t+="~n"
 			Endif
 		Endif
 		Return t
 	End
 	
 	Method SpanToHtml:String( src:String )
-	
 		src=ReplaceSpanTags( src,"`","code" )
 		
 		src=ReplaceSpanTags( src,"*","b" )
@@ -303,8 +323,20 @@ Class Markdown
 		Endif
 		
 		If Not src
-			If _blk="table" Return SetBlock( "" )+"<p>"
-			Return "<p>"
+			' 2018-11-14 - Holzchopf
+			' in lists, insert empty list (valid html) and make it a space
+			' with css, e.g. ul>ul:empty,ol>ul:empty{margin-bottom:1em;}
+			If (_blk="ol" Or _blk="ul") Then
+				Return "<ul></ul>"
+			' when not in any block: ignore line
+			Elseif _blk="" Then
+				Return ""
+			' outside lists: close the block
+			Else
+				Return SetBlock("")
+			End
+			'If _blk="table" Return SetBlock( "" )+"<p>"
+			'Return "<p>"
 		Endif
 		
 		If src="-" Or src="--" Or src="---"
@@ -313,7 +345,12 @@ Class Markdown
 		
 		If src.StartsWith( "<pre>" )
 			Local t:=SetBlock( "pre" )
-			If src[5..].Trim() Return t+Prettify( src[5..] )
+			' 2018-12-18 - Holzchopf
+			' single line <pre> blocks are a thing, so do also check if the line
+			' ends in </pre>
+			Local source:=src[5..].Trim()
+			If source.EndsWith("</pre>") Then source = source[..-6]
+			If source Return t+Prettify( source )
 			Return t
 		End
 		
@@ -355,7 +392,9 @@ Class Markdown
 			Return t+"<li>"+SpanToHtml( src[2..] )+"</li>"
 		Endif
 		
-		Local t:=SetBlock( "" )
+		' 2018-11-14 - Holzchopf
+		' put everything that is not any other block markup into a <p>
+		Local t:=SetBlock( "p" )
 		
 		Local i:=Find( src,"~~n",src.Length-2 )
 		If i<>-1 src=src[..-2]+"<br>"

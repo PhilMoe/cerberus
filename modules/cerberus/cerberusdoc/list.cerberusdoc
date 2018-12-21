@@ -27,7 +27,7 @@ Creates a new, initially empty list object.
 
 Creates a new list object initialized with an array of values.
 
-Params: 
+Parameters: 
 
 values - an array of values
 
@@ -39,7 +39,7 @@ Converts the list to an array of values.
 
 # Method Equals:Bool(lhs:T,rhs:T)
 
-This method is used by the [[Contains]], [[RemoveFirst(2)|RemoveFirst]], [[RemoveLast(2)|RemoveLast]] and [[RemoveEach]] methods to determine element equality.
+This method is used by the [[Contains]], [[RemoveFirst]], [[RemoveLast]] and [[RemoveEach]] methods to determine element equality.
 
 By default, this method compares @lhs and @rhs using the '=' operator. Extending classes may override this method to provide their own equality test.
 
@@ -228,7 +228,7 @@ The list must implement the Compare method.
 
 
 
-# Class cerberus.list.Node
+# Class cerberus.list.Node<T>
 
 See the [[List]] class for a discussion of list nodes.
 
@@ -316,7 +316,7 @@ Implements the [[List.Compare]] method, which allows StringLists to be sorted us
 Concatenates the elements of the list together, inserting the specified separator between each element.
 
 
-Params: 
+Parameters: 
 
 separator - string to use to separate elements.
 

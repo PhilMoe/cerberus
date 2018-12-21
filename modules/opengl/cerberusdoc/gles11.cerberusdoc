@@ -1020,7 +1020,7 @@ Upon success, info[0] is initialized to the width of the image, and info[1] is i
 
 The image is returned in tightly packed, byte-per-component R,G,B,A format.
 
-Params: 
+Parameters: 
 
 path - path to image to load.
 

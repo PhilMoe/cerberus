@@ -81,7 +81,7 @@ Create a new renderer.
 By default, a renderer will render to the back buffer. To change this, use [[SetRenderTarget]].
 
 
-# Method SetRenderTarget:void( image:Image )
+# Method SetRenderTarget:Void( image:Image )
 
 Change render target.
 

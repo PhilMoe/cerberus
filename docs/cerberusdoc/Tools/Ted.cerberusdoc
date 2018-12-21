@@ -4,4 +4,6 @@ Ted is a simple text editor/IDE for Cerberus X.
 
 Ted is written in C++ and [Qt](http://qt.nokia.com/products/), and is located in the Cerberus X 'bin' directory along with any necessary Qt libraries.
 
-Normally, you should not need to run Ted directly. Instead, use the [[Cerberus_X]] app in the main Cerberus X directory which launches Ted for you.
+Normally, you should not need to run Ted directly. Instead, use the [[Cerberus X]] app in the main Cerberus X directory which launches Ted for you.
+
+![That's what Ted looks like](data/Tools/Ted/TED_20180219.PNG)

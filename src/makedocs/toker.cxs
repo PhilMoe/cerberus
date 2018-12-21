@@ -1,183 +1,243 @@
 
+' 2018-11-11 - Holzchopf
+' Copied from trans/toker and modified:
+' - removed "Import trans"
+' - added "Import stringutil"
+' - added TOKE_EOL
+' - added TOKE_CDATA
+' - added windows & macintosh line endings support
+' - removed reading "[]" as one token
+' - changed TCHR and TSTR now public - WHO ON EARTH MAKES GETTERS PRIVATE?!?!
+
 Import stringutil
 
+'toke_type
+Const TOKE_EOF=0
+Const TOKE_SPACE=1
+Const TOKE_IDENT=2
+Const TOKE_KEYWORD=3
+Const TOKE_INTLIT=4
+Const TOKE_FLOATLIT=5
+Const TOKE_STRINGLIT=6
+Const TOKE_STRINGLITEX=7
+Const TOKE_SYMBOL=8
+Const TOKE_LINECOMMENT=9
+Const TOKE_INTLITEX=10
+Const TOKE_EOL=11
+Const TOKE_CDATA=12			' to be set by parser, when overruling toker
+
+'***** Tokenizer *****
 Class Toker
 
-	Const Eof:=0
-	Const Eol:=1
-	Const Whitespace:=2
-	Const Identifier:=3
-	Const IntLiteral:=4
-	Const FloatLiteral:=5
-	Const StringLiteral:=6
-	Const Symbol:=7
+	Global _symbols:StringSet
+	Global _keywords:StringSet
 
-	Method New( text:String )
-		_text=text
-		_len=_text.Length
+	Field _path$
+	Field _line
+	Field _source$
+	Field _length
+	Field _toke$
+	Field _tokeType
+	Field _tokePos
+	
+	Method _init()
+		If _keywords Return
+		
+		Const keywords:="void strict "+
+		"public private protected friend property "+
+		"bool int float string array object mod continue exit "+
+		"include import module extern "+
+		"new self super eachin true false null not "+
+		"extends abstract final select case default "+
+		"const local global field method function class "+
+		"and or shl shr end if then else elseif endif while wend repeat until forever "+
+		"for to step next return "+
+		"interface implements inline alias try catch throw throwable "+
+		"enumerate"
+
+		_keywords=New StringSet
+		For Local t:=Eachin keywords.Split( " " )
+			_keywords.Insert t
+		Next
+		_symbols=New StringSet
+		_symbols.Insert ".."
+		_symbols.Insert ":="
+		_symbols.Insert "*="
+		_symbols.Insert "/="
+		_symbols.Insert "+="
+		_symbols.Insert "-="
+		_symbols.Insert "|="
+		_symbols.Insert "&="
+		_symbols.Insert "~~="
+	End
+	
+	Method New( path$,source$ )
+		_init
+		_path=path
+		_line=1
+		_source=source
+		_length=_source.Length
+		_toke=""
+		_tokeType=TOKE_EOF
+		_tokePos=0
 	End
 	
 	Method New( toker:Toker )
-		_text=toker._text
-		_len=toker._len
+		_init
+		_path=toker._path
+		_line=toker._line
+		_source=toker._source
+		_length=_source.Length
 		_toke=toker._toke
-		_type=toker._type
-		_pos=toker._pos
+		_tokeType=toker._tokeType
+		_tokePos=toker._tokePos
 	End
 	
-	Method SetText:Void( text:String )
-		_text=text
-		_len=_text.Length
+	Method Path$()
+		Return _path
+	End
+	
+	Method Line:Int()
+		Return _line
+	End
+	
+	Method NextToke$()
+	
 		_toke=""
-		_type=0
-		_pos=0
-	End
-	
-	Method Text:String() Property
-		Return _text
-	End
-	
-	Method Cursor:Int() Property
-		return _pos
-	End
-	
-	Method Bump:String()
-	
-		If _pos=_len
-			_toke=""
-			_type=Eof
+
+		If _tokePos=_length
+			_tokeType=TOKE_EOF
 			Return _toke
 		Endif
-
-		Local stp:=_pos
-		Local chr:=Chr()
-		Local str:=Str()
-		_pos+=1
 		
-		If chr=10
-			_type=Eol
+		Local chr:=TCHR()
+		Local str:=TSTR()
+		Local start:=_tokePos
+		_tokePos+=1
+		
+		If str="~n"
+			_tokeType=TOKE_EOL
+			_line+=1
+		' "macintosh" line endings
+		Else If str="~r"
+			' "windows" line endings
+			If TSTR()="~n" Then _tokePos+=1 
+			_tokeType=TOKE_EOL
+			_line+=1
+		Else If IsSpace( chr )
+			_tokeType=TOKE_SPACE
+			While _tokePos<_length And IsSpace( TCHR() ) And TSTR()<>"~n"
+				_tokePos+=1
+			Wend
+		Else If str="_" Or IsAlpha( chr )
+			_tokeType=TOKE_IDENT
+			While _tokePos<_length
+				Local chr=_source[_tokePos]
+				If chr<>95 And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
+'				If chr<>Asc("_") And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
+				_tokePos+=1
+			Wend
+			_toke=_source[start.._tokePos]
+			If _keywords.Contains( _toke.ToLower() ) _tokeType=TOKE_KEYWORD
+		Else If IsDigit( chr ) Or str="." And IsDigit( TCHR() )
+			_tokeType=TOKE_INTLIT
+			If str="." _tokeType=TOKE_FLOATLIT
+			While IsDigit( TCHR() )
+				_tokePos+=1
+			Wend
+			If _tokeType=TOKE_INTLIT And TSTR()="." And IsDigit( TCHR(1) )
+				_tokeType=TOKE_FLOATLIT
+				_tokePos+=2
+				While IsDigit( TCHR() )
+					_tokePos+=1
+				Wend
+			Endif
+			If TSTR().ToLower()="e"
+				_tokeType=TOKE_FLOATLIT
+				_tokePos+=1
+				If TSTR()="+" Or TSTR()="-" _tokePos+=1
+				While IsDigit( TCHR() )
+					_tokePos+=1
+				Wend
+			Endif
+		Else If str="%" And IsBinDigit( TCHR() )
+			_tokeType=TOKE_INTLIT
+			_tokePos+=1
+			While IsBinDigit( TCHR() )
+				_tokePos+=1
+			Wend
+		Else If str="$" And IsHexDigit( TCHR() )
+			_tokeType=TOKE_INTLIT
+			_tokePos+=1
+			While IsHexDigit( TCHR() )
+				_tokePos+=1
+			Wend
+		Else If str="~q"
+			_tokeType=TOKE_STRINGLIT
+			While _tokePos<_length And TSTR()<>"~q"
+				_tokePos+=1
+			Wend
+			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_STRINGLITEX
+		Else If str="`"
+			_tokeType=TOKE_INTLIT
+			While _tokePos<_length And TSTR()<>"`"
+				_tokePos+=1
+			Wend
+			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_INTLITEX
 		Else If str="'"
-			While Chr() And Chr()<>10
-				_pos+=1
+			_tokeType=TOKE_LINECOMMENT
+			While _tokePos<_length And TSTR()<>"~n"
+				_tokePos+=1
 			Wend
-			If Chr()=10 _pos+=1
-			_type=Eol
-		Else If chr<=32
-			While Chr() And Chr()<=32
-				_pos+=1
-			Wend
-			_type=Whitespace
-		Else If IsAlpha(chr) Or str="_"
-			While IsAlpha(Chr()) Or IsDigit(Chr()) Or Str()="_"
-				_pos+=1
-			Wend
-			While Chr()=46	' .
-				_pos+=1
-				While IsAlpha(Chr()) Or IsDigit(Chr()) Or Str()="_"
-					_pos+=1
-				Wend
-			Wend
-			_type=Identifier
-		Else If chr=34
-			While Chr()<>34 And Chr()<>10
-				_pos+=1
-			Wend
-			If Chr()=34 _pos+=1
-			_type=StringLiteral
-		Else If IsDigit(chr) Or str="." And IsDigit(Chr())
-			_type=IntLiteral
-			If str="." _type=FloatLiteral
-			While IsDigit(Chr())
-				_pos+=1
-			Wend
-			If _type=IntLiteral And Str()="." And IsDigit(Chr(1))
-				_type=FloatLiteral
-				_pos+=2
-				While IsDigit(Chr())
-					_pos+=1
-				Wend
+			If _tokePos<_length
+				_tokePos+=1
+				_line+=1
 			Endif
-			If Str().ToLower()="e"
-				_type=FloatLiteral
-				_pos+=1
-				If Str()="+" Or Str()="-" _pos+=1
-				While IsDigit(Chr())
-					_pos+=1
-				Wend
-			Endif
-		Else If str="%" And IsBinDigit(Chr())
-			_type=IntLiteral
-			_pos+=1
-			While IsBinDigit(Chr())
-				_pos+=1
+		#Rem
+		Else If str="["
+			_tokeType=TOKE_SYMBOL
+			Local i
+			While _tokePos+i<_length
+				If TSTR(i)="]"
+					_tokePos+=i+1
+					Exit
+				Endif
+				If TSTR(i)="~n" Or Not IsSpace( TCHR(i) ) Exit
+				i+=1
 			Wend
-		Else If str="$" And IsHexDigit(Chr())
-			_type=IntLiteral
-			_pos+=1
-			While IsHexDigit(Chr())
-				_pos+=1
-			Wend
+		#End
 		Else
-			While Chr()=35	' #
-				_pos+=1
-			Wend
-			_type=Symbol
+			_tokeType=TOKE_SYMBOL
+			If _symbols.Contains( _source[_tokePos-1.._tokePos+1] ) _tokePos+=1
 		Endif
 		
-		_toke=_text[stp.._pos]
+		If Not _toke _toke=_source[start.._tokePos]
+
 		Return _toke
 	End
 	
-	Method Toke:String() Property
+	Method Toke$()
 		Return _toke
 	End
 	
-	Method TokeType:Int() Property
-		Return _type
-	End
-
-Private
-
-	Field _text:String
-	Field _len:Int
-	Field _toke:String
-	Field _type:Int
-	Field _pos:Int
-
-	Method Chr:Int( offset:Int=0 )
-		If _pos+offset<_len Return _text[_pos+offset]
-		Return 0
+	Method TokeType()
+		Return _tokeType
 	End
 	
-	Method Str:String( offset:Int=0 )
-		If _pos+offset<_len Return _text[_pos+offset.._pos+offset+1]
-		Return ""
+	Method SkipSpace()
+		While _tokeType=TOKE_SPACE
+			NextToke
+		Wend
 	End
 	
-	Method IsSpace( ch )
-		Return ch<=32
-	'	Return ch<=Asc(" ")
+	Method TCHR( i=0 )
+		i+=_tokePos
+		If i<_length Return _source[i]
 	End
 	
-	Method IsDigit( ch )
-		Return ch>=48 And ch<=57
-	'	Return ch>=Asc("0") And ch<=Asc("9")
+	Method TSTR$( i=0 )
+		i+=_tokePos
+		If i<_length Return _source[i..i+1]
 	End
-	
-	Method IsAlpha( ch )
-		Return (ch>=65 And ch<=90) Or (ch>=97 And ch<=122)
-	'	Return (ch>=Asc("A") And ch<=Asc("Z")) Or (ch>=Asc("a") And ch<=Asc("z"))
-	End
-	
-	Method IsBinDigit( ch )
-		Return ch=48 Or ch=49
-	'	Return ch=Asc("0") Or ch=Asc("1")
-	End
-	
-	Method IsHexDigit( ch )
-		Return (ch>=48 And ch<=57) Or (ch>=65 And ch<=70) Or (ch>=97 And ch<=102)
-	'	Return IsDigit(ch) Or (ch>=Asc("A") And ch<=Asc("F")) Or (ch>=Asc("a") And ch<=Asc("f"))
-	End
-		
 	
 End
