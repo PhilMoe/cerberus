@@ -1,19 +1,20 @@
 
-> 3rd party software
+> Links
 
-**Modules**
+Additional modules and tools for Cerberus X can be found at the following places:
 
-+ [[http://code.google.com/p/monkeybox2d|Box2d]] - a Cerberus X port of the popular 2d physics library.
-+ [[http://code.google.com/p/diddy|Diddy]] - a collection of utilties and extensions for Cerberus X.
-+ [[http://www.jungleide.com/?page_id=515|Font machine]] - a very useful bitmap font module.
+>> Modules
 
-**Frameworks**
+* [[http://code.google.com/p/monkeybox2d|Box2d]] - a Cerberus X port of the popular 2d physics library.
+* [[http://code.google.com/p/diddy|Diddy]] - a collection of utilties and extensions for Cerberus X.
+* [[http://www.jungleide.com/?page_id=515|Font machine]] - a very useful bitmap font module.
 
-+ [[http://devolonter.github.com/flixel-monkey|Flixel]] - a port of the popular Flash framework.
-+ [[http://www.playniax.com|Ignition]] - a new game framework for Cerberus X by [[http://www.playniax.com/aboutus.html|Playniax]].
+>> Frameworks
 
-**Tools and utilities**
+* [[http://devolonter.github.com/flixel-monkey|Flixel]] - a port of the popular Flash framework.
+* [[http://www.playniax.com|Ignition]] - a new game framework for Cerberus X by [[http://www.playniax.com/aboutus.html|Playniax]].
 
-+ [[http://www.jungleide.com|Jungle]] - an awesome IDE for Cerberus X by [[http://www.lemonbytes.com|LemonBytes]].
+>> Tools and Utilities
 
-
+* [[http://www.jungleide.com|Jungle]] - an awesome IDE for Cerberus X by [[http://www.lemonbytes.com|LemonBytes]].
+* [[https://www.cerberus-x.com/community/]] - the place for Cerberus X folks

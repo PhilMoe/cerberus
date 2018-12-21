@@ -1,0 +1,111 @@
+Strict
+
+Import makedocs
+
+' Parses the docs/cerberusdoc folder for useful cerberus docs.
+Class DocDoccer
+	Field maker:Makedocs	
+	' for writing the docs: active page maker and markdown
+	Field pager:PageMaker
+	Field marker:Markdown
+	
+	Method New( pMakedocs:Makedocs )
+		maker = pMakedocs
+	End
+	
+	' doc all cerberusdocs
+	Method Doc:Void()
+		' scan docs/cerberusdoc
+		DocIn( maker.docpath, maker.rootdocs )
+	End
+	
+	' doc all 3rd party docs
+	Method Doc3rdParty:Void()
+		Local decls := maker.branch3rdparty.GetChilds( DECL_3RDPARTYDOC )
+		If decls Then
+			For Local d := Eachin decls
+				DocIn( d.ident, maker.branch3rdparty, LOCATION_3RDPARTY, True )
+			Next
+		End
+	End
+	
+	' parse modules in specified directory
+	' pScope says to which decl found modules are attached
+	' pDocPath is set, when scanning a sub directory (e.g. Programming)
+	Method DocIn:Void( pDirectory:String, pScope:DocDecl, pDocPath:String="", p3rdParty:Bool=False )
+		#If LOG_DOCIN
+			maker.Log( "DocIn: "+pDirectory, True )
+		#End
+		' build actual docpath
+		Local docpath:String = pDocPath
+		If docpath Then docpath += "/"
+		' go through the complete directory
+		For Local file:String = Eachin LoadDir( pDirectory, False, False )
+			#If LOG_DOCIN
+				maker.Log( file, True )
+			#End
+			Local path:String = pDirectory + "/" + file
+			Select FileType( path )
+			Case FILETYPE_DIR
+				' paths ending in ".data" contain data (NO DISCUSSION)
+				If file.EndsWith(".data") Then
+					Local name:String = StripExt( file )
+					Local dst:String = docpath + name
+					' for 3rd party docs only:
+					' strip "3rd Party Docs/" from destination
+					If p3rdParty Then
+						Local p := dst.Find("/")
+						dst = dst[ p+1 .. ]
+					End
+					maker.CopyDir( path, PATH_HTML_DATA + "/" + dst, True )
+				' paths not ending in ".data" contain docs (NO DISCUSSION)
+				Else
+					' scope for that folder: either existing or new doc
+					Local decl := pScope.GetChild( file )
+					If Not decl Then
+						' create new index decl
+						decl = New DocDecl( DECL_INDEX, file )
+						decl.Add( New DocDecl( DECL_UIDENT_SCOPE, docpath ) )
+						pScope.Add( decl )
+					End
+					DocIn( path, decl, docpath + file, p3rdParty )
+				End
+			Case FILETYPE_FILE
+				Select ExtractExt( file )
+				Case "cerberusdoc", "monkeydoc"
+					' create doc decl or modify matching index decl
+					Local name:String = StripExt( file )
+					Local decl := pScope.GetChild( name )
+					Local newdoc:Bool = False
+					If decl Then
+						decl.kind = DECL_DOC
+					Else
+						decl = New DocDecl( DECL_DOC, name )
+						newdoc = True
+						decl.Add( New DocDecl( DECL_UIDENT_SCOPE, docpath ) )
+					End
+					' add page content
+					Local txt:String = LoadString( path )
+					' since markdown only understands Unix line endings (LF),
+					' replace Windows (CR+LF) and Mac line endings (CR) to Unix ones
+					txt = UnifyLineEndings( txt )
+					decl.Add( New DocDecl( DECL_CONTENTS, txt ) )
+					If newdoc Then
+						pScope.Add( decl )
+					End
+					' for 3rd party documentation:
+					If p3rdParty Then
+						' make an icon link when there's a .png file with the same
+						' name and copy that icon
+						path = pDirectory + "/" + name + ".png"
+						If FileType( path ) = FILETYPE_FILE Then
+							Local filename:String = LOCATION_3RDPARTY + "_" + name + ".png"
+							decl.Add( New DocDecl( DECL_3RDPARTY_ICON, filename ) )
+							maker.CopyFile( path, PATH_HTML_BASE + "/" + filename )
+						End
+					End
+				End
+			End
+		Next
+	End
+End

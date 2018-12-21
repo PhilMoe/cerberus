@@ -82,7 +82,7 @@ End
 
 Returns an integer representing the type of a file, one of: FILETYPE_NONE for no file, FILETYPE_FILE for a normal file, FILETYPE_DIR for a directory.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -91,7 +91,7 @@ path - a file system path.
 
 Return the length of a file, in bytes, or 0 if the file does not exist.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -102,7 +102,7 @@ Return the time the file was last modified, or 0 if the file does not exist.
 
 The returned value is the number of seconds since Jan 1 1970.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -127,7 +127,7 @@ Deletes the specified file.
 
 Returns True if the file was successfully deleted.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -138,7 +138,7 @@ Copies a file from srcpath to dstpath.
 
 Returns True if the file was successfully copied.
 
-Params: 
+Parameters: 
 
 srcpath - file system path of source file.
 
@@ -151,7 +151,7 @@ Create a new directory at path.
 
 Returns True if the directory was successfully created.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -166,7 +166,7 @@ If recursive if False and the directory contains files, DeleteDir will fail.
 
 Returns True if the directory was successfully deleted.
 
-Params: 
+Parameters: 
 
 path - file system path of directory to delete.
 
@@ -183,7 +183,7 @@ If hidden is True, then hidden files - files starting with a dot - are also copi
 
 Returns True if the directory was successfully copied.
 
-Params: 
+Parameters: 
 
 srcpath - file system path of source directory.
 
@@ -202,7 +202,7 @@ If @recursive is True, LoadDir will also load file and directory names in subdir
 
 If @hidden is True, then hidden files - files starting with a dot - are also loaded.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 

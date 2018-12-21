@@ -1,0 +1,15 @@
+> Using the Makedocs Tool
+
+To run Makedocs from command line, the following syntax applies:
+
+`*makedocs.exe* [ *-path* %PATH% ] [ *-template* %TEMPLATE% ] [ *-ignore* %MODULES% ] [ *-printtree* ] [ *-printdocs* ]`
+
+* `%PATH%` is the home directory of your Cerberus X installation, e.g. `C:/Software/Cerberus/`. If not specified, Makedocs assumes it's run from `bin/` in the Cerberus X directory and fails with an error message if that's not the case.
+
+* `%TEMPLATE%` is the name of the template Makedocs should use to transform the help files, e.g. `cerberusx`. If not specified, the template name is read from `bin/docstyle.txt`.
+
+* Use `*-ignore*` to specify a module or a list of semicolon separated modules which shall not be documented by Makedocs, e.g. `-ignore brl;os;reflection`. Instead of separating multiple modules by semicolon, you can also specify the `-ignore` attribute several times.
+
+* Use `*-printtree*` to output the complete tree (data structure) of all declarations and documents to the console instead of modifying the target html files. Best used together with `>log.txt` to redirect the output stream to a file.
+
+* Use `*-printdocs*` to output all html contents to the console instead of modifying the target html files. Best used together with `>log.txt` to redirect the output stream to a file.

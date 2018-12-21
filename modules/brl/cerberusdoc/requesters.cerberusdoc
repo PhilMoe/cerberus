@@ -1,5 +1,5 @@
 
-# Module requesters
+# Module brl.requesters
 
 The requesters module allows you to use simple modal requesters with the glfw3 target on Mac and Windows only!
 

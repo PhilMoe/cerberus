@@ -30,7 +30,9 @@ Create a new Cerberus X file, paste the above code, and save as "game.cxs" in a 
 
 This app, when run, produces a black display as the [[LoadImage]] command will fail to find the file monkey64.png.
 
-In the same folder that you saved "game.cxs" create a new directory named "game.data". Copy this [image](http://commondatastorage.googleapis.com/monkeycoder.co.nz/blitz-wiki/monkeylogos/monkey64.png) to the newly created .data folder.
+In the same folder that you saved "game.cxs" create a new directory named "game.data". Save this image to the newly created .data folder:
+
+![Monkey](data/Tutorials/Drawing with images/monkey64.png)
 
 >> Add Points where you Click
 

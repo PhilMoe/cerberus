@@ -17,7 +17,7 @@ The math module provides math related constants and functions.
 
 Returns the sine of @x degrees.
 
-Params: 
+Parameters: 
 
 @x - angle in degrees.
 
@@ -27,7 +27,7 @@ Params:
 Returns the cosine of @x degrees.
 
 
-Params: 
+Parameters: 
 
 @x - angle in degrees.
 
@@ -36,7 +36,7 @@ Params:
 
 Returns the tangent of @x degrees.
 
-Params: 
+Parameters: 
 
 @x - angle in degrees.
 
@@ -45,7 +45,7 @@ Params:
 
 Returns the arc sine of @x, in degrees.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -54,7 +54,7 @@ Params:
 
 Returns the arc cosine of @x, in degrees.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -63,7 +63,7 @@ Params:
 
 Returns the arc tangent of @x, in degrees.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -81,7 +81,7 @@ Print Atan2(1,0)	' 90
 Print Atan2(-1,0)	' -90
 </pre>
 
-Params: 
+Parameters: 
 
 @x, @y - floating point values.
 
@@ -90,7 +90,7 @@ Params:
 
 Returns the sine of @x radians.
 
-Params: 
+Parameters: 
 
 @x - angle in radians.
 
@@ -99,7 +99,7 @@ Params:
 
 Returns the cosine of @x radians.
 
-Params: 
+Parameters: 
 
 @x - angle in radians.
 
@@ -108,7 +108,7 @@ Params:
 
 Returns the tangent of @x radians.
 
-Params: 
+Parameters: 
 
 @x - angle in radians.
 
@@ -117,7 +117,7 @@ Params:
 
 Returns the arc sine of @x, in radians.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -126,7 +126,7 @@ Params:
 
 Returns the arc cosine of @x, in radians.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -135,7 +135,7 @@ Params:
 
 Returns the arc tangent of @x, in radians.
 
-Params: 
+Parameters: 
 
 @x - floating point value in the range -1 to 1 (inclusive).
 
@@ -153,7 +153,7 @@ Print Atan2r(1,0)	' approx PI/2
 Print Atan2r(-1,0)	' approx -PI/2
 </pre>
 
-Params: 
+Parameters: 
 
 @x, @y - floating point values.
 
@@ -162,16 +162,16 @@ Params:
 
 Returns the square root of @x.
 
-Params: 
+Parameters: 
 
-@x - floatint point value.
+@x - floating point value.
 
 
 # Function Floor:Float(x:Float)
 
 Returns the largest integral value that is not greater than @x.
 
-Params: 
+Parameters: 
 
 @x - floating point value.
 
@@ -180,25 +180,25 @@ Params:
 
 Returns the smallest integral value that is not less than @x.
 
-Params: 
+Parameters: 
 
-@x - floatint point value.
+@x - floating point value.
 
 
 # Function Log:Float(x:Float)
 
 Returns the natural logarithm of @x.
 
-Params: 
+Parameters: 
 
-2x - floating point value.
+@x - floating point value.
 
 
 # Function Pow:Float(x:Float,y:Float)
 
 Returns @x raised to the power @y.
 
-Params: 
+Parameters: 
 
 @x, @y - float point values.
 
@@ -207,7 +207,7 @@ Params:
 
 Returns the base-e exponential function of @x, which is the @e number raised to the power @x.
 
-Params: 
+Parameters: 
 
 @x - floating point value.
 
@@ -216,7 +216,7 @@ Params:
 
 Returns -1 if @x is less than zero, +1 if @x is greater than zero or 0 if @x is equal to zero.
 
-Params: 
+Parameters: 
 
 @x - input value.
 
@@ -225,7 +225,7 @@ Params:
 
 Returns -1 if @x is less than zero, +1 if @x is greater than zero or 0 if @x is equal to zero.
 
-Params: 
+Parameters: 
 
 @x - input value.
 
@@ -234,7 +234,7 @@ Params:
 
 Returns the absolute value of @x, that is, +@x if @x>=0 and -@x if @x<0.
 
-Params: 
+Parameters: 
 
 @x - input value.
 
@@ -243,7 +243,7 @@ Params:
 
 Returns the absolute value of @x, that is, +@x if @x>=0 and -@x if @x<0.
 
-Params: 
+Parameters: 
 
 @x - input value.
 
@@ -252,7 +252,7 @@ Params:
 
 Returns the minimum of @x and @y.
 
-Params: 
+Parameters: 
 
 @x, @y - input values.
 
@@ -261,7 +261,7 @@ Params:
 
 Returns the maximum of @x and @y.
 
-Params: 
+Parameters: 
 
 @x, @y - input values.
 
@@ -270,7 +270,7 @@ Params:
 
 Clamps @x to the range @min through @max inclusive.
 
-Params: 
+Parameters: 
 
 @x - value to clamp
 
@@ -283,7 +283,7 @@ Params:
 
 Returns the minimum of @x and @y.
 
-Params: 
+Parameters: 
 
 @x, @y - input values.
 
@@ -292,7 +292,7 @@ Params:
 
 Returns the maximum of @x and @y.
 
-Params: 
+Parameters: 
 
 @x, @y - input values.
 
@@ -301,7 +301,7 @@ Params:
 
 Clamps @x to the range @min through @max inclusive.
 
-Params: 
+Parameters: 
 
 @x - value to clamp
 

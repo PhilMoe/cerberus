@@ -68,7 +68,7 @@ Returns a random float in the range low (exclusive) to high (exclusive).
 
 
 <pre>
-Print Rnd(5,10)			' anything between 5.0 and 1.0
+Print Rnd(5,10)			' anything between 5.0 and 10.0
 Print Int(Rnd(5,10))	' any integer from 5 to 9
 </pre>
 

@@ -1,0 +1,10 @@
+
+> Licence Information
+
+For Microsoft Windows users.
+
+* Please note that parts of this software uses OpenAL Soft 1.18.1 from [http://kcat.strangesoft.net](http://kcat.strangesoft.net/openal.html) as precompiled dynamic libraries.
+* You can find the source code for OpenAL Soft from [https://github.com/kcat/openal-soft](https://github.com/kcat/openal-soft)
+* OpenAL Soft is released under the LGPL v2 licence, a copy of which you will find located in the Cerberus libs and bin directories under the name Openal32_COPYING and Openal32_LICENCE. As well as pre-compiled dynamic libraries for your own use located in the directories Win32 and Win64.
+* IF YOU ARE TO DISTRIBUTE THESE BINARIES YOU MUST COMPLY WITH THE TERMS AND CONDITIONS OF THE LGPL LICENCE. IF YOU DO NOT AGREE TO THE TERMS AND CONDITION SET OUT BY THE LGPL VERSION 2 LICENCE, THEN YOU MUST REMOVE ALL COPIES OF THE DYNAMIC LINK LIBRARIES AND LICENCES.
+* For compatibility reasons, the OpenAL Soft libraries have already been renamed to OpenAl32.DLL and in no way must be confused with the OpenAL libraries supplied by Creative Labs LTD, or the files distributed by [http://openal.org/](http://openal.org/).

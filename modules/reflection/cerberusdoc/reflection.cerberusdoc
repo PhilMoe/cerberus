@@ -276,7 +276,7 @@ The elementType parameter may itself be an array, in which case the returned cla
 
 This is actually the class of the objects used to box arrays, since arrays aren't objects and therefore don't have a class.
 
-Params: 
+Parameters: 
 
 elementType - Array element type.
 
@@ -364,7 +364,7 @@ Links:
 
 
 
-# Class reflection.ArrayBoxer
+# Class reflection.ArrayBoxer<T>
 
 The ArrayBoxer class is a utility class that allows you to box and unbox arrays for use with reflection.
 

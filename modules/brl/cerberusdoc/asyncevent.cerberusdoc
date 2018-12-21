@@ -5,7 +5,7 @@ The asyncevent module provides core functionality for handling asynchronous (asy
 
 An async event occurs when an async operation completes or changes state. Async operations are operations that execute 'in the background' while your app is running, typically on another thread, and include network data transfers and network connections.
 
-When an async event occurs, your program is notified by means of a method call to an event handler object you  provided when the async operation was started. Such event handler objects must implement the correct interface method for the operation being performed. For example, when you start an async socket receive [[Modules/brl.socket/Socket#ReceiveAsync]] operation, you must provide an object with a method that implements the [[IOnReceiveComplete]] interface method. This is the method that will be called when the async receive completes.
+When an async event occurs, your program is notified by means of a method call to an event handler object you  provided when the async operation was started. Such event handler objects must implement the correct interface method for the operation being performed. For example, when you start an async socket receive [[brl.socket.Socket.ReceiveAsync]] operation, you must provide an object with a method that implements the [[IOnReceiveComplete]] interface method. This is the method that will be called when the async receive completes.
 
 In order for async events to occur, the global [[UpdateAsyncEvents]] function must be called at regular intervals - once per OnUpdate is generally enough. This is when your event handler methods will actually be called.
 
@@ -38,6 +38,6 @@ Returns True if the async event is currently active.
 
 # Method UpdateAsyncEvents:Void()
 
-This method is called by the global [[Modules/brl.asyncevent#UpdateAsyncEvents]] function for each event source that has been added to the global list of event sources.
+This method is called by the global [[brl.asyncevent.UpdateAsyncEvents]] function for each event source that has been added to the global list of event sources.
 
 You should not normally call this method directly.

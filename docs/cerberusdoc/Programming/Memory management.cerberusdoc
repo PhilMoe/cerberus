@@ -1,0 +1,13 @@
+> Memory Management
+
+Cerberus&nbsp;X is a garbage collected language, and depends on the underlying target language to provide memory management.
+
+Finalizers are not supported. If you need an object to be 'destroyable', you will need to add a 'Destroy' type method.
+
+The garbage collector is capable of collecting cyclic data structures such as linked lists automatically.
+
+The current C++ garbage collector will only collect garbage when control is returned to the OS. In the case of C++ Mojo targets such as IOS and GLFW, this occurs after any of the 'On' methods such as `OnCreate`, `OnUpdate` etc return.
+
+In general, the best way to use the garbage collector is to ignore it! Although such practices as 'nulling out' object references are common, they are seldom required. 
+
+But it's a good idea to monitor your apps memory requirements as you develop anyway. This will allow you to catch any memory issues, GC related or otherwise, early on.

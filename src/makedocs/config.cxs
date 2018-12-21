@@ -1,0 +1,17 @@
+' build settings (mainly what messages to deliver in debug mode)
+
+#If CONFIG="debug"
+	#LOG_APPARGS			= False
+	#LOG_CXROOT				= False
+	#LOG_TEMPLATENAME		= False
+	#LOG_MODPATH			= False
+	#LOG_PARSEIN			= False
+	#LOG_PARSEFILE			= False
+	#LOG_PARSER				= False
+	#LOG_DOCIN				= False
+	#LOG_LINKRESOLVER		= False
+	#LOG_DOCLINKRESOLVER	= False
+	#LOG_DOCLINKBUILDER		= False
+	#LOG_FINDERCALLS		= False	
+	#LOG_TIMESTAMPS			= False	
+#End

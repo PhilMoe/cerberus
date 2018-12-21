@@ -1,0 +1,17 @@
+' helpers for extended debugging functionality
+
+#If LOG_TIMESTAMPS
+	' privatly import brl.process so it doesn't conflict with module os
+	Private
+		Import brl.process
+	Public
+	
+	' returns a human readable timestamp
+	' (on windows the format is HH:MM:SS.CS
+	Function GetTimestamp:String()
+		#If HOST="winnt"
+			Return Process.Execute("cmd /c ~qecho %time%~q").Trim()
+		#End
+		Return "N/A"
+	End
+#End

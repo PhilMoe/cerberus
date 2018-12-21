@@ -17,7 +17,7 @@ Data can be added to the end of the buffer using [[Put]], and removed from the s
 A ringbuffer can also dynamically resize itself as necessary so that [[Put]] always succeeds.
 
 
-# Method New( capacity:int,dynamic:bool )
+# Method New( capacity:Int,dynamic:Bool )
 
 Creates a new ringbuffer with the given capacity. This is the number of bytes the buffer can store.
 
