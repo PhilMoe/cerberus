@@ -1,114 +1,123 @@
+' Cerberus X - Shader Effect example
+' 
+' Demonstrates a simple black/white shader effect
 
-'Simple black/white shader effect
+
+Strict
 
 Import mojo2
 
 'Our custom shader
 Class BWShader Extends Shader
 
+	Private
+	Global _instance:BWShader
+
+
 	Method New()
-		Build( LoadString( "cerberus://data/bwshader.glsl" ) )
+		Build(LoadString("bwshader.glsl"))
 	End
 	
-	'must implement this - sets valid/default material params
-	Method OnInitMaterial:Void( material:Material )
-		material.SetTexture "ColorTexture",Texture.White()
-		material.SetScalar "EffectLevel",1
+	
+	' this method must be implemented as it sets valid/default material parameters
+	Method OnInitMaterial:Void( myMaterial:Material )
+		myMaterial.SetTexture("ColorTexture",Texture.White())
+		myMaterial.SetScalar("EffectLevel", 1)
 	End
+	
 	
 	Function Instance:BWShader()
-		If Not _instance _instance=New BWShader
+		If Not _instance _instance = New BWShader()
 		Return _instance
 	End
-	
-	Private
-	
-	Global _instance:BWShader
-	
+		
 End
+
 
 Class ShaderEffect
 
+	Private
+	Global _canvas:Canvas
+	Field _material:Material	
+	
+	
 	Method New()
-		If Not _canvas _canvas=New Canvas
 
-		_material=New Material( BWShader.Instance() )
+		' ensure there is a single instance of the canvas
+		If Not _canvas _canvas = New Canvas()
+		_material = New Material(BWShader.Instance())
 	End
+
 	
 	Method SetLevel:Void( level:Float )
 	
-		_material.SetScalar "EffectLevel",level
+		' set the level of effect to the supplied value
+		_material.SetScalar("EffectLevel", level)
 	End
 	
-	Method Render:Void( source:Image,target:Image )
 	
-		_material.SetTexture "ColorTexture",source.Material.ColorTexture
-		
-		_canvas.SetRenderTarget target
-		_canvas.SetViewport 0,0,target.Width,target.Height
-		_canvas.SetProjection2d 0,target.Width,0,target.Height
-		
-		_canvas.DrawRect 0,0,target.Width,target.Height,_material
-		
-		_canvas.Flush
+	Method Render:Void(source:Image, target:Image )
+	
+		_material.SetTexture("ColorTexture", source.Material.ColorTexture)
+		_canvas.SetRenderTarget(target)
+		_canvas.SetViewport(0, 0, target.Width(), target.Height())
+		_canvas.SetProjection2d(0, target.Width(), 0, target.Height())
+		_canvas.DrawRect(0, 0, target.Width(), target.Height(), _material)
+		_canvas.Flush()
 	End
-	
-	Private
-	
-	Global _canvas:Canvas	'shared between ALL effects
-	
-	Field _material:Material
 	
 End
+
 
 
 Class MyApp Extends App
 
 	Field sourceImage:Image
 	Field targetImage:Image
-	
-	Field canvas:Canvas
-	
+	Field myCanvas:Canvas
 	Field effect:ShaderEffect
+	Field level:Float = 0.5
 	
-	Field level:Float=1
-	
-	Method OnCreate()
+	Method OnCreate:Int()
 		
-		sourceImage=Image.Load( "default_player.png" )
-		targetImage=New Image( sourceImage.Width,sourceImage.Height )
-		
-		effect=New ShaderEffect
-
-		canvas=New Canvas
+		sourceImage = Image.Load("default_player.png")
+		targetImage = New Image(sourceImage.Width(), sourceImage.Height())
+		effect = New ShaderEffect()
+		myCanvas = New Canvas()
+		Return(0)
 	End
 	
-	Method OnUpdate()
-		If KeyDown( KEY_A )
-			level=Min( level+.01,1.0 )
-		Else If KeyDown( KEY_Z )
-			level=Max( level-.01,0.0 )
-		Endif
+	
+	Method OnUpdate:Int()
+		
+		' change the level of effect applied, in the range 0 to 1.0
+		If KeyDown( KEY_UP )
+			level = Min(level + 0.02, 1.0)
+		Else If KeyDown( KEY_DOWN )
+			level = Max(level - 0.02, 0.0)
+		End
+		Return(0)
 	End
 	
-	Method OnRender()
 	
-		effect.SetLevel level
+	Method OnRender:Int()
 	
-		effect.Render( sourceImage,targetImage )
-		
-		canvas.Clear
-		
-		canvas.DrawImage targetImage,MouseX,MouseY
-		
-		canvas.DrawText "Effect level="+level+" (A/Z to change)",0,0
-		
-		canvas.Flush
+		effect.SetLevel(level)
+		effect.Render(sourceImage, targetImage)
+		myCanvas.Clear()
+		myCanvas.DrawImage(targetImage, MouseX(), MouseY() - targetImage.Height() / 2)
+		myCanvas.DrawImage(sourceImage, DeviceWidth() / 2, DeviceHeight() - 100)
+		myCanvas.DrawText("Source Image", DeviceWidth() / 2, DeviceHeight() - 140, 0.5)
+		myCanvas.DrawText("Shader Effect: " + Int(level * 100) + "%", DeviceWidth()/2, 8, 0.5)
+		myCanvas.DrawText("Up/Down To Change", DeviceWidth()/2, 28, 0.5)
+		myCanvas.Flush()
+		Return(0)
 	End
 	
 End
 
-Function Main()
-	New MyApp
-End
 
+Function Main:Int()
+	New MyApp()
+	Return(0)
+End
