@@ -956,7 +956,7 @@ The image is returned in tightly packed, byte-per-component R,G,B,A format.
 
 IMPORTANT: LoadImageData is not currently available on the HTML5 target.
 
-Params: 
+Parameters: 
 
 path - path to image to load.
 

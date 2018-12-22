@@ -41,7 +41,7 @@ Finally, when designing for low performance hardware it's a good idea to try and
 
 Loads a sound from the specified path and returns it.
 
-Params: 
+Parameters: 
 
 path - file path of the sound to load.
 

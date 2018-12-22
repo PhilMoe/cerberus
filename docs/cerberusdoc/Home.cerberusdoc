@@ -1,46 +1,50 @@
-(New to Cerberus X? Try the [[Getting started]] page or check out the [[Samples]])
+> Cerberus X
 
->> New stuff!
+This is the ultimate guide to Cerberus X.
 
-* Please check out the file VERSIONS.TXT in the Cerberus X folder for the newest changes.
+>> Introduction
+
+* [[Tutorials/Getting started]] - If you're new to Cerberus X, this is what you're looking for
+
+* [[Target SDKs]] - what target platforms Cerberus X supports and how to set them up
+
+* [[Tutorials]] - more tutorials teaching you the Cerberus X programming language
+* [[Samples|Mojo1 samples]] - samples for the base game framework
+* [[Mojo2 samples|Mojo2 samples]] - samples for the advanced 2D rendering API
+
 
 >> Programming Guide
 
-* [[Target SDKs]]
-* [[API Reference]]
-* [[3rd party modules]]
-* [[Programming/File formats]]
-* [[Programming/Resource paths]]
-* [[Programming/App config settings]]
-* [[Programming/Language reference]]
-* [[Programming/Keywords|Keyword reference]]
-* [[Tutorials]]
-* [[Samples|Mojo1 samples]]
-* [[Mojo2 samples|Mojo2 samples]]
+* [[API Reference]] - standard Cerberus X modules and what they do
+* [[3rd Party Docs]] - if you have 3rd party frameworks installed, their docs might end up here
+* [[Programming/Language reference]] - complete language reference
+* [[Modules]] - all installed and documented modules
+* [[Index]] - every possibly documented thing
 
->> Tools
+* [[Programming/File formats]] - formats supported by Cerberus X targets
+* [[Programming/Resource paths]] - how to store assets for your project
+* [[Programming/Keywords|Keyword reference]] - Cerberus X keywords
+* [[Programming/Key codes]] - for use with [[KeyDown]] and [[KeyHit]]
+* [[Programming/ASCII table]] - ASCII codes of the first 128 chars
 
-* [[Tools/Cerberus_X]]
-* [[Tools/Ted]]
-* [[Tools/Trans]]
-* [[Tools/CServer]]
-* [[Tools/Makedocs]]
 
->> Online resources
+>> Advanced Topics
 
-* [Learn Cerberus](https://www.cerberus-x.com/community/files/learnmonkey.pdf) with this friendly beginners guide by James Boyd (pdf).
-* View the [Cerberus Pixels](https://www.cerberus-x.com/community/files/monkeypixels_tutorial.pdf) tutorial by Robbert Prins (pdf).
-* Follow the [Path of the Cerberus](https://www.cerberus-x.com/community/files/PathOfTheMonkey/index.html) by Patrick Strandell.
-* Check out invaderJim's great new [[http://www.youtube.com/user/smalltimeoutlaws/videos?view=1|YouTube tutorials]].
+* [[Programming/App config settings]] - build settings for your project
+* [[Programming/Optimisation]] - how Cerberus X optimises your code during translation
+* [[Programming/Memory management]] - Cerberus X' garbage collector
+* [[Programming/Asset import]] - provide assets outside your project's data directory
+* [[Tools/Makedocs]] - How to document your modules using this tool
 
->> Credits
 
-* The obligatory [[Credits|credits]].
+>> Appendix
 
->> For Microsoft Windows users
-* Please note that parts of this software uses OpenAL Soft 1.18.1 from [http://kcat.strangesoft.net](http://kcat.strangesoft.net/openal.html) as precompiled dynamic libraries.
-* You can find the source code for OpenAL Soft from [https://github.com/kcat/openal-soft](https://github.com/kcat/openal-soft)
-* OpenAL Soft is released under the LGPL v2 licence, a copy of which you will find located in the Cerberus libs and bin directories under the name Openal32_COPYING and Openal32_LICENCE. As well as pre-compiled dynamic libraries for your own use located in the directories Win32 and Win64.
-* IF YOU ARE TO DISTRIBUTE THESE BINARIES YOU MUST COMPLY WITH THE TERMS AND CONDITIONS OF THE LGPL LICENCE. IF YOU DO NOT AGREE TO THE TERMS AND CONDITION SET OUT BY THE LGPL VERSION 2 LICENCE, THEN YOU MUST REMOVE ALL COPIES OF THE DYNAMIC LINK LIBRARIES AND LICENCES.
-* For compatibility reasons, the OpenAL Soft libraries have already been renamed to OpenAl32.DLL and in no way must be confused with the OpenAL libraries supplied by Creative Labs LTD, or the files distributed by [http://openal.org/](http://openal.org/).
+* [[Tools]] - the tools that come with Cerberus X
 
+* [[Links]] - expand your Cerberus X experience at these places
+
+* [[Versions]] - history of Cerberus X' versions
+
+* [[Credits]] - the creative heads behind Cerberus X
+
+* [[Licence information]] - important message to Microsoft Windows users

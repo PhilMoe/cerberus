@@ -1,0 +1,39 @@
+
+> ASCII Table
+
+ASCII codes 0-127. For those who are too lazy to type `Print \`a\``.
+
+| Dec | Char								| Dec | Char	| Dec | Char	| Dec | Char
+| 000 | *NUL* (null)						| 032 | space	| 064 | *@*		| 096 | *\`*
+| 001 | *SOH* (start of heading)			| 033 | *!*		| 065 | *A*		| 097 | *a*
+| 002 | *STX* (start of text)				| 034 | *"*		| 066 | *B*		| 098 | *b*
+| 003 | *ETX* (end of text)					| 035 | *#*		| 067 | *C*		| 099 | *c*
+| 004 | *EOT* (end of transmission)			| 036 | *$*		| 068 | *D*		| 100 | *d*
+| 005 | *ENQ* (enquiry)						| 037 | *\%*	| 069 | *E*		| 101 | *e*
+| 006 | *ACK* (acknowledge)					| 038 | *&*		| 070 | *F*		| 102 | *f*
+| 007 | *BEL* (bell)						| 039 | *'*		| 071 | *G*		| 103 | *g*
+| 008 | *BS* (backspace)					| 040 | *(*		| 072 | *H*		| 104 | *h*
+| 009 | *TAB* (horizontal tab)				| 041 | *)*		| 073 | *I*		| 105 | *i*
+| 010 | *LF* (line feed)					| 042 | *\**	| 074 | *J*		| 106 | *j*
+| 011 | *VT* (vertical tab)					| 043 | *+*		| 075 | *K*		| 107 | *k*
+| 012 | *FF* (form feed)					| 044 | *,*		| 076 | *L*		| 108 | *l*
+| 013 | *CR* (carriage return)				| 045 | *-*		| 077 | *M*		| 109 | *m*
+| 014 | *SO* (shift out)					| 046 | *.*		| 078 | *N*		| 110 | *n*
+| 015 | *SI* (shift in)						| 047 | */*		| 079 | *O*		| 111 | *o*
+| 016 | *DLE* (data link escape)			| 048 | *0*		| 080 | *P*		| 112 | *p*
+| 017 | *DC1* (device control 1)			| 049 | *1*		| 081 | *Q*		| 113 | *q*
+| 018 | *DC2* (device control 2)			| 050 | *2*		| 082 | *R*		| 114 | *r*
+| 019 | *DC3* (device control 3)			| 051 | *3*		| 083 | *S*		| 115 | *s*
+| 020 | *DC4* (device control 4)			| 052 | *4*		| 084 | *T*		| 116 | *t*
+| 021 | *NAK* (negative acknowledge)		| 053 | *5*		| 085 | *U*		| 117 | *u*
+| 022 | *SYN* (synchronous idle)			| 054 | *6*		| 086 | *V*		| 118 | *v*
+| 023 | *ETB* (end of transmission block)	| 055 | *7*		| 087 | *W*		| 119 | *w*
+| 024 | *CAN* (cancel)						| 056 | *8*		| 088 | *X*		| 120 | *x*
+| 025 | *EM* (end of medium)				| 057 | *9*		| 089 | *Y*		| 121 | *y*
+| 026 | *SUB* (substitute)					| 058 | *:*		| 090 | *Z*		| 122 | *z*
+| 027 | *ESC* (escape)						| 059 | *;*		| 091 | *[*		| 123 | *{*
+| 028 | *FS* (file separator)				| 060 | *\<*	| 092 | *\\*	| 124 | *&#124;*
+| 029 | *GS* (group separator)				| 061 | *=*		| 093 | *]*		| 125 | *}*
+| 030 | *RS* (record separator)				| 062 | *\>*	| 094 | *^*		| 126 | *~*
+| 031 | *US* (unit separator)				| 063 | *?*		| 095 | *_*		| 127 | *DEL*
+

@@ -53,7 +53,7 @@ To declare your own shader, you must:
 Once you have created an instance of your shader, you can pass it as a parameter to [[Material.New|Material.New]], [[Material.Load|Material.Load]], [[Image.New|Image.New]], [[Image.Load|Image.Load]] and [[Shader.SetDefaultShader|Shader.SetDefaultShader]].
 
 
-# Method Build:void( source:String )
+# Method Build:Void( source:String )
 
 Compiles and links the shader.
 
@@ -289,7 +289,7 @@ Get width of @text drawn in this font.
 Get height of @text drawn in this font.
 
 
-# Function Load:Font( imagePath:String,firstChar:Int,numChars:int,padded:bool )
+# Function Load:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
 
 Load a fixed width font from @imagePath.
 
@@ -573,7 +573,7 @@ Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
 Return current alpha.
 
 
-# Method GetColor:void( color:Float[] )
+# Method GetColor:Void( color:Float[] )
 
 Copy current color to @color.
 
@@ -750,7 +750,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawOval:Void( x:float,y:Float,width:Float,height:Float,material:Material=Null )
+# Method DrawOval:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
 
 Draw an oval in the given rectangle.
 
@@ -777,7 +777,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],material:Material=Null )
+# Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],material:Material=Null )
 
 Draw a batch of primtives.
 
@@ -792,7 +792,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],material:Material=Null )
+# Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],material:Material=Null )
 
 Draw a batch of primtives.
 
@@ -809,7 +809,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],material:Material=Null )
+# Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],material:Material=Null )
 
 Draw a batch of primtives.
 
@@ -828,7 +828,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]], [[PremultiplyArgb2Abgr]]
 
 
-# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],indices:Int[],material:Material=Null )
+# Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],indices:Int[],material:Material=Null )
 
 Draw a batch of indexed primtives.
 
@@ -845,7 +845,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],indices:Int[],material:Material=Null )
+# Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],indices:Int[],material:Material=Null )
 
 Draw a batch of indexed primtives.
 
@@ -864,7 +864,7 @@ If @material is null, the current default material is used.
 See also: [[SetDefaultMaterial]]
 
 
-# Method DrawIndexedPrimitives:Void( order:Int,count:int,vertices:Float[],texcoords:float[],vertcols:int[],indices:Int[],material:Material=Null )
+# Method DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],indices:Int[],material:Material=Null )
 
 Draw a batch of indexed primtives.
 
@@ -946,17 +946,17 @@ The scaling is done via the 9-Patch method. The @patchSize determines the width 
 left-width and right-width of the image. These are not scaled. The rest is.
 
 
-# Method DrawText:Void( text:String,x:float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+# Method DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 
 Draw @text at @x,@y in the current font.
 
 
-# Method DrawShadow:void( lightX:Float,lightY:Float,x0:Float,y0:Float,x1:Float,y1:Float )
+# Method DrawShadow:Void( lightX:Float,lightY:Float,x0:Float,y0:Float,x1:Float,y1:Float )
 
 Draw a shadow volume.
 
 
-# Method DrawShadows:void( lightX:Float,lightY:Float,drawList:DrawList )
+# Method DrawShadows:Void( lightX:Float,lightY:Float,drawList:DrawList )
 
 Draw multiple shadow volumes.
 
@@ -1318,12 +1318,12 @@ Get light range.
 @index must be in the range 0 to 3 inclusive.
 
 
-# Method SetColorMask:Void( r:bool,g:bool,b:bool,a:bool )
+# Method SetColorMask:Void( r:Bool,g:Bool,b:Bool,a:Bool )
 
 Set which color components are writeable.
 
 
-# Method ColorMask:bool[]() Property
+# Method ColorMask:Bool[]() Property
 
 Get color mask.
 
@@ -1340,14 +1340,14 @@ If @shadowMap is null (the default), shadow mapping is disabled.
 Get shadow map.
 
 
-# Method Clear:Void( r:float=0,g:float=0,b:float=0,a:float=1 )
+# Method Clear:Void( r:Float=0,g:Float=0,b:Float=0,a:Float=1 )
 
 Clear canvas to the specified color.
 
 Clear is affect by the current viewport, scissor rect and color mask.
 
 
-# Method RenderDrawList:void( drawList:DrawList )
+# Method RenderDrawList:Void( drawList:DrawList )
 
 Render a drawlist to canvas.
 

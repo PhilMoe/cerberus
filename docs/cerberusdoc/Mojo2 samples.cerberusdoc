@@ -1,17 +1,19 @@
 
 > Mojo2 samples
 
-+ [[../../examples/mojo2/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
-+ [[../../examples/mojo2/bouncyaliens/bouncyaliens.cxs|Bouncy aliens converted to mojo2]]
-+ [[../../examples/mojo2/bumptest/bumptest.cxs|Bumpmapping test]]
-+ [[../../examples/mojo2/directlight/directlight.cxs|Simple lighting]]
-+ [[../../examples/mojo2/drawprimitives/drawprimitives.cxs|Drawing primitives]]
-+ [[../../examples/mojo2/helloworld/helloworld.cxs|Hello world]]
-+ [[../../examples/mojo2/letterbox/letterbox.cxs|Letterbox rendering]]
-+ [[../../examples/mojo2/mojotest/mojotest.cxs|Mojotest converted to mojo2]]
-+ [[../../examples/mojo2/renderdrawlist/renderdrawlist.cxs|Simple drawlist rendering demo]]
-+ [[../../examples/mojo2/rendererdemo/rendererdemo.cxs|Using the renderer class]]
-+ [[../../examples/mojo2/rendertoimage/rendertoimage.cxs|Simple render to image]]
-+ [[../../examples/mojo2/shadereffect/shadereffect.cxs|Simple shader effect]]
-+ [[../../examples/mojo2/vectormonkey/vectormonkey.cxs|Way cool vector Cerberus X demo!]]
-+ [[../../examples/mojo2/writepixels/writepixels.cxs|Create image with writepixels]]
+Samples for the advanced 2D rendering API.
+
+* [[../../examples/mojo2/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
+* [[../../examples/mojo2/bouncyaliens/bouncyaliens.cxs|Bouncy aliens converted to mojo2]]
+* [[../../examples/mojo2/bumptest/bumptest.cxs|Bumpmapping test]]
+* [[../../examples/mojo2/directlight/directlight.cxs|Simple lighting]]
+* [[../../examples/mojo2/drawprimitives/drawprimitives.cxs|Drawing primitives]]
+* [[../../examples/mojo2/helloworld/helloworld.cxs|Hello world]]
+* [[../../examples/mojo2/letterbox/letterbox.cxs|Letterbox rendering]]
+* [[../../examples/mojo2/mojotest/mojotest.cxs|Mojotest converted to mojo2]]
+* [[../../examples/mojo2/renderdrawlist/renderdrawlist.cxs|Simple drawlist rendering demo]]
+* [[../../examples/mojo2/rendererdemo/rendererdemo.cxs|Using the renderer class]]
+* [[../../examples/mojo2/rendertoimage/rendertoimage.cxs|Simple render to image]]
+* [[../../examples/mojo2/shadereffect/shadereffect.cxs|Simple shader effect]]
+* [[../../examples/mojo2/vectormonkey/vectormonkey.cxs|Way cool vector Cerberus X demo!]]
+* [[../../examples/mojo2/writepixels/writepixels.cxs|Create image with writepixels]]

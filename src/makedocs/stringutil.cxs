@@ -1,24 +1,66 @@
 
+#Rem 'cerberusdoc Module trans.stringutil
+String and character util functions.
+#End
+
+' 2018-11-10 - Holzchopf
+' Copied from src/makedocs/stringutil and adapted
+' kept some ascii numerals instead of `char` literals because sometimes it's
+' easier to understand when a greater than/less than operation is performed on a
+' numerical value rather than on a `char` literal
+
+#Rem cerberusdoc
+Returns if given char code is a whitespace char.
+Only the characaters 0x09 (character tabulation), 0x0A (line feed), 0x0B
+(line tabulation), 0x0C (form feed), 0x0D (carriage return) and 0x20 (space)
+are considered whitespace chars.
+#End
 Function IsSpace:Bool( ch:Int )
+	'          SP
 	Return ch<=32
 End
 
+#Rem cerberusdoc
+Returns if given char code is a digit (0-9).
+#End
 Function IsDigit:Bool( ch:Int )
+	'           0          9
 	Return ch>=48 And ch<=57
 End
 
+#Rem cerberusdoc
+Returns if given char code is alphabetical (A-Z or a-z).
+#End
 Function IsAlpha:Bool( ch:Int )
+	'            A          Z           a           z
 	Return (ch>=65 And ch<=90) Or (ch>=97 And ch<=122)
 End
 
+#Rem cerberusdoc
+Returns if given char code is a binary digit (0 or 1).
+#End
 Function IsBinDigit:Bool( ch:Int )
-	Return ch=48 Or ch=49
+	Return ch=`0` Or ch=`1`
 End
 
+#Rem cerberusdoc
+Returns if given char code is a hexadecimal digit (0-9 or A-F or a-f).
+#End
 Function IsHexDigit:Bool( ch:Int )
+	'            0          9           A          F           a           f
 	Return (ch>=48 And ch<=57) Or (ch>=65 And ch<=70) Or (ch>=97 And ch<=102)
 End
 
+#Rem cerberusdoc
+Replaces html special chars with html entities in string.
+#End
 Function HtmlEscape:String( str:String )
 	Return str.Replace( "&","&amp;" ).Replace( "<","&lt;" ).Replace( ">","&gt;" )
+End
+
+#Rem cerberusdoc
+Transforms line endings from Windows (CR+LF) and Macintosh (CR) to Unix (LF)
+#End
+Function UnifyLineEndings:String( str:String )
+	Return str.Replace( "~r~n","~n" ).Replace( "~r","~n" )
 End

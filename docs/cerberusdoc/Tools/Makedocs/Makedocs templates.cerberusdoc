@@ -1,0 +1,125 @@
+> Makedocs Templates
+
+Makedocs uses templates to transform cerberusdocs into html files. Templates are folders located in `docs/templates` with the folder name being the template name. The template itself consists of:
+
++ page_template.html
++ scope_template.html
++ index_template.html
+
+Everything in the template directory, that is not one of the three files listed above, is copied to `docs/html` upon transformation. That way you can provide additional data and stylesheets.
+
+
+>> The Pagemaker Syntax
+
+Pagemaker is the module used by Makedocs to transform .html templates to output .html
+
+Before modifying templates, get used to the Pagemaker syntax: Basically, every `*${* %identifier% *}*` tag gets replaced by the corresponding value provided by (in this case) Makedocs. Values are either field or list names.
+
+Some tag names are reserved and have other meanings:
+
+| Tag syntax					| Description
+| `*${* %identifier% *}*`		| Replaced by the field value stored in %identifier%
+| `*${IF* %identifier% *}*`		| Conditionally evaluates the block if %identifier% is a non-empty field or list
+| `*${IF LAST}*`				| Conditionally evaluates the block if currently the last list element is loaded
+| `*${IF NOT LAST}*`			| Conditionally evaluates the block if currently not the last list element is loaded
+| `*${IF FIRST}*`				| Conditionally evaluates the block if currently the first list element is loaded
+| `*${ENDIF}*`					| Ends a conditional block
+| `*${FOR* %identifier% *}*`	| Goes through all elements in list %identifier%
+| `*${NEXT}*`					| End of for block
+
+
+>> The page_template.html File
+
+This file is used as framework for every generated .html file. Thus, this should provide the html header and styling.
+
+For this file, Makedocs provides the following lists and fields:
+
+| Name			| Description
+| `CONTENT`		| Page content passed on by scope_template, index_template or plain markdown from general documentation.
+| `ICONLINKS`	| List of all icon links (links to 3rd party docs)
+| &emsp;`ICON`	| Image source for that icon link
+| &emsp;`URL`	| Target url for that icon link
+| `NAVLINKS`	| List of navigation links (current location)
+| &emsp;`IDENT`	| Name of navigation link
+| &emsp;`URL`	| Url of that link
+
+
+>> The scope_template.html File
+
+This file is used for module and class documentation. For this file, Makedocs provides the following fields for every declaration:
+
+| Name			| Description
+| `KIND`		| "Module", "Class", "Function" and so on depending on kind of declaration
+| `IDENT`		| Identifier for that declaration
+| `UIDENT`		| Identifier with attached parameter types, so it's unique for that scope. Used for overloads.
+| `URL`			| Url for that declaration
+| `PARAMTYPES`	| Types of function parameters. Used to distinguish overloads.
+| `DECL`		| Additional type information for this declaration (e.g. generic type argument, data type, parameters)
+| `XDECL`		| Like `DECL` but with links to type identifiers
+| `SCOPE`		| Scope of this declaration
+| `SUMMARY`		| Summary field, retrieved from description
+| `DESCRIPTION`	| Description
+| `LINKS`		| The description paragraph labelled "Links:"
+| `PARAMETERS`	| The description paragraph labelled "Parameter:"
+| `RETURNS`		| The description paragraph labelled "Returns:"
+| `EXAMPLE`		| The example provided to this declaration
+| `EXAMPLE_URL`	| The url to the provided example
+
+When transforming the doc page for a module, class or interface, the fields above are accessible globally for that exact declaration.
+
+Otherwise, child declarations are stored in lists.
+
+For modules, these lists are available:
+
+| Name			| Description
+| `IMPORTS`		| Modules imported by this one
+| `IMPORTED_BY`	| Modules that import this one
+| `CLASSES`		| Classes in this module
+| `INTERFACES`	| Interfaces in this module
+| `FUNCTIONS`	| Functions in this module
+| `CONSTS`		| Constants in this module
+| `GLOBALS`		| Globals in this module
+| `ENUMS`		| Enumerates in this module\*
+
+For classes and interfaces, these lists are available:
+
+| Name			| Description
+| `EXTENDS`		| Classes/interfaces extended by this one
+| `EXTENDED_BY`	| Classes/interface that extend this one
+| `IMPLEMENTS`	| Interfaces implemented by this one
+| `IMPLEMENTED_BY`	| Classes/interface that implemented this one
+| `METHODS`		| Methods in this class
+| `PROPERTIES`	| Property methods in this class
+| `CTORS`		| Constructors in this class
+| `FUNCTIONS`	| Functions in this class
+| `CONSTS`		| Constants in this class
+| `GLOBALS`		| Globals in this class
+| `ENUMS`		| Enumerates in this class\*
+| `FIELDS`		| Fields in this class
+| `INHERITED_METHODS`		| Inherited methods in this class
+| `INHERITED_PROPERTIES`	| Inherited property methods in this class
+| `INHERITED_CTORS`			| Inherited constructors in this class
+| `INHERITED_FUNCTIONS`		| Inherited functions in this class
+| `INHERITED_CONSTS`		| Inherited constants in this class
+| `INHERITED_GLOBALS`		| Inherited globals in this class
+| `INHERITED_ENUMS`			| Inherited enumerates in this class\*
+| `INHERITED_FIELDS`		| Inherited fields in this class
+
+\* `ENUMS` are lists of `ENUM_ELEMENTS`, which are lists of declaration themselves
+
+
+>> The index_template.html File
+
+Makedocs automatically generates some indexes, e.g. of all modules and also for folders that have no corresponding %.cerberusdoc% file. For indexes, two additional fields are provided:
+
+| Name			| Description
+| `INDEX`		| Name of that index
+| `ITEMS`		| List of all declarations in that index
+
+Since indexes can also list general documentation, only basic fields that can be retrieved from every type of documentation are provide for the items:
+
+| Name			| Description
+| `IDENT`		| Identifier for that declaration / page
+| `URL`			| Url for that declaration / page
+| `SCOPE`		| Scope of this declaration / page
+| `SUMMARY`		| Summary field

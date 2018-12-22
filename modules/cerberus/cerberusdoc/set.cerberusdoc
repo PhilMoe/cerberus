@@ -11,7 +11,7 @@ Please Refer to the [[Set]] class for more information on how cerberus implement
 
 
 
-# Class cerberus.set.Set
+# Class cerberus.set.Set<T>
 
 '# Import cerberus.map Private
 
@@ -50,7 +50,7 @@ Returns True if the set is empty, ie: contains no items, else False.
 
 Return True if the specified value is contained in the set, else False.
 
-Params: 
+Parameters: 
 
 value - value to check
 
@@ -59,7 +59,7 @@ value - value to check
 
 Inserts value into the set.
 
-Params: 
+Parameters: 
 
 value - value to insert.
 
@@ -68,7 +68,7 @@ value - value to insert.
 
 Removes value from the set.
 
-Params: 
+Parameters: 
 
 value - value to remove.
 

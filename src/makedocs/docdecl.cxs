@@ -1,0 +1,849 @@
+Strict
+
+' a DocDecl (doc declaration) is basically anything of use,
+' that should be known to the doccer
+' these decls are customised for the doccer, that's why there are doccer
+' specific methods provided
+
+Const DECL_ROOT:Int					= 100	' "files structure" decls
+Const DECL_ROOT_MODULES:Int			= 101
+Const DECL_ROOT_DOCS:Int			= 102
+Const DECL_MODULE_SCOPE:Int			= 900	' (the higher numbers help sorting the tree
+Const DECL_MODULE:Int				= 901	' keep in mind, that kind values of 900
+Const DECL_DOC:Int					= 902	' and more are not compared by kind for
+Const DECL_INDEX:Int				= 903	' sorting between them)
+Const DECL_MODHEADER:Int			= 200	' modules must contain one
+Const DECL_UIDENT_SCOPE:Int			= 201	' everything before ident for unique ident
+Const DECL_UIDENT_PARAMS:Int		= 202	' everything after ident for unique ident
+Const DECL_3RDPARTYDOC:Int			= 210	' 3rdparty docs passed from api- to docdoccer
+Const DECL_3RDPARTY_ICON:Int		= 211	' 3rdparty docs may contain icons for iconlinks
+Const DECL_EXAMPLE_IDENT:Int		= 220	' examples provided as external files
+Const DECL_EXAMPLE_SOURCE:Int		= 221
+Const DECL_EXAMPLE_URL:Int			= 222	' examples written back to file system
+Const DECL_IMPORT:Int				= 300	' declarations at module scope
+Const DECL_CLASS:Int				= 301
+Const DECL_INTERFACE:Int			= 302
+Const DECL_FUNCTION:Int				= 310
+Const DECL_CONST:Int				= 320
+Const DECL_GLOBAL:Int				= 321
+Const DECL_ENUM:Int					= 322
+Const DECL_GENTYPE_PARAM:Int		= 400	' declarations at class scope
+Const DECL_EXTENDS:Int				= 401
+Const DECL_IMPLEMENTS:Int			= 402
+Const DECL_METHOD:Int				= 403
+Const DECL_PROPERTY:Int				= 405
+Const DECL_CTOR:Int					= 406
+Const DECL_CLASSFUNCTION:Int		= 410
+Const DECL_CLASSCONST:Int			= 420
+Const DECL_CLASSGLOBAL:Int			= 421
+Const DECL_CLASSENUM:Int			= 422
+Const DECL_FIELD:Int				= 423
+Const DECL_INH_METHOD:Int			= 453
+Const DECL_INH_PROPERTY:Int			= 455
+Const DECL_INH_CTOR:Int				= 456
+Const DECL_INH_CLASSFUNCTION:Int	= 460
+Const DECL_INH_CLASSCONST:Int		= 470
+Const DECL_INH_CLASSGLOBAL:Int		= 471
+Const DECL_INH_CLASSENUM:Int		= 472
+Const DECL_INH_FIELD:Int			= 473
+Const DECL_INHERITED:Int			= 499	' for classes done inheriting
+Const DECL_TYPE:Int					= 500	' typing decls
+Const DECL_IMPLICIT_TYPE:Int		= 501
+Const DECL_INITIAL_VALUE:Int		= 502
+Const DECL_ARRAY:Int				= 550
+Const DECL_GENTYPE_ARGUMENT:Int		= 551
+Const DECL_PARAMETER:Int			= 600	' sub-decl decls
+Const DECL_ENUM_ELEMENT:Int			= 601
+Const DECL_IMPORTEDBY:Int			= 700	' late generated decls
+Const DECL_EXTENDEDBY:Int			= 701
+Const DECL_IMPLEMENTEDBY:Int		= 702
+Const DECL_DESCRIPTION:Int			= 800	' documentation
+Const DECL_EXAMPLE:Int				= 801
+Const DECL_LINKS:Int				= 802
+Const DECL_PARAMS:Int				= 803
+Const DECL_RETURNS:Int				= 804
+Const DECL_CONTENTS:Int				= 805
+Const DECL_SUMMARY:Int				= 850
+
+#If LOG_FINDERCALLS
+	Global _findercalls:Int
+#End
+
+Class DocDecl
+	' relative elements
+	Field parent:DocDecl
+	Field childs:DocDeclStack
+	' for decls that link to another decl (e.g. import, extend, inherited...)
+	Field target:DocDecl
+
+	Field kind:Int			' kind id
+	Field ident:String		' identifier, e.g. DrawImage or any other content
+	Field uid:Int			' unique numerical id (auto-incrementing)
+	Global _uid:Int			' global observer of uid
+	
+	Field canbefound:Bool	' if this decl can be found by the Find* methods
+	
+	' create node with specified kind
+	Method New( pKind:Int, pIdent:String="" )
+		parent = Null
+		kind = pKind
+		ident = pIdent
+		' assign auto-incrementing uid
+		uid = _uid
+		_uid += 1
+		' default canbefound
+		canbefound = Canbefound()
+	End
+	' set the default value for the canbefound flag
+	Method Canbefound:Bool()
+		Select kind
+		Case DECL_DOC,
+		DECL_MODULE,
+		DECL_INDEX,
+		DECL_CLASS,
+		DECL_INTERFACE,
+		DECL_FUNCTION,
+		DECL_CONST,
+		DECL_GLOBAL,
+		DECL_METHOD,
+		DECL_PROPERTY,
+		DECL_CTOR,
+		DECL_CLASSFUNCTION,
+		DECL_CLASSCONST,
+		DECL_CLASSGLOBAL,
+		DECL_FIELD,
+		DECL_ENUM_ELEMENT
+			Return True
+		End
+		Return False
+	End
+
+	' returns kind as string (for some kinds)
+	Method GetKindName:String()
+		Select kind
+		Case DECL_MODULE
+			Return "Module"
+		Case DECL_CLASS
+			Return "Class"
+		Case DECL_INTERFACE
+			Return "Interface"
+		Case DECL_FUNCTION
+			Return "Function"
+		Case DECL_CONST
+			Return "Const"
+		Case DECL_GLOBAL
+			Return "Global"
+		Case DECL_METHOD
+			Return "Method"
+		Case DECL_PROPERTY
+			Return "Property"
+		Case DECL_CTOR
+			Return "Method"
+		Case DECL_CLASSFUNCTION
+			Return "Function"
+		Case DECL_CLASSCONST
+			Return "Const"
+		Case DECL_CLASSGLOBAL
+			Return "Global"
+		Case DECL_FIELD
+			Return "Field"
+		Case DECL_INH_METHOD
+			Return "Inherited_method"
+		Case DECL_INH_PROPERTY
+			Return "Inherited_property"
+		Case DECL_INH_CTOR
+			Return "Inherited_method"
+		Case DECL_INH_CLASSFUNCTION
+			Return "Inherited_function"
+		End
+		Return "Unspecified"
+	End
+
+	' returns identifier
+	Method GetIdent:String()
+		Return ident
+	End
+	' returns scope
+	Method GetScopeIdent:String()
+		Return GetTextOfChild( DECL_UIDENT_SCOPE )
+	End
+	' returns unique identifier
+	' (scope + ident [+ paramtypes])
+	Method GetUniqueIdent:String()
+		Local _scope:String, _params:String
+		Local str:String
+		' try building unique identifier from details
+		If childs Then
+			For Local c := Eachin childs
+				If c.kind = DECL_UIDENT_SCOPE Then
+					_scope = c.ident
+					If _params Then Exit	' abort once both are defined
+				Elseif c.kind = DECL_UIDENT_PARAMS Then
+					_params = c.ident
+					If _scope Then Exit		' abort once both are defined
+				End
+			Next
+		End
+		Return _scope + ident + _params
+	End
+	' returns identifier with params
+	' (ident [+ paramtypes])
+	Method GetIdentWithParams:String()
+		If childs Then
+			For Local c := Eachin childs
+				If c.kind = DECL_UIDENT_PARAMS Then
+					Return GetIdent() + c.ident
+				End
+			Next
+		End
+		Return GetIdent()
+	End
+	' returns the identifier of the target, if possible,
+	' otherwise the own identifier
+	Method GetTargetIdent:String()
+		If target Then Return target.ident
+		Return ident
+	End
+	' returns the text of child pKind, if existing
+	Method GetTextOfChild:String( pKind:Int )
+		Local d := GetChild( pKind )
+		If d Then Return d.ident
+		Return ""
+	End
+	' returns type of function, variable or type (for generics) as string
+	Method GetType:String( pPutInLink:Bool=False, pMarkOptionals:Bool=True )
+		Local str := ""
+		' look for type child
+		Local t := GetChild( DECL_TYPE )
+		If t Then
+			str = t.ident
+			If pPutInLink Then
+				' only put in link when this identifier is not a type param
+				' of the scope class
+				Local gparam:DocDecl = Null
+				Local scope := GetScope( DECL_CLASS )
+				If scope Then
+					gparam = scope.GetChild( str, DECL_GENTYPE_PARAM )
+				End
+				If Not gparam Then
+					str = "[[" + str + "]]"
+				End
+			End
+			' type can have type arguments or array
+			str += t.GetType( pPutInLink, False )
+		End
+		' look for gentype argument childs
+		Local args := GetChilds( DECL_GENTYPE_ARGUMENT )
+		If args Then
+			Local astr:String
+			For Local a := Eachin args
+				If astr Then astr += ","
+				astr += a.ident + a.GetType( pPutInLink, False )
+			Next
+			If pPutInLink Then
+				str += "&lt;" + astr + "&gt;"
+			Else
+				str += "<" + astr + ">"
+			End
+		End
+		' array?
+		Local arr := GetChild( DECL_ARRAY )
+		While arr
+			str += "[]"
+			arr = arr.GetChild( DECL_ARRAY )
+		Wend
+		' put optional parameters in brackets
+		' (it's optional when it's sibling to a initial value)
+		If pMarkOptionals And t And t.parent.GetChild( DECL_INITIAL_VALUE ) Then
+			str = "[" + str + "]"
+		End
+		Return str
+	End
+	' returns type and parameters (for functions and such) or initial value
+	' (for consts and such)
+	Method GetDocType:String( pPutInLink:Bool=False )
+		' type (if known)
+		Local str:String = GetType( pPutInLink, False )
+		If str Then str = " : " + str
+		' initial value (maybe known for consts and such)
+		Local decl := GetChild( DECL_INITIAL_VALUE )
+		If decl Then
+			' implicit typing
+			If Not str And kind <> DECL_ENUM_ELEMENT Then
+				str = " := " + decl.ident
+			' already typed
+			Else
+				str += " = " + decl.ident
+			End
+		End
+		' parameters (maybe known for functions and such)
+		Local decls := GetChilds( DECL_PARAMETER )
+		If decls Then
+			str += " ( "
+			Local isfirst:Bool = True
+			For Local d := Eachin decls
+				If Not isfirst Then str += ", "
+				' identifier and type (whithout marking of optionals) of param
+				str += d.ident + ":"
+				str += d.GetType( pPutInLink, False )
+				Local decl := d.GetChild( DECL_INITIAL_VALUE )
+				If decl Then
+					str += "=" + decl.ident
+				End
+				isfirst = False
+			Next
+			str += " )"
+		Else
+			' put "()" for decls that are invoked (functions, methods...)
+			Select kind
+			Case DECL_FUNCTION, DECL_METHOD, DECL_PROPERTY, DECL_CTOR,
+			DECL_CLASSFUNCTION, DECL_INH_METHOD, DECL_INH_PROPERTY,
+			DECL_INH_CTOR, DECL_INH_CLASSFUNCTION
+				str += " ()"
+			End
+		End
+		Return str
+	End
+	' like GetDocType, but puts type identifiers in a markdown link
+	Method GetDocXType:String()
+		Return GetDocType( True )
+	End
+	' returns gentype parameters for classes
+	Method GetGenType:String()
+		' try getting type parameters for generic classes
+		Local types := GetChilds( DECL_GENTYPE_PARAM )
+		If types Then
+			Local str:String
+			For Local t := Eachin types
+				If str Then str += ","
+				str += t.ident
+			Next
+			Return "<" + str + ">"
+		End
+		Return ""
+	End
+	
+	' returns the first parent matching pKind
+	Method GetScope:DocDecl( pKind:Int )
+		Local decl := Self
+		While decl.kind <> pKind
+			If decl.parent Then
+				decl = decl.parent
+			Else
+				Return Null
+			End
+		Wend
+		Return decl
+	End
+	' returns the first child matching pKind
+	Method GetChild:DocDecl( pKind:Int )
+		If childs Then
+			For Local c := Eachin childs
+				If c.kind = pKind Then
+					Return c
+				End
+			Next
+		End
+		Return Null
+	End
+	' returns the first child matching pIdent
+	Method GetChild:DocDecl( pIdent:String )
+		If childs Then
+			For Local c := Eachin childs
+				If c.ident = pIdent Then
+					Return c
+				End
+			Next
+		End
+		Return Null
+	End
+	' returns the first child matching pIdent and pKind
+	' (attention, pKind might be 0 - then it's ignored)
+	Method GetChild:DocDecl( pIdent:String, pKind:Int )
+		If childs Then
+			For Local c := Eachin childs
+				If c.ident = pIdent And (pKind = 0 Or c.kind = pKind ) Then
+					Return c
+				End
+			Next
+		End
+		Return Null
+	End
+	' returns the childs of kind pKind as stack
+	Method GetChilds:DocDeclStack( pKind:Int, pRecursive:Bool=False )
+		If childs Then
+			'Local ret := New Stack<DocDecl>
+			Local ret := New DocDeclStack
+			For Local c := Eachin childs
+				If pKind = 0 Or c.kind = pKind Then
+					ret.Push( c )
+				End
+				' look in childs too
+				If pRecursive Then
+					Local cret := c.GetChilds( pKind, True )
+					If cret Then ret.Push( cret.ToArray() )
+				End
+			Next
+			' only return not-null if there were matches
+			If ret.Length Then Return ret
+		End
+		Return Null
+	End
+	' returns the childs matching pIdent as stack
+	Method GetChilds:DocDeclStack( pIdent:String, pRecursive:Bool=False)
+		If childs Then
+			Local ret := New DocDeclStack
+			For Local c := Eachin childs
+				If c.ident = pIdent Then
+					ret.Push( c )
+				End
+				' look in childs too
+				If pRecursive Then
+					Local cret := c.GetChilds( pIdent, True )
+					If cret Then ret.Push( cret.ToArray() )
+				End
+			Next
+			' only return not-null if there were matches
+			If ret.Length Then Return ret
+		End
+		Return Null
+	End
+	
+	' prepares the finder by storing some lists/scopes for quick access
+	' (should be called on root)
+	Global _root:DocDecl, _modroot:DocDecl, _docroot:DocDecl
+	Global _modules:DocDeclStack, _documents:DocDeclStack
+	' names of primitive types
+	Global _primnames:StringStack = New StringStack()
+	' primitive types and the DocDecl they're linking to
+	Global _primlinks:StringMap<DocDecl> = New StringMap<DocDecl>
+	Method PrepareFinder:Void()
+		' most used decls
+		_root = GetScope( DECL_ROOT )
+		_modroot = _root.GetChild( DECL_ROOT_MODULES )
+		_modules = _modroot.GetChilds( DECL_MODULE, True )
+		_docroot = _root.GetChild( DECL_ROOT_DOCS )
+		_documents = _docroot.GetChilds( DECL_DOC, True )
+		' indexes are found like documents
+		Local alsodocuments := _docroot.GetChilds( DECL_INDEX, True )
+		If alsodocuments Then _documents.Push( alsodocuments.ToArray() )
+		' most used primitive types
+		_primnames.Push( ["Void","Bool","Int","Float","String"] )
+	End
+	
+	' find the DocDecl matching pIdent visible from the current scope
+	' pIdent may also be specific or even the unique identifier
+	' valid pIdents: Print, .Print, brl, brl.admob, brl.admob.Admob,
+	' New(Int), New(String), Min(Int,Int), Min(Float,Float)
+	' pKind optionally specifies a kind that must match
+	' only finds decls with the canbefound flag set to true
+	Global _searchid:Int
+	Field _lastsid:Int
+	Method FindFromHere:DocDecl( pIdent:String, pKind:Int=0 )
+		#If LOG_FINDERCALLS
+			Print("finding "+pKind+" "+pIdent+" from "+kind+" "+ident)
+			_findercalls = 0
+		#End
+		' primitive types are most common. to speed up finding them, quickstore
+		' their destination and look up in them first
+		Local addtoprimlinks:Bool = False
+		If _primnames.Contains( pIdent ) Then
+			' return link to that primitive if existing...
+			Local decl := _primlinks.Get( pIdent )
+			If decl Then Return decl
+			'... or mark to add
+			addtoprimlinks = True
+		End
+		' increase search id - so childs will actually search again
+		_searchid += 1
+		Local scope:DocDecl, decl:DocDecl, decls:DocDeclStack
+		Local idents:String[], params:String=""
+		Local docpathtomatch:String=""
+		' if pIdent contains "/" it's a doc path
+		If pIdent.Contains("/") Then
+			idents = pIdent.Split("/")
+			' find scope to start looking for...
+			'... when ident started with "/", start at global scope
+			If idents[0] = "" Then
+				idents = idents[1..]
+				scope = _docroot
+			'... otherwise start in current doc
+			Else
+				scope = Self
+			End
+		' otherwise it's possibly anything
+		Else
+			Local _ident:String
+			' strip parameters from pIdent
+			If pIdent.Contains("(") Then
+				Local p0:Int = pIdent.Find("(")
+				params = pIdent[p0..]
+				_ident = pIdent[..p0]
+			Else
+				_ident = pIdent
+			End
+			' try splitting ident into path pieces
+			' so "brl.admob.Admob" becomes ["brl","admob","Admob"]
+			idents = _ident.Split(".")
+			' find scope to start looking for...
+			'... when ident started with ".", start at global scope
+			If idents[0] = "" Then
+				' strip the empty idents element
+				idents = idents[1..]
+				scope = _modroot
+			'... otherwise start at closest scope
+			Else
+				scope = GetScope( DECL_CLASS )
+				If Not scope Then scope = GetScope( DECL_INTERFACE )
+				If Not scope Then scope = GetScope( DECL_MODULE )
+				If Not scope Then scope = _modroot
+			End
+		End
+		' start actually looking for ident
+		Repeat
+			#If LOG_FINDERCALLS
+				Print("in scope "+scope.kind+" "+scope.ident+" after "+_findercalls+" calls")
+			#End
+			Select scope.kind
+			' at class/interface scope, ...
+			Case DECL_CLASS, DECL_INTERFACE
+				'... first query scope
+				decl = scope._FindInHere( idents, 0, params, pKind )
+				If decl Then Return _FoundDecl( decl )
+				'... then, if necessary, try looking in extended/implemented
+				decls = scope.GetChilds( DECL_EXTENDS )
+				If decls Then
+					For Local d := Eachin decls
+						If d.target Then
+							decl = d.target._FindInHere( idents, 0, params, pKind )
+							If decl Then Return _FoundDecl( decl )
+						End
+					Next
+				End
+				decls = scope.GetChilds( DECL_IMPLEMENTS )
+				If decls Then
+					For Local d := Eachin decls
+						If d.target Then
+							decl = d.target._FindInHere( idents, 0, params, pKind )
+							If decl Then Return _FoundDecl( decl )
+						End
+					Next
+				End
+				'... nothing found yet, move to module scope
+				scope = scope.GetScope( DECL_MODULE )
+			' at module scope, ...
+			Case DECL_MODULE, DECL_MODULE_SCOPE
+				'... first query scope
+				decl = scope._FindInHere( idents, 0, params, pKind )
+				If decl Then Return _FoundDecl( decl )
+				'... then query imported scopes (but not imported by imported
+				' ones, to prevent cyclic import infinite loops - matches there
+				' will be found when scanning the root)
+				decls = scope.GetChilds( DECL_IMPORT )
+				If decls Then
+					For Local d := Eachin decls
+						If d.target Then
+							decl = d.target._FindInHere( idents, 0, params, pKind )
+							If decl Then Return _FoundDecl( decl )
+						End
+					Next
+				End
+				'... nothing found yet, move up (one module or to modroot)
+				scope = scope.parent
+			' at module global scope
+			Case DECL_ROOT_MODULES
+				'... start scanning top-down
+				decl = scope._FindInHere( idents, 0, params, pKind )
+				If decl Then Return _FoundDecl( decl )
+				'... proceed by querying every known module
+				decls = _modules
+				If decls Then
+					For Local d := Eachin decls
+						decl = d._FindInHere( idents, 0, params, pKind )
+						If decl Then Return _FoundDecl( decl )
+					Next
+				End
+				'... still nothing found, move to document root
+				scope = _docroot
+			' at document global scope
+			Case DECL_ROOT_DOCS
+				'... start scanning top-down
+				decl = scope._FindInHere( idents, 0, params, pKind )
+				If decl Then Return _FoundDecl( decl, addtoprimlinks )
+				'... proceed by querying every known document
+				decls = _documents
+				If decls Then
+					For Local d := Eachin decls
+						decl = d._FindInHere( idents, 0, params, pKind )
+						If decl Then Return _FoundDecl( decl, addtoprimlinks )
+					Next
+				End
+				'... nothing found at all
+				Return Null
+			' at document scope
+			Case DECL_DOC, DECL_INDEX
+				'... first query scope
+				decl = scope._FindInHere( idents, 0, params, pKind )
+				If decl Then Return _FoundDecl( decl )
+				'... nothing found yet, move up (one document or to docroot)
+				scope = scope.parent
+			' illegal scope (can happen when writing shit links like
+			' "Modules/brl.socket/Socket" WHICH IS A FUCKING DOC LINK BUT 
+			' brl.socket.Socket AIN'T A FUCKING DOCUMENT BUT A FUCKING CLASS IN
+			' A FUCKING MODULE FOR SHITFUCKING FUCK'S SAKE)
+			Default
+				scope = _docroot
+			End
+		Forever
+		Return Null
+	End
+	' scans this scope for a matching ident path
+	Method _FindInHere:DocDecl( pIdentPath:String[], pLevel:Int=0, pParams:String="", pKind:Int=0 )
+		#If LOG_FINDERCALLS
+			_findercalls += 1
+		#End
+		' on level 0, only search this decl once per search id
+		If pLevel = 0 Then
+			If _lastsid = _searchid Then Return Null
+			_lastsid = _searchid
+		End
+		Local islastlevel:Bool = ( pLevel = pIdentPath.Length-1 )
+		Local _ident:String = pIdentPath[ pLevel ]
+		' scan all childs that canbefound and roots
+		If childs Then
+			Local cbf:Bool
+			For Local c := Eachin childs
+				' if decls can be found depends on their canbefound flag,
+				' additionally, DECL_MODULE_SCOPE can be found if it's not
+				' last level
+				cbf = c.canbefound
+				If c.kind = DECL_MODULE_SCOPE And Not islastlevel Then
+					cbf = True
+				End
+				If cbf Then
+					Local cident:String = c.ident
+					' for modules (& scopes), only compare the last modpath part
+					If c.kind = DECL_MODULE Or c.kind = DECL_MODULE_SCOPE Then
+						Local p0 := cident.FindLast(".")
+						If p0 >= 0 Then
+							cident = cident[p0+1 ..]
+						End
+					End
+					' on last level, ident and optionally params must match
+					If islastlevel Then
+						'If c.ident = _ident And ( pKind = 0 Or c.kind = pKind ) Then
+						If cident = _ident And
+						( pKind = 0 Or c.kind = pKind ) Then
+							' check params
+							If pParams Then
+								Local p := c.GetChild( DECL_UIDENT_PARAMS )
+								' abort if no params for this decl or not matching
+								If Not p Then Continue
+								If p.ident <> pParams Then Continue
+							End
+							' params ok, return this decl,
+							Return c
+						End
+					' on earlier levels, scan recursively down on matching scope
+					Elseif cident = _ident Then
+						Return c._FindInHere( pIdentPath, pLevel+1, pParams, pKind )
+					End
+				End
+			Next
+		End
+		Return Null
+	End
+	' a found decl is passed through this method so it can be attached to
+	' primitive links if necessary
+	Method _FoundDecl:DocDecl( pDecl:DocDecl, pAddToPrimLinks:Bool=False )
+		#If LOG_FINDERCALLS
+			Print("found "+pDecl.kind+" "+pDecl.ident+" after "+_findercalls+" calls" )
+		#End
+		' store resolved link?
+		If pAddToPrimLinks Then
+			_primlinks.Add( pDecl.ident, pDecl )
+		End
+		Return pDecl
+	End
+
+	' returns the first child matching pIdent recursively
+	' valid pIdents: Print, Min(Int,Int), Min(Float,Float)
+	' if given, pKind must also match
+	Method FindChild:DocDecl( pIdent:String, pKind:Int=0 )
+		Local _ident:String, params:String=""
+		' strip parameters
+		If pIdent.Contains("(") Then
+			Local p0:Int = pIdent.Find("(")
+			params = pIdent[p0..]
+			_ident = pIdent[..p0]
+		Else
+			_ident = pIdent
+		End
+		Return _FindChild( _ident, params, pKind )
+	End
+	' like FindChild(String,Int) - but with pParams that must match if given
+	Method _FindChild:DocDecl( pIdent:String, pParams:String, pKind:Int=0 )
+		If childs Then
+			For Local c := Eachin childs
+				' only consider "indexed" childs
+				If c.canbefound Then
+					If c.ident = pIdent And (pKind = 0 Or c.kind = pKind ) Then
+						' check params
+						If pParams Then
+							Local p := c.GetChild( DECL_UIDENT_PARAMS )
+							' return if child has matching params
+							If p And p.ident = pParams Then
+								Return c
+							End
+						Else
+							' no params specified - don't care
+							Return c
+						End
+					End
+					If c.childs Then
+						Local decl := c._FindChild( pIdent, pParams, pKind )
+						If decl Then Return decl
+					End
+				Elseif c.kind = DECL_ROOT_DOCS Or c.kind = DECL_ROOT_MODULES
+					Return c._FindChild( pIdent, pParams, pKind )
+				End
+			Next
+		End
+		Return Null
+	End
+	
+	' sets the parent
+	Method SetParent__:Void( pDecl:DocDecl )
+		parent = pDecl
+		' set uid scope part (for actually findable decls + module(scopes))
+		If canbefound Or kind = DECL_MODULE Then
+			Local scope:String = parent.GetUniqueIdent()
+			If scope Then
+				scope += "."
+				Local sdecl := GetChild( DECL_UIDENT_SCOPE )
+				If sdecl Then
+					sdecl.ident = scope
+				Else
+					Add( New DocDecl( DECL_UIDENT_SCOPE, scope ) )
+				End
+			End
+		End
+	End
+	' adds a decl and sets relations
+	Method Add:Void( pDecl:DocDecl )
+		' create childs stack, if needed
+		If Not childs Then
+			'childs = New Stack<DocDecl>
+			childs = New DocDeclStack
+		End
+		' set relations
+		childs.Push( pDecl )
+		'pDecl.SetParent( Self )
+		pDecl.parent = Self
+	End
+	' adds multiple decls
+	Method Add:Void( pDecls:Stack<DocDecl> )
+		For Local d := Eachin pDecls
+			Add( d )
+		Next
+	End
+	' null-exception save "IsEmpty"
+	Method HasChilds__:Int()
+		If childs Then
+			Return Not childs.IsEmpty()
+		End
+		Return False
+	End
+	
+	' creates new icon link decl
+	' icon and html file will have the same name, but different extensions
+	Function NewIconLink:DocDeclIconLink( pIdent:String )
+		Local decl := New DocDeclIconLink()' DECL_ICONLINK )
+		decl.Init( pIdent )
+		Return decl
+	End
+	
+	' sort child decls
+	Method Sort:Void()
+		If childs Then
+			childs.Sort()
+		End
+	End
+	
+	' turns the decl tree into a nice string
+	Method ToString:String(pIndent:Int=0)
+		Local indstr:String = ""
+		For Local i:Int = 0 Until pIndent
+			indstr += "  "
+		Next
+		Local uidstr:String = ("00000" + uid)[-6..]
+		indstr = indstr + kind + "." + uidstr + " "
+		'indstr += GetIdent().Replace("~n","~~n").Replace("~r","")
+		indstr += ident.Replace("~n","~~n").Replace("~r","")
+		If target Then
+			Local uidstr:String = ("00000" + target.uid)[-6..]
+			indstr += " (Targeting " + target.kind + "." + uidstr + ")"
+		End
+		'indstr += "(" + uidscope + "; " + uidfullscope + "; " + uidparams + ")"
+		indstr += "~n"
+		If childs Then
+			For Local d := Eachin childs
+				indstr += d.ToString(pIndent + 1)
+			Next
+		End
+		Return indstr
+	End
+End
+
+' custom DocDecl stack class for convenient adapted sorting
+Class DocDeclStack Extends Stack<DocDecl>
+	Method Compare:Int( pLhs:DocDecl, pRhs:DocDecl )
+		' a bit nasty: to achieve that module scopes, modules, docs and indexes
+		' are only compared alphabetically, don't compare by kind if both kinds
+		' are equal or greater than 900 (DECL_MODULE_SCOPE)
+		If pLhs.kind < 900 Or pRhs.kind < 900 Then
+			' compare by kind
+			If pLhs.kind < pRhs.kind Then Return -1
+			If pLhs.kind > pRhs.kind Then Return +1
+		End
+		' (pLhs.kind = pRhs.kind at this point)
+		' descriptions, parameters, enums, enumelements and arguments:
+		' sort by uid
+		' (not sorting them at all results in mess)
+		Select pLhs.kind
+		Case DECL_GENTYPE_PARAM,
+		DECL_GENTYPE_ARGUMENT,
+		DECL_PARAMETER,
+		DECL_DESCRIPTION,
+		DECL_EXAMPLE,
+		DECL_PARAMS,
+		DECL_RETURNS,
+		DECL_ENUM,
+		DECL_CLASSENUM,
+		DECL_ENUM_ELEMENT
+			Return pLhs.uid - pRhs.uid
+		End
+		' try sorting alphabetically - for this, redirect to target decls
+		Local lhs := pLhs
+		Local rhs := pRhs
+		If lhs.target Then lhs = lhs.target
+		If rhs.target Then rhs = rhs.target
+		' compare alphabetically, but lowercase
+		Local c := lhs.ident.ToLower().Compare( rhs.ident.ToLower() )
+		If c <> 0 Then Return c
+		' take params into account if necessary
+		Local lident := lhs.GetIdentWithParams()
+		Local rident := rhs.GetIdentWithParams()
+		' sort rest alphabetically
+		Return lident.Compare( rident )
+	End
+
+	Method Sort:Void( pAsc:Bool=True )
+		' sort childs by sorting "self" stack
+		Super.Sort( pAsc )
+		' sort childs' childs
+		For Local d := Eachin Self
+			d.Sort()
+		Next
+	End
+End

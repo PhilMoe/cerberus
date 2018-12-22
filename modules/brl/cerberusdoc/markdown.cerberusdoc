@@ -15,15 +15,16 @@ To convert markdown text to html, you must create a [[Markdown]] object and call
 A blank line inserts a paragraph separator into the output.
 
 %Example%
-<pre>
-This
+
+<div class="pretty">
+<code>This
 is
 on
 one
 line...
-
-This is a new paragraph!
-</pre>
+ 
+This is a new paragraph!</code>
+</div>
 
 %Output%
 
@@ -42,11 +43,12 @@ This is a new paragraph!
 Appending ~n to the end of a line will cause a line break to be inserted.
 
 %Example%
-<pre>
-Tightly~n
-Packed~n
-Lines~n
-</pre>
+
+<div class="pretty">
+<code>Tightly\~n
+Packed\~n
+Lines\~n</code>
+</div>
 
 %Output%
 
@@ -64,15 +66,60 @@ Text may be enclosed in the following style tags to control text style. Style ta
 \%italic\%~n
 \`code\`
 
+Additionally, the `@` character can be used to put emphasis on a single word.
+
 %Example%
 
-<pre>
-*This is in bold*, while %this is in italics%. And `this is some code`.
-</pre>
+<div class="pretty">
+<code>\*This is in bold\* as well as \@this, while \%this is in italics\%. And \`this is some code\`.</code>
+</div>
 
 %Output%
 
-*This is in bold*, while %this is in italics%. And `this is some code`.
+*This is in bold* as well as @this, while %this is in italics%. And `this is some code`.
+
+---
+
+>>> In-line HTML
+
+Except for the `\<pre\> \</pre\>` tags, html tags are passed as-is to the final generated document. This means, you can use html markup for coloured texts, iframes, embedded objects and so on. Just keep in mind that the html renderer inside your IDE might not have every html feature implemented.
+
+%Example%
+
+<div class="pretty">
+<code>This text contains a \<span style="background:yellow;"\>highlighted\</span\> word.</code>
+</div>
+
+%Output%
+
+This text contains a <span style="background:yellow;">highlighted</span> word.
+
+---
+
+>>> Code blocks
+
+Code blocks are generated using `\<pre\> .. \</pre\>` tags.
+
+%Example%
+
+<div class="pretty">
+<code>\<pre\>
+Function Main:Int()
+	Return 0
+End
+\</pre\></code>
+</div>
+
+%Output%
+
+<pre>
+Function Main:Int()
+	Return 0
+End
+</pre>
+
+For code blocks without syntax highlighting, you need to use in-line html with `\<div class="pretty"\> .. \</div\>` tags around the block and put the code into `\<code\> .. \</code\>` tags. However, the escaping within such blocks differs from the one within pre-tags, meaning you have to escape html characters and markdown. Also, such blocks *may not* contain blank lines, since they will be translated into paragraph separators, which would cause invalid html. Instead, you have to put a space character at the place of a blank line.
+
 
 ---
 
@@ -83,15 +130,15 @@ Text may be enclosed in the following style tags to control text style. Style ta
 \+ Ordered list
 
 %Example%
-<pre>
-* Item
-* Another item
-* Yet another item
-
-+ Item 1
-+ Item 2
-+ Item 3
-</pre>
+<div class="pretty">
+<code>\* Item
+\* Another item
+\* Yet another item
+ 
+\+ Item 1
+\+ Item 2
+\+ Item 3</code>
+</div>
 
 %Output%
 
@@ -116,11 +163,11 @@ Lists may contain paragraph separators.
 Tables may not contain paragraph separators - a blank line ends the table.
 
 %Example%
-<pre>
-| Flags   | Meaning
-| 1       | Enable
-| 2       | MidHandle
-</pre>
+<div class="pretty">
+<code>\| Flags   | Meaning
+\| 1       | Enable
+\| 2       | MidHandle</code>
+</div>
 
 %Output%
 
@@ -140,12 +187,12 @@ Tables may not contain paragraph separators - a blank line ends the table.
 \>>>>>> Sixth level header
 
 %Example%
-<pre>
-> Title
->> Chapter 1
->> Chapter 2
->>> Figure 1
-</pre>
+<div class="pretty">
+<code>\> Title
+\>> Chapter 1
+\>> Chapter 2
+\>>> Figure 1</code>
+</div>
 
 %Output%
 
@@ -161,15 +208,55 @@ Tables may not contain paragraph separators - a blank line ends the table.
 Links may be created by enclosing the link target in \[[ and \]]. In addition, alternate link text may be added using |.
 
 %Example%
-<pre>
-* [[Home]]
-* [[Home|Go Home]]
-</pre>
+<div class="pretty">
+<code>\* \[[Home\]]
+\* \[[Home|Go Home\]]
+\* \[This also is a form of a link that leads to Home\](Home)</code>
+</div>
 
 %Output%
 
 * [[Home]]
 * [[Home|Go Home]]
+* [This also is a form of a link that leads to Home](Home)
+
+---
+
+>>> Anchors
+
+Using the an empty `\<a\>` element with a name attribute, anchors can be defined to which you can link within a page.
+
+%Example%
+<div class="pretty">
+<code>\>>>> \<a name="anchor"\>\</a\> You can link here
+ 
+Watch where this link takes you:
+ 
+\[[#anchor\]]</code>
+</div>
+
+%Output%
+
+>>>> <a name="anchor"></a> You can link here
+
+Watch where this link takes you:
+
+[[#anchor]]
+
+---
+
+>>> Images
+
+Images may be inserted with !\[Alternate text\](url).
+
+%Example%
+<div class="pretty">
+<code>\![Cerberus X logo\](data/cerberusx.png)</code>
+</div>
+
+%Output%
+
+![Cerberus X logo](data/cerberusx.png)
 
 ---
 
@@ -178,11 +265,11 @@ Links may be created by enclosing the link target in \[[ and \]]. In addition, a
 A horizontal divider may be inserted by using one to three dash characters alone on a line.
 
 %Example%
-<pre>
-Above
----
-Below
-</pre>
+<div class="pretty">
+<code>Above
+\---
+Below</code>
+</div>
 
 %Output%
 
@@ -198,9 +285,9 @@ Below
 The backslash character may be used to escape any special markdown characters. To insert a literal backslash, use \\\\.
 
 %Example%
-<pre>
-*This is bold*, but \*this isn't\*.
-</pre>
+<div class="pretty">
+<code>\*This is bold\*, but \\\*this isn't\\\*.</code>
+</div>
 
 %Output%
 
@@ -208,6 +295,8 @@ The backslash character may be used to escape any special markdown characters. T
 
 
 # Class Markdown
+
+The Markdown class is used to transform text using the [[markdown|brl.markdown]] syntax.
 
 # Method New( linkResolver:ILinkResolver,prettifier:IPrettifier )
 
