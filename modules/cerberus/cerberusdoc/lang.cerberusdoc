@@ -45,7 +45,7 @@ Returns the number of elements contained in the array.
 
 Returns a copy of this array, resized to newLength.
 
-Parameters: 
+Params: 
 
 newLength - new array length.
 
@@ -77,7 +77,7 @@ Returns the number of characters contained in the string.
 
 Compares two strings. Returns a value \<0 if this string is less than @str, a value \>0 if this string is greater than @str, or 0 if the strings are equal.
 
-Parameters: 
+Params: 
 
 @str - string to compare this string with.
 
@@ -88,7 +88,7 @@ Returns the offset of the first occurrence of @str within this string, starting 
 
 Returns -1 if @str is not found.
 
-Parameters: 
+Params: 
 
 @str - string to find.
 
@@ -101,7 +101,7 @@ Returns the offset of the last occurrence of @str within this string.
 
 Returns -1 if @str is not found.
 
-Parameters: 
+Params: 
 
 @str - string to search for.
 
@@ -114,7 +114,7 @@ Returns the offset of the last occurrence of @str within this string, starting a
 
 Returns -1 if @str is not found.
 
-Parameters: 
+Params: 
 
 @str - string to search for.
 
@@ -130,7 +130,7 @@ Removes any leading and trailing whitespace from the string and returns the resu
 
 Creates a single string by joining together each element of @pieces, using the current string as a separator.
 
-Parameters: 
+Params: 
 
 @pieces - An array of string to be joined.
 
@@ -139,7 +139,7 @@ Parameters:
 
 Splits this string into an array of pieces, using the @separator string to delimit each piece.
 
-Parameters: 
+Params: 
 
 @separator - string to use to separate pieces.
 
@@ -148,7 +148,7 @@ Parameters:
 
 Replaces all occurrences of @findStr with @replaceStr and returns the result.
 
-Parameters: 
+Params: 
 
 @findStr - string to search for.
 
@@ -179,7 +179,7 @@ Links:
 Returns true if the string contains @str, else false.
 
 
-Parameters: 
+Params: 
 
 @str - string to check for.
 
@@ -189,7 +189,7 @@ Parameters:
 Returns true if the string starts with @str, else false.
 
 
-Parameters: 
+Params: 
 
 @str - string to check for.
 
@@ -198,7 +198,7 @@ Parameters:
 
 Returns true if this string ends with @str, else false.
 
-Parameters: 
+Params: 
 
 @str - string to check for.
 
@@ -212,7 +212,7 @@ Converts string to an array of character codes.
 
 Creates and returns a string of length 1 containing the character code specified by @charCode.
 
-Parameters: 
+Params: 
 
 @charCode - character code to convert to a string.
 
