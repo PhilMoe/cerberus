@@ -1,112 +1,160 @@
+' Cerberus X - Vector Monkey example
+'
+' Shows how to draw and manipulate vector graphics
+
 
 Strict
 
 Import mojo2
 
+
 Class MyApp Extends App
 
-	Field canvas:Canvas	
+	Field myCanvas:Canvas	
 	Field drawing:List<TriPrims>
 	Field rotstep:Float
 	Field wiggle:Float
 	Field rot:Float
  
+ 
 	Method OnCreate:Int()
-		canvas=New Canvas
+		myCanvas = New Canvas()
 		drawing = MakeVectorDrawing()
-		Return 0
+		Return(0)
 	End
+	
 	
 	Method OnUpdate:Int()
 	
-		 If KeyHit(KEY_W) 
+		If KeyHit(KEY_W) 
 		 	wiggle = 0.5
-
-		 Endif
+		Endif
 		 
-		 If MouseDown(0)
+		If MouseDown(MOUSE_LEFT)
 		 	For Local pt:= Eachin drawing 		 
-	 			pt.Pull(MouseX(),MouseY(),0.0001) 		
-	 		Next
-		 Endif
+	 			pt.Pull(MouseX(), MouseY(), 0.0001) 		
+	 		End
+		End
 		 
-		 If MouseDown(1)
+		If MouseDown(MOUSE_RIGHT)
 		 	For Local pt:= Eachin drawing 		 
-	 			pt.Pull(MouseX(),MouseY(),-0.0001) 		
-	 		Next
-		 Endif
+	 			pt.Pull(MouseX(), MouseY(), -0.0001) 		
+	 		End
+		End
 	
 		If KeyHit(KEY_SPACE)
 			wiggle = 0
 			rot = 0
 			For Local pt:= Eachin drawing 		 
 	 			pt.ResetMorph(1)	
-	 		Next
-			 
-		 
+	 		End
 			rotstep = 0
-		Endif 
+		End 
 	
-		Return 0
-	End Method
+		Return(0)
+	End
 	
 	
 	Method OnRender:Int()
 	
-		canvas.ResetMatrix()
-	
-		canvas.Clear .5,.7,1
-		 	
-		canvas.SetColor 0.5,0.5,0.5
-		canvas.DrawText "Mouse Click with left/right mouse button",10,10
-		canvas.DrawText "Press [W] to wiggle",10,30
-		canvas.DrawText "Press [Space] to reset",10,50
+		myCanvas.ResetMatrix()	
+		myCanvas.Clear(0.5, 0.7, 1) 	
+		myCanvas.SetColor(0, 0, 0)
+		myCanvas.DrawText("Hold [LMB]/[RMB] to distort", DeviceWidth() / 2, DeviceHeight() - 60, 0.5)
+		myCanvas.DrawText("Press [W] to wiggle", DeviceWidth() / 2, DeviceHeight() - 40, 0.5)
+		myCanvas.DrawText("Press [Space] to reset", DeviceWidth() / 2, DeviceHeight() - 20, 0.5)
 		 
 		rot = 0
 		 	
 	 	For Local pt:= Eachin drawing
-	 		canvas.Rotate rot
-	 		pt.Draw(canvas)
-	 		canvas.Rotate -rot
-	 		rot +=rotstep
-	 		
-	 	Next
+	 		myCanvas.Rotate(rot)
+	 		pt.Draw(myCanvas)
+	 		myCanvas.Rotate(-rot)
+	 		rot +=rotstep	
+	 	End
 	 	
-		canvas.Flush
-		rotstep +=Cos(Float(Millisecs() Mod 360))*wiggle
+		myCanvas.Flush()
+		rotstep += Cos(Float(Millisecs() Mod 360)) * wiggle
 	 
-		wiggle *=0.95
-		
-		rotstep *=0.99
+		wiggle *= 0.95
+		rotstep *= 0.99
 		
 		For Local pt:= Eachin drawing 		 
-	 			pt.ResetMorph(0.01)	
-	 		Next
+	 		pt.ResetMorph(0.01)	
+	 	End
 		
-		Return 0
+		Return(0)
+	End
+End
+
+
+Class TriPrims
+	
+	Field r:Float,g:Float,b:Float,a:Float = 1
+	Field myVertices:Float[]
+	Field morphedVertices:Float[]
+	Field indexes:Int[]
+	
+	
+	Method ResetMorph:Void(factor:Float = 1.0)
+	
+		If factor >= 1
+			Local invfactor:Float = 1.0 - factor
+			For Local i:Int = 0 Until myVertices.Length
+				morphedVertices[i] =  myVertices[i]  
+			End
+			Return
+		End 
+	End
+	
+	
+	Method Draw:Void(myCanvas:Canvas)
+		
+		If morphedVertices.Length<>myVertices.Length
+			morphedVertices = New  Float[myVertices.Length]
+			ResetMorph()
+	 	End	
+		myCanvas.SetColor(r, g, b, a)
+		myCanvas.DrawIndexedPrimitives(3, indexes.Length / 3, morphedVertices, indexes)
+	End 
+	
+	
+	Method Pull:Void(x:Float, y:Float, factor:Float)
+		
+		For Local i:Int = 0 Until myVertices.Length Step 2
+		
+			Local vx:Float = (morphedVertices[i] - x)
+			Local vy:Float = (morphedVertices[i + 1] - y) 
+			Local dist:Float = Sqrt(vx * vx + vy * vy)
+		
+	 		dist = 200 - dist
+
+			Local newx:Float = morphedVertices[i] + vx * dist * factor 
+			Local newy:Float = morphedVertices[i + 1] + vy * dist * factor 
+ 
+			morphedVertices[i] = newx
+			morphedVertices[i + 1] = newy
+ 
+		End
 	End
 End
 
 
 Function MakeVectorDrawing:List<TriPrims>()
 
-	Local data:=LoadString( "data.txt" )
-
+	Local data:=LoadString("data.txt")
 	Local primslist:= New List<TriPrims>
-	
-	
-		Local lines:String[] = data.Split("*")
-	
+	Local lines:String[] = data.Split("*")
 	Local tp:TriPrims
 	
 	For Local line:String = Eachin lines
+		
 		Local parts:String[] = line.Split(";")
 	
-		 
-		 select parts[0]
+		Select parts[0]
 		 
 		 	Case "color"
-				  tp = New TriPrims
+				tp = New TriPrims
 				
 				Local vals:String[] = parts[1].Split(",")
 				tp.r = Float(vals[0])
@@ -117,88 +165,25 @@ Function MakeVectorDrawing:List<TriPrims>()
 			 Case "vertices"	
 			 	Local vals:String[] = parts[1].Split(",")
 			 	
-			 	tp.vertices = New Float[vals.Length]
+			 	tp.myVertices = New Float[vals.Length]
 			 	For Local i:Int = 0  Until vals.Length
-			 		tp.vertices[i] = Float(vals[i])*0.01
-			 	Next
-			 			
-				 
+			 		tp.myVertices[i] = Float(vals[i]) * 0.01
+			 	End
+			 							 
 			 Case "indexes"				
 				Local vals:String[] = parts[1].Split(",")
 			 	tp.indexes = New Int[vals.Length]
 			 	For Local i:Int = 0  Until vals.Length
 			 		tp.indexes[i] = Int(vals[i])
-			 	Next			
-		 
-		 End Select
-		 
-		 Next
-		 
-		 
-		 Return primslist
-		 
-End Function
+			 	End			
+		 End		 
+	End
+		 		 
+	Return(primslist)	 
+End
 
 
 Function Main:Int()
 	New MyApp
-	Return 0
+	Return(0)
 End
-
-Class TriPrims
-	Field r:Float,g:Float,b:Float,a:Float = 1
-	Field vertices:Float[]
-	Field morphedvertices:Float[]
-	Field indexes:Int[]
-	
-	Method ResetMorph:Void(factor:Float = 1.0)
-	
-		If factor>= 1
-			Local invfactor:Float = 1.0 - factor
-			For Local i:Int = 0 Until vertices.Length
-				morphedvertices[i] =  vertices[i]  
-			Next
-			Return 
-		endif 
-	
-	
-		Local invfactor:Float = 1.0 - factor
-		For Local i:Int = 0 Until vertices.Length
-			Local newval:Float =  morphedvertices[i] *invfactor +  vertices[i] * factor
-		
-		Next
-	End Method
-	
-	
-	
-	Method Draw:void(canvas:Canvas)
-		If morphedvertices.Length<>vertices.Length
-			morphedvertices= New  Float[vertices.Length]
-			ResetMorph()
-	 	Endif
-	
-		canvas.SetColor r,g,b,a
-		canvas.DrawIndexedPrimitives(3,indexes.Length/3,morphedvertices,indexes)
-	End Method
-	
-	Method Pull:Void(x:Float,y:Float,factor:float)
-		
-		For Local i:Int = 0 Until vertices.Length Step 2
-		
-			Local vx:Float = (morphedvertices[i]-x)
-			Local vy:Float = (morphedvertices[i+1]-y) 
-		
-			Local dist:Float = Sqrt(vx*vx+vy*vy)
-		
-	 		dist = 200-dist
-
-			Local newx:Float = morphedvertices[i]  + vx  * dist  * factor 
-			Local newy:Float = morphedvertices[i+1]  + vy *  dist  * factor 
- 
-			morphedvertices[i] = newx
-			morphedvertices[i+1] = newy
- 
-		Next
-	End Method
-	
-End Class
