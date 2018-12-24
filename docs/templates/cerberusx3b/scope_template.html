@@ -1,0 +1,507 @@
+
+<h1>${KIND} <small>${IDENT}${DECL}</small></h1>
+
+${IF SUMMARY}
+	<p>
+		${SUMMARY}${IF DESCRIPTION}<a href="#description"> More...</a>${ENDIF}
+	</p>
+${ENDIF}
+
+<h2>Declarations</h2>
+
+${IF IMPORTS}
+	<table class="index">
+		<tr><th>Imports</th><th></th></tr>
+		${FOR IMPORTS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF IMPORTED_BY}
+	<table class="index">
+		<tr><th>Imported By</th><th></th></tr>
+		<tr>
+			<td colspan="2">
+				${FOR IMPORTED_BY}
+					<code><a href="${URL}">${IDENT}</a></code>${IF NOT LAST} , ${ENDIF}
+				${NEXT}	
+			</td>
+		</tr>
+	</table>
+	<span class="note">Please note that only documented modules are listed here, there might be undocumented modules that import this one.</span>
+${ENDIF}
+${IF CLASSES}
+	<table class="index">
+		<tr><th>Classes</th><th></th></tr>
+		${FOR CLASSES}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a>${DECL}</code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INTERFACES}
+	<table class="index">
+		<tr><th>Interfaces</th><th></th></tr>
+		${FOR INTERFACES}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF EXTENDS}
+	<table class="index">
+		<tr><th>Extends</th><th></th></tr>
+		${FOR EXTENDS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF EXTENDED_BY}
+	<table class="index">
+		<tr><th>Extended By</th><th></th></tr>
+		<tr>
+			<td colspan="2">
+				${FOR EXTENDED_BY}
+					<code><a href="${URL}">${IDENT}</a></code>${IF NOT LAST} , ${ENDIF}
+				${NEXT}	
+			</td>
+		</tr>
+	</table>
+	<span class="note">Please note that only documented classes are listed here, there might be undocumented classes that extend this one.</span>
+${ENDIF}
+${IF IMPLEMENTS}
+	<table class="index">
+		<tr><th>Implements</th><th></th></tr>
+		${FOR IMPLEMENTS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF IMPLEMENTED_BY}
+	<table class="index">
+		<tr><th>Implemented By</th><th></th></tr>
+		<tr>
+			<td colspan="2">
+				${FOR IMPLEMENTED_BY}
+					<code><a href="${URL}">${IDENT}</a></code>${IF NOT LAST} , ${ENDIF}
+				${NEXT}	
+			</td>
+		</tr>
+	</table>
+	<span class="note">Please note that only documented classes are listed here, there might be undocumented classes that implement this interface.</span>
+${ENDIF}
+${IF CONSTS}
+	<table class="index">
+		<tr><th>Constants</th><th></th></tr>
+		${FOR CONSTS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF ENUMS}
+	<table class="index">
+		<tr><th>Enumerates</th><th></th></tr>
+		${FOR ENUMS}
+			<tr>
+				<td>
+					${FOR ENUM_ELEMENTS}
+						<code><a href="#${UIDENT}">${IDENT}</a></code>${IF NOT LAST} , ${ENDIF}
+					${NEXT}	
+				</td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF GLOBALS}
+	<table class="index">
+		<tr><th>Globals</th><th></th></tr>
+		${FOR GLOBALS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF FIELDS}
+	<table class="index">
+		<tr><th>Fields</th><th></th></tr>
+		${FOR FIELDS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF PROPERTIES}
+	<table class="index">
+		<tr><th>Properties</th><th></th></tr>
+		${FOR PROPERTIES}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF CTORS}
+	<table class="index">
+		<tr><th>Constructors</th><th></th></tr>
+		${FOR CTORS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF METHODS}
+	<table class="index">
+		<tr><th>Methods</th><th></th></tr>
+		${FOR METHODS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF FUNCTIONS}
+	<table class="index">
+		<tr><th>Functions</th><th></th></tr>
+		${FOR FUNCTIONS}
+			<tr>
+				<td><code><a href="#${UIDENT}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_CONSTS}
+	<table class="index">
+		<tr><th>Inherited Constants</th><th></th></tr>
+		${FOR INHERITED_CONSTS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_ENUMS}
+	<table class="index">
+		<tr><th>Inherited Enumerates</th><th></th></tr>
+		${FOR INHERITED_ENUMS}
+			<tr>
+				<td>
+					${FOR ENUM_ELEMENTS}
+						<code><a href="${URL}">${IDENT}</a></code>${IF NOT LAST} , ${ENDIF}
+					${NEXT}	
+				</td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_GLOBALS}
+	<table class="index">
+		<tr><th>Inherited Globals</th><th></th></tr>
+		${FOR INHERITED_GLOBALS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_FIELDS}
+	<table class="index">
+		<tr><th>Inherited Fields</th><th></th></tr>
+		${FOR INHERITED_FIELDS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_PROPERTIES}
+	<table class="index">
+		<tr><th>Inherited Properties</th><th></th></tr>
+		${FOR INHERITED_PROPERTIES}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_CTORS}
+	<table class="index">
+		<tr><th>Inherited Constructors</th><th></th></tr>
+		${FOR INHERITED_CTORS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_METHODS}
+	<table class="index">
+		<tr><th>Inherited Methods</th><th></th></tr>
+		${FOR INHERITED_METHODS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+${IF INHERITED_FUNCTIONS}
+	<table class="index">
+		<tr><th>Inherited Functions</th><th></th></tr>
+		${FOR INHERITED_FUNCTIONS}
+			<tr>
+				<td><code><a href="${URL}">${IDENT}</a><small>${DECL}</small></code></td>
+				<td>${SUMMARY}</td>
+			</tr>
+		${NEXT}
+	</table>
+${ENDIF}
+
+${IF DESCRIPTION}
+	<div class="section">
+		<a name="description"></a>
+		<h2>Detailed Discussion</h2>
+		${DESCRIPTION}
+		${IF LINKS}
+			<span class="detail links">See also</span>
+			${LINKS}
+		${ENDIF}
+		${IF EXAMPLE}
+			<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+			${EXAMPLE}
+		${ENDIF}
+	</div>
+	<hr>
+${ENDIF}
+
+${IF CONSTS}
+	<div class="section">
+		<h2>Constants Documentation</h2>
+		${FOR CONSTS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Const <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF ENUMS}
+	<div class="section">
+		<h2>Enumerates Documentation</h2>
+		${FOR ENUMS}
+			<div class="article">
+				${FOR ENUM_ELEMENTS}<a name='${UIDENT}'></a>${NEXT}
+				<pre class="declaration">Enumerate ${FOR ENUM_ELEMENTS}<strong>${IDENT}</strong>${IF XDECL}${XDECL}${ENDIF}${IF NOT LAST}, ${ENDIF}${NEXT}</pre>
+				${DESCRIPTION}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF GLOBALS}
+	<div class="section">
+		<h2>Globals Documentation</h2>
+		${FOR GLOBALS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Global <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF FIELDS}
+	<div class="section">
+		<h2>Fields Documentation</h2>
+		${FOR FIELDS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Field <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF PROPERTIES}
+	<div class="section">
+		<h2>Properties Documentation</h2>
+		${FOR PROPERTIES}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Method <strong>${IDENT}</strong>${XDECL} Property</pre>
+				${DESCRIPTION}
+				${IF PARAMETERS}
+					<span class="detail parameters">Parameters</span>
+					${PARAMETERS}
+				${ENDIF}
+				${IF RETURNS}
+					<span class="detail returns">Returns</span>
+					${RETURNS}
+				${ENDIF}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF CTORS}
+	<div class="section">
+		<h2>Constructors Documentation</h2>
+		${FOR CTORS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Method <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF PARAMETERS}
+					<span class="detail parameters">Parameters</span>
+					${PARAMETERS}
+				${ENDIF}
+				${IF RETURNS}
+					<span class="detail returns">Returns</span>
+					${RETURNS}
+				${ENDIF}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF METHODS}
+	<div class="section">
+		<h2>Methods Documentation</h2>
+		${FOR METHODS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Method <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF PARAMETERS}
+					<span class="detail parameters">Parameters</span>
+					${PARAMETERS}
+				${ENDIF}
+				${IF RETURNS}
+					<span class="detail returns">Returns</span>
+					${RETURNS}
+				${ENDIF}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
+${IF FUNCTIONS}
+	<div class="section">
+		<h2>Functions Documentation</h2>
+		${FOR FUNCTIONS}
+			<div class="article">
+				<a name="${UIDENT}"></a>
+				<pre class="declaration">Function <strong>${IDENT}</strong>${XDECL}</pre>
+				${DESCRIPTION}
+				${IF PARAMETERS}
+					<span class="detail parameters">Parameters</span>
+					${PARAMETERS}
+				${ENDIF}
+				${IF RETURNS}
+					<span class="detail returns">Returns</span>
+					${RETURNS}
+				${ENDIF}
+				${IF LINKS}
+					<span class="detail links">See also</span>
+					${LINKS}
+				${ENDIF}
+				${IF EXAMPLE}
+					<span class="detail example"><b><a href="${EXAMPLE_URL}">Example</a></b></span>
+					${EXAMPLE}
+				${ENDIF}
+			</div>
+		${NEXT}
+	</div>
+	<hr>
+${ENDIF}
