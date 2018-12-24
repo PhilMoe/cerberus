@@ -265,7 +265,7 @@ The standard Cerberus&nbsp;X modules use a simple naming convention:
 * Pascal case (eg: '`PascalCase`' ): [Globals](#globals), [functions](#functions), [classes](#classes), [methods](#methods), [properties](#properties).
 * Camel case (eg: '`camelCase`' ): [Fields](#fields), [locals](#locals) and function parameters.
 
-You are of course free to use your own convention, but for the sake of consistency it is recommended that this convention be used for the public interface of any modules you create intended for use by the Cerberus&nbsp;X community.
+You are of course free to use your own convention, but for the sake of consistency it is recommended that this convention be used for the public interface of any modules you create which are intended for use by the Cerberus&nbsp;X community.
 
 
 >> <a name="literals"></a> Literals

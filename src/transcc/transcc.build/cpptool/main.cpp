@@ -9457,8 +9457,6 @@ bool c_AGKBuilder_ios::p_IsValid(){
 		if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
 			return true;
 		}
-	}else{
-		return true;
 	}
 	return false;
 }
