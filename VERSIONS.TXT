@@ -1,4 +1,4 @@
-***** v2018-12-22 *****
+***** v2018-12-25 *****
 
 FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.
 FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.
@@ -8,6 +8,7 @@ MOD: [example] Various changes to sample scripts     (Author: Paul59)
 FIX: [TED] Fixed "Open on Desktop" on Linux.
 MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.
 MOD: [DOCS/MAKEDOCS] Numerous changes to the docs and MakeDocs itself.
+FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.
 
 ***** v2018-08-10 *****
 
