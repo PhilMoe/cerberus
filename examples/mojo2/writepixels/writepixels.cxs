@@ -1,6 +1,6 @@
 ' Cerberus X - Writepixels example
 '
-' Write pixels in an image using a dada buffer
+' Write pixels in an image using a data buffer
 
 Strict
 
