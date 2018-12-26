@@ -27,17 +27,18 @@ Class MyApp Extends App
 			Local radius:Float = Rnd(40, 300)
 			Local cx:Float = radius * Cos(i)
 			Local cy:Float = radius * Sin(i)
-			myDrawList.DrawCircle(cx, cy, radius/10)		
-		End
+			myDrawList.DrawCircle(cx, cy, radius / 10)		
+		Next
 		myDrawList.SetAlpha(0.5)
 		myDrawList.SetColor(1, 1, 1)
 		myDrawList.DrawImage(myImage, 0, 0)			
 
-		Return(0)
+		Return 0
 	End
 	
 	
 	Method OnRender:Int()
+		
 		myCanvas.Clear(0, 0, 0.25)
 		' draw everything in the list in one pass
 		' translate to the mouse position and rotate continuously
@@ -45,7 +46,7 @@ Class MyApp Extends App
 		' do the same again, but rotate in the opposite direction
 		myCanvas.RenderDrawList(myDrawList, MouseX(), MouseY(), Millisecs() * -0.01)
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 
 End
@@ -53,5 +54,5 @@ End
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End

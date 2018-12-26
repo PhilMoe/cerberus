@@ -27,13 +27,13 @@ Class MyApp Extends App
 		
 	Method OnCreate:Int()
 		myCanvas = New Canvas()
-		Return(0)
+		Return 0
 	End
 	
 	
 	Method OnUpdate:Int()	
 		If KeyHit(KEY_SPACE) splitScreen = Not splitScreen
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -56,8 +56,9 @@ Class MyApp Extends App
 			vprect[3] = devrect[2] / VASPECT
 			vprect[0] = devrect[0]
 			vprect[1] = (devrect[3] - vprect[3]) / 2 + devrect[1]
-		End
-		Return(feedback)
+		Endif
+		
+		Return feedback
 	
 	End
 	
@@ -95,10 +96,10 @@ Class MyApp Extends App
 		Else
 			' draw single player screen
 			RenderScene("SPACE TO TOGGLE SPLITSCREEN", [0, 0, DeviceWidth(), DeviceHeight()])
-		End
+		Endif
 		
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 	
 End
@@ -106,5 +107,5 @@ End
 
 Function Main:Int()
 	New MyApp
-	Return(0)
+	Return 0
 End

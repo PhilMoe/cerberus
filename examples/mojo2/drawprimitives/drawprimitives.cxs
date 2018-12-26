@@ -8,6 +8,7 @@ Strict
 Import mojo2
 Import cerberus.random
 
+
 Class MyApp Extends App
 
 	Field myCanvas:Canvas
@@ -45,11 +46,11 @@ Class MyApp Extends App
 			verts[p + 7] = y + sz
 			
 			p += 8
-		end
+		Next
 
 		grabbed = False
 		
-		Return(0)		
+		Return 0		
 	End
 	
 	Method OnRender:Int()
@@ -73,10 +74,10 @@ Class MyApp Extends App
 			myCanvas.PopMatrix()
 		Else
 			myCanvas.DrawPrimitives(4, 100, verts)
-		End
+		Endif
 
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -87,14 +88,14 @@ Class MyApp Extends App
 		' distort the shapes by moving each vertex a little
 		For Local i:Int = 0 Until verts.Length()			
 			verts[i] += Rnd(-0.25, 0.25)
-		End
+		Next
 		
-		Return(0)
+		Return 0
 	End
 
 End
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End

@@ -20,6 +20,8 @@ Function Mat4Ortho:Float[](left:Float, right:Float, lower:Float, upper:Float, zn
 End
 
 
+
+
 Class MyLight Implements ILight
 
 	' note: x,y,z,w are last 4 components of matrix...
@@ -30,32 +32,33 @@ Class MyLight Implements ILight
 	' implement ILight interface methods
 	
 	Method LightMatrix:Float[]()
-		Return(myMatrix)
+		Return myMatrix
 	End
 	
 	
 	Method LightType:Int()
 		' all lights are point-light type: 0 = disabled, 1 = enabled
-		Return(1)
+		Return 1
 	End
 	
 	
 	Method LightColor:Float[]()
-		Return(myLightColor)
+		Return myLightColor
 	End
 	
 	
 	Method LightRange:Float()
-		Return(myLightRange)
+		Return myLightRange
 	End
 	
 	
 	Method LightImage:Image()
 		' we're not using a texture image for lighting
-		Return(Null)
+		Return Null
 	End
 
 End
+
 
 
 Class RenderLayer Extends DrawList Implements ILayer
@@ -67,24 +70,24 @@ Class RenderLayer Extends DrawList Implements ILayer
 	' implement ILayer interface methods
 	
 	Method LayerMatrix:Float[]()
-		Return(myLayerMatrix)
+		Return myLayerMatrix
 	End
 	
 	
 	Method LayerFogColor:Float[]()
-		Return(myLayerFogColor)
+		Return myLayerFogColor
 	End
 	
 	
 	Method LayerLightMaskImage:Image()
-		Return(Null)
+		Return Null
 	End
 	
 	
 	Method EnumLayerLights:Void(lights:Stack<ILight>)
 		For Local light:=Eachin Self.lights
 			lights.Push(light)
-		End
+		Next
 	End
 
 
@@ -93,6 +96,7 @@ Class RenderLayer Extends DrawList Implements ILayer
 	End
 
 End
+
 
 
 Class MyApp Extends App
@@ -131,8 +135,8 @@ Class MyApp Extends App
 		For Local x:Int = 0 Until 640 Step 128
 			For Local y:Int = 0 Until 480 Step 128	
 				layer0.DrawImage(tile, x, y)
-			End
-		End
+			Next
+		Next
 		
 		' create simple rectangular shadow caster
 		myShadowCaster = New ShadowCaster()
@@ -145,12 +149,12 @@ Class MyApp Extends App
 				layer0.DrawImage(wallImage, x, y)
 				layer0.SetColor(1, 1, 1)
 				layer0.AddShadowCaster(myShadowCaster, x - 16, y - 16)
-			End
-		End
+			Next
+		Next
 
 		' add layer to renderer		
 		myRenderer.Layers.Push(layer0)
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -165,16 +169,16 @@ Class MyApp Extends App
 			' rotate lights around mouse position, setting x and y co-ords in matrix[]	
 			light.myMatrix[12] = MouseX() - DeviceWidth() / 2 + Cos(an) * radius + 320
 			light.myMatrix[13] = MouseY() - DeviceHeight() / 2 + Sin(an) * radius + 240
-		End
+		Next
 
 		' render the scene
 		myRenderer.Render()
-		Return(0)
+		Return 0
 	End
 End
 
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End
