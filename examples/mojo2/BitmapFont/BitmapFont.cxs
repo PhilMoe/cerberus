@@ -1,6 +1,6 @@
 ' Cerberus X - BitmapFont example
 '
-' Demonstrates how to load bitmap fonts and draw text over multiple lines
+' Demonstrates how to load bitmap fonts and draw text on multiple lines
 
 Strict
 
