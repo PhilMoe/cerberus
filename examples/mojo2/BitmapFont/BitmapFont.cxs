@@ -1,6 +1,6 @@
 ' Cerberus X - BitmapFont example
 '
-' Demonstrates how to load bitmap fonts and draw text over multiple lines
+' Demonstrates how to load bitmap fonts and draw text on multiple lines
 
 Strict
 
@@ -24,7 +24,7 @@ Class myClass Extends App
         myFont = Font.Load("font.txt")	
         myCanvas.SetFont(myFont)
         
-        Return(0)
+        Return 0
     End
     
 
@@ -35,15 +35,15 @@ Class myClass Extends App
         ' DrawText() can take a string or an array of strings as its first parameter.
         ' Supplying an array will draw each string on a new line.
         ' Here we split a simple string it into an array using the "~n" separator.
-        myCanvas.DrawText( String("Hello World~nCerberus X is AWESOME!").Split("~n"), canvasWidth/2, canvasHeight/2, 0.5, 0.5)
+        myCanvas.DrawText( String("Hello World~nCerberus X is AWESOME!").Split("~n"), canvasWidth / 2, canvasHeight / 2, 0.5, 0.5)
       
         myCanvas.Flush
-        Return(0)
+        Return 0
     End
 End
 
 
 Function Main:Int()
     New myClass()		
-    Return(0)
+    Return 0
 End

@@ -18,7 +18,7 @@ Class MyApp Extends App
 		myCanvas = New Canvas()		
 		myCanvas.SetAmbientLight(0.2, 0.2, 0.2)
 		bgTile = Image.Load( "t3.png", 0, 0 )
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -60,11 +60,11 @@ Class MyApp Extends App
 			Next
 		Next
 
-		myCanvas.DrawText("CERBERUS X HAS FOUR EASY TO USE LIGHTS", DeviceWidth()/2, DeviceHeight()/2, 0.5)
+		myCanvas.DrawText("CERBERUS X HAS EASY TO USE LIGHTS", DeviceWidth()/2, DeviceHeight()/2, 0.5)
 		myCanvas.DrawText("TO ILLUMINATE YOUR GAMES", DeviceWidth()/2, DeviceHeight()/2 + 20, 0.5)
 		
 		myCanvas.Flush
-		Return(0)	
+		Return 0	
 	End
 	
 	
@@ -73,8 +73,8 @@ Class MyApp Extends App
 		For Local i:Int = 1 Until 4
 			lRange[i] += 1
 			If lRange[i] > 80 lRange[i] = 30
-		End
-		Return(0)
+		Next
+		Return 0
 	End
 
 End
@@ -82,6 +82,6 @@ End
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End
 

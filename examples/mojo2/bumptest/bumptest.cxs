@@ -18,7 +18,7 @@ Class MyApp Extends App
 	
 		' generate color texture
 		' clamp co-ords and make it writeable using a canvas
-		Local colortex:Texture = New Texture(256, 256, 4, Texture.ClampST|Texture.RenderTarget)
+		Local colortex:Texture = New Texture(256, 256, 4, Texture.ClampST | Texture.RenderTarget)
 		' create a new canvas with colortex as the render target
 		Local rcanvas :Canvas = New Canvas(colortex)
 		rcanvas.Clear(1, 1, 1, 1)
@@ -26,7 +26,7 @@ Class MyApp Extends App
 
 		' generate a 'normal map' in a texture		
 		' normals are set to point as if on the surface of a hemisphere 
-		Local normtex := New Texture(256, 256, 4, Texture.ClampST|Texture.RenderTarget)
+		Local normtex := New Texture(256, 256, 4, Texture.ClampST | Texture.RenderTarget)
 		rcanvas.SetRenderTarget(normtex)
 		rcanvas.Clear(0.5, 0.5, 1.0, 0.0)
 		For Local x := 0 Until 256 
@@ -46,10 +46,10 @@ Class MyApp Extends App
 					
 					rcanvas.SetColor(r, g, b, 1)
 					rcanvas.DrawPoint(x, y)
-				End
-			End
-		End
-		rcanvas.Flush
+				Endif
+			Next
+		Next
+		rcanvas.Flush()
 		
 		' create a material using our texture and normal map
 		' and finally an image, using the material as its source
@@ -74,7 +74,7 @@ Class MyApp Extends App
 		myCanvas.SetLightRange(0, beamWidth)
 		myCanvas.SetLightPosition(0, MouseX(), MouseY(), lightZ)
 		
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -90,7 +90,7 @@ Class MyApp Extends App
 		Local dw:Int = DeviceWidth()		
 		For Local x:Int = 128 Until dw Step 192 
 			myCanvas.DrawImage(myImage, x, DeviceHeight()/2, rot, 0.5, 0.5)
-		End
+		Next
 		
 		myCanvas.DrawText("Left/Right", DeviceWidth()/3, 8, 0.5)
 		myCanvas.DrawText("Up/Down",  DeviceWidth()/3 * 2, 8, 0.5)
@@ -99,7 +99,7 @@ Class MyApp Extends App
 
 		myCanvas.Flush
 		
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -109,12 +109,12 @@ Class MyApp Extends App
 		If KeyDown(KEY_LEFT) And beamWidth > 150 beamWidth -= 1
 		If KeyDown(KEY_RIGHT) And beamWidth < 350 beamWidth += 1		
 		rot += 1.0
-		Return(0)	
+		Return 0	
 	End
 End
 
 
 Function Main:Int()
 	New MyApp
-	Return(0)
+	Return 0
 End

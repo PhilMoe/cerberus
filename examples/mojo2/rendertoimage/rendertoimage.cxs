@@ -20,9 +20,9 @@ Class MyApp Extends App
 		myCanvas = New Canvas()
 		
 		' create an image and set it as a render target which enables us to draw upon it
-		myImage = New Image(256,256)
+		myImage = New Image(256, 256)
 		imageCanvas = New Canvas(myImage)
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -36,10 +36,10 @@ Class MyApp Extends App
 					imageCanvas.SetColor(Sin(Millisecs() * 0.1 ) * 0.5 + 0.5, Cos(Millisecs() * 0.1) * 0.5 + 0.5, 0.5)
 				Else
 					imageCanvas.SetColor(0, 0, 0)
-				End
+				Endif
 				imageCanvas.DrawRect(x * 2, y * 2, 2, 2)
-			End
-		End
+			Next
+		Next
 		
 		' finalize drawing on the image
 		imageCanvas.Flush()
@@ -54,13 +54,18 @@ Class MyApp Extends App
 		
 		' finalize drawing on the main canvas		
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 End
 
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End
 
+		
+		
+	
+	
+	

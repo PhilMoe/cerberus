@@ -1,6 +1,6 @@
 ' Cerberus X - Writepixels example
 '
-' Write pixels in an image using a dada buffer
+' Write pixels in an image using a data buffer
 
 Strict
 
@@ -22,7 +22,7 @@ Class MyApp Extends App
 		myCanvas = New Canvas()
 		myImage = New Image(256, 256)
 		myData = New DataBuffer(16 * 16 * 4)
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -53,13 +53,13 @@ Class MyApp Extends App
 				' save it in the data buffer
 				For Local i:Int = 0 Until 16 * 16 * 4 Step 4
 					myData.PokeInt(i, rgba)
-				End
+				Next
 				
 				' draw each small square using the values
 				myImage.WritePixels(x * 16, y * 16, 16, 16, myData)
 				
-			End
-		End
+			Next
+		Next
 		
 		' render image to main canvas
 		' add a little rotation and scaling to make it interesting!
@@ -72,12 +72,12 @@ Class MyApp Extends App
 		myCanvas.Flush()
 		r += rv
 		If r > 15 Or r < -10 rv = -rv
-		Return(0)
+		Return 0
 	End
 End
 
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End

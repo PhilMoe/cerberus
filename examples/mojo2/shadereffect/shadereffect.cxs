@@ -65,6 +65,7 @@ Class ShaderEffect
 		_canvas.DrawRect(0, 0, target.Width(), target.Height(), _material)
 		_canvas.Flush()
 	End
+
 	
 End
 
@@ -84,7 +85,7 @@ Class MyApp Extends App
 		targetImage = New Image(sourceImage.Width(), sourceImage.Height())
 		effect = New ShaderEffect()
 		myCanvas = New Canvas()
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -95,8 +96,8 @@ Class MyApp Extends App
 			level = Min(level + 0.02, 1.0)
 		Else If KeyDown( KEY_DOWN )
 			level = Max(level - 0.02, 0.0)
-		End
-		Return(0)
+		Endif
+		Return 0
 	End
 	
 	
@@ -111,7 +112,7 @@ Class MyApp Extends App
 		myCanvas.DrawText("Shader Effect: " + Int(level * 100) + "%", DeviceWidth()/2, 8, 0.5)
 		myCanvas.DrawText("Up/Down To Change", DeviceWidth()/2, 28, 0.5)
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 	
 End
@@ -119,5 +120,6 @@ End
 
 Function Main:Int()
 	New MyApp()
-	Return(0)
+	Return 0
 End
+

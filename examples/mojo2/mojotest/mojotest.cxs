@@ -19,7 +19,7 @@ Class myApp Extends App
 		
 		'unthrottled frame rate
 		SetUpdateRate(0)
-		Return(0)
+		Return 0
 	End	
 		
 
@@ -82,7 +82,7 @@ Class myApp Extends App
 		myCanvas.DrawRect(0, 0, 1, DeviceHeight() - 1)
 		
 		myCanvas.Flush()
-		Return(0)
+		Return 0
 	End
 
 End
@@ -90,5 +90,5 @@ End
 
 Function Main:Int()
 	New myApp()
-	Return(0)
+	Return 0
 End

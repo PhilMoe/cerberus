@@ -20,7 +20,7 @@ Class MyApp Extends App
 	Method OnCreate:Int()
 		myCanvas = New Canvas()
 		drawing = MakeVectorDrawing()
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -33,25 +33,25 @@ Class MyApp Extends App
 		If MouseDown(MOUSE_LEFT)
 		 	For Local pt:= Eachin drawing 		 
 	 			pt.Pull(MouseX(), MouseY(), 0.0001) 		
-	 		End
-		End
+	 		Next
+		Endif
 		 
 		If MouseDown(MOUSE_RIGHT)
 		 	For Local pt:= Eachin drawing 		 
 	 			pt.Pull(MouseX(), MouseY(), -0.0001) 		
-	 		End
-		End
+	 		Next
+		Endif
 	
 		If KeyHit(KEY_SPACE)
 			wiggle = 0
 			rot = 0
 			For Local pt:= Eachin drawing 		 
 	 			pt.ResetMorph(1)	
-	 		End
+	 		Next
 			rotstep = 0
-		End 
+		Endif 
 	
-		Return(0)
+		Return 0
 	End
 	
 	
@@ -71,7 +71,7 @@ Class MyApp Extends App
 	 		pt.Draw(myCanvas)
 	 		myCanvas.Rotate(-rot)
 	 		rot +=rotstep	
-	 	End
+	 	Next
 	 	
 		myCanvas.Flush()
 		rotstep += Cos(Float(Millisecs() Mod 360)) * wiggle
@@ -81,9 +81,9 @@ Class MyApp Extends App
 		
 		For Local pt:= Eachin drawing 		 
 	 		pt.ResetMorph(0.01)	
-	 	End
+	 	Next
 		
-		Return(0)
+		Return 0
 	End
 End
 
@@ -102,9 +102,9 @@ Class TriPrims
 			Local invfactor:Float = 1.0 - factor
 			For Local i:Int = 0 Until myVertices.Length
 				morphedVertices[i] =  myVertices[i]  
-			End
+			Next
 			Return
-		End 
+		Endif 
 	End
 	
 	
@@ -113,7 +113,7 @@ Class TriPrims
 		If morphedVertices.Length<>myVertices.Length
 			morphedVertices = New  Float[myVertices.Length]
 			ResetMorph()
-	 	End	
+	 	Endif	
 		myCanvas.SetColor(r, g, b, a)
 		myCanvas.DrawIndexedPrimitives(3, indexes.Length / 3, morphedVertices, indexes)
 	End 
@@ -135,7 +135,7 @@ Class TriPrims
 			morphedVertices[i] = newx
 			morphedVertices[i + 1] = newy
  
-		End
+		Next
 	End
 End
 
@@ -168,22 +168,22 @@ Function MakeVectorDrawing:List<TriPrims>()
 			 	tp.myVertices = New Float[vals.Length]
 			 	For Local i:Int = 0  Until vals.Length
 			 		tp.myVertices[i] = Float(vals[i]) * 0.01
-			 	End
+			 	Next
 			 							 
 			 Case "indexes"				
 				Local vals:String[] = parts[1].Split(",")
 			 	tp.indexes = New Int[vals.Length]
 			 	For Local i:Int = 0  Until vals.Length
 			 		tp.indexes[i] = Int(vals[i])
-			 	End			
+			 	Next			
 		 End		 
-	End
+	Next
 		 		 
-	Return(primslist)	 
+	Return primslist
 End
 
 
 Function Main:Int()
 	New MyApp
-	Return(0)
+	Return 0
 End

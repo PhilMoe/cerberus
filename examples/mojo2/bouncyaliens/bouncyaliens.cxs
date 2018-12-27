@@ -38,7 +38,7 @@ Class Sprite
 			vrotation = Int(Rnd(1,3))
 		Else
 			vrotation = -Int(Rnd(1,3))
-		End	
+		Endif	
 	End
 
 	Method Update:Int()
@@ -54,11 +54,11 @@ Class Sprite
 			frame += 1
 			If frame = 8 frame = 0
 			frametime = Millisecs() + 50
-		End
+		Endif
 		' update rotation
 		rotation += vrotation
 		
-		Return(0)
+		Return 0
 	End
 End
 
@@ -66,7 +66,6 @@ End
 Class MyApp Extends App
 
 	Field myCanvas:Canvas
-
 	Field frames1:Image[]
 	Field frames2:Image[]
 	Field sprites:=New Stack<Sprite>
@@ -85,7 +84,7 @@ Class MyApp Extends App
 			SetDeviceWindow 640, 480, 4
 			SetSwapInterval(1)
 			SetUpdateRate(0)
-		End
+		Endif
 	End
 	
 	
@@ -100,11 +99,11 @@ Class MyApp Extends App
 		
 		For Local i:Int = 0 Until 25
 			sprites.Push New Sprite
-		End
-
+		Next
+		
 		SetUpdateRate(60)
 
-		Return(0)
+		Return 0
 	End
 	
 
@@ -114,36 +113,35 @@ Class MyApp Extends App
 		If KeyHit( KEY_SPACE ) 
 			#If TARGET = "glfw"
 				ToggleFullscreen
-			#End
-		End
+			#Endif
+		Endif
 		
 		' add/remove 25 sprites per click
 		' make existing sprites smaller/larger as new ones are added/removed
 		If MouseHit(MOUSE_RIGHT) And Not sprites.IsEmpty()		
 			For Local i:Int = 0 Until 25
 				sprites.Pop()
-			End
+			Next
 			For Local sprite:=Eachin sprites
 				sprite.xscale *= 1.25
 				sprite.yscale *= 1.25
-			End
+			Next
 			
 		Elseif MouseHit(MOUSE_LEFT)
 			For Local sprite:=Eachin sprites
 				sprite.xscale *= 0.8
 				sprite.yscale *= 0.8
-			End
+			Next
 			For Local i:Int = 0 Until 25
 				sprites.Push(New Sprite())
-			End
-		End				
+			Next
+		Endif				
 		
 		For Local sprite:=Eachin sprites
 			sprite.Update()
 		Next
 	
-	
-		Return(0)	
+		Return 0	
  	End
  	
 	
@@ -151,8 +149,8 @@ Class MyApp Extends App
 	
 		Local dw:Int = DeviceWidth()
 		Local dh:Int = DeviceHeight()
-		Local centrex:Int = dw/2
-		Local centrey:Int = dh/2
+		Local centrex:Int = dw / 2
+		Local centrey:Int = dh / 2
 		
 		' make sure viewport fills device in case window size has changed
 		myCanvas.SetViewport(0, 0, dw, dh)		
@@ -165,8 +163,8 @@ Class MyApp Extends App
 				myCanvas.DrawImage(frames1[sprite.frame], sprite.x, sprite.y, sprite.rotation, sprite.xscale, sprite.yscale)
 			Else
 				myCanvas.DrawImage(frames2[sprite.frame], sprite.x, sprite.y, sprite.rotation, sprite.xscale, sprite.yscale)
-			End		
-		End
+			Endif		
+		Next
 		
 		' scale to window dimensions
 		myCanvas.SetProjection2d(0, dw, 0, dh)
@@ -174,7 +172,7 @@ Class MyApp Extends App
 		myCanvas.DrawText ("[LMB - Add Sprites]     [RMB - Remove Sprites]", centrex, 8, 0.5)
 		#If TARGET = "glfw" 
 			myCanvas.DrawText ("[Space - Toggle Fullscreen]", centrex, 28, 0.5)
-		#End
+		#Endif
 		myCanvas.DrawText ("Sprites: " + sprites.Length(), centrex, dh - 20, 0.5)
 					
 		If paused
@@ -182,31 +180,31 @@ Class MyApp Extends App
 			myCanvas.DrawRect(0, 0, dw, dh)
 			myCanvas.SetColor(1, 1, 1, 1)
 			myCanvas.DrawText("Suspended", centrex, centrey, 0.5, 0.5)
-		End
+		Endif
 		
 		myCanvas.Flush
-		Return(0)		
+		Return 0		
 	End
 	
 	
 	Method OnSuspend:Int()
 		Print "BouncyAliens: OnSuspend"
 		paused=True
-		Return(0)
+		Return 0
 	End
 
 
 	Method OnResume:Int()
 		Print "BouncyAliens: OnResume"
 		paused=False
-		Return(0)
+		Return 0
 	End
 	
 	
 	Method OnClose:Int()
 		Print "BouncyAliens: OnClose"
 		Super.OnClose()
-		Return(0)
+		Return 0
 	End
 	
 End
@@ -214,5 +212,5 @@ End
 
 Function Main:Int()
 	New MyApp
-	Return(0)	
+	Return 0	
 End
