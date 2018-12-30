@@ -4,17 +4,30 @@ Ted, a simple text editor/IDE.
 Copyright 2012, Blitz Research Ltd.
 
 See LICENSE.TXT for licensing terms.
+
+Change Log
+--------------------------------------------------------------------------------
+2018-07-23 - dawlane
+		Update Ted to use QtWebEngine and QtWebEnginePage and minor fixes.
+		Should now build with later versions of Qt.
 */
 
 #ifndef STD_H
 #define STD_H
 
 #include <QtGui/QtGui>
-#if QT_VERSION>=0x50000
+// DAWLANE Qt 5.6+ supported
+#if QT_VERSION>0x050501
+#include <QtWidgets/QtWidgets>
+#include <QWebEngineView>
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
+#else
+#if QT_VERSION>=0x050001 || QT_VERSION<=0x050501
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
 #else
 #include <QtWebKit/QWebView>
+#endif
 #endif
 
 static QString textFileTypes=";txt;cerberusdoc;monkeydoc;";
@@ -58,5 +71,7 @@ void replaceTabWidgetWidget( QTabWidget *tabWidget,int index,QWidget *widget );
 
 bool isUrl( const QString &path );
 bool isImageFile(const QString &path);
+bool isAudioFile(const QString &path);
+bool isDocFile(const QString &path);
 
 #endif // STD_H

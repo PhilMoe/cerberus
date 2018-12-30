@@ -30,7 +30,7 @@ class Process : public QObject{
     Q_OBJECT
 
 public:
-    Process( QObject *parent=0 );
+    Process( QObject *parent=nullptr );
     ~Process();
 
     bool start( const QString &cmd );

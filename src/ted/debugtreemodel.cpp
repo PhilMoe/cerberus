@@ -11,7 +11,7 @@ See LICENSE.TXT for licensing terms.
 
 class DebugItem : public QStandardItem{
 public:
-    DebugItem():_type(-1),_addr(0),_expanded( false ){
+    DebugItem():_type(-1),_addr(nullptr),_expanded( false ){
         setEditable( false );
     }
 
@@ -38,7 +38,7 @@ public:
     void update( const QString &ctext ){
         QString text=ctext;
         _type=0;
-        _addr=0;
+        _addr=nullptr;
         _info="";
         if( text.startsWith("(") ){
            _type=0;
@@ -80,7 +80,7 @@ void DebugTreeModel::stop(){
 
     //build callstack...
     //
-    DebugItem *func=0;
+    DebugItem *func=nullptr;
     int n_funcs=0,n_vars=0;
 
     QStack<DebugItem*> objs;
@@ -107,7 +107,7 @@ void DebugTreeModel::stop(){
             }
             item->update( text );
 
-            if( item->type()==3 && item->address()!=0 && item->expanded() ){
+            if( item->type()==3 && item->address()!=nullptr && item->expanded() ){
                 objs.push( item );
             }else{
                 item->setRowCount(0);
@@ -140,7 +140,7 @@ void DebugTreeModel::stop(){
 
             child->update( text );
 
-            if( child->type()==2 && child->address()!=0 && child->expanded() ){
+            if( child->type()==2 && child->address()!=nullptr && child->expanded() ){
                 objs.push( child );
             }else{
                 child->setRowCount(0);
@@ -211,7 +211,7 @@ bool DebugTreeModel::canFetchMore( const QModelIndex &parent )const{
 
     if( DebugItem *item=dynamic_cast<DebugItem*>( itemFromIndex( parent ) ) ){
 
-        return item->type()==3 && item->address()!=0 && !item->expanded();
+        return item->type()==3 && item->address()!=nullptr && !item->expanded();
     }
 
     return false;

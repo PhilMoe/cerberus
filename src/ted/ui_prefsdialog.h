@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'prefsdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.9.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -557,66 +557,66 @@ public:
 
     void retranslateUi(QDialog *PrefsDialog)
     {
-        PrefsDialog->setWindowTitle(QApplication::translate("PrefsDialog", "IDE Options", 0));
-        grpUI->setTitle(QApplication::translate("PrefsDialog", "Theme", 0));
-        themeLabel->setText(QApplication::translate("PrefsDialog", "UI Theme", 0));
+        PrefsDialog->setWindowTitle(QApplication::translate("PrefsDialog", "IDE Options", Q_NULLPTR));
+        grpUI->setTitle(QApplication::translate("PrefsDialog", "Theme", Q_NULLPTR));
+        themeLabel->setText(QApplication::translate("PrefsDialog", "UI Theme", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        themeWidget->setToolTip(QApplication::translate("PrefsDialog", "Sets the UI theme", 0));
+        themeWidget->setToolTip(QApplication::translate("PrefsDialog", "Sets the UI theme", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        console1ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#1", 0));
-        console2ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#2", 0));
-        console3ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#3", 0));
-        lineNumberColorLabel->setText(QApplication::translate("PrefsDialog", "Line numbers", 0));
-        grpOptions->setTitle(QApplication::translate("PrefsDialog", "Code Editor Options", 0));
-        familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", 0));
-        pointSizeLabel->setText(QApplication::translate("PrefsDialog", "Font Size", 0));
-        tabSizeLabel_2->setText(QApplication::translate("PrefsDialog", "Tab size", 0));
-        tabs4spacesLabel->setText(QApplication::translate("PrefsDialog", "Tabs or Spaces", 0));
+        console1ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#1", Q_NULLPTR));
+        console2ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#2", Q_NULLPTR));
+        console3ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#3", Q_NULLPTR));
+        lineNumberColorLabel->setText(QApplication::translate("PrefsDialog", "Line numbers", Q_NULLPTR));
+        grpOptions->setTitle(QApplication::translate("PrefsDialog", "Code Editor Options", Q_NULLPTR));
+        familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", Q_NULLPTR));
+        pointSizeLabel->setText(QApplication::translate("PrefsDialog", "Font Size", Q_NULLPTR));
+        tabSizeLabel_2->setText(QApplication::translate("PrefsDialog", "Tab size", Q_NULLPTR));
+        tabs4spacesLabel->setText(QApplication::translate("PrefsDialog", "Tabs or Spaces", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        tabs4spacesWidget->setToolTip(QApplication::translate("PrefsDialog", "Uses tabs instead of spaces", 0));
+        tabs4spacesWidget->setToolTip(QApplication::translate("PrefsDialog", "Uses tabs instead of spaces", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         tabs4spacesWidget->setText(QString());
-        smoothFontsLabel->setText(QApplication::translate("PrefsDialog", "Smooth fonts", 0));
-        highlightLabel->setText(QApplication::translate("PrefsDialog", "Highlight:", 0));
-        highlightCaretRowWidget->setText(QApplication::translate("PrefsDialog", "Caret Row", 0));
-        highlightCaretWordWidget->setText(QApplication::translate("PrefsDialog", "Word under caret", 0));
-        showLineNumbersLabel->setText(QApplication::translate("PrefsDialog", "Show line numbers", 0));
+        smoothFontsLabel->setText(QApplication::translate("PrefsDialog", "Smooth fonts", Q_NULLPTR));
+        highlightLabel->setText(QApplication::translate("PrefsDialog", "Highlight:", Q_NULLPTR));
+        highlightCaretRowWidget->setText(QApplication::translate("PrefsDialog", "Caret Row", Q_NULLPTR));
+        highlightCaretWordWidget->setText(QApplication::translate("PrefsDialog", "Word under caret", Q_NULLPTR));
+        showLineNumbersLabel->setText(QApplication::translate("PrefsDialog", "Show line numbers", Q_NULLPTR));
         showLineNumbersWidget->setText(QString());
-        sortCodeBrowserLabel->setText(QApplication::translate("PrefsDialog", "Sort Code Browser", 0));
+        sortCodeBrowserLabel->setText(QApplication::translate("PrefsDialog", "Sort Code Browser", Q_NULLPTR));
         sortCodeBrowserWidget->setText(QString());
-        highlightBracketsWidget->setText(QApplication::translate("PrefsDialog", "Matching brackets", 0));
-        capitalizeAPILabel->setText(QApplication::translate("PrefsDialog", "Capitalize API", 0));
+        highlightBracketsWidget->setText(QApplication::translate("PrefsDialog", "Matching brackets", Q_NULLPTR));
+        capitalizeAPILabel->setText(QApplication::translate("PrefsDialog", "Capitalize API", Q_NULLPTR));
         capitalizeAPIWidget->setText(QString());
-        grpColors->setTitle(QApplication::translate("PrefsDialog", "Code Editor Colors", 0));
-        backgroundColorLabel->setText(QApplication::translate("PrefsDialog", "Background", 0));
-        defaultColorLabel->setText(QApplication::translate("PrefsDialog", "Default", 0));
-        highlightColorLabel->setText(QApplication::translate("PrefsDialog", "Highlight", 0));
-        numbersColorLabel->setText(QApplication::translate("PrefsDialog", "Numbers", 0));
-        stringsColorLabel->setText(QApplication::translate("PrefsDialog", "Strings", 0));
-        keywordsColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords", 0));
+        grpColors->setTitle(QApplication::translate("PrefsDialog", "Code Editor Colors", Q_NULLPTR));
+        backgroundColorLabel->setText(QApplication::translate("PrefsDialog", "Background", Q_NULLPTR));
+        defaultColorLabel->setText(QApplication::translate("PrefsDialog", "Default", Q_NULLPTR));
+        highlightColorLabel->setText(QApplication::translate("PrefsDialog", "Highlight", Q_NULLPTR));
+        numbersColorLabel->setText(QApplication::translate("PrefsDialog", "Numbers", Q_NULLPTR));
+        stringsColorLabel->setText(QApplication::translate("PrefsDialog", "Strings", Q_NULLPTR));
+        keywordsColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        keywordsColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the CX language keywords", 0));
+        keywordsColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the CX language keywords", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        keywords2ColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords2", 0));
+        keywords2ColorLabel->setText(QApplication::translate("PrefsDialog", "Keywords2", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        keywords2ColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the API", 0));
+        keywords2ColorWidget->setToolTip(QApplication::translate("PrefsDialog", "Color of the API", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        commentsColorLabel->setText(QApplication::translate("PrefsDialog", "Comments", 0));
-        identifiersColorLabel->setText(QApplication::translate("PrefsDialog", "Identifiers", 0));
-        grpTools->setTitle(QApplication::translate("PrefsDialog", "Tool Paths", 0));
-        cerberusLabel->setText(QApplication::translate("PrefsDialog", "Cerberus", 0));
-        blitzMaxLabel->setText(QApplication::translate("PrefsDialog", "BlitzMax", 0));
-        cerberusPathButton->setText(QApplication::translate("PrefsDialog", "...", 0));
-        blitzmaxPathButton->setText(QApplication::translate("PrefsDialog", "...", 0));
+        commentsColorLabel->setText(QApplication::translate("PrefsDialog", "Comments", Q_NULLPTR));
+        identifiersColorLabel->setText(QApplication::translate("PrefsDialog", "Identifiers", Q_NULLPTR));
+        grpTools->setTitle(QApplication::translate("PrefsDialog", "Tool Paths", Q_NULLPTR));
+        cerberusLabel->setText(QApplication::translate("PrefsDialog", "Cerberus", Q_NULLPTR));
+        blitzMaxLabel->setText(QApplication::translate("PrefsDialog", "BlitzMax", Q_NULLPTR));
+        cerberusPathButton->setText(QApplication::translate("PrefsDialog", "...", Q_NULLPTR));
+        blitzmaxPathButton->setText(QApplication::translate("PrefsDialog", "...", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnLoadColors->setToolTip(QApplication::translate("PrefsDialog", "Load the editor colors from the theme", 0));
+        btnLoadColors->setToolTip(QApplication::translate("PrefsDialog", "Load the editor colors from the theme", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnLoadColors->setText(QApplication::translate("PrefsDialog", "Load Colors", 0));
+        btnLoadColors->setText(QApplication::translate("PrefsDialog", "Load Colors", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        btnSaveColors->setToolTip(QApplication::translate("PrefsDialog", "Save the editor colors with the theme", 0));
+        btnSaveColors->setToolTip(QApplication::translate("PrefsDialog", "Save the editor colors with the theme", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        btnSaveColors->setText(QApplication::translate("PrefsDialog", "Save Colors", 0));
-        okayButton->setText(QApplication::translate("PrefsDialog", "Okay", 0));
+        btnSaveColors->setText(QApplication::translate("PrefsDialog", "Save Colors", Q_NULLPTR));
+        okayButton->setText(QApplication::translate("PrefsDialog", "Okay", Q_NULLPTR));
     } // retranslateUi
 
 };

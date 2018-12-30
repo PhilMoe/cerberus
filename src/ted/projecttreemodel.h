@@ -16,7 +16,7 @@ class ProjectTreeModel : public QFileSystemModel{
 
 public:
 
-    ProjectTreeModel( QObject *parent=0 );
+    ProjectTreeModel( QObject *parent=nullptr );
 
     bool addProject( const QString &dir );
     void removeProject( const QString &dir );

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.9.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -117,6 +117,7 @@ public:
         QFont font;
         font.setStyleStrategy(QFont::PreferDefault);
         MainWindow->setFont(font);
+        MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         MainWindow->setStyleSheet(QStringLiteral(""));
         MainWindow->setDocumentMode(false);
         MainWindow->setDockOptions(QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
@@ -307,6 +308,7 @@ public:
         actionToggle_Fullscreen->setObjectName(QStringLiteral("actionToggle_Fullscreen"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setContextMenuPolicy(Qt::DefaultContextMenu);
         gridLayout_3 = new QGridLayout(centralWidget);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -314,6 +316,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         fileToolBar = new QToolBar(MainWindow);
         fileToolBar->setObjectName(QStringLiteral("fileToolBar"));
+        fileToolBar->setContextMenuPolicy(Qt::DefaultContextMenu);
         fileToolBar->setIconSize(QSize(24, 24));
         MainWindow->addToolBar(Qt::TopToolBarArea, fileToolBar);
         statusBar = new QStatusBar(MainWindow);
@@ -321,19 +324,24 @@ public:
         MainWindow->setStatusBar(statusBar);
         editToolBar = new QToolBar(MainWindow);
         editToolBar->setObjectName(QStringLiteral("editToolBar"));
+        editToolBar->setContextMenuPolicy(Qt::DefaultContextMenu);
         MainWindow->addToolBar(Qt::TopToolBarArea, editToolBar);
         buildToolBar = new QToolBar(MainWindow);
         buildToolBar->setObjectName(QStringLiteral("buildToolBar"));
+        buildToolBar->setContextMenuPolicy(Qt::DefaultContextMenu);
         MainWindow->addToolBar(Qt::TopToolBarArea, buildToolBar);
         helpToolBar = new QToolBar(MainWindow);
         helpToolBar->setObjectName(QStringLiteral("helpToolBar"));
+        helpToolBar->setContextMenuPolicy(Qt::DefaultContextMenu);
         MainWindow->addToolBar(Qt::TopToolBarArea, helpToolBar);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 996, 21));
+        menuBar->setGeometry(QRect(0, 0, 996, 22));
+        menuBar->setContextMenuPolicy(Qt::CustomContextMenu);
         menuBar->setStyleSheet(QStringLiteral(""));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setContextMenuPolicy(Qt::DefaultContextMenu);
         menuFile->setStyleSheet(QStringLiteral(""));
         menuRecent_Files = new QMenu(menuFile);
         menuRecent_Files->setObjectName(QStringLiteral("menuRecent_Files"));
@@ -514,128 +522,183 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Big Ted", 0));
-        actionOpen->setText(QApplication::translate("MainWindow", "Open...", 0));
-        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0));
-        actionSave->setText(QApplication::translate("MainWindow", "Save", 0));
-        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
-        actionSave_All->setText(QApplication::translate("MainWindow", "Save All", 0));
-        actionSave_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+S", 0));
-        actionClose->setText(QApplication::translate("MainWindow", "Close", 0));
-        actionClose_All->setText(QApplication::translate("MainWindow", "Close All", 0));
-        actionFileQuit->setText(QApplication::translate("MainWindow", "Quit", 0));
-        actionBuildRun->setText(QApplication::translate("MainWindow", "Build and Run", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Big Ted", Q_NULLPTR));
+        actionOpen->setText(QApplication::translate("MainWindow", "Open...", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionSave->setText(QApplication::translate("MainWindow", "Save", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionSave_All->setText(QApplication::translate("MainWindow", "Save All", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionSave_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+S", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionClose->setText(QApplication::translate("MainWindow", "Close", Q_NULLPTR));
+        actionClose_All->setText(QApplication::translate("MainWindow", "Close All", Q_NULLPTR));
+        actionFileQuit->setText(QApplication::translate("MainWindow", "Quit", Q_NULLPTR));
+        actionBuildRun->setText(QApplication::translate("MainWindow", "Build and Run", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionBuildRun->setToolTip(QApplication::translate("MainWindow", "Build/Run", 0));
+        actionBuildRun->setToolTip(QApplication::translate("MainWindow", "Build/Run", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionBuildRun->setShortcut(QApplication::translate("MainWindow", "F5", 0));
-        actionNew->setText(QApplication::translate("MainWindow", "New...", 0));
-        actionPrefs->setText(QApplication::translate("MainWindow", "Options...", 0));
-        actionSave_As->setText(QApplication::translate("MainWindow", "Save As...", 0));
-        actionStep->setText(QApplication::translate("MainWindow", "Step", 0));
-        actionKill->setText(QApplication::translate("MainWindow", "Kill", 0));
-        actionKill->setShortcut(QApplication::translate("MainWindow", "Shift+F5", 0));
-        actionStep_In->setText(QApplication::translate("MainWindow", "Step In", 0));
-        actionStep_Out->setText(QApplication::translate("MainWindow", "Step out", 0));
-        actionEditFind->setText(QApplication::translate("MainWindow", "Find...", 0));
-        actionEditFind->setShortcut(QApplication::translate("MainWindow", "Ctrl+F", 0));
-        actionEditUndo->setText(QApplication::translate("MainWindow", "Undo", 0));
-        actionEditUndo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0));
-        actionEditRedo->setText(QApplication::translate("MainWindow", "Redo", 0));
-        actionEditRedo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Y", 0));
-        actionEditCut->setText(QApplication::translate("MainWindow", "Cut", 0));
-        actionEditCut->setShortcut(QApplication::translate("MainWindow", "Ctrl+X", 0));
-        actionEditCopy->setText(QApplication::translate("MainWindow", "Copy", 0));
-        actionEditCopy->setShortcut(QApplication::translate("MainWindow", "Ctrl+C", 0));
-        actionEditPaste->setText(QApplication::translate("MainWindow", "Paste", 0));
-        actionEditPaste->setShortcut(QApplication::translate("MainWindow", "Ctrl+V", 0));
-        actionEditDelete->setText(QApplication::translate("MainWindow", "Delete", 0));
-        actionEditSelectAll->setText(QApplication::translate("MainWindow", "Select All", 0));
-        actionEditSelectAll->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0));
-        actionEditGoto->setText(QApplication::translate("MainWindow", "Go to Line...", 0));
-        actionEditGoto->setShortcut(QApplication::translate("MainWindow", "Ctrl+G", 0));
-        actionHelpHome->setText(QApplication::translate("MainWindow", "Home", 0));
-        actionHelpBack->setText(QApplication::translate("MainWindow", "Back", 0));
-        actionHelpForward->setText(QApplication::translate("MainWindow", "Forward", 0));
-        actionViewFile->setText(QApplication::translate("MainWindow", "File", 0));
-        actionViewEdit->setText(QApplication::translate("MainWindow", "Edit", 0));
-        actionViewBuild->setText(QApplication::translate("MainWindow", "Build", 0));
-        actionViewHelp->setText(QApplication::translate("MainWindow", "Help", 0));
-        actionViewBrowser->setText(QApplication::translate("MainWindow", "Browser", 0));
-        actionViewBrowser->setShortcut(QApplication::translate("MainWindow", "Shift+Esc", 0));
-        actionViewConsole->setText(QApplication::translate("MainWindow", "Console", 0));
-        actionViewConsole->setShortcut(QApplication::translate("MainWindow", "Esc", 0));
-        actionAbout->setText(QApplication::translate("MainWindow", "About...", 0));
-        actionBuildTarget->setText(QApplication::translate("MainWindow", "Build Target...", 0));
+#ifndef QT_NO_SHORTCUT
+        actionBuildRun->setShortcut(QApplication::translate("MainWindow", "F5", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionNew->setText(QApplication::translate("MainWindow", "New...", Q_NULLPTR));
+        actionPrefs->setText(QApplication::translate("MainWindow", "Options...", Q_NULLPTR));
+        actionSave_As->setText(QApplication::translate("MainWindow", "Save As...", Q_NULLPTR));
+        actionStep->setText(QApplication::translate("MainWindow", "Step", Q_NULLPTR));
+        actionKill->setText(QApplication::translate("MainWindow", "Kill", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionKill->setShortcut(QApplication::translate("MainWindow", "Shift+F5", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionStep_In->setText(QApplication::translate("MainWindow", "Step In", Q_NULLPTR));
+        actionStep_Out->setText(QApplication::translate("MainWindow", "Step out", Q_NULLPTR));
+        actionEditFind->setText(QApplication::translate("MainWindow", "Find...", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditFind->setShortcut(QApplication::translate("MainWindow", "Ctrl+F", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditUndo->setText(QApplication::translate("MainWindow", "Undo", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditUndo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditRedo->setText(QApplication::translate("MainWindow", "Redo", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditRedo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Y", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditCut->setText(QApplication::translate("MainWindow", "Cut", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditCut->setShortcut(QApplication::translate("MainWindow", "Ctrl+X", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditCopy->setText(QApplication::translate("MainWindow", "Copy", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditCopy->setShortcut(QApplication::translate("MainWindow", "Ctrl+C", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditPaste->setText(QApplication::translate("MainWindow", "Paste", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditPaste->setShortcut(QApplication::translate("MainWindow", "Ctrl+V", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditDelete->setText(QApplication::translate("MainWindow", "Delete", Q_NULLPTR));
+        actionEditSelectAll->setText(QApplication::translate("MainWindow", "Select All", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditSelectAll->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditGoto->setText(QApplication::translate("MainWindow", "Go to Line...", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditGoto->setShortcut(QApplication::translate("MainWindow", "Ctrl+G", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionHelpHome->setText(QApplication::translate("MainWindow", "Home", Q_NULLPTR));
+        actionHelpBack->setText(QApplication::translate("MainWindow", "Back", Q_NULLPTR));
+        actionHelpForward->setText(QApplication::translate("MainWindow", "Forward", Q_NULLPTR));
+        actionViewFile->setText(QApplication::translate("MainWindow", "File", Q_NULLPTR));
+        actionViewEdit->setText(QApplication::translate("MainWindow", "Edit", Q_NULLPTR));
+        actionViewBuild->setText(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
+        actionViewHelp->setText(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
+        actionViewBrowser->setText(QApplication::translate("MainWindow", "Browser", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionViewBrowser->setShortcut(QApplication::translate("MainWindow", "Shift+Esc", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionViewConsole->setText(QApplication::translate("MainWindow", "Console", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionViewConsole->setShortcut(QApplication::translate("MainWindow", "Esc", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionAbout->setText(QApplication::translate("MainWindow", "About...", Q_NULLPTR));
+        actionBuildTarget->setText(QApplication::translate("MainWindow", "Build Target...", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionBuildTarget->setToolTip(QApplication::translate("MainWindow", "Build Target", 0));
+        actionBuildTarget->setToolTip(QApplication::translate("MainWindow", "Build Target", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionBuildConfig->setText(QApplication::translate("MainWindow", "Build Config...", 0));
+        actionBuildConfig->setText(QApplication::translate("MainWindow", "Build Config...", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionBuildConfig->setToolTip(QApplication::translate("MainWindow", "Build Config", 0));
+        actionBuildConfig->setToolTip(QApplication::translate("MainWindow", "Build Config", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionOpenProject->setText(QApplication::translate("MainWindow", "Open project...", 0));
-        actionDeleteFile->setText(QApplication::translate("MainWindow", "Delete...", 0));
-        actionRenameFile->setText(QApplication::translate("MainWindow", "Rename...", 0));
-        actionCloseProject->setText(QApplication::translate("MainWindow", "Close Project", 0));
-        actionSetActiveProject->setText(QApplication::translate("MainWindow", "Set as Active Project", 0));
-        actionLock_Build_File->setText(QApplication::translate("MainWindow", "Lock Build File", 0));
-        actionLock_Build_File->setShortcut(QApplication::translate("MainWindow", "Ctrl+L", 0));
-        actionUnlock_Build_File->setText(QApplication::translate("MainWindow", "Unlock Build File", 0));
-        actionUnlock_Build_File->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+L", 0));
-        action_empty->setText(QApplication::translate("MainWindow", "<empty>", 0));
-        actionFileNext->setText(QApplication::translate("MainWindow", "Next File", 0));
-        actionFilePrevious->setText(QApplication::translate("MainWindow", "Previous File", 0));
-        actionEditFindNext->setText(QApplication::translate("MainWindow", "Find Next", 0));
-        actionEditFindNext->setShortcut(QApplication::translate("MainWindow", "F3", 0));
-        actionBuildBuild->setText(QApplication::translate("MainWindow", "Build", 0));
-        actionBuildBuild->setShortcut(QApplication::translate("MainWindow", "F7", 0));
-        actionEditFindInFiles->setText(QApplication::translate("MainWindow", "Find in files...", 0));
+        actionOpenProject->setText(QApplication::translate("MainWindow", "Open project...", Q_NULLPTR));
+        actionDeleteFile->setText(QApplication::translate("MainWindow", "Delete...", Q_NULLPTR));
+        actionRenameFile->setText(QApplication::translate("MainWindow", "Rename...", Q_NULLPTR));
+        actionCloseProject->setText(QApplication::translate("MainWindow", "Close Project", Q_NULLPTR));
+        actionSetActiveProject->setText(QApplication::translate("MainWindow", "Set as Active Project", Q_NULLPTR));
+        actionLock_Build_File->setText(QApplication::translate("MainWindow", "Lock Build File", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionLock_Build_File->setShortcut(QApplication::translate("MainWindow", "Ctrl+L", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionUnlock_Build_File->setText(QApplication::translate("MainWindow", "Unlock Build File", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionUnlock_Build_File->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+L", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        action_empty->setText(QApplication::translate("MainWindow", "<empty>", Q_NULLPTR));
+        actionFileNext->setText(QApplication::translate("MainWindow", "Next File", Q_NULLPTR));
+        actionFilePrevious->setText(QApplication::translate("MainWindow", "Previous File", Q_NULLPTR));
+        actionEditFindNext->setText(QApplication::translate("MainWindow", "Find Next", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditFindNext->setShortcut(QApplication::translate("MainWindow", "F3", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionBuildBuild->setText(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionBuildBuild->setShortcut(QApplication::translate("MainWindow", "F7", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionEditFindInFiles->setText(QApplication::translate("MainWindow", "Find in files...", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionEditFindInFiles->setToolTip(QApplication::translate("MainWindow", "Find in files", 0));
+        actionEditFindInFiles->setToolTip(QApplication::translate("MainWindow", "Find in files", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionNewFile->setText(QApplication::translate("MainWindow", "New File...", 0));
-        actionNewFolder->setText(QApplication::translate("MainWindow", "New Folder...", 0));
-        actionOpen_on_Desktop->setText(QApplication::translate("MainWindow", "Open on Desktop", 0));
-        actionOpen_in_Help->setText(QApplication::translate("MainWindow", "Open in Help View", 0));
-        actionHelpQuickHelp->setText(QApplication::translate("MainWindow", "Quick Help", 0));
-        actionHelpQuickHelp->setShortcut(QApplication::translate("MainWindow", "F1", 0));
-        actionBuildCheck->setText(QApplication::translate("MainWindow", "Check Source", 0));
+        actionNewFile->setText(QApplication::translate("MainWindow", "New File...", Q_NULLPTR));
+        actionNewFolder->setText(QApplication::translate("MainWindow", "New Folder...", Q_NULLPTR));
+        actionOpen_on_Desktop->setText(QApplication::translate("MainWindow", "Open on Desktop", Q_NULLPTR));
+        actionOpen_in_Help->setText(QApplication::translate("MainWindow", "Open in Help View", Q_NULLPTR));
+        actionHelpQuickHelp->setText(QApplication::translate("MainWindow", "Quick Help", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionHelpQuickHelp->setShortcut(QApplication::translate("MainWindow", "F1", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionBuildCheck->setText(QApplication::translate("MainWindow", "Check Source", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionBuildCheck->setToolTip(QApplication::translate("MainWindow", "Check Source", 0));
+        actionBuildCheck->setToolTip(QApplication::translate("MainWindow", "Check Source", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionBuildCheck->setShortcut(QApplication::translate("MainWindow", "F6", 0));
-        actionBuildUpdate->setText(QApplication::translate("MainWindow", "Update Target Project", 0));
+#ifndef QT_NO_SHORTCUT
+        actionBuildCheck->setShortcut(QApplication::translate("MainWindow", "F6", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionBuildUpdate->setText(QApplication::translate("MainWindow", "Update Target Project", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
-        actionBuildUpdate->setToolTip(QApplication::translate("MainWindow", "Update Target Project", 0));
+        actionBuildUpdate->setToolTip(QApplication::translate("MainWindow", "Update Target Project", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionBuildUpdate->setShortcut(QApplication::translate("MainWindow", "F8", 0));
-        actionClose_Others->setText(QApplication::translate("MainWindow", "Close Others", 0));
-        actionHelpRebuild->setText(QApplication::translate("MainWindow", "Rebuild Help", 0));
-        actionEditUn_Comment_block->setText(QApplication::translate("MainWindow", "Un/Comment block", 0));
-        actionEditUn_Comment_block->setShortcut(QApplication::translate("MainWindow", "Ctrl+E", 0));
-        actionNew_from_template->setText(QApplication::translate("MainWindow", "New from template", 0));
-        actionToggleBookmark->setText(QApplication::translate("MainWindow", "Toggle bookmark", 0));
-        actionToggleBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+M", 0));
-        actionNextBookmark->setText(QApplication::translate("MainWindow", "Next bookmark", 0));
-        actionNextBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+.", 0));
-        actionPreviousBookmark->setText(QApplication::translate("MainWindow", "Previous bookmark", 0));
-        actionPreviousBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0));
-        actionHelpCerberusHomepage->setText(QApplication::translate("MainWindow", "Cerberus X Homepage", 0));
-        actionToggle_Fullscreen->setText(QApplication::translate("MainWindow", "Toggle Fullscreen", 0));
-        actionToggle_Fullscreen->setShortcut(QApplication::translate("MainWindow", "F11", 0));
-        editToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
-        buildToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
-        helpToolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
-        menuRecent_Files->setTitle(QApplication::translate("MainWindow", "Recent Files...", 0));
-        menuNewTemplate->setTitle(QApplication::translate("MainWindow", "New from template", 0));
-        menuBuild->setTitle(QApplication::translate("MainWindow", "Build", 0));
-        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0));
-        menuView->setTitle(QApplication::translate("MainWindow", "View", 0));
-        menuToolbars->setTitle(QApplication::translate("MainWindow", "Toolbars", 0));
-        menuWindows->setTitle(QApplication::translate("MainWindow", "Windows", 0));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0));
+#ifndef QT_NO_SHORTCUT
+        actionBuildUpdate->setShortcut(QApplication::translate("MainWindow", "F8", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionClose_Others->setText(QApplication::translate("MainWindow", "Close Others", Q_NULLPTR));
+        actionHelpRebuild->setText(QApplication::translate("MainWindow", "Rebuild Help", Q_NULLPTR));
+        actionEditUn_Comment_block->setText(QApplication::translate("MainWindow", "Un/Comment block", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionEditUn_Comment_block->setShortcut(QApplication::translate("MainWindow", "Ctrl+E", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionNew_from_template->setText(QApplication::translate("MainWindow", "New from template", Q_NULLPTR));
+        actionToggleBookmark->setText(QApplication::translate("MainWindow", "Toggle bookmark", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionToggleBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+M", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionNextBookmark->setText(QApplication::translate("MainWindow", "Next bookmark", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionNextBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+.", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionPreviousBookmark->setText(QApplication::translate("MainWindow", "Previous bookmark", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionPreviousBookmark->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        actionHelpCerberusHomepage->setText(QApplication::translate("MainWindow", "Cerberus X Homepage", Q_NULLPTR));
+        actionToggle_Fullscreen->setText(QApplication::translate("MainWindow", "Toggle Fullscreen", Q_NULLPTR));
+#ifndef QT_NO_SHORTCUT
+        actionToggle_Fullscreen->setShortcut(QApplication::translate("MainWindow", "F11", Q_NULLPTR));
+#endif // QT_NO_SHORTCUT
+        fileToolBar->setWindowTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
+        editToolBar->setWindowTitle(QApplication::translate("MainWindow", "Edit", Q_NULLPTR));
+        buildToolBar->setWindowTitle(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
+        helpToolBar->setWindowTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
+        menuRecent_Files->setTitle(QApplication::translate("MainWindow", "Recent Files...", Q_NULLPTR));
+        menuNewTemplate->setTitle(QApplication::translate("MainWindow", "New from template", Q_NULLPTR));
+        menuBuild->setTitle(QApplication::translate("MainWindow", "Build", Q_NULLPTR));
+        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", Q_NULLPTR));
+        menuView->setTitle(QApplication::translate("MainWindow", "View", Q_NULLPTR));
+        menuToolbars->setTitle(QApplication::translate("MainWindow", "Toolbars", Q_NULLPTR));
+        menuWindows->setTitle(QApplication::translate("MainWindow", "Windows", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

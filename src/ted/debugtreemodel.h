@@ -17,7 +17,7 @@ class DebugTreeModel : public QStandardItemModel{
     Q_OBJECT
 
 public:
-    DebugTreeModel( Process *proc,QObject *parent=0 );
+    DebugTreeModel( Process *proc,QObject *parent=nullptr );
 
     void stop();
 
