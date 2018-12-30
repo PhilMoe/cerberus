@@ -159,7 +159,7 @@ bool Process::start( const QString &cmd ){
 #ifdef Q_OS_WIN
 
     HANDLE in[2],out[2],err[2];
-    SECURITY_ATTRIBUTES sa={sizeof(sa),0,1};
+    SECURITY_ATTRIBUTES sa={sizeof(sa),nullptr,1};
     CreatePipe( &in[0],&in[1],&sa,0 );
     CreatePipe( &out[0],&out[1],&sa,0 );
     CreatePipe( &err[0],&err[1],&sa,0 );
@@ -171,7 +171,7 @@ bool Process::start( const QString &cmd ){
     si.hStdError=err[1];
     si.wShowWindow=SW_HIDE;
 
-    PROCESS_INFORMATION pi={0};
+    PROCESS_INFORMATION pi={nullptr};
 
     int res=CreateProcessW( 0,(LPWSTR)cmd.toStdWString().c_str(),0,0,-1,CREATE_NEW_PROCESS_GROUP,0,0,&si,&pi );
 
@@ -308,7 +308,7 @@ bool Process::writeLine( const QString &line ){
     QString buf=line+'\n';
 #ifdef Q_OS_WIN
     DWORD n=0;
-    return WriteFile( _in,buf.toStdString().c_str(),buf.length(),&n,0 ) && n==buf.length();
+    return WriteFile( _in,buf.toStdString().c_str(),buf.length(),&n,nullptr ) && n==buf.length();
 #else
     return write( _in,buf.toStdString().c_str(),buf.length() )==buf.length();
 #endif
@@ -400,7 +400,7 @@ int LineReader::readChar(){
     unsigned char c;
 #ifdef Q_OS_WIN
     DWORD n=0;
-    if( ReadFile( _fd,&c,1,&n,0 ) && n==1 ) return c;
+    if( ReadFile( _fd,&c,1,&n,nullptr ) && n==1 ) return c;
 #else
     if( read( _fd,&c,1 )==1 ) return c;
 #endif

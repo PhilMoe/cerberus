@@ -3942,7 +3942,7 @@ String c_Makedocs::p_BuildDocLink(c_DocDecl* t_pDecl,c_DocDecl* t_pScope){
 void c_Makedocs::p_WriteDeclFiles(){
 	p_ClearErrInfo();
 	m_curdecl=m_rootmodules;
-	c_DocDeclStack* t_alldecls=m_rootmodules->p_GetChilds2(0,true);
+	c_DocDeclStack* t_alldecls=m_rootdecl->p_GetChilds2(0,true);
 	String t_txt=String();
 	c_StringMap4* t_idx=(new c_StringMap4)->m_new();
 	c_Enumerator2* t_=t_alldecls->p_ObjectEnumerator();
@@ -3955,6 +3955,12 @@ void c_Makedocs::p_WriteDeclFiles(){
 			}else{
 				String t_str=String(L"Index.html#",11)+t_d->m_ident;
 				t_idx->p_Set2(t_d->m_ident,t_str);
+			}
+		}else{
+			if(t_8==902){
+				if(t_d->p_GetTextOfChild(201)==String(L"Programming/Keywords/",21)){
+					t_idx->p_Add5(t_d->m_ident,p_BuildDocLink(t_d,0));
+				}
 			}
 		}
 	}

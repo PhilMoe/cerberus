@@ -83,13 +83,38 @@ bool isUrl( const QString &path ){
     return path.startsWith( "file:" ) || path.startsWith( "http:" ) || path.startsWith( "https:" );
 }
 
-
+// TODO: Use a preference dialog for additional file extentions.
 bool isImageFile(const QString &path)
+{
+    //TODO: Add more image file extentions
+    static QStringList list;
+    if (list.isEmpty()) {
+        list<<"jpg"<<"jpeg"<<"png"<<"ico"<<"bmp"<<"gif"<<"tif"<<"tiff"<<"psd"<<"xcf"<<"ico";
+        list<<"pnm"<<"pgm"<<"xpm"<<"xbm"<<"tga"<<"icns"<<"icon";
+    }
+    QString ext = extractExt(path.toLower());
+    return list.contains(ext);
+}
+
+// TODO: Use a preference dialog for additional file extentions.
+bool isAudioFile(const QString &path)
 {
     static QStringList list;
     if (list.isEmpty()) {
-        list<<"jpg"<<"jpeg"<<"png"<<"ico"<<"bmp"<<"gif";
+        // mmpz=lmms, flp=Fruity loops/FL Studio, aup=audacity project, cpw/cbw=CakeWalk, cpr=cubase
+        list<<"wav"<<"ogg"<<"m4a"<<"mp3"<<"wma";
+        list<<"mmpz"<<"flp"<<"aup"<<"cpw"<<"cbw"<<"cpr";
     }
-    QString ext = extractExt(path);
+    QString ext = extractExt(path.toLower());
+    return list.contains(ext);
+}
+
+// TODO: Use a preference dialog for additional file extentions.
+bool isDocFile(const QString &path){
+    static QStringList list;
+    if (list.isEmpty()) {
+        list<<"doc"<<"pdf"<<"docx"<<"odt"<<"rtf";
+    }
+    QString ext = extractExt(path.toLower());
     return list.contains(ext);
 }

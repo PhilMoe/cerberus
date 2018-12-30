@@ -19,7 +19,7 @@ class FindDialog : public QDialog{
     Q_OBJECT
 
 public:
-    FindDialog( QWidget *parent=0 );
+    FindDialog( QWidget *parent=nullptr );
     ~FindDialog();
 
     void readSettings();

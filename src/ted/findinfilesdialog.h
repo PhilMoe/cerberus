@@ -19,7 +19,7 @@ class FindInFilesDialog : public QDialog{
     Q_OBJECT
     
 public:
-    FindInFilesDialog( QWidget *parent=0 );
+    FindInFilesDialog( QWidget *parent=nullptr );
     ~FindInFilesDialog();
 
     void readSettings();

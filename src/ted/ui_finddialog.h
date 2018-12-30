@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'finddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.9.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -133,13 +133,13 @@ public:
 
     void retranslateUi(QDialog *FindDialog)
     {
-        FindDialog->setWindowTitle(QApplication::translate("FindDialog", "Find/Replace", 0));
-        label->setText(QApplication::translate("FindDialog", "Find", 0));
-        label_2->setText(QApplication::translate("FindDialog", "Replace", 0));
-        caseSensitiveLabel->setText(QApplication::translate("FindDialog", "Case sensitive", 0));
-        replaceAll->setText(QApplication::translate("FindDialog", "Replace All", 0));
-        replace->setText(QApplication::translate("FindDialog", "Replace", 0));
-        findNext->setText(QApplication::translate("FindDialog", "Find Next", 0));
+        FindDialog->setWindowTitle(QApplication::translate("FindDialog", "Find/Replace", Q_NULLPTR));
+        label->setText(QApplication::translate("FindDialog", "Find", Q_NULLPTR));
+        label_2->setText(QApplication::translate("FindDialog", "Replace", Q_NULLPTR));
+        caseSensitiveLabel->setText(QApplication::translate("FindDialog", "Case sensitive", Q_NULLPTR));
+        replaceAll->setText(QApplication::translate("FindDialog", "Replace All", Q_NULLPTR));
+        replace->setText(QApplication::translate("FindDialog", "Replace", Q_NULLPTR));
+        findNext->setText(QApplication::translate("FindDialog", "Find Next", Q_NULLPTR));
     } // retranslateUi
 
 };
