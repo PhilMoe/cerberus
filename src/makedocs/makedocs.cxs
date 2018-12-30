@@ -93,6 +93,7 @@ Const PATH_HTML_BASE:String			= "docs/html"
 Const PATH_HTML_DATA:String			= PATH_HTML_BASE + "/data"
 Const PATH_HTML_EXAMPLES:String		= PATH_HTML_BASE + "/examples"
 Const PATH_DOC_BASE:String			= "docs/cerberusdoc"
+Const PATH_DOC_KEYWORDS:String		= "Programming/Keywords/"
 
 ' "doc" name (as displayed in navigation) for...
 Const LOCATION_3RDPARTY:String		= "3rd Party Docs"
@@ -931,7 +932,7 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		ClearErrInfo()
 		curdecl = rootmodules
 		' make stack of ALL decls
-		Local alldecls := rootmodules.GetChilds( 0, True )
+		Local alldecls := rootdecl.GetChilds( 0, True )
 		Local txt:String
 		' make index.txt
 		' index.txt format:
@@ -962,6 +963,12 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 					' duplicates redirect to index #ident
 					Local str := "Index.html#" + d.ident
 					idx.Set( d.ident, str )
+				End
+			' language keywords
+			' (assume they're documented under: Programming/Keywords)
+			Case DECL_DOC
+				If d.GetTextOfChild( DECL_UIDENT_SCOPE ) = PATH_DOC_KEYWORDS Then
+					idx.Add( d.ident, BuildDocLink( d ) )
 				End
 			End
 		Next
