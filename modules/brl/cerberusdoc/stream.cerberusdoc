@@ -73,7 +73,7 @@ Returns the number of bytes actually read. This may be less than @count if an IO
 If @count is non-zero, this method will block until either at least 1 byte is available to be read, an IO error occurs or end-of-file has been reached.
 
 
-# Method ReadAll:Void( buffer:DataBuffer,offset:int,count:int )
+# Method ReadAll:Void( buffer:DataBuffer,offset:Int,count:Int )
 
 Reads @count bytes from the stream into @databuffer, starting at address @offset within the databuffer.
 

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'findinfilesdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.9.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -182,17 +182,17 @@ public:
 
     void retranslateUi(QDialog *FindInFilesDialog)
     {
-        FindInFilesDialog->setWindowTitle(QApplication::translate("FindInFilesDialog", "Find in Files", 0));
-        findLabel->setText(QApplication::translate("FindInFilesDialog", "Find", 0));
-        fileTypesLabel->setText(QApplication::translate("FindInFilesDialog", "File types", 0));
-        directoryLabel->setText(QApplication::translate("FindInFilesDialog", "Directory", 0));
-        caseSensitiveLabel->setText(QApplication::translate("FindInFilesDialog", "Case sensitive", 0));
+        FindInFilesDialog->setWindowTitle(QApplication::translate("FindInFilesDialog", "Find in Files", Q_NULLPTR));
+        findLabel->setText(QApplication::translate("FindInFilesDialog", "Find", Q_NULLPTR));
+        fileTypesLabel->setText(QApplication::translate("FindInFilesDialog", "File types", Q_NULLPTR));
+        directoryLabel->setText(QApplication::translate("FindInFilesDialog", "Directory", Q_NULLPTR));
+        caseSensitiveLabel->setText(QApplication::translate("FindInFilesDialog", "Case sensitive", Q_NULLPTR));
         casedCheckBox->setText(QString());
-        recursiveLabel->setText(QApplication::translate("FindInFilesDialog", "Recursive", 0));
-        dirToolButton->setText(QApplication::translate("FindInFilesDialog", "...", 0));
-        groupBox->setTitle(QApplication::translate("FindInFilesDialog", "Find results", 0));
-        cancelButton->setText(QApplication::translate("FindInFilesDialog", "Stop", 0));
-        findButton->setText(QApplication::translate("FindInFilesDialog", "Find All", 0));
+        recursiveLabel->setText(QApplication::translate("FindInFilesDialog", "Recursive", Q_NULLPTR));
+        dirToolButton->setText(QApplication::translate("FindInFilesDialog", "...", Q_NULLPTR));
+        groupBox->setTitle(QApplication::translate("FindInFilesDialog", "Find results", Q_NULLPTR));
+        cancelButton->setText(QApplication::translate("FindInFilesDialog", "Stop", Q_NULLPTR));
+        findButton->setText(QApplication::translate("FindInFilesDialog", "Find All", Q_NULLPTR));
     } // retranslateUi
 
 };

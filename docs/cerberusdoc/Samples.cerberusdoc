@@ -1,104 +1,107 @@
 
 > Cerberus X samples
 
+Samples for the base game framework.
+
 >> Arthur "devolonter" and Olga "AhNinniah" Bikmullin
 
-+ [[../../examples/mojo/devolonter/matchup/matchup.cxs|Match up]] 
+* [[../../examples/mojo/devolonter/matchup/matchup.cxs|Match up]] 
 
 >> Gerry Quin
 
-+ [[../../examples/mojo/gerryq/picpuzzle/picpuzzle.cxs|Picture puzzle]]
+* [[../../examples/mojo/gerryq/picpuzzle/picpuzzle.cxs|Picture puzzle]]
 
 >> Impixi
 
-+ [[../../examples/mojo/impixi/life/life.cxs|Game of life]]
+* [[../../examples/mojo/impixi/life/life.cxs|Game of life]]
 
 >> Ferdi
 
-+ [[../../examples/mojo/ferdi/snake/snake.cxs|Snake]]
-+ [[../../examples/mojo/ferdi/breakout/breakout.cxs|Breakout]]
+* [[../../examples/mojo/ferdi/snake/snake.cxs|Snake]]
+* [[../../examples/mojo/ferdi/breakout/breakout.cxs|Breakout]]
 
 >> Charlie Knight
 
-+ [[../../examples/mojo/charlie/blobmonster/blobmonster.cxs|Blob monster]]
+* [[../../examples/mojo/charlie/blobmonster/blobmonster.cxs|Blob monster]]
 
 >> Origaming
 
-+ [[../../examples/mojo/origaming/DegreeAndRadian/DegreeAndRadian.cxs|Degrees vs Radians]]
-+ [[../../examples/mojo/origaming/FollowMouse/FollowMouse.cxs|Follow mouse]]
-+ [[../../examples/mojo/origaming/MacOsMenu/MacOsMenu.cxs|MacOS dock style menu]]
-+ [[../../examples/mojo/origaming/RotatingObjects/RotatingObjects.cxs|Rotating objects]]
+* [[../../examples/mojo/origaming/DegreeAndRadian/DegreeAndRadian.cxs|Degrees vs Radians]]
+* [[../../examples/mojo/origaming/FollowMouse/FollowMouse.cxs|Follow mouse]]
+* [[../../examples/mojo/origaming/MacOsMenu/MacOsMenu.cxs|MacOS dock style menu]]
+* [[../../examples/mojo/origaming/RotatingObjects/RotatingObjects.cxs|Rotating objects]]
 
 >> Richard Betson
 
-+ [[../../examples/mojo/Richard_Betson/mirror_fx_transform/mirror_fx_transform.cxs|Mirror FX]]
-+ [[../../examples/mojo/Richard_Betson/TileImage/TileImage.cxs|Tile Image]]
-+ [[../../examples/mojo/Richard_Betson/line_v_circle_collision/line_v_circle_collision.cxs|Line vs circle]]
-+ [[../../examples/mojo/Richard_Betson/simple_verlet_physics/simple_verlet_physics.cxs|Simple verlet physics]]
+* [[../../examples/mojo/Richard_Betson/mirror_fx_transform/mirror_fx_transform.cxs|Mirror FX]]
+* [[../../examples/mojo/Richard_Betson/TileImage/TileImage.cxs|Tile Image]]
+* [[../../examples/mojo/Richard_Betson/line_v_circle_collision/line_v_circle_collision.cxs|Line vs circle]]
+* [[../../examples/mojo/Richard_Betson/simple_verlet_physics/simple_verlet_physics.cxs|Simple verlet physics]]
 
 >> Jonathan Pittock
 
-+ [[../../examples/mojo/skn3/monkenstein/monkenstein.cxs|Monkenstein]]
-+ [[../../examples/mojo/skn3/spiralmatrix/spiralmatrix.cxs|Spiral matrix]]
-+ [[../../examples/mojo/skn3/texteffect/texteffect.cxs|Text effect]]
-+ [[../../examples/mojo/skn3/tweening/tweendemo.cxs|Tween demo]]
-+ [[../../examples/mojo/skn3/config/configdemo.cxs|Config demo]]
-+ [[../../examples/mojo/skn3/iconfun/iconfun.cxs|Async icon fun!]]
+* [[../../examples/mojo/skn3/monkenstein/monkenstein.cxs|Monkenstein]]
+* [[../../examples/mojo/skn3/spiralmatrix/spiralmatrix.cxs|Spiral matrix]]
+* [[../../examples/mojo/skn3/texteffect/texteffect.cxs|Text effect]]
+* [[../../examples/mojo/skn3/tweening/tweendemo.cxs|Tween demo]]
+* [[../../examples/mojo/skn3/config/configdemo.cxs|Config demo]]
+* [[../../examples/mojo/skn3/iconfun/iconfun.cxs|Async icon fun!]]
 
 >> Martin Leidel
-+ [[../../examples/mojo/martin/mousetest/mousetest.cxs|Mousewheel test]]
+* [[../../examples/mojo/martin/mousetest/mousetest.cxs|Mousewheel test]]
 
 >> Michael Hartlef
-+ [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
-+ [[../../examples/mojo/mikehart/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
+* [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
+* [[../../examples/mojo/mikehart/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
+* [[../../examples/mojo/mikehart/PubNub/PubNub.cxs|Using the services of PubNub with their REST api]]
 
 >> James Boyd
 
-+ [[../../examples/mojo/hitoro/autofit/autofitdemo.cxs|Auto-fit]]
-+ [[../../examples/mojo/hitoro/basicgame/basicgame.cxs|Basic game]]
-+ [[../../examples/mojo/hitoro/delta/delta.cxs|Delta timing]]
-+ [[../../examples/mojo/hitoro/gamestates_demo/gamestates_demo.cxs|Game states]]
-+ [[../../examples/mojo/hitoro/jump_rotate/jump_rotate.cxs|Jump rotate]]
-+ [[../../examples/mojo/hitoro/matrixrocks/matrixrocks.cxs|Matrix rocks!]]
-+ [[../../examples/mojo/hitoro/rockout/rockout.cxs|Rockout]]
-+ [[../../examples/mojo/hitoro/rotationsickness/rotationsickness.cxs|Rotation sickness]]
+* [[../../examples/mojo/hitoro/autofit/autofitdemo.cxs|Auto-fit]]
+* [[../../examples/mojo/hitoro/basicgame/basicgame.cxs|Basic game]]
+* [[../../examples/mojo/hitoro/delta/delta.cxs|Delta timing]]
+* [[../../examples/mojo/hitoro/gamestates_demo/gamestates_demo.cxs|Game states]]
+* [[../../examples/mojo/hitoro/jump_rotate/jump_rotate.cxs|Jump rotate]]
+* [[../../examples/mojo/hitoro/matrixrocks/matrixrocks.cxs|Matrix rocks!]]
+* [[../../examples/mojo/hitoro/rockout/rockout.cxs|Rockout]]
+* [[../../examples/mojo/hitoro/rotationsickness/rotationsickness.cxs|Rotation sickness]]
 
 >> Christian Perfect
 
-+ [[../../examples/mojo/warpy/bezier/bezier.cxs|Bezier]]
-+ [[../../examples/mojo/warpy/hilbert/hilbert.cxs|Hilbert]]
-+ [[../../examples/mojo/warpy/horsey/horsey.cxs|Horsey!]]
-+ [[../../examples/mojo/warpy/json/json.cxs|JSON]]
-+ [[../../examples/mojo/warpy/cxspuzzle/monkeypuzzle.cxs|MonkeyPuzzle]]
-+ [[../../examples/mojo/warpy/pegs/pegs.cxs|Pegs]]
-+ [[../../examples/mojo/warpy/transform/transform.cxs|Transform]]
-+ [[../../examples/mojo/warpy/transform/transform_mouse.cxs|Transform mouse]]
+* [[../../examples/mojo/warpy/bezier/bezier.cxs|Bezier]]
+* [[../../examples/mojo/warpy/hilbert/hilbert.cxs|Hilbert]]
+* [[../../examples/mojo/warpy/horsey/horsey.cxs|Horsey!]]
+* [[../../examples/mojo/warpy/json/json.cxs|JSON]]
+* [[../../examples/mojo/warpy/cxspuzzle/monkeypuzzle.cxs|MonkeyPuzzle]]
+* [[../../examples/mojo/warpy/pegs/pegs.cxs|Pegs]]
+* [[../../examples/mojo/warpy/transform/transform.cxs|Transform]]
+* [[../../examples/mojo/warpy/transform/transform_mouse.cxs|Transform mouse]]
 </ul|
 
 >> Peter Scheutz
 
-+ [[../../examples/mojo/difference/champagne/champagne.cxs|Champagne]]
-+ [[../../examples/mojo/difference/clock/clock.cxs|Clock]]
+* [[../../examples/mojo/difference/champagne/champagne.cxs|Champagne]]
+* [[../../examples/mojo/difference/clock/clock.cxs|Clock]]
 
 >> Robin Shackford
 
-+ [[../../examples/mojo/beaker/angelfont_example/angelfont_example.cxs|Angelfont]]
+* [[../../examples/mojo/beaker/angelfont_example/angelfont_example.cxs|Angelfont]]
 
 >> Mark Sibly
 
-+ [[../../examples/mojo/mak/acceltest/acceltest.cxs|Accelerometer test]]
-+ [[../../examples/mojo/mak/admobtest/admobtest.cxs|Admob test]]
-+ [[../../examples/mojo/mak/audiotest/audiotest.cxs|Audio test]]
-+ [[../../examples/mojo/mak/bouncyaliens/bouncyaliens.cxs|Bouncy Aliens!]]
-+ [[../../examples/mojo/mak/dynamicimage/dynamicimage.cxs|Dynamic image creation]]
-+ [[../../examples/mojo/mak/echoserver_tcp/echoserver_tcp.cxs|Echo server TCP]]
-+ [[../../examples/mojo/mak/echoserver_udp/echoserver_udp.cxs|Echo server UDP]]
-+ [[../../examples/mojo/mak/httprequest/httprequest.cxs|HTTP Request test]]
-+ [[../../examples/mojo/mak/mojotest/mojotest.cxs|Graphics test]]
-+ [[../../examples/mojo/mak/iaptest/iaptest.cxs|InApp Purchases test]]
-+ [[../../examples/mojo/mak/joytest/joytest.cxs|Joystick/-pad test]]
-+ [[../../examples/mojo/mak/gles20cube/gles20cube.cxs|OpenGL ES 2.0 Cubes]]
-+ [[../../examples/mojo/mak/opengltest/opengltest.cxs|OpenGL ES 1.1 test]]
-+ [[../../examples/mojo/mak/httpgetter/httpgetter.cxs|Simple async HTTP demo]]
-+ [[../../examples/mojo/mak/suspendtest/suspendtest.cxs|Suspend test]]
-+ [[../../examples/mojo/mak/firepaint/firepaint.cxs|Touch test]]
+* [[../../examples/mojo/mak/acceltest/acceltest.cxs|Accelerometer test]]
+* [[../../examples/mojo/mak/admobtest/admobtest.cxs|Admob test]]
+* [[../../examples/mojo/mak/audiotest/audiotest.cxs|Audio test]]
+* [[../../examples/mojo/mak/bouncyaliens/bouncyaliens.cxs|Bouncy Aliens!]]
+* [[../../examples/mojo/mak/dynamicimage/dynamicimage.cxs|Dynamic image creation]]
+* [[../../examples/mojo/mak/echoserver_tcp/echoserver_tcp.cxs|Echo server TCP]]
+* [[../../examples/mojo/mak/echoserver_udp/echoserver_udp.cxs|Echo server UDP]]
+* [[../../examples/mojo/mak/httprequest/httprequest.cxs|HTTP Request test]]
+* [[../../examples/mojo/mak/mojotest/mojotest.cxs|Graphics test]]
+* [[../../examples/mojo/mak/iaptest/iaptest.cxs|InApp Purchases test]]
+* [[../../examples/mojo/mak/joytest/joytest.cxs|Joystick/-pad test]]
+* [[../../examples/mojo/mak/gles20cube/gles20cube.cxs|OpenGL ES 2.0 Cubes]]
+* [[../../examples/mojo/mak/opengltest/opengltest.cxs|OpenGL ES 1.1 test]]
+* [[../../examples/mojo/mak/httpgetter/httpgetter.cxs|Simple async HTTP demo]]
+* [[../../examples/mojo/mak/suspendtest/suspendtest.cxs|Suspend test]]
+* [[../../examples/mojo/mak/firepaint/firepaint.cxs|Touch test]]

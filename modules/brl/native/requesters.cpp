@@ -47,6 +47,27 @@ int bbProceed( String title,String text,int serious ){
 	return -1;
 }
 
+int bbRequestColor( void ){
+	CHOOSECOLOR cc; // common dialog box structure
+	static COLORREF acrCustClr[16]; // array of custom colors
+	HWND hwnd; // owner window
+	HBRUSH hbrush; // brush handle
+	static DWORD rgbCurrent; // initial color selection
+	// Initialize CHOOSECOLOR
+	ZeroMemory(&cc, sizeof(CHOOSECOLOR));
+	cc.lStructSize = sizeof(CHOOSECOLOR);
+	cc.hwndOwner = GetActiveWindow();
+	cc.lpCustColors = (LPDWORD) acrCustClr;
+	cc.rgbResult = rgbCurrent;
+	cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+	if (ChooseColor(&cc)==TRUE) {
+		//hbrush = CreateSolidBrush(cc.rgbResult);
+		rgbCurrent = cc.rgbResult;
+		return rgbCurrent;
+	}
+	return -1;
+}
+
 String bbRequestFile( String title,String exts,int save,String path ){
 
 	String file,dir;
@@ -55,7 +76,7 @@ String bbRequestFile( String title,String exts,int save,String path ){
 	int i=path.FindLast( "\\" );
 	if( i!=-1 ){
 		dir=path.Slice( 0,i );
-		file=path.Slice( 1+1 );
+		file=path.Slice( i+1 );
 	}else{
 		file=path;
 	}
@@ -244,7 +265,7 @@ String bbRequestFile( String title,String filter,int save,String path ){
 	int i=path.FindLast( "\\" );
 	if( i!=-1 ){
 		dir=path.Slice( 0,i );
-		file=path.Slice( 1+1 );
+		file=path.Slice( i+1 );
 	}else{
 		file=path;
 	}

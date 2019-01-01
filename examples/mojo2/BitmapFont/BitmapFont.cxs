@@ -1,73 +1,49 @@
+' Cerberus X - BitmapFont example
+'
+' Demonstrates how to load bitmap fonts and draw text on multiple lines
+
 Strict
 
-#rem
-	Script:			BitmapFont.cxs
-	Description:	Sample script, that shows how load bitmap fonts and draw multiline text 
-	Author: 		Michael Hartlef
-#End
-
-' Import the mojo framework
 Import mojo2
 
-'*******************************************************************    
-' Define the myClass that extends the App Class.    
 Class myClass Extends App
-	'Create some class fields
-	Field box1:Image			' A field to store ...
-	Field canvasWidth:Int		' A field to store the width of the canvas.
-	Field canvasHeight:Int		' Holds the height of the canvas.
-	Field canvas:Canvas			' Stores the canvas to draw on.
-	Field font:Font				' A field to hold the loaded font.
 
-	'---------------------------------------------------------------
- 	' The OnCreate Method inside the App class is always called at the start of your app.
- 	' It is a perfect place to load resources into your app.
+	Field canvasWidth:Int	 
+	Field canvasHeight:Int	
+	Field myCanvas:Canvas	
+	Field myFont:Font		
+
     Method OnCreate:Int()
-        ' By setting the update rate to 0, there will be always an OnRender call after OnUpdate. No matter how long it takes.
-        ' It will also run as fast as your sync rate of your hardware runs.
-        SetUpdateRate(60)				
-        canvas=New Canvas
-        ' Determine the width of the device canvas.
+        
+        SetUpdateRate(60)				    
+        myCanvas = New Canvas()
         canvasWidth = DeviceWidth()		
-        ' Determine the height of the device canvas.
         canvasHeight = DeviceHeight()	
-        ' Load and set the bitmap font.
-        font = Font.Load("font.txt")	
-        canvas.SetFont(font)
+        
+        ' Load and set the bitmap font specified in font.txt.
+        myFont = Font.Load("font.txt")	
+        myCanvas.SetFont(myFont)
+        
         Return 0
     End
     
-	'---------------------------------------------------------------
- 	' The OnUpdate Method is called at the beginning of a new frame.
- 	' The interval it is called depends on how you have set the update rate, which by default is set to 60 times a second.
- 	' The mojo framework tries to make sure that it will be able to call OnUpdate this many times in a second. And if needed, skip
- 	' calls to OnRender to reach the goal.
-    Method OnUpdate:Int()
-        Return 0
-    End
-    
-	'---------------------------------------------------------------
-    ' The OnRender method will be called after the OnUpdate method.
-    ' It is the place to draw your images or other visual elements. ~n
-    Method OnRender:Int()
-	    ' Clear the canvas with a black color.
-        canvas.Clear (0,0,0)	
-        ' Draw a cross hair.	
-        canvas.DrawLine(0,canvasHeight/2, canvasWidth,canvasHeight/2)	
-        canvas.DrawLine(canvasWidth/2,0, canvasWidth/2,canvasHeight)	
-        ' Now draw the multiple text lines. They need to be split into a strng array.
-        canvas.DrawText( String("Hello World~nCerberus X is awesome!").Split("~n")),canvasWidth/2,canvasHeight/2,0.5,0.5
-		' Flush the canvas so it becomes visible.        
-        canvas.Flush
 
+    Method OnRender:Int()
+
+        myCanvas.Clear (0, 0, 0)	
+
+        ' DrawText() can take a string or an array of strings as its first parameter.
+        ' Supplying an array will draw each string on a new line.
+        ' Here we split a simple string it into an array using the "~n" separator.
+        myCanvas.DrawText( String("Hello World~nCerberus X is AWESOME!").Split("~n"), canvasWidth / 2, canvasHeight / 2, 0.5, 0.5)
+      
+        myCanvas.Flush
         Return 0
     End
 End
 
-'---------------------------------------------------------------
-' The Main function is the starting point of every Cerberus X app.
+
 Function Main:Int()
-	' Create an instance of your class that you have defined above.
     New myClass()		
     Return 0
 End

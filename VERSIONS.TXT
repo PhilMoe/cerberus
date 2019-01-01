@@ -1,3 +1,16 @@
+***** v2018-12-30 *****
+
+FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.
+FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.
+FIX: [brl.requesters] Fixed RequestFile not working with a set path.
+FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.
+MOD: [example] Various changes to sample scripts     (Author: Paul59)
+FIX: [TED] Fixed "Open on Desktop" on Linux.    (Author: Dawlane)
+MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.
+MOD: [DOCS/MAKEDOCS] Numerous changes to the docs and MakeDocs itself.
+FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.
+MOD: [TED] Bigger changes so TED uses the QT5 webengine now and needs QT5.9.2 to compile.    (Author: Dawlane)
+
 ***** v2018-08-10 *****
 
 FIX: [GLFW.ANGLE] Added z coordinate to mouse button events.
@@ -10,7 +23,6 @@ MOD: [mojo/mojo2] Added debugging log if loading an image failed.
 FIX: [AGK/AGK_IOS] Fixed media folder being deleted evey other compile run.
 FIX: [AGK/AGK_IOS] Fixed AGKBuildTarget creating an unusable native function.
 FIX: [example] Changed server to httpbin.org in the mak/httprequest example.
-
 
 ***** v2018-04-21 *****
 

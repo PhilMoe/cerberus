@@ -72,7 +72,7 @@ This is generally used to store data such as user preferences and high score tab
 
 Note: On the android target, building and uploading a new version of an application to a device will not clear the application's state. To do this, you must manually uninstall the application from the device first.
 
-Params: 
+Parameters: 
 
 state - application state to save.
 
@@ -90,7 +90,7 @@ Links:
 [[Resource paths]], [[File formats]]
 
 
-Params: 
+Parameters: 
 
 path - the data file path of the string to load, relative to your applications .data folder.
 
@@ -276,7 +276,6 @@ Class MyApp Extends App
 		Cls
 		DrawText "Click above to visit Cerberus X, below to email Martin!",DeviceWidth/2,DeviceHeight/2,.5,.5
 	End
-	
 
 End
 
@@ -290,12 +289,16 @@ End
 
 # Function HideMouse:Void()
 
-Hides the mouse pointer if the underlying operation system supports a mouse.
+Hides the mouse pointer if the underlying operating system supports a mouse.
+
+Links: [[ShowMouse]]
 
 
 # Function ShowMouse:Void()
 
-Shows the mouse pointer if the underlying operation system supports a mouse.
+Shows the mouse pointer if the underlying operating system supports a mouse.
+
+Links: [[HideMouse]]
 
 
 # Function EndApp:Void()

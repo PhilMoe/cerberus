@@ -1,308 +1,929 @@
+Strict
+
+' 2018-11-10 - Holzchopf
+' inspired by src/makedocs/parser
 
 Import toker
+Import docdecl
+Import throwablestring
 
-Class Decl
-
-	Field kind:String					'arg, const, global, function etc
-	Field ident:String					'ID - for scopes, includes path.
-	Field type:String					'Void, Int, Int[], Image, Image[] etc
-	Field init:String					'for consts or arg defaults
-	Field exts:String					'extended type, eg: [[List]]<T> 
-	Field impls:String					'implemented types, eg: [[IOnComplete]], [[IOnEvent]]
-
-	Method New( kind:String,ident:String="" )
-		Self.kind=kind
-		Self.ident=ident
+' A parser extends a toker by the capabilites of understanding the input string
+'	and translating it into a tree of decl nodes. Also, as a rule of thumb it
+'	can be said that a toker does not need to know any conditions, but a parser
+'	does (e.g. a parser needs to know in which scope it currently is as the
+'	meaning of tokens may change depending on scope)
+Class Parser Extends Toker
+	' creates a new parser with given string
+	Method New( pText:String )
+		Super.New( "", pText )
+		NextToke()	' load first token
 	End
 	
-End
-
-Class Parser
-
-	Method New( src:String )
-		_toker=New Toker( src )
-		Bump
+	Method Error:Void( pMessage:String )
+		Throw New ThrowableString(pMessage)
 	End
 	
-	Method SetText:Void( src:String )
-		_toker.SetText src
-		_toke=""
-		_tokeType=0
-		Bump
+	Method GetCarretLine:Int()
+		Return _line
 	End
-	
-	Method GetText:String()
-		Return _toker.Text[_toker.Cursor..]	
+	Method GetCarretChar:Int()
+		' find position of last line breaking char
+		Local i:Int = _tokePos
+		Repeat
+			Local c:Int = _source[i]
+			If c = 10 Or c = 13 Then
+				Exit
+			End
+			i -= 1
+		Until i < 0
+		Return _tokePos - i
 	End
+
+	'===========================================================================
+	' extended Toker functionality
 	
-	Method ParseDecl:Decl()
-		Local decl:Decl
-		Select Toke
-		Case "module"
-		
-			decl=New Decl(Parse())
-			decl.ident=ParseIdent()
-			
-		Case "class","interface"
-		
-			decl=New Decl(Parse())
-			decl.ident=ParseIdent()
-			
-			If CParse("<")
-				decl.type="<"+ParseIdentSeq()+">"
-				Parse ">"
-			Endif
-			
-			If CParse("extends")
-				decl.exts=ParseType()
-			Endif
-			
-			If CParse("implements")
-				decl.impls=ParseTypeSeq()
-			Endif
-			
-		Case "import"
-		
-			Local kind:=Parse()
-			If TokeType<>Toker.Identifier Return Null
-
-			decl=New Decl( kind )
-			decl.ident=ParseIdent()
-			
-		Case "const"
-		
-			decl=New Decl(Parse())
-			decl.ident=ParseIdent()
-			decl.type=ParseType()
-
-			If CParse("=") decl.init=Parse()
-			
-		Case "global","field"
-					
-			decl=New Decl(Parse())
-			decl.ident=ParseIdent()
-			decl.type=ParseType()
-			
-		Case "method","function"
-		
-			decl=New Decl(Parse())
-			decl.ident=ParseIdent()
-			decl.type=ParseType()
-			decl.type+=ParseArgs()
-			
-			If decl.ident="New"
-				Local i:=decl.type.Find( "(" )
-				If i<>-1 decl.type=decl.type[i..]
-				decl.kind="ctor"
-			Else If CParse("property") 
-				decl.kind="property"
-			Endif
-		
-		Default 
-			Err
+	' instead of a token, this thing eats the remaining CDATA on this line
+	' (including the trailing line ending) - used to parse block comments
+	Method NextRestOfLine:String()
+		' don't acquire more data, if already at line ending or similar
+		If _tokeType = TOKE_EOL Or _tokeType = TOKE_LINECOMMENT Then
+			_tokeType = TOKE_CDATA
+			Return _toke
 		End
-		
-		Return decl
-	End
-	
-	Method GetToker:Toker()
-		Return _toker
-	End
-	
-	Method Err:Void( msg:String="Parse error" )
-	
-		Print "Toke="+Toke
-		Local text:=_toker.Text
-		Local cursor:=_toker.Cursor
-		Print text[..cursor]+"<<<<<HERE?"+text[cursor..]
-		Error msg
-	End
-	
-	Method Toke:String() Property
+		_toke = ""
+		' source end reached
+		If _tokePos = _length Then
+			_tokeType = TOKE_EOF
+			Return _toke
+		Endif
+		' current position
+		Local start := _tokePos
+		' read everything
+		Repeat
+			Local c := TCHR()
+			_tokePos += 1
+			' stop reading at end of line
+			If c = `~n` Then							' linux style
+				_line += 1
+				Exit
+			Elseif c = `~r` Then						' macintosh style
+				If TCHR() = `~n` Then _tokePos += 1		' windows style
+				_line += 1
+				Exit
+			' stop reading before end of file
+			Elseif c = 0 Then
+				_tokePos -= 1	' because it was already pointing beyond end
+				Exit
+			End
+		Forever
+		' extract token and return
+		_toke = _source[start.._tokePos]
+		_tokeType = TOKE_CDATA
 		Return _toke
 	End
 	
-	Method TokeType:Int() Property
-		Return _tokeType
+	' instead of any token, this thing only eats spaces and tabs
+	Method NextSpace:String()
+		_toke = ""
+		' source end reached
+		If _tokePos = _length Then
+			_tokeType = TOKE_EOF
+			Return _toke
+		Endif
+		' current position
+		Local start := _tokePos
+		' read everything
+		Repeat
+			Local c := TCHR()
+			' stop reading at end of line
+			If c <> 32 And c <> `~t` Then
+				Exit
+			End
+			_tokePos += 1
+		Forever
+		' extract token and return
+		_toke = _source[start.._tokePos]
+		_tokeType = TOKE_SPACE
+		Return _toke
 	End
 	
-	Method Bump:String()
-		Repeat
-			Local toke:=_toker.Bump()
-			Local type:=_toker.TokeType
-			If type=Toker.Eol Continue
-			If type=Toker.Whitespace Continue
-			_toke=toke.ToLower()
-			_tokeType=type
+	' instead of a token, this thing only eats when matching CDATA
+	Method NextCdata:String( pString:String )
+		_toke = ""
+		' source end reached
+		If _tokePos = _length Then
+			_tokeType = TOKE_EOF
 			Return _toke
+		Endif
+		Local ln:Int = pString.Length
+		If _tokePos + ln < _length Then
+			Local sstr:String = _source[_tokePos .. _tokePos+ln]
+			' match
+			If sstr = pString Then
+				_toke = sstr
+				_tokeType = TOKE_CDATA
+				_tokePos += ln
+				Return _toke
+			End
+		End
+		' no match
+		Return _toke
+	End
+	
+	' get copy to store tokers state
+	Method Store:Toker()
+		Local t:Toker = New Toker
+		t._line = _line
+		t._toke = _toke
+		t._tokeType = _tokeType
+		t._tokePos = _tokePos
+		Return t
+	End
+	' restore tokers state from copy
+	Method Restore:Void( toker:Toker )
+		_line = toker._line
+		_toke = toker._toke
+		_tokeType = toker._tokeType
+		_tokePos = toker._tokePos
+	End
+	
+	'===========================================================================
+	' more like parser functionality from here on
+	
+	' pops current token and loads next one
+	Method Pop:Void()
+		NextToke()
+	End
+	' pops current token as long as it's space or line break
+	' (reads better than PopSpace( True )
+	Method PopLineBreak:Void()
+		PopSpace( True )
+	End
+	' pops current token as long as it's space
+	' pAlsoLineBreak says if it's allowed to pop line breaks too
+	Method PopSpace:Void( pAlsoLineBreak:Bool=False )
+		Repeat
+			' abort on any of these:
+			' end of file
+			If _tokeType = TOKE_EOF Then
+				Exit
+			' comment / newline
+			Elseif _tokeType = TOKE_LINECOMMENT Or _tokeType = TOKE_EOL Then
+				If Not pAlsoLineBreak Then Exit
+			' non-space
+			Elseif _tokeType <> TOKE_SPACE Then
+				Exit
+			End
+			NextToke()
 		Forever
 	End
 	
-	Method SaveToker:Toker()
-		Return New Toker( _toker )
+	' TODO: case-insensitive support ###########################################
+	
+	' pops space tokens up to plus the one matching pString
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopToken:Bool( pString:String, pNewline:Bool=False )
+		Return _PopToken( pString, , pNewline, True )
+	End
+	' pops space tokens up to plus the one matching pType
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopToken:Bool( pType:Int, pNewline:Bool=False )
+		Return _PopToken( , pType, pNewline, True )
+	End
+	' pops keyword (token of type keyword and case-insensitive matching pString)
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopKeyword:Bool( pString:String, pNewline:Bool=False  )
+		Return _PopToken( pString, TOKE_KEYWORD, pNewline, True, False )
+	End
+	' pops current token and loads next non-space if that one matches pString
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopUntilToken:Bool( pString:String, pNewline:Bool=False )
+		Return _PopToken( pString, , pNewline, False )
+	End
+	' pops current token and loads next non-space if that one matches pType
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopUntilToken:Bool( pType:Int, pNewline:Bool=False )
+		Return _PopToken( , pType, pNewline, False )
+	End
+	' pops current token and loads next keyword
+	' returns if successful
+	' when pNewline is set, the expected token may be on a new line
+	Method PopUntilKeyword:Bool( pString:String, pNewline:Bool=False  )
+		Return _PopToken( pString, TOKE_KEYWORD, pNewline, False, False )
+	End
+	' token popping helper function
+	' if pString="" it's not considered
+	' if pType=-1 it's not considered
+	' pPop says if matching token shall be popped too
+	' set pCaseSensitive to false to allow matching case-insensitive
+	Method _PopToken:Bool( pString:String="", pType:Int=-1, pNewline:Bool,
+	pPop:Bool, pCaseSensitive:Bool=True )
+		Local state := Store()
+		PopSpace( pNewline )
+		Local ltoke:String = _toke
+		Local lstr:String = pString
+		' case insensitivity
+		If Not pCaseSensitive Then
+			ltoke = ltoke.ToLower()
+			lstr = lstr.ToLower()
+		End
+		' match
+		If (lstr = "" Or ltoke = lstr) And
+		(pType = -1 Or _tokeType = pType) Then
+			If pPop Then Pop()
+			Return True
+		End
+		' no match
+		Restore( state )
+		Return False
 	End
 	
-	Method RestoreToker:Void( toker:Toker )
-		_toker=toker
-		_toke=_toker.Toke().ToLower()
-		_tokeType=_toker.TokeType()
+	' returns the class/interface decl representing the scope of pDecl
+	' or null, if pScope is not at class/interface scope
+	Method GetClassScope:DocDecl( pDecl:DocDecl )
+		Local scope:DocDecl
+		'scope = GetScope( pDecl, DECL_CLASS )
+		scope = pDecl.GetScope( DECL_CLASS )
+		If Not scope Then
+			scope = pDecl.GetScope( DECL_INTERFACE )
+		End
+		Return scope
+	End
+	' returns the module decl representing the scope of pDecl
+	Method GetModuleScope:DocDecl( pDecl:DocDecl )
+		Return pDecl.GetScope( DECL_MODULE )
 	End
 	
-	Method Parse:String()
-		Local tmp:=Toke
-		Bump
-		Return tmp
-	End
+	'---------------------------------------------------------------------------
+	' ParseXXX methods return a DocDecl node or null if not successful
+	' the generated DocDecl node is automatically appended to pScope
 	
-	Method Parse:Void( toke:String )
-		If Toke<>toke Err
-		Bump
-	End
-	
-	Method Parse:String( type:Int )
-		If TokeType<>type Err
-		Return Parse()
-	End
-	
-	Method CParse:Bool( toke:String )
-		If Toke<>toke Return False
-		Bump
-		Return True
-	End
-
-	Method CParse:String( type:Int )
-		If TokeType<>type Return ""
-		Return Parse()
-	End
-	
-	Method ParseText:String()
-		Local text:=_toker.Toke
-		Bump
-		Return text
-	End
-
-	Method ParseIdent:String()
-		CParse "@"
-		If TokeType<>Toker.Identifier Err
-		Local id:=_toker.Toke
-		Bump
-		Return id
-	End
-	
-	Method CParseIdent:String()
-		If TokeType<>Toker.Identifier Return ""
-		Local id:=_toker.Toke
-		Bump
-		Return id
-	End
-	
-	Method ParseIdentSeq:String()
-		Local args:=New StringStack
-		Repeat
-			args.Push ParseIdent()
-		Until Not CParse(",")
-		Return args.Join(",")
-	End
-	
-	Method ParseTypeSeq:String()
-		Local args:=New StringStack
-		Repeat
-			args.Push ParseType()
-		Until Not CParse(",")
-		Return args.Join(",")
-	End
-	
-	Method ParseArgs:String()
-		If Not CParse("(") Err
-		If CParse(")") Return " ()"
-		Local args:=New StringStack
-		Repeat
-			Local id:=ParseIdent()
-			Local ty:=ParseType()
-			If CParse("=")
-				ty+="="
-				While Toke<>"," And Toke<>")"
-					ty+=Toke
-					Bump
-				Wend
-			Endif
-			args.Push id+":"+ty
-		Until Not CParse( "," )
-		Parse ")"
-		Return " ( "+args.Join(", ")+" )"
-	End
-	
-	Method ParseType:String()
-		Local ty:=""
-		If CParse( ":" ) Or TokeType=Toker.Identifier
-			If CParse( "=" )
-				If CParse( "new" )
-					If TokeType=Toker.Identifier
-						ty=ParseType()
-					Endif
-				Else
-					Select TokeType
-					Case Toker.IntLiteral
-						Parse
-						ty="int"
-					Case Toker.FloatLiteral
-						Parse
-						ty="float"
-					Case Toker.StringLiteral
-						Parse
-						ty="string"
-					End
-				Endif
-				If Not ty
-					Print "Inferred types not allowed: "+_toker.Text()
-					Return ""
-				Endif
-			Else If TokeType=Toker.Identifier
-				Local id:=ParseIdent()
-				Select id.ToLower()
-				Case "void","bool","int","float","string","object"
-					ty+=id
-				Default 
-					ty+="[["+id+"]]"
-				End
+	' parse a declaration in pScope
+	Method ParseDecl:DocDecl( pScope:DocDecl )
+		' valid declarations start with...
+		Select _toke.ToLower()
+		Case "module"
+			Pop()
+			ParseModuleHeader( pScope )
+			Return pScope
+		Case "import"
+			Pop()
+			ParseImportDecl( pScope )
+			Return pScope
+		Case "class"
+			Pop()
+			Return ParseClassDecl( GetModuleScope( pScope ) )
+		Case "interface"
+			Pop()
+			Return ParseClassDecl( GetModuleScope( pScope ), DECL_INTERFACE )
+		Case "function"
+			Pop()
+			Local scope := GetClassScope( pScope )
+			' try it for class/interface scope first
+			If scope Then
+				Return ParseFunctionDecl( scope, DECL_CLASSFUNCTION )
+			' otherwise it's at module scope
 			Else
-				Err
-			Endif
+				scope = GetModuleScope( pScope )
+				Return ParseFunctionDecl( scope, DECL_FUNCTION )
+			End
+		Case "method"
+			Pop()
+			Local scope := GetClassScope( pScope )
+			If scope Then
+				Return ParseFunctionDecl( scope, DECL_METHOD )
+			Else
+				Error("Method declaration must be at class scope")
+			End
+		Case "const", "global"
+			Local ltoke:String = _toke.ToLower()
+			Pop()
+			Local scope := GetClassScope( pScope )
+			' try it for class/interface scope first
+			If scope Then
+				Local kind:Int
+				If ltoke = "const" Then kind = DECL_CLASSCONST
+				If ltoke = "global" Then kind = DECL_CLASSGLOBAL
+				Local decls := ParseVariableSet( scope, kind )
+				Return decls.Get(0)
+			' otherwise it's at module scope
+			Else
+				scope = GetModuleScope( pScope )
+				Local kind:Int
+				If ltoke = "const" Then kind = DECL_CONST
+				If ltoke = "global" Then kind = DECL_GLOBAL
+				Local decls := ParseVariableSet( scope, kind )
+				Return decls.Get(0)
+			End
+		Case "enumerate"
+			Pop()
+			' don't evaluate enumerate in method or function scope,
+			' because they could also be local (but then they should not appear
+			' in docs)
+			If pScope.kind = DECL_METHOD Or
+			pScope.kind = DECL_CLASSFUNCTION Or
+			pScope.kind = DECL_FUNCTION Then
+				Return Null
+			End
+			Local scope := GetClassScope( pScope )
+			' try it for class/interface scope first
+			If scope Then
+				Return ParseEnumDecl( scope, DECL_CLASSENUM )
+			' otherwise it's at module scope
+			Else
+				scope = GetModuleScope( pScope )
+				Return ParseEnumDecl( scope, DECL_ENUM )
+			End
+		Case "field"
+			Pop()
+			Local scope := GetClassScope( pScope )
+			If scope Then
+				Local decls := ParseVariableSet( scope, DECL_FIELD )
+				Return decls.Get(0)
+			Else
+				Error("Field declaration must be at class scope")
+			End
+		End
+		Return Null
+	End
+	
+	' parse a module header
+	' e.g. 'Module' my.module
+	Method ParseModuleHeader:DocDecl( pScope:DocDecl )
+		If pScope.kind <> DECL_MODULE Then
+			Error("Module header must be at module scope")
+		End
+		Local decl:DocDecl
+		Local str:String = SParseModpath()
+		' validate module header
+		'If str = pScope.GetUniqueIdent() Then
+		If str = pScope.ident Or pScope.ident.EndsWith("."+str) Then
+			decl = New DocDecl( DECL_MODHEADER )
+		Elseif Not str Then
+			Error("Expecting modpath")
 		Else
-			If CParse( "$" )
-				ty="string"
-			Else If CParse( "#" ) 
-				ty="float"
-			Else If CParse( "%" )
-				ty="int"
-			Else If CParse( "?" ) 
-				ty="bool"
-			Else
-				ty="int"
-			Endif
-		Endif
-		If CParse("<")
-			Local args:=New StringStack
-			Repeat
-				args.Push ParseType()
-			Until Not CParse(",")
-			Parse ">"
-			ty+="<"+args.Join(", ")+">"
-		Endif
-		While CParse( "[" )
-			While TokeType And Toke<>"]"
-				Parse
-			Wend
-			CParse "]"
-			ty+="[]"
-		Wend
-		Return ty
+			Error("Module header does not match modpath")
+		End
+		pScope.Add( decl )
+		Return decl
 	End
 	
-	Private
+	' parse an import declaration
+	' e.g. 'Import' my.module
+	Method ParseImportDecl:DocDecl( pScope:DocDecl )
+		If pScope.kind <> DECL_MODULE Then
+			Error("Import declaration must be at module scope")
+		End
+		Local decl:DocDecl
+		Local str:String = SParseModpath()
+		' valid import declaration
+		If str Then
+			decl = New DocDecl( DECL_IMPORT, str )
+		Else
+			Error("Expecting modpath")
+		End
+		pScope.Add( decl )
+		Return decl
+	End
 	
-	Field _toker:Toker
-	Field _toke:String
-	Field _tokeType:Int
-		
+	' parse a class (or interface) declaration
+	' e.g. 'Class' MyClass<U, V> Extends YourClass
+	Method ParseClassDecl:DocDecl( pScope:DocDecl, pKind:Int=DECL_CLASS )
+		Local state := Store()
+		' class identifier can be preceded by modpath for specifity
+		' (modpath + '.' + identifier = modpath)
+		Local ident:String = SParseClasspath()
+		If Not ident Then
+			Error("Expecting class identifier")
+		End
+		' use only last bit of path as identifier
+		If ident.Contains(".") Then
+			Local i:Int = ident.FindLast(".")
+			ident = ident[i+1 ..]
+		End
+		Local decl := New DocDecl( pKind, ident )
+		' only for classes:
+		If pKind = DECL_CLASS Then
+			' optional: type parameters
+			ParseTypeParameters( decl )
+			' optional: extends
+			ParseClassExtends( decl )
+			' optional: implements
+			ParseClassImplements( decl )
+		' only for interfaces:
+		Elseif pKind = DECL_INTERFACE Then
+			' optional: extends (multiple base interfaces allowed)
+			ParseInterfaceExtends( decl )
+		End
+		pScope.Add( decl )
+		Return decl
+	End
+	
+	' parse type parameters
+	' e.g. <U, V>
+	Method ParseTypeParameters:Stack<DocDecl>( pScope:DocDecl )
+		If PopToken("<") Then
+			Local decl:DocDecl
+			Local decls := New Stack<DocDecl>
+			Repeat
+				' there must be a parameter now
+				If PopUntilToken( TOKE_IDENT ) Then
+					decl = New DocDecl( DECL_GENTYPE_PARAM, _toke )
+					decls.Push( decl )
+					Pop()
+				' otherwise it's not a valid set of type parameters
+				Else
+					Error("Expecting type parameter identifier")
+				End
+				' after that, it's either
+				' end of parameters
+				If PopToken(">") Then
+					pScope.Add( decls )
+					Return decls
+				' or more paremeters
+				Elseif PopToken(",") Then
+					PopLineBreak()
+				End
+			Forever
+		End
+		Return Null
+	End
+	
+	' parses a single base class for classes
+	' e.g. Extends BaseClass<Int, V>
+	Method ParseClassExtends:DocDecl( pScope:DocDecl )
+		If PopKeyword("extends") Then
+			Local decl:DocDecl
+			' expecting classpath
+			Local str:String = SParseClasspath()
+			If str Then
+				decl = New DocDecl( DECL_EXTENDS, str )
+			Else
+				Error("Expecting base class")
+			End
+			' optional: type arguments
+			ParseTypeArguments( decl )
+			
+			pScope.Add( decl )
+			Return decl
+		End
+		Return Null
+	End
+	
+	' parse a list of base interfaces for classes
+	' e.g. Implements mymodule.MyClass, MyOtherClass
+	Method ParseClassImplements:Stack<DocDecl>( pScope:DocDecl, pKeyword:String="implements" )
+		If PopKeyword( pKeyword ) Then
+			Local str:String
+			Local decl:DocDecl
+			Local decls := New Stack<DocDecl>
+			Repeat
+				str = SParseModpath()
+				' there must be a classpath now
+				If str Then
+					decl = New DocDecl( DECL_EXTENDS, str )
+					decls.Push( decl )
+				' otherwise it's not a valid set of classes
+				Else
+					Error("Expecting base interface")
+				End
+				' after that, it's either
+				' more classes
+				If PopToken(",") Then
+					PopLineBreak()
+				' or end of list
+				Else
+					pScope.Add( decls )
+					Return decls
+				End
+			Forever
+		End
+		Return Null
+	End
+	
+	' parse a list of base interfaces for interfaces
+	' e.g. Extends mymodule.MyClass, MyOtherClass
+	' (same ase ParseClassImplements with different keyword)
+	Method ParseInterfaceExtends:Stack<DocDecl>( pScope:DocDecl )
+		Return ParseClassImplements( pScope, "extends" )
+	End
+	
+	' parsers any function declaration
+	' e.g. Method ShowAdView:Void( style:Int=1,layout:Int=2 )
+	Method ParseFunctionDecl:DocDecl( pScope:DocDecl, pKind:Int )
+		' read function identifier
+		' (can be keyword thanks to function overloading)
+		If PopUntilToken( TOKE_IDENT ) Or PopUntilToken( TOKE_KEYWORD ) Then
+			Local decl:DocDecl
+			' constructor?
+			If _toke = "New" Then
+				decl = New DocDecl( DECL_CTOR, _toke )
+				Pop()
+			' anything else
+			Else
+				decl = New DocDecl( pKind, _toke )
+				' expect type
+				Pop()
+				ParseTypeDecl( decl )
+			End
+			' function parameters
+			ParseFunctionParameters( decl )
+			' optional for methods: property keyword
+			If decl.kind = DECL_METHOD Then
+				Local state := Store()
+				If PopKeyword("property") Then
+					decl.kind = DECL_PROPERTY
+				Else
+					Restore( state )
+				End
+			End
+			pScope.Add( decl )
+			Return decl
+		Else
+			Error("Expecting function identifier")
+		End
+		Return Null
+	End
+	
+	' parses function parameters
+	' e.g. (a:Int, b:Int=2, c:=WHATEVER) -or- ()
+	Method ParseFunctionParameters:Stack<DocDecl>( pScope:DocDecl )
+		If PopToken("(") Then
+			' empty parameter list
+			If PopToken(")") Then Return Null
+			Local decls := ParseVariableSet( pScope, DECL_PARAMETER )
+			PopToken(")")
+			Return decls
+		End
+		Return Null
+	End
+	
+	' parses any variable declaration
+	' e.g. foo = MyFancy.Stuff()
+	Method ParseVariable:DocDecl( pScope:DocDecl, pKind:Int )
+		If PopUntilToken( TOKE_IDENT ) Then
+			Local decl := New DocDecl( pKind, _toke )
+			Pop()
+			' try to parse type (allowing impl. typing)
+			Local tdecl := ParseTypeDecl( decl, True )
+			' implicit typing needs initial expression
+			If tdecl.kind = DECL_IMPLICIT_TYPE Then
+				If Not ParseInitialValue( decl ) Then
+					Error("Expecting initial expression")
+				End
+			' for other types, initial expression is optional
+			Else
+				ParseInitialValue( decl )
+			End
+			pScope.Add( decl )
+			Return decl
+		End
+		Return Null
+	End
+	
+	' parses a set of variables
+	' e.g. 'Global' a:Int, b:Int
+	Method ParseVariableSet:Stack<DocDecl>( pScope:DocDecl, pKind:Int )
+		Local decls := New Stack<DocDecl>
+		' could be a whole list, so loop
+		Repeat
+			Local decl := ParseVariable( pScope, pKind )
+			' there must be a variable definition now
+			If decl Then
+				decls.Push( decl )
+			' otherwise it's not a valid set of type parameters
+			Else
+				Error("Expecting variable identifier")
+			End
+			' after that, it's either
+			' more variables
+			If PopToken(",") Then
+				PopLineBreak()
+			' or end of parameters
+			Else
+				Return decls
+			End
+		Forever
+		Return Null
+	End
+	
+	' parses initial value
+	' e.g. =2 -or- =[FOO, BAR]
+	Method ParseInitialValue:DocDecl( pScope:DocDecl )
+		If PopToken("=") Then
+			Local str:String = SParseExpression().Trim()
+			If str Then
+				Local decl := New DocDecl( DECL_INITIAL_VALUE, str )
+				pScope.Add( decl )
+				Return decl
+			Else
+				Error("Expecting expression")
+			End
+		End
+		Return Null
+	End
+	
+	' parses an enum
+	' e.g. Enumerate ONE, TWO, THREE
+	Method ParseEnumDecl:DocDecl( pScope:DocDecl, pKind:Int )
+		' enum host
+		Local decl := New DocDecl( pKind )
+		' read enum identifiers
+		Repeat
+			' there must be an identifier now
+			If PopUntilToken( TOKE_IDENT ) Then
+				Local edecl := New DocDecl( DECL_ENUM_ELEMENT, _toke )
+				Pop()
+				decl.Add( edecl )
+				' optional: initial expression
+				ParseInitialValue( edecl )
+			Else
+				Error("Expecting identifier")
+			End
+			' after that, it's either
+			' more identifiers
+			If PopToken(",") Then
+				PopLineBreak()
+			' or end of enum
+			Else
+				pScope.Add( decl )
+				Return decl
+			End
+		Forever
+		Return Null
+	End
+
+	' parses any type declaration
+	' e.g. :Bool -or- $ -or- :Node<T> -or maybe- :=
+	Method ParseTypeDecl:DocDecl( pScope:DocDecl, pAllowImplicitTyping:Int=False )
+		Local decl:DocDecl
+		' short notations first (can be arrays too)
+		If PopToken("?") Then
+			decl = New DocDecl( DECL_TYPE, "Bool" )
+			ParseTypeArray( decl )
+		Elseif PopToken("%") Then
+			decl = New DocDecl( DECL_TYPE, "Int" )
+			ParseTypeArray( decl )
+		Elseif PopToken("#") Then
+			decl = New DocDecl( DECL_TYPE, "Float" )
+			ParseTypeArray( decl )
+		Elseif PopToken("$") Then
+			decl = New DocDecl( DECL_TYPE, "String" )
+			ParseTypeArray( decl )
+		' non-strict int
+		Elseif PopUntilToken("[") Or
+		PopUntilToken("(") Or
+		PopUntilToken("=") Or
+		PopUntilToken(",") Then
+			decl = New DocDecl( DECL_TYPE, "Int" )
+			ParseTypeArray( decl )
+		' implicit typing
+		Elseif PopUntilToken(":=") And pAllowImplicitTyping Then
+			decl = New DocDecl( DECL_IMPLICIT_TYPE )
+			' rewind by 1 so the "=" becomes visible again
+			' (for initial value)
+			_tokePos -= 1
+			NextToke()
+		' long notation
+		Elseif PopToken(":") Then
+			decl = ParseType( pScope )
+			' return without further adding
+			Return decl
+		Else
+			Error("Expecting type declaration")
+		End
+		pScope.Add( decl )
+		Return decl
+	End
+
+	' parses any type
+	' e.g. Bool -or- Node<T>
+	Method ParseType:DocDecl( pScope:DocDecl )
+		If PopUntilToken( TOKE_IDENT ) Or PopUntilToken( TOKE_KEYWORD ) Then
+			Local decl := New DocDecl( DECL_TYPE, _toke )
+			Pop()
+			' could be any combination of array or generic type argument
+			Repeat
+				' array of current
+				If PopUntilToken("[") Then
+					ParseTypeArray( decl )
+				' type arguments for current
+				Elseif PopUntilToken("<") Then
+					ParseTypeArguments( decl )
+				' end of arrayisation and argumentisation
+				Else
+					Exit
+				End
+			Forever
+			pScope.Add( decl )
+			Return decl
+		End
+		Return Null
+	End
+	' parse type arguments
+	' e.g. <Stack<Map<Int, Float[]>>
+	Method ParseTypeArguments:Stack<DocDecl>( pScope:DocDecl )
+		If PopToken("<") Then
+			Local decl:DocDecl
+			Local arg:DocDecl
+			Local args := New Stack<DocDecl>
+			Repeat
+				arg = New DocDecl( DECL_GENTYPE_ARGUMENT )
+				' there must be a type now
+				If ParseType( arg ) Then
+					' move the type child ident to the arg ident
+					arg.ident = arg.childs.Get(0).ident
+					arg.childs = Null
+					' and store that argument
+					args.Push( arg )
+				Else
+					Error("Expecting type argument")
+				End
+				' after that, it's either
+				' end of arguments
+				If PopToken(">") Then
+					pScope.Add( args )
+					Return args
+				' or more paremeters
+				Elseif PopToken(",") Then
+					PopLineBreak()
+				End
+			Forever
+		End
+		Return Null
+	End
+	' parses type "array of" declaration
+	' e.g. [] -or- [42]
+	Method ParseTypeArray:DocDecl( pScope:DocDecl )
+		'Print "ParseTypeArray"
+		If PopToken("[") Then
+			' optional: expression defining the size
+			SParseExpression()
+			If PopToken("]") Then
+				Local decl := New DocDecl( DECL_ARRAY )
+				pScope.Add( decl )
+				Return decl
+			Else
+				Error("Expecting `]`")
+			End
+		End
+		Return Null
+	End
+	
+	'---------------------------------------------------------------------------
+	' SParseXXX methods return a string or "" if not successful
+	
+	' parse a modpath
+	' sequence of identifier [ '.' identifier ... ]
+	' pMayEndInKeyword is used for misusing a modpath as a classpath, e.g. in
+	' "Extends Throwable" with throwable being a valid classpath although it's
+	' a keyword
+	Method SParseModpath:String( pMayEndInKeyword:Bool=False )
+		Local state := Store()
+		Local str:String
+		Repeat
+			' there must be an identifier now
+			If PopUntilToken( TOKE_IDENT ) Then
+				str += _toke
+				Pop()
+			' or probably a keyword - but that ends the path
+			Elseif pMayEndInKeyword And PopUntilToken( TOKE_KEYWORD ) Then
+				str += _toke
+				Pop()
+				Return str
+			' otherwise it's not a valid modpath
+			Else
+				Restore( state )
+				Return ""
+			End
+			' after that, it's either
+			' more identifiers
+			If PopToken(".") Then
+				str += "."
+			' or end of path
+			Else
+				Return str
+			End
+		Forever
+		Return ""
+	End
+	
+	' parse a classpath
+	' which looks exactly the same as modpath and is only used for resons
+	' of specifity in class/interface declarations
+	Method SParseClasspath:String()
+		Return SParseModpath( True )
+	End
+	
+	' parses any expression
+	' e.g. MyFunc( 42, ["do", "re", "mi"] ) + 30
+	' DOES NOT GIVE A SHIT ABOUT SEMANTING ERRORS and lets pass some syntax
+	' errors too
+	Method SParseExpression:String()
+		'Print "SParseExpression"
+		Local state := Store()
+		Local str:String
+		Local brackets:StringStack = New StringStack
+		Local instr:Bool = False
+		Local linebreakallowed:Bool = False
+		' start at current token
+		_tokePos -= _toke.Length
+		' just read till expression is ended
+		' e.g. by comment ('), line conc (;) or comma (, for use in arrays etc.
+		' where expressions can be comma-separated) or closing brackets
+		' (round, square, pointy)
+		While _tokePos < _length
+			Local c := TCHR()
+			Local s := TSTR()
+			' always:
+			' string
+			If c = `~q` Then
+				' toggle 'in string' flag
+				instr = Not instr
+			End
+			' only in string:
+			If instr Then
+				' add char no matter what
+				str += s
+			' only outside string:
+			Else
+				' array / invokes / type paremeters (e.g. in constructors)
+				If c = `[` Or c = `(` Or c = `<` Then
+					brackets.Push( s )
+					linebreakallowed = True
+					str += s
+				Elseif c = `]` Or c = `)` Or c = `>` Then
+					If brackets.IsEmpty() Then
+						NextToke()
+						Return str
+					End
+					Local obrack:String = brackets.Get(0)
+					If c = `]` And obrack = "[" Or
+					c = `)` And obrack = "(" Or
+					c = `>` And obrack = "<" Then
+						brackets.Pop()
+					Else
+						Error("Unexpected '"+ s +"'")
+					End
+					linebreakallowed = False
+					str += s
+				' comment
+				Elseif c = `'` Then
+					NextToke()
+					If Not linebreakallowed Then
+						Return str
+					End
+					' add space instead
+					If str And str[-1..][0] > 32 Then str += " "
+				' line break
+				Elseif c = `~n` Or c = `~r` Then
+					NextToke()
+					If Not linebreakallowed Then
+						Return str
+					End
+					' add space instead
+					If str And str[-1..][0] > 32 Then str += " "
+				' set item separator
+				Elseif c = `,` Then
+					If brackets.IsEmpty() Then
+						NextToke()
+						Return str
+					End
+					linebreakallowed = True
+				' statement separator
+				Elseif c = `;` Then
+					NextToke()
+					Return str	
+				Else
+					' collapse spaces
+					If c <= 32 Then
+						If str And str[-1..][0] > 32 Then str += " "
+					Else
+						str += s
+					End
+					linebreakallowed = False
+				End
+				' additionally, allow line breaks after operators
+				' just assume string is always long enough for that *risky* =)
+				Local e1:String = _source[-1..]
+				Local e2:String = _source[-2..].ToLower()
+				Local e3:String = _source[-3..].ToLower()
+				If e1 = "." Or
+				e1 = "+" Or e1 = "-" Or e1 = "~~" Or e3 = "not" Or
+				e1 = "*" Or e1 = "/" Or e3 = "mod" Or e3 = "shl" Or e3 = "shr" Or
+				e1 = "&" Or e1 = "|" Or
+				e1 = "=" Or e1 = "<" Or e1 = ">" Or
+				e3 = "and" Or e2 = "or" Then
+					linebreakallowed = True
+				End
+			End
+			_tokePos += 1
+		Wend
+		Return ""
+	End
 End

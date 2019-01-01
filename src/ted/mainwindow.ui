@@ -15,6 +15,9 @@
     <stylestrategy>PreferDefault</stylestrategy>
    </font>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Big Ted</string>
   </property>
@@ -28,9 +31,18 @@
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
    <layout class="QGridLayout" name="gridLayout_3"/>
   </widget>
   <widget class="QToolBar" name="fileToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
+   <property name="windowTitle">
+    <string>File</string>
+   </property>
    <property name="iconSize">
     <size>
      <width>24</width>
@@ -50,8 +62,11 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="editToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Edit</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -65,8 +80,11 @@
    <addaction name="actionEditFind"/>
   </widget>
   <widget class="QToolBar" name="buildToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Build</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -82,8 +100,11 @@
    <addaction name="actionKill"/>
   </widget>
   <widget class="QToolBar" name="helpToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Help</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -101,13 +122,19 @@
      <x>0</x>
      <y>0</y>
      <width>996</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::CustomContextMenu</enum>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuFile">
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>

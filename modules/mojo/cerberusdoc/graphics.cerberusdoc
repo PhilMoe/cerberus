@@ -18,12 +18,12 @@ The graphics module is state based, and commands that 'set' various states will 
 
 # Function DeviceWidth:Int()
 
-***** Moved to [[Modules/mojo.app#DeviceWidth|mojo.app.DeviceWidth]] *****
+***** Moved to [[mojo.app.DeviceWidth]] *****
 
 
 # Function DeviceHeight:Int()
 
-***** Moved to [[Modules/mojo.app#DeviceHeight|mojo.app.DeviceHeight]] *****
+***** Moved to [[mojo.app.DeviceHeight]] *****
 
 
 # Function LoadImage:Image(path:String,frameCount:Int=1,flags:Int=Image.DefaultFlags)
@@ -446,7 +446,7 @@ Get width of @text drawn in this font.
 Get height of @text drawn in this font.
 
 
-# Function Load:Font( imagePath:String,firstChar:Int,numChars:int,padded:bool )
+# Function Load:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
 
 Load a fixed width font from @imagePath.
 

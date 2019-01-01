@@ -18,7 +18,7 @@ static void flushExtraSels(){
     if( !extraSelsEditor ) return;
     extraSels.clear();
     extraSelsEditor->setExtraSelections( extraSels );
-    extraSelsEditor=0;
+    extraSelsEditor=nullptr;
 }
 
 
@@ -32,7 +32,7 @@ bool caseInsensitiveLessThan(const QString &a, const QString &b)
 
 class CodeTreeItem : public QStandardItem{
 public:
-    CodeTreeItem():_data(0){
+    CodeTreeItem():_data(nullptr){
         setEditable( false );
     }
 
@@ -88,10 +88,10 @@ CodeEditor::CodeEditor( QWidget *parent, MainWindow *wnd ):QPlainTextEdit( paren
 
     lineNumberArea = new LineNumberArea(this);
 
-    _codeTreeModel=new QStandardItemModel( 0 );//this );
+    _codeTreeModel=new QStandardItemModel( nullptr );//this );
     _codeTreeModel->setSortRole(Qt::AscendingOrder);
 
-    _codeTreeView=new QTreeView( 0 );
+    _codeTreeView=new QTreeView( nullptr );
     _codeTreeView->setHeaderHidden( true );
     _codeTreeView->setModel( _codeTreeModel );
     _codeTreeView->setFocusPolicy( Qt::NoFocus );
@@ -859,7 +859,7 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
             cursor.insertText( '\n'+text.left(  i ) );
             ensureCursorVisible();
             e->accept();
-            e=0;
+            e=nullptr;
         }
     }
 
@@ -970,7 +970,7 @@ void CodeEditor::populateModel(const QString &completionPrefix)
 {
     QStringList strings = toPlainText().split(QRegExp("\\W+"));
     strings.removeAll(completionPrefix);
-    if ( _mainWnd != 0) {
+    if ( _mainWnd != nullptr) {
         for( int i=0;i < _mainWnd->_completeList.count();++i ){
 
             QString command=_mainWnd->_completeList.at( i );
@@ -1006,7 +1006,7 @@ void CodeEditor::insertCompletion(const QString &completion,
 
 bool CodeEditor::findNext( const QString &findText,bool cased,bool wrap ){
 
-    QTextDocument::FindFlags flags=0;
+    QTextDocument::FindFlags flags=nullptr;
     if( cased ) flags|=QTextDocument::FindCaseSensitively;
 
     setCenterOnScroll( true );
@@ -1042,7 +1042,7 @@ bool CodeEditor::replace( const QString &findText,const QString &replaceText,boo
 
 int CodeEditor::replaceAll( const QString &findText,const QString &replaceText,bool cased,bool wrap ){
 
-    QTextDocument::FindFlags flags=0;
+    QTextDocument::FindFlags flags=nullptr;
     if( cased ) flags|=QTextDocument::FindCaseSensitively;
 
     if( wrap ){
@@ -1474,14 +1474,14 @@ void Highlighter::highlightBlock( const QString &ctext ){
 
         if( st!=-1 ){
             setFormat( 0,text.length(),_commentsColor );
-            setCurrentBlockUserData( 0 );
+            setCurrentBlockUserData( nullptr );
             return;
         }
     }
 
     if( !_editor->isCode() ){
         setFormat( 0,text.length(),_defaultColor );
-        setCurrentBlockUserData( 0 );
+        setCurrentBlockUserData( nullptr );
         return;
     }
 
@@ -1517,7 +1517,7 @@ void Highlighter::highlightBlock( const QString &ctext ){
         //
         //Update user block data for code tree.
         //
-        BlockData *data=0;
+        BlockData *data=nullptr;
 
         QString decl=tokes.size()>0 ? tokes[0].toLower() : "";
         QString ident=tokes.size()>1 ? tokes[1] : "";
@@ -1660,7 +1660,7 @@ BlockData::BlockData( Highlighter *highlighter,const QTextBlock &block,const QSt
 }
 
 void BlockData::invalidate(){
-    _highlighter=0;
+    _highlighter=nullptr;
 }
 
 BlockData::~BlockData(){

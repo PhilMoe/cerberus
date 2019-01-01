@@ -22,7 +22,7 @@ class PrefsDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit PrefsDialog( QWidget *parent=0 );
+    explicit PrefsDialog( QWidget *parent=nullptr );
     ~PrefsDialog();
 
     void readSettings();

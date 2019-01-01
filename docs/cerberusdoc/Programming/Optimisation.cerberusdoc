@@ -1,0 +1,90 @@
+> Optimisation
+
+Cerberus&nbsp;X optimises your code during translation for size. This means, unused functions and class members are not copied to the transpiled result. It doesn't matter whether the code in question is in an imported module or in the main file.
+
+The following example code demonstrates this behaviour:
+
+<pre>
+Strict
+
+Function Main:Int()
+    Print "Starting test..."
+
+    ' creating instances of the erroneous classes alone does not provoke
+    ' any errors, since the erroneous methods, functions and fields will
+    ' be optimized away
+    Local t:Test = New Test()
+    Local ext:ExtTest = New ExtTest()
+    Local err:ErrClass = New ErrClass()
+
+    ' EXAMPLE 1
+    ' Unused functions are optimized away.
+    ' As long as ErryFunc() ain't called, it won't cause troubles:
+    'ErryFunc()                                     ' (un-comment for proof)
+
+    ' EXAMPLE 2
+    ' Unused methods are optimized away.
+    ' As long as t.ErryMeth() ain't called, it won't cause troubles:
+    't.ErryMeth()                                   ' (un-comment for proof)
+
+    ' EXAMPLE 3
+    ' Although ExtClass does a few things wrong, like overwriting an erroneous
+    ' method and overwriting unmatching methods, it won't cause troubles as
+    ' long as the extending methods aren't called:
+    'ext.ErryMeth()                                 ' (un-comment for proof)
+    'ext.ErryMeth2()                                ' (un-comment for proof)
+    ext.OkMeth()
+
+    ' EXAMPLE 4
+    ' Although ErrClass has an illegal initial value for a field, it won't cause
+    ' troubles as long as the field ain't accessed:
+    'err.all.Sort()                                 ' (un-comment for proof)
+
+    Print "Done."
+    Return 0
+End
+
+' erroneous function
+Function ErryFunc:Void()
+    ' Error : Void functions may not return a value.
+    Return False
+End
+
+' class with erroneous method
+Class Test
+    ' erroneous method
+    Method ErryMeth:Void()
+        ' Error : Void functions may not return a value.
+        Return False
+    End
+
+    ' correct method (just named like that for compatibility with ErryClass)
+    Method ErryMeth2:Int()
+        Return 1
+    End
+End
+
+' erroneous extending class
+Class ExtTest Extends Test
+    ' would be ok, but the extended method is erroneous
+    Method ErryMeth:Void()
+        Print "ExtTest.ErryMeth() invoked"
+    End
+
+    ' Error : Overriding method does not match any overridden method.
+    Method ErryMeth2:Int(arg:Int)
+        Return 1
+    End
+
+    ' totally ok
+    Method OkMeth:Void()
+        Print "ExtTest.OkMeth() invoked"
+    End
+End
+
+' erroneous class
+Class ErrClass
+    ' Error : Cannot convert from Bool to List<ErrClass>.
+    Field all:List<ErrClass> = True
+End
+</pre>

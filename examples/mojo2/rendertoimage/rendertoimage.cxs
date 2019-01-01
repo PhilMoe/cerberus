@@ -1,45 +1,67 @@
+' Cerberus X - Render to image example
+'
+' Illustrates the method for drawing on an image
+
+Strict
 
 Import mojo2
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
+	Field myCanvas:Canvas
+	Field myImage:Image
+	Field imageCanvas:Canvas
+	Field patternSeed:Float = 1
 	
-	Field image:Image
-	Field icanvas:Canvas
 	
-	Method OnCreate()
-		canvas=New Canvas
-
-		image=New Image( 256,256 )
-		icanvas=New Canvas( image )
+	Method OnCreate:Int()
 		
+		' the main canvas where the final scene is drawn
+		myCanvas = New Canvas()
+		
+		' create an image and set it as a render target which enables us to draw upon it
+		myImage = New Image(256, 256)
+		imageCanvas = New Canvas(myImage)
+		Return 0
 	End
 	
-	Method OnRender()
 	
-		'render to image...
-		For Local x:=0 Until 16
-			For Local y:=0 Until 16
-				If (x~y)&1
-					icanvas.SetColor Sin( Millisecs*.1 )*.5+.5,Cos( Millisecs*.1 )*.5+.5,.5
+	Method OnRender:Int()
+	
+		' draw a pattern on the image
+		patternSeed += 0.1
+		For Local x:Int = 0 Until 128
+			For Local y:Int = 0 Until 128
+				If (x & y & Int(patternSeed))
+					imageCanvas.SetColor(Sin(Millisecs() * 0.1 ) * 0.5 + 0.5, Cos(Millisecs() * 0.1) * 0.5 + 0.5, 0.5)
 				Else
-					icanvas.SetColor 1,1,0
+					imageCanvas.SetColor(0, 0, 0)
 				Endif
-				icanvas.DrawRect x*16,y*16,16,16
+				imageCanvas.DrawRect(x * 2, y * 2, 2, 2)
 			Next
 		Next
-		icanvas.Flush
 		
-		'render to main canvas...
-		canvas.Clear
-		canvas.DrawImage image,MouseX,MouseY
-		canvas.Flush
+		' finalize drawing on the image
+		imageCanvas.Flush()
+		
+		' now render to main canvas
+		' draw four copies of the final image, using rotation to form a symmetrical pattern
+		myCanvas.Clear()	
+		myCanvas.DrawImage(myImage, MouseX(), MouseY())
+		myCanvas.DrawImage(myImage, MouseX() + 256, MouseY(), -90, 1.0, 1.0)
+		myCanvas.DrawImage(myImage, MouseX(), MouseY() + 256, 90, 1.0, 1.0)
+		myCanvas.DrawImage(myImage, MouseX() + 256, MouseY() + 256, 180, 1.0, 1.0)
+		
+		' finalize drawing on the main canvas		
+		myCanvas.Flush()
+		Return 0
 	End
 End
 
-Function Main()
-	New MyApp
+
+Function Main:Int()
+	New MyApp()
+	Return 0
 End
 
 		

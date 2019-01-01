@@ -16,3 +16,5 @@ Function Proceed:Int( title:String,text:String,serious:Bool=false )="bbProceed"
 Function RequestFile:String( title:String,extensions:String="",save:Bool=False,file:String="" )="bbRequestFile"
 
 Function RequestDir:String( title:String,dir:String="" )="bbRequestDir"
+
+Function RequestColor:Int( )="bbRequestColor"

@@ -1,0 +1,11 @@
+> Asset import
+
+The `Import` keyword can be used to provide assets to the current project which are not stored in the project data directory. See the [resource paths](Programming/Resource paths) documentation for the definition of the project data directory and how to load resources.
+
+However, if you need access to a file that is not in the data directory, you can tell Cerberus&nbsp;X to include that file in your build and make it visible and accessible for data loading by 'importing' it with it's relative file path. For example:
+
+<pre>
+Import "assets/myfile.png"      ' makes assets/myfile.png accessible
+
+Image.Load("myfile.png")        ' loads the file
+</pre>

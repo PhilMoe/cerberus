@@ -1,0 +1,78 @@
+Strict
+
+' PubNub.Com example of their REST API
+
+Import mojo
+Import brl.httprequest
+
+'-----------------------------------------------------------------
+Class myClass Extends App Implements IOnHttpRequestComplete
+
+	Field get_req:HttpRequest
+	
+	'-----------------------------------------------------------------
+	Method OnHttpRequestComplete:Void( req:HttpRequest )
+	
+		If req=get_req
+			Print "Http GET complete!"
+		Endif
+
+		Print "Status="+req.Status()
+		Print "ResponseText="+req.ResponseText()
+		
+	End
+	'-----------------------------------------------------------------
+	Method OnCreate:Int()
+		SetUpdateRate 60
+		
+		
+		'Buildung up the Pubnub string
+
+		'Publish
+		Local pubKey:String = "demo"
+		Local subKey:String = "demo"
+		Local signature:String = "0"
+		Local channel:String = "hello_world"
+		Local callback:String = "0"
+		Local message:String = "%22Hello%20World777%22"
+		
+		Local pubnubP:String = "publish/"   + pubKey + "/" + subKey  + "/" + signature + "/" + channel + "/" + callback + "/" + message
+		
+		'History
+		Local limit:String = "3"
+		Local pubnubH:String = "history/"   + subKey + "/" + channel + "/" + callback  + "/" + limit
+		
+		'Subscribe
+		Local timeToken:String = "0"
+		Local pubnubS:String = "subscribe/" + subKey + "/" + channel + "/" + callback  + "/" + timeToken
+
+		'get_req = New HttpRequest()
+		'get_req.Open( "GET","http://www.nvgamepad.com/mobileapp/diamondpokerlitecasino/highscore.php",Self,100 )
+		get_req = New HttpRequest("GET","http://www.nvgamepad.com/mobileapp/diamondpokerlitecasino/highscore.php",Self)
+		'get_req = New HttpRequest("GET","http://pubsub.pubnub.com/"+pubnubH,Self)
+		get_req.Send
+
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnUpdate:Int()
+		If KeyHit( KEY_CLOSE ) Error ""
+
+		UpdateAsyncEvents()
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnRender:Int()
+		' here you render your app
+		Cls 0,0,128
+		SetColor 128,128,128
+		DrawText "Http GET bytes received="+get_req.BytesReceived(),0,0
+		Return 0
+	End
+End
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	New myClass
+	Return 0
+End

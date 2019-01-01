@@ -40,7 +40,7 @@ class CompleterListModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    CompleterListModel( QObject *parent=0 ): QAbstractListModel(parent){};
+    CompleterListModel( QObject *parent=nullptr ): QAbstractListModel(parent){};
 
     int	rowCount( const QModelIndex &parent=QModelIndex() )const ;
 
@@ -92,7 +92,7 @@ class CodeEditor : public QPlainTextEdit{
     Q_OBJECT
 
 public:
-    CodeEditor( QWidget *parent=0, MainWindow *wnd=0 );
+    CodeEditor( QWidget *parent=nullptr, MainWindow *wnd=nullptr );
     ~CodeEditor();
 
     //return true if successful and path updated

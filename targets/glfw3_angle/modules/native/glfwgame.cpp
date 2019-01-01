@@ -534,7 +534,9 @@ void BBGlfwGame::OnMouseButton( GLFWwindow *window,int button,int action,int mod
 
 void BBGlfwGame::OnMouseWheel( GLFWwindow *window, double x, double z )
 {
-  _glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,0.0,0.0,z );
+	double y=0;
+	glfwGetCursorPos( window,&x,&y );
+  _glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,x,y,z );
 }
 
 void BBGlfwGame::OnCursorPos( GLFWwindow *window,double x,double y ){

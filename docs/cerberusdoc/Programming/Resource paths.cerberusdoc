@@ -3,29 +3,40 @@
 
 App resources may be stored in many different locations, for example, in an app's data dir, on the local filesystem, or on a remote server.
 
-When using functions and methods that open or load resources, you can use any of the following special prefixes when specifying resource paths:
+>> App data directory
 
-* Use the "http://" or "https://" prefix to locate resources stored on a server.
+The app's data dir is a sub-directory in the directory where your app's main file is stored and has the name %AppName%.data - e.g. if your main file is stored as myProject/myApp.cxs your data dir is myProject/myApp.data/ and resources can be loaded from there.
 
-* Use the "cerberus://data/" prefix to locate resources that were placed in the app's data/ directory when it was built.
+>> Locating resources
 
-* Use the "cerberus://internal/" prefix to locate resources stored in the app's internal storage directory.
+When using functions and methods that open or load resources, you can use any of the following prefixes when specifying resource paths:
 
-Not all prefixes work on all targets and the exact behavior of each prefix is target dependant. For example, android and ios can load images from http:// but not audio, while glfw cannot load from http:// at all. Full support for all prefixes is an ongoing mission!
+* Use the `http://` or `https://` prefix to locate resources stored on a server.
 
-Also, note that Mojo module load commands will automatically insert a "cerberus://data/" prefix before any path that does not already incude a prefix. For example, LoadImage( "myimage.png" ) is the same as LoadImage( "cerberus://data/myimage.png" ).
+* Use the `cerberus://data/` prefix to locate resources that were placed in the app's data directory when it was built.
+
+* Use the `cerberus://internal/` prefix to locate resources stored in the app's internal storage directory.
+
+Not all prefixes work on all targets and the exact behavior of each prefix is target dependant. For example, android and ios can load images from `http://` but not audio, while glfw cannot load from `http://` at all. Full support for all prefixes is an ongoing mission!
+
+Also, note that Mojo module load commands will automatically insert a `cerberus://data/` prefix before any path that does not already include a prefix. For example, the two following lines are the same:
+
+<pre>
+LoadImage( "myimage.png" )
+LoadImage( "cerberus://data/myimage.png" )
+</pre>
 
 
->> Supported resource path prefixes
+>> Resource path prefix support
 
-* *web* = http://, https://
-* *data* = cerberus://data/
-* *file* = cerberus://internal/
+* *web* = `http://`, `https://`
+* *data* = `cerberus://data/`
+* *file* = `cerberus://internal/`
 
 | Function														| Android 			| iOS				| Win8			| Glfw			| Html5		| Flash	| Stdcpp
-| [[Modules/mojo.app#LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| NA
-| [[Modules/mojo.graphics#LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| NA
-| [[Modules/mojo.audio#LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
-| [[Modules/mojo.audio#PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
-| [[Modules/brl.databuffer/DataBuffer#Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| file
-| [[Modules/brl.filestream/FileStream#Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file
+| [[mojo.app.LoadString]]								| web, data, file	| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[mojo.graphics.LoadImage]]							| web, data, file	| web, data, file	| data, file	| data, file	| web, data	| data	| NA
+| [[mojo.audio.LoadSound]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[mojo.audio.PlayMusic]]								| data				| data, file		| data, file	| data, file	| web, data	| data	| NA
+| [[brl.databuffer.DataBuffer.Load|DataBuffer.Load]]	| web, data, file	| data, file		| data, file	| data,file		| web, data	| data	| file
+| [[brl.filestream.FileStream.Open|FileStream.Open]]	| file				| file				| file			| file			| NA		| NA	| file

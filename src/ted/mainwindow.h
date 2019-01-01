@@ -4,6 +4,18 @@ Ted, a simple text editor/IDE.
 Copyright 2012, Blitz Research Ltd.
 
 See LICENSE.TXT for licensing terms.
+
+Change Log
+--------------------------------------------------------------------------------
+2018-07-31 - dawlane
+        Heavy changes to allow single instance running of Ted. Lets us open multiple files from Explorer.
+        All zero/null pointer updated to the nullptr as per C++11 standard.
+        All QApplication static members now using derived CerberusApplication class.
+        All mainWindow references are now set to the CerberusApplication member mainWindow.
+        Work-around to Mac OS invisible QTabBar close button. Themes need to be set and load on first run.
+2018-07-23 - dawlane
+        Update Ted to use QtWebEngine and QtWebEnginePage and minor fixes.
+        Should now build with later versions of Qt. Qt 5.9.2 tested.
 */
 
 #ifndef MAINWINDOW_H
@@ -24,22 +36,40 @@ namespace Ui {
 class MainWindow;
 }
 
-class Prefs;
-class PrefsDialog;
-
-class HelpView : public QWebView{
+// DAWLANE Qt 5.6+ supported
+#if QT_VERSION>0x050501
+class HelpView : public QWebEngineView{
     Q_OBJECT
-public:
-
 protected:
     void keyPressEvent ( QKeyEvent * event );
 };
+
+class WebEnginePage : public QWebEnginePage
+{
+    Q_OBJECT
+public:
+    bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool);
+
+signals:
+    void linkClicked( const QUrl &url);
+};
+#else
+class HelpView : public QWebView{
+    Q_OBJECT
+public:
+protected:
+    void keyPressEvent ( QKeyEvent * event );
+};
+#endif
+
+class Prefs;
+class PrefsDialog;
 
 class MainWindow : public QMainWindow{
     Q_OBJECT
 public:
 
-    MainWindow( QWidget *parent=0 );
+    MainWindow( QWidget *parent=nullptr );
     ~MainWindow();
 
     void cdebug( const QString &str );
@@ -50,9 +80,13 @@ public:
     void setIcons();
     QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
     QStringList _completeList;
+
+// DAWLANE Qt 5.6+ supported. Function openFile moved here so that WebEnginePage can access it.
+    QWidget *openFile( const QString &path,bool addToRecent );
+// DAWLANE Move void parseAppArgs(); to public to pass new arguments if another instance of Ted was started.
+    void parseAppArgs(QStringList &args);
 private:
 
-    void parseAppArgs();
     void loadHelpIndex();
 
     bool isBuildable( CodeEditor *editor );
@@ -61,7 +95,7 @@ private:
 
     QWidget *newFile( const QString &path );
     QWidget *newFileTemplate( const QString &path );
-    QWidget *openFile( const QString &path,bool addToRecent );
+
     bool saveFile( QWidget *widget,const QString &path );
     bool closeFile( QWidget *widget,bool remove=true );
 
@@ -70,6 +104,7 @@ private:
     QString defaultCerberusPath();
     void enumTargets();
 
+    void loadTheme(QString &appPath, Prefs *prefs);
     void readSettings();
     void writeSettings();
 
@@ -85,6 +120,8 @@ private:
     bool confirmQuit();
     void closeEvent( QCloseEvent *event );
     void showImage(const QString &path);
+    void playAudio(const QString &path);
+    void showDoc(const QString &path);
 
 public slots:
 
@@ -156,8 +193,12 @@ private slots:
     void onTargetChanged( int index );
 
     void onShowHelp( const QString &text );
+    void onShowHelpWithStatusbar( const QString &text );
 
+// DAWLANE Qt 5.6+ supported -  onLinkClick is not required as QtWebEngine works differently.
+    #if QT_VERSION<=0x050501
     void onLinkClicked( const QUrl &url );
+#endif
 
     void onCloseMainTab( int index );
     void onMainTabChanged( int index );

@@ -1,73 +1,83 @@
+' Cerberus X - Writepixels example
+'
+' Write pixels in an image using a data buffer
+
+Strict
 
 Import mojo2
-
 Import brl.databuffer
+Import cerberus.maths
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
+	Field myCanvas:Canvas
+	Field myImage:Image
+	Field myData:DataBuffer
+	Field r:Float = 0
+	Field rv:Float = 0.2
 	
-	Field image:Image
 	
-	Field data:DataBuffer
-	
-	Method OnCreate()
+	Method OnCreate:Int()
 
-		canvas=New Canvas
-
-		image=New Image( 256,256 )
-		
-		data=New DataBuffer( 16*16*4 )
-		
+		myCanvas = New Canvas()
+		myImage = New Image(256, 256)
+		myData = New DataBuffer(16 * 16 * 4)
+		Return 0
 	End
 	
-	Method OnUpdate()
-		If KeyHit( KEY_SPACE ) CrashGraphics
-	End
 	
-	Method OnRender()
+	Method OnRender:Int()
 	
-		'write databuffer to image...
-		'
-		Local pitch:=256*4
-		
-		For Local x:=0 Until 16
-		
-			For Local y:=0 Until 16
+		' vary the rgba values 
+		For Local x:Int = 0 Until 16
+			For Local y:Int = 0 Until 16
 
-				Local r:=1.0,g:=1.0,b:=1.0,a:=1.0
+				Local r:Float
+				Local g:Float
+				Local b:Float
+				Local a:Float
 				
-				If (x~y)&1
-					r=Sin( Millisecs*.1 )*.5+.5
-					g=Cos( Millisecs*.1 )*.5+.5
-					b=.5
+				If (x ~ y) & 1
+					r = Sin(Millisecs() * 0.1) * (x Shr 1 - y Shr 1)
+					g = Cos(Millisecs() * 0.1) * (x Shr 1 - y Shr 1) '* 0.5 + 0.5
+					b = (r + g) / 2
+				Else
+					r = 0
+					g = 0
+					b = 0
 				Endif
 				
-				Local rgba:=a*255 Shl 24 | b*255 Shl 16 | g*255 Shl 8 | r*255
+				' combine into a single 'color' value
+				Local rgba:Int = a * 255 Shl 24 | b * 255 Shl 16 | g * 255 Shl 8 | r * 255
 				
-				For Local i:=0 Until 16*16*4 Step 4
-					data.PokeInt i,rgba
+				' save it in the data buffer
+				For Local i:Int = 0 Until 16 * 16 * 4 Step 4
+					myData.PokeInt(i, rgba)
 				Next
 				
-				image.WritePixels x*16,y*16,16,16,data
-
+				' draw each small square using the values
+				myImage.WritePixels(x * 16, y * 16, 16, 16, myData)
+				
 			Next
 		Next
 		
-		'render image to main canvas...
-		'
-		canvas.Clear
-		canvas.DrawImage image,MouseX,MouseY
-		canvas.Flush
+		' render image to main canvas
+		' add a little rotation and scaling to make it interesting!
+		myCanvas.Clear()
+		myCanvas.PushMatrix()
+		myCanvas.Rotate(r)
+		myCanvas.Scale((r + 15) / 16, (r + 15) / 16)
+		myCanvas.DrawImage(myImage, DeviceWidth() / 2, DeviceHeight() / 2)
+		myCanvas.PopMatrix()
+		myCanvas.Flush()
+		r += rv
+		If r > 15 Or r < -10 rv = -rv
+		Return 0
 	End
 End
 
-Function Main()
-	New MyApp
-End
 
-		
-		
-	
-	
-	
+Function Main:Int()
+	New MyApp()
+	Return 0
+End

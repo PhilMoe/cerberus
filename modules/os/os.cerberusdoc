@@ -32,7 +32,7 @@ Returns the application startup parameters.
 
 Returns the real, or 'absolute', file system path corresponding to the given path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -41,7 +41,7 @@ path - a file system path.
 
 Returns an integer representing the type of a file, one of: 0 for no file, 1 for a normal file, 2 for a directory.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -50,7 +50,7 @@ path - a file system path.
 
 Return the length of a file, in bytes.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -59,7 +59,7 @@ path - a file system path.
 
 Returns the time the file at path was last modified.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -68,7 +68,7 @@ path - a file system path.
 
 Copies a file from srcpath to dstpath.
 
-Params: 
+Parameters: 
 
 srcpath - file system path of source file.
 
@@ -79,7 +79,7 @@ dstpath - file system path of destination file.
 
 Deletes the specified file.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -88,7 +88,7 @@ path - a file system path.
 
 Loads a string from the file at path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -99,7 +99,7 @@ Saves str to a file specified by path.
 
 If a file already exists at path, it will be overwritten.
 
-Params: 
+Parameters: 
 
 str - a string value.
 
@@ -114,7 +114,7 @@ If recursive is True, LoadDir will also load file names in subdirectories, but w
 
 If hidden is True, then hidden files - files starting with a dot - are also loaded.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -127,7 +127,7 @@ hidden - a flag indicating whether hidden files should also be loaded.
 
 Create a new directory at path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -138,7 +138,7 @@ Deletes the directory at path.
 
 If recursive is True, then subdirectories are also deleted - use with care!
 
-Params: 
+Parameters: 
 
 path - file system path of directory to delete.
 
@@ -149,7 +149,7 @@ recursive - a flag indicating whether subdirectories should also be deleted.
 
 Changes the current directory of the running application.
 
-Params: 
+Parameters: 
 
 path - file system path of directory.
 
@@ -163,7 +163,7 @@ Returns the current directory of the currently running application.
 
 Sets an environment variable.
 
-Params: 
+Parameters: 
 
 name - name of environment var.
 
@@ -174,7 +174,7 @@ value - value to set environment var to.
 
 Gets an environment variable.
 
-Params: 
+Parameters: 
 
 name - name of environment var.
 
@@ -183,7 +183,7 @@ name - name of environment var.
 
 Executes a shell command and returns the result. This is generally 0 for success, or non-0 for failure.
 
-Params: 
+Parameters: 
 
 cmd - command to execute.
 
@@ -194,7 +194,7 @@ Exits the application with the given return code.
 
 In general, ExitApp should return 0 if successful, or <0 upon failure.
 
-Params: 
+Parameters: 
 
 retcode - application return code.
 
@@ -216,7 +216,7 @@ If recursive is True, LoadDir will also load file names in subdirectories.
 
 If hidden is True, then hidden files - files starting with a dot - are also loaded.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -233,7 +233,7 @@ If recursive is True, then subdirectories are also copied.
 
 If hidden is True, then hidden files - files starting with a dot - are also copied.
 
-Params: 
+Parameters: 
 
 srcpath - file system path of source directory.
 
@@ -250,7 +250,7 @@ Deletes the directory at path.
 
 If recursive is True, then subdirectories are also deleted - use with care!
 
-Params: 
+Parameters: 
 
 path - file system path of directory to delete.
 
@@ -261,7 +261,7 @@ recursive - a flag indicating whether subdirectories should also be deleted.
 
 Removes the directory from a file system path, and returns the file name and extension.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -270,7 +270,7 @@ path - a file system path.
 
 Extracts and returns the directory of a file system path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -279,7 +279,7 @@ path - a file system path.
 
 Extracts and returns the file extension of a file system path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -288,7 +288,7 @@ path - a file system path.
 
 Extracts and returns the file type extension of a file system path.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 
@@ -297,7 +297,7 @@ path - a file system path.
 
 Removes both the directory and file extension from a file system path, returning just the file name.
 
-Params: 
+Parameters: 
 
 path - a file system path.
 

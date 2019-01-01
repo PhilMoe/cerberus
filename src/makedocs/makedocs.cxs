@@ -1,447 +1,1548 @@
+Strict
+
+#Rem
+================================================================================
+Cerberus X Makedocs, used to translate cerberusdocs into html docs
+
+usage:
+> makedocs.exe OPTIONS
+
+the following options are available:
+-path PATH				Consider PATH as Cerberus X's root.
+-template TEMPLATE		Use TEMPLATE instead of the one from bin/docstyle.txt
+-ignore MODULES			Don't doc MODULES which is either a single modpath
+						or a list of semicolon separated modpaths
+						The -ignore option can also be set several times
+-printtree				Don't alter any files in docs/html, instead, print
+						the DocDecl tree on the console
+-printdocs				Don't alter any files in docs/html, instead, print
+						the generated docs on the console
+
+examples:
+makedocs.exe -path F:\Software\Cerberus -printtree
+makedocs.exe -ignore "brl.admob;reflection"
+
+Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
+--------------------------------------------------------------------------------
+2018-12-21 - Holzchopf
+	- completely rewritten
+	- ADDED new ${VARS} provided to PageMaker for all decls:
+		KIND - the kind of a decl as string, e.g. "Method"
+		SCOPE - the unique scope, e.g. "brl.admob." for the Adbmob class
+		PARAMTYPES - the unique parameter set for functions/method, used to dis-
+		tinguish overloads, e.g. "(Int,Float)"
+		DECL - similar to TYPE, but including the ":" before the type
+		XDECL - similar to DECL, but with markdown links to type identifiers
+		PARAMETERS - the description paragraphs in the "parameters:" section
+		RETURNS - the description paragraphs in the "returns:" section
+	- ADDED new ${LISTS} provided to PageMaker:
+		IMPORTED_BY - containing decls of modules, that import this one
+		EXTENDS - containing decls of base classes/interfaces
+		EXTENDED_BY - containing decls of classes/interfaces extending this one
+		IMPLEMENTS - implemented interfaces
+		IMPLEMENTED_BY - containing decls of classes implementing this decl
+		ENUMS - enumerates in this decl
+		ENUM_ELEMENTS - enumerate elements in this enum
+		INHERITED_CONSTS - constants inherited from base class
+		INHERITED_GLOBALS - globals inherited from base class
+		INHERITED_ENUMS - enumerates inherited from base class
+		INHERITED_FIELDS - fields inherited from base class
+	- CHANGED ${VARS} provided to PageMaker:
+		EXTENDS - is now a list (see above)
+		EXTENDED_BY - is now a list (see above)
+		IMPLEMENTS - is now a list (see above)
+		XEXTENDS - marked as deprecated (still available for compatibility)
+		XEXTENDED_BY - marked as deprecated (still available for compatibility)
+		XIMPLEMENTS - marked as deprecated (still available for compatibility)
+		TYPE - marked as deprecated (still available for compatibility)
+		XTYPE - marked as deprecated (still available for compatibility)
+	- CHANGED the following ${VARS} are now available for all decls:
+		IDENT, UIDENT, SCOPE, PARAMTYPES, DECL, XDECL, URL, SUMMARY,
+		DESCRIPTION, LINKS, EXAMPLE, PARAMETERS, RETURNS, EXAMPLE_URL
+	- CHANGED 3rd party monkeydoc support the way it used to be. Maybe.
+		3rd party doccing was a undocumented feature and is now documented, thus
+		the behaviour may differ at some points now.
+		
+
+================================================================================
+#End
 
 #If TARGET<>"stdcpp"
-#Error "Invalid target"
+	#Error "Invalid target. Use stdcpp to compile makedocs"
 #Endif
 
 Import os
-Import brl.markdown
-Import brl.pagemaker
+Import brl.markdown			' transforms markdown formatting
+Import brl.pagemaker		' this gem transforms ${MARKUP} in templates
 
+Import config
+Import helpers
+
+Import docdecl
+Import parser
 Import toker
 Import apidoccer
-Import docsdoccer
+Import docdoccer
 
-Class George Implements ILinkResolver,IPrettifier
+'===============================================================================
+Const VERSION:String		= "2018-12-21"
+'===============================================================================
 
-	Field errinfo:String
+' path settings
+Const PATH_HTML_BASE:String			= "docs/html"
+Const PATH_HTML_DATA:String			= PATH_HTML_BASE + "/data"
+Const PATH_HTML_EXAMPLES:String		= PATH_HTML_BASE + "/examples"
+Const PATH_DOC_BASE:String			= "docs/cerberusdoc"
+Const PATH_DOC_KEYWORDS:String		= "Programming/Keywords/"
 
-	Field styledir:String
+' "doc" name (as displayed in navigation) for...
+Const LOCATION_3RDPARTY:String		= "3rd Party Docs"
+Const LOCATION_MODULES:String		= "Modules"
+Const LOCATION_CLASSES:String		= "Classes"
+Const LOCATION_INTERFACES:String	= "Interfaces"
+Const LOCATION_FUNCTIONS:String		= "Functions"
+Const LOCATION_INDEX:String			= "Index"
 
-	Field pages:=New StringMap<String>					'maps docpath to url
-	Field content:=New StringMap<String>				'maps url to html
-	Field indexcats:=New StringMap<StringMap<String>>	'maps index categories to indexes
+'===============================================================================
+Function Main:Int()
+	' runs complete Makedocs program
+	New Makedocs
 	
-	Field iconImgs:=New StringStack
-	Field iconUrls:=New StringStack
+	Return 0
+End
 
-	Field srcdir:String
-	Field docbase:String
+' Cleans up the output directory, gathers all docs*, turns them into html,
+' then saves them.
+' * This is done by building a complete DocDecl tree with the decls found in
+' APIs (the ApiDoccer scans modpath for this) and Docs (the DocDoccer scans
+' the docs directory for this).
+' Also, provides ApiDoccer and DocDoccer with the necessary info
+' (like modpath and doc path).
+Class Makedocs Implements ILinkResolver, IPrettifier
+	' options
+	Field opt_printtree:Bool	= False
+	Field opt_printdocs:Bool	= False
+	' path in which makedocs is causing mayhem
+	Field rootpath:String = ""
+	' page template to use
+	Field templatename:String = ""
+	Field templatedir:String = ""
+	Field template:String
+	' modules (paths to modules separated by `;`)
+	Field modpaths:String = ""
+	' modules to ignore (not make any decls for them or put in index)
+	Field ignoremods:StringStack = New StringStack
+	' docs (path to cerberusdocs)
+	Field docpath:String
 	
-	Field ptoker:=New Toker
+	' docs tree root and main branches
+	Field rootdecl:DocDecl
+	Field rootmodules:DocDecl
+	Field rootdocs:DocDecl
+	Field branch3rdparty:DocDecl
+	' current position in doc decl tree (necessary for resolving links)
+	Field curdecl:DocDecl
 	
-	Field dataDirs:=New StringMap<String>
+	' doccers
+	Field apidoccer:ApiDoccer
+	Field docdoccer:DocDoccer
 	
-	Global CerberusKeywords:=(";Void;Strict;Public;Private;Property;"+
-		"Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"+
-		"Include;Import;Module;Extern;"+
-		"New;Self;Super;Eachin;True;False;Null;Not;"+
-		"Extends;Abstract;Final;Native;Select;Case;Default;"+
-		"Const;Local;Global;Field;Method;Function;Class;Interface;Implements;Enumerate;"+
-		"And;Or;Shl;Shr;End;If;Then;Else;Elseif;Endif;While;Wend;Repeat;Until;Forever;For;To;Step;Next;Return;Inline;"+
-		"Try;Catch;Throw;Throwable;"+
-		"Print;Error;Alias;").ToLower()
+	' indexes (maps "indexname" to maps of "itemname">DocDecl, the latter
+	' are sorted by "itemname")
+	Field indexes:StringMap<StringMap<DocDecl>>
 	
-	Method New( styledir:String )
-		Self.styledir=styledir
-	End
+	' additional error info
+	Field errinfofile:String = ""
+	Field errinfoline:Int
+	Field errinfochar:Int
 	
-	Method SetSrcDir:Void( srcdir:String )
-		If Not srcdir.EndsWith( "/" ) srcdir+="/"
-		Self.srcdir=srcdir
-	End
-	
-	Method SetDocBase:Void( docbase:String )
-		Self.docbase=docbase
-	End
-	
-	#rem
-	Method AddFile:String( path:String )
-	
-		Local src:=srcdir+path
-		Local dst:="docs/html/data/"+StripDir( path )
-		
-		Local udst:=dst,n:=1
-		While FileType( dst )<>FILETYPE_NONE
-			n+=1
-			udst=dst+"("+n+")"
-		Wend
-		
-		Return "data/"+StripDir( udst )+".html"
-	End
-	#end
-	
-	Method MakeLink:String( url:String,text:String )
-		Local isImg:Bool = False
-		'Check if it is an image link
-		If url.Find("<img>",0) > -1
-			isImg = True
-			url = url[5..]
-		Endif
-		If Not text text=url
-		If url 
-			If isImg = True
-				Return "<img src=~q"+url+"~q alt=~q"+text+"~q />"
-			Else
-				Return "<a href=~q"+url+"~q>"+text+"</a>"
-			Endif
-		Endif
-		Return text
-	End
-	
-	Method ResolveLink:String( link:String,text:String )
-		
-		If link.StartsWith( "#" ) Or link.StartsWith( "<img>" ) Or link.StartsWith( "http:" ) Or link.StartsWith( "https:" ) Return MakeLink( link,text )
-		
-		Local url:=""
-		Local path:=link,hash:=""
-			
-		Local i=path.Find( "#" )
-		If i<>-1
-			hash=path[i..]
-			path=path[..i]
-		Endif
-		
-		url=pages.Get( path )
-		
-		If Not url 
-			path=GetIndex( "Index" ).Get( path )
-			If path url=pages.Get( path )
-		Endif
-		
-		If url url+=hash
-		
-		If Not text
-			text=StripDir( link )
-			Local i:=text.Find( "#" )
-			If i<>-1 text=text[i+1..]
-		Endif
-		
-		If Not url Err "Can't find link:"+link
-		
-		Return MakeLink( url,text )
-	End
-	
-	Method SetErrInfo:Void( errinfo:String )
-		Self.errinfo=errinfo
-	End
-	
-	Method Err:Void( msg:String )
-		Print errinfo+"  :  "+msg
-	End
-	
-	Method MakeUrl:String( path:String )
-		Local url:=path.Replace( "/","_" )
-		Local i:=url.Find( "#" )
-		If i=-1 Return url+".html"
-		Return url[..i]+".html"+url[i..]
-	End
-	
-	Method GetPageUrl:String( path:String )
-		Return pages.Get( path )
-	end
-	
-	Method GetIndex:StringMap<String>( cat:String )
-		Local index:=indexcats.Get( cat )
-		If Not index
-			index=New StringMap<String>
-			indexcats.Set cat,index
-		Endif
-		Return index
-	End
-	
-	Method AddIconLink:Void( iconImg:String,iconUrl:String )
-		iconImgs.Push iconImg
-		iconUrls.Push iconUrl
-	End
-	
-	Method AddPage:Void( path:String,icon:String="" )
-	
-		If pages.Contains( path ) Print "Overwriting page:"+path
-		
-		Local url:=MakeUrl( path )
-		
-'		Print "Adding page:"+path+" url:"+url
+	' pagemaker and helpers
+	Field pager:PageMaker
+	Field marker:Markdown
+	Field iconlinks_url:String[]
+	Field iconlinks_icon:String[]
 
-		pages.Set path,url
-
-		Local id:=StripDir( path )
-		Local i:=id.Find( "#" )
-		
-		If i=-1
-			Local i:=path.Find( "/" )
-			If i<>-1 And path.Find( "/",i+1 )=-1
-				AddToIndex path[..i],id,path
-			Endif
-		Else
-			id=id[i+1..]
-		Endif
-		
-		AddToIndex( "Index",id,path )
+	'---------------------------------------------------------------------------
+	' "Main"
+	Method New()
+		#If LOG_TIMESTAMPS
+			Log("init ... @ "+GetTimestamp(), True)
+		#End
+		' welcome and init
+		Print "Makedocs "+VERSION
+		ParseAppArgs()
+		BrowseToCxRoot()
+		LoadTemplateName()
+		LoadModulesPath()
+		LoadDocPath()
+		' first clean up pass before doccing
+		CleanUpEarly()
+		CopyTemplateData()
+		'--- CREATE DOCDECL TREE CONTAINING COMPLETE DOCS ---
+		' root and main branches
+		rootdecl = New DocDecl( DECL_ROOT )
+		rootmodules = New DocDecl( DECL_ROOT_MODULES )
+		rootdocs = New DocDecl( DECL_ROOT_DOCS )
+		rootdecl.Add( rootmodules )
+		rootdecl.Add( rootdocs )
+		' virtual pages
+		branch3rdparty = New DocDecl( DECL_INDEX, LOCATION_3RDPARTY )
+		branch3rdparty.Add( New DocDecl( DECL_SUMMARY, "All 3rd Party Docs") )
+		rootdocs.Add( branch3rdparty )
+		' parse all apis and add declarations to rootmodules
+		' also, this bookmarks all places where 3rd party docs can be found
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "parsing APIs..."
+		apidoccer = New ApiDoccer(Self)
+		apidoccer.Parse()
+		' parse cerberusdocs
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "parsing cerberusdocs..."
+		docdoccer = New DocDoccer(Self)
+		docdoccer.Doc()
+		' parse 3rd party docs
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "parsing 3rd party docs..."
+		docdoccer.Doc3rdParty()
+		'--- COMPLETE THE DOCDECL TREE WITH ADDITIONAL DECLS ---
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "completing decls..."
+		' complete summaries, cross-links for import/extends/implements
+		Complete()
+		' create indexes
+		CreateIndexes()
+		' sort decls - refer to DocDeclStack for sorting rule
+		' (this sorting is actually mainly for the output of the decl tree)
+		rootdecl.Sort()
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "writing decl files..."
+		WriteDeclFiles()
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "writing docs..."
+		WriteDocs()
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "writing examples..."
+		WriteExamples()
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		If opt_printtree Then
+			Print rootdecl.ToString()
+		End
+		Print "done!"
+		#If LOG_TIMESTAMPS
+			Log("complete @ "+GetTimestamp(), True)
+		#End
 	End
 	
-	Method AddToIndex:Void( cat:String,ident:String,path:String )
+	'---------------------------------------------------------------------------
+	' App initialisation
 	
-		Local i:=ident.Find( "(" )
-		If i<>-1 ident=ident[..i]
-		
-		Local index:=GetIndex( cat )
-		
-		Local uident:=ident,n:=1
-		While index.Contains( uident )
-			n+=1
-			uident=ident+"("+n+")"
-		Wend
-		index.Set uident,path
-	End
-	
-	Method SetPageContent:Void( page:String,html:String )
-		content.Set page,html
-	End
-	
-	Method MakeIndices:Void()
-	
-		Local maker:=New PageMaker( LoadString( styledir+"/index_template.html" ) )
-		
-		For Local it:=Eachin indexcats
-		
-			Local cat:=it.Key
-			If pages.Contains( cat ) Continue
-			
-			Local index:=it.Value
-			Local url:=cat+".html"
-			
-			maker.Clear
-			maker.SetString "INDEX",cat
-			maker.BeginList "ITEMS"
-			
-			For Local it:=Eachin index
-				maker.AddItem
-				maker.SetString "IDENT",it.Key
-				maker.SetString "URL",pages.Get( it.Value )
-			Next
-
-			maker.EndList
-			
-			Local page:=maker.MakePage()
-			
-			pages.Set cat,url
-			SetPageContent cat,page
-		Next
-		
-	End
-	
-	Method MakeDocs:Void()
-	
-		For Local f:=Eachin LoadDir( styledir,True )
-			If f.EndsWith( "_template.html" ) Continue
-			
-			Local dir:=ExtractDir( f )
-			If dir CreateDir "docs/html/"+dir
-			CopyFile styledir+"/"+f,"docs/html/"+f
-		Next
-		
-		Local maker:=New PageMaker( LoadString( styledir+"/page_template.html" ) )
-		
-		For Local it:=Eachin pages
-		
-			Local path:=it.Key
-			Local url:=it.Value
-			
-			Local page:=content.Get( path )
-			If Not page Continue
-			
-			maker.Clear
-			maker.SetString "CONTENT",page
-			
-			If iconImgs.Length
-				maker.BeginList "ICONLINKS"
-				For Local i:=0 Until iconImgs.Length
-					maker.AddItem
-					maker.SetString "ICON",iconImgs.Get( i )
-					maker.SetString "URL",iconUrls.Get( i )
-				Next
-				maker.EndList
-			Endif
-		
-			If path<>"Home" And path<>"Home2"
-				maker.BeginList "NAVLINKS"
-				Local tpath:=""
-				For Local bit:=Eachin path.Split( "/" )
-					maker.AddItem
-					maker.SetString "IDENT",bit
-					If tpath tpath+="/"
-					tpath+=bit
-					maker.SetString "URL",pages.Get( tpath )
-				Next
-				maker.EndList
-			Endif
-			
-			page=maker.MakePage()
-			
-			SaveString page,"docs/html/"+url
-			
-		Next
-		
-		Local out:=New StringStack
-		For Local it:=Eachin GetIndex( "Index" )
-			Local url:=pages.Get( it.Value )
-			If url out.Push it.Key+":"+url
-		Next
-		SaveString out.Join( "~n" ),"docs/html/index.txt"
-		
-		CopyDir styledir+"/data","docs/html/data"
-		
-	End
-	
-	Method HtmlEsc:String( str:String )
-		Return str.Replace( "&","&amp;" ).Replace( "<","&lt;" ).Replace( ">","&gt;" )
-	End
-	
-	Field inrem:=0
-	
-	Method BeginPrettyBlock:String()
-		Return "<div class=pretty>" 
-		inrem=0
-	End
-	
-	Method CopyDataDirs()
-		For Local dir:= Eachin dataDirs
-			If CreateDir("docs/html/data/"+dir.Value) = True 
-				Local subDir:String =""
-				subDir = StripDir(StripExt(dir.Key))
-				If CopyDir(dir.Key, "docs/html/data/"+dir.Value+"/"+subDir, True) = False
-					Print ("... error in copying data directory: "+dir.Key+"  to  docs/html/data/"+dir.Value+"/"+subDir)
+	' parse passed app args
+	Method ParseAppArgs:Void()
+		' start with AppArgs[1], because [0] is just AppPath
+		Local i:Int = 1
+		While i < AppArgs().Length
+			Local arg:String = AppArgs()[i]
+			#If LOG_APPARGS
+				Log( "passed argument #"+i+" is '"+arg+"'" )
+			#End
+			i += 1
+			Select arg
+			' modules to ignore
+			Case "-ignore"
+				If i < AppArgs().Length
+					Local ignparam:String = AppArgs()[i]
+					Local ignored := ignparam.Split(";")
+					For Local ign := Eachin ignored
+						ignoremods.Push( ign )
+					Next
+					i += 1
+				Else
+					Die("-ignore must be followed by module name")
 				Endif
-			Else
-				Print ("... error in creating data directory -> docs/html/data/"+dir.Value)
-			Endif
+			' overwrite root path
+			Case "-path"
+				If i < AppArgs().Length
+					rootpath = AppArgs()[i]
+					i += 1
+					' clean up path (may not end in "/" or "\" - cut away)
+					If rootpath.EndsWith("/") Or rootpath.EndsWith("\")
+						rootpath = rootpath[.. -1]
+					End
+				Else
+					Die("-path must be followed by path")
+				Endif
+			' set template
+			Case "-template"
+				If i < AppArgs().Length
+					templatename = AppArgs()[i]
+					i += 1
+				Else
+					Die("-template must be followed by template name")
+				Endif
+			' deactivate file altering
+			Case "-printtree"
+				opt_printtree = True
+			Case "-printdocs"
+				opt_printdocs = True
+			' invalid arg
+			Default
+				Die("invalid argument: "+arg)
+			End
+		Wend
+	End
+	' browse to Cerberus X root directory
+	' (see _IsInCxRoot() for definition of root)
+	Method BrowseToCxRoot:Void()
+		' if rootpath is not set, auto scan
+		If rootpath = "" Then
+			' go up the hierarchy from app path on until in CX's root
+			ChangeDir( ExtractDir( AppPath() ) )
+			#If LOG_CXROOT
+				Log( "[LOG] rootpath not set, starting scan ..." )
+				Log( "now verifying: "+CurrentDir() )
+			#End
+			While Not _IsInCxRoot()
+				' observe actual dir change
+				Local odir:String = CurrentDir()
+				ChangeDir("..")
+				rootpath = CurrentDir()
+				' abort, when ChangeDir failed (e.g. on drive root)
+				If odir = rootpath Then
+					Die("Cerberus X root path not found")
+				End
+				#If LOG_CXROOT
+					Log( "now verifying: "+CurrentDir() )
+				#End
+			Wend
+		Else
+			#If LOG_CXROOT
+				Log( "rootpath set to: "+rootpath )
+			#End
+			' check, if specified rootpath even exists
+			If FileType(rootpath) <> FILETYPE_DIR Then
+				Die("path '"+rootpath+"' does not exist")
+			End
+			' go to passed rootpath
+			ChangeDir( rootpath )
+			#If LOG_CXROOT
+				Log( "now verifying: "+CurrentDir() )
+			#End
+			If Not _IsInCxRoot() Then
+				Die(rootpath+" is not a valid Cerberus X root path")
+			End
+		End
+		' Cerberus X root found
+		Print "Making docs for "+CurrentDir()
+	End
+	' checks if CurrentDir is valid Cerberus X root
+	' (Cerberus X root dir is defined by having "docs", "bin" and "modules"
+	' sub folders)
+	Method _IsInCxRoot:Int()
+		If FileType("docs") = FILETYPE_DIR And
+		FileType("bin") = FILETYPE_DIR And
+		FileType("modules") = FILETYPE_DIR Then
+			#If LOG_CXROOT
+				Log( "approved as Cerberus X root dir: "+CurrentDir() )
+			#End
+			Return True
+		End
+		' if they're not all there: not CX's root
+		Return False
+	End
+	' load template name
+	Method LoadTemplateName:Void()
+		' if templatename is not already set, load from bin/docstyle.txt
+		If templatename = "" Then
+			templatename = LoadString("bin/docstyle.txt").Trim()
+			#If LOG_TEMPLATENAME
+				Log( "template name read from docstyle.txt: '"+templatename+"'" )
+			#End
+		End
+		templatedir = "docs/templates/"+templatename
+		#If LOG_TEMPLATENAME
+			Log( "verifying template: '"+templatename+"'" )
+		#End
+		' check if template exists
+		If templatename = "" Or FileType( templatedir ) <> FILETYPE_DIR Then
+			Die( "specified template does not exist: "+templatename )
+		End
+		#If LOG_TEMPLATENAME
+			Log( "using template: '"+templatename+"'" )
+		#End
+	End
+	' copy additional data from template to docs/html
+	Method CopyTemplateData:Void()
+		For Local file := Eachin LoadDir( templatedir )
+			Local path:String = templatedir + "/" + file
+			Select FileType( path )
+			' copy files not ending in "_template.html"
+			Case FILETYPE_FILE
+				If Not file.EndsWith( "_template.html" ) Then
+					CopyFile( path, PATH_HTML_BASE + "/" + file )
+				End
+			' copy files under data/
+			Case FILETYPE_DIR
+				If file = "data" Then
+					CopyDir( path, PATH_HTML_DATA, True )
+				End
+			End
 		Next
 	End
+	' load modules path (where to look for modules)
+	' not to be confused with a modpath (although the env variable and the
+	' config key are named so) - a modpath is the "identifier" of a module,
+	' e.g. "brl.filesystem"
+	Method LoadModulesPath:Void()
+		' try to get MODPATH from env variable
+		modpaths = GetEnv("MODPATH")
+		#If LOG_MODPATH
+			Log( "MODPATH in env: '"+modpaths+"'" )
+		#End
+		' ... or alternatively, from bin/config.HostOS.txt
+		If modpaths = "" Then
+			' parse config for MODPATH
+			Local config:String = LoadString("bin/config."+HostOS()+".txt")
+			If Not config Then
+				Warning( "config file not found" )
+			End
+			For Local line:String = Eachin config.Split("~n")
+				line = line.Trim()
+				' ignore comment lines
+				If line.StartsWith("'") Then
+					Continue
+				End
+				' ignore invalid key=val pairs
+				Local bits:String[] = line.Split("=")
+				If bits.Length <> 2 Then
+					Continue
+				End
+				' parse MODPATH
+				If bits[0] = "MODPATH" Then
+					' replace ${VAR} with VAR's value
+					Local val:String = bits[1]
+					#If LOG_MODPATH
+						Log( "MODPATH in config: '"+val+"'" )
+					#End
+					Repeat
+						Local i0:Int = val.Find( "${" )
+						Local i1:Int = val.Find( "}" )
+						' once ${VAR} is not found anymore, parsing is done
+						If i0 = -1 Or i1 = -1 Then
+							Exit
+						End
+						' extract identifier and replace by it's value
+						Local ident:String = val[i0+2 .. i1]
+						Select ident
+						Case "MONKEYDIR", "CERBERUSDIR"
+							ident = CurrentDir()
+						Default
+							ident = GetEnv( ident )
+						End
+						' remove ${VAR} from MODPATH
+						val = val[.. i0] + ident + val[i1+1 ..]
+					Forever
+					' remove quotes if necessary
+					If val.StartsWith("~q") And val.EndsWith("~q") Then
+						val = val[1 .. -1]
+					End
+					' set as modpaths and abort
+					modpaths = val
+					#If LOG_MODPATH
+						Log( "clean MODPATH in config: '"+modpaths+"'" )
+					#End
+					If Not modpaths Then
+						Warning( "MODPATH not set" )
+					End
+					Exit
+				End
+			Next
+		End
+		' clean up modpaths
+		modpaths = modpaths.Replace("\", "/")
+		modpaths = modpaths.Replace("|", ";")
+		#If LOG_MODPATH
+			Log( "modpaths: '"+modpaths+"'" )
+		#End
+	End
+	' set path to cerberusdocs
+	Method LoadDocPath:Void()
+		docpath = CurrentDir() + "/" + PATH_DOC_BASE
+	End
+	' clean up (before doccing)
+	Method CleanUpEarly:Void()
+		' clean up docs/html
+		If Not( opt_printdocs ) And Not( opt_printtree ) Then
+			DeleteDir( PATH_HTML_BASE, True)
+			CreateDir( PATH_HTML_BASE )
+			CreateDir( PATH_HTML_DATA )
+			CreateDir( PATH_HTML_EXAMPLES )
+		End
+		' try to copy "htmldocs"
+		' 2018-10-30 - Holzchopf - feature disabled, there's no htmldoc dir
+		'CopyDir("docs/htmldoc", "docs/html", True)
+	End
 	
+	'---------------------------------------------------------------------------
+	' Decl completition
+	
+	' complete api DocDecls by creating summary field, adding scope info,
+	' double link extends and implements and import etc
+	Method Complete:Void()
+		' set up some shortcuts for the finder
+		rootdecl.PrepareFinder()
+		' assign examples from examples directories to correct decl
+		_AssignExamples( rootmodules )
+		' add details about scope and parameters (for overloading)
+		' for unique identifiers
+		_CompleteIdentifiers( rootmodules )
+		' cross-link imports
+		_CompleteImports()
+		' cross-link extends, implements and inherited members
+		_CompleteExtends()
+		' add summaries from descriptions
+		_CompleteSummaries()
+		' put all examples in <pre> blocks
+		'_FixExamples()
+		' add URLs to examples
+		_CompleteExamples()
+	End
+	' assign examples from examples directories to correct decl by looking
+	' for examples sections, then for matching decls within the same scope.
+	' only add example when match does not yet have an example section
+	Method _AssignExamples:Void( pScope:DocDecl )
+		' go through decl
+		If pScope.childs Then
+			For Local c := Eachin pScope.childs
+				' examples are located under modules or module scopes
+				If c.kind = DECL_MODULE Or c.kind = DECL_MODULE_SCOPE Then
+					Local examples := c.GetChilds( DECL_EXAMPLE_IDENT )
+					If examples Then
+						_CopyExamples( c, examples )
+					End
+					' recursively scan sub modules
+					_AssignExamples( c )
+				End
+			Next
+		End
+	End
+	' copy examples of that scope to matching decls
+	Method _CopyExamples:Void( pScope:DocDecl, pExamples:DocDeclStack )
+		' go through all examples stored in that scope
+		For Local ex := Eachin pExamples
+			' source of that example
+			Local source := ex.GetChild( DECL_EXAMPLE_SOURCE ).ident
+			source = "<pre>" + source + "</pre>"
+			' find matching decls by identifier
+			Local decls := pScope.GetChilds( ex.ident, True )
+			' move to valid targets
+			If decls Then
+				For Local d := Eachin decls
+					' decls that can have an example section
+					Select d.kind
+					Case DECL_MODULE,
+					DECL_CLASS,
+					DECL_INTERFACE,
+					DECL_FUNCTION,
+					DECL_CONST,
+					DECL_GLOBAL,
+					DECL_METHOD,
+					DECL_PROPERTY,
+					DECL_CTOR,
+					DECL_CLASSFUNCTION,
+					DECL_CLASSCONST,
+					DECL_CLASSGLOBAL,
+					DECL_FIELD
+						' add example, if not already existing
+						If Not d.GetChild( DECL_EXAMPLE ) Then
+							d.Add( New DocDecl( DECL_EXAMPLE, source ) )
+						End
+					' enums are identified by their elements
+					Case DECL_ENUM_ELEMENT
+						If Not d.parent.GetChild( DECL_EXAMPLE ) Then
+							d.parent.Add( New DocDecl( DECL_EXAMPLE, source ) )
+						End
+					End
+				Next
+			End
+		Next
+	End
+	' complete unique identifier details - scope and parameters (for overloading)
+	Method _CompleteIdentifiers:Void( pDecl:DocDecl, pScope:String="", pModPath:String="" )
+		' build unique details from passed down ones
+		Local uident:String = ""
+		If pScope Then uident = pScope + "."
+		If pModPath Then uident = pModPath + "." + uident
+		'uident += pDecl.ident
+		Local completechilds:Bool = False
+		Select pDecl.kind
+		' for functions and such: build param details
+		Case DECL_FUNCTION, DECL_METHOD, DECL_CTOR,
+		DECL_PROPERTY, DECL_CLASSFUNCTION
+			pDecl.Add( New DocDecl( DECL_UIDENT_SCOPE, uident ) )
+			Local txt:String
+			Local params := pDecl.GetChilds( DECL_PARAMETER )
+			If params Then
+				For Local p := Eachin params
+					If txt Then txt += ","
+					txt += p.GetType()
+				Next
+			End
+			pDecl.Add( New DocDecl( DECL_UIDENT_PARAMS, "(" + txt + ")" ) )
+		' module: set modpath and split ident into scopes
+		Case DECL_MODULE, DECL_MODULE_SCOPE
+			pModPath = pDecl.GetUniqueIdent()
+			completechilds = True
+		' classes and interfaces: set scope
+		Case DECL_CLASS, DECL_INTERFACE
+			pDecl.Add( New DocDecl( DECL_UIDENT_SCOPE, uident ) )
+			pScope = pDecl.ident
+			completechilds = True
+		' root: complete childs
+		Case DECL_ROOT, DECL_ROOT_DOCS, DECL_ROOT_MODULES
+			completechilds = True
+		' variables: add scope info
+		Case DECL_CONST, DECL_ENUM, DECL_GLOBAL,
+		DECL_CLASSCONST, DECL_CLASSENUM,
+		DECL_CLASSGLOBAL, DECL_FIELD
+			pDecl.Add( New DocDecl( DECL_UIDENT_SCOPE, uident ) )
+		End
+		' complete childs
+		If pDecl.childs And completechilds Then
+			For Local c := Eachin pDecl.childs
+				_CompleteIdentifiers( c, pScope, pModPath )
+			Next
+		End
+	End
+	' add "imported by" decls and cross-link
+	Method _CompleteImports:Void()
+		' all import declarations
+		Local imps := rootmodules.GetChilds( DECL_IMPORT, True )
+		' go through all import decls, find module, add cross-link
+		If imps Then
+			For Local i := Eachin imps
+				Local decl:DocDecl
+				' modules are all under root
+				decl = rootmodules.FindFromHere( i.ident, DECL_MODULE )
+				' if module is found, cross-link
+				If decl Then
+					' link from import decl to module
+					i.target = decl
+					' "imported by" to module with link
+					Local d := New DocDecl( DECL_IMPORTEDBY, i.parent.GetUniqueIdent() )
+					d.target = i.parent
+					decl.Add( d )
+				End
+			Next
+		End
+	End
+	' add "extended by" decls and cross-link
+	Method _CompleteExtends:Void()
+		' all extends and implements declarations, for classes and interfaces
+		Local exts := rootmodules.GetChilds( DECL_EXTENDS, True )
+		Local imps := rootmodules.GetChilds( DECL_IMPLEMENTS, True )
+		' go through all extends decls, find base class, add cross-link
+		If exts Then
+			For Local e := Eachin exts
+				Local decl:DocDecl
+				' extends decl is at sub-class, go two up to be at least at module
+				decl = e.parent.parent.FindFromHere( e.ident, DECL_CLASS )
+				' could also be base interface
+				If Not decl Then
+					decl = e.parent.parent.FindFromHere( e.ident, DECL_INTERFACE )
+				End
+				' if base class is found, cross-link
+				If decl Then
+					' link from extends decl to class
+					e.target = decl
+					' "extended by" to class with link
+					Local d := New DocDecl( DECL_EXTENDEDBY, e.parent.GetUniqueIdent() )
+					d.target = e.parent
+					decl.Add( d )
+					' also, inherit
+					_CompleteInherited( decl, e.parent )
+				End
+			Next
+		End
+		' go through all implements decls, find interface, add cross-link
+		If imps Then
+			For Local i := Eachin imps
+				Local decl:DocDecl
+				' implements decl is at sub-class, go two up to be at least at module
+				decl = i.parent.parent.FindFromHere( i.ident, DECL_INTERFACE )
+				' if interface is found, cross-link
+				If decl Then
+					' link from imports to interface
+					i.target = decl
+					' "implemented by" to interface with link
+					Local d := New DocDecl( DECL_IMPLEMENTEDBY, i.parent.GetUniqueIdent() )
+					d.target = i.parent
+					decl.Add( d )
+				End
+			Next
+		End
+	End
+	
+	' add inherited decls
+	Method _CompleteInherited:Void( pFrom:DocDecl, pTo:DocDecl )
+		' the class, from which is inherited, must be completed with it's task
+		' of inheriting beforehand
+		If Not pFrom.GetChild( DECL_INHERITED ) Then
+			' if someone thinks he's funny, he'll challenge the doccer with
+			' a cyclic extension - to prevent this, already mark self as
+			' completed
+			pFrom.Add( New DocDecl( DECL_INHERITED ) )
+			' could be a list because of interfaces
+			Local exts := pFrom.GetChilds( DECL_EXTENDS )
+			If exts Then
+				For Local e := Eachin exts
+					_CompleteInherited( e, pFrom )
+				Next
+			End
+		End
+		' now that pFrom has itself inherited everything, inherit from pFrom
+		If pFrom.childs Then
+			For Local c := Eachin pFrom.childs
+				' only inherit a selection of stuff
+				Local kind:Int = 0
+				Select c.kind
+				Case DECL_CTOR
+					kind = DECL_INH_CTOR
+				Case DECL_METHOD
+					kind = DECL_INH_METHOD
+				Case DECL_PROPERTY
+					kind = DECL_INH_PROPERTY
+				Case DECL_CLASSFUNCTION
+					kind = DECL_INH_CLASSFUNCTION
+				Case DECL_CLASSCONST
+					kind = DECL_INH_CLASSCONST
+				Case DECL_CLASSENUM
+					kind = DECL_INH_CLASSENUM
+				Case DECL_CLASSGLOBAL
+					kind = DECL_INH_CLASSGLOBAL
+				Case DECL_FIELD
+					kind = DECL_INH_FIELD
+				End
+				' and only add decls of not overwritten stuff
+				If kind And Not( pTo.GetChild( c.ident, c.kind ) ) Then
+					' add inherited member with link
+					Local decl := New DocDecl( kind, c.ident )
+					decl.target = c
+					pTo.Add( decl )
+				End
+			Next
+		End
+	End
+	' add "summary" decls
+	Method _CompleteSummaries:Void()
+		' all descriptions
+		Local descs := rootdecl.GetChilds( DECL_DESCRIPTION, True )
+		'... and page contents
+		Local contents := rootdecl.GetChilds( DECL_CONTENTS, True )
+		If descs And contents Then
+			descs.Push( contents.ToArray() )
+		Elseif contents Then
+			descs = contents
+		End
+		' go through all descriptions and create summary from it
+		If descs Then
+			For Local d := Eachin descs
+				Local summary:String = _SummaryFromDescription( d.ident )
+				' remove markup
+				' remove lists
+				If summary.StartsWith("* ") Then summary = summary[2..]
+				If summary.StartsWith("+ ") Then summary = summary[2..]
+				' remove tables
+				If summary.StartsWith("| ") Then summary = summary[2..]
+				' TODO: remove broken links (e.g. [[Oh ...
+				' add summary to decl
+				Local decl := New DocDecl( DECL_SUMMARY, summary )
+				d.parent.Add( decl )
+			Next
+		End
+	End
+	' retrieve the summary from given description
+	Method _SummaryFromDescription:String( pDescription:String )
+		Local lines := pDescription.Replace("~r","~n").Split("~n")
+		Local summary:String
+		' scan text for acceptable summary
+		For Local line := Eachin lines
+			Local txt := line.Trim()
+			' only consider lines that are non-empty, non-">"-starting
+			If txt And Not txt.StartsWith(">") Then
+				Local i:Int = 0
+				While i < txt.Length-1
+					Local c:Int = txt[i]
+					' stop at ".",WHITESPACE
+					If c = `.` And IsSpace( txt[i+1] ) Then
+						i += 1 ' +1 to include "."
+						Return txt[..i]
+					End
+					i += 1
+				Wend
+				Return txt
+			End
+		Next
+		Return ""
+	End
+	' put all examples in <pre> </pre> tags
+	Method _FixExamples:Void()
+		' ACTUALLY, SCREW THIS! I'd rather correct the one cerberusdoc not
+		' doing this correctly, than adding an extra feature just for that
+		' one case.
+	End
+	' add url decl to examples
+	Method _CompleteExamples:Void()
+		' get all examples
+		Local examples := rootmodules.GetChilds( DECL_EXAMPLE, True )
+		If examples Then
+			For Local ex := Eachin examples
+				' filename
+				Local str := ex.parent.GetUniqueIdent().Replace(".","_")
+				str += ".cxs"
+				' add to example as decl
+				ex.Add( New DocDecl( DECL_EXAMPLE_URL, str ) )
+			Next
+		End
+	End
+	
+	'---------------------------------------------------------------------------
+	' Indexing
+	
+	' create/fill indexes
+	Method CreateIndexes:Void()
+		indexes = New StringMap<StringMap<DocDecl>>
+		' make indexes for doc subfolders without matching index page
+		Local idecls := rootdocs.GetChilds( DECL_INDEX, True )
+		If idecls Then
+			For Local idx := Eachin idecls
+				' docs and sub-indexes to this folder
+				Local docs := idx.GetChilds( DECL_DOC )
+				Local idxs := idx.GetChilds( DECL_INDEX )
+				If docs And idxs Then
+					docs.Push( idxs.ToArray() )
+				Elseif idxs Then
+					docs = idxs
+				End
+				_MoveToIndex( idx.GetUniqueIdent(), docs )
+				' also, add a summary field to this automatically generated index
+				idx.Add( New DocDecl( DECL_SUMMARY, "Index of "+idx.GetIdent() ) )
+			Next
+		End
+		' create virtual indexes
+		Local modules := rootdecl.GetChilds( DECL_MODULE, True )
+		Local classes := rootdecl.GetChilds( DECL_CLASS, True )
+		Local interfaces := rootdecl.GetChilds( DECL_INTERFACE, True )
+		Local functions := rootdecl.GetChilds( DECL_FUNCTION, True )
+		' store indexes
+		_CreateIndex( LOCATION_MODULES, modules, "All documented modules" )
+		_CreateIndex( LOCATION_CLASSES, classes, "All documented classes" )
+		_CreateIndex( LOCATION_INTERFACES, interfaces, "All documented interfaces" )
+		_CreateIndex( LOCATION_FUNCTIONS, functions, "All documented functions" )
+		' make master index
+		Local master := New DocDeclStack
+		_FillMasterIndex( rootdecl, master )
+		_CreateIndex( LOCATION_INDEX, master, "Everything" )
+	End
+	' fill the master index
+	Method _FillMasterIndex:Void( pDecl:DocDecl, pStack:DocDeclStack )
+		If pDecl.childs Then
+			For Local d := Eachin pDecl.childs
+				Select d.kind
+				' push these onto index
+				Case DECL_DOC,
+				DECL_INDEX,
+				DECL_MODULE,
+				DECL_CLASS,
+				DECL_INTERFACE,
+				DECL_FUNCTION,
+				DECL_CONST,
+				DECL_GLOBAL,
+				DECL_METHOD,
+				DECL_PROPERTY,
+				DECL_CTOR,
+				DECL_CLASSFUNCTION,
+				DECL_CLASSCONST,
+				DECL_CLASSGLOBAL,
+				DECL_FIELD,
+				DECL_ENUM_ELEMENT
+					pStack.Push( d )
+					_FillMasterIndex( d, pStack )
+				' push childs of these onto index
+				Case DECL_ROOT_MODULES,
+				DECL_ROOT_DOCS,
+				DECL_MODULE_SCOPE,
+				DECL_ENUM,
+				DECL_CLASSENUM
+					_FillMasterIndex( d, pStack )
+				End
+			Next
+		End
+	End
+	' create index decl named pIndex and fill with pStack,
+	' pSummary sets an optional summary text to be shown when listed in indexes
+	Method _CreateIndex:Void( pIndex:String, pStack:DocDeclStack, pSummary:String="" )
+		Local decl := New DocDecl( DECL_INDEX, pIndex )
+		' add at least the index' name as summary so it shows up when listed in
+		' an index
+		Local txt := pSummary
+		If Not txt Then txt = pIndex
+		decl.Add( New DocDecl( DECL_SUMMARY, txt ) )
+		' store index decl
+		rootdocs.Add( decl )
+		_MoveToIndex( pIndex, pStack )
+	End
+	' moves the stack elements to the index map, which magically also sorts it
+	Method _MoveToIndex:Void( pIndex:String, pStack:DocDeclStack )
+		Local index := New StringMap<DocDecl>
+		If pStack Then
+			For Local d := Eachin pStack
+				' build the itemname, by which shall be alphabetically sorted
+				Local key:String = d.GetIdentWithParams()
+				key += d.GetTextOfChild( DECL_UIDENT_SCOPE )
+				' add item to the map with its itemname
+				' (this automatically sorts by key, not alphabetically but by
+				' ascii code - that's why the key is lowercased)
+				index.Add( key.ToLower(), d )
+			Next
+		End
+		indexes.Add( pIndex, index )
+	End
+	
+	'---------------------------------------------------------------------------
+	' Docs writing
+	
+	' write index.txt and decls.txt
+	Method WriteDeclFiles:Void()
+		ClearErrInfo()
+		curdecl = rootmodules
+		' make stack of ALL decls
+		Local alldecls := rootdecl.GetChilds( 0, True )
+		Local txt:String
+		' make index.txt
+		' index.txt format:
+		' IDENTIFIER:URL
+		' to prevent duplicates, put in map first
+		Local idx := New StringMap<String>
+		For Local d := Eachin alldecls
+			Select d.kind
+			Case DECL_MODULE,
+			DECL_CLASS,
+			DECL_INTERFACE,
+			DECL_FUNCTION,
+			DECL_CONST,
+			DECL_GLOBAL,
+			DECL_METHOD,
+			DECL_PROPERTY,
+			DECL_CTOR,
+			DECL_CLASSFUNCTION,
+			DECL_CLASSCONST,
+			DECL_CLASSGLOBAL,
+			DECL_FIELD,
+			DECL_ENUM_ELEMENT
+				' new ident?
+				If Not idx.Contains( d.ident ) Then
+					idx.Add( d.ident, BuildDocLink( d ) )
+				' duplicate?
+				Else
+					' duplicates redirect to index #ident
+					Local str := "Index.html#" + d.ident
+					idx.Set( d.ident, str )
+				End
+			' language keywords
+			' (assume they're documented under: Programming/Keywords)
+			Case DECL_DOC
+				If d.GetTextOfChild( DECL_UIDENT_SCOPE ) = PATH_DOC_KEYWORDS Then
+					idx.Add( d.ident, BuildDocLink( d ) )
+				End
+			End
+		Next
+		'... then transform map to string
+		For Local d := Eachin idx
+			txt += d.Key() + ":" + d.Value() + "~n"
+		Next
+		SaveString( txt, PATH_HTML_BASE + "/index.txt" )
+		' make decls.txt
+		' decls.txt format:
+		' KIND FULLIDENTIFIER;URL;PATHTODECLARATION
+		txt = ""
+		For Local d := Eachin alldecls
+			Local ktxt:String = d.GetKindName()
+			If ktxt <> "Unspecified" Then
+				Local str := d.GetScopeIdent() + d.ident + d.GetDocType().Replace(" ","")
+				txt += ktxt + " " + str
+				txt += ";" + BuildDocLink( d )
+				txt += ";"
+				txt += "~n"
+			End
+		Next
+		SaveString( txt, PATH_HTML_BASE + "/decls.txt" )
+	End
+	' fill template and write documents
+	Method WriteDocs:Void()
+		template = LoadString( templatedir +"/page_template.html" )
+		pager = New PageMaker(template)
+		marker = New Markdown(Self, Self)
+		' prepare lists of iconlinks (for quick access)
+		Local decls := rootdocs.GetChilds( DECL_3RDPARTY_ICON, True )
+		ClearErrInfo()
+		curdecl = rootdocs
+		If decls Then
+			Local cnt:Int = decls.Length
+			iconlinks_url = New String[cnt]
+			iconlinks_icon = New String[cnt]
+			Local i:Int = 0
+			For Local d := Eachin decls
+				iconlinks_url[i] = BuildDocLink( d.parent )
+				iconlinks_icon[i] = d.ident
+				i += 1
+			Next
+		End
+		' current location
+		Local linkidents:String[]
+		Local linkurls:String[]
+		'... and that page
+		Local page:String
+		Local file:String, content:String
+		' make module docs
+		Local scopetemplate := LoadString( templatedir +"/scope_template.html" )
+		Local scopepager := New PageMaker( scopetemplate )
+		Local modules := rootmodules.GetChilds( DECL_MODULE, True )
+		If modules Then
+			' write docs for module
+			For Local m := Eachin modules
+				' for warnings and links to be bound to the right source
+				SetErrInfoFile( m.ident )
+				curdecl = m
+				' prepare contents for the page template
+				linkidents = ["Modules", m.GetIdent()]
+				linkurls = ["Modules.html", ResolveDocLink( m.ident )]
+				' create and save the page
+				page = apidoccer.ApplyModuleTemplate( m, scopepager )
+				content = _ApplyPageTemplate( linkidents, linkurls, page )
+				file = BuildDocLink( m )
+				_WritePage( file, content )
+				' and classes/interfaces (they get their own page)
+				If m.childs Then
+					linkidents = linkidents.Resize(3)
+					linkurls = linkurls.Resize(3)
+					For Local c := Eachin m.childs
+						If c.kind = DECL_CLASS Or c.kind = DECL_INTERFACE Then
+							SetErrInfoFile( c.GetUniqueIdent() )
+							curdecl = c
+							linkidents[2] = c.ident
+							linkurls[2] = ResolveDocLink( c.GetUniqueIdent() )
+							' create and save the page
+							page = apidoccer.ApplyClassTemplate( c, scopepager )
+							content = _ApplyPageTemplate( linkidents, linkurls, page )
+							file = BuildDocLink( c )
+							_WritePage( file, content )
+						End
+					Next
+				End
+			Next
+		End
+		' make doc docs
+		Local docs := rootdocs.GetChilds( DECL_DOC, True )
+		If docs Then
+			' write docs for doc
+			For Local d := Eachin docs
+				' for warnings and links to be bound to the right source
+				SetErrInfoFile( d.ident )
+				curdecl = d
+				' special case: omit current location in "Home"
+				If d.ident <> "Home" Then
+					linkidents = d.GetUniqueIdent().Split("/")
+					linkurls = _LinkUrlsFromIdents( linkidents )
+				Else
+					linkidents = []
+					linkurls = []
+				End
+				' create and save the page
+				page = marker.ToHtml( d.GetTextOfChild( DECL_CONTENTS ) )
+				content = _ApplyPageTemplate( linkidents, linkurls, page )
+				file = BuildDocLink( d )
+				_WritePage( file, content )
+			Next
+		End
+		' make indexes
+		Local indextemplate := LoadString( templatedir +"/index_template.html" )
+		Local indexpager := New PageMaker( indextemplate )
+		' resolve all index links from doc root level on
+		curdecl = rootdocs
+		Local txt:String
+		For Local index := Eachin indexes
+			SetErrInfoFile( index.Key )
+			' derive current location from index name (which can contain "/")
+			linkidents = index.Key.Split("/")
+			linkurls = _LinkUrlsFromIdents( linkidents )
+			' set pager lists/strings for index template
+			Local indexname:String = linkidents[ linkidents.Length-1 ]
+			indexpager.Clear()
+			indexpager.SetString("INDEX", indexname )
+			indexpager.BeginList("ITEMS")
+			If index.Value Then
+				For Local item := Eachin index.Value
+					Local decl := item.Value
+					indexpager.AddItem()
+					curdecl = decl
+					apidoccer.SetPagerStrings(indexpager, decl, True)
+				Next
+			End
+			indexpager.EndList()
+			' create and save the index
+			page = indexpager.MakePage()
+			content = _ApplyPageTemplate( linkidents, linkurls, page )
+			file = linkurls[ linkurls.Length-1 ]
+			_WritePage( file, content )
+		Next
+	End
+	' returns a string array containing the urls to links (for the current location)
+	Method _LinkUrlsFromIdents:String[]( pIdents:String[] )
+		Local urls:String[ pIdents.Length ]
+		For Local i := 0 Until pIdents.Length
+			Local txt:String = ""
+			For Local j:Int = 0 To i
+				If txt Then txt += "_"
+				txt += pIdents[j]
+			Next
+			urls[i] += txt + ".html"
+		Next
+		Return urls
+	End
+	' sets the pager strings that are available for every page:
+	' NAVLINKS (list with items URL and IDENT)
+	' ICONLINKS (list with items URL and ICON)
+	' CONTENT
+	Method _ApplyPageTemplate:String( pLinkIdents:String[], pLinkUrls:String[], pContents:String )
+		pager.Clear()
+		' set iconlinks
+		If iconlinks_url Then
+			pager.BeginList("ICONLINKS")
+			For Local i:Int = 0 Until iconlinks_url.Length
+				pager.AddItem()
+				pager.SetString("URL", iconlinks_url[i])
+				pager.SetString("ICON", iconlinks_icon[i])
+			Next
+			pager.EndList()
+		End
+		' set navlinks
+		If pLinkIdents Then
+			pager.BeginList("NAVLINKS")
+			For Local i:Int = 0 Until pLinkIdents.Length
+				pager.AddItem()
+				pager.SetString("IDENT", pLinkIdents[i])
+				pager.SetString("URL", pLinkUrls[i])
+			Next
+			pager.EndList()
+		End
+		' set contents
+		pager.SetString("CONTENT", pContents)
+		Return pager.MakePage()
+	End
+	' save a doc .html page
+	Method _WritePage:Void( pFile:String, pContents:String )
+		If Not( opt_printdocs ) And Not( opt_printtree ) Then
+			SaveString( pContents, PATH_HTML_BASE + "/" + pFile )
+		Elseif opt_printdocs Then
+			Print ">>> OUTPUT FOR FILE: " + pFile
+			Print pContents
+		End
+	End
+	' write examples to html/examples
+	Method WriteExamples:Void()
+		' don't if opt_print* is set
+		If opt_printdocs Or opt_printtree Then Return
+		_AssertPath( PATH_HTML_EXAMPLES )
+		' gather all examples and save them all
+		Local examples := rootmodules.GetChilds( DECL_EXAMPLE, True )
+		If examples Then
+			For Local ex := Eachin examples
+				' prepare example file
+				Local file:String = ex.GetTextOfChild( DECL_EXAMPLE_URL )
+				Local source:String = ex.ident
+				' <pre> .. </pre> indicates example source
+				Local p0:Int = source.Find("<pre>")
+				Local p1:Int = source.Find("</pre>", p0+5)
+				If p0 >= 0 And p1 >= 0 Then
+					source = source[p0+5 .. p1]
+					SaveString( source, PATH_HTML_EXAMPLES + "/" + file )
+				End
+			Next
+		End
+	End
+
+	'---------------------------------------------------------------------------
+	' Error messaging
+
+	' additional error info
+	Method SetErrInfoFile:Void( pInfo:String )
+		errinfofile = pInfo
+	End
+	Method SetErrInfoLine:Void( pLine:Int )
+		errinfoline = pLine
+	End
+	Method SetErrInfoChar:Void( pChar:Int )
+		errinfochar = pChar
+	End
+	Method ClearErrInfo:Void()
+		errinfofile = ""
+		errinfoline = 0
+		errinfochar = 0
+	End
+	' report message
+	Method Message:Void( pType:String, pPrompt:String )
+		Local msg:String
+		If errinfofile Then
+			Local errinfo:String = errinfofile
+			If errinfoline Then
+				errinfo += ", line "+errinfoline
+				If errinfochar Then
+					errinfo += ", char "+errinfochar
+				End
+			End
+			msg = "["+ pType +" ("+ errinfo +")] "+pPrompt
+		Else
+			msg = "["+ pType +"] "+pPrompt
+		End
+		Print msg
+	End
+	' report log
+	Method Log:Void( pPrompt:String, pClearErrInfos:Bool=False )
+		If pClearErrInfos Then ClearErrInfo()
+		Message( "LOG", pPrompt )
+	End
+	' report warning
+	Method Warning:Void( pPrompt:String )
+		Message( "WARNING", pPrompt )
+	End
+	' report error
+	Method Error:Void( pPrompt:String )
+		Message( "ERROR", pPrompt )
+	End
+	' terminate app with prompt
+	Method Die:Void( pPrompt:String )
+		Message( "FATAL ERROR", pPrompt )
+		ExitApp(0)
+	End
+	
+	'---------------------------------------------------------------------------
+	' -opt_print* save filesystem methods
+	
+	' CopyDir - but only when no opt_print* is set
+	Method CopyDir:Void( pSrc:String, pDst:String, pRecursive:Bool=True )
+		If Not( opt_printdocs ) And Not( opt_printtree ) Then
+			_AssertPath(pDst)
+			.CopyDir(pSrc, pDst, pRecursive)
+		End
+	End
+	' CopyFile - but only when no opt_print* is set
+	Method CopyFile:Void( pSrc:String, pDst:String )
+		If Not( opt_printdocs ) And Not( opt_printtree ) Then
+			.CopyFile(pSrc, pDst)
+		End
+	End
+	' copying folder structures only works when every level is created
+	' individually - this method takes care of that
+	Method _AssertPath:Void( pDst:String )
+		Local p:Int = -1
+		Local path:String = ""
+		Repeat
+			' find next "/"
+			p = pDst.Find("/", p+1)
+			' strip of path before "/"
+			If p = -1 Then
+				path = pDst
+			Else
+				path = pDst[..p]
+			End
+			' assert that level exists
+			If FileType( path ) <> FILETYPE_DIR Then
+				CreateDir( path )
+			End
+		Until p = -1
+	End
+	
+	'===========================================================================
+	' ILinkResolver
+	Method ResolveLink:String( pLink:String, pAltText:String )
+		#If LOG_LINKRESOLVER
+			Log( "resolving link: '"+pLink+"', '"+pAltText+"'" )
+		#End
+		' image link?
+		If pLink.StartsWith("<img>") Then
+			Local src:String = pLink[5..]
+			Local html:String = "<img src=~q" + src + "~q"
+			If pAltText Then
+				html += " alt=~q" + pAltText + "~q"
+			End
+			html += " />"
+			Return html
+		End
+		' actual link
+		Local link:String = pLink
+		Local alt:String = pAltText
+		' no alt text? then make it the link text
+		If Not pAltText Then alt = pLink
+		' "http://*", "https://*" - internetzli link
+		' "#*" - anchor link on page
+		' "../*", "./" - file system link
+		If pLink.StartsWith("http://") Or pLink.StartsWith("https://") Or
+		pLink.StartsWith("#") Or
+		pLink.StartsWith("../") Or pLink.StartsWith("./") Then
+			Local html:String = "<a href=~q" + link + "~q>" + alt + "</a>"
+			Return html
+		End
+		' IN-DOC LINK
+		' if the link is a document link, strip what's leading "/"
+		If Not pAltText Then
+			Local p := alt.FindLast("/")
+			If p >= 0 Then
+				alt = alt[p+1 ..]
+			End
+		End
+		link = ResolveDocLink( link )
+		If resolvecode < 0 Then
+			Return "<a href=~q"+ link +"~q class=~qunresolved~q>"+ alt +"</a>"
+		End
+		Return "<a href=~q"+ link +"~q>"+ alt +"</a>"
+	End
+	' actually resolves a link (e.g. brl.admob.Admob.AdViewHeight) into a url
+	' (e.g. Modules_brl.admob.Admob.html#AdViewHeigt() )
+	Global resolvecode:Int
+	Method ResolveDocLink:String( pLink:String )
+		#If LOG_DOCLINKRESOLVER
+			Log( "resolving doc link: '"+pLink+"'" )
+		#End
+		' thanks Mike for reminding me that people actually DO write empty links...
+		If Not pLink Then
+			resolvecode = -1
+			Warning("empty link, please fix")
+			Return ""
+		End
+		Local link:String = pLink
+		' leaf/anchor specified?
+		Local anchor:String = ""
+		If link.Contains("#") Then
+			Local p:Int = link.Find("#")
+			anchor = link[p..]
+			link = link[..p]
+		End
+		' find decl this link links to
+		' (from curdecl on - which is set by the caller of whatever triggers
+		' link resolving)
+		Local dest := curdecl.FindFromHere( link )
+		#If LOG_DOCLINKRESOLVER
+			If dest Then
+				Log( "destination from current scope: "+dest.GetUniqueIdent() )
+			End
+		#End
+		' fallback 1: when linking to a decl that is not visible
+		' from the current scope, try to find it anywhere
+		If Not dest Then
+			' also, if link is a keyword, correct capitalization
+			#rem
+			SCREW THAT! Makedocs is strictly case-sensitive, period.
+			If Toker._keywords.Contains( link.ToLower() ) Then
+				Select link.ToLower()
+				Case "elseif"
+					link = "ElseIf"
+				Case "endif"
+					link = "EndIf"
+				Default
+					' just capitalize first letter
+					' (this would fuck up "ElseIf" and "EndIf")
+					link = link[..1].ToUpper() + link[1..].ToLower()
+				End
+			End
+			#end
+			dest = rootdecl.FindChild( link )
+			#If LOG_DOCLINKRESOLVER
+				If dest Then
+					Log("destination found outside scope: "+dest.GetUniqueIdent())
+				End
+			#End
+		End
+		' build link path from actual destination (backwards)
+		If dest Then
+			resolvecode = 0
+			link = BuildDocLink( dest, curdecl )
+		Else
+			resolvecode = -1
+			Warning("link destination not found: " + link)
+		End
+		Return link
+	End
+	' build link url to destination pDecl valid in pScope
+	' (meaning a link to Admob.GetAdmob() will only become #GetAdmob() when
+	' in brl.admob.Admob but Modules_brl.admob_Admob.html#GetAdbmob() when
+	' somewhere else)
+	Method BuildDocLink:String( pDecl:DocDecl, pScope:DocDecl=Null )
+		' browse up to actual valid scope
+		While pScope
+			Select pScope.kind
+			Case DECL_CLASS,
+			DECL_INTERFACE,
+			DECL_MODULE,
+			DECL_DOC,
+			DECL_INDEX,
+			DECL_ROOT_DOCS,
+			DECL_ROOT_MODULES,
+			DECL_ROOT
+				Exit
+			End
+			pScope = pScope.parent
+		Wend
+		#If LOG_DOCLINKBUILDER
+			If pScope Then
+				Log("building link to "+pDecl.GetIdent()+" from scope "+pScope.GetIdent())
+			Else
+				Log("building link to "+pDecl.ident)
+			End
+		#End
+		Local anchor:String, document:String
+		Local bit := pDecl
+		Repeat
+			' only scopes, doc files and indexes have their own page,
+			' the rest is addressed by anchor
+			Select bit.kind
+			Case DECL_DOC, DECL_INDEX
+				' replace the "path" of a doc by a prefix
+				Local pdecl := bit.GetChild( DECL_UIDENT_SCOPE )
+				If pdecl Then
+					' replace the "/" in the prefix by an "_"
+					document = pdecl.ident.Replace("/","_")
+				End
+				document += bit.ident
+				bit = rootdocs
+			' at module level, prefix "Modules_<modulename>"
+			Case DECL_MODULE
+				'document = bit.GetUniqueIdent() + document
+				'document = bit.GetTextOfChild( DECL_UIDENT_SCOPE ) + document
+				document = bit.GetIdent() + document
+				document = "Modules_" + document
+				bit = rootmodules
+			' at class/interface level, prefix "_<scopename>"
+			Case DECL_CLASS, DECL_INTERFACE
+				document = "_" + bit.ident + document
+			' at root level, append ".html" and exit
+			Case DECL_ROOT, DECL_ROOT_MODULES, DECL_ROOT_DOCS
+				document = document + ".html"
+				Exit
+			' enum level, jump over
+			Case DECL_ENUM, DECL_CLASSENUM, DECL_INH_CLASSENUM
+				' jump over
+			' at sub-scope level, make it an anchor
+			Default
+				anchor = "#" + bit.GetIdentWithParams()
+				' no need to specify more when current scope is reached
+				If bit.parent = pScope Then Exit
+			End
+			bit = bit.parent
+		Forever
+		Return document + anchor
+	End
+	'===========================================================================
+	' IPrettifier
+	Field blocks:IntStack
+	Method BeginPrettyBlock:String()
+		' one block controller per pretty block
+		blocks = New IntStack
+		Return "<div class=~qpretty~q>"
+	End
 	Method EndPrettyBlock:String()
 		Return "</div>"
 	End
-	
-	Method PrettifyLine:String( text:String )
-	
-		If text="</pre >" text="</pre>"
-		
-		'VERY simple #Rem handling...
-		If inrem
-			If text.StartsWith( "#End" ) inrem-=1
-			Return "<code class=r>"+HtmlEsc( text )+"</code><br>"
-		Else If text.StartsWith( "#Rem" )
-			inrem+=1
-			Return "<code class=r>"+HtmlEsc( text )+"</code><br>"
-		Endif
-
-		ptoker.SetText text
-		Local str:String,out:String,ccls:String
+	Method PrettifyLine:String( pText:String )
+		' create toker for this single pretty line and parse that
+		' (this means, multi-line tokens like multi-line strings can not be
+		' rendered correctly - have to be avoided)
+		Local toker := New Toker("docs", pText)
+		' pretty line's tokens can have these css classes:
+		' d (default/symbols), k (keywords), i (identifiers),
+		' l (literals), r (remarks)
+		Local css:String = "d", _css:String
+		Local txt:String, html:String
 		Repeat
-		
-			If Not ptoker.Bump() Exit
-			
-			Local cls:="d",toke:=ptoker.Toke,esc:=toke
-			
-			Select ptoker.TokeType
-			Case Toker.Eol
-				If Not toke Exit
-				cls="r"
-				esc=HtmlEsc( esc )
-			Case Toker.Whitespace
-				toke=""
-				For Local c:=Eachin esc
-					If c=9
-						toke+="    "[..4-(str+toke).Length Mod 4]
-					Else
-						toke+=" "
-					Endif
-				Next
-				esc=toke.Replace( " ","&nbsp;" )
-			Case Toker.Identifier
-				cls="i"
-				If CerberusKeywords.Contains( ";"+toke.ToLower()+";" ) cls="k"
-			Case Toker.IntLiteral,Toker.FloatLiteral,Toker.StringLiteral
-				cls="l"
-				esc=HtmlEsc( esc ).Replace( " ","&nbsp;" )
-			Case Toker.Symbol
-				esc=HtmlEsc( esc )
+			toker.NextToke()
+			txt = toker._toke
+			' end of line
+			If toker._tokeType = TOKE_EOL Or toker._tokeType = TOKE_EOF Then
+				Exit
 			End
-			If cls<>ccls
-				If out out+="</code>"
-				If cls out+="<code class="+cls+">" Else out+="<code>"
-				ccls=cls
-			Endif
-			str+=toke
-			out+=esc
+			' remarks and preprocessor directives
+			If toker._toke = "#" Then
+				toker.NextToke()
+				' remarks
+				If toker._toke.ToLower() = "rem" Then
+					css = "r"
+					blocks.Push(1)
+				Elseif toker._toke.ToLower() = "end" Then
+					' in rem block: end remark
+					If blocks.Length() > 0 Then
+						css = "r"
+						blocks.Pop()
+					' otherwise: end preprocessor block
+					Else
+						css = "d"
+					End
+				' preprocessor directive
+				Else
+					css = "d"
+				End
+				txt += toker._toke
+			' in rem blocks: just make everything a remark
+			Elseif blocks.Length() > 0 Then
+				css = "r"
+			' otherwise, analyse and switch style
+			Else
+				Select toker._tokeType
+				Case TOKE_LINECOMMENT
+					css = "r"
+					' line comments come with line ending included - trim them
+					If txt.EndsWith("~n") Then txt = txt[.. -1]
+					If txt.EndsWith("~r~n") Then txt = txt[.. -2]
+					If txt.EndsWith("~r") Then txt = txt[.. -1]
+				Case TOKE_KEYWORD
+					css = "k"
+				Case TOKE_IDENT
+					css = "i"
+				Case TOKE_INTLIT, TOKE_FLOATLIT, TOKE_STRINGLIT
+					css = "l"
+				Case TOKE_SYMBOL
+					css = "d"
+				End
+			End
+			' change style
+			If css <> _css Then
+				' close old styling block
+				If _css Then html += "</code>"
+				' open new block
+				If css Then html += "<code class=~q"+ css +"~q>"
+			End
+			' append data
+			html += HtmlEscape(txt)
+			_css = css
 		Forever
-		If out out+="</code>"
-		Return out+"<br>"
+		' close open styling blocks
+		If _css Then html += "</code>"
+		' end line
+		html += "<br/>"
+		Return html
 	End
-	
-End
-
-Function Main:Int()
-
-	ChangeDir ExtractDir( AppPath() )
-
-	While FileType( "docs" )<>FILETYPE_DIR Or FileType( "modules" )<>FILETYPE_DIR
-		ChangeDir ".."
-	Wend
-	
-	Local i:=1
-	While i<AppArgs.Length
-		Local arg:=AppArgs[i]
-		i+=1
-		Select arg
-		Case "-ignore"
-			If i<AppArgs.Length
-				ignore_mods.Insert AppArgs[i]
-				i+=1
-			Endif
-		End
-	Wend
-	
-	DeleteDir "docs/html",True
-	CreateDir "docs/html"
-	CreateDir "docs/html/data"
-	CreateDir "docs/html/examples"
-	CreateDir "docs/html/3rd party modules"
-	CopyDir   "docs/htmldoc","docs/html",True
-	
-	DeleteDir "docs/cerberusdoc/3rd party modules",True
-	CreateDir "docs/cerberusdoc/3rd party modules"
-	
-	Local style:=LoadString( "bin/docstyle.txt" ).Trim()
-	If Not style Or FileType( "docs/templates/"+style )<>FILETYPE_DIR style="devolonter"
-	
-	Local george:=New George( "docs/templates/"+style )
-	
-	Local apidoccer:=New ApiDoccer( george )
-	Local docsdoccer:=New DocsDoccer( george )
-	
-	Print "Parsing apis..."
-	apidoccer.ParseDocs
-	
-	Print "Parsing docs..."
-	docsdoccer.ParseDocs
-	
-	Print "Making indices..."
-	george.MakeIndices
-	
-	Print "Making apis..."
-	apidoccer.MakeDocs
-	
-	Print "Making docs..."
-	docsdoccer.MakeDocs
-	
-	george.MakeDocs
-	
-	DeleteDir "docs/cerberusdoc/3rd party modules",True
-	
-	Print "Copy module data dirs..."
-	george.CopyDataDirs()
-	
-	Print "Makedocs finished!"
-	Return 0
 End

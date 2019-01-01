@@ -1,217 +1,216 @@
+' Cerberus X - Bouncy Aliens example
+'
+' Shows how to use a stack, handle suspend and resume events, use pre-processor directives and achieve simple animation.
 
-'a port of the mojo1 banana...
-
-'#GLFW_USE_MINGW=False	'to build with msvc.
-
-'#GLFW_GCC_MSIZE_WINNT="64"	'to force 64 bit mingw builds. Needs mingw64 and will not work with angle target.
+Strict
 
 Import mojo2
 
-Public
+Const DRAW_WIDTH:Int = 320
+Const DRAW_HEIGHT:Int = 240
 
-Const WIDTH#=320
-Const HEIGHT#=240
 
 Class Sprite
 
-	Field x#,vx#
-	Field y#,vy#
-	Field f#,vf#
-	
+	Field x:Float, vx:Float
+	Field y:Float, vy:Float
+	Field xscale:Float, yscale:Float
+	Field frame:Int
+	Field frameset:Int
+	Field frametime:Int
+	Field rotation:Int
+	Field vrotation:Int
+
 	Method New()
-		x=Rnd( WIDTH )
-		y=Rnd( HEIGHT )
-		vx=Rnd(1,2);If Rnd(1)>=.5 vx=-vx
-		vy=Rnd(1,2);If Rnd(1)>=.5 vy=-vy
-		vf=Rnd( .5,1.5 )
+		x = Rnd(DRAW_WIDTH)
+		y = Rnd(DRAW_HEIGHT)
+		vx = Rnd(1, 2)
+		If Rnd(1) >= 0.5 vx = -vx
+		vy = Rnd(1,2)
+		If Rnd(1) >= 0.5 vy = -vy
+		xscale = Rnd(1, 3)
+		yscale = Rnd(1, 3)
+		frame = Int(Rnd(0, 8))
+		frameset = Int(Rnd(1,3))
+		frametime = Millisecs() + 50
+		rotation = Int(Rnd(359))
+		If Rnd(1) >= 0.5 
+			vrotation = Int(Rnd(1,3))
+		Else
+			vrotation = -Int(Rnd(1,3))
+		Endif	
 	End
 
-	Method Update()
-		x+=vx;If x<0 Or x>=WIDTH vx=-vx
-		y+=vy;If y<0 Or y>=HEIGHT vy=-vy
-		f+=vf;If f>=8 f-=8
+	Method Update:Int()
+		
+		' update position
+		x += vx
+		If x < 0 Or x >= DRAW_WIDTH vx = -vx
+		y += vy
+		If y < 0 Or y >= DRAW_HEIGHT vy = -vy
+		
+		' update frame
+		If Millisecs() > frametime
+			frame += 1
+			If frame = 8 frame = 0
+			frametime = Millisecs() + 50
+		Endif
+		' update rotation
+		rotation += vrotation
+		
+		Return 0
 	End
-	
 End
+
 
 Class MyApp Extends App
 
-	Field canvas:Canvas
-
-	Field utime,uframes,ufps
-	Field rtime,rframes,rfps
-	
+	Field myCanvas:Canvas
 	Field frames1:Image[]
 	Field frames2:Image[]
 	Field sprites:=New Stack<Sprite>
-	
-	Field rot#
-	
-	Field ums
-
-	Field fullscreen:=False
+	Field fullscreen:Bool = False
+	Field paused:Bool = False
 	
 	Method ToggleFullscreen:Void()
-		fullscreen=Not fullscreen
+		
+		fullscreen = Not fullscreen
 		If fullscreen
-			SetDeviceWindow DesktopMode.Width,DesktopMode.Height,1
-			SetSwapInterval 1
-			SetUpdateRate 0
+			Local desktop:DisplayMode = DesktopMode()
+			SetDeviceWindow(desktop.Width, desktop.Height, 1)
+			SetSwapInterval(1)
+			SetUpdateRate(0)
 		Else
-			SetDeviceWindow 640,480,4
-			SetSwapInterval 1
-			SetUpdateRate 0
+			SetDeviceWindow 640, 480, 4
+			SetSwapInterval(1)
+			SetUpdateRate(0)
 		Endif
 	End
 	
-	Method OnCreate()
+	
+	Method OnCreate:Int()
 
-		'For 'pixel art' style graphics!	
-		Image.SetFlagsMask( Image.Managed )
+		Image.SetFlagsMask(Image.Managed)
 		
-		canvas=New Canvas
+		myCanvas=New Canvas()
+								
+		frames1 = Image.LoadFrames("alien1.png", 8)
+		frames2 = Image.LoadFrames("alien2.png", 8)
 		
-		'make sure I haven't broken any file type filters!
-		Local test:=LoadString( "test.txt" )
-		If test Print "LoadString:"+test Else Print "LoadString failed."
-		
-		Print "Display modes:"
-		For Local mode:=Eachin DisplayModes()
-			Print mode.Width+","+mode.Height
-		Next
-
-		frames1=Image.LoadFrames( "alien1.png",8 )
-		frames2=Image.LoadFrames( "alien2.png",8 )
-		
-		For Local i=0 Until 100
+		For Local i:Int = 0 Until 25
 			sprites.Push New Sprite
 		Next
-
-		SetSwapInterval 1
-		SetUpdateRate 0
 		
-		utime=Millisecs()
-		rtime=utime
+		SetUpdateRate(60)
+
+		Return 0
 	End
 	
-	Method OnUpdate()
+
+	Method OnUpdate:Int()
 	
+		' switch to full screen only possible in Desktop mode
 		If KeyHit( KEY_SPACE ) 
-#If TARGET="glfw"
-			ToggleFullscreen
-#Else
-			CrashGraphics
-#Endif
-		End
-	
-		ums=Millisecs
-
-		uframes+=1
-		Local e=Millisecs-utime
-		If e>=1000
-			ufps=uframes
-			uframes=0
-			utime+=e
+			#If TARGET = "glfw"
+				ToggleFullscreen
+			#Endif
 		Endif
-	
-		If MouseHit(0)
 		
-			If MouseX()<DeviceWidth/3
-				For Local i=0 Until 25
-					If Not sprites.IsEmpty() sprites.Pop
-				Next
-			Else If MouseX()>DeviceWidth*2/3
-				For Local i=0 Until 25
-					sprites.Push New Sprite
-				Next
-			Else
-				If fullscreen ToggleFullscreen			
-				OpenUrl "http://www.cerberus-x.com"
-			Endif
-		Endif
-	
+		' add/remove 25 sprites per click
+		' make existing sprites smaller/larger as new ones are added/removed
+		If MouseHit(MOUSE_RIGHT) And Not sprites.IsEmpty()		
+			For Local i:Int = 0 Until 25
+				sprites.Pop()
+			Next
+			For Local sprite:=Eachin sprites
+				sprite.xscale *= 1.25
+				sprite.yscale *= 1.25
+			Next
+			
+		Elseif MouseHit(MOUSE_LEFT)
+			For Local sprite:=Eachin sprites
+				sprite.xscale *= 0.8
+				sprite.yscale *= 0.8
+			Next
+			For Local i:Int = 0 Until 25
+				sprites.Push(New Sprite())
+			Next
+		Endif				
+		
 		For Local sprite:=Eachin sprites
-			sprite.Update
+			sprite.Update()
 		Next
-		
-		rot+=1
-		
-		ums=Millisecs-ums;
-
+	
+		Return 0	
  	End
  	
- 	Field paused:Bool
 	
-	Method OnRender()
+	Method OnRender:Int()
 	
-		'in case device mode changed
-		canvas.SetViewport 0,0,DeviceWidth,DeviceHeight
-		canvas.SetScissor 0,0,DeviceWidth,DeviceHeight
-	
-		canvas.SetProjection2d 0,WIDTH,0,HEIGHT
-	
-		rframes+=1
-		Local e=Millisecs-rtime
-		If e>=1000
-			rfps=rframes
-			rframes=0
-			rtime+=e
-		Endif
+		Local dw:Int = DeviceWidth()
+		Local dh:Int = DeviceHeight()
+		Local centrex:Int = dw / 2
+		Local centrey:Int = dh / 2
 		
-		canvas.Clear .5,0,1
+		' make sure viewport fills device in case window size has changed
+		myCanvas.SetViewport(0, 0, dw, dh)		
+		myCanvas.SetProjection2d(0, DRAW_WIDTH, 0, DRAW_HEIGHT)
+		myCanvas.Clear(0, 0, 0, 1)
 
-		Local r:=rot
-		Local frames:=frames1
-		Local i,n=sprites.Length()/10	'ie: simulate 10 render state changes
-		random.Seed=1234
-		For Local sprite:=Eachin sprites
-			i+=1
-			If i Mod n=0
-				If (i/n)&1 frames=frames2 Else frames=frames1
-			End
-			r+=Rnd(360)
-			canvas.DrawImage frames[sprite.f],sprite.x,sprite.y,r,Rnd(1,2),Rnd(1,2)
+		For Local sprite := Eachin sprites
+
+			If sprite.frameset = 1 
+				myCanvas.DrawImage(frames1[sprite.frame], sprite.x, sprite.y, sprite.rotation, sprite.xscale, sprite.yscale)
+			Else
+				myCanvas.DrawImage(frames2[sprite.frame], sprite.x, sprite.y, sprite.rotation, sprite.xscale, sprite.yscale)
+			Endif		
 		Next
 		
-		canvas.SetProjection2d 0,DeviceWidth,0,DeviceHeight
-		
-		canvas.DrawText "[<<]",0,8,0,.5
-		canvas.DrawText "imgs="+sprites.Length()+", ufps="+ufps+", rfps="+rfps+", last update="+ums,DeviceWidth/2,8,.5,.5
-		canvas.DrawText "[>>]",DeviceWidth,8,1,.5
-		
-		If paused
+		' scale to window dimensions
+		myCanvas.SetProjection2d(0, dw, 0, dh)
 
-			canvas.SetColor 0,0,0,.5
-			canvas.DrawRect 0,0,DeviceWidth,DeviceHeight
-			canvas.SetColor 1,1,1,1
-			canvas.DrawText "Suspended",DeviceWidth/2,DeviceHeight/2,.5,.5
-			canvas.SetColor 1,1,1,1
-			
+		myCanvas.DrawText ("[LMB - Add Sprites]     [RMB - Remove Sprites]", centrex, 8, 0.5)
+		#If TARGET = "glfw" 
+			myCanvas.DrawText ("[Space - Toggle Fullscreen]", centrex, 28, 0.5)
+		#Endif
+		myCanvas.DrawText ("Sprites: " + sprites.Length(), centrex, dh - 20, 0.5)
+					
+		If paused
+			myCanvas.SetColor(0, 0, 0, 0.5)
+			myCanvas.DrawRect(0, 0, dw, dh)
+			myCanvas.SetColor(1, 1, 1, 1)
+			myCanvas.DrawText("Suspended", centrex, centrey, 0.5, 0.5)
 		Endif
 		
-		canvas.Flush
-
+		myCanvas.Flush
+		Return 0		
 	End
 	
-	Method OnSuspend()
+	
+	Method OnSuspend:Int()
 		Print "BouncyAliens: OnSuspend"
 		paused=True
+		Return 0
 	End
 
-	Method OnResume()
+
+	Method OnResume:Int()
 		Print "BouncyAliens: OnResume"
 		paused=False
+		Return 0
 	End
 	
-	Method OnClose()
+	
+	Method OnClose:Int()
 		Print "BouncyAliens: OnClose"
 		Super.OnClose()
+		Return 0
 	End
 	
 End
 
-Function Main()
 
+Function Main:Int()
 	New MyApp
-	
+	Return 0	
 End

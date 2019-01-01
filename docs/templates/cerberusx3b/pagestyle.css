@@ -1,0 +1,403 @@
+/************************
+ shared definitions
+************************/
+*{
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+h1, h2, h3, h4, h5{
+	font-family: sans-serif;
+	font-weight: 900;
+}
+a{
+	text-decoration: none;
+	color: inherit;
+}
+a img{
+	border: none;
+}
+code, pre{
+	font-family: monospace;
+	font-size: 13px;		/* fix for SHIT BROWSERS DOWNSCALING EFFING MONOSPACE FONTS */
+	white-space: pre-wrap;
+}
+.main, .nav, .article, .section, .header, .footer{
+	display: block;
+}
+
+/************************
+ page coarse layout
+************************/
+html{
+	/*
+	100% = "16px", 81.25% = "13px" (old CX docs default)
+	Every other size depends on this, thus:
+	DO NOT CHANGE !
+	*/
+	font-size: 81.25%;
+	line-height: 155%;
+}
+html, body{
+	width: 100%;
+	background: #ffffff;
+	font-family: "Helvetica", "Arial", sans-serif;
+	color: #222222;
+}
+.page{
+	box-sizing: border-box;
+	width: 100%;
+	padding: 1.5rem 2rem;
+}
+
+/************************
+ header
+************************/
+.page>.header{
+	font-size: 1.85rem;
+	line-height: 2em;
+}
+/* DOCS HEADER */
+.page>.header>h1{
+	display: inline-block;
+	font-size: inherit;
+	text-transform: uppercase;
+}
+.page>.header>h1>a{
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+}
+.page>.header>h1>a>img{
+	vertical-align: top;
+}
+/* ICON LINKS */
+.page>.header>.icons{
+	display: inline-flex;
+	flex-wrap: wrap;
+	float: right;
+}
+.page>.header>.icons>a{
+	display: inline-block;
+	margin-left: 0.5rem;
+}
+.page>.header>.icons>a>img{
+	vertical-align: middle;
+	max-width: 3rem;
+	max-height: 3rem;
+}
+.page>.header::after{
+	display: block;
+	content: '';
+	clear: both;
+}
+
+/************************
+ navigation
+************************/
+/* MAIN NAVIGATION */
+.page>.nav{
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 1rem;
+	border-radius: 0.4rem;
+	background: #333333;
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	color: white;
+}
+.page>.nav>a{
+	display: inline-block;
+	margin: 0 0.5rem;
+	padding: 0.5rem;
+}
+.page>.nav>a:hover{
+	color: hsl(26, 100%, 45%);
+}
+/* LOCATION */
+.page>.location{
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 1rem;
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	color: #cccccc;
+}
+.page>.location>a{
+	margin-right: 0.5rem;
+	color: black;
+}
+.page>.location>a:hover{
+	color: hsl(26, 90%, 40%);
+}
+.page>.location>a::after{
+	content: '/';
+	margin-left: 0.5rem;
+	color: #cccccc;
+}
+
+/************************
+ contents
+************************/
+.page>.main{
+	margin-top: 2rem;
+}
+/* HEADINGS */
+.page>.main h1,
+.page>.main h2,
+.page>.main h3,
+.page>.main h4,
+.page>.main h5{
+	margin: 3rem 0 1.5rem 0;
+	font-weight: bold;
+	color: #333333;
+}
+.page>.main h1{
+	font-size: 1.4rem;
+	font-weight: 900;
+	text-transform: uppercase;
+}
+.page>.main h1 small{
+	text-transform: none;
+}
+.page>.main h2{
+	font-size: 1.3rem;
+}
+.page>.main h3{
+	font-size: 1.1rem;
+}
+.page>.main hr{
+	margin: 2rem 0;
+	height: 0.8rem;
+	border: none;
+	border-radius: 0.4rem;
+	background: #eeeeee;
+}
+/* SEMANTIC */
+.page>.main .article{
+	margin: 3rem 0 1rem 0;
+}
+/* BLOCK CONTENTS */
+.page>.main p,
+.page>.main ul,
+.page>.main ol,
+.page>.main table,
+.page>.main div.pretty{
+	margin: 0.8rem 0;
+}
+.page>.main ul,
+.page>.main ol{
+	margin-left: 2rem;
+}
+.page>.main iframe,
+.page>.main canvas{
+	box-sizing: border-box;
+	padding: 0.4rem;
+	border-radius: 0.4rem;
+	border: 1px solid #cccccc;
+}
+.page>.main .multicolumn{
+	column-width: 15rem;
+	column-gap: 4rem;
+	column-rule: 1px solid #cccccc;
+}
+.page>.main pre{
+	margin: 1rem 0;
+	padding: 0.6rem 1rem;
+	border-radius: 0.4rem;
+	border: 1px solid #cccccc;
+	background: #f5f5f5;
+}
+.page>.main img{
+	max-width: 100%;
+}
+/* tables */
+.page>.main table{
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 0.4rem;
+	border: 1px solid #cccccc;
+}
+.page>.main table tbody{
+	border: inherit;
+}
+.page>.main table tr{
+	border: inherit;
+}
+.page>.main table tr:nth-child(even){
+	background-color: rgba(0,0,0, 0.04);
+}
+.page>.main table th,
+.page>.main table td{
+	padding: 0.6rem 1rem;
+	border: inherit;
+	border-right: none;
+	border-bottom: none;
+	text-align: left;
+	vertical-align: top;
+}
+.page>.main table th:first-child,
+.page>.main table td:first-child{
+	border-left: none;
+}
+.page>.main table th{
+	border-top: none;
+	vertical-align: bottom;
+}
+/* INLINE CONTENTS */
+.page>.main a[href]{
+	color: hsl(12, 90%, 40%);
+}
+.page>.main a[href]:hover{
+	color: hsl(12, 90%, 30%);
+	text-decoration: underline;
+}
+.page>.main a[name]{
+	position: absolute;
+	display: block;
+	top: -2rem;
+}
+.page>.main a.unresolved:after{
+	content: '?';
+	color: red;
+	font-weight: 900;
+	animation: blink 1s step-start infinite;
+}
+@keyframes blink{
+	50% {color: black;}
+}
+
+/************************
+ code blocks with syntax
+ highlighting
+************************/
+div.pretty{
+	font-family: monospace;
+	padding: 0.75rem;
+	background-color: #302f2d;
+	border-radius: 0.4rem;
+	color: #e8bf6a;
+	tab-size: 4;
+	-webkit-tab-size: 4;
+	-moz-tab-size: 4;
+	-ms-tab-size: 4;
+	overflow-x: auto;
+}
+div.pretty code{
+	white-space: pre-wrap;
+}
+div.pretty code.d {
+  color: #6897bb;
+}
+div.pretty code.k {
+  color: #a9b7c6;
+}
+div.pretty code.i {
+  color: #e8bf6a;
+}
+div.pretty code.l {
+  color: #a4c157;
+}
+div.pretty code.r {
+  color: #bc9458;
+}
+
+/************************
+ scope documentation
+************************/
+/* index */
+.page>.main table.index{
+	width: 100%;
+	border-radius: 0;
+	border: none;
+	border-bottom: 1px solid #cccccc;
+	line-height: 1.3rem;
+	table-layout: fixed;
+}
+.page>.main table.index td{
+	padding: 0.3rem 1rem;
+}
+.page>.main table.index th:first-child{
+	width: 20rem;
+}
+.page>.main table.index th{
+	padding: 1.5rem 1rem 0.3rem 1rem;
+	border-bottom: 1px solid #cccccc;
+	font-weight: normal;
+	text-transform: uppercase;
+}
+.page>.main table.index td>small{
+	display: block;
+	top: -0.2em;
+	margin: -0.2em 0;
+	color: #999999;
+	font-size: 0.75em;
+}
+.page>.main table.index code small{
+	color: #666666;
+}
+
+.page>.main span.note{
+	top: -1rem;
+	padding-left: 1rem;
+	font-size: 0.85em;
+}
+
+.page>.main .declaration{
+	font-weight: bold;
+	color: #666666;
+}
+.page>.main .declaration strong{
+	color: #000000;
+}
+.page>.main .detail{
+	top: 0.4rem;
+	font-size: 0.9rem;
+	text-transform: uppercase;
+}
+.page>.main .detail:before{
+	display: inline-block;
+	width: 1.3rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #999999;
+}
+.page>.main .detail.parameters:before{
+	content: '\2ba9\20';
+}
+.page>.main .detail.returns:before{
+	content: '\2ba8\20';
+}
+.page>.main .detail.links:before{
+	content: '\2b67\20';
+}
+.page>.main .detail.example:before{
+	content: '\23f5\20';
+}
+
+
+/* declarations */
+.page>.main .scope-decls{
+	width: 100%;
+	border: none;
+}
+.page>.main .scope-decls tr{
+	border: inherit;
+	border-bottom: 1px solid #cccccc;
+	background: none !important;
+}
+.page>.main .scope-decls tr:last-child{
+	border-bottom: none;
+}
+.page>.main .scope-decls td{
+	border: inherit;
+}
+.page>.main .scope-decls td:first-child{
+	width: 14rem;
+	text-transform: uppercase;
+}
+.page>.main .scope-decls ul{
+	margin: 0 0 1rem 0;
+	list-style: none;
+}
+
