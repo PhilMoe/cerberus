@@ -1,6 +1,12 @@
 
 <h1>${INDEX}</h1>
 
+<div class="shortcuts">
+${FOR INDEX_SHORTCUTS}
+	<span>${IF URL}<a href="${URL}">${ENDIF}${IDENT}${IF URL}</a>${ENDIF}</span>
+${NEXT}
+</div>
+
 <table class="index">
 	<tr><th>Name</th><th>Description</th></tr>
 	${FOR ITEMS}
