@@ -400,3 +400,15 @@ div.pretty code.r {
 	list-style: none;
 }
 
+/************************
+ indexes
+************************/
+.page>main .shortcuts{
+	margin-top: -0.5rem;
+}
+.page>main .shortcuts>span{
+	display: inline-block;
+	margin-right: 0.3rem;
+	color: #cccccc;
+	text-transform: uppercase;
+}
