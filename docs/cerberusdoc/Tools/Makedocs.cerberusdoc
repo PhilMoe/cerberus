@@ -55,11 +55,11 @@ All generated html files are written in `docs/html/`, that's why the relative pa
 
 >> <a name="general"></a> General documentation
 
-General documentation files have a `.cerberusdoc` extension and are placed in the `docs/cerberusdoc/` directory or subdirectories therein. Makedocs will automatically create index files for directories without matching `.cerberusdoc` file and in there, list the contents of that directory.
+General documentation files have a `.cerberusdoc` extension and are placed in the `docs/cerberusdoc/` directory or subdirectories therein. Makedocs will automatically create index files for directories without matching `.cerberusdoc` file and in there, list the contents of that directory. 
 
 The landing page for the Cerberus X documentation is `Home.cerberusdoc`.
 
-For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension.
+For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension. The files must be UTF-8 encoded - IDEs such as [[Ted]] automatically use this encoding, but other text editors might not.
 
 
 >> <a name="module"></a> Module documentation
@@ -107,7 +107,7 @@ Following declarations will show up in the docs.
 #End
 </pre>
 
-For backwards compatibility, the `.monkey` extension is treated like the `.cxs` extension.
+For backwards compatibility, the `.monkey` extension is treated like the `.cxs` extension. The files must be UTF-8 encoded - IDEs such as [[Ted]] automatically use this encoding, but other text editors might not.
 
 
 >>> Documenting modules using an external cerberusdoc file
@@ -145,7 +145,7 @@ Documentation for my.module goes here.
 Documentation for MyFunction goes here.</code>
 </div>
 
-For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension and the `monkeydoc` directory like the `cerberusdoc` one.
+For backwards compatibility, the `.monkeydoc` extension is treated like the `.cerberusdoc` extension and the `monkeydoc` directory like the `cerberusdoc` one. The files must be UTF-8 encoded - IDEs such as [[Ted]] automatically use this encoding, but other text editors might not.
 
 
 >>> Adding examples to declarations
