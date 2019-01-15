@@ -118,6 +118,8 @@ Function Main:Int()
 End
 </pre>
 
+@Note that inside `\<pre\>` blocks markdown is bypassed, so you don't have to escape html or markdown special chars.
+
 For code blocks without syntax highlighting, you need to use in-line html with `\<div class="pretty"\> .. \</div\>` tags around the block and put the code into `\<code\> .. \</code\>` tags. However, the escaping within such blocks differs from the one within pre-tags, meaning you have to escape html characters and markdown. Also, such blocks *may not* contain blank lines, since they will be translated into paragraph separators, which would cause invalid html. Instead, you have to put a space character at the place of a blank line.
 
 

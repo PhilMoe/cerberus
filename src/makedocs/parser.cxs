@@ -108,7 +108,8 @@ Class Parser Extends Toker
 	End
 	
 	' instead of a token, this thing only eats when matching CDATA
-	Method NextCdata:String( pString:String )
+	' pCaseInsensitive=True will ignore case
+	Method NextCdata:String( pString:String, pCaseInsensitive:Bool=False )
 		_toke = ""
 		' source end reached
 		If _tokePos = _length Then
@@ -119,7 +120,8 @@ Class Parser Extends Toker
 		If _tokePos + ln < _length Then
 			Local sstr:String = _source[_tokePos .. _tokePos+ln]
 			' match
-			If sstr = pString Then
+			If sstr = pString Or
+			(pCaseInsensitive And sstr.ToLower() = pString.ToLower()) Then
 				_toke = sstr
 				_tokeType = TOKE_CDATA
 				_tokePos += ln
@@ -262,9 +264,15 @@ Class Parser Extends Toker
 	'---------------------------------------------------------------------------
 	' ParseXXX methods return a DocDecl node or null if not successful
 	' the generated DocDecl node is automatically appended to pScope
+
+	' Some Parse* methods can result in whole lists, but can only return one
+	' item thereof. In that case, the complete list will be stored in this:
+	Field listofdecls:Stack<DocDecl>
 	
 	' parse a declaration in pScope
 	Method ParseDecl:DocDecl( pScope:DocDecl )
+		' only needed for parsing lists of decls
+		listofdecls = Null
 		' valid declarations start with...
 		Select _toke.ToLower()
 		Case "module"
@@ -310,6 +318,10 @@ Class Parser Extends Toker
 				If ltoke = "const" Then kind = DECL_CLASSCONST
 				If ltoke = "global" Then kind = DECL_CLASSGLOBAL
 				Local decls := ParseVariableSet( scope, kind )
+				' provide whole list of vars
+				If decls.Length > 1 Then
+					listofdecls = decls
+				End
 				Return decls.Get(0)
 			' otherwise it's at module scope
 			Else
@@ -318,6 +330,10 @@ Class Parser Extends Toker
 				If ltoke = "const" Then kind = DECL_CONST
 				If ltoke = "global" Then kind = DECL_GLOBAL
 				Local decls := ParseVariableSet( scope, kind )
+				' provide whole list of vars
+				If decls.Length > 1 Then
+					listofdecls = decls
+				End
 				Return decls.Get(0)
 			End
 		Case "enumerate"
@@ -344,6 +360,10 @@ Class Parser Extends Toker
 			Local scope := GetClassScope( pScope )
 			If scope Then
 				Local decls := ParseVariableSet( scope, DECL_FIELD )
+				' provide whole list of vars
+				If decls.Length > 1 Then
+					listofdecls = decls
+				End
 				Return decls.Get(0)
 			Else
 				Error("Field declaration must be at class scope")
@@ -587,7 +607,7 @@ Class Parser Extends Toker
 	End
 	
 	' parses a set of variables
-	' e.g. 'Global' a:Int, b:Int
+	' e.g. Global a:Int, b:Int
 	Method ParseVariableSet:Stack<DocDecl>( pScope:DocDecl, pKind:Int )
 		Local decls := New Stack<DocDecl>
 		' could be a whole list, so loop
