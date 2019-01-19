@@ -37,12 +37,19 @@ For this file, Makedocs provides the following lists and fields:
 | Name			| Description
 | `CONTENT`		| Page content passed on by scope_template, index_template or plain markdown from general documentation.
 | `ICONLINKS`	| List of all icon links (links to 3rd party docs)
-| &emsp;`ICON`	| Image source for that icon link
-| &emsp;`URL`	| Target url for that icon link
 | `NAVLINKS`	| List of navigation links (current location)
-| &emsp;`IDENT`	| Name of navigation link
-| &emsp;`URL`	| Url of that link
 
+In `ICONLINKS`, these fields are available:
+
+| Name			| Description
+| `ICON`		| Image source for that icon link
+| `URL`			| Target url for that icon link
+
+In `NAVLINKS`, these fields are available:
+
+| Name			| Description
+| `IDENT`		| Name of navigation link
+| `URL`			| Url of that link
 
 >> The scope_template.html File
 
@@ -110,11 +117,12 @@ For classes and interfaces, these lists are available:
 
 >> The index_template.html File
 
-Makedocs automatically generates some indexes, e.g. of all modules and also for folders that have no corresponding %.cerberusdoc% file. For indexes, two additional fields are provided:
+Makedocs automatically generates some indexes, e.g. of all modules and also for folders that have no corresponding %.cerberusdoc% file. For indexes, three additional fields are provided:
 
-| Name			| Description
-| `INDEX`		| Name of that index
-| `ITEMS`		| List of all declarations in that index
+| Name				| Description
+| `INDEX`			| Name of that index
+| `ITEMS`			| List of all declarations in that index
+| `INDEX_SHORTCUTS`	| List of the letters a to z for short cuts
 
 Since indexes can also list general documentation, only basic fields that can be retrieved from every type of documentation are provide for the items:
 
@@ -123,3 +131,9 @@ Since indexes can also list general documentation, only basic fields that can be
 | `URL`			| Url for that declaration / page
 | `SCOPE`		| Scope of this declaration / page
 | `SUMMARY`		| Summary field
+
+`INDEX_SHORTCUTS` provides the following fields:
+
+| Name			| Description
+| `IDENT`		| The short cut letter (`a` to `z`)
+| `URL`			| Url for the first element in that letter category
