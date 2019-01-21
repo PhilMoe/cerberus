@@ -1,0 +1,128 @@
+
+# Module cerberus.interpolate
+
+Functions to interpolate between two values. This is mostly used for timed transitions or to ease movements' beginnings and endings.
+
+<!--
+Replaced iframe by link to document, since QT redirects page to iframe url
+
+<div style="position:relative;width:100\%;padding-top:56.25\%;">
+	<iframe src="data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html" style="position:absolute;top:0;width:100\%;height:100\%;"></iframe>
+</div>
+-->
+
+Try the [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function LinMap:Float(dt:Float, t0:Float, t1:Float)
+
+Returns percentage of where about @dt is in the range of @t0 to @t1. This is basically the inverse function of [[InterpolateLin]].
+
+
+
+# Function InterpolateLin:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates linearly between `(0,@y0)` and `(1,@y1)` at @x.
+
+![InterpolateLin diagram](data/cerberus/interpolate/InterpolateLin.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [[LinMap]], [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function InterpolateCurve:Float(y0:Float, y1:Float, yA:Float, x:Float)
+
+Interpolates on a curve from `(0,@y0)` to `(1,@y1)` going through `(0.5,@yA)` at @x.
+
+![InterpolateCurve diagram](data/cerberus/interpolate/InterpolateCurve.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @yA - value at x=0.5
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function InterpolateFit:Float(y0:Float, y1:Float, s0:Float, s1:Float, x:Float)
+
+Interpolates on a curve from `(0,@y0)` to `(1,@y1)` with slopes `@s0` and `@s1` respectively at @x.
+
+![InterpolateFit diagram](data/cerberus/interpolate/InterpolateFit.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @s0 - slope at x=0.0
+* @s1 - slope at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function InterpolateSin:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a sinusoidal from `(0,@y0)` to `(1,@y1)` at @x.
+
+![InterpolateSin diagram](data/cerberus/interpolate/InterpolateSin.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function InterpolateFlats:Float(y0:Float, y1:Float, yA:Float, x:Float)
+
+Interpolates on a curve from `(0,@y0)` to `(1,@y1)` with slopes=0 going through `(0.5,@yA)` at @x.
+
+![InterpolateFlats diagram](data/cerberus/interpolate/InterpolateFlats.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @yA - value at x=0.5
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+
+# Function InterpolateCubicBezier:Float(y0:Float, y1:Float, A:Float, B:Float, C:Float, D:Float, x:Float, pPrecision:Float = 0.0001)
+
+Interpolates on a cubic bézier curve from `(0,@y0)` to `(1,@y1)` with control points `(@A,@B)` and `(@C,@D)` at @x.
+
+![InterpolateCubicBezier diagram](data/cerberus/interpolate/InterpolateCubicBezier.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @A, @B, @C, @D - cubic bézier points
+* @x - point to interpolate, ranging from 0 to 1
+* @pPrecision (optional) - to which precision the @x value shall be evaluated
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
