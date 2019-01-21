@@ -1,0 +1,491 @@
+Strict
+
+Import mojo2
+
+Const COLOR_DIAGRAM1:Int		= $277bc4		' blue
+Const COLOR_DIAGRAM2:Int		= $e43127		' red
+Const COLOR_DIAGRAM3:Int		= $00a66c		' green
+Const COLOR_DIAGRAM4:Int		= $734fb3		' lila
+Const COLOR_DIAGRAM5:Int		= $ef8616		' orange
+Const COLOR_DIAGRAM6:Int		= $97bf24		' lime
+Const COLOR_DIAGRAM7:Int		= $06a2c9		' turquoise
+Const COLOR_DIAGRAM8:Int		= $c90481		' magenta
+Const COLOR_DIAGRAM9:Int		= $fbbd00		' yellow
+
+Const COLOR_DIAGRAM_WALL:Int	= $cccccc		' light grey
+
+#USE_JSHACK = True
+#If USE_JSHACK
+	Extern
+	' finish string with ;// so whatever follows the invoke in .cxs gets ignored in .js
+	Global jshack_target_refer:String = "var target = document.getElementById('InterpolateFunction'); if(!target) target = document.getElementById('GameConsole');//"
+	Global jshack_target_value:String = "target.innerHTML"
+	Public
+#End
+
+Global mx:Int, my:Int
+Global mh:Int, md:Int
+
+Global INTERPFUNCS:InterpFunc[] = [	InterpFunc(New InterpFuncLin),
+									InterpFunc(New InterpFuncCurve),
+									InterpFunc(New InterpFuncSin),
+									InterpFunc(New InterpFuncFit),
+									InterpFunc(New InterpFuncFlats),
+									InterpFunc(New InterpFuncCubicBezier)]
+Global curfuncidx:Int = 0
+Global curfunc:InterpFunc
+
+' end points
+Global pointY0 := New ControlPoint()
+Global pointY1 := New ControlPoint()
+' intermediate point
+Global pointYA  := New ControlPoint()
+' slope control points
+Global pointS0 := New ControlPoint()
+Global pointS1 := New ControlPoint()
+' cubic bezier points
+Global pointAB := New ControlPoint()
+Global pointCD := New ControlPoint()
+
+Global cvMain:Canvas
+' track if any of the points moved
+Global anypointmoved:Int = True
+
+
+' main function
+Function Main:Int()
+	New MyApp()
+	Return 0
+End
+
+Class MyApp Extends App
+	' graph layout
+	Global width:Int, height:Int
+	Global graphsize:Int
+	Global graphx0:Int, graphy0:Int
+	Global framesize:Int
+	Global framex0:Int, framey0:Int
+	' demo
+	Global demox0:Int, demoy0:Int
+	' different demo timings
+	Global demot:Float[3]
+	Global DEMO_DURATIONS:Int[] = [500, 1000, 2000]
+	Global DEMO_DURATION_MAX:Int
+	
+	Method OnCreate:Int()
+		cvMain = New Canvas
+		SetUpdateRate(60)
+		' maximum duration
+		DEMO_DURATION_MAX = DEMO_DURATIONS[0]
+		For Local d := Eachin DEMO_DURATIONS
+			If d > DEMO_DURATION_MAX Then DEMO_DURATION_MAX = d
+		Next
+		'--- init control points ---
+		' end points
+		pointY0.Position(0,0)
+		pointY0.XBounds(0,0)
+		pointY0.YBounds(-0.5,1.5)
+		pointY0.Show()
+		pointY1.Position(1,1)
+		pointY1.XBounds(1,1)
+		pointY1.YBounds(-0.5,1.5)
+		pointY1.Show()
+		' intermediate point
+		pointYA.Position(0.5,0.25)
+		pointYA.XBounds(0.5,0.5)
+		pointYA.YBounds(-0.5,1.5)
+		pointYA.Hide()
+		' slope control points
+		pointS0.Position(0.25,0.5)
+		pointS0.XBounds(0.25,0.25)
+		pointS0.YBounds(-0.5,1.5)
+		pointS0.Hide()
+		pointS1.Position(0.75,0.5)
+		pointS1.XBounds(0.75,0.75)
+		pointS1.YBounds(-0.5,1.5)
+		pointS1.Hide()
+		' cubic bezier points
+		pointAB.Position(0.2,0.0)
+		pointAB.XBounds(0,1)
+		pointAB.YBounds(-0.5,1.5)
+		pointAB.Hide()
+		pointCD.Position(0.6,1)
+		pointCD.XBounds(0,1)
+		pointCD.YBounds(-0.5,1.5)
+		pointCD.Hide()
+		'--- init tweening function attachments ---
+		curfunc = INTERPFUNCS[ curfuncidx ]
+		curfunc.Activate()
+		
+		Layout()
+		Return 0
+	End
+	
+	Method OnResize:Int()
+		cvMain = New Canvas
+		Layout()
+		Return 0
+	End
+	
+	Method Layout:Void()
+		width = DeviceWidth()
+		height = DeviceHeight()
+		' get dimension to fit in graph
+		graphsize = Min(width / 2, height)
+		graphx0 = width / 2 - graphsize
+		graphy0 = (height - graphsize) / 2
+		' fit frame into graph
+		framesize = graphsize * 0.5
+		framex0 = graphsize * 0.25
+		framey0 = graphsize * 0.25
+		' adjust points
+		pointY0.SetScale( framesize )
+		pointY1.SetScale( framesize )
+		pointYA.SetScale( framesize )
+		pointS0.SetScale( framesize )
+		pointS1.SetScale( framesize )
+		pointAB.SetScale( framesize )
+		pointCD.SetScale( framesize )
+		' demo stuff
+		demox0 = width / 2 + framex0
+		demoy0 = graphy0 + framey0
+	End
+
+	Method OnUpdate:Int()
+		mx = MouseX()
+		my = MouseY()
+		mh = MouseHit(MOUSE_LEFT)
+		md = MouseDown(MOUSE_LEFT)
+		' update control points,
+		' for this, translate mouse coordinates (remember to mirror y)
+		mx = mx - graphx0 - framex0
+		my = framesize - (my - graphy0 - framey0)
+		' update AB/CD and S0/S1 first, so when on top of Y0 or Y1, they get
+		' grabbed instead of the end points
+		pointAB.Update()
+		pointCD.Update()
+		pointS0.Update()
+		pointS1.Update()
+		pointYA.Update()
+		pointY0.Update()
+		pointY1.Update()
+		' update function to use
+		If KeyHit( KEY_SPACE ) Then
+			curfuncidx = (curfuncidx + 1) Mod INTERPFUNCS.Length
+			curfunc = INTERPFUNCS[ curfuncidx ]
+			pointAB.Hide()
+			pointCD.Hide()
+			pointS0.Hide()
+			pointS1.Hide()
+			pointYA.Hide()
+			curfunc.Activate()
+			anypointmoved = True
+		End
+		' update demo
+		Local t:Float = (Millisecs() Mod (DEMO_DURATION_MAX + 2000)) - 1000
+		For Local i:Int = 0 Until 3
+			demot[i] = Clamp(t / DEMO_DURATIONS[i], 0.0, 1.0)
+		Next
+		' return to output target
+		If anypointmoved Then
+			Local ttxt:String = curfunc.Label()
+			' what's behind jshack_target_refer doesn't matter
+			' since it's commented out by extern global declaration
+			#If USE_JSHACK
+				jshack_target_refer.Length()
+				jshack_target_value = ttxt
+			#Else
+				Print ttxt
+			#End
+			anypointmoved = False
+		End
+		Return 0
+	End
+	
+	Method OnRender:Int()
+		cvMain.Clear(1.0, 1.0, 1.0)
+		cvMain.ResetMatrix()
+		' draw graph
+		cvMain.Translate(graphx0, graphy0)
+		' draw frame (mirror Y-AXISSSSSS)
+		cvMain.Translate(framex0, framey0+framesize)
+		cvMain.Scale(1, -1)
+		' border
+		DrawFrameBorder()
+		' connectors to control points
+		cvMain.SetColor( COLOR_DIAGRAM2 )
+		cvMain.SetAlpha(0.5)
+		If pointS0.visible Then
+			cvMain.DrawLine(0,pointY0.y*framesize, pointS0.x*framesize,pointS0.y*framesize)
+			cvMain.DrawLine(framesize,pointY1.y*framesize, pointS1.x*framesize,pointS1.y*framesize)
+		End
+		If pointAB.visible Then
+			cvMain.DrawLine(0,pointY0.y*framesize, pointAB.x*framesize,pointAB.y*framesize)
+			cvMain.DrawLine(framesize,pointY1.y*framesize, pointCD.x*framesize,pointCD.y*framesize)
+		End
+		' spline
+		cvMain.SetColor( COLOR_DIAGRAM1 )
+		cvMain.SetAlpha(1)
+		Local rx:Float, ry:Float
+		Local y:Float
+		Local oy:Float = pointY0.y * framesize
+		For Local x:Int = 1 To framesize
+			rx = x / Float(framesize)
+			ry = curfunc.Interpolate( rx )
+			y = ry * framesize
+			DrawThickLine(x-1,oy, x,y, 2.5)
+			oy = y
+		Next
+		' draw control points
+		cvMain.SetColor( COLOR_DIAGRAM2 )
+		pointY0.Draw(cvMain)
+		pointY1.Draw(cvMain)
+		pointAB.Draw(cvMain)
+		pointCD.Draw(cvMain)
+		pointYA.Draw(cvMain)
+		pointS0.Draw(cvMain)
+		pointS1.Draw(cvMain)
+		' draw demo
+		Local x:Float
+		Local scl:Float
+		Local s20:Float = framesize / 20.0
+		cvMain.ResetMatrix()
+		cvMain.Translate(demox0, demoy0)
+		DrawFrameBorder()
+		cvMain.SetColor( COLOR_DIAGRAM1 )
+		For Local i:Int = 0 Until 3
+			scl = curfunc.Interpolate( demot[i] )
+			x = framesize * scl
+			' moving points at 20%, 40% an 60% of height
+			cvMain.DrawCircle(x,(4+4*i)*s20, s20)
+			' scaling points at 80% of height and 25%, 50% and 75% of width
+			cvMain.DrawCircle((5+5*i)*s20, 16*s20, 2*s20*scl)
+		Next
+		' draw label
+		cvMain.ResetMatrix()
+		cvMain.SetColor(0,0,0)
+		cvMain.DrawText( curfunc.Label(), 0,10 )
+		cvMain.DrawText( "Hit SPACE to change function", 0,25 )
+		cvMain.Flush()
+		Return 0
+	End
+	
+	Method DrawFrameBorder:Void()
+		cvMain.SetColor(0.8, 0.8, 0.8)
+		cvMain.DrawLine(0,0, framesize,0)
+		cvMain.DrawLine(framesize,0, framesize,framesize)
+		cvMain.DrawLine(framesize,framesize, 0,framesize)
+		cvMain.DrawLine(0,framesize, 0,0)
+	End
+	
+	Method DrawThickLine:Void(pX0:Float, pY0:Float, pX1:Float, pY1:Float, pWidth:Float)
+		' line vector
+		Local lx:Float = pX1 - pX0
+		Local ly:Float = pY1 - pY0
+		Local l:Float = Sqrt(lx*lx + ly*ly)
+		Local lux:Float, luy:Float
+		If l = 0 Then
+			lux = 1
+			luy = 0
+		Else
+			lux = lx / l
+			luy = ly / l
+		End
+		' orthogonal vector (directly stretched to half line width)
+		Local ox:Float = luy * pWidth / 2
+		Local oy:Float = -lux * pWidth / 2
+		' thick line is basically a quad, prepare that:
+		Local verts:Float[] = [pX0+ox, pY0+oy,  pX1+ox, pY1+oy,  pX1-ox, pY1-oy,  pX0-ox, pY0-oy]
+		cvMain.DrawPrimitives(4,1, verts)
+	End
+End
+
+'-------------------------------------------------------------------------------
+' Interpolation Function Attachments
+
+' base
+Class InterpFunc
+	Method Interpolate:Float(pX:Float) Abstract
+	Method Label:String() Abstract
+	Method Activate:Void() Abstract
+End
+' InterpolateLin
+Class InterpFuncLin Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateLin( pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateLin( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateCurve
+Class InterpFuncCurve Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateCurve( pointY0.y, pointY1.y, pointYA.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateCurve( "+pointY0.y+", "+pointY1.y+", "+pointYA.y+", t )"
+	End
+	Method Activate:Void()
+		pointYA.Show()
+	End
+End
+' TweenolateSin
+Class InterpFuncSin Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateSin( pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateSin( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateFit
+Class InterpFuncFit Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		' slopes from control points
+		Local s0:Float = ( pointS0.y - pointY0.y ) / 0.25
+		Local s1:Float = ( pointY1.y - pointS1.y ) / 0.25
+		Return InterpolateFit( pointY0.y, pointY1.y, s0, s1, pX )
+	End
+	Method Label:String()
+		' slopes from control points 
+		Local s0:Float = ( pointS0.y - pointY0.y ) / 0.25
+		Local s1:Float = ( pointY1.y - pointS1.y ) / 0.25
+		' round to x10 int and back to float for better display in string
+		s0 = Int(s0*10.0 + Sgn(s0)*0.5) / 10.0
+		s1 = Int(s1*10.0 + Sgn(s1)*0.5) / 10.0
+		Return "InterpolateFit( "+pointY0.y+", "+pointY1.y+", "+s0+", "+s1+", t )"
+	End
+	Method Activate:Void()
+		pointS0.Show()
+		pointS1.Show()
+	End
+End
+' InterpolateFlats
+Class InterpFuncFlats Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateFlats( pointY0.y, pointY1.y, pointYA.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateFlats( "+pointY0.y+", "+pointY1.y+", "+pointYA.y+", t )"
+	End
+	Method Activate:Void()
+		pointYA.Show()
+	End
+End
+' InterpolateCubicBezier
+Class InterpFuncCubicBezier Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateCubicBezier( pointY0.y, pointY1.y,
+		pointAB.x, pointAB.y, pointCD.x, pointCD.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateCubicBezier( "+pointY0.y+", "+pointY1.y+", "+
+		pointAB.x+", "+pointAB.y+", "+pointCD.x+", "+pointCD.y+", t )"
+	End
+	Method Activate:Void()
+		pointAB.Show()
+		pointCD.Show()
+	End
+End
+
+'-------------------------------------------------------------------------------
+' Control points
+Class ControlPoint
+	Field x:Float, y:Float
+	Field xmin:Float, xmax:Float
+	Field ymin:Float, ymax:Float
+	Field xscale:Float = 1.0
+	Field yscale:Float = 1.0
+	
+	Field hold:Int
+	Field grabx:Float, graby:Float
+	Field hover:Int
+	Field visible:Bool
+	
+	Method Position:Void(pX:Float, pY:Float)
+		x = pX
+		y = pY
+	End
+	
+	Method XBounds:Void(pXmin:Float, pXmax:Float)
+		xmin = pXmin
+		xmax = pXmax
+	End
+	Method YBounds:Void(pYmin:Float, pYmax:Float)
+		ymin = pYmin
+		ymax = pYmax
+	End
+	
+	Method Show:Void()
+		visible = True
+	End
+	Method Hide:Void()
+		visible = False
+	End
+	
+	Method SetScale:Void(pScale:Float)
+		xscale = pScale
+		yscale = pScale
+	End
+	
+	Method Update:Void()
+		If Not visible Then
+			hover = False
+			hold = False
+			Return
+		End
+		Local dx:Float, dy:Float
+		dx = mx - x * xscale
+		dy = my - y * yscale
+		Local dd:Float
+		dd = Sqrt(dx*dx + dy*dy)
+		If dd <= 8.0 Then
+			hover = True
+		Else
+			hover = False
+		End
+		' mouseability
+		' grab point
+		If mh And hover Then
+			hold = True
+			grabx = dx
+			graby = dy
+			' reset global mh, so only one point at a time gets grabbed
+			mh = False
+		' drag point
+		Elseif md And hold Then
+			' track if point moves
+			Local ox:Int = x
+			Local oy:Int = y
+			' trick to make point appear smaller while held
+			hover = -1
+			x = (mx - grabx) / xscale
+			y = (my - graby) / yscale
+			' round to tenths
+			x = Int(x*20+0.5)/20.0
+			y = Int(y*20+0.5)/20.0
+			' keep in range
+			x = Clamp(x, xmin, xmax)
+			y = Clamp(y, ymin, ymax)
+			' track if point moved
+			If x<>ox Or y<>oy Then
+				anypointmoved = True
+			End
+		' release point
+		Elseif (Not md) And hold Then
+			hold = False
+		End
+	End
+	
+	Method Draw:Void(pCanvas:Canvas)
+		If Not visible Then
+			Return
+		End
+		pCanvas.DrawCircle(x*xscale,y*yscale, 6.0 + 2*hover)
+	End
+End

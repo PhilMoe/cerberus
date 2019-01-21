@@ -35,6 +35,7 @@ These are the modules Cerberus X is shipped with.
 | Module					| Contains																|Availability
 | [[cerberus.math]]			| Math functions														|All
 | [[cerberus.random]]			| Functions for generating random numbers								|All
+| [[cerberus.interpolate]]			| Functions for interpolating between values								|All
 
 >> Text and Strings
 
