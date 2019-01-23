@@ -24,6 +24,8 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
+2019-01-20 - Holzchopf
+	- FIXED bug in brl.markdown - required rebuild of Makedocs
 2019-01-15 - Holzchopf
 	- FIXED precompiler directives are now parsed "case insensitive"
 	- CHANGED decls.txt format is now
@@ -98,7 +100,7 @@ Import apidoccer
 Import docdoccer
 
 '===============================================================================
-Const VERSION:String		= "2019-01-15"
+Const VERSION:String		= "2019-01-20"
 '===============================================================================
 
 ' path settings
