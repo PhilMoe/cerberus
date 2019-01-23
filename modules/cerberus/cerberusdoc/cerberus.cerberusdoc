@@ -13,6 +13,8 @@
 
 # Import cerberus.random
 
+# Import cerberus.interpolate
+
 # Import cerberus.set
 
 # Import cerberus.stack
