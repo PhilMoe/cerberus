@@ -1,4 +1,4 @@
-***** v2018-01-09 *****
+***** v2019-01-09 *****
 
 MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.
 MOD: [DOCS] Added A-Z shortcuts on top of indexes.
