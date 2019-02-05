@@ -17,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.03"
+#GLFW_APP_LABEL="AGKBuildTarget V1.04"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -197,7 +197,7 @@ Function Main:Int()
 					Local param := params[_j-1]
 					Local singleparam := param.Trim().Split(" ")
 					fTrans += "_" + singleparam[1] + ":" +  Convert(singleparam[0])
-					outdocs	+= singleparam[1] + ":" +  Convert(singleparam[0])			
+					outdocs	+= "_" + singleparam[1] + ":" +  Convert(singleparam[0])			
 					If _j < params.Length()
 						fTrans += ", "
 					outdocs	+= ", "
@@ -391,7 +391,7 @@ Function Main:Int()
 			If hmKey.Value().Length > 1
 				Local fileds := FileStream.Open(cerberusPath+"/modules/agk2/cerberusdoc/agk2_"+hmKey.Value().Replace("-","_")+".cerberusdoc","w")
 				outdocs = "~n"
-				'outdocs += "# Module agk2_" + hmKey.Value()
+				outdocs += "# Module agk2_" + hmKey.Value() + "~n"
 				'outdocs += "~n"
 				'outdocs += "~n"
 				'outdocs += "> " + hmKey.Value()

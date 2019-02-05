@@ -1,8 +1,9 @@
-***** v2019-01-09 *****
+***** v2019-02-05 *****
 
 MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.
 MOD: [DOCS] Added A-Z shortcuts on top of indexes.
 NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
+FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.
 
 ***** v2018-12-30 *****
 
