@@ -1219,6 +1219,34 @@ Class Image
 		Return frames
 	End
 	
+	Function LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+		flags&=_flagsMask
+	
+		Local material:=.Material.Load( path,flags|Texture.ClampST,shader )
+		If Not material 
+			DebugLog ("Error - Unable to load image frames: " + path)
+			Return []
+		Endif
+		
+		'Local cellWidth:=material.Width/numFrames,cellHeight:=material.Height
+		
+		Local x:=0,width:=cellWidth
+		If padded x+=1;width-=2
+		
+		Local tx:Int = material.Width/cellWidth
+		Local ty:Int = material.Height/cellHeight
+		Local frames := New Image[tx*ty]
+		Local i:Int = 0
+		For Local yi:Int = 0 To ty-1
+			For Local xi:Int = 0 To tx-1
+				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight,width,cellHeight,xhandle,yhandle )
+				i += 1
+			Next
+		Next
+		
+		Return frames
+	End
+
 	Private
 	
 	Global _flagsMask:=Filter|Mipmap|Managed
