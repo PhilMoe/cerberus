@@ -1,7 +1,7 @@
 
 #include "main.h"
 
-//${CONFIG_BEGIN}
+//${CONFIG_BEGIN} 
 #define CFG_BRL_DATABUFFER_IMPLEMENTED 1
 #define CFG_BRL_FILESTREAM_IMPLEMENTED 1
 #define CFG_BRL_OS_IMPLEMENTED 1
@@ -1816,6 +1816,7 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
+	virtual void SetMousePos( double xpos, double ypos );
 	
 	virtual int GetDeviceWidth(){ return 0; }
 	virtual int GetDeviceHeight(){ return 0; }
@@ -1967,6 +1968,9 @@ void BBGame::OpenUrl( String url ){
 }
 
 void BBGame::SetMouseVisible( bool visible ){
+}
+
+void BBGame::SetMousePos( double xpos, double ypos ){
 }
 
 //***** C++ Game *****
@@ -5990,7 +5994,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2018-08-10",35));
+	bbPrint(String(L"TRANS cerberus compiler V2019-02-21",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -7967,15 +7971,25 @@ void c_AndroidBuilder::p_MakeTarget(){
 		if(!p_Execute(t_gradle+String(L" clean ",7)+t_gradlecfg,false)){
 			bb_transcc_Die(String(L"Android build failed.",21));
 		}else{
-			if(m_tcc->m_opt_run){
+			if(m_tcc->m_opt_config==String(L"release",7)){
 				String t_adb=String(L"adb",3);
 				if((m_tcc->m_ANDROID_PATH).Length()!=0){
 					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
 				}
-				p_Execute(t_adb+String(L" logcat -c",10),false);
-				p_Execute(t_adb+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+t_app_package+String(L".CerberusGame",13),false);
-				p_Execute(t_adb+String(L" logcat [Cerberus]:I *:E",24),false);
+				String t__file=CurrentDir();
+				t__file=t__file+String(L"\\app\\build\\outputs\\apk\\release\\app-release.apk",46);
+				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
+				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
 			}
+		}
+		if(m_tcc->m_opt_run){
+			String t_adb2=String(L"adb",3);
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			p_Execute(t_adb2+String(L" logcat -c",10),false);
+			p_Execute(t_adb2+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+t_app_package+String(L".CerberusGame",13),false);
+			p_Execute(t_adb2+String(L" logcat [Cerberus]:I *:E",24),false);
 		}
 	}
 }

@@ -531,7 +531,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Okay</string>
+        <string>Ok</string>
        </property>
       </widget>
      </item>

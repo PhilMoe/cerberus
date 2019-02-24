@@ -107,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
      * Get WebEngineView working with full screen for youtube.
      */
     QWebEngineSettings::defaultSettings()->setAttribute( QWebEngineSettings::PluginsEnabled,true);
-    QWebEngineSettings::defaultSettings()->setAttribute( QWebEngineSettings::FullScreenSupportEnabled,true);
+    //QWebEngineSettings::defaultSettings()->setAttribute( QWebEngineSettings::FullScreenSupportEnabled,true);
 #else
     //Enables pdf viewing!
     QWebSettings::globalSettings()->setAttribute( QWebSettings::PluginsEnabled,true );
@@ -240,11 +240,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     connect( _browserDockWidget,SIGNAL(visibilityChanged(bool)),SLOT(onDockVisibilityChanged(bool)) );
 
 #ifdef Q_OS_WIN
-    _ui->actionFileNext->setShortcut( QKeySequence( "Ctrl+Tab" ) );
-    _ui->actionFilePrevious->setShortcut( QKeySequence( "Ctrl+Shift+Tab" ) );
+    //_ui->actionFileNext->setShortcut( QKeySequence( "Ctrl+Tab" ) );
+    QList<QKeySequence> shortcuts;
+    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_PageDown));
+    _ui->actionFileNext->setShortcuts(shortcuts);
+    //_ui->actionFilePrevious->setShortcut( QKeySequence( "Ctrl+Shift+Tab" ) );
+    QList<QKeySequence> shortcuts2;
+    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::Key_PageUp));
+    _ui->actionFilePrevious->setShortcuts(shortcuts2);
 #else
-    _ui->actionFileNext->setShortcut( QKeySequence( "Meta+Tab" ) );
-    _ui->actionFilePrevious->setShortcut( QKeySequence( "Meta+Shift+Tab" ) );
+    //_ui->actionFileNext->setShortcut( QKeySequence( "Meta+Tab" ) );
+    QList<QKeySequence> shortcuts;
+    shortcuts.append(QKeySequence(Qt::META + Qt::Key_Tab));
+    shortcuts.append(QKeySequence(Qt::META + Qt::Key_PageDown));
+    _ui->actionFileNext->setShortcuts(shortcuts);
+
+    //_ui->actionFilePrevious->setShortcut( QKeySequence( "Meta+Shift+Tab" ) );
+    QList<QKeySequence> shortcuts2;
+    shortcuts2.append(QKeySequence(Qt::META + Qt::SHIFT + Qt::Key_Tab));
+    shortcuts2.append(QKeySequence(Qt::META + Qt::Key_PageUp));
+    _ui->actionFilePrevious->setShortcuts(shortcuts2);
 #endif
 
     _projectPopupMenu=new QMenu;
@@ -610,12 +627,12 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
             if( helpView ) break;
         }
         if( !helpView ){
-            helpView=new HelpView;
+            helpView=new HelpView(_mainTabWidget);
 // DAWLANE Qt 5.6+ supported
 #if QT_VERSION>0x050501
             // QWebEnginePage already uses links.
             // Uncomment these to set the QWebEnginePage so you can over-ride acceptNavigationRequest to open external browsers.
-            helpView->setPage(new WebEnginePage);
+            helpView->setPage(new WebEnginePage(helpView));
             //connect( helpView,SIGNAL(linkClicked(QUrl)),SLOT(onLinkClicked(QUrl)) );
 #else
             helpView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
@@ -2112,10 +2129,13 @@ void MainWindow::onViewWindow(){
 }
 
 void MainWindow::onToggleFullscreen() {
-    if(windowState() != Qt::WindowFullScreen)
+    if(windowState() != Qt::WindowFullScreen){
+        this->_windowState = windowState();
         this->setWindowState(Qt::WindowFullScreen);
+    }
     else
-        this->setWindowState(Qt::WindowActive);
+        //this->setWindowState(Qt::WindowActive);
+        this->setWindowState(this->_windowState);
 }
 
 //***** Build menu *****
@@ -2385,16 +2405,17 @@ void MainWindow::onShowHelpWithStatusbar( const QString &topic ){
 
 // DAWLANE - QtWebEnginge/Page uses a different way to call hypertext links.
 #if QT_VERSION>0x050501
-bool WebEnginePage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool )
+bool WebEnginePage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame )
 {
-    //qDebug() << "URL: " << url;
-    if (type == QWebEnginePage::NavigationTypeLinkClicked)
+    // Capture links that have been clicked only in the main frame. Embedded elements will be child frames within a QWebEnginePage.
+    if ( (type == QWebEnginePage::NavigationTypeLinkClicked)  && (isMainFrame)  )
     {
+        //  Convert the url all to lower case to deal with caputing local files.
         QString str=url.toString();
-/* DAWLANE -- Trap files that need to be opened in the editor.
-              Replaced the sub string slicing with string replace due to inconsistent paths.
-*/
-        if( str.startsWith( "file:///", Qt::CaseInsensitive ) ){
+        if( (str.startsWith( "file:///", Qt::CaseInsensitive ))){
+
+            // If our link leads to one of the recognised source or text files, then strip off the file tag
+            // and call the open file method in the main window class to load it into the editor
             QString ext=";"+extractExt(str)+";";
             if( textFileTypes.contains( ext.toLower() ) || codeFileTypes.contains( ext.toLower() ) ){
 #ifdef Q_OS_WIN
@@ -2404,14 +2425,17 @@ bool WebEnginePage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::Nav
 #endif
                 return false;
             }
-           CerberusApplication::mainWindow->openFile( str,false );
+
+            // Our file isn't one of the main types, so try to open it any way.
+            CerberusApplication::mainWindow->openFile( str,false );
             return false;
         }
 
+        // Our file isn't local, so try to open this is a web browser rather than in the QWebEngineView.
         QDesktopServices::openUrl( str );
         return false;
     }
-        return true;
+    return true;
 }
 #else
 void MainWindow::onLinkClicked( const QUrl &url ){

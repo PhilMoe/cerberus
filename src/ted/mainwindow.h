@@ -40,6 +40,8 @@ class MainWindow;
 #if QT_VERSION>0x050501
 class HelpView : public QWebEngineView{
     Q_OBJECT
+public:
+    HelpView(QWidget *parent=Q_NULLPTR): QWebEngineView( parent ){}
 protected:
     void keyPressEvent ( QKeyEvent * event );
 };
@@ -48,6 +50,7 @@ class WebEnginePage : public QWebEnginePage
 {
     Q_OBJECT
 public:
+    WebEnginePage(QObject *parent=Q_NULLPTR): QWebEnginePage( parent ){}
     bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool);
 
 signals:
@@ -235,6 +238,7 @@ private:
     QString _transVersion;
 
     QTabWidget *_mainTabWidget;
+    Qt::WindowStates _windowState;
 
     QTextEdit *_consoleTextWidget;
     QDockWidget *_consoleDockWidget;

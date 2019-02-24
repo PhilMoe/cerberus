@@ -616,7 +616,7 @@ public:
         btnSaveColors->setToolTip(QApplication::translate("PrefsDialog", "Save the editor colors with the theme", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         btnSaveColors->setText(QApplication::translate("PrefsDialog", "Save Colors", Q_NULLPTR));
-        okayButton->setText(QApplication::translate("PrefsDialog", "Okay", Q_NULLPTR));
+        okayButton->setText(QApplication::translate("PrefsDialog", "Ok", Q_NULLPTR));
     } // retranslateUi
 
 };
