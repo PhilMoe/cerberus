@@ -1,6 +1,8 @@
 
 # Module mojo2
 
+# Import mojo.color
+
 # Import mojo2.graphics
 
 # Import mojo2.renderer

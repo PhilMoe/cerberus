@@ -1,0 +1,169 @@
+
+# Module mojo.color
+
+Provides extended color handling and storing functionality.
+
+Allows to assign and mix colors in different color spaces.
+
+
+# Import mojo.colornames
+
+
+# Class Color
+
+Stores a color and provides different possibilities to modify it.
+
+
+# Field r:Int
+
+Red component of the color.
+Do only assign values ranging 0 to 255, they're *not* automatically clamped
+upon assignment.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Field g:Int
+
+Green component of the color.
+Do only assign values ranging 0 to 255, they're *not* automatically clamped
+upon assignment.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Field b:Int
+
+Blue component of the color.
+Do only assign values ranging 0 to 255, they're *not* automatically clamped
+upon assignment.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Method New()
+
+Creates a new Color object which is black by default.
+
+
+# Method New(pHex:Int)
+
+Creates a new Color object which is initialized to the hexadecimal color value
+you pass. E.g. `$ff0000` is red.
+
+
+# Method New(pRed:Int, pGrn:Int, pBlu:Int)
+
+Creates a new Color object which is initialized to the rgb components you pass.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Method New(pRgb:Int[])
+
+Creates a new Color object which is initialized to the rgb components contained
+in the 3-component Int array you pass.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Method New(pColorName:String)
+
+Creates a new Color object based on the [[mojo.colornames|color name]] you pass. E.g. `"black"` is black.
+
+
+# Method New(pColor:Color)
+
+Creates a new Color object by copying the components from the Color object you
+pass.
+
+
+# Method ToInt:Int()
+
+Returns the color as one Int with the rgb components represented by the three
+least significant bytes. For a red color, the returned value will equal To
+`$ff0000`.
+
+
+# Method GetHex:Int()
+
+See [[ToInt]].
+
+
+# Method Set(pHex:Int)
+
+Sets the color to the hexadecimal color value
+you pass. E.g. `$ff0000` is red.
+
+
+# Method Set(pRed:Int, pGrn:Int, pBlu:Int)
+
+Sets the color to the rgb components you pass.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Method Set(pRgb:Int[])
+
+Sets the color to the rgb components contained
+in the 3-component Int array you pass.
+
+*note for mojo2:* Instead of Int, use Float ranging 0.0 to 1.0
+
+
+# Method Set(pColorName:String)
+
+Sets the color based on the [[mojo.colornames|color name]] you pass. E.g. `"black"` is black.
+
+
+# Method Set(pColor:Color)
+
+Sets the color by copying the components from the Color object you
+pass.
+
+
+# Method SetHsb:Void(pHue:Float, pSat:Float, pBri:Float)
+
+Sets the color to the *hue*, *saturation* and *brightness* values you pass. They
+range 0 to 360, 0 to 1 and 0 to 1 respectively.
+
+
+# Method SetHsl:Void(pHue:Float, pSat:Float, pLit:Float)
+
+Sets the color to the *hue*, *saturation* and *lightness* values you pass. They
+range 0 to 360, 0 to 1 and 0 to 1 respectively.
+
+
+# Field hue:Float
+
+The color's hue, ranging 0 to 360. Setting this will update the rgb components.
+
+
+# Field sat:Float
+
+The color's saturation, ranging 0 to 1. Setting this will update the rgb components.
+
+
+# Field bri:Float
+
+The color's brightness ranging 0 to 1. Setting this will update the rgb components.
+
+
+# Method Mix:Void(pColor1:Color, pColor2:Color, pMix:Float)
+
+Sets the color's components by mixing two colors.
+
+Parameters:
+* *pColor1*, *pColor2* - the two colors to mix
+* *pMix* - percentage of *pColor2* to apply in the mix, ranging 0 to 1
+
+
+# Method MixHsb:Void(pColor1:Color, pColor2:Color, pMix:Float, pHueWay:Int = 0)
+
+Sets the color's hue, saturation and brightness by mixing two colors.
+
+Parameters:
+* *pColor1*, *pColor2* - the two colors to mix
+* *pMix* - percentage of *pColor2* to apply in the mix, ranging 0 to 1
+* *pHueWay* - which way to rotate hue: 0 = shortest, +1 = positive, -1 = negative
+
