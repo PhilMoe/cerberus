@@ -1,0 +1,611 @@
+
+# Module mojo.colornames
+
+Constants for color values using color's Html names. The Html color names are
+shown in the following table:
+
+<table style="width: 100%;">
+	<tr><th>Color</th><th>Const name</th><th>As String</th></tr>
+	<tr><td style="background: #F0F8FF;"></td><td>`COLOR_ALICEBLUE`</td><td>`"aliceblue"`</td></tr>
+	<tr><td style="background: #FAEBD7;"></td><td>`COLOR_ANTIQUEWHITE`</td><td>`"antiquewhite"`</td></tr>
+	<tr><td style="background: #00FFFF;"></td><td>`COLOR_AQUA`</td><td>`"aqua"`</td></tr>
+	<tr><td style="background: #7FFFD4;"></td><td>`COLOR_AQUAMARINE`</td><td>`"aquamarine"`</td></tr>
+	<tr><td style="background: #F0FFFF;"></td><td>`COLOR_AZURE`</td><td>`"azure"`</td></tr>
+	<tr><td style="background: #F5F5DC;"></td><td>`COLOR_BEIGE`</td><td>`"beige"`</td></tr>
+	<tr><td style="background: #FFE4C4;"></td><td>`COLOR_BISQUE`</td><td>`"bisque"`</td></tr>
+	<tr><td style="background: #000000;"></td><td>`COLOR_BLACK`</td><td>`"black"`</td></tr>
+	<tr><td style="background: #FFEBCD;"></td><td>`COLOR_BLANCHEDALMOND`</td><td>`"blanchedalmond"`</td></tr>
+	<tr><td style="background: #0000FF;"></td><td>`COLOR_BLUE`</td><td>`"blue"`</td></tr>
+	<tr><td style="background: #8A2BE2;"></td><td>`COLOR_BLUEVIOLET`</td><td>`"blueviolet"`</td></tr>
+	<tr><td style="background: #A52A2A;"></td><td>`COLOR_BROWN`</td><td>`"brown"`</td></tr>
+	<tr><td style="background: #DEB887;"></td><td>`COLOR_BURLYWOOD`</td><td>`"burlywood"`</td></tr>
+	<tr><td style="background: #5F9EA0;"></td><td>`COLOR_CADETBLUE`</td><td>`"cadetblue"`</td></tr>
+	<tr><td style="background: #7FFF00;"></td><td>`COLOR_CHARTREUSE`</td><td>`"chartreuse"`</td></tr>
+	<tr><td style="background: #D2691E;"></td><td>`COLOR_CHOCOLATE`</td><td>`"chocolate"`</td></tr>
+	<tr><td style="background: #FF7F50;"></td><td>`COLOR_CORAL`</td><td>`"coral"`</td></tr>
+	<tr><td style="background: #6495ED;"></td><td>`COLOR_CORNFLOWERBLUE`</td><td>`"cornflowerblue"`</td></tr>
+	<tr><td style="background: #FFF8DC;"></td><td>`COLOR_CORNSILK`</td><td>`"cornsilk"`</td></tr>
+	<tr><td style="background: #DC143C;"></td><td>`COLOR_CRIMSON`</td><td>`"crimson"`</td></tr>
+	<tr><td style="background: #00FFFF;"></td><td>`COLOR_CYAN`</td><td>`"cyan"`</td></tr>
+	<tr><td style="background: #00008B;"></td><td>`COLOR_DARKBLUE`</td><td>`"darkblue"`</td></tr>
+	<tr><td style="background: #008B8B;"></td><td>`COLOR_DARKCYAN`</td><td>`"darkcyan"`</td></tr>
+	<tr><td style="background: #B8860B;"></td><td>`COLOR_DARKGOLDENROD`</td><td>`"darkgoldenrod"`</td></tr>
+	<tr><td style="background: #A9A9A9;"></td><td>`COLOR_DARKGRAY`</td><td>`"darkgray"`</td></tr>
+	<tr><td style="background: #006400;"></td><td>`COLOR_DARKGREEN`</td><td>`"darkgreen"`</td></tr>
+	<tr><td style="background: #A9A9A9;"></td><td>`COLOR_DARKGREY`</td><td>`"darkgrey"`</td></tr>
+	<tr><td style="background: #BDB76B;"></td><td>`COLOR_DARKKHAKI`</td><td>`"darkkhaki"`</td></tr>
+	<tr><td style="background: #8B008B;"></td><td>`COLOR_DARKMAGENTA`</td><td>`"darkmagenta"`</td></tr>
+	<tr><td style="background: #556B2F;"></td><td>`COLOR_DARKOLIVEGREEN`</td><td>`"darkolivegreen"`</td></tr>
+	<tr><td style="background: #FF8C00;"></td><td>`COLOR_DARKORANGE`</td><td>`"darkorange"`</td></tr>
+	<tr><td style="background: #9932CC;"></td><td>`COLOR_DARKORCHID`</td><td>`"darkorchid"`</td></tr>
+	<tr><td style="background: #8B0000;"></td><td>`COLOR_DARKRED`</td><td>`"darkred"`</td></tr>
+	<tr><td style="background: #E9967A;"></td><td>`COLOR_DARKSALMON`</td><td>`"darksalmon"`</td></tr>
+	<tr><td style="background: #8FBC8F;"></td><td>`COLOR_DARKSEAGREEN`</td><td>`"darkseagreen"`</td></tr>
+	<tr><td style="background: #483D8B;"></td><td>`COLOR_DARKSLATEBLUE`</td><td>`"darkslateblue"`</td></tr>
+	<tr><td style="background: #2F4F4F;"></td><td>`COLOR_DARKSLATEGRAY`</td><td>`"darkslategray"`</td></tr>
+	<tr><td style="background: #2F4F4F;"></td><td>`COLOR_DARKSLATEGREY`</td><td>`"darkslategrey"`</td></tr>
+	<tr><td style="background: #00CED1;"></td><td>`COLOR_DARKTURQUOISE`</td><td>`"darkturquoise"`</td></tr>
+	<tr><td style="background: #9400D3;"></td><td>`COLOR_DARKVIOLET`</td><td>`"darkviolet"`</td></tr>
+	<tr><td style="background: #FF1493;"></td><td>`COLOR_DEEPPINK`</td><td>`"deeppink"`</td></tr>
+	<tr><td style="background: #00BFFF;"></td><td>`COLOR_DEEPSKYBLUE`</td><td>`"deepskyblue"`</td></tr>
+	<tr><td style="background: #696969;"></td><td>`COLOR_DIMGRAY`</td><td>`"dimgray"`</td></tr>
+	<tr><td style="background: #696969;"></td><td>`COLOR_DIMGREY`</td><td>`"dimgrey"`</td></tr>
+	<tr><td style="background: #1E90FF;"></td><td>`COLOR_DODGERBLUE`</td><td>`"dodgerblue"`</td></tr>
+	<tr><td style="background: #B22222;"></td><td>`COLOR_FIREBRICK`</td><td>`"firebrick"`</td></tr>
+	<tr><td style="background: #FFFAF0;"></td><td>`COLOR_FLORALWHITE`</td><td>`"floralwhite"`</td></tr>
+	<tr><td style="background: #228B22;"></td><td>`COLOR_FORESTGREEN`</td><td>`"forestgreen"`</td></tr>
+	<tr><td style="background: #FF00FF;"></td><td>`COLOR_FUCHSIA`</td><td>`"fuchsia"`</td></tr>
+	<tr><td style="background: #DCDCDC;"></td><td>`COLOR_GAINSBORO`</td><td>`"gainsboro"`</td></tr>
+	<tr><td style="background: #F8F8FF;"></td><td>`COLOR_GHOSTWHITE`</td><td>`"ghostwhite"`</td></tr>
+	<tr><td style="background: #FFD700;"></td><td>`COLOR_GOLD`</td><td>`"gold"`</td></tr>
+	<tr><td style="background: #DAA520;"></td><td>`COLOR_GOLDENROD`</td><td>`"goldenrod"`</td></tr>
+	<tr><td style="background: #808080;"></td><td>`COLOR_GRAY`</td><td>`"gray"`</td></tr>
+	<tr><td style="background: #008000;"></td><td>`COLOR_GREEN`</td><td>`"green"`</td></tr>
+	<tr><td style="background: #ADFF2F;"></td><td>`COLOR_GREENYELLOW`</td><td>`"greenyellow"`</td></tr>
+	<tr><td style="background: #808080;"></td><td>`COLOR_GREY`</td><td>`"grey"`</td></tr>
+	<tr><td style="background: #F0FFF0;"></td><td>`COLOR_HONEYDEW`</td><td>`"honeydew"`</td></tr>
+	<tr><td style="background: #FF69B4;"></td><td>`COLOR_HOTPINK`</td><td>`"hotpink"`</td></tr>
+	<tr><td style="background: #CD5C5C;"></td><td>`COLOR_INDIANRED`</td><td>`"indianred"`</td></tr>
+	<tr><td style="background: #4B0082;"></td><td>`COLOR_INDIGO`</td><td>`"indigo"`</td></tr>
+	<tr><td style="background: #FFFFF0;"></td><td>`COLOR_IVORY`</td><td>`"ivory"`</td></tr>
+	<tr><td style="background: #F0E68C;"></td><td>`COLOR_KHAKI`</td><td>`"khaki"`</td></tr>
+	<tr><td style="background: #E6E6FA;"></td><td>`COLOR_LAVENDER`</td><td>`"lavender"`</td></tr>
+	<tr><td style="background: #FFF0F5;"></td><td>`COLOR_LAVENDERBLUSH`</td><td>`"lavenderblush"`</td></tr>
+	<tr><td style="background: #7CFC00;"></td><td>`COLOR_LAWNGREEN`</td><td>`"lawngreen"`</td></tr>
+	<tr><td style="background: #FFFACD;"></td><td>`COLOR_LEMONCHIFFON`</td><td>`"lemonchiffon"`</td></tr>
+	<tr><td style="background: #ADD8E6;"></td><td>`COLOR_LIGHTBLUE`</td><td>`"lightblue"`</td></tr>
+	<tr><td style="background: #F08080;"></td><td>`COLOR_LIGHTCORAL`</td><td>`"lightcoral"`</td></tr>
+	<tr><td style="background: #E0FFFF;"></td><td>`COLOR_LIGHTCYAN`</td><td>`"lightcyan"`</td></tr>
+	<tr><td style="background: #FAFAD2;"></td><td>`COLOR_LIGHTGOLDENRODYELLOW`</td><td>`"lightgoldenrodyellow"`</td></tr>
+	<tr><td style="background: #D3D3D3;"></td><td>`COLOR_LIGHTGRAY`</td><td>`"lightgray"`</td></tr>
+	<tr><td style="background: #90EE90;"></td><td>`COLOR_LIGHTGREEN`</td><td>`"lightgreen"`</td></tr>
+	<tr><td style="background: #D3D3D3;"></td><td>`COLOR_LIGHTGREY`</td><td>`"lightgrey"`</td></tr>
+	<tr><td style="background: #FFB6C1;"></td><td>`COLOR_LIGHTPINK`</td><td>`"lightpink"`</td></tr>
+	<tr><td style="background: #FFA07A;"></td><td>`COLOR_LIGHTSALMON`</td><td>`"lightsalmon"`</td></tr>
+	<tr><td style="background: #20B2AA;"></td><td>`COLOR_LIGHTSEAGREEN`</td><td>`"lightseagreen"`</td></tr>
+	<tr><td style="background: #87CEFA;"></td><td>`COLOR_LIGHTSKYBLUE`</td><td>`"lightskyblue"`</td></tr>
+	<tr><td style="background: #778899;"></td><td>`COLOR_LIGHTSLATEGRAY`</td><td>`"lightslategray"`</td></tr>
+	<tr><td style="background: #778899;"></td><td>`COLOR_LIGHTSLATEGREY`</td><td>`"lightslategrey"`</td></tr>
+	<tr><td style="background: #B0C4DE;"></td><td>`COLOR_LIGHTSTEELBLUE`</td><td>`"lightsteelblue"`</td></tr>
+	<tr><td style="background: #FFFFE0;"></td><td>`COLOR_LIGHTYELLOW`</td><td>`"lightyellow"`</td></tr>
+	<tr><td style="background: #00FF00;"></td><td>`COLOR_LIME`</td><td>`"lime"`</td></tr>
+	<tr><td style="background: #32CD32;"></td><td>`COLOR_LIMEGREEN`</td><td>`"limegreen"`</td></tr>
+	<tr><td style="background: #FAF0E6;"></td><td>`COLOR_LINEN`</td><td>`"linen"`</td></tr>
+	<tr><td style="background: #FF00FF;"></td><td>`COLOR_MAGENTA`</td><td>`"magenta"`</td></tr>
+	<tr><td style="background: #800000;"></td><td>`COLOR_MAROON`</td><td>`"maroon"`</td></tr>
+	<tr><td style="background: #66CDAA;"></td><td>`COLOR_MEDIUMAQUAMARINE`</td><td>`"mediumaquamarine"`</td></tr>
+	<tr><td style="background: #0000CD;"></td><td>`COLOR_MEDIUMBLUE`</td><td>`"mediumblue"`</td></tr>
+	<tr><td style="background: #BA55D3;"></td><td>`COLOR_MEDIUMORCHID`</td><td>`"mediumorchid"`</td></tr>
+	<tr><td style="background: #9370DB;"></td><td>`COLOR_MEDIUMPURPLE`</td><td>`"mediumpurple"`</td></tr>
+	<tr><td style="background: #3CB371;"></td><td>`COLOR_MEDIUMSEAGREEN`</td><td>`"mediumseagreen"`</td></tr>
+	<tr><td style="background: #7B68EE;"></td><td>`COLOR_MEDIUMSLATEBLUE`</td><td>`"mediumslateblue"`</td></tr>
+	<tr><td style="background: #00FA9A;"></td><td>`COLOR_MEDIUMSPRINGGREEN`</td><td>`"mediumspringgreen"`</td></tr>
+	<tr><td style="background: #48D1CC;"></td><td>`COLOR_MEDIUMTURQUOISE`</td><td>`"mediumturquoise"`</td></tr>
+	<tr><td style="background: #C71585;"></td><td>`COLOR_MEDIUMVIOLETRED`</td><td>`"mediumvioletred"`</td></tr>
+	<tr><td style="background: #191970;"></td><td>`COLOR_MIDNIGHTBLUE`</td><td>`"midnightblue"`</td></tr>
+	<tr><td style="background: #F5FFFA;"></td><td>`COLOR_MINTCREAM`</td><td>`"mintcream"`</td></tr>
+	<tr><td style="background: #FFE4E1;"></td><td>`COLOR_MISTYROSE`</td><td>`"mistyrose"`</td></tr>
+	<tr><td style="background: #FFE4B5;"></td><td>`COLOR_MOCCASIN`</td><td>`"moccasin"`</td></tr>
+	<tr><td style="background: #FFDEAD;"></td><td>`COLOR_NAVAJOWHITE`</td><td>`"navajowhite"`</td></tr>
+	<tr><td style="background: #000080;"></td><td>`COLOR_NAVY`</td><td>`"navy"`</td></tr>
+	<tr><td style="background: #FDF5E6;"></td><td>`COLOR_OLDLACE`</td><td>`"oldlace"`</td></tr>
+	<tr><td style="background: #808000;"></td><td>`COLOR_OLIVE`</td><td>`"olive"`</td></tr>
+	<tr><td style="background: #6B8E23;"></td><td>`COLOR_OLIVEDRAB`</td><td>`"olivedrab"`</td></tr>
+	<tr><td style="background: #FFA500;"></td><td>`COLOR_ORANGE`</td><td>`"orange"`</td></tr>
+	<tr><td style="background: #FF4500;"></td><td>`COLOR_ORANGERED`</td><td>`"orangered"`</td></tr>
+	<tr><td style="background: #DA70D6;"></td><td>`COLOR_ORCHID`</td><td>`"orchid"`</td></tr>
+	<tr><td style="background: #EEE8AA;"></td><td>`COLOR_PALEGOLDENROD`</td><td>`"palegoldenrod"`</td></tr>
+	<tr><td style="background: #98FB98;"></td><td>`COLOR_PALEGREEN`</td><td>`"palegreen"`</td></tr>
+	<tr><td style="background: #AFEEEE;"></td><td>`COLOR_PALETURQUOISE`</td><td>`"paleturquoise"`</td></tr>
+	<tr><td style="background: #DB7093;"></td><td>`COLOR_PALEVIOLETRED`</td><td>`"palevioletred"`</td></tr>
+	<tr><td style="background: #FFEFD5;"></td><td>`COLOR_PAPAYAWHIP`</td><td>`"papayawhip"`</td></tr>
+	<tr><td style="background: #FFDAB9;"></td><td>`COLOR_PEACHPUFF`</td><td>`"peachpuff"`</td></tr>
+	<tr><td style="background: #CD853F;"></td><td>`COLOR_PERU`</td><td>`"peru"`</td></tr>
+	<tr><td style="background: #FFC0CB;"></td><td>`COLOR_PINK`</td><td>`"pink"`</td></tr>
+	<tr><td style="background: #DDA0DD;"></td><td>`COLOR_PLUM`</td><td>`"plum"`</td></tr>
+	<tr><td style="background: #B0E0E6;"></td><td>`COLOR_POWDERBLUE`</td><td>`"powderblue"`</td></tr>
+	<tr><td style="background: #800080;"></td><td>`COLOR_PURPLE`</td><td>`"purple"`</td></tr>
+	<tr><td style="background: #663399;"></td><td>`COLOR_REBECCAPURPLE`</td><td>`"rebeccapurple"`</td></tr>
+	<tr><td style="background: #FF0000;"></td><td>`COLOR_RED`</td><td>`"red"`</td></tr>
+	<tr><td style="background: #BC8F8F;"></td><td>`COLOR_ROSYBROWN`</td><td>`"rosybrown"`</td></tr>
+	<tr><td style="background: #4169E1;"></td><td>`COLOR_ROYALBLUE`</td><td>`"royalblue"`</td></tr>
+	<tr><td style="background: #8B4513;"></td><td>`COLOR_SADDLEBROWN`</td><td>`"saddlebrown"`</td></tr>
+	<tr><td style="background: #FA8072;"></td><td>`COLOR_SALMON`</td><td>`"salmon"`</td></tr>
+	<tr><td style="background: #F4A460;"></td><td>`COLOR_SANDYBROWN`</td><td>`"sandybrown"`</td></tr>
+	<tr><td style="background: #2E8B57;"></td><td>`COLOR_SEAGREEN`</td><td>`"seagreen"`</td></tr>
+	<tr><td style="background: #FFF5EE;"></td><td>`COLOR_SEASHELL`</td><td>`"seashell"`</td></tr>
+	<tr><td style="background: #A0522D;"></td><td>`COLOR_SIENNA`</td><td>`"sienna"`</td></tr>
+	<tr><td style="background: #C0C0C0;"></td><td>`COLOR_SILVER`</td><td>`"silver"`</td></tr>
+	<tr><td style="background: #87CEEB;"></td><td>`COLOR_SKYBLUE`</td><td>`"skyblue"`</td></tr>
+	<tr><td style="background: #6A5ACD;"></td><td>`COLOR_SLATEBLUE`</td><td>`"slateblue"`</td></tr>
+	<tr><td style="background: #708090;"></td><td>`COLOR_SLATEGRAY`</td><td>`"slategray"`</td></tr>
+	<tr><td style="background: #708090;"></td><td>`COLOR_SLATEGREY`</td><td>`"slategrey"`</td></tr>
+	<tr><td style="background: #FFFAFA;"></td><td>`COLOR_SNOW`</td><td>`"snow"`</td></tr>
+	<tr><td style="background: #00FF7F;"></td><td>`COLOR_SPRINGGREEN`</td><td>`"springgreen"`</td></tr>
+	<tr><td style="background: #4682B4;"></td><td>`COLOR_STEELBLUE`</td><td>`"steelblue"`</td></tr>
+	<tr><td style="background: #D2B48C;"></td><td>`COLOR_TAN`</td><td>`"tan"`</td></tr>
+	<tr><td style="background: #008080;"></td><td>`COLOR_TEAL`</td><td>`"teal"`</td></tr>
+	<tr><td style="background: #D8BFD8;"></td><td>`COLOR_THISTLE`</td><td>`"thistle"`</td></tr>
+	<tr><td style="background: #FF6347;"></td><td>`COLOR_TOMATO`</td><td>`"tomato"`</td></tr>
+	<tr><td style="background: #40E0D0;"></td><td>`COLOR_TURQUOISE`</td><td>`"turquoise"`</td></tr>
+	<tr><td style="background: #EE82EE;"></td><td>`COLOR_VIOLET`</td><td>`"violet"`</td></tr>
+	<tr><td style="background: #F5DEB3;"></td><td>`COLOR_WHEAT`</td><td>`"wheat"`</td></tr>
+	<tr><td style="background: #FFFFFF;"></td><td>`COLOR_WHITE`</td><td>`"white"`</td></tr>
+	<tr><td style="background: #F5F5F5;"></td><td>`COLOR_WHITESMOKE`</td><td>`"whitesmoke"`</td></tr>
+	<tr><td style="background: #FFFF00;"></td><td>`COLOR_YELLOW`</td><td>`"yellow"`</td></tr>
+	<tr><td style="background: #9ACD32;"></td><td>`COLOR_YELLOWGREEN`</td><td>`"yellowgreen"`</td></tr>
+</table>
+
+
+# Const COLOR_ALICEBLUE:Int				= $F0F8FF
+Color <div style="display: inline-block; width: 2rem; background: #F0F8FF;">&emsp;</div>
+
+# Const COLOR_ANTIQUEWHITE:Int			= $FAEBD7
+Color <div style="display: inline-block; width: 2rem; background: #FAEBD7;">&emsp;</div>
+
+# Const COLOR_AQUA:Int					= $00FFFF
+Color <div style="display: inline-block; width: 2rem; background: #00FFFF;">&emsp;</div>
+
+# Const COLOR_AQUAMARINE:Int				= $7FFFD4
+Color <div style="display: inline-block; width: 2rem; background: #7FFFD4;">&emsp;</div>
+
+# Const COLOR_AZURE:Int					= $F0FFFF
+Color <div style="display: inline-block; width: 2rem; background: #F0FFFF;">&emsp;</div>
+
+# Const COLOR_BEIGE:Int					= $F5F5DC
+Color <div style="display: inline-block; width: 2rem; background: #F5F5DC;">&emsp;</div>
+
+# Const COLOR_BISQUE:Int					= $FFE4C4
+Color <div style="display: inline-block; width: 2rem; background: #FFE4C4;">&emsp;</div>
+
+# Const COLOR_BLACK:Int					= $000000
+Color <div style="display: inline-block; width: 2rem; background: #000000;">&emsp;</div>
+
+# Const COLOR_BLANCHEDALMOND:Int			= $FFEBCD
+Color <div style="display: inline-block; width: 2rem; background: #FFEBCD;">&emsp;</div>
+
+# Const COLOR_BLUE:Int					= $0000FF
+Color <div style="display: inline-block; width: 2rem; background: #0000FF;">&emsp;</div>
+
+# Const COLOR_BLUEVIOLET:Int				= $8A2BE2
+Color <div style="display: inline-block; width: 2rem; background: #8A2BE2;">&emsp;</div>
+
+# Const COLOR_BROWN:Int					= $A52A2A
+Color <div style="display: inline-block; width: 2rem; background: #A52A2A;">&emsp;</div>
+
+# Const COLOR_BURLYWOOD:Int				= $DEB887
+Color <div style="display: inline-block; width: 2rem; background: #DEB887;">&emsp;</div>
+
+# Const COLOR_CADETBLUE:Int				= $5F9EA0
+Color <div style="display: inline-block; width: 2rem; background: #5F9EA0;">&emsp;</div>
+
+# Const COLOR_CHARTREUSE:Int				= $7FFF00
+Color <div style="display: inline-block; width: 2rem; background: #7FFF00;">&emsp;</div>
+
+# Const COLOR_CHOCOLATE:Int				= $D2691E
+Color <div style="display: inline-block; width: 2rem; background: #D2691E;">&emsp;</div>
+
+# Const COLOR_CORAL:Int					= $FF7F50
+Color <div style="display: inline-block; width: 2rem; background: #FF7F50;">&emsp;</div>
+
+# Const COLOR_CORNFLOWERBLUE:Int			= $6495ED
+Color <div style="display: inline-block; width: 2rem; background: #6495ED;">&emsp;</div>
+
+# Const COLOR_CORNSILK:Int				= $FFF8DC
+Color <div style="display: inline-block; width: 2rem; background: #FFF8DC;">&emsp;</div>
+
+# Const COLOR_CRIMSON:Int					= $DC143C
+Color <div style="display: inline-block; width: 2rem; background: #DC143C;">&emsp;</div>
+
+# Const COLOR_CYAN:Int					= $00FFFF
+Color <div style="display: inline-block; width: 2rem; background: #00FFFF;">&emsp;</div>
+
+# Const COLOR_DARKBLUE:Int				= $00008B
+Color <div style="display: inline-block; width: 2rem; background: #00008B;">&emsp;</div>
+
+# Const COLOR_DARKCYAN:Int				= $008B8B
+Color <div style="display: inline-block; width: 2rem; background: #008B8B;">&emsp;</div>
+
+# Const COLOR_DARKGOLDENROD:Int			= $B8860B
+Color <div style="display: inline-block; width: 2rem; background: #B8860B;">&emsp;</div>
+
+# Const COLOR_DARKGRAY:Int				= $A9A9A9
+Color <div style="display: inline-block; width: 2rem; background: #A9A9A9;">&emsp;</div>
+
+# Const COLOR_DARKGREEN:Int				= $006400
+Color <div style="display: inline-block; width: 2rem; background: #006400;">&emsp;</div>
+
+# Const COLOR_DARKGREY:Int				= $A9A9A9
+Color <div style="display: inline-block; width: 2rem; background: #A9A9A9;">&emsp;</div>
+
+# Const COLOR_DARKKHAKI:Int				= $BDB76B
+Color <div style="display: inline-block; width: 2rem; background: #BDB76B;">&emsp;</div>
+
+# Const COLOR_DARKMAGENTA:Int				= $8B008B
+Color <div style="display: inline-block; width: 2rem; background: #8B008B;">&emsp;</div>
+
+# Const COLOR_DARKOLIVEGREEN:Int			= $556B2F
+Color <div style="display: inline-block; width: 2rem; background: #556B2F;">&emsp;</div>
+
+# Const COLOR_DARKORANGE:Int				= $FF8C00
+Color <div style="display: inline-block; width: 2rem; background: #FF8C00;">&emsp;</div>
+
+# Const COLOR_DARKORCHID:Int				= $9932CC
+Color <div style="display: inline-block; width: 2rem; background: #9932CC;">&emsp;</div>
+
+# Const COLOR_DARKRED:Int					= $8B0000
+Color <div style="display: inline-block; width: 2rem; background: #8B0000;">&emsp;</div>
+
+# Const COLOR_DARKSALMON:Int				= $E9967A
+Color <div style="display: inline-block; width: 2rem; background: #E9967A;">&emsp;</div>
+
+# Const COLOR_DARKSEAGREEN:Int			= $8FBC8F
+Color <div style="display: inline-block; width: 2rem; background: #8FBC8F;">&emsp;</div>
+
+# Const COLOR_DARKSLATEBLUE:Int			= $483D8B
+Color <div style="display: inline-block; width: 2rem; background: #483D8B;">&emsp;</div>
+
+# Const COLOR_DARKSLATEGRAY:Int			= $2F4F4F
+Color <div style="display: inline-block; width: 2rem; background: #2F4F4F;">&emsp;</div>
+
+# Const COLOR_DARKSLATEGREY:Int			= $2F4F4F
+Color <div style="display: inline-block; width: 2rem; background: #2F4F4F;">&emsp;</div>
+
+# Const COLOR_DARKTURQUOISE:Int			= $00CED1
+Color <div style="display: inline-block; width: 2rem; background: #00CED1;">&emsp;</div>
+
+# Const COLOR_DARKVIOLET:Int				= $9400D3
+Color <div style="display: inline-block; width: 2rem; background: #9400D3;">&emsp;</div>
+
+# Const COLOR_DEEPPINK:Int				= $FF1493
+Color <div style="display: inline-block; width: 2rem; background: #FF1493;">&emsp;</div>
+
+# Const COLOR_DEEPSKYBLUE:Int				= $00BFFF
+Color <div style="display: inline-block; width: 2rem; background: #00BFFF;">&emsp;</div>
+
+# Const COLOR_DIMGRAY:Int					= $696969
+Color <div style="display: inline-block; width: 2rem; background: #696969;">&emsp;</div>
+
+# Const COLOR_DIMGREY:Int					= $696969
+Color <div style="display: inline-block; width: 2rem; background: #696969;">&emsp;</div>
+
+# Const COLOR_DODGERBLUE:Int				= $1E90FF
+Color <div style="display: inline-block; width: 2rem; background: #1E90FF;">&emsp;</div>
+
+# Const COLOR_FIREBRICK:Int				= $B22222
+Color <div style="display: inline-block; width: 2rem; background: #B22222;">&emsp;</div>
+
+# Const COLOR_FLORALWHITE:Int				= $FFFAF0
+Color <div style="display: inline-block; width: 2rem; background: #FFFAF0;">&emsp;</div>
+
+# Const COLOR_FORESTGREEN:Int				= $228B22
+Color <div style="display: inline-block; width: 2rem; background: #228B22;">&emsp;</div>
+
+# Const COLOR_FUCHSIA:Int					= $FF00FF
+Color <div style="display: inline-block; width: 2rem; background: #FF00FF;">&emsp;</div>
+
+# Const COLOR_GAINSBORO:Int				= $DCDCDC
+Color <div style="display: inline-block; width: 2rem; background: #DCDCDC;">&emsp;</div>
+
+# Const COLOR_GHOSTWHITE:Int				= $F8F8FF
+Color <div style="display: inline-block; width: 2rem; background: #F8F8FF;">&emsp;</div>
+
+# Const COLOR_GOLD:Int					= $FFD700
+Color <div style="display: inline-block; width: 2rem; background: #FFD700;">&emsp;</div>
+
+# Const COLOR_GOLDENROD:Int				= $DAA520
+Color <div style="display: inline-block; width: 2rem; background: #DAA520;">&emsp;</div>
+
+# Const COLOR_GRAY:Int					= $808080
+Color <div style="display: inline-block; width: 2rem; background: #808080;">&emsp;</div>
+
+# Const COLOR_GREEN:Int					= $008000
+Color <div style="display: inline-block; width: 2rem; background: #008000;">&emsp;</div>
+
+# Const COLOR_GREENYELLOW:Int				= $ADFF2F
+Color <div style="display: inline-block; width: 2rem; background: #ADFF2F;">&emsp;</div>
+
+# Const COLOR_GREY:Int					= $808080
+Color <div style="display: inline-block; width: 2rem; background: #808080;">&emsp;</div>
+
+# Const COLOR_HONEYDEW:Int				= $F0FFF0
+Color <div style="display: inline-block; width: 2rem; background: #F0FFF0;">&emsp;</div>
+
+# Const COLOR_HOTPINK:Int					= $FF69B4
+Color <div style="display: inline-block; width: 2rem; background: #FF69B4;">&emsp;</div>
+
+# Const COLOR_INDIANRED:Int				= $CD5C5C
+Color <div style="display: inline-block; width: 2rem; background: #CD5C5C;">&emsp;</div>
+
+# Const COLOR_INDIGO:Int					= $4B0082
+Color <div style="display: inline-block; width: 2rem; background: #4B0082;">&emsp;</div>
+
+# Const COLOR_IVORY:Int					= $FFFFF0
+Color <div style="display: inline-block; width: 2rem; background: #FFFFF0;">&emsp;</div>
+
+# Const COLOR_KHAKI:Int					= $F0E68C
+Color <div style="display: inline-block; width: 2rem; background: #F0E68C;">&emsp;</div>
+
+# Const COLOR_LAVENDER:Int				= $E6E6FA
+Color <div style="display: inline-block; width: 2rem; background: #E6E6FA;">&emsp;</div>
+
+# Const COLOR_LAVENDERBLUSH:Int			= $FFF0F5
+Color <div style="display: inline-block; width: 2rem; background: #FFF0F5;">&emsp;</div>
+
+# Const COLOR_LAWNGREEN:Int				= $7CFC00
+Color <div style="display: inline-block; width: 2rem; background: #7CFC00;">&emsp;</div>
+
+# Const COLOR_LEMONCHIFFON:Int			= $FFFACD
+Color <div style="display: inline-block; width: 2rem; background: #FFFACD;">&emsp;</div>
+
+# Const COLOR_LIGHTBLUE:Int				= $ADD8E6
+Color <div style="display: inline-block; width: 2rem; background: #ADD8E6;">&emsp;</div>
+
+# Const COLOR_LIGHTCORAL:Int				= $F08080
+Color <div style="display: inline-block; width: 2rem; background: #F08080;">&emsp;</div>
+
+# Const COLOR_LIGHTCYAN:Int				= $E0FFFF
+Color <div style="display: inline-block; width: 2rem; background: #E0FFFF;">&emsp;</div>
+
+# Const COLOR_LIGHTGOLDENRODYELLOW:Int	= $FAFAD2
+Color <div style="display: inline-block; width: 2rem; background: #FAFAD2;">&emsp;</div>
+
+# Const COLOR_LIGHTGRAY:Int				= $D3D3D3
+Color <div style="display: inline-block; width: 2rem; background: #D3D3D3;">&emsp;</div>
+
+# Const COLOR_LIGHTGREEN:Int				= $90EE90
+Color <div style="display: inline-block; width: 2rem; background: #90EE90;">&emsp;</div>
+
+# Const COLOR_LIGHTGREY:Int				= $D3D3D3
+Color <div style="display: inline-block; width: 2rem; background: #D3D3D3;">&emsp;</div>
+
+# Const COLOR_LIGHTPINK:Int				= $FFB6C1
+Color <div style="display: inline-block; width: 2rem; background: #FFB6C1;">&emsp;</div>
+
+# Const COLOR_LIGHTSALMON:Int				= $FFA07A
+Color <div style="display: inline-block; width: 2rem; background: #FFA07A;">&emsp;</div>
+
+# Const COLOR_LIGHTSEAGREEN:Int			= $20B2AA
+Color <div style="display: inline-block; width: 2rem; background: #20B2AA;">&emsp;</div>
+
+# Const COLOR_LIGHTSKYBLUE:Int			= $87CEFA
+Color <div style="display: inline-block; width: 2rem; background: #87CEFA;">&emsp;</div>
+
+# Const COLOR_LIGHTSLATEGRAY:Int			= $778899
+Color <div style="display: inline-block; width: 2rem; background: #778899;">&emsp;</div>
+
+# Const COLOR_LIGHTSLATEGREY:Int			= $778899
+Color <div style="display: inline-block; width: 2rem; background: #778899;">&emsp;</div>
+
+# Const COLOR_LIGHTSTEELBLUE:Int			= $B0C4DE
+Color <div style="display: inline-block; width: 2rem; background: #B0C4DE;">&emsp;</div>
+
+# Const COLOR_LIGHTYELLOW:Int				= $FFFFE0
+Color <div style="display: inline-block; width: 2rem; background: #FFFFE0;">&emsp;</div>
+
+# Const COLOR_LIME:Int					= $00FF00
+Color <div style="display: inline-block; width: 2rem; background: #00FF00;">&emsp;</div>
+
+# Const COLOR_LIMEGREEN:Int				= $32CD32
+Color <div style="display: inline-block; width: 2rem; background: #32CD32;">&emsp;</div>
+
+# Const COLOR_LINEN:Int					= $FAF0E6
+Color <div style="display: inline-block; width: 2rem; background: #FAF0E6;">&emsp;</div>
+
+# Const COLOR_MAGENTA:Int					= $FF00FF
+Color <div style="display: inline-block; width: 2rem; background: #FF00FF;">&emsp;</div>
+
+# Const COLOR_MAROON:Int					= $800000
+Color <div style="display: inline-block; width: 2rem; background: #800000;">&emsp;</div>
+
+# Const COLOR_MEDIUMAQUAMARINE:Int		= $66CDAA
+Color <div style="display: inline-block; width: 2rem; background: #66CDAA;">&emsp;</div>
+
+# Const COLOR_MEDIUMBLUE:Int				= $0000CD
+Color <div style="display: inline-block; width: 2rem; background: #0000CD;">&emsp;</div>
+
+# Const COLOR_MEDIUMORCHID:Int			= $BA55D3
+Color <div style="display: inline-block; width: 2rem; background: #BA55D3;">&emsp;</div>
+
+# Const COLOR_MEDIUMPURPLE:Int			= $9370DB
+Color <div style="display: inline-block; width: 2rem; background: #9370DB;">&emsp;</div>
+
+# Const COLOR_MEDIUMSEAGREEN:Int			= $3CB371
+Color <div style="display: inline-block; width: 2rem; background: #3CB371;">&emsp;</div>
+
+# Const COLOR_MEDIUMSLATEBLUE:Int			= $7B68EE
+Color <div style="display: inline-block; width: 2rem; background: #7B68EE;">&emsp;</div>
+
+# Const COLOR_MEDIUMSPRINGGREEN:Int		= $00FA9A
+Color <div style="display: inline-block; width: 2rem; background: #00FA9A;">&emsp;</div>
+
+# Const COLOR_MEDIUMTURQUOISE:Int			= $48D1CC
+Color <div style="display: inline-block; width: 2rem; background: #48D1CC;">&emsp;</div>
+
+# Const COLOR_MEDIUMVIOLETRED:Int			= $C71585
+Color <div style="display: inline-block; width: 2rem; background: #C71585;">&emsp;</div>
+
+# Const COLOR_MIDNIGHTBLUE:Int			= $191970
+Color <div style="display: inline-block; width: 2rem; background: #191970;">&emsp;</div>
+
+# Const COLOR_MINTCREAM:Int				= $F5FFFA
+Color <div style="display: inline-block; width: 2rem; background: #F5FFFA;">&emsp;</div>
+
+# Const COLOR_MISTYROSE:Int				= $FFE4E1
+Color <div style="display: inline-block; width: 2rem; background: #FFE4E1;">&emsp;</div>
+
+# Const COLOR_MOCCASIN:Int				= $FFE4B5
+Color <div style="display: inline-block; width: 2rem; background: #FFE4B5;">&emsp;</div>
+
+# Const COLOR_NAVAJOWHITE:Int				= $FFDEAD
+Color <div style="display: inline-block; width: 2rem; background: #FFDEAD;">&emsp;</div>
+
+# Const COLOR_NAVY:Int					= $000080
+Color <div style="display: inline-block; width: 2rem; background: #000080;">&emsp;</div>
+
+# Const COLOR_OLDLACE:Int					= $FDF5E6
+Color <div style="display: inline-block; width: 2rem; background: #FDF5E6;">&emsp;</div>
+
+# Const COLOR_OLIVE:Int					= $808000
+Color <div style="display: inline-block; width: 2rem; background: #808000;">&emsp;</div>
+
+# Const COLOR_OLIVEDRAB:Int				= $6B8E23
+Color <div style="display: inline-block; width: 2rem; background: #6B8E23;">&emsp;</div>
+
+# Const COLOR_ORANGE:Int					= $FFA500
+Color <div style="display: inline-block; width: 2rem; background: #FFA500;">&emsp;</div>
+
+# Const COLOR_ORANGERED:Int				= $FF4500
+Color <div style="display: inline-block; width: 2rem; background: #FF4500;">&emsp;</div>
+
+# Const COLOR_ORCHID:Int					= $DA70D6
+Color <div style="display: inline-block; width: 2rem; background: #DA70D6;">&emsp;</div>
+
+# Const COLOR_PALEGOLDENROD:Int			= $EEE8AA
+Color <div style="display: inline-block; width: 2rem; background: #EEE8AA;">&emsp;</div>
+
+# Const COLOR_PALEGREEN:Int				= $98FB98
+Color <div style="display: inline-block; width: 2rem; background: #98FB98;">&emsp;</div>
+
+# Const COLOR_PALETURQUOISE:Int			= $AFEEEE
+Color <div style="display: inline-block; width: 2rem; background: #AFEEEE;">&emsp;</div>
+
+# Const COLOR_PALEVIOLETRED:Int			= $DB7093
+Color <div style="display: inline-block; width: 2rem; background: #DB7093;">&emsp;</div>
+
+# Const COLOR_PAPAYAWHIP:Int				= $FFEFD5
+Color <div style="display: inline-block; width: 2rem; background: #FFEFD5;">&emsp;</div>
+
+# Const COLOR_PEACHPUFF:Int				= $FFDAB9
+Color <div style="display: inline-block; width: 2rem; background: #FFDAB9;">&emsp;</div>
+
+# Const COLOR_PERU:Int					= $CD853F
+Color <div style="display: inline-block; width: 2rem; background: #CD853F;">&emsp;</div>
+
+# Const COLOR_PINK:Int					= $FFC0CB
+Color <div style="display: inline-block; width: 2rem; background: #FFC0CB;">&emsp;</div>
+
+# Const COLOR_PLUM:Int					= $DDA0DD
+Color <div style="display: inline-block; width: 2rem; background: #DDA0DD;">&emsp;</div>
+
+# Const COLOR_POWDERBLUE:Int				= $B0E0E6
+Color <div style="display: inline-block; width: 2rem; background: #B0E0E6;">&emsp;</div>
+
+# Const COLOR_PURPLE:Int					= $800080
+Color <div style="display: inline-block; width: 2rem; background: #800080;">&emsp;</div>
+
+# Const COLOR_REBECCAPURPLE:Int			= $663399
+Color <div style="display: inline-block; width: 2rem; background: #663399;">&emsp;</div>
+
+# Const COLOR_RED:Int						= $FF0000
+Color <div style="display: inline-block; width: 2rem; background: #FF0000;">&emsp;</div>
+
+# Const COLOR_ROSYBROWN:Int				= $BC8F8F
+Color <div style="display: inline-block; width: 2rem; background: #BC8F8F;">&emsp;</div>
+
+# Const COLOR_ROYALBLUE:Int				= $4169E1
+Color <div style="display: inline-block; width: 2rem; background: #4169E1;">&emsp;</div>
+
+# Const COLOR_SADDLEBROWN:Int				= $8B4513
+Color <div style="display: inline-block; width: 2rem; background: #8B4513;">&emsp;</div>
+
+# Const COLOR_SALMON:Int					= $FA8072
+Color <div style="display: inline-block; width: 2rem; background: #FA8072;">&emsp;</div>
+
+# Const COLOR_SANDYBROWN:Int				= $F4A460
+Color <div style="display: inline-block; width: 2rem; background: #F4A460;">&emsp;</div>
+
+# Const COLOR_SEAGREEN:Int				= $2E8B57
+Color <div style="display: inline-block; width: 2rem; background: #2E8B57;">&emsp;</div>
+
+# Const COLOR_SEASHELL:Int				= $FFF5EE
+Color <div style="display: inline-block; width: 2rem; background: #FFF5EE;">&emsp;</div>
+
+# Const COLOR_SIENNA:Int					= $A0522D
+Color <div style="display: inline-block; width: 2rem; background: #A0522D;">&emsp;</div>
+
+# Const COLOR_SILVER:Int					= $C0C0C0
+Color <div style="display: inline-block; width: 2rem; background: #C0C0C0;">&emsp;</div>
+
+# Const COLOR_SKYBLUE:Int					= $87CEEB
+Color <div style="display: inline-block; width: 2rem; background: #87CEEB;">&emsp;</div>
+
+# Const COLOR_SLATEBLUE:Int				= $6A5ACD
+Color <div style="display: inline-block; width: 2rem; background: #6A5ACD;">&emsp;</div>
+
+# Const COLOR_SLATEGRAY:Int				= $708090
+Color <div style="display: inline-block; width: 2rem; background: #708090;">&emsp;</div>
+
+# Const COLOR_SLATEGREY:Int				= $708090
+Color <div style="display: inline-block; width: 2rem; background: #708090;">&emsp;</div>
+
+# Const COLOR_SNOW:Int					= $FFFAFA
+Color <div style="display: inline-block; width: 2rem; background: #FFFAFA;">&emsp;</div>
+
+# Const COLOR_SPRINGGREEN:Int				= $00FF7F
+Color <div style="display: inline-block; width: 2rem; background: #00FF7F;">&emsp;</div>
+
+# Const COLOR_STEELBLUE:Int				= $4682B4
+Color <div style="display: inline-block; width: 2rem; background: #4682B4;">&emsp;</div>
+
+# Const COLOR_TAN:Int						= $D2B48C
+Color <div style="display: inline-block; width: 2rem; background: #D2B48C;">&emsp;</div>
+
+# Const COLOR_TEAL:Int					= $008080
+Color <div style="display: inline-block; width: 2rem; background: #008080;">&emsp;</div>
+
+# Const COLOR_THISTLE:Int					= $D8BFD8
+Color <div style="display: inline-block; width: 2rem; background: #D8BFD8;">&emsp;</div>
+
+# Const COLOR_TOMATO:Int					= $FF6347
+Color <div style="display: inline-block; width: 2rem; background: #FF6347;">&emsp;</div>
+
+# Const COLOR_TURQUOISE:Int				= $40E0D0
+Color <div style="display: inline-block; width: 2rem; background: #40E0D0;">&emsp;</div>
+
+# Const COLOR_VIOLET:Int					= $EE82EE
+Color <div style="display: inline-block; width: 2rem; background: #EE82EE;">&emsp;</div>
+
+# Const COLOR_WHEAT:Int					= $F5DEB3
+Color <div style="display: inline-block; width: 2rem; background: #F5DEB3;">&emsp;</div>
+
+# Const COLOR_WHITE:Int					= $FFFFFF
+Color <div style="display: inline-block; width: 2rem; background: #FFFFFF;">&emsp;</div>
+
+# Const COLOR_WHITESMOKE:Int				= $F5F5F5
+Color <div style="display: inline-block; width: 2rem; background: #F5F5F5;">&emsp;</div>
+
+# Const COLOR_YELLOW:Int					= $FFFF00
+Color <div style="display: inline-block; width: 2rem; background: #FFFF00;">&emsp;</div>
+
+# Const COLOR_YELLOWGREEN:Int				= $9ACD32
+Color <div style="display: inline-block; width: 2rem; background: #9ACD32;">&emsp;</div>
+
+
+
+# Function NamedHtmlColor:Int(pColor:String)
+
+Returns the Integer value for a given Html named color.
+See the [[#description|description]] for all possible colors.
+
+

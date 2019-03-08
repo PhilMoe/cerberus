@@ -1,4 +1,4 @@
-
+#COLOR_USE_NORMALISED_COMPONENTS = True
 Import mojo.app
 Import mojo.input
 Import mojo.audio

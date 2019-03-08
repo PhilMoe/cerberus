@@ -561,6 +561,16 @@ Set color and alpha.
 All color and alpha values should be in the range 0 to 1 inclusive.
 
 
+# Method SetColor:Void( hex:Int )
+
+Set color to specified hex color value.
+
+
+# Method SetColor:Void( col:Color )
+
+Set color to specified [[Color]].
+
+
 # Method Color:Float[]() Property
 
 Returns a 4 component float array containing current color and alpha.
@@ -1343,6 +1353,20 @@ Get shadow map.
 # Method Clear:Void( r:Float=0,g:Float=0,b:Float=0,a:Float=1 )
 
 Clear canvas to the specified color.
+
+Clear is affect by the current viewport, scissor rect and color mask.
+
+
+# Method Clear:Void( rgb:Int )
+
+Clear canvas to the specified hex color value.
+
+Clear is affect by the current viewport, scissor rect and color mask.
+
+
+# Method Clear:Void( col:Color )
+
+Clear canvas to the specified [[Color]].
 
 Clear is affect by the current viewport, scissor rect and color mask.
 
