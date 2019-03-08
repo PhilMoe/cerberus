@@ -7,6 +7,10 @@
 Import mojox.graphics
 #Else
 
+' 20190117 - Holzchopf
+' Color class support
+Import color
+
 Private
 
 Import "data/mojo_font.png"
@@ -528,11 +532,23 @@ Function SetColor( r#,g#,b# )
 	renderDevice.SetColor r,g,b
 End
 
-Function SetColor( rgb# )
-  context.color_r = ((rgb Shr 16) & $FF) ' Extract the RR byte
-  context.color_g = ((rgb Shr 8) & $FF)  ' Extract the GG byte
-  context.color_b = (rgb & $FF)       ' Extract the BB byte
-  renderDevice.SetColor context.color_r,context.color_g,context.color_b 
+' 20190117 - Holzchopf
+' Color class support - fix: SetColor( hex ) must take Int, not Float
+Function SetColor( rgb% )
+	context.color_r = ((rgb Shr 16) & $FF)	' Extract the RR byte
+	context.color_g = ((rgb Shr 8) & $FF)	' Extract the GG byte
+	context.color_b = (rgb & $FF)       	' Extract the BB byte
+	renderDevice.SetColor context.color_r,context.color_g,context.color_b 
+End
+
+' 20190117 - Holzchopf
+' Color class support
+Function SetColor( col:Color )
+	context.color_r = col.r
+	context.color_g = col.g
+	context.color_b = col.b
+	renderDevice.SetColor context.color_r,context.color_g,context.color_b
+	renderDevice.SetAlpha context.alpha
 End
 
 Function GetColor#[]()
@@ -656,6 +672,25 @@ Function Cls( r#=0,g#=0,b#=0 )
 	DebugRenderDevice
 #End
 	renderDevice.Cls r,g,b
+End
+' 20190117 - Holzchopf
+' Color class support
+Function Cls( col:Color )
+#If CONFIG="debug"
+	DebugRenderDevice
+#End
+	renderDevice.Cls col.r, col.g, col.b
+End
+' 20190117 - Holzchopf
+' Hex support
+Function Cls( rgb:Int )
+#If CONFIG="debug"
+	DebugRenderDevice
+#End
+	Local r:Int = ((rgb Shr 16) & $FF)	' Extract the RR byte
+	Local g:Int = ((rgb Shr 8) & $FF)	' Extract the GG byte
+	Local b:Int = (rgb & $FF)       	' Extract the BB byte
+	renderDevice.Cls r, g, b
 End
 
 Function DrawPoint( x#,y# )

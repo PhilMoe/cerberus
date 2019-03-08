@@ -1,4 +1,7 @@
-
+' 20190117 - Holzchopf
+' Color class support
+'#COLOR_USE_NORMALISED_COMPONENTS = True - this must be done in mojo2.cxs, don't ask why
+Import mojo.color
 Private
 
 '#TEXT_FILES+="*.txt|*.xml|*.json|*.glsl"
@@ -1578,6 +1581,24 @@ Class DrawList
 		_pmcolor=Int(_alpha) Shl 24 | Int(_color[2]*_alpha) Shl 16 | Int(_color[1]*_alpha) Shl 8 | Int(_color[0]*_alpha)
 	End
 	
+' 20190117 - Holzchopf
+' Color class support
+	Method SetColor:Void( hex:Int )
+		_color[0] = ((hex Shr 16) & $FF) / 255.0
+		_color[1] = ((hex Shr 08) & $FF) / 255.0
+		_color[2] = ((hex       ) & $FF) / 255.0
+		_pmcolor=Int(_alpha) Shl 24 | Int(_color[2]*_alpha) Shl 16 | Int(_color[1]*_alpha) Shl 8 | Int(_color[0]*_alpha)
+	End
+	
+' 20190117 - Holzchopf
+' Color class support
+	Method SetColor:Void( col:Color )
+		_color[0] = col.r
+		_color[1] = col.g
+		_color[2] = col.b
+		_pmcolor=Int(_alpha) Shl 24 | Int(_color[2]*_alpha) Shl 16 | Int(_color[1]*_alpha) Shl 8 | Int(_color[0]*_alpha)
+	End
+	
 	Method SetAlpha:Void( a:Float )
 		_color[3]=a
 		_alpha=a*255
@@ -2713,6 +2734,17 @@ Class Canvas Extends DrawList
 		glClearColor r,g,b,a
 		glClear GL_COLOR_BUFFER_BIT
 		If _clsScissor glDisable GL_SCISSOR_TEST
+	End
+	' 20190117 - Holzchopf
+	' Color class support
+	Method Clear:Void( rgb:Int )
+		Local r:Float = ((rgb Shr 16) & $FF) / 255.0
+		Local g:Float = ((rgb Shr 08) & $FF) / 255.0
+		Local b:Float = ((rgb       ) & $FF) / 255.0
+		Clear(r,g,b)
+	End
+	Method Clear:Void( col:Color )
+		Clear(col.r, col.g, col.b)
 	End
 	
 	Method ReadPixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
