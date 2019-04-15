@@ -79,6 +79,19 @@ Class InputDevice
 		Return mZ
 	End
 
+	Method SetMousePos:Void( xpos:Float, ypos:Float )
+		BBGame.Game().SetMousePos( xpos, ypos )
+	End
+	
+	Function SetClipboard:Void( _text:String )
+		BBGame.Game().SetClipboard( _text )
+	End
+
+	Function GetClipboard:String()
+		Return BBGame.Game().GetClipboard()
+	End
+
+
 	Method TouchX#( index )
 		If index>=0 And index<32 Return _touchX[index]
 		Return 0

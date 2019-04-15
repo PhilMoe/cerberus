@@ -63,10 +63,18 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
+	virtual void SetMousePos( double xpos, double ypos );
+	virtual void SetClipboard( String _text );
+	virtual String GetClipboard();
 	
 	virtual int GetDeviceWidth(){ return 0; }
 	virtual int GetDeviceHeight(){ return 0; }
 	virtual void SetDeviceWindow( int width,int height,int flags ){}
+	virtual void SetDeviceWindowIcon( String _path ){}
+	virtual void SetDeviceWindowPosition( int _x, int _y ){}
+	virtual void SetDeviceWindowSize( int _width, int _height ){}
+	virtual void SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight ){}
+	virtual void SetDeviceWindowTitle( String _title ){}
 	virtual Array<BBDisplayMode*> GetDisplayModes(){ return Array<BBDisplayMode*>(); }
 	virtual BBDisplayMode *GetDesktopMode(){ return 0; }
 	virtual void SetSwapInterval( int interval ){}
@@ -214,6 +222,16 @@ void BBGame::OpenUrl( String url ){
 }
 
 void BBGame::SetMouseVisible( bool visible ){
+}
+
+void BBGame::SetMousePos( double xpos, double ypos ){
+}
+
+void BBGame::SetClipboard( String _text ){
+}
+
+String BBGame::GetClipboard(){
+	return "";
 }
 
 //***** C++ Game *****

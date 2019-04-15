@@ -38,15 +38,23 @@ Class BBGame Extends Null
 	Method CountJoysticks:Int( update:Bool )
 	Method PollJoystick:Bool( port:Int,joyx:Float[],joyy:Float[],joyz:Float[],buttons:Bool[] )
 	Method OpenUrl:Void( url:String )
-	Method SetMouseVisible( visible:Bool )
+	Method SetMouseVisible:Void( visible:Bool )
+	Method SetMousePos:Void( xpos:Float, ypos:Float )
+	Method SetClipboard:Void( _text:String )
+	Method GetClipboard:String()
 	
 	Method GetDeviceWidth:Int()
 	Method GetDeviceHeight:Int()
-	Method SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
+	Method SetDeviceWindow:Void( Width:Int,Height:Int,Flags:Int )
+	Method SetDeviceWindowIcon:Void( _path:String )
+	Method SetDeviceWindowPosition:Void( _x:Int, _y:Int )
+	Method SetDeviceWindowSize:Void( _width:Int, _height:Int )
+	Method SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )
+	Method SetDeviceWindowTitle:Void( _title:String )
 	Method GetDisplayModes:BBDisplayMode[]()
 	Method GetDesktopMode:BBDisplayMode()
 	Method SetSwapInterval:Void( interval:Int )
-
+	
 	Method PathToFilePath:String( path:String )
 End
 

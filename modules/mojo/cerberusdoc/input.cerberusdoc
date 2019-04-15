@@ -142,6 +142,33 @@ End
 </pre>
 
 
+# Function SetClipboard:Void( _text:String)
+
+Sets the clipboard text.
+
+Works only for GLFW target.
+
+
+# Function GetClipboard:String()
+
+Returns the text that is stored inside the clipboard.
+
+Please note that clipboard can be prefilled from other programs. If you want it to be empty, sent an empty string via [[SetClipboard]].
+
+Works only for GLFW target.
+
+
+# Function SetMousePos:Void( _x:Int, _y:Int)
+
+Sets the coordinates of the mouse pointer in the devices window.
+
+Works only for GLFW target.
+
+Links: 
+
+[[MouseX]], [[MouseY]], [[MouseZ]]
+
+
 # Function MouseX:Float()
 
 Returns the x coordinate of the mouse pointer.
@@ -150,7 +177,7 @@ On devices with a touch screen but no mouse, MouseX will instead return TouchX( 
 
 Links: 
 
-[[MouseY]], [[MouseZ]], [[TouchX]]
+[[MouseY]], [[MouseZ]], [[TouchX]], [[SetMousePos]]
 
 Example: 
 
@@ -187,7 +214,7 @@ On devices with a touch screen but no mouse, MouseY will instead return TouchY( 
 
 Links: 
 
-[[MouseX]], [[MouseZ]], [[TouchY]]
+[[MouseX]], [[MouseZ]], [[TouchY]], [[SetMousePos]]
 
 
 # Function MouseZ:Float()
@@ -198,7 +225,7 @@ Works only for GLFW target.
 
 Links: 
 
-[[MouseX]], [[MouseY]], [[TouchX]]
+[[MouseX]], [[MouseY]], [[TouchX]], [[TouchY]], [[SetMousePos]]
 
 Example: 
 

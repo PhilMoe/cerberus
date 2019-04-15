@@ -1,10 +1,20 @@
-***** v2019-02-21 *****
+***** v2019-04-15 *****
 
 MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.
 MOD: [DOCS] Added A-Z shortcuts on top of indexes.
-NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
-FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.
 MOD: [Trans/ANDROID] Release builds are installed automatically now.
+FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.
+FIX: [TED] Fixed fixed displaying an iframe element in the docs.    (Author: Dawlane)
+FIX: [TED] Fixed scaling issues when displaying images.
+NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
+NEW: [MOJO.APP] Added SetDeviceWindowIcon( _path:String ).
+NEW: [MOJO.APP] Added SetDeviceWindowTitle( _title:String ).
+NEW: [MOJO.APP] Added SetDeviceWindowSize( _width:Int, _height:Int ).
+NEW: [MOJO.APP] Added SetDeviceWindowPosition( _x:Int, _y:Int ).
+NEW: [MOJO.APP] Added SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )
+NEW: [MOJO.INPUT] Added SetMousePos:Void( _x:Int, _y:Int ).
+NEW: [MOJO.INPUT] Added SetClipboard:Void( _text:String ).
+NEW: [MOJO.INPUT] Added GetClipboard:String().
 
 ***** v2018-12-30 *****
 
