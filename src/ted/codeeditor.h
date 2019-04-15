@@ -233,6 +233,7 @@ private:
     QColor _console1Color;
     QColor _console2Color;
     QColor _console3Color;
+    QColor _console4Color;
     QColor _defaultColor;
     QColor _numbersColor;
     QColor _stringsColor;

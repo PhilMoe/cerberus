@@ -18,7 +18,7 @@ QComboBox#cbTarget QAbstractItemView#cbTargetView {
 }
 
 /*****************************************/
-QMainWindow, QMenuBar, QToolBar, QTabWidget, QStatusBar, QTreeView, QListView, QTextEdit, QDialog, QGroupBox, QSpinBox {
+QMainWindow, QMenuBar, QToolBar, QTabWidget, QStatusBar, QTreeView, QListView, QTextEdit, QDialog, QGroupBox, QSpinBox, QToolBox, QWidget, CE_ToolBoxTab, CE_ToolBoxTabLabel, CE_ToolBoxTabShapes {
 	color: #BCEBB2;
 	background-color: #006523;
 	border: 0px;
@@ -436,8 +436,8 @@ QPlainTextEdit {
 
 /*****************************************/
 QToolBox::tab {
-    color: #c8c8c8;
-	background-color: #4A4F51;
+	color: #BCEBB2;
+	background-color: #006523;
 	border: 1px solid #2b2b2b;
 	/*border-radius: 2px;*/
 	padding: 0px 15px;
@@ -464,4 +464,9 @@ QSlider::handle:horizontal {
 /*****************************************/
 QMainWindow::separator:hover,QSplitter::handle:hover{
   background:#BCEBB2;
+}
+
+QFileDialog QHeaderView::section{
+	color: #BCEBB2;
+	background-color: #006523;
 }

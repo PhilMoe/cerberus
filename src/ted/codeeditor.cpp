@@ -1308,6 +1308,7 @@ void Highlighter::onPrefsChanged( const QString &name ){
         _console1Color=prefs->getColor("console1Color");
         _console2Color=prefs->getColor("console2Color");
         _console3Color=prefs->getColor("console3Color");
+        _console4Color=prefs->getColor("console4Color");
         _defaultColor=prefs->getColor("defaultColor");
         _numbersColor=prefs->getColor("numbersColor");
         _stringsColor=prefs->getColor("stringsColor");
@@ -1412,7 +1413,7 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
         if( t.isEmpty() ) break;
 
         QString kw=keyWords().value( t.toLower() );
-        if (_editor->_capitalizeAPI){
+        if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
             QString kw3=keyWords3().value( t.toLower() );
 
             if ( kw.isEmpty() ) kw = kw3;
@@ -1424,6 +1425,7 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
             cursor.setPosition( i1,QTextCursor::KeepAnchor );
             cursor.insertText( kw );
         }
+
 
         i+=t.length();
     }

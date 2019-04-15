@@ -22,6 +22,9 @@ Change Log
 #define MAINWINDOW_H
 
 #include "std.h"
+#ifdef Q_OS_WIN
+#include <QtPlatformHeaders\QWindowsWindowFunctions>
+#endif
 
 class CodeEditor;
 class ProjectTreeModel;
@@ -29,7 +32,6 @@ class DebugTreeModel;
 class FindDialog;
 class Process;
 class FindInFilesDialog;
-
 
 
 namespace Ui {
@@ -238,6 +240,7 @@ private:
     QString _transVersion;
 
     QTabWidget *_mainTabWidget;
+
     Qt::WindowStates _windowState;
 
     QTextEdit *_consoleTextWidget;
