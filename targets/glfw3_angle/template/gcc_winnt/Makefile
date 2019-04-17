@@ -1,4 +1,4 @@
-
+CC_RES=windres
 CC=gcc
 CFLAGS=
 
@@ -22,6 +22,7 @@ LDLIBS=-llibEGL -llibGLESv2 -lcomdlg32 -lgdi32 $(LIBOPTS) -lws2_32
 vpath %.c ../glfw3/src
 vpath %.c ../stb
 vpath %.cpp ..
+vpath %.rc ..
 
 OBJS0=\
 context.o \
@@ -38,6 +39,7 @@ window.o \
 winmm_joystick.o \
 stb_vorbis.o \
 stb_image.o \
+resource.o \
 main.o
 
 TMP=build/$(dir $(OUT))
@@ -58,3 +60,5 @@ $(TMP)%.o : %.c
 $(TMP)%.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 	
+$(TMP)%.o : %.rc
+	$(CC_RES) $< -o $@
