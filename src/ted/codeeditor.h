@@ -248,7 +248,7 @@ private:
     void insert( BlockData *data );
     void remove( BlockData *data );
 
-    QString parseToke( QString &text,QColor &color );
+    QString parseToke( QString &text,QColor &color, QString &prevText );
 
     const QMap<QString,QString>&keyWords(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords; }
     const QMap<QString,QString>&keyWords3(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords3; }

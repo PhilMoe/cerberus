@@ -1321,9 +1321,9 @@ void Highlighter::onPrefsChanged( const QString &name ){
     }
 }
 
-QString Highlighter::parseToke( QString &text,QColor &color ){
+QString Highlighter::parseToke( QString &text,QColor &color, QString &prevText ){
     if( !text.length() ) return "";
-
+//qDebug() << text;
     int i=0,n=text.length();
     QChar c=text[i++];
 
@@ -1334,9 +1334,11 @@ QString Highlighter::parseToke( QString &text,QColor &color ){
     }else if( isAlpha(c) ){
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
-        if( cerberusFile &&  keyWords().contains( text.left(i).toLower() ) ) {
-            color=_keywordsColor;
-        } else if( cerberusFile &&  keyWords3().contains( text.left(i).toLower() ) ) color=_keywords2Color;
+        if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") && (prevText != "(") && (prevText != ",")) {
+            if( cerberusFile &&  keyWords().contains( text.left(i).toLower() ) ) {
+                color=_keywordsColor;
+            } else if( cerberusFile &&  keyWords3().contains( text.left(i).toLower() ) ) color=_keywords2Color;
+        }
 
     }else if( c=='0' && !cerberusFile ){
         if( i<n && text[i]=='x' ){
@@ -1403,31 +1405,34 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
     QString text=block.text();
     QColor color;
-
+    QString prevToken = "";
     int i=0,pos=cursor.position();
 
     cursor.beginEditBlock();
 
     for(;;){
-        QString t=parseToke( text,color );
+        QString t=parseToke( text,color, prevToken );
         if( t.isEmpty() ) break;
+        if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
+            //qDebug() << lastToken << ":" << t;
+            QString kw=keyWords().value( t.toLower() );
+            if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
+                QString kw3=keyWords3().value( t.toLower() );
 
-        QString kw=keyWords().value( t.toLower() );
-        if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
-            QString kw3=keyWords3().value( t.toLower() );
-
-            if ( kw.isEmpty() ) kw = kw3;
+                if ( kw.isEmpty() ) kw = kw3;
+            }
+            if( !kw.isEmpty() && t!=kw ){
+                int i0=block.position()+i;
+                int i1=i0+t.length();
+                cursor.setPosition( i0 );
+                cursor.setPosition( i1,QTextCursor::KeepAnchor );
+                cursor.insertText( kw );
+            }
         }
-        if( !kw.isEmpty() && t!=kw ){
-            int i0=block.position()+i;
-            int i1=i0+t.length();
-            cursor.setPosition( i0 );
-            cursor.setPosition( i1,QTextCursor::KeepAnchor );
-            cursor.insertText( kw );
-        }
-
 
         i+=t.length();
+        if (t != " ")
+            prevToken = t.toLower();
     }
 
     cursor.endEditBlock();
@@ -1494,12 +1499,12 @@ void Highlighter::highlightBlock( const QString &ctext ){
     QColor curcol=_defaultColor;
 
     QVector<QString> tokes;
-
+    QString prevToken = "";
     for(;;){
 
         QColor col=curcol;
 
-        QString t=parseToke( text,col );
+        QString t=parseToke( text,col, prevToken );
         if( t.isEmpty() ) break;
 
         if( t[0]>' ' ) tokes.push_back( t );
@@ -1509,7 +1514,8 @@ void Highlighter::highlightBlock( const QString &ctext ){
             curcol=col;
             colst=i;
         }
-
+        if (t != " ")
+            prevToken = t.toLower();
         i+=t.length();
     }
 
