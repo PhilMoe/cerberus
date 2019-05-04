@@ -39,7 +39,7 @@ Change Log
 
 #include <QHostInfo>
 
-#define TED_VERSION "2019-04-17"
+#define TED_VERSION "2019-05-04"
 
 #define SETTINGS_VERSION 2
 
@@ -1604,7 +1604,7 @@ void MainWindow::print( const QString &str ){
 }
 
 void MainWindow::cdebug( const QString &str ){
-    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console4Color" ) );
+    _consoleTextWidget->setTextColor( Prefs::prefs()->getColor( "console3Color" ) );
     //_consoleTextWidget->setTextColor( QColor( 128,0,128 ) );
     print( str );
 }

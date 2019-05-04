@@ -797,6 +797,14 @@ void CodeEditor::keyPressEvent( QKeyEvent *e ){
 
     int key=e->key();
 
+    if(key==Qt::Key_Insert){
+        if (overwriteMode()==false){
+            setOverwriteMode(true);
+        }
+        else {
+            setOverwriteMode(false);
+        }
+    }
 
     if( key==Qt::Key_Tab || key==Qt::Key_Backtab ){
         //block tab/untab
