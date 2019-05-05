@@ -272,6 +272,27 @@ Function SetDeviceWindow:Void( width:Int,height:Int,flags:Int )
 	ValidateDeviceWindow False
 End
 
+Function SetDeviceWindowIcon:Void( _path:String )
+	_game.SetDeviceWindowIcon( FixDataPath(_path) )
+End
+
+Function SetDeviceWindowPosition:Void( _x:Int, _y:Int )
+	_game.SetDeviceWindowPosition( _x, _y )
+End
+
+Function SetDeviceWindowSize:Void( _width:Int, _height:Int )
+	_game.SetDeviceWindowSize( _width, _height )
+	ValidateDeviceWindow False
+End
+
+Function SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )
+	_game.SetDeviceWindowSizeLimits( _minWidth, _minHeight, _maxWidth, _maxHeight )
+End
+
+Function SetDeviceWindowTitle:Void( _title:String )
+	_game.SetDeviceWindowTitle( _title )
+End
+
 Function DisplayModes:DisplayMode[]()
 	Return _displayModes
 End

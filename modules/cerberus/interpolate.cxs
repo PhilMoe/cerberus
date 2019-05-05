@@ -1,0 +1,144 @@
+Strict
+
+' interpolation function
+
+
+' interpolates linearly between two points
+Function InterpolateLin:Float(pY0:Float, pY1:Float, pX:Float)
+	Local a:Float = pY1 - pY0
+	Local b:Float = pY0
+	Return a*pX + b
+End
+
+' inverse of linear interpolation - map dt in [t0,t1] to [0,1]
+Function LinMap:Float(pDT:Float, pT0:Float, pT1:Float)
+	' subtract offset
+	pDT -= pT0
+	pT1 -= pT0
+	' interpolate
+	Return pDT / pT1
+End
+
+' interpolates between two points going through intermediate point
+Function InterpolateCurve:Float(pY0:Float, pY1:Float, pYA:Float, pX:Float)
+	' given: 3 constraints in form of 3 points to go through = 3 degrees of
+	' freedom to lock = polynomial of 2nd degree:
+	' y(x) = ax² + bx + c
+	' with:
+	' y(0) = pY0
+	' y(1) = pY1
+	' y(0.5) = pYA
+	' solving for a, b, and c yields:
+	Local a:Float = 2 * (pY1 - 2*pYA + pY0)
+	Local b:Float = -pY1 + 4*pYA - 3*pY0
+	Local c:Float = pY0
+	Return a*pX*pX + b*pX + c
+End
+
+' interpolates between two points with given slopes
+Function InterpolateFit:Float(pY0:Float, pY1:Float, pS0:Float, pS1:Float, pX:Float)
+	' given: 4 constraints in form of 2 points to go through and their slopes =
+	' 4 degrees of freedom to lock in total (2 in polynomial, 2 in it's
+	' derivative, which are respectively):
+	' y(x) = ax³ + bx² + cx + d
+	' y'(x) = 3ax² + 2bx + c
+	' with:
+	' y(0) = pY0
+	' y(1) = pY1
+	' y'(0) = pS0
+	' y'(1) = pS1
+	' solving for a, b, c and d yields:
+	Local a:Float = pS0 + pS1 + 2*pY0 - 2*pY1
+	Local b:Float = -2*pS0 - pS1 - 3*pY0 + 3*pY1
+	Local c:Float = pS0
+	Local d:Float = pY0
+	Return a*pX*pX*pX + b*pX*pX + c*pX + d
+End
+
+' interpolates between two points with a sinusoidal curve
+Function InterpolateSin:Float(pY0:Float, pY1:Float, pX:Float)
+	Local a:Float = (pY0 - pY1) / 2
+	Local b:Float = (pY0 + pY1) / 2
+	Return a*Cos(pX*180) + b
+End
+
+' interpolates between two points with slope=0 and an intermediate point
+Function InterpolateFlats:Float(pY0:Float, pY1:Float, pYA:Float, pX:Float)
+	' given: 5 constraints in form of 3 points to go through and the slopes at
+	' the end points = 5 degrees of freedom to lock in total (3 in polynomial,
+	' 2 in it's derivative, which are respectively):
+	' y(x) = ax⁴ + bx³ + cx² + dx + e
+	' y'(x) = 4ax³ + 3bx² + 2cx + d
+	' with:
+	' y(0) = pY0
+	' y(1) = pY1
+	' y(0.5) = pYA
+	' y'(0) = 0
+	' y'(1) = 0
+	' solving for a, b, c, d and e yields:
+	Local a:Float = 16*pYA - 8*pY0 - 8*pY1
+	Local b:Float = -32*pYA + 18*pY0 + 14*pY1
+	Local c:Float = 16*pYA - 11*pY0 - 5*pY1
+	'Local d:Float = 0
+	Local e:Float = pY0
+	Return a*pX*pX*pX*pX + b*pX*pX*pX + c*pX*pX + e
+End
+
+' cubic bezier curve interpolation between two points
+Function InterpolateCubicBezier:Float(pY0:Float, pY1:Float, pA:Float, pB:Float, pC:Float, pD:Float, pX:Float, pPrecision:Float = 0.0001)
+	' boundary conditions - cubic bezier interpolation is not designed to extrapolate
+	If pX <= 0 Then Return pY0
+	If pX >= 1 Then Return pY1
+	' polynomial factors, precalculated for performance
+	Local pLin:Float = 3*pA
+	Local pQuadr:Float = 3*pC - 6*pA
+	Local pCubic:Float = 1 + 3*pA - 3*pC
+	' A cubic bezier spline is a vector function
+	' (x, y) = f(t)
+	' The algorithm finds t for a given x
+	' iteratively
+	' and returns the corresponding y value.
+	' start at t = pX
+	Local t:Float = pX
+	' old value of t, step of t, how much t actually changed and next best guess for t
+	Local oldt:Float, tstep:Float, dt:Float, dttarget:Float
+	' value of x, old value of x and how much x actually changed in last iteration
+	Local x:Float, oldx:Float, dx:Float
+	' observe runs (for abort condition and to update first tstep differently)
+	Local runs:Int = 0
+	' iterate
+	Repeat
+		runs += 1
+		' calculate x of cubic bezier spline
+		x = pLin * t + pQuadr * t*t + pCubic * t*t*t
+		' accurately found t?
+		If Abs(x - pX) <= pPrecision Then
+			Exit
+		' no, move t
+		Else
+			' update tstep
+			' in first iteration
+			If runs=1 then
+				' tstep by how much x differs from target x
+				tstep = pX - x
+			' after that
+			Else
+				' adapt tstep by how much the value over- or undershoot
+				dx = x - oldx
+				dt = t - oldt
+				dttarget = (pX - oldx) / dx * dt
+				tstep = -dt + dttarget
+			Endif
+			' update t and clamp
+			oldt = t
+			t += tstep
+			If t > 1 then t=1
+			If t < 0 then t=0
+		EndIf
+		oldx = x
+	' abort after 20 runs to prevent infinite loops when AB/CD where badly set
+	' (A-B > 1)
+	Until runs=20
+	' calculate y of cubic bezier spline and return
+	Return pY0 + (3*pB - 3*pY0) * t + (3*pY0 - 6*pB + 3*pD) * t*t + (pY1 + 3*pB - 3*pD - pY0) * t*t*t
+End

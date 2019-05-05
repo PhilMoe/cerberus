@@ -24,6 +24,21 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
+2019-01-20 - Holzchopf
+	- FIXED bug in brl.markdown - required rebuild of Makedocs
+2019-01-15 - Holzchopf
+	- FIXED precompiler directives are now parsed "case insensitive"
+	- CHANGED decls.txt format is now
+		KIND;IDENTIFIER;SCOPE;STATUS
+	- CHANGED descriptions and summaries are now provided for every element in
+		a decl list (as in Field x:Int, y:Int, z:Int)
+	- CHANGED ENUM_ELEMENTS now take the summary from their parent ENUM
+2019-01-08 - Holzchopf
+	- ADDED list ${INDEX_SHORTCUTS}: List of A...Z linking to the first matching
+		anchor in the index, available in indexes. List containing of:
+		IDENT - the display name of the shortcut
+		URL - where the shortcut leads to (will only be set for list items that
+		actually have a matching anchor)
 2018-12-21 - Holzchopf
 	- completely rewritten
 	- ADDED new ${VARS} provided to PageMaker for all decls:
@@ -85,7 +100,7 @@ Import apidoccer
 Import docdoccer
 
 '===============================================================================
-Const VERSION:String		= "2018-12-21"
+Const VERSION:String		= "2019-01-20"
 '===============================================================================
 
 ' path settings
@@ -979,16 +994,31 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		SaveString( txt, PATH_HTML_BASE + "/index.txt" )
 		' make decls.txt
 		' decls.txt format:
-		' KIND FULLIDENTIFIER;URL;PATHTODECLARATION
+		' KIND;IDENTIFIER;SCOPE;STATUS;
 		txt = ""
 		For Local d := Eachin alldecls
 			Local ktxt:String = d.GetKindName()
 			If ktxt <> "Unspecified" Then
-				Local str := d.GetScopeIdent() + d.ident + d.GetDocType().Replace(" ","")
-				txt += ktxt + " " + str
-				txt += ";" + BuildDocLink( d )
-				txt += ";"
-				txt += "~n"
+				Local str := ktxt + ";"
+				str += d.ident + ";"
+				' strip trailing "." from scope
+				Local stxt := d.GetScopeIdent()
+				If stxt.EndsWith(".") Then
+					stxt = stxt[..-1]
+				End
+				str += stxt + ";"
+				Local dtxt:String
+				' "decl" string comes either from decl itself, or from targeted
+				' decl (e.g. for inherited methods)
+				If d.target Then
+					dtxt = d.target.GetDocType()
+				Else
+					dtxt = d.GetDocType()
+				End
+				' escape ";" with "~s" and "~" with "~~"
+				dtxt = dtxt.Replace("~~","~~~~").Replace(";","~~s")
+				str += d.ident + dtxt + ";"
+				txt += str + "~n"
 			End
 		Next
 		SaveString( txt, PATH_HTML_BASE + "/decls.txt" )
@@ -1091,6 +1121,8 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 			' derive current location from index name (which can contain "/")
 			linkidents = index.Key.Split("/")
 			linkurls = _LinkUrlsFromIdents( linkidents )
+			' prepare list of shortcuts
+			Local indexshortcuts := New IntMap<String>
 			' set pager lists/strings for index template
 			Local indexname:String = linkidents[ linkidents.Length-1 ]
 			indexpager.Clear()
@@ -1102,8 +1134,22 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 					indexpager.AddItem()
 					curdecl = decl
 					apidoccer.SetPagerStrings(indexpager, decl, True)
+					' check if this item shall get a short cut
+					Local scdest := decl.GetIdent()
+					Local sckey := scdest.ToLower()[0]
+					If Not indexshortcuts.Contains( sckey ) Then
+						indexshortcuts.Add( sckey, "#"+scdest )
+					End
 				Next
 			End
+			indexpager.EndList()
+			' set pager list/strings for shortcuts
+			indexpager.BeginList("INDEX_SHORTCUTS")
+			For Local i:Int = `a` To `z`
+				indexpager.AddItem()
+				indexpager.SetString("IDENT", String.FromChar(i))
+				indexpager.SetString("URL", indexshortcuts.Get(i) )
+			Next
 			indexpager.EndList()
 			' create and save the index
 			page = indexpager.MakePage()

@@ -19,6 +19,8 @@
 
 # Import brl.httprequest
 
+# Import brl.requesters
+
 The brl module is a set of utility classes and functions.
 
 To import all modules in brl, simply add "Import brl" at the top of your program.

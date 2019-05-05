@@ -64,6 +64,7 @@ void PrefsDialog::onSaveThemeColor(){
         themeColor.setValue( "console1Color", Prefs::prefs()->getColor( "console1Color" ) );
         themeColor.setValue( "console2Color", Prefs::prefs()->getColor( "console2Color" ) );
         themeColor.setValue( "console3Color", Prefs::prefs()->getColor( "console3Color" ) );
+        themeColor.setValue( "console4Color", Prefs::prefs()->getColor( "console4Color" ) );
         themeColor.setValue( "defaultColor", Prefs::prefs()->getColor( "defaultColor" ) );
         themeColor.setValue( "numbersColor", Prefs::prefs()->getColor( "numbersColor" ) );
         themeColor.setValue( "stringsColor", Prefs::prefs()->getColor( "stringsColor" ) );
@@ -98,6 +99,7 @@ void PrefsDialog::onLoadThemeColor(){
         _ui->console1ColorWidget->setColor( themeColor.value( "Colors/console1Color" ).toString() );
         _ui->console2ColorWidget->setColor( themeColor.value( "Colors/console2Color" ).toString() );
         _ui->console3ColorWidget->setColor( themeColor.value( "Colors/console3Color" ).toString() );
+        _ui->console4ColorWidget->setColor( themeColor.value( "Colors/console4Color" ).toString() );
         _ui->defaultColorWidget->setColor( themeColor.value( "Colors/defaultColor" ).toString() );
         _ui->numbersColorWidget->setColor( themeColor.value( "Colors/numbersColor" ).toString());
         _ui->stringsColorWidget->setColor( themeColor.value( "Colors/stringsColor" ).toString() );
@@ -133,6 +135,7 @@ int PrefsDialog::exec(){
     _ui->console1ColorWidget->setColor( _prefs->getColor( "console1Color" ) );
     _ui->console2ColorWidget->setColor( _prefs->getColor( "console2Color" ) );
     _ui->console3ColorWidget->setColor( _prefs->getColor( "console3Color" ) );
+    _ui->console4ColorWidget->setColor( _prefs->getColor( "console4Color" ) );
     _ui->defaultColorWidget->setColor( _prefs->getColor( "defaultColor" ) );
     _ui->numbersColorWidget->setColor( _prefs->getColor( "numbersColor" ) );
     _ui->stringsColorWidget->setColor( _prefs->getColor( "stringsColor" ) );

@@ -1,1 +1,8 @@
 QDockWidget::title{text-align:center;}
+
+QTabBar::close-button {
+	image: url(:/images/dock_close.png)
+}
+QTabBar::close-button:hover {
+	image: url(:/images/dock_close_sel.png)
+}

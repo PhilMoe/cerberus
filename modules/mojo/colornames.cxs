@@ -1,0 +1,304 @@
+Const COLOR_ALICEBLUE:Int				= $F0F8FF
+Const COLOR_ANTIQUEWHITE:Int			= $FAEBD7
+Const COLOR_AQUA:Int					= $00FFFF
+Const COLOR_AQUAMARINE:Int				= $7FFFD4
+Const COLOR_AZURE:Int					= $F0FFFF
+Const COLOR_BEIGE:Int					= $F5F5DC
+Const COLOR_BISQUE:Int					= $FFE4C4
+Const COLOR_BLACK:Int					= $000000
+Const COLOR_BLANCHEDALMOND:Int			= $FFEBCD
+Const COLOR_BLUE:Int					= $0000FF
+Const COLOR_BLUEVIOLET:Int				= $8A2BE2
+Const COLOR_BROWN:Int					= $A52A2A
+Const COLOR_BURLYWOOD:Int				= $DEB887
+Const COLOR_CADETBLUE:Int				= $5F9EA0
+Const COLOR_CHARTREUSE:Int				= $7FFF00
+Const COLOR_CHOCOLATE:Int				= $D2691E
+Const COLOR_CORAL:Int					= $FF7F50
+Const COLOR_CORNFLOWERBLUE:Int			= $6495ED
+Const COLOR_CORNSILK:Int				= $FFF8DC
+Const COLOR_CRIMSON:Int					= $DC143C
+Const COLOR_CYAN:Int					= $00FFFF
+Const COLOR_DARKBLUE:Int				= $00008B
+Const COLOR_DARKCYAN:Int				= $008B8B
+Const COLOR_DARKGOLDENROD:Int			= $B8860B
+Const COLOR_DARKGRAY:Int				= $A9A9A9
+Const COLOR_DARKGREEN:Int				= $006400
+Const COLOR_DARKGREY:Int				= $A9A9A9
+Const COLOR_DARKKHAKI:Int				= $BDB76B
+Const COLOR_DARKMAGENTA:Int				= $8B008B
+Const COLOR_DARKOLIVEGREEN:Int			= $556B2F
+Const COLOR_DARKORANGE:Int				= $FF8C00
+Const COLOR_DARKORCHID:Int				= $9932CC
+Const COLOR_DARKRED:Int					= $8B0000
+Const COLOR_DARKSALMON:Int				= $E9967A
+Const COLOR_DARKSEAGREEN:Int			= $8FBC8F
+Const COLOR_DARKSLATEBLUE:Int			= $483D8B
+Const COLOR_DARKSLATEGRAY:Int			= $2F4F4F
+Const COLOR_DARKSLATEGREY:Int			= $2F4F4F
+Const COLOR_DARKTURQUOISE:Int			= $00CED1
+Const COLOR_DARKVIOLET:Int				= $9400D3
+Const COLOR_DEEPPINK:Int				= $FF1493
+Const COLOR_DEEPSKYBLUE:Int				= $00BFFF
+Const COLOR_DIMGRAY:Int					= $696969
+Const COLOR_DIMGREY:Int					= $696969
+Const COLOR_DODGERBLUE:Int				= $1E90FF
+Const COLOR_FIREBRICK:Int				= $B22222
+Const COLOR_FLORALWHITE:Int				= $FFFAF0
+Const COLOR_FORESTGREEN:Int				= $228B22
+Const COLOR_FUCHSIA:Int					= $FF00FF
+Const COLOR_GAINSBORO:Int				= $DCDCDC
+Const COLOR_GHOSTWHITE:Int				= $F8F8FF
+Const COLOR_GOLD:Int					= $FFD700
+Const COLOR_GOLDENROD:Int				= $DAA520
+Const COLOR_GRAY:Int					= $808080
+Const COLOR_GREEN:Int					= $008000
+Const COLOR_GREENYELLOW:Int				= $ADFF2F
+Const COLOR_GREY:Int					= $808080
+Const COLOR_HONEYDEW:Int				= $F0FFF0
+Const COLOR_HOTPINK:Int					= $FF69B4
+Const COLOR_INDIANRED:Int				= $CD5C5C
+Const COLOR_INDIGO:Int					= $4B0082
+Const COLOR_IVORY:Int					= $FFFFF0
+Const COLOR_KHAKI:Int					= $F0E68C
+Const COLOR_LAVENDER:Int				= $E6E6FA
+Const COLOR_LAVENDERBLUSH:Int			= $FFF0F5
+Const COLOR_LAWNGREEN:Int				= $7CFC00
+Const COLOR_LEMONCHIFFON:Int			= $FFFACD
+Const COLOR_LIGHTBLUE:Int				= $ADD8E6
+Const COLOR_LIGHTCORAL:Int				= $F08080
+Const COLOR_LIGHTCYAN:Int				= $E0FFFF
+Const COLOR_LIGHTGOLDENRODYELLOW:Int	= $FAFAD2
+Const COLOR_LIGHTGRAY:Int				= $D3D3D3
+Const COLOR_LIGHTGREEN:Int				= $90EE90
+Const COLOR_LIGHTGREY:Int				= $D3D3D3
+Const COLOR_LIGHTPINK:Int				= $FFB6C1
+Const COLOR_LIGHTSALMON:Int				= $FFA07A
+Const COLOR_LIGHTSEAGREEN:Int			= $20B2AA
+Const COLOR_LIGHTSKYBLUE:Int			= $87CEFA
+Const COLOR_LIGHTSLATEGRAY:Int			= $778899
+Const COLOR_LIGHTSLATEGREY:Int			= $778899
+Const COLOR_LIGHTSTEELBLUE:Int			= $B0C4DE
+Const COLOR_LIGHTYELLOW:Int				= $FFFFE0
+Const COLOR_LIME:Int					= $00FF00
+Const COLOR_LIMEGREEN:Int				= $32CD32
+Const COLOR_LINEN:Int					= $FAF0E6
+Const COLOR_MAGENTA:Int					= $FF00FF
+Const COLOR_MAROON:Int					= $800000
+Const COLOR_MEDIUMAQUAMARINE:Int		= $66CDAA
+Const COLOR_MEDIUMBLUE:Int				= $0000CD
+Const COLOR_MEDIUMORCHID:Int			= $BA55D3
+Const COLOR_MEDIUMPURPLE:Int			= $9370DB
+Const COLOR_MEDIUMSEAGREEN:Int			= $3CB371
+Const COLOR_MEDIUMSLATEBLUE:Int			= $7B68EE
+Const COLOR_MEDIUMSPRINGGREEN:Int		= $00FA9A
+Const COLOR_MEDIUMTURQUOISE:Int			= $48D1CC
+Const COLOR_MEDIUMVIOLETRED:Int			= $C71585
+Const COLOR_MIDNIGHTBLUE:Int			= $191970
+Const COLOR_MINTCREAM:Int				= $F5FFFA
+Const COLOR_MISTYROSE:Int				= $FFE4E1
+Const COLOR_MOCCASIN:Int				= $FFE4B5
+Const COLOR_NAVAJOWHITE:Int				= $FFDEAD
+Const COLOR_NAVY:Int					= $000080
+Const COLOR_OLDLACE:Int					= $FDF5E6
+Const COLOR_OLIVE:Int					= $808000
+Const COLOR_OLIVEDRAB:Int				= $6B8E23
+Const COLOR_ORANGE:Int					= $FFA500
+Const COLOR_ORANGERED:Int				= $FF4500
+Const COLOR_ORCHID:Int					= $DA70D6
+Const COLOR_PALEGOLDENROD:Int			= $EEE8AA
+Const COLOR_PALEGREEN:Int				= $98FB98
+Const COLOR_PALETURQUOISE:Int			= $AFEEEE
+Const COLOR_PALEVIOLETRED:Int			= $DB7093
+Const COLOR_PAPAYAWHIP:Int				= $FFEFD5
+Const COLOR_PEACHPUFF:Int				= $FFDAB9
+Const COLOR_PERU:Int					= $CD853F
+Const COLOR_PINK:Int					= $FFC0CB
+Const COLOR_PLUM:Int					= $DDA0DD
+Const COLOR_POWDERBLUE:Int				= $B0E0E6
+Const COLOR_PURPLE:Int					= $800080
+Const COLOR_REBECCAPURPLE:Int			= $663399
+Const COLOR_RED:Int						= $FF0000
+Const COLOR_ROSYBROWN:Int				= $BC8F8F
+Const COLOR_ROYALBLUE:Int				= $4169E1
+Const COLOR_SADDLEBROWN:Int				= $8B4513
+Const COLOR_SALMON:Int					= $FA8072
+Const COLOR_SANDYBROWN:Int				= $F4A460
+Const COLOR_SEAGREEN:Int				= $2E8B57
+Const COLOR_SEASHELL:Int				= $FFF5EE
+Const COLOR_SIENNA:Int					= $A0522D
+Const COLOR_SILVER:Int					= $C0C0C0
+Const COLOR_SKYBLUE:Int					= $87CEEB
+Const COLOR_SLATEBLUE:Int				= $6A5ACD
+Const COLOR_SLATEGRAY:Int				= $708090
+Const COLOR_SLATEGREY:Int				= $708090
+Const COLOR_SNOW:Int					= $FFFAFA
+Const COLOR_SPRINGGREEN:Int				= $00FF7F
+Const COLOR_STEELBLUE:Int				= $4682B4
+Const COLOR_TAN:Int						= $D2B48C
+Const COLOR_TEAL:Int					= $008080
+Const COLOR_THISTLE:Int					= $D8BFD8
+Const COLOR_TOMATO:Int					= $FF6347
+Const COLOR_TURQUOISE:Int				= $40E0D0
+Const COLOR_VIOLET:Int					= $EE82EE
+Const COLOR_WHEAT:Int					= $F5DEB3
+Const COLOR_WHITE:Int					= $FFFFFF
+Const COLOR_WHITESMOKE:Int				= $F5F5F5
+Const COLOR_YELLOW:Int					= $FFFF00
+Const COLOR_YELLOWGREEN:Int				= $9ACD32
+
+
+' Translate html color name to int (hex) value
+Function NamedHtmlColor:Int(pColor:String)
+	Select pColor.ToLower()
+	Case "aliceblue" Return COLOR_ALICEBLUE
+	Case "antiquewhite" Return COLOR_ANTIQUEWHITE
+	Case "aqua" Return COLOR_AQUA
+	Case "aquamarine" Return COLOR_AQUAMARINE
+	Case "azure" Return COLOR_AZURE
+	Case "beige" Return COLOR_BEIGE
+	Case "bisque" Return COLOR_BISQUE
+	Case "black" Return COLOR_BLACK
+	Case "blanchedalmond" Return COLOR_BLANCHEDALMOND
+	Case "blue" Return COLOR_BLUE
+	Case "blueviolet" Return COLOR_BLUEVIOLET
+	Case "brown" Return COLOR_BROWN
+	Case "burlywood" Return COLOR_BURLYWOOD
+	Case "cadetblue" Return COLOR_CADETBLUE
+	Case "chartreuse" Return COLOR_CHARTREUSE
+	Case "chocolate" Return COLOR_CHOCOLATE
+	Case "coral" Return COLOR_CORAL
+	Case "cornflowerblue" Return COLOR_CORNFLOWERBLUE
+	Case "cornsilk" Return COLOR_CORNSILK
+	Case "crimson" Return COLOR_CRIMSON
+	Case "cyan" Return COLOR_CYAN
+	Case "darkblue" Return COLOR_DARKBLUE
+	Case "darkcyan" Return COLOR_DARKCYAN
+	Case "darkgoldenrod" Return COLOR_DARKGOLDENROD
+	Case "darkgray" Return COLOR_DARKGRAY
+	Case "darkgreen" Return COLOR_DARKGREEN
+	Case "darkgrey" Return COLOR_DARKGREY
+	Case "darkkhaki" Return COLOR_DARKKHAKI
+	Case "darkmagenta" Return COLOR_DARKMAGENTA
+	Case "darkolivegreen" Return COLOR_DARKOLIVEGREEN
+	Case "darkorange" Return COLOR_DARKORANGE
+	Case "darkorchid" Return COLOR_DARKORCHID
+	Case "darkred" Return COLOR_DARKRED
+	Case "darksalmon" Return COLOR_DARKSALMON
+	Case "darkseagreen" Return COLOR_DARKSEAGREEN
+	Case "darkslateblue" Return COLOR_DARKSLATEBLUE
+	Case "darkslategray" Return COLOR_DARKSLATEGRAY
+	Case "darkslategrey" Return COLOR_DARKSLATEGREY
+	Case "darkturquoise" Return COLOR_DARKTURQUOISE
+	Case "darkviolet" Return COLOR_DARKVIOLET
+	Case "deeppink" Return COLOR_DEEPPINK
+	Case "deepskyblue" Return COLOR_DEEPSKYBLUE
+	Case "dimgray" Return COLOR_DIMGRAY
+	Case "dimgrey" Return COLOR_DIMGREY
+	Case "dodgerblue" Return COLOR_DODGERBLUE
+	Case "firebrick" Return COLOR_FIREBRICK
+	Case "floralwhite" Return COLOR_FLORALWHITE
+	Case "forestgreen" Return COLOR_FORESTGREEN
+	Case "fuchsia" Return COLOR_FUCHSIA
+	Case "gainsboro" Return COLOR_GAINSBORO
+	Case "ghostwhite" Return COLOR_GHOSTWHITE
+	Case "gold" Return COLOR_GOLD
+	Case "goldenrod" Return COLOR_GOLDENROD
+	Case "gray" Return COLOR_GRAY
+	Case "green" Return COLOR_GREEN
+	Case "greenyellow" Return COLOR_GREENYELLOW
+	Case "grey" Return COLOR_GREY
+	Case "honeydew" Return COLOR_HONEYDEW
+	Case "hotpink" Return COLOR_HOTPINK
+	Case "indianred" Return COLOR_INDIANRED
+	Case "indigo" Return COLOR_INDIGO
+	Case "ivory" Return COLOR_IVORY
+	Case "khaki" Return COLOR_KHAKI
+	Case "lavender" Return COLOR_LAVENDER
+	Case "lavenderblush" Return COLOR_LAVENDERBLUSH
+	Case "lawngreen" Return COLOR_LAWNGREEN
+	Case "lemonchiffon" Return COLOR_LEMONCHIFFON
+	Case "lightblue" Return COLOR_LIGHTBLUE
+	Case "lightcoral" Return COLOR_LIGHTCORAL
+	Case "lightcyan" Return COLOR_LIGHTCYAN
+	Case "lightgoldenrodyellow" Return COLOR_LIGHTGOLDENRODYELLOW
+	Case "lightgray" Return COLOR_LIGHTGRAY
+	Case "lightgreen" Return COLOR_LIGHTGREEN
+	Case "lightgrey" Return COLOR_LIGHTGREY
+	Case "lightpink" Return COLOR_LIGHTPINK
+	Case "lightsalmon" Return COLOR_LIGHTSALMON
+	Case "lightseagreen" Return COLOR_LIGHTSEAGREEN
+	Case "lightskyblue" Return COLOR_LIGHTSKYBLUE
+	Case "lightslategray" Return COLOR_LIGHTSLATEGRAY
+	Case "lightslategrey" Return COLOR_LIGHTSLATEGREY
+	Case "lightsteelblue" Return COLOR_LIGHTSTEELBLUE
+	Case "lightyellow" Return COLOR_LIGHTYELLOW
+	Case "lime" Return COLOR_LIME
+	Case "limegreen" Return COLOR_LIMEGREEN
+	Case "linen" Return COLOR_LINEN
+	Case "magenta" Return COLOR_MAGENTA
+	Case "maroon" Return COLOR_MAROON
+	Case "mediumaquamarine" Return COLOR_MEDIUMAQUAMARINE
+	Case "mediumblue" Return COLOR_MEDIUMBLUE
+	Case "mediumorchid" Return COLOR_MEDIUMORCHID
+	Case "mediumpurple" Return COLOR_MEDIUMPURPLE
+	Case "mediumseagreen" Return COLOR_MEDIUMSEAGREEN
+	Case "mediumslateblue" Return COLOR_MEDIUMSLATEBLUE
+	Case "mediumspringgreen" Return COLOR_MEDIUMSPRINGGREEN
+	Case "mediumturquoise" Return COLOR_MEDIUMTURQUOISE
+	Case "mediumvioletred" Return COLOR_MEDIUMVIOLETRED
+	Case "midnightblue" Return COLOR_MIDNIGHTBLUE
+	Case "mintcream" Return COLOR_MINTCREAM
+	Case "mistyrose" Return COLOR_MISTYROSE
+	Case "moccasin" Return COLOR_MOCCASIN
+	Case "navajowhite" Return COLOR_NAVAJOWHITE
+	Case "navy" Return COLOR_NAVY
+	Case "oldlace" Return COLOR_OLDLACE
+	Case "olive" Return COLOR_OLIVE
+	Case "olivedrab" Return COLOR_OLIVEDRAB
+	Case "orange" Return COLOR_ORANGE
+	Case "orangered" Return COLOR_ORANGERED
+	Case "orchid" Return COLOR_ORCHID
+	Case "palegoldenrod" Return COLOR_PALEGOLDENROD
+	Case "palegreen" Return COLOR_PALEGREEN
+	Case "paleturquoise" Return COLOR_PALETURQUOISE
+	Case "palevioletred" Return COLOR_PALEVIOLETRED
+	Case "papayawhip" Return COLOR_PAPAYAWHIP
+	Case "peachpuff" Return COLOR_PEACHPUFF
+	Case "peru" Return COLOR_PERU
+	Case "pink" Return COLOR_PINK
+	Case "plum" Return COLOR_PLUM
+	Case "powderblue" Return COLOR_POWDERBLUE
+	Case "purple" Return COLOR_PURPLE
+	Case "rebeccapurple" Return COLOR_REBECCAPURPLE
+	Case "red" Return COLOR_RED
+	Case "rosybrown" Return COLOR_ROSYBROWN
+	Case "royalblue" Return COLOR_ROYALBLUE
+	Case "saddlebrown" Return COLOR_SADDLEBROWN
+	Case "salmon" Return COLOR_SALMON
+	Case "sandybrown" Return COLOR_SANDYBROWN
+	Case "seagreen" Return COLOR_SEAGREEN
+	Case "seashell" Return COLOR_SEASHELL
+	Case "sienna" Return COLOR_SIENNA
+	Case "silver" Return COLOR_SILVER
+	Case "skyblue" Return COLOR_SKYBLUE
+	Case "slateblue" Return COLOR_SLATEBLUE
+	Case "slategray" Return COLOR_SLATEGRAY
+	Case "slategrey" Return COLOR_SLATEGREY
+	Case "snow" Return COLOR_SNOW
+	Case "springgreen" Return COLOR_SPRINGGREEN
+	Case "steelblue" Return COLOR_STEELBLUE
+	Case "tan" Return COLOR_TAN
+	Case "teal" Return COLOR_TEAL
+	Case "thistle" Return COLOR_THISTLE
+	Case "tomato" Return COLOR_TOMATO
+	Case "turquoise" Return COLOR_TURQUOISE
+	Case "violet" Return COLOR_VIOLET
+	Case "wheat" Return COLOR_WHEAT
+	Case "white" Return COLOR_WHITE
+	Case "whitesmoke" Return COLOR_WHITESMOKE
+	Case "yellow" Return COLOR_YELLOW
+	Case "yellowgreen" Return COLOR_YELLOWGREEN
+	End
+	Return 0
+End

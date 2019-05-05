@@ -80,6 +80,15 @@ The current color is used by all drawing operations except Cls.
 Note: Drawing images in any color other than $FFFFFF on the HTML5 target will incur a major runtime overhead. For best results on the HTML5 target, either use colored images sparingly, or consider using 'pre-colored' images stored in multiple image files.
 
 
+# Function SetColor( col:Color )
+
+Sets the current color using a [[Color]] object.
+
+The current color is used by all drawing operations except Cls.
+
+Note: Drawing images in any color other than $FFFFFF on the HTML5 target will incur a major runtime overhead. For best results on the HTML5 target, either use colored images sparingly, or consider using 'pre-colored' images stored in multiple image files.
+
+
 # Function GetColor:Float[]()
 
 Returns the current color as a 3 component float array containg the current color's red, green and blue components respectively.
@@ -240,6 +249,20 @@ Multiplies the current matrix by a matrix representing the specified rotation.
 # Function Cls:Int(r:Float=0,g:Float=0,b:Float=0)
 
 Clears the graphics device to the specified color.
+
+The current color, alpha and blend mode are ignored by Cls. However, the scissor rect is still used so only the area inside the scissor rect is cleared.
+
+
+# Function Cls( col:Color )
+
+Clears the graphics device to the specified [[Color]].
+
+The current color, alpha and blend mode are ignored by Cls. However, the scissor rect is still used so only the area inside the scissor rect is cleared.
+
+
+# Function Cls( rgb:Int )
+
+Clears the graphics device to the specified hex color value.
 
 The current color, alpha and blend mode are ignored by Cls. However, the scissor rect is still used so only the area inside the scissor rect is cleared.
 

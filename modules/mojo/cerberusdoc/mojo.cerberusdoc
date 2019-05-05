@@ -5,6 +5,8 @@
 
 # Import mojo.audio
 
+# Import mojo.color
+
 # Import mojo.graphics
 
 # Import mojo.input

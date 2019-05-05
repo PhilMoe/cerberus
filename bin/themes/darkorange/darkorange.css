@@ -476,3 +476,10 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
 {
     border: 1px solid #444;
 }
+
+QTabBar::close-button {
+	image: url(:/dock_close.png)
+}
+QTabBar::close-button:hover {
+	image: url(:/dock_close_sel.png)
+}

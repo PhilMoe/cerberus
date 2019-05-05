@@ -1,6 +1,9 @@
 
 //***** glfwgame.h *****
 
+static String::CString<char> GLFW_C_STR( const String &t ){ return t.ToCString<char>(); };
+
+
 class BBGlfwGame : public BBGame{
 public:
 	BBGlfwGame();
@@ -13,10 +16,18 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
-		
+	virtual void SetMousePos( double xpos,double ypos );
+	virtual void SetClipboard( String _text );
+	virtual String GetClipboard();
+	
 	virtual int GetDeviceWidth(){ return _width; }
 	virtual int GetDeviceHeight(){ return _height; }
 	virtual void SetDeviceWindow( int width,int height,int flags );
+	virtual void SetDeviceWindowIcon( String _path );
+	virtual void SetDeviceWindowPosition( int _x, int _y );
+	virtual void SetDeviceWindowSize( int _width, int _height );
+	virtual void SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight );
+	virtual void SetDeviceWindowTitle( String _title );
 	virtual void SetSwapInterval( int interval );
 	virtual Array<BBDisplayMode*> GetDisplayModes();
 	virtual BBDisplayMode *GetDesktopMode();
@@ -270,6 +281,10 @@ void BBGlfwGame::SetMouseVisible( bool visible ){
 	}else{
 		glfwSetInputMode( _window,GLFW_CURSOR,GLFW_CURSOR_HIDDEN );
 	}
+}
+
+void BBGlfwGame::SetMousePos( double xpos,double ypos ){
+	glfwSetCursorPos( _window, xpos, ypos ); 
 }
 
 String BBGlfwGame::PathToFilePath( String path ){
@@ -557,6 +572,52 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 	_glfwGame->_nextUpdate=0;
 #endif
 }
+
+void BBGlfwGame::SetClipboard( String _text ){
+    if( _window )
+    	glfwSetClipboardString( _window, GLFW_C_STR(_text) );
+}
+
+String BBGlfwGame::GetClipboard(){
+	const char* _text = glfwGetClipboardString( _window );
+	if (_text != NULL) {
+		return String(_text);
+	}
+	else {
+		return String("");
+	}
+}
+
+void BBGlfwGame::SetDeviceWindowIcon( String _path ){
+    if( _window ) {
+    	int width,height,depth;
+		GLFWimage icons[1];
+		unsigned char* imageData = LoadImageData(_path, &icons[0].width,&icons[0].height,&depth);
+		icons[0].pixels = imageData;   	
+    	glfwSetWindowIcon(_window, 1, icons);
+    }
+}
+
+void BBGlfwGame::SetDeviceWindowPosition( int _x, int _y ){
+    if( _window )
+    	glfwSetWindowPos(_window, _x, _y);
+}
+
+void BBGlfwGame::SetDeviceWindowSize( int _width, int _height ){
+    if( _window )
+    	glfwSetWindowSize(_window, _width, _height);
+}
+
+void BBGlfwGame::SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight ){
+    if( _window )
+    	glfwSetWindowSizeLimits(_window, _minWidth, _minHeight, _maxWidth, _maxHeight);
+}
+
+void BBGlfwGame::SetDeviceWindowTitle( String _title ){
+    if( _window )
+    	glfwSetWindowTitle(_window,GLFW_C_STR(_title));
+}
+
 
 void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 

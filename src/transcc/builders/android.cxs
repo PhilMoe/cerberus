@@ -181,7 +181,19 @@ Class AndroidBuilder Extends Builder
 
 				Die "Android build failed."
 				
-			Else If tcc.opt_run
+			Elseif (tcc.opt_config = "release")
+				Local adb:="adb"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+				Local _file:String = CurrentDir()
+				_file += "\app\build\outputs\apk\release\app-release.apk"
+				Print ("installing "+_file+" ...")
+				'Execute adb+" logcat -c",False
+				Execute adb+" install -r "+_file,False
+				'Execute adb+" logcat [Cerberus]:I *:E",False
+				
+			Endif
+			
+			If tcc.opt_run
 
 				Local adb:="adb"
 				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"

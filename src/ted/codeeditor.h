@@ -233,6 +233,7 @@ private:
     QColor _console1Color;
     QColor _console2Color;
     QColor _console3Color;
+    QColor _console4Color;
     QColor _defaultColor;
     QColor _numbersColor;
     QColor _stringsColor;
@@ -247,7 +248,7 @@ private:
     void insert( BlockData *data );
     void remove( BlockData *data );
 
-    QString parseToke( QString &text,QColor &color );
+    QString parseToke( QString &text,QColor &color, QString &prevText );
 
     const QMap<QString,QString>&keyWords(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords; }
     const QMap<QString,QString>&keyWords3(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords3; }

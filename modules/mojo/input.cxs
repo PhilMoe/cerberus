@@ -74,6 +74,20 @@ Function MouseHit( button=MOUSE_LEFT )
 	Return device.KeyHit( KEY_LMB+button )
 End
 
+Function SetMousePos:Void( xpos:Float, ypos:Float )
+	device.SetMousePos( xpos, ypos )
+End
+
+'***** Clipboard *****
+
+Function SetClipboard:Void( _text:String )
+	device.SetClipboard( _text )
+End
+
+Function GetClipboard:String()
+	Return device.GetClipboard()
+End
+
 '***** Touch *****
 
 Function TouchX#( index=0 )

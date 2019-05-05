@@ -314,7 +314,7 @@ Class ApiDoccer
 				Local state := parser.Store()
 				parser.NextSpace()
 				' start of a rem block
-				If parser.NextCdata("#Rem") Then
+				If parser.NextCdata("#rem", True) Then
 					parser.NextToke()
 					' only analyse first level rem blocks
 					' (not already in a block)
@@ -367,7 +367,7 @@ Class ApiDoccer
 					End
 				' start of another precompiler conditional block
 				' (count them too as they're terminated with #End as well)
-				Elseif parser.NextCdata("#If") Then
+				Elseif parser.NextCdata("#if", True) Then
 					If indoc Then
 						parser.Restore( state )
 						Local str:String = parser.NextRestOfLine()
@@ -378,7 +378,7 @@ Class ApiDoccer
 						docblocks.Push( BLOCK_CONDITION )
 					End
 				' end of a contitional block
-				Elseif parser.NextCdata("#End") Then
+				Elseif parser.NextCdata("#end", True) Then
 					docblocks.Pop()
 					If docblocks.Length() > 0 And docblocks.Get(0) = BLOCK_DOC Then
 						parser.Restore( state )
@@ -410,6 +410,14 @@ Class ApiDoccer
 									' send through Add to match parent
 									curdecl.Add( d )
 								Next
+								' if decl was a whole list, copy documentation
+								' to other set elements
+								If parser.listofdecls Then
+									' remove curdecl - that one is already docced
+									parser.listofdecls.RemoveEach( curdecl )
+									' copy documentation to rest in list
+									_CopyDoccDecl( doccdecl, parser.listofdecls )
+								End
 								doccdecl = Null
 							End
 						End
@@ -469,6 +477,16 @@ Class ApiDoccer
 			' Windows (CR+LF) and Mac line endings (CR) to Unix ones
 			curparagraph.ident += UnifyLineEndings( pString )
 		End
+	End
+	
+	' copy the childs from pDoccDecl to all decls in pDecls
+	Method _CopyDoccDecl:Void( pDoccDecl:DocDecl, pDecls:Stack<DocDecl> )
+		For Local ld := Eachin pDecls
+			For Local d := Eachin pDoccDecl.childs
+				' Add copy of existing doccdecl
+				ld.Add( New DocDecl( d.kind, d.ident ) )
+			Next
+		Next
 	End
 	
 	' apply the template loaded in pPager to a module like pDecl
@@ -574,8 +592,12 @@ Class ApiDoccer
 		pPager.SetString("URL", maker.BuildDocLink( tdecl ) )
 		' SCOPE - the scope that uniquely identifies this decl at global
 		pPager.SetString("SCOPE", tdecl.GetScopeIdent() )
-		' SUMMARY, markdowned 
-		txt = tdecl.GetTextOfChild( DECL_SUMMARY )
+		' SUMMARY, markdowned
+		If tdecl.kind = DECL_ENUM_ELEMENT Then
+			txt = tdecl.parent.GetTextOfChild( DECL_SUMMARY )
+		Else
+			txt = tdecl.GetTextOfChild( DECL_SUMMARY )
+		End
 		txt = StripParagraph( maker.marker.ToHtml(txt) )
 		pPager.SetString("SUMMARY", txt )
 		' fields only for CX declarations

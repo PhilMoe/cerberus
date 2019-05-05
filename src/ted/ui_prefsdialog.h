@@ -49,6 +49,8 @@ public:
     ColorSwatch *console2ColorWidget;
     QLabel *console3ColorLabel;
     ColorSwatch *console3ColorWidget;
+    QLabel *console4ColorLabel;
+    ColorSwatch *console4ColorWidget;
     QLabel *lineNumberColorLabel;
     ColorSwatch *lineNumberColorWidget;
     QGroupBox *grpOptions;
@@ -171,16 +173,26 @@ public:
 
         formLayout_5->setWidget(4, QFormLayout::FieldRole, console3ColorWidget);
 
+        console4ColorLabel = new QLabel(grpUI);
+        console4ColorLabel->setObjectName(QStringLiteral("console4ColorLabel"));
+
+        formLayout_5->setWidget(5, QFormLayout::LabelRole, console4ColorLabel);
+
+        console4ColorWidget = new ColorSwatch(grpUI);
+        console4ColorWidget->setObjectName(QStringLiteral("console4ColorWidget"));
+
+        formLayout_5->setWidget(5, QFormLayout::FieldRole, console4ColorWidget);
+
         lineNumberColorLabel = new QLabel(grpUI);
         lineNumberColorLabel->setObjectName(QStringLiteral("lineNumberColorLabel"));
         lineNumberColorLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-        formLayout_5->setWidget(5, QFormLayout::LabelRole, lineNumberColorLabel);
+        formLayout_5->setWidget(6, QFormLayout::LabelRole, lineNumberColorLabel);
 
         lineNumberColorWidget = new ColorSwatch(grpUI);
         lineNumberColorWidget->setObjectName(QStringLiteral("lineNumberColorWidget"));
 
-        formLayout_5->setWidget(5, QFormLayout::FieldRole, lineNumberColorWidget);
+        formLayout_5->setWidget(6, QFormLayout::FieldRole, lineNumberColorWidget);
 
 
         gridLayout_5->addLayout(formLayout_5, 0, 0, 1, 1);
@@ -551,6 +563,7 @@ public:
         QObject::connect(highlightBracketsWidget, SIGNAL(toggled(bool)), PrefsDialog, SLOT(onHighlightBracketsChanged(bool)));
         QObject::connect(keywords2ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
         QObject::connect(capitalizeAPIWidget, SIGNAL(clicked(bool)), PrefsDialog, SLOT(onCapitalizeAPIChanged(bool)));
+        QObject::connect(console4ColorWidget, SIGNAL(colorChanged()), PrefsDialog, SLOT(onColorChanged()));
 
         QMetaObject::connectSlotsByName(PrefsDialog);
     } // setupUi
@@ -566,6 +579,7 @@ public:
         console1ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#1", Q_NULLPTR));
         console2ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#2", Q_NULLPTR));
         console3ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#3", Q_NULLPTR));
+        console4ColorLabel->setText(QApplication::translate("PrefsDialog", "Console color#4", Q_NULLPTR));
         lineNumberColorLabel->setText(QApplication::translate("PrefsDialog", "Line numbers", Q_NULLPTR));
         grpOptions->setTitle(QApplication::translate("PrefsDialog", "Code Editor Options", Q_NULLPTR));
         familyLabel->setText(QApplication::translate("PrefsDialog", "Font Family", Q_NULLPTR));
@@ -616,7 +630,7 @@ public:
         btnSaveColors->setToolTip(QApplication::translate("PrefsDialog", "Save the editor colors with the theme", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
         btnSaveColors->setText(QApplication::translate("PrefsDialog", "Save Colors", Q_NULLPTR));
-        okayButton->setText(QApplication::translate("PrefsDialog", "Okay", Q_NULLPTR));
+        okayButton->setText(QApplication::translate("PrefsDialog", "Ok", Q_NULLPTR));
     } // retranslateUi
 
 };

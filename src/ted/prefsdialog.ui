@@ -79,6 +79,16 @@
          <widget class="ColorSwatch" name="console3ColorWidget" native="true"/>
         </item>
         <item row="5" column="0">
+         <widget class="QLabel" name="console4ColorLabel">
+          <property name="text">
+           <string>Console color#4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="ColorSwatch" name="console4ColorWidget" native="true"/>
+        </item>
+        <item row="6" column="0">
          <widget class="QLabel" name="lineNumberColorLabel">
           <property name="text">
            <string>Line numbers</string>
@@ -88,7 +98,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="6" column="1">
          <widget class="ColorSwatch" name="lineNumberColorWidget" native="true"/>
         </item>
        </layout>
@@ -531,7 +541,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Okay</string>
+        <string>Ok</string>
        </property>
       </widget>
      </item>
@@ -577,7 +587,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>547</y>
+     <y>566</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -593,7 +603,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>585</y>
+     <y>604</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -609,7 +619,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>490</y>
+     <y>509</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -625,7 +635,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>528</y>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -641,7 +651,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>471</y>
+     <y>490</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -657,7 +667,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>566</y>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -673,7 +683,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>623</y>
+     <y>642</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -721,7 +731,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>683</y>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>
@@ -737,7 +747,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>709</y>
+     <y>728</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -769,7 +779,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>509</y>
+     <y>528</y>
     </hint>
     <hint type="destinationlabel">
      <x>143</x>
@@ -785,7 +795,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>285</y>
+     <y>304</y>
     </hint>
     <hint type="destinationlabel">
      <x>176</x>
@@ -817,7 +827,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>308</y>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -833,7 +843,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>398</y>
+     <y>417</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -865,7 +875,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>417</y>
+     <y>436</y>
     </hint>
     <hint type="destinationlabel">
      <x>395</x>
@@ -961,7 +971,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>134</y>
+     <y>153</y>
     </hint>
     <hint type="destinationlabel">
      <x>613</x>
@@ -977,7 +987,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>266</y>
+     <y>285</y>
     </hint>
     <hint type="destinationlabel">
      <x>488</x>
@@ -993,7 +1003,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>331</y>
+     <y>350</y>
     </hint>
     <hint type="destinationlabel">
      <x>535</x>
@@ -1009,7 +1019,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>354</y>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel">
      <x>546</x>
@@ -1025,7 +1035,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>390</x>
-     <y>604</y>
+     <y>623</y>
     </hint>
     <hint type="destinationlabel">
      <x>518</x>
@@ -1040,12 +1050,28 @@
    <slot>onCapitalizeAPIChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>273</x>
-     <y>367</y>
+     <x>389</x>
+     <y>392</y>
     </hint>
     <hint type="destinationlabel">
      <x>404</x>
      <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>console4ColorWidget</sender>
+   <signal>colorChanged()</signal>
+   <receiver>PrefsDialog</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>247</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>445</y>
     </hint>
    </hints>
   </connection>

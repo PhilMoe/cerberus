@@ -263,10 +263,10 @@ Class MyApp Extends App
 	Method OnUpdate()
 	
 		If MouseHit(0)
-			If MouseY()\<DeviceHeight/2
+			If MouseY()<DeviceHeight/2
 				OpenUrl "http://www.cerberus-x.com"
 			Else
-				OpenUrl "mailto:martin.leidel@gmail.com"
+				OpenUrl "mailto:email@example.com"
 			Endif
 		Endif
 	End
@@ -274,7 +274,7 @@ Class MyApp Extends App
 	Method OnRender()
 	
 		Cls
-		DrawText "Click above to visit Cerberus X, below to email Martin!",DeviceWidth/2,DeviceHeight/2,.5,.5
+		DrawText "Click above to visit Cerberus X, below to email some one!",DeviceWidth/2,DeviceHeight/2,.5,.5
 	End
 
 End
@@ -344,6 +344,43 @@ Calling this function does NOT result in your application's [[OnResize]] method 
 Use [[DisplayModes]] for a list of valid fullscreen device width/heights.
 
 Note that this function is not affected by any app config settings such as #GLFW_WINDOW_FULLSCREEN.
+
+
+# Function SetDeviceWindowIcon:Void( _path:String )
+
+Sets the icon of the application's device window. 
+
+Works only for GLFW target.
+
+
+# Function SetDeviceWindowPosition:Void( _x:Int, _y:Int )
+
+Sets the position of the application's device window. 
+
+Please note, that the position does not include the title bar of the window.
+
+Works only for GLFW target.
+
+
+# Function SetDeviceWindowSize:Void( _width:Int, _height:Int )
+
+Sets the size of the application's device window. 
+
+Works only for GLFW target.
+
+
+# Function SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )
+
+Sets the minimum and maximum size limits of the application's device window. 
+
+Works only for GLFW target.
+
+
+# Function SetDeviceWindowTitle:Void( _title:String )
+
+Sets the title of the application's device window.
+
+Works only for GLFW target.
 
 
 # Function DisplayModes:DisplayMode[]()

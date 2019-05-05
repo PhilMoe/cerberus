@@ -1,5 +1,5 @@
 Strict
-
+#GLFW_USE_MINGW=false
 #Rem
 ================================================================================
 Cerberus X MiniServer, used for local testing of HTML5 games
@@ -64,7 +64,9 @@ Changelog
 #Endif
 
 ' framework
-Import mojo
+'Import mojo
+Import mojo.app
+Import mojo.graphics
 
 Import brl.socket
 Import brl.process

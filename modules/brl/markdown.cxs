@@ -165,69 +165,76 @@ Class Markdown
 	End
 	
 	Method ReplaceLinks:String( src:String )
-		'
-		'[[link]]  [[link|text]]
-		'
-		Local i:=0
+		' 20190120 - Holzchopf
+		' function redesigned - go only once through src, otherwise the result
+		' of one link resolving might be destroyed in a later pass by another
+		' "link format" replacement
+		Local i := 0
+		Local i0:Int, i1:Int, i2:Int
+		Local lnk:String, txt:String, res:String
 		Repeat
-
-			Local i0:=Find(src,"[[",i)
-			If i0=-1 Exit
-			Local i1:=Find(src,"]]",i0+2)
-			If i1=-1 Exit
-			
-			Local p:=src[i0+2..i1],t:=""
-			Local j:=p.Find("|")
-			If j<>-1
-				t=p[j+1..]
-				p=p[..j]
-			Endif
-	
-			Local r:=_resolver.ResolveLink(p,t)
-			
-			src=src[..i0]+r+src[i1+2..]
-			i=i0+r.Length
-		Forever
-		'
-		' Image link
-		'![alttext](link)
-		'
-		i=0
-		Repeat
-			Local i0:=Find(src,"![",i)
-			If i0=-1 Exit
-			Local i1:=Find(src,"](",i0+1)
-			If i1=-1 Or i1=i0+1 Exit
-			Local i2:=Find(src,")",i1+2)
-			If i2=-1 Or i2=i1+2 Exit
-			'
-			Local t:=src[i0+2..i1]
-			Local p:=src[i1+2..i2]
-			'
-			Local r:=_resolver.ResolveLink("<img>"+p,t)
-			src=src[..i0]+r+src[i2+1..]
-			i=i0+r.Length
-		Forever
-		'
-		'[text](link)
-		'
-		i=0
-		Repeat
-			Local i0:=Find(src,"[",i)
-			If i0=-1 Exit
-			Local i1:=Find(src,"](",i0+1)
-			If i1=-1 Or i1=i0+1 Exit
-			Local i2:=Find(src,")",i1+2)
-			If i2=-1 Or i2=i1+2 Exit
-			'
-			Local t:=src[i0+1..i1]
-			Local p:=src[i1+2..i2]
-			'
-			Local r:=_resolver.ResolveLink(p,t)
-			src=src[..i0]+r+src[i2+1..]
-			i=i0+r.Length
-		Forever
-		'
+			lnk = ""
+			txt = ""
+			'[[link]]  [[link|text]]
+			i0 = Find(src,"[[",i)
+			If i0 > -1 Then
+				i1 = Find(src,"]]",i0+2)
+				If i1 > -1 Then
+					lnk = src[i0+2..i1]
+					' alt text given? then extract that from lnk
+					i2 = Find(lnk,"|",0)
+					If i2 > -1 Then
+						txt = lnk[i2+1..]
+						lnk = lnk[..i2]
+					End
+					' resolve link, replace in src and go back to loop start,
+					' to keep priority of link formats
+					res = _resolver.ResolveLink(lnk,txt)
+					src = src[..i0] + res + src[i1+2..]
+					i = i0 + res.Length
+					Continue
+				End
+			End
+			' Image link
+			'![alttext](link)
+			i0 = Find(src,"![",i)
+			If i0 > -1 Then
+				i1 = Find(src,"](",i0+2)
+				If i1 > -1 Then
+					i2 = Find(src,")",i1+2)
+					If i2 > -1 Then
+						txt = src[i0+2..i1]
+						lnk = src[i1+2..i2]
+						' resolve image link, replace and go back to loop start,
+						' to keep priority of link formats
+						res = _resolver.ResolveLink("<img>"+lnk,txt)
+						src = src[..i0] + res + src[i2+1..]
+						i = i0 + res.Length
+						Continue
+					End
+				End
+			End
+			'[text](link)
+			i0 = Find(src,"[",i)
+			If i0 > -1 Then
+				i1 = Find(src,"](",i0+1)
+				If i1 > -1 Then
+					i2 = Find(src,")",i1+2)
+					If i2 > -1 Then
+						txt = src[i0+1..i1]
+						lnk = src[i1+2..i2]
+						' resolve link, replace and go back to loop start,
+						' to keep priority of link formats
+						res = _resolver.ResolveLink(lnk,txt)
+						src = src[..i0] + res + src[i2+1..]
+						i = i0 + res.Length
+						Continue
+					End
+				End
+			End
+			' advance i, otherwise loop will hang up on faulty link formats
+			i += 1
+		Until i0 = -1
 		Return src
 	End
 	

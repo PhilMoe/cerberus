@@ -1,0 +1,448 @@
+Strict
+
+Import colornames	
+
+#Rem
+using the EN-US word for "colour" as it seems to be the way to go, sorry.
+some proper british words may still have slipped in.
+
+depending on #COLOR_USE_NORMALISED_COMPONENTS the class implements Floats
+or Ints for color components and automatically converts their ranges from
+0-255 to 0.0-1.0 and vice-versa when setting hex values, converting to HSB or
+from HSB to RBG
+
+to use #COLOR_USE_NORMALISED_COMPONENTS, it must be set to True before importing
+mojo.color
+
+#End
+
+Class Color
+	' rgb components represent the active color workspace
+	' allow direct modification - but document that this does not ensure range
+	#If COLOR_USE_NORMALISED_COMPONENTS
+		Field r:Float, g:Float, b:Float
+	#Else
+		Field r:Int, g:Int, b:Int
+	#End
+	'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	Private
+	' hsb components are simulated by properties - they need to be synced before
+	' reading / after writing and shall not be modified by user directly
+	Field _hue:Float, _sat:Float, _bri:Float
+	' and the rgb triplet they represent (track for optimising ToHsb() calls)
+	#If COLOR_USE_NORMALISED_COMPONENTS
+		Field _HsbSyncRed:Float, _HsbSyncGrn:Float, _HsbSyncBlu:Float
+	#Else
+		Field _HsbSyncRed:Int, _HsbSyncGrn:Int, _HsbSyncBlu:Int
+	#End
+	Public
+	'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	
+	'---------------------------------------------------------------------------
+	' constructors
+	
+	' new black color (default)
+	Method New()
+		Set(0)
+	End
+	' new color by "hex-value", e.g. $ff0000 = red
+	' also used for boxing
+	Method New(pHex:Int)
+		Set(pHex)
+	End
+	#If COLOR_USE_NORMALISED_COMPONENTS
+		' new color by rgb triplet
+		Method New(pRed:Float, pGrn:Float, pBlu:Float)
+			Set(pRed, pGrn, pBlu)
+		End
+		Method New(pRgb:Float[])
+			Set(pRgb)
+		End
+	#Else
+		' new color by [rgb] array
+		Method New(pRed:Int, pGrn:Int, pBlu:Int)
+			Set(pRed, pGrn, pBlu)
+		End
+		Method New(pRgb:Int[])
+			Set(pRgb)
+		End
+	#End
+	' new color by html color name
+	Method New(pColorName:String)
+		Set(pColorName)
+	End
+	' new color by copying existing one
+	Method New(pColor:Color)
+		Set(pColor)
+	End
+	
+	'---------------------------------------------------------------------------
+	' getters
+	
+	' un-boxing
+	Method ToInt:Int()
+		Return GetHex()
+	End
+	' unbox colour into int-value, e.g. red => ff0000(hex)
+	#If COLOR_USE_NORMALISED_COMPONENTS
+		Method GetHex:Int()
+			Local _r:Int = r * 255.0
+			Local _g:Int = g * 255.0
+			Local _b:Int = b * 255.0
+			Return (_r Shl 16) | (_g Shl 08 ) | _b
+		End
+	#Else
+		Method GetHex:Int()
+			Return (r Shl 16) | (g Shl 08 ) | b
+		End
+	#End
+	
+	Method ToDbgString:String()
+		Return "rgb: "+r+", "+g+", "+b+" hsb: "+_hue+", "+_sat+", "+_bri
+	End
+	
+	'---------------------------------------------------------------------------
+	' setters
+	
+	#If COLOR_USE_NORMALISED_COMPONENTS
+		' set color by "hex-value"
+		Method Set:Void(pHex:Int)
+			r = ((pHex Shr 16) & $ff) / 255.0
+			g = ((pHex Shr 08) & $ff) / 255.0
+			b = ((pHex       ) & $ff) / 255.0
+		End
+		' set color by rgb triplet
+		Method Set:Void(pRed:Float, pGrn:Float, pBlu:Float)
+			r = Clamp(pRed, 0.0, 1.0)
+			g = Clamp(pGrn, 0.0, 1.0)
+			b = Clamp(pBlu, 0.0, 1.0)
+		End
+		' set color by [rgb] array
+		Method Set:Void(pRgb:Float[])
+			r = Clamp(pRgb[0], 0.0, 1.0)
+			g = Clamp(pRgb[1], 0.0, 1.0)
+			b = Clamp(pRgb[2], 0.0, 1.0)
+		End
+	#Else
+		' set color by "hex-value"
+		Method Set:Void(pHex:Int)
+			r = ((pHex Shr 16) & $ff)
+			g = ((pHex Shr 08) & $ff)
+			b = ((pHex       ) & $ff)
+		End
+		' set color by rgb triplet
+		Method Set:Void(pRed:Int, pGrn:Int, pBlu:Int)
+			r = Clamp(pRed, 0, 255)
+			g = Clamp(pGrn, 0, 255)
+			b = Clamp(pBlu, 0, 255)
+		End
+		' set color by [rgb] array
+		Method Set:Void(pRgb:Int[])
+			r = Clamp(pRgb[0], 0, 255)
+			g = Clamp(pRgb[1], 0, 255)
+			b = Clamp(pRgb[2], 0, 255)
+		End
+	#End
+	
+	' set color by html color name
+	Method Set:Void(pColorName:String)
+		' retrieve color's hex value from named color table
+		Set( NamedHtmlColor(pColorName) )
+	End
+	' set color to existing one
+	Method Set:Void(pColor:Color)
+		r = pColor.r
+		g = pColor.g
+		b = pColor.b
+		_hue = pColor._hue
+		_sat = pColor._sat
+		_bri = pColor._bri
+		_HsbSyncRed = pColor._HsbSyncRed
+		_HsbSyncGrn = pColor._HsbSyncGrn
+		_HsbSyncBlu = pColor._HsbSyncBlu
+	End
+
+	' set color in hsb space by float triplet [0..360), [0..1], [0..1]
+	Method SetHsb:Void(pHue:Float, pSat:Float, pBri:Float)
+		_hue = pHue Mod 360					' mod hue into -360 ... 360 exkl.
+		If _hue < 0 Then _hue += 360		' turn -360 ... 0 into 0 ... 360
+		_sat = Clamp(pSat, 0.0, 1.0)
+		_bri = Clamp(pBri, 0.0, 1.0)
+		' sync RGB space
+		ToRgb()
+	End
+	
+	' set color in hsl space by float triplet [0..360), [0..1], [0..1]
+	Method SetHsl:Void(pHue:Float, pSat:Float, pLit:Float)
+		_hue = pHue Mod 360					' mod hue into -360 ... 360 exkl.
+		If _hue < 0 Then _hue += 360		' turn -360 ... 0 into 0 ... 360
+		pSat = Clamp(pSat, 0.0, 1.0)
+		pLit = Clamp(pLit, 0.0, 1.0)
+		' convert first to hsb
+		_bri = (2 * pLit + pSat * (1 - Abs(2 * pLit - 1))) / 2
+		If _bri = 0 Then
+			_sat = 0
+		Else
+			_sat = 2 * (_bri - pLit) / _bri
+		End
+		' sync RGB space
+		ToRgb()
+	End
+
+	'---------------------------------------------------------------------------
+	' properties
+
+	' imitate hue field
+	Method hue:Void(pHue:Float) Property
+		SyncHsb()							' make sure HSB is up-to-date
+		_hue = pHue Mod 360					' mod hue into -360 ... 360 exkl.
+		If _hue < 0 Then _hue += 360		' turn -360 ... 0 into 0 ... 360
+		' keep working space up-to-date
+		ToRgb()
+	End
+	Method hue:Float() Property
+		SyncHsb()							' make sure HSB is up-to-date
+		Return _hue
+	End
+	' imitate saturation field
+	Method sat:Void(pSat:Float) Property
+		SyncHsb()							' make sure HSB is up-to-date
+		_sat = Clamp(pSat, 0.0, 1.0)
+		' keep working space up-to-date
+		ToRgb()
+	End
+	Method sat:Float() Property
+		SyncHsb()							' make sure HSB is up-to-date
+		Return _sat
+	End
+	' imitate brightness field
+	Method bri:Void(pBri:Float) Property
+		SyncHsb()							' make sure HSB is up-to-date
+		_bri = Clamp(pBri, 0.0, 1.0)
+		' keep working space up-to-date
+		ToRgb()
+	End
+	Method bri:Float() Property
+		SyncHsb()							' make sure HSB is up-to-date
+		Return _bri
+	End
+
+	'---------------------------------------------------------------------------
+	' mixing
+
+	' define color by mixing two colors
+	' components are linearly interpolated by usage of pMix [0..1]
+	Method Mix:Void(pColor1:Color, pColor2:Color, pMix:Float)
+		pMix = Clamp(pMix, 0.0, 1.0)
+		' get differencies of components
+		Local dred:Float, dgrn:Float, dblu:Float, dalpha:Float
+		dred = pColor2.r - pColor1.r
+		dgrn = pColor2.g - pColor1.g
+		dblu = pColor2.b - pColor1.b
+		' mix components
+		r = pColor1.r + dred * pMix
+		g = pColor1.g + dgrn * pMix
+		b = pColor1.b + dblu * pMix
+	End
+	
+	' define color by mixing two colors
+	' hue is rotated, saturation brightnes and alpha linearly interpolated
+	' pHueWay defines which way around hue is rotated:
+	' 0 = shortest, +1 = positive, -1 = negative
+	Method MixHsb:Void(pColor1:Color, pColor2:Color, pMix:Float, pHueWay:Int = 0)
+		pMix = Clamp(pMix, 0.0, 1.0)
+		' update HSB if necessary
+		pColor1.SyncHsb()
+		pColor2.SyncHsb()
+		' temporarily save hsb values
+		Local h1:Float, s1:Float, b1:Float
+		Local h2:Float, s2:Float, b2:Float
+		Local dh:Float, ds:Float, db:float
+		h1 = pColor1._hue
+		s1 = pColor1._sat
+		b1 = pColor1._bri
+		h2 = pColor2._hue
+		s2 = pColor2._sat
+		b2 = pColor2._bri
+		' there are some special cases, where hue and/or saturation don't matter
+		' meaning, they can be set to the other value
+		' gray: don't rotate hue
+		If s1 = 0 Then h1 = h2
+		If s2 = 0 Then h2 = h1
+		' black: neither rotate hue nor change saturation
+		If b1 = 0 Then
+			h1 = h2
+			s1 = s2
+		End
+		If b2 = 0 Then
+			h2 = h1
+			s2 = s2
+		End
+		' differencies of values
+		dh = (h2 - h1) Mod 360
+		' rotate shortest angle
+		If pHueWay = 0 Then
+			If dh > 180 Then dh -= 360
+			If dh <= -180 Then dh += 360
+		' rotate counterclockwise
+		Elseif pHueWay > 0 Then
+			If dh < 0 Then dh += 360
+		' rotate clockwise
+		Elseif pHueWay < 0 Then
+			If dh > 0 Then dh -= 360
+		End
+		ds = s2 - s1
+		db = b2 - b1
+		' mix components
+		Local hue:Float = h1 + dh * pMix
+		Local sat:Float = s1 + ds * pMix
+		Local bri:Float = b1 + db * pMix
+		' set via SetHsb() to ensure clamping and rgb sync tracking
+		SetHsb(hue, sat, bri)
+	End
+	
+	' hide ToRgb and ToHsb from user - shall not use them, might mess up stuff
+	' if called at the wrong time
+	'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	Private
+
+	' make sure hsb space is synced
+	Method SyncHsb:Void()
+		If _HsbSyncRed <> r Or _HsbSyncGrn <> g Or _HsbSyncBlu <> b Then ToHsb()
+	End
+
+	' convert colour from rgb to hsb space
+	Method ToHsb:Void()
+		#If COLOR_USE_NORMALISED_COMPONENTS
+			Local maxval:Float, minval:Float
+		#Else
+			Local maxval:Int, minval:Int
+		#End
+		
+		maxval = Max(r, Max(g, b))
+		minval = Min(r, Min(g, b))
+		
+		' treat hue and saturation
+		' special case: gray
+		If maxval = minval Then
+			_hue = 0
+			_sat = 0
+		' colored
+		Else
+			Local valdif:Float = maxval - minval
+			' red, reddish
+			If r = maxval Then
+				_hue = (0 + (g - b) / valdif) * 60.0
+			' green, greenish
+			Elseif g = maxval Then
+				_hue = (2 + (b - r) / valdif) * 60.0
+			' blue, blueish
+			Else
+				_hue = (4 + (r - g) / valdif) * 60.0
+			End
+			_hue = (_hue + 360) Mod 360
+			_sat = valdif / maxval
+		End
+		' brightness only depends on maxval
+		#If COLOR_USE_NORMALISED_COMPONENTS
+			_bri = maxval
+		#Else
+			_bri = maxval / 255.0
+		#End
+		' track space sync
+		_HsbSyncRed = r
+		_HsbSyncGrn = g
+		_HsbSyncBlu = b
+	End
+	
+	' convert color from hsb to rgb space
+	Method ToRgb:Void()
+		' special case: gray
+		If _sat = 0 Then
+			#If COLOR_USE_NORMALISED_COMPONENTS
+				r = _bri
+				g = _bri
+				b = _bri
+			#Else
+				r = _bri * 255
+				g = _bri * 255
+				b = _bri * 255
+			#End
+		' special case: black
+		Elseif _bri = 0 Then
+			r = 0
+			g = 0
+			b = 0
+		' colored
+		Else
+			Local hidx:Int = _hue / 60
+			Local hfrac:Float = _hue / 60.0 - hidx
+			
+			' intermediate color components:
+			' value of weakest component
+			Local ccj:Float = _bri * (1 - _sat)
+			' value of intermediate component with hue lower than color's hue
+			Local cck:Float = _bri * (1 - _sat * hfrac)
+			' value of intermediate component with hue higher than color's hue
+			Local ccl:Float = _bri * (1 - _sat * (1-hfrac))
+			' value of strongest component
+			Local ccm:Float = _bri
+			
+			#If Not COLOR_USE_NORMALISED_COMPONENTS
+				ccj *= 255
+				cck *= 255
+				ccl *= 255
+				ccm *= 255
+			#End
+			
+			' interpolation of rgb components
+			Select hidx
+			Case 0 ' red to yellow
+				r = ccm
+				g = ccl
+				b = ccj
+			Case 1 ' yellow to lime
+				r = cck
+				g = ccm
+				b = ccj
+			Case 2 ' lime to aqua
+				r = ccj
+				g = ccm
+				b = ccl
+			Case 3 ' aqua to blue
+				r = ccj
+				g = cck
+				b = ccm
+			Case 4 ' blue to fuchsia
+				r = ccl
+				g = ccj
+				b = ccm
+			Case 5 ' fuchsia to red
+				r = ccm
+				g = ccj
+				b = cck
+			End
+		End
+		' track space sync
+		_HsbSyncRed = r
+		_HsbSyncGrn = g
+		_HsbSyncBlu = b
+	End
+End
+
+#Rem
+http://codeitdown.com/hsl-hsb-hsv-color/
+
+convert from HSB to HSL
+
+H_HSL = H_HSB
+L = B * (2 - S_HSB) / 2
+S_HSL = B * S_HSB / (1 - Abs(2 * L - 1)) ' attention: division by 0 for L = 1
+
+convert from HSL to HSB
+
+H_HSB = H_HSL
+B = (2 * L + S_HSL * (1 - Abs(2 * L - 1))) / 2
+S_HSB = 2 * (B - L) / B	' attention: division by 0 for B = 0
+
+#End
