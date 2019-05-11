@@ -1342,7 +1342,8 @@ QString Highlighter::parseToke( QString &text,QColor &color, QString &prevText )
     }else if( isAlpha(c) ){
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
-        if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") && (prevText != "(") && (prevText != ",")) {
+        //if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") && (prevText != "(") && (prevText != ",")) {
+        if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") ) {
             if( cerberusFile &&  keyWords().contains( text.left(i).toLower() ) ) {
                 color=_keywordsColor;
             } else if( cerberusFile &&  keyWords3().contains( text.left(i).toLower() ) ) color=_keywords2Color;
@@ -1421,7 +1422,8 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
     for(;;){
         QString t=parseToke( text,color, prevToken );
         if( t.isEmpty() ) break;
-        if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
+        //if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
+        if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "import") && (prevToken != ".")) {
             //qDebug() << lastToken << ":" << t;
             QString kw=keyWords().value( t.toLower() );
             if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){

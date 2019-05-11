@@ -39,7 +39,7 @@ Change Log
 
 #include <QHostInfo>
 
-#define TED_VERSION "2019-05-04"
+#define TED_VERSION "2019-05-11"
 
 #define SETTINGS_VERSION 2
 

@@ -1,3 +1,9 @@
+***** v2019-05-11 *****
+
+FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
+FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
+MOD: [TED] Another attempt at fixing the colorization/capitalization of the API. 
+
 ***** v2019-05-05 *****
 
 MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.
