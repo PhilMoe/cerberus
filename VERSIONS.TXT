@@ -2,6 +2,7 @@
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
 FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
+FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
 MOD: [TED] Another attempt at fixing the colorization/capitalization of the API. 
 
 ***** v2019-05-05 *****

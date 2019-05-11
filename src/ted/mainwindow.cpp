@@ -605,6 +605,14 @@ QWidget *MainWindow::newFileTemplate( const QString &cpath ){
 
     file.close();
 
+/* DAWLANE LINUX SYSLINK PATH FIX
+* If symbolic links are use, the IDE will try to open a new editor on an error.
+* This fix sets the path to the full path of the actual target file.
+*/
+#ifdef Q_OS_LINUX
+    path = QFileInfo(path).canonicalFilePath();
+#endif
+
     if( CodeEditor *editor=editorWithPath( path ) ) closeFile( editor );
 
     return openFile( path,true );
@@ -680,6 +688,14 @@ QWidget *MainWindow::openFile( const QString &cpath,bool addToRecent ){
         showDoc(path);
         return nullptr;
     }
+
+/* DAWLANE LINUX SYSLINK PATH FIX
+* If symbolic links are use, the IDE will try to open a new editor on an error.
+* This fix sets the path to the full path of the actual target file.
+*/
+#ifdef Q_OS_LINUX
+    path = QFileInfo(path).canonicalFilePath();
+#endif
 
     CodeEditor *editor=editorWithPath( path );
     if( editor ){
