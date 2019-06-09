@@ -1,9 +1,12 @@
-***** v2019-05-11 *****
+***** v2019-06-08 *****
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
+NEW: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
 FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
 FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
 MOD: [TED] Another attempt at fixing the colorization/capitalization of the API. 
+MOD: [TRANS/GLFW] Added standard cerberus icons plus the ability to set the app icon via an .ico file and the app folder.
+FIX: [OSX] Recompiled the launcher as a 64bit app.
 
 ***** v2019-05-05 *****
 

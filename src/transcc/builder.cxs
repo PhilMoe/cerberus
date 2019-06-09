@@ -71,7 +71,15 @@ Class Builder
 		Print "Translating..."
 		Local transbuf:=New StringStack
 		For Local file$=Eachin app.fileImports
+'Print("fileImports="+file)
+'Print("ENV_LANG="+ENV_LANG)
 			If ExtractExt( file ).ToLower()=ENV_LANG
+'Print("match")
+				transbuf.Push LoadString( file )
+				transbuf.Push "~n"
+			Endif
+			If ENV_LANG="cpp" And ( ExtractExt( file ).ToLower()="h" Or ExtractExt( file ).ToLower()="c" )
+'Print("match")
 				transbuf.Push LoadString( file )
 				transbuf.Push "~n"
 			Endif
@@ -158,6 +166,17 @@ Class Builder
 		Endif
 	End
 	
+	Method CopyIcon:Void()
+		Local iconPath:=StripExt( tcc.opt_srcpath )
+		Local iconFile:= iconPath+".ico"
+'Print "IconFile="+iconFile.Replace("/","\")
+		Local targetIcon:= CurrentDir()+"\cerberus.ico"
+		If FileType( iconFile )=FILETYPE_FILE
+			Print (CopyFile (iconFile,targetIcon))
+'Print("New icon="+targetIcon)
+		Endif
+	End
+
 	Method CreateDataDir:Void( dir:String )
 	
 		dir=RealPath( dir )

@@ -1,1 +1,2 @@
 101 ICON "cerberus.ico"
+GLFW_ICON ICON "cerberus.ico"

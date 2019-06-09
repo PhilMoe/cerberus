@@ -29,6 +29,8 @@ Class GlfwBuilder Extends Builder
 		CreateDir dst+"/"+tconfig+"/external"
 		
 		CreateDataDir dst+"/"+tconfig+"/data"
+
+		CopyIcon()
 		
 		Local main:=LoadString( "main.cpp" )
 		
@@ -126,6 +128,8 @@ Class GlfwBuilder Extends Builder
 		CreateDir "msvc/"+casedConfig+"/external"
 		
 		CreateDataDir "msvc/"+casedConfig+"/data"
+		
+		CopyIcon()
 		
 		Local main:=LoadString( "main.cpp" )
 		

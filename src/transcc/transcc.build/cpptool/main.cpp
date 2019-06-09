@@ -3453,6 +3453,7 @@ class c_Builder : public Object{
 	void p_CCopyFile(String,String);
 	void p_CreateDataDir(String);
 	bool p_Execute(String,bool);
+	void p_CopyIcon();
 	void mark();
 };
 class c_Map3 : public Object{
@@ -6014,7 +6015,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2019-05-11",35));
+	bbPrint(String(L"TRANS cerberus compiler V2019-05-30",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -7476,6 +7477,10 @@ void c_Builder::p_Make(){
 			t_transbuf->p_Push(LoadString(t_file));
 			t_transbuf->p_Push(String(L"\n",1));
 		}
+		if(bb_config_ENV_LANG==String(L"cpp",3) && (bb_os_ExtractExt(t_file).ToLower()==String(L"h",1) || bb_os_ExtractExt(t_file).ToLower()==String(L"c",1))){
+			t_transbuf->p_Push(LoadString(t_file));
+			t_transbuf->p_Push(String(L"\n",1));
+		}
 	}
 	t_transbuf->p_Push(bb_translator__trans->p_TransApp(m_app));
 	if(!m_tcc->m_opt_update){
@@ -7638,6 +7643,16 @@ void c_Builder::p_CreateDataDir(String t_dir){
 }
 bool c_Builder::p_Execute(String t_cmd,bool t_failHard){
 	return m_tcc->p_Execute(t_cmd,t_failHard);
+}
+void c_Builder::p_CopyIcon(){
+	String t_iconPath=bb_os_StripExt(m_tcc->m_opt_srcpath);
+	String t_iconFile=t_iconPath+String(L".ico",4);
+	bbPrint(String(L"IconFile=",9)+t_iconFile.Replace(String(L"/",1),String(L"\\",1)));
+	String t_targetIcon=CurrentDir()+String(L"\\cerberus.ico",13);
+	if(FileType(t_iconFile)==1){
+		bbPrint(String(CopyFile(t_iconFile,t_targetIcon)));
+		bbPrint(String(L"New icon=",9)+t_targetIcon);
+	}
 }
 void c_Builder::mark(){
 	Object::mark();
@@ -8295,6 +8310,7 @@ void c_GlfwBuilder::p_MakeGcc(){
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
 	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
+	p_CopyIcon();
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
@@ -8365,6 +8381,7 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	CreateDir(String(L"msvc/",5)+m_casedConfig+String(L"/internal",9));
 	CreateDir(String(L"msvc/",5)+m_casedConfig+String(L"/external",9));
 	p_CreateDataDir(String(L"msvc/",5)+m_casedConfig+String(L"/data",5));
+	p_CopyIcon();
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
