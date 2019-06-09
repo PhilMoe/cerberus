@@ -43,7 +43,7 @@ Class HttpRequest Implements IAsyncEventSource
 		Open req,url,onComplete
 	End
 	
-	Method Open:Void( req:String, url:String, onComplete:IOnHttpRequestComplete, timeout:Int = 10, httpsVerifyCertificate:Bool = False, httpsVerifyHost:Bool = False )
+	Method Open:Void( req:String, url:String, onComplete:IOnHttpRequestComplete, timeout:Int = 1000, httpsVerifyCertificate:Bool = False, httpsVerifyHost:Bool = False )
 		If _req And _req.IsRunning() Error "HttpRequest in progress"
 
 		_req=New BBHttpRequest

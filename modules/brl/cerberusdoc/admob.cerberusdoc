@@ -21,7 +21,7 @@ To use Admob advertising in your game:
 + Import the brl.admob module into your game and use the Admob class to enable and disable ads as required.
 
 Example:
-
+<pre>
 #If TARGET<>"android" And TARGET<>"ios"
 #Error "Admob is only supported on Android and iOS targets"
 #End
@@ -80,7 +80,7 @@ End
 Function Main()
   New MyApp
 End
-
+</pre>
 
 # Function GetAdmob:Admob()
 
