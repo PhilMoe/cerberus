@@ -805,7 +805,7 @@ Function DrawImage( image:Image,x#,y#,rotation#,scaleX#,scaleY#,frame=0 )
 	PopMatrix
 End
 
--Function DrawImage9P( image:Image, x#,y#,patchSize, rotation#, scaleX#,scaleY#,frame=0 )
+Function DrawImage9P( image:Image, x#,y#,patchSize, rotation#, scaleX#,scaleY#,frame=0 )
 
 #If CONFIG="debug"
 	DebugRenderDevice
