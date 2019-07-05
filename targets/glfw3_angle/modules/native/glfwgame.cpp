@@ -24,10 +24,10 @@ public:
 	virtual int GetDeviceWidth(){ return _width; }
 	virtual int GetDeviceHeight(){ return _height; }
 	virtual void SetDeviceWindow( int width,int height,int flags );
-	virtual void SetDeviceWindowIcon( String _path );
+	//virtual void SetDeviceWindowIcon( String _path );
 	virtual void SetDeviceWindowPosition( int _x, int _y );
 	virtual void SetDeviceWindowSize( int _width, int _height );
-	virtual void SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight );
+	//virtual void SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight );
 	virtual void SetDeviceWindowTitle( String _title );
 	virtual void SetSwapInterval( int interval );
 	virtual Array<BBDisplayMode*> GetDisplayModes();
@@ -589,7 +589,7 @@ String BBGlfwGame::GetClipboard(){
 		return String("");
 	}
 }
-
+/*
 void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     if( _window ) {
     	int width,height,depth;
@@ -599,7 +599,7 @@ void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     	glfwSetWindowIcon(_window, 1, icons);
     }
 }
-
+*/
 void BBGlfwGame::SetDeviceWindowPosition( int _x, int _y ){
     if( _window )
     	glfwSetWindowPos(_window, _x, _y);
@@ -609,12 +609,12 @@ void BBGlfwGame::SetDeviceWindowSize( int _width, int _height ){
     if( _window )
     	glfwSetWindowSize(_window, _width, _height);
 }
-
+/*
 void BBGlfwGame::SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight ){
     if( _window )
     	glfwSetWindowSizeLimits(_window, _minWidth, _minHeight, _maxWidth, _maxHeight);
 }
-
+*/
 void BBGlfwGame::SetDeviceWindowTitle( String _title ){
     if( _window )
     	glfwSetWindowTitle(_window,GLFW_C_STR(_title));
