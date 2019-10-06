@@ -336,7 +336,7 @@ public:
         MainWindow->addToolBar(Qt::TopToolBarArea, helpToolBar);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 996, 22));
+        menuBar->setGeometry(QRect(0, 0, 996, 21));
         menuBar->setContextMenuPolicy(Qt::CustomContextMenu);
         menuBar->setStyleSheet(QStringLiteral(""));
         menuFile = new QMenu(menuBar);
@@ -393,6 +393,8 @@ public:
         menuFile->addAction(actionClose_All);
         menuFile->addAction(actionClose_Others);
         menuFile->addSeparator();
+        menuFile->addAction(actionOpenProject);
+        menuFile->addSeparator();
         menuFile->addAction(actionSave);
         menuFile->addAction(actionSave_As);
         menuFile->addAction(actionSave_All);
@@ -418,8 +420,6 @@ public:
         menuBuild->addSeparator();
         menuBuild->addAction(actionLock_Build_File);
         menuBuild->addAction(actionUnlock_Build_File);
-        menuBuild->addSeparator();
-        menuBuild->addAction(actionOpenProject);
         menuEdit->addAction(actionEditUndo);
         menuEdit->addAction(actionEditRedo);
         menuEdit->addSeparator();
@@ -612,7 +612,7 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionBuildConfig->setToolTip(QApplication::translate("MainWindow", "Build Config", Q_NULLPTR));
 #endif // QT_NO_TOOLTIP
-        actionOpenProject->setText(QApplication::translate("MainWindow", "Open project...", Q_NULLPTR));
+        actionOpenProject->setText(QApplication::translate("MainWindow", "Open project folder...", Q_NULLPTR));
         actionDeleteFile->setText(QApplication::translate("MainWindow", "Delete...", Q_NULLPTR));
         actionRenameFile->setText(QApplication::translate("MainWindow", "Rename...", Q_NULLPTR));
         actionCloseProject->setText(QApplication::translate("MainWindow", "Close Project", Q_NULLPTR));

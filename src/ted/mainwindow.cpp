@@ -39,7 +39,7 @@ Change Log
 
 #include <QHostInfo>
 
-#define TED_VERSION "2019-05-11"
+#define TED_VERSION "2019-10-5"
 
 #define SETTINGS_VERSION 2
 
@@ -239,18 +239,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     addDockWidget( Qt::RightDockWidgetArea,_browserDockWidget );
     connect( _browserDockWidget,SIGNAL(visibilityChanged(bool)),SLOT(onDockVisibilityChanged(bool)) );
 
-#ifdef Q_OS_WIN
-    //_ui->actionFileNext->setShortcut( QKeySequence( "Ctrl+Tab" ) );
-    QList<QKeySequence> shortcuts;
-    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_PageDown));
-    _ui->actionFileNext->setShortcuts(shortcuts);
-    //_ui->actionFilePrevious->setShortcut( QKeySequence( "Ctrl+Shift+Tab" ) );
-    QList<QKeySequence> shortcuts2;
-    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::Key_PageUp));
-    _ui->actionFilePrevious->setShortcuts(shortcuts2);
-#else
+#ifdef Q_OS_MAC
     //_ui->actionFileNext->setShortcut( QKeySequence( "Meta+Tab" ) );
     QList<QKeySequence> shortcuts;
     shortcuts.append(QKeySequence(Qt::META + Qt::Key_Tab));
@@ -262,6 +251,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow( parent ),_ui( new Ui::Mai
     shortcuts2.append(QKeySequence(Qt::META + Qt::SHIFT + Qt::Key_Tab));
     shortcuts2.append(QKeySequence(Qt::META + Qt::Key_PageUp));
     _ui->actionFilePrevious->setShortcuts(shortcuts2);
+#else
+    //_ui->actionFileNext->setShortcut( QKeySequence( "Ctrl+Tab" ) );
+    QList<QKeySequence> shortcuts;
+    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_PageDown));
+    _ui->actionFileNext->setShortcuts(shortcuts);
+    //_ui->actionFilePrevious->setShortcut( QKeySequence( "Ctrl+Shift+Tab" ) );
+    QList<QKeySequence> shortcuts2;
+    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    shortcuts2.append(QKeySequence(Qt::CTRL + Qt::Key_PageUp));
+    _ui->actionFilePrevious->setShortcuts(shortcuts2);
+
+
 #endif
 
     _projectPopupMenu=new QMenu;

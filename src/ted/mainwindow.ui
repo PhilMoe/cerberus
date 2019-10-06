@@ -122,7 +122,7 @@
      <x>0</x>
      <y>0</y>
      <width>996</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -163,6 +163,8 @@
     <addaction name="actionClose_All"/>
     <addaction name="actionClose_Others"/>
     <addaction name="separator"/>
+    <addaction name="actionOpenProject"/>
+    <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionSave_All"/>
@@ -193,8 +195,6 @@
     <addaction name="separator"/>
     <addaction name="actionLock_Build_File"/>
     <addaction name="actionUnlock_Build_File"/>
-    <addaction name="separator"/>
-    <addaction name="actionOpenProject"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -581,7 +581,7 @@
   </action>
   <action name="actionOpenProject">
    <property name="text">
-    <string>Open project...</string>
+    <string>Open project folder...</string>
    </property>
   </action>
   <action name="actionDeleteFile">
