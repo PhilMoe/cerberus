@@ -1435,9 +1435,10 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
         //if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
         if (((prevToken != "interface") && (prevToken != "class") && (prevToken != "field") && (prevToken != "for" ) && (prevToken != "local") &&
-             (prevToken != "(") && (prevToken != ",") && (prevTokenR != " ") && (prevTokenR != "\t") &&
+             (prevToken != "[") && (prevToken != "(") && (prevToken != ",") && (prevTokenR != " ") && (prevTokenR != "\t") &&
              (prevToken != "global") && (prevToken != "import")  && (prevToken3 != "import")  && (prevToken != "method")) ||
-             ((prevToken == "for") && (t.toLower() == "local"))) {
+             (!(keyWords().value( t ).isEmpty())) ||
+             (prevToken == "extends") ) {
             QString kw=keyWords().value( t.toLower() );
             if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
                 QString kw3=keyWords3().value( t.toLower() );
