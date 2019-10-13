@@ -167,13 +167,20 @@ Class Builder
 	End
 	
 	Method CopyIcon:Void()
-		Local iconPath:=StripExt( tcc.opt_srcpath )
-		Local iconFile:= iconPath+".ico"
-'Print "IconFile="+iconFile.Replace("/","\")
-		Local targetIcon:= CurrentDir()+"\cerberus.ico"
-		If FileType( iconFile )=FILETYPE_FILE
-			Print (CopyFile (iconFile,targetIcon))
-'Print("New icon="+targetIcon)
+		If HostOS() = "winnt"
+			Local targetIcon:= CurrentDir()+"\cerberus.ico"
+			Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
+			Local iconFile:String = RealPath(iconPath+"\"+GetConfigVar( "GLFW_APP_ICON"))
+			If FileType( iconFile )=FILETYPE_FILE
+				'Print "Icon1== "+iconFile
+				CopyFile (iconFile,targetIcon)
+			Else
+				iconFile = RealPath(GetConfigVar( "GLFW_APP_ICON"))
+				If FileType( iconFile )=FILETYPE_FILE
+					'Print "Icon2== "+iconFile
+					CopyFile (iconFile,targetIcon)		
+				Endif
+			Endif
 		Endif
 	End
 
