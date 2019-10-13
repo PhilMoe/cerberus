@@ -15,6 +15,8 @@ FIX: [MOJO1] Fixed missing usage of frame parameter in DrawImage9P.    (Author: 
 MOD: [WIN8/WINPHONE8] Depreciated these targets. 
                       If you need them, move them out of the targets/depreciated folder.
 MOD: [TRANS/ANDROID] Reactivated logcat filtering.
+NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once. 
+
 
 ***** v2019-05-05 *****
 
