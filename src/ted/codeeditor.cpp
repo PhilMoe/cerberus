@@ -1422,17 +1422,22 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
     QString prevToken = "";
     QString prevToken2 = "";
     QString prevToken3 = "";
+    QString prevTokenR = "";
+    QString prevTokenR2 = "";
     int i=0,pos=cursor.position();
 
     cursor.beginEditBlock();
 
     for(;;){
         QString t=parseToke( text,color, prevToken );
-//qDebug() << prevToken3 << " <"  << prevToken2 << " <"  << prevToken << " <" << t <<">";
+//qDebug() << prevTokenR2 << " <"  << prevTokenR << " <"  << prevToken3 << " <"  << prevToken2 << " <"  << prevToken << " <" << t <<">";
         if( t.isEmpty() ) break;
 
         //if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
-        if ((prevToken != "interface") && (prevToken != "class") && (prevToken != "field") && (prevToken != "for" ) && (prevToken != "local") && (prevToken != "global") && (prevToken != "import")  && (prevToken3 != "import")  && (prevToken != "method")  && (prevToken != "(") && (prevToken != ",") ) {
+        if (((prevToken != "interface") && (prevToken != "class") && (prevToken != "field") && (prevToken != "for" ) && (prevToken != "local") &&
+             (prevToken != "(") && (prevToken != ",") && (prevTokenR != " ") && (prevTokenR != "\t") &&
+             (prevToken != "global") && (prevToken != "import")  && (prevToken3 != "import")  && (prevToken != "method")) ||
+             ((prevToken == "for") && (t.toLower() == "local"))) {
             QString kw=keyWords().value( t.toLower() );
             if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
                 QString kw3=keyWords3().value( t.toLower() );
@@ -1454,6 +1459,18 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
             prevToken3 = prevToken2;
             prevToken2 = prevToken;
             prevToken = t.toLower();
+        }
+        if ( t.length() >= 1 ) {
+            prevTokenR = t.right(1);
+        }
+        else {
+            prevTokenR = "";
+        }
+        if ( t.length() >= 2 ) {
+            prevTokenR2 = t.right(2);
+        }
+        else {
+            prevTokenR2 = "";
         }
     }
 

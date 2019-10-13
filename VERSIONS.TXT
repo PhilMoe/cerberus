@@ -1,11 +1,10 @@
-***** v2019-10-05 *****
+***** v2019-10-13 *****
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
 MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
 FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
 FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
-MOD: [TED] Another attempt at fixing the colorization/capitalization of the API. 
-           "FOR LOCAL ..." is still buggy
+MOD: [TED] Another attempt at fixing the capitalization of the API. 
 MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu. 
 MOD: [TED] Replaced Options dialog with a similar one like from Dawlane's version of TED. 
            This dialog is much smaller and so can be displayed on small screens two.
