@@ -28,7 +28,7 @@ The optional @filters string can either be a comma separated list of file extens
 The @save parameter can be true to create a save-style requester, or false to create a load-style requester.
 
 Example:
-
+<pre>
 Import mojo
 
 Import brl.requesters
@@ -48,7 +48,7 @@ Function Main()
 	New MyApp
 
 End
-
+</pre>
 
 # Function RequestDir:String( title:String,dir:String="" )
 

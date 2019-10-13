@@ -219,44 +219,50 @@ int CopyFile( String srcpath,String dstpath ){
 
 #if _WIN32
 
-	if( CopyFileW( OS_STR(srcpath),OS_STR(dstpath),FALSE ) ) return 1;
-	return 0;
-	
+    if( CopyFileW( OS_STR(srcpath),OS_STR(dstpath),FALSE ) ) return 1;
+    return 0;
+
 #elif __APPLE__
 
-	// Would like to use COPY_ALL here, but it breaks trans on MacOS - produces weird 'pch out of date' error with copied projects.
-	//
-	// Ranlib strikes back!
-	//
-	if( copyfile( OS_STR(srcpath),OS_STR(dstpath),0,COPYFILE_DATA )>=0 ) return 1;
-	return 0;
-	
+    // Would like to use COPY_ALL here, but it breaks trans on MacOS - produces weird 'pch out of date' error with copied projects.
+    //
+    // Ranlib strikes back!
+    //
+    // DAWLANE - Added file attributes COPYFILE_XATTR | COPYFILE_STAT (NEEDS CONFIRMING)
+    if( copyfile( OS_STR(srcpath),OS_STR(dstpath),0,COPYFILE_XATTR | COPYFILE_STAT | COPYFILE_DATA )>=0 ) return 1;
+    return 0;
+
 #else
 
-	int err=-1;
-	if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR( "rb" ) ) ){
-		err=-2;
-		if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR( "wb" ) ) ){
-			err=0;
-			char buf[1024];
-			while( int n=fread( buf,1,1024,srcp ) ){
-				if( fwrite( buf,1,n,dstp )!=n ){
-					err=-3;
-					break;
-				}
-			}
-			fclose( dstp );
-		}else{
-//			printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
-			fflush( stdout );
-		}
-		fclose( srcp );
-	}else{
-//		printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
-		fflush( stdout );
-	}
-	return err==0;
-	
+    int err=-1;
+    if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR( "rb" ) ) ){
+        err=-2;
+        if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR( "wb" ) ) ){
+            err=0;
+            char buf[1024];
+            while( int n=fread( buf,1,1024,srcp ) ){
+                if( fwrite( buf,1,n,dstp )!=n ){
+                    err=-3;
+                    break;
+                }
+            }
+            fclose( dstp );
+     
+            // DAWLANE - Copy over the file attributes.
+            struct stat st;
+            stat( OS_STR( srcpath ), &st );
+            chmod( OS_STR( dstpath ), st.st_mode );
+        }else{
+//            printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+            fflush( stdout );
+        }
+        fclose( srcp );
+    }else{
+//        printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+        fflush( stdout );
+    }
+    return err==0;
+
 #endif
 }
 

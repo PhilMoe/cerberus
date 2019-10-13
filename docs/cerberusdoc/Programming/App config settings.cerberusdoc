@@ -54,6 +54,8 @@ The following app config settings are currently supported:
 #GLFW_WINDOW_DECORATED=True				'Set to false to create a broderless window (glfw3 only).
 #GLFW_VERSION=2							'Set to GLFW version, ie: 2 or 3.			
 
+#GLFW_APP_ICON="myIcon.ico"				'On Windows you can set the app and window icon via this setting.  
+										'If no path is provided, TRANSCC will assume the source path as its location.
 #GLFW_APP_LABEL="My App"				'Human readable label for app. 
 										'Must be set for cerberus://internal to map to 'per user' app data dir.
 										'If not set (the default), cerberus://internal is shared by all users of app.

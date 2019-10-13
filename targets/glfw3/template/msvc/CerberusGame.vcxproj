@@ -122,6 +122,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CerberusGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\cerberus.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

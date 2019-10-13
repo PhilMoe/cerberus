@@ -48,8 +48,8 @@ Class myClass Extends App Implements IOnHttpRequestComplete
 
 		'get_req = New HttpRequest()
 		'get_req.Open( "GET","http://www.nvgamepad.com/mobileapp/diamondpokerlitecasino/highscore.php",Self,100 )
-		get_req = New HttpRequest("GET","http://www.nvgamepad.com/mobileapp/diamondpokerlitecasino/highscore.php",Self)
-		'get_req = New HttpRequest("GET","http://pubsub.pubnub.com/"+pubnubH,Self)
+		'get_req = New HttpRequest("GET","http://www.nvgamepad.com/mobileapp/diamondpokerlitecasino/highscore.php",Self)
+		get_req = New HttpRequest("GET","https://pubsub.pubnub.com/"+pubnubH,Self)
 		get_req.Send
 
 		Return 0

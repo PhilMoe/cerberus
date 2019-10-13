@@ -825,17 +825,17 @@ Function DrawImage9P( image:Image, x#,y#,patchSize, rotation#, scaleX#,scaleY#,f
 	Rotate rotation
 	Translate xo2, yo2
 
-	DrawImageRect ( image,0,0, 0,0,patchSize,patchSize )
-	_DrawImageRect2( image,patchSize-image.HandleX,-image.HandleY,patchSize,0,image.Width-patchS2,patchSize,0.0,tsX,1.0 )
-	DrawImageRect ( image,(image.Width*scaleX)-patchSize,0,image.Width-patchSize,0,patchSize,patchSize )
+	DrawImageRect ( image,0,0, 0,0,patchSize,patchSize, frame )
+	_DrawImageRect2( image,patchSize-image.HandleX,-image.HandleY,patchSize,0,image.Width-patchS2,patchSize,0.0,tsX,1.0, frame )
+	DrawImageRect ( image,(image.Width*scaleX)-patchSize,0,image.Width-patchSize,0,patchSize,patchSize, frame )
 
-	DrawImageRect( image,0,patchSize, 0,patchSize,patchSize,image.Height-patchS2,0.0, 1.0,tsY )
-	_DrawImageRect2( image,patchSize-image.HandleX,patchSize-image.HandleY,patchSize,patchSize,image.Width()-patchS2,image.Height()-patchS2,0,tsX, tsY )
-	DrawImageRect( image,(image.Width*scaleX)-patchSize,patchSize, image.Width-patchSize,patchSize,patchSize,image.Height-patchS2,0.0, 1.0,tsY )
+	DrawImageRect( image,0,patchSize, 0,patchSize,patchSize,image.Height-patchS2,0.0, 1.0,tsY, frame )
+	_DrawImageRect2( image,patchSize-image.HandleX,patchSize-image.HandleY,patchSize,patchSize,image.Width()-patchS2,image.Height()-patchS2,0,tsX, tsY, frame )
+	DrawImageRect( image,(image.Width*scaleX)-patchSize,patchSize, image.Width-patchSize,patchSize,patchSize,image.Height-patchS2,0.0, 1.0,tsY, frame )
 
-	DrawImageRect ( image,0                             , image.Height*scaleY-patchSize, 0,image.Height-patchSize,patchSize,patchSize )
-	_DrawImageRect2( image,patchSize-image.HandleX       , image.Height*scaleY-patchSize-image.HandleY, patchSize ,image.Height-patchSize,image.Width-patchS2,patchSize,0,tsX,1.0 )
-	DrawImageRect ( image,(image.Width*scaleX)-patchSize, image.Height*scaleY-patchSize, image.Width-patchSize,image.Height-patchSize, patchSize,patchSize )
+	DrawImageRect ( image,0                             , image.Height*scaleY-patchSize, 0,image.Height-patchSize,patchSize,patchSize, frame )
+	_DrawImageRect2( image,patchSize-image.HandleX       , image.Height*scaleY-patchSize-image.HandleY, patchSize ,image.Height-patchSize,image.Width-patchS2,patchSize,0,tsX,1.0, frame )
+	DrawImageRect ( image,(image.Width*scaleX)-patchSize, image.Height*scaleY-patchSize, image.Width-patchSize,image.Height-patchSize, patchSize,patchSize, frame )
 
 	PopMatrix
 End

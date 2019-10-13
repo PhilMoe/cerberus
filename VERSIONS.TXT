@@ -1,3 +1,23 @@
+***** v2019-10-13 *****
+
+FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
+MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
+FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
+FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
+MOD: [TED] Another attempt at fixing the capitalization of the API. 
+MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu. 
+MOD: [TED] Replaced Options dialog with a similar one like from Dawlane's version of TED. 
+           This dialog is much smaller and so can be displayed on small screens two.
+FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.
+MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.
+FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).
+FIX: [MOJO1] Fixed missing usage of frame parameter in DrawImage9P.    (Author: Rich)
+MOD: [WIN8/WINPHONE8] Depreciated these targets. 
+                      If you need them, move them out of the targets/depreciated folder.
+MOD: [TRANS/ANDROID] Reactivated logcat filtering.
+NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once. 
+
+
 ***** v2019-05-05 *****
 
 MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.

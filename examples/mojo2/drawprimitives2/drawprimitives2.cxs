@@ -1,0 +1,80 @@
+' Cerberus X - Draw Primitives2 example
+'
+' Shows how to construct and draw a list of images via DrawPrimitives
+
+Strict
+
+Import mojo2
+'Import cerberus.random
+
+
+Class MyApp Extends App
+
+	Field myCanvas:Canvas
+	Field grabbed:Bool
+	Field material:Material
+	Field verts:Float[]
+	Field texcs:Float[]
+	
+	Method OnCreate:Int()
+
+		'randomise
+		Seed = Millisecs()
+		myCanvas = New Canvas()
+		
+		material = Material.Load("bg.png", Image.Filter,  Shader.DefaultShader())
+		
+		' where to draw in Offset to the mouse cursor
+		Local x1:Float = -64
+		Local y1:Float = -64
+		Local x2:Float = 63
+		Local y2:Float = 63
+		' provide 16 vertices from those coordinates as array
+		verts = [x1,y1, x2,y1, x2,y2, x1,y2, 
+		         x1+129,y1, x2+129,y1, x2+129,y2, x1+129,y2,
+		         x1,y1+129, x2,y1+129, x2,y2+129, x1,y2+129,
+		         x1+129,y1+129, x2+129,y1+129, x2+129,y2+129, x1+129,y2+129]
+		' piece of texture to draw. Coordinates are float, ranging from 0 to 1.
+		Local tx1:Float = 0
+		Local ty1:Float = 0
+		Local tx2:Float = 1
+		Local ty2:Float = 1
+		' provide texture coordinates for vertices
+		texcs = [tx1,ty1, tx2,ty1, tx2,ty2, tx1,ty2,
+		         tx1,ty1, tx2,ty1, tx2,ty2, tx1,ty2,
+		         tx1,ty1, tx2,ty1, tx2,ty2, tx1,ty2,
+		         tx1,ty1, tx2,ty1, tx2,ty2, tx1,ty2]
+		
+		Return 0		
+	End
+	
+	Method OnRender:Int()
+	
+		myCanvas.Clear(1, 1, 1)
+		
+		Local m:Int = Millisecs()
+		myCanvas.SetColor(1, 0, 0) 
+		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 16, 0.5)		
+		
+		myCanvas.PushMatrix()
+		myCanvas.Translate(MouseX(), MouseY())
+		myCanvas.SetColor(1, 1, 1) 
+		myCanvas.DrawPrimitives(4, 4, verts, texcs, material)
+		myCanvas.PopMatrix()
+
+		myCanvas.Flush()
+		Return 0
+	End
+	
+	
+	Method OnUpdate:Int()
+	
+		Return 0
+	End
+
+End
+
+Function Main:Int()
+	New MyApp()
+	Return 0
+End
