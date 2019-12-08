@@ -1234,7 +1234,11 @@ Class Image
 		'Local cellWidth:=material.Width/numFrames,cellHeight:=material.Height
 		
 		Local x:=0,width:=cellWidth
-		If padded x+=1;width-=2
+		Local y:=0,height:=cellHeight
+		If padded 
+			x+=1;width-=2
+			y+=1;height-=2
+		Endif
 		
 		Local tx:Int = material.Width/cellWidth
 		Local ty:Int = material.Height/cellHeight
@@ -1242,7 +1246,7 @@ Class Image
 		Local i:Int = 0
 		For Local yi:Int = 0 To ty-1
 			For Local xi:Int = 0 To tx-1
-				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight,width,cellHeight,xhandle,yhandle )
+				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight+y,width,cellHeight,xhandle,yhandle )
 				i += 1
 			Next
 		Next
@@ -1377,7 +1381,7 @@ Class Font
 	End
 
 	'------------------------------------------
-	Function Load:Font(url:String)
+	Function Load:Font(url:String, flags:Int=Image.Filter )
 		Local iniText:String
 		Local pageNum:Int = 0
 		Local idnum:Int = 0
@@ -1450,9 +1454,9 @@ Class Font
 						Endif
 						filename = path+filename.Trim()
 
-						_pages[pageNum] = Image.Load(filename)
+						_pages[pageNum] = Image.Load(filename,0.5,0.5,flags)
 #If CONFIG="debug"
-						If _pages[pageNum] = Null Then Error("~n~nError in file graphics.cxs, Method Font.Load:Font(url:String)~n~nCan not load page image: "+filename)
+						If _pages[pageNum] = Null Then Error("~n~nError in file graphics.cxs, Method Font.Load:Font(url:String, flags:Int=Image.Filter)~n~nCan not load page image: "+filename)
 #End
 						pageNum = pageNum + 1
 					Endif

@@ -183,7 +183,7 @@ Class Font
 	End
 
 	'------------------------------------------
-	Function Load:Font(url:String)
+	Function Load:Font(url:String, flags:Int=Image.DefaultFlags)
 		Local iniText:String
 		Local pageNum:Int = 0
 		Local idnum:Int = 0
@@ -256,9 +256,9 @@ Class Font
 						Endif
 						filename = path+filename.Trim()
 
-						_pages[pageNum] = LoadImage(filename)
+						_pages[pageNum] = LoadImage(filename, 1, flags)
 #If CONFIG="debug"
-						If _pages[pageNum] = Null Then Error("~n~nError in file graphics.cxs, Method Font.Load:Font(url:String)~n~nCan not load page image: "+filename)
+						If _pages[pageNum] = Null Then Error("~n~nError in file graphics.cxs, Method Font.Load:Font(url:String, flags:Int=Image.DefaultFlags)~n~nCan not load page image: "+filename)
 #End
 						pageNum = pageNum + 1
 					Endif

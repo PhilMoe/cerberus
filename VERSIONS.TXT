@@ -1,3 +1,14 @@
+***** v2019-12-08 *****
+
+MOD: [mojo/mojo2] Added flags parameter to the Font.Load:Font(url:String) method.
+FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
+
+***** v2019-10-13b *****
+
+MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs
+FIX: [GLFW] Added missing stb_write_image.h file on Linux
+FIX: [TED] Was still using the old PrefsDialog on Linux
+
 ***** v2019-10-13 *****
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
