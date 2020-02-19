@@ -13,6 +13,7 @@
   ${ANDROID_MANIFEST_MAIN}
     
   <application
+    ${ANDROID_APPLICATION_EXTRAS}
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="${ANDROID_APP_LABEL}"
