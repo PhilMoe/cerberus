@@ -8,7 +8,7 @@ Import asyncevent
 #LIBS+="StoreKit.framework"
 Import "native/cerberusstore.ios.cpp"
 #Elseif TARGET="android"
-#SRCS+="${CD}/native/android_iab/src/com/android/vending/billing/IInAppBillingService.aidl"
+#SRCS+="${CD}/native/android_iab/src/main/aidl/com/android/vending/billing/IInAppBillingService.aidl;"
 #ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qcom.android.vending.BILLING~q />"
 Import "native/cerberusstore.android.java"
 #Else If TARGET="winrt"
