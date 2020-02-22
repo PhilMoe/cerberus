@@ -8,11 +8,11 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="com.android.vending.BILLING" />
 
   ${ANDROID_MANIFEST_MAIN}
     
   <application
+    ${ANDROID_APPLICATION_EXTRAS}
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="${ANDROID_APP_LABEL}"

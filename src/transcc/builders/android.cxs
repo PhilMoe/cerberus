@@ -149,8 +149,18 @@ Class AndroidBuilder Extends Builder
 				Local i:=src.FindLast( "/src/" )
 				If i<>-1
 					Local dst:=src[i+1..]
-					If CreateDirRecursive( ExtractDir( dst ) )
-						CopyFile src,dst
+					If CreateDirRecursive( ExtractDir( "app/"+dst ) )
+						CopyFile src,"app/"+dst
+					Endif
+				Endif
+			Case "xml"
+				Local i:=src.FindLast( "/src/" )
+				If i<>-1
+					Local dst:=src[i+1..]
+					If CreateDirRecursive( ExtractDir( "app/"+dst ) )
+						Local str:=LoadString( src )
+						str=ReplaceEnv( str )
+						SaveString str,"app/"+dst
 					Endif
 				Endif
 			End

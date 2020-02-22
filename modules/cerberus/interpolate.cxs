@@ -118,7 +118,7 @@ Function InterpolateCubicBezier:Float(pY0:Float, pY1:Float, pA:Float, pB:Float, 
 		Else
 			' update tstep
 			' in first iteration
-			If runs=1 then
+			If runs=1 Then
 				' tstep by how much x differs from target x
 				tstep = pX - x
 			' after that
@@ -132,8 +132,8 @@ Function InterpolateCubicBezier:Float(pY0:Float, pY1:Float, pA:Float, pB:Float, 
 			' update t and clamp
 			oldt = t
 			t += tstep
-			If t > 1 then t=1
-			If t < 0 then t=0
+			If t > 1 Then t=1
+			If t < 0 Then t=0
 		EndIf
 		oldx = x
 	' abort after 20 runs to prevent infinite loops when AB/CD where badly set
@@ -142,3 +142,143 @@ Function InterpolateCubicBezier:Float(pY0:Float, pY1:Float, pA:Float, pB:Float, 
 	' calculate y of cubic bezier spline and return
 	Return pY0 + (3*pB - 3*pY0) * t + (3*pY0 - 6*pB + 3*pD) * t*t + (pY1 + 3*pB - 3*pD - pY0) * t*t*t
 End
+
+' interpolates across a custom range of points
+Function InterpolateCustomLine:Float(dataY:Float[], pX:Float )
+	Local steps:Int = dataY.Length()-1
+	If steps <1 Then Return 1
+	
+	Local segment:Int = Min(pX*steps,steps-1.0)
+	' between segment and segment+1
+	Local ratio:Float = (pX - 1.0/steps*segment) / (1.0/steps)
+	Return dataY[segment] + (dataY[segment+1]-dataY[segment])*ratio
+End
+
+Function InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float)
+	Local s := 1.70158
+	Return pY0 + (pX * pX * ((s + 1) * pX - s)) * (pY1-pY0)
+End
+
+Function InterpolateBackEaseOut:Float(pY0:Float, pY1:Float, pX:Float)
+	Local s := 1.70158
+	pX-=1
+	Return pY0 + ((pX * pX * ((s + 1) * pX + s) + 1)) * (pY1-pY0)
+End
+
+Function InterpolateBackEaseInOut:Float(pY0:Float, pY1:Float, pX:Float)
+	Local s:Float= 1.70158
+	Local s2:Float
+	s2 = s
+	pX *= 2
+	s2 *= 1.525
+	If pX < 1
+		Return pY0 + (0.5 * (pX * pX *((s2+1) * pX - s2))) * (pY1-pY0)
+	Endif
+	pX -= 2
+	Return pY0 + (0.5 * (pX * pX * ((s2 + 1) * pX + s2) + 2)) * (pY1-pY0)
+End
+
+
+Function InterpolateElasticEaseIn:Float(pY0:Float, pY1:Float, pX:Float)
+	Local p:Float, s:Float
+	If pX = 0 Return pY0
+	If pX = 1 Return pY1
+	p = 0.3
+	s = p / 4
+	pX -= 1
+	Return pY0 - ((Pow(2,10 * (pX)) * Sin(((pX - s) * (2 * PI) / p) * 57.2957795))) * (pY1-pY0)
+End
+
+Function InterpolateElasticEaseOut:Float(pY0:Float, pY1:Float, pX:Float)
+	Local p:Float
+	Local s:Float
+
+	If pX = 0 Return pY0
+	If pX = 1 Return pY1
+	p = 0.3
+	s = p / 4
+	Return pY0 + ((Pow(2,-10 * pX) * Sin(((pX - s) * (2 * PI) / p) * 57.2957795) + 1)) * (pY1-pY0)
+End
+
+Function InterpolateElasticEaseInOut:Float(pY0:Float, pY1:Float, pX:Float)
+	Local p:Float
+	Local s:Float
+
+	If pX = 0 Return pY0
+	pX*=2
+	If pX = 2 Return pY1
+	p = (0.3 * 1.5)
+	s = p / 4
+	If pX < 1
+		pX -= 1
+		Return pY0 + (-0.5 * (Pow(2,10 * pX) * Sin(((pX - s) * (2 * PI) / p) * 57.2957795))) * (pY1-pY0)
+	End
+	pX -= 1
+	Return pY0 + (Pow(2,-10 * pX) * Sin(((pX - s) * (2 * PI) / p) * 57.2957795) * 0.5 + 1) * (pY1-pY0)
+End
+
+
+
+Function InterpolateBounceEaseIn:Float(pY0:Float, pY1:Float, pX:Float)
+	pX = 1 - pX
+	If pX < 0.3636363
+		Return pY0 + (1 - (7.5625 * pX * pX))*(pY1-pY0)
+	Else If pX < 0.7272727
+		pX -= 0.5454545
+		Return pY0 + (1 - (7.5625 * pX * pX + 0.75))*(pY1-pY0)
+	Else If pX < 0.9090909
+		pX -= 0.8181818
+		Return pY0 + (1 - (7.5625 * pX * pX + 0.9375))*(pY1-pY0)
+	Else
+		pX -= 0.9636363
+		Return pY0 + (1 - (7.5625 * pX * pX + 0.984375))*(pY1-pY0)
+	Endif
+End
+
+Function InterpolateBounceEaseOut:Float(pY0:Float, pY1:Float, pX:Float)
+	If pX < 0.3636363
+		Return pY0 + ((7.5625 * pX * pX) )*(pY1-pY0)
+	Else If pX < 0.7272727
+		pX -= 0.5454545
+		Return pY0 + ((7.5625 * pX * pX + 0.75))*(pY1-pY0)
+	Else If pX < 0.9090909
+		pX -= 0.8181818
+		Return pY0 + ((7.5625 * pX * pX + 0.9375))*(pY1-pY0)
+	Else
+		pX -= 0.9636363
+		Return pY0 + ((7.5625 * pX * pX + 0.984375))*(pY1-pY0)
+	Endif
+End
+
+Function InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float)
+	If pX < 0.5
+		pX = (1 - pX * 2)
+		If pX < 0.3636363
+			Return pY0 + ((1 - (7.5625 * pX * pX)) * 0.5)*(pY1-pY0)
+		Else If pX < 0.7272727
+			pX -= 0.5454545
+			Return pY0 + ((1 - (7.5625 * pX * pX + 0.75)) * 0.5)*(pY1-pY0)
+		Else If pX < 0.9090909
+			pX -= 0.8181818
+			Return pY0 + ((1 - (7.5625 * pX * pX + 0.9375)) * 0.5)*(pY1-pY0)
+		Else
+			pX -= 0.9636363
+			Return pY0 + ((1 - (7.5625 * pX * pX + 0.984375)) * 0.5)*(pY1-pY0)
+		Endif
+	Else
+		pX = (pX * 2 - 1)
+		If pX < 0.3636363
+			Return pY0 + ((7.5625 * pX * pX) * 0.5 + 0.5)*(pY1-pY0)
+		Else If pX < 0.7272727
+			pX -= 0.5454545
+			Return pY0 + ((7.5625 * pX * pX + 0.75) * 0.5 + 0.5)*(pY1-pY0)
+		Else If pX < 0.9090909
+			pX -= 0.8181818
+			Return pY0 + ((7.5625 * pX * pX + 0.9375) * 0.5 + 0.5)*(pY1-pY0)
+		Else
+			pX -= 0.9636363
+			Return pY0 + ((7.5625 * pX * pX + 0.984375) * 0.5 + 0.5)*(pY1-pY0)
+		Endif
+	Endif
+End
+
