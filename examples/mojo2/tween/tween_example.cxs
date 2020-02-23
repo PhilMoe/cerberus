@@ -1,0 +1,169 @@
+Strict
+
+Import mojo2
+Import brl.tween
+
+'*******************************************************************    
+' Define the tweenExample that extends the App Class.    
+Class tweenExample Extends App
+	Field cnvs:Canvas
+	Field tw:Tween[6]
+	Field selected_tween:Int
+	Field tweens:String[] = ["LINEAR","BEZIER","CUSTOM","CURVE","BOUNCE (EASEOUT)","ELASTIC (EASEINOUT)"]
+	Field loop:Bool,yoyo:Bool
+	
+	Method OnCreate:Int()
+		SetUpdateRate(60)				
+		cnvs = New Canvas
+
+		' linear tween		
+		tw[0] = New Tween(Tween.LINEAR,2000)
+		tw[0].SetRange(100,540)	
+
+		' cubic bezier tween
+		tw[1] = New Tween(Tween.BEZIER,2000)
+		tw[1].SetBezierPoints(0.2,0.6,0.7,1)
+		tw[1].SetRange(100,540)
+		
+		' custom tween
+		tw[2] = New Tween(Tween.CUSTOM,2000)
+		tw[2].SetCustomData([0,0.1,0.9,0.8,0.4,0.7,1])
+		tw[2].SetRange(100,540)	
+		
+		' curve tween
+		tw[3] = New Tween(Tween.CURVE,2000)
+		tw[3].SetCurve(0)
+		tw[3].SetRange(100,540)	
+		
+		' bounce tween	
+		tw[4] = New Tween(Tween.BOUNCE,2000)
+		tw[4].SetEasing(Tween.EASEOUT)
+		tw[4].SetRange(100,540)	
+		
+		' elastic tween
+		tw[5] = New Tween(Tween.ELASTIC,2000)
+		tw[5].SetEasing(Tween.EASEINOUT)
+		tw[5].SetRange(100,540)	
+
+		loop = False
+		yoyo = False		
+		selected_tween = 0		
+		tw[selected_tween].Start()
+		tw[selected_tween].SetLoop(loop)
+		tw[selected_tween].SetYoYo(yoyo)
+		
+		Return 0
+	End
+    
+	Method OnUpdate:Int()
+		' start tween again
+		If KeyHit(KEY_SPACE) Then tw[selected_tween].Start()
+		
+		' change tween
+		If KeyHit(KEY_1)
+			selected_tween=(selected_tween+1) Mod tw.Length()
+			tw[selected_tween].Start()
+			tw[selected_tween].SetLoop(loop)
+			tw[selected_tween].SetYoYo(yoyo)
+		End
+		
+		' randdom custom tween
+		If KeyHit(KEY_R)
+			Select selected_tween
+			Case 1
+				tw[1].SetBezierPoints(0.25,Rnd(1),0.75,Rnd(1))
+			Case 2
+				CreateRandomTween()
+			Case 3
+				tw[3].SetCurve(Rnd(1))
+			End
+			tw[selected_tween].Start()
+			tw[selected_tween].SetLoop(loop)
+			tw[selected_tween].SetYoYo(yoyo)
+		End
+		
+		' loop tween
+		If KeyHit(KEY_L)
+			loop = Not loop
+			tw[selected_tween].SetLoop(loop)
+		End
+
+		' yoyo tween
+		If KeyHit(KEY_Y)
+			yoyo = Not yoyo
+			tw[selected_tween].SetYoYo(yoyo)
+		End
+		
+		Return 0
+	End
+
+	Method CreateRandomTween:Void()
+		Local y:Float[Rnd(20)+3]
+		For Local i:Int = 0 Until y.Length()
+			y[i] = Rnd(1)
+		Next
+		tw[2].SetCustomData(y)
+	End
+	
+	Method OnRender:Int()
+		' Clear the canvas with a black color.
+		cnvs.Clear (0,0.5,0)	
+
+		cnvs.SetColor 1,1,1
+		cnvs.DrawText "Tween."+tweens[selected_tween],320,80,0.5,0.5
+		
+		cnvs.SetColor 0,0.2,0
+		cnvs.DrawRect 100,100,440,20
+		
+		' draw a circle using the Tween Range Value as the x co-ordinate		
+		cnvs.SetColor 1,1,1
+		cnvs.DrawOval tw[selected_tween].RangeValue()-10,100,20,20
+		
+		DrawTween(220,180,200)
+		
+		cnvs.SetColor 1,1,1
+		cnvs.DrawText "1 - Next Tween",10,400
+		cnvs.DrawText "L - Toggle Looping",10,420
+		cnvs.DrawText "Y - Toggle YoYoing",10,440
+		cnvs.DrawText "SPACE - Restart Tween",330,400
+		
+		Select selected_tween
+		Case 1,2,3
+			cnvs.DrawText "R - Randomise Tween",330,420
+		End
+		
+		cnvs.Flush
+
+		Return 0
+	End
+	
+	Method DrawTween:Void(x:Float,y:Float,size:Float)
+		cnvs.SetColor 1,1,1
+		cnvs.DrawText "x",x+size+10,y+size,0.5,0.5
+		cnvs.DrawText "y",x-1,y-10,0.5,0.5
+		cnvs.DrawRect x-1,y,size+1,size+1
+
+		cnvs.SetColor 0,0.2,0
+		cnvs.DrawRect x,y,size,size
+		
+		cnvs.SetColor 1,0,0
+		Local tx:Float = x+tw[selected_tween].X()*size 
+		Local ty:Float = y+size-tw[selected_tween].TweenValueAtX(tw[selected_tween].X())*size
+		cnvs.DrawLine x,ty,tx,ty
+		cnvs.DrawLine tx,ty,tx,y+size
+				
+		cnvs.SetColor 1,1,1
+		Local prey:Float = tw[selected_tween].TweenValueAtX(0)
+		For Local i:Float = 1 Until size
+			cnvs.DrawLine x+i-1,y+size-prey*size,x+i,y+size-tw[selected_tween].TweenValueAtX(i/size)*size
+			prey = tw[selected_tween].TweenValueAtX(i/size)
+		Next
+		cnvs.SetColor 1,0,0
+		cnvs.DrawOval tx-5,ty-5,10,10
+	End
+End
+
+Function Main:Int()
+	New tweenExample		
+	Return 0
+End
