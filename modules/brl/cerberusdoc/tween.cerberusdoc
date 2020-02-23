@@ -1,0 +1,157 @@
+
+# Module tween
+
+The tween module provides simple support for loops using the built in interpolation functions.
+Some interpolation functions have easing in, easing out and easing in and out abilities.
+
+# Class tween.Tween
+
+The Tween class provides simple support for tweening with timing and loops.
+
+Each Tween will start at p(0,0) and end at p(1,1). A @CUSTOM interpolation is the only one that can overide p(0,y) and p(1,y).
+
+Example:
+<pre>
+Strict
+Import mojo2
+Import tween
+
+Class myClass Extends App
+	Field canvas:Canvas
+	Field tw:Tween
+	
+	Method OnCreate:Int()
+		SetUpdateRate(60)
+		canvas = New Canvas
+		tw = New Tween(Tween.ELASTIC,2000)
+		tw.SetLoop(True)
+		tw.SetRange(0,300)
+		tw.SetEasing(Tween.EASEOUT)
+		tw.Start()
+		
+		Return 0
+	End
+
+	Method OnUpdate:Int()
+		Return 0
+	End
+
+	Method OnRender:Int()
+		canvas.Clear (0,0.5,0)	
+		canvas.DrawText( String("Cerberus X~nTweening").Split("~n")),DeviceWidth()/2,400-tw.RangeValue(),0.5,0.5
+		canvas.Flush
+
+		Return 0
+	End
+End
+
+Function Main:Int()
+	New myClass
+	Return 0
+End</pre>
+
+
+# Method New(interpolation:Int, duration:Int)
+
+Setup a new Tween.
+
+* @interpolation can be either @Tween.@LINEAR, @Tween.@CUSTOM, @Tween.@BEZIER, @Tween.@CURVE, @Tween.@ELASTIC, @Tween.@BOUNCE, @Tween.@BACK
+* @duration is the length of the tween in Milli-seconds
+
+For interpolation styles see [[cerberus.interpolate]]
+
+# Method RangeValue:Float()
+
+Get the value in the range of the current Tween.
+
+# Method RangeValueAtX:Float(x:Float)
+
+Get the value in the range of the Tween when x=@x.
+
+# Method RangeValueAtTime:Float(time:Float)
+
+Get the value in the range of the Tween when time=@time.
+
+Links: [[SetRange]]
+
+# Method SetRange:Void(startValue:Float, endValue:Float)
+
+Set the range of the values of the tween. @RangeValue will return values between @startValue and @endValue
+
+Links: [[RangeValue]]
+
+# Method TweenValue:Float()
+
+Return the current tween value. This is usually between 0 and 1.
+
+# Method TweenValueAtX:Float(x:Float)
+
+Returns the tween value when x is @x. @x must be between 0 and 1. This doesnt set the x posiiton of the tween.
+
+# Method TweenValueAtTime:Float(time:Float)
+
+Returns the tween value when time is @time. This doesnt set the time or duration.
+
+# Method Start:Void()
+
+Starts the current tween
+
+# Method Stop:Void()
+
+Stops the current tween
+
+# Method Resume:Void()
+
+Resumes the currently stopped tween
+
+# Method SetLoop:Void(flag:Bool)
+
+Sets looping action. 
+
+Links: [[GetLoop]]
+
+# Method SetYoYo:Void(flag:Bool)
+
+Sets YoYo-ing. YoYo-ing will only wotk if looping is set to @True
+
+Links: [[GetYoYo]]
+
+# Method GetLoop:Bool()
+
+Returns @True if looping is set to True
+
+# Method GetYoYo:Bool()
+
+Returns @True if YoYo is set to True
+
+# Method X:Float()
+
+Returns the x value of the current tween. @x is from 0-1
+
+
+# Method SetEasing:Void(easing_mode:Int)
+
+Sets the easing mode for the Tween. 
+
+@easing_mode can be @Tween.@EASEIN, @Tween.@EASEOUT, @Tween.@EASEINOUT
+
+Only the following tween modes have easing modes: @BOUNCE, @BACK, @ELASTIC
+
+# Method SetBezierPoints:Void(pXa:Float, pYA:Float, pXb:Float, pYb:Float)
+
+Sets the 2 control points for the Bezier curve.
+
+* Control point 1 = (@pXa, @pYa)
+* Control point 2 = (@pXb, @pYb)
+
+# Method SetCustomData:Void(dataY:Float[])
+
+Sets the y data for the custom interpolation. The Tween will pass through each @dataY point
+
+# Method SetCurve:Void(curveY:Float)
+
+Sets the curve iterpolation point so that the curve passes through p(0.5,@curveY)
+
+# Method SetDuration:Void(duration:Int)
+
+Sets a new duration for the tween. @duration is in Millisecs
