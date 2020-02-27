@@ -166,6 +166,31 @@ Class AndroidBuilder Extends Builder
 			End
 		Next
 
+		' make icons
+		If GetConfigVar( "ANDROID_APP_ICON") <> ""
+			Local iconfiles:String[]
+			
+			' normal icons
+			iconfiles = ["app/src/main/res/mipmap-hdpi/ic_launcher.png","72","72",
+					  	"app/src/main/res/mipmap-mdpi/ic_launcher.png","48","48",
+						"app/src/main/res/mipmap-xhdpi/ic_launcher.png","96","96",
+						"app/src/main/res/mipmap-xxhdpi/ic_launcher.png","144","144",
+						"app/src/main/res/mipmap-xxxhdpi/ic_launcher.png","192","192"]	
+			MakeIcons(GetConfigVar( "ANDROID_APP_ICON"),iconfiles)
+			
+			' round icons
+			iconfiles = ["app/src/main/res/mipmap-hdpi/ic_launcher_round.png","72","72",
+					  	"app/src/main/res/mipmap-mdpi/ic_launcher_round.png","48","48",
+						"app/src/main/res/mipmap-xhdpi/ic_launcher_round.png","96","96",
+						"app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png","144","144",
+						"app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png","192","192"]
+			If GetConfigVar( "ANDROID_APP_ROUND_ICON")=""
+				MakeIcons(GetConfigVar( "ANDROID_APP_ICON"),iconfiles,True)
+			Else	
+				MakeIcons(GetConfigVar( "ANDROID_APP_ROUND_ICON"),iconfiles)
+			End
+		End
+
 		If GetConfigVar( "ANDROID_NATIVE_GL_ENABLED" )="1"
 			CopyDir "nativegl/libs","libs",True
 			CreateDir "src/com"
