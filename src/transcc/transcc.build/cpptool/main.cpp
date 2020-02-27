@@ -6015,7 +6015,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2019-05-30",35));
+	bbPrint(String(L"TRANS cerberus compiler V2019-10-13",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -7645,13 +7645,18 @@ bool c_Builder::p_Execute(String t_cmd,bool t_failHard){
 	return m_tcc->p_Execute(t_cmd,t_failHard);
 }
 void c_Builder::p_CopyIcon(){
-	String t_iconPath=bb_os_StripExt(m_tcc->m_opt_srcpath);
-	String t_iconFile=t_iconPath+String(L".ico",4);
-	bbPrint(String(L"IconFile=",9)+t_iconFile.Replace(String(L"/",1),String(L"\\",1)));
-	String t_targetIcon=CurrentDir()+String(L"\\cerberus.ico",13);
-	if(FileType(t_iconFile)==1){
-		bbPrint(String(CopyFile(t_iconFile,t_targetIcon)));
-		bbPrint(String(L"New icon=",9)+t_targetIcon);
+	if(HostOS()==String(L"winnt",5)){
+		String t_targetIcon=CurrentDir()+String(L"\\cerberus.ico",13);
+		String t_iconPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath));
+		String t_iconFile=RealPath(t_iconPath+String(L"\\",1)+bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)));
+		if(FileType(t_iconFile)==1){
+			CopyFile(t_iconFile,t_targetIcon);
+		}else{
+			t_iconFile=RealPath(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)));
+			if(FileType(t_iconFile)==1){
+				CopyFile(t_iconFile,t_targetIcon);
+			}
+		}
 	}
 }
 void c_Builder::mark(){

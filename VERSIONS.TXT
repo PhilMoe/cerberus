@@ -1,14 +1,33 @@
-***** v2019-07-05 *****
+***** v2019-12-08 *****
+
+MOD: [mojo/mojo2] Added flags parameter to the Font.Load:Font(url:String) method.
+FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
+
+***** v2019-10-13b *****
+
+MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs
+FIX: [GLFW] Added missing stb_write_image.h file on Linux
+FIX: [TED] Was still using the old PrefsDialog on Linux
+
+***** v2019-10-13 *****
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
-NEW: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
+MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
 FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
 FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
-MOD: [TED] Another attempt at fixing the colorization/capitalization of the API. 
+MOD: [TED] Another attempt at fixing the capitalization of the API. 
+MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu. 
+MOD: [TED] Replaced Options dialog with a similar one like from Dawlane's version of TED. 
+           This dialog is much smaller and so can be displayed on small screens two.
+FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.
 MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.
-FIX: [OSX] Recompiled the launcher as a 64bit app.
+FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).
 FIX: [MOJO1] Fixed missing usage of frame parameter in DrawImage9P.    (Author: Rich)
-MOD: [WIN8/WINPHONE8] Depreciated these targets. If you need them, move them out of the targets/depreciated folder.
+MOD: [WIN8/WINPHONE8] Depreciated these targets. 
+                      If you need them, move them out of the targets/depreciated folder.
+MOD: [TRANS/ANDROID] Reactivated logcat filtering.
+NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once. 
+
 
 ***** v2019-05-05 *****
 

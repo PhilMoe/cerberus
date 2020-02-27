@@ -8,6 +8,7 @@ Samples for the advanced 2D rendering API.
 * [[../../examples/mojo2/bumptest/bumptest.cxs|Bumpmapping test]]
 * [[../../examples/mojo2/directlight/directlight.cxs|Simple lighting]]
 * [[../../examples/mojo2/drawprimitives/drawprimitives.cxs|Drawing primitives]]
+* [[../../examples/mojo2/drawprimitives2/drawprimitives2.cxs|Drawing several images with one call to DrawPrimitives]]
 * [[../../examples/mojo2/helloworld/helloworld.cxs|Hello world]]
 * [[../../examples/mojo2/letterbox/letterbox.cxs|Letterbox rendering]]
 * [[../../examples/mojo2/mojotest/mojotest.cxs|Mojotest converted to mojo2]]

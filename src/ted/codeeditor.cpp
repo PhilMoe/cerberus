@@ -148,7 +148,11 @@ CodeEditor::CodeEditor( QWidget *parent, MainWindow *wnd ):QPlainTextEdit( paren
             this, SLOT(insertCompletion(const QString&)));
     (void) new QShortcut(QKeySequence(tr("Ctrl+Space", "Complete")),
                          this, SLOT(performCompletion()));
-
+/*
+    QTextOption option;
+    option.setFlags(QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces | QTextOption::IncludeTrailingSpaces );
+    document()->setDefaultTextOption(option);
+*/
 }
 
 CodeEditor::~CodeEditor(){
@@ -1331,7 +1335,7 @@ void Highlighter::onPrefsChanged( const QString &name ){
 
 QString Highlighter::parseToke( QString &text,QColor &color, QString &prevText ){
     if( !text.length() ) return "";
-//qDebug() << text;
+//qDebug() << "Highlighter::parseToke" << text << "  prev: " << prevText;
     int i=0,n=text.length();
     QChar c=text[i++];
 
@@ -1343,7 +1347,7 @@ QString Highlighter::parseToke( QString &text,QColor &color, QString &prevText )
         while( i<n && isIdent(text[i]) ) ++i;
         color=_identifiersColor;
         //if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") && (prevText != "(") && (prevText != ",")) {
-        if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") ) {
+        if ((prevText != "class") && (prevText != "field") && (prevText != "global") && (prevText != "local") && (prevText != "method")  && (prevText != "(") && (prevText != ",") ) {
             if( cerberusFile &&  keyWords().contains( text.left(i).toLower() ) ) {
                 color=_keywordsColor;
             } else if( cerberusFile &&  keyWords3().contains( text.left(i).toLower() ) ) color=_keywords2Color;
@@ -1413,18 +1417,28 @@ QString Highlighter::parseToke( QString &text,QColor &color, QString &prevText )
 bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
     QString text=block.text();
+//qDebug() << "Highlighter::capitalize" << text;
     QColor color;
     QString prevToken = "";
+    QString prevToken2 = "";
+    QString prevToken3 = "";
+    QString prevTokenR = "";
+    QString prevTokenR2 = "";
     int i=0,pos=cursor.position();
 
     cursor.beginEditBlock();
 
     for(;;){
         QString t=parseToke( text,color, prevToken );
+//qDebug() << prevTokenR2 << " <"  << prevTokenR << " <"  << prevToken3 << " <"  << prevToken2 << " <"  << prevToken << " <" << t <<">";
         if( t.isEmpty() ) break;
+
         //if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "(") && (prevToken != ",")) {
-        if ((prevToken != "class") && (prevToken != "field") && (prevToken != "local") && (prevToken != "global") && (prevToken != "import") && (prevToken != ".")) {
-            //qDebug() << lastToken << ":" << t;
+        if (((prevToken != "interface") && (prevToken != "class") && (prevToken != "field") && (prevToken != "for" ) && (prevToken != "local") &&
+             (prevToken != "[") && (prevToken != "(") && (prevToken != ",") && (prevTokenR != " ") && (prevTokenR != "\t") &&
+             (prevToken != "global") && (prevToken != "import")  && (prevToken3 != "import")  && (prevToken != "method")) ||
+             (!(keyWords().value( t ).isEmpty())) ||
+             (prevToken == "extends") ) {
             QString kw=keyWords().value( t.toLower() );
             if ((_editor->_capitalizeAPI) && (keyWords().value( t ).isEmpty())){
                 QString kw3=keyWords3().value( t.toLower() );
@@ -1441,8 +1455,24 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
         }
 
         i+=t.length();
-        if (t != " ")
+        if (t != " " && t != "  " && t != "   " && t != "    " && t != "     ")
+        {
+            prevToken3 = prevToken2;
+            prevToken2 = prevToken;
             prevToken = t.toLower();
+        }
+        if ( t.length() >= 1 ) {
+            prevTokenR = t.right(1);
+        }
+        else {
+            prevTokenR = "";
+        }
+        if ( t.length() >= 2 ) {
+            prevTokenR2 = t.right(2);
+        }
+        else {
+            prevTokenR2 = "";
+        }
     }
 
     cursor.endEditBlock();
@@ -1454,7 +1484,7 @@ bool Highlighter::capitalize( const QTextBlock &block,QTextCursor cursor ){
 
 void Highlighter::highlightBlock( const QString &ctext ){
     QString text=ctext;
-
+//qDebug() << "Highlighter::highlightBlock" << text;
     int i=0,n=text.length();
     while( i<n && text[i]<=' ' ) ++i;
 
@@ -1524,8 +1554,10 @@ void Highlighter::highlightBlock( const QString &ctext ){
             curcol=col;
             colst=i;
         }
-        if (t != " ")
+        if (t != " " && t != "  " && t != "   " && t != "    " && t != "     ")
+        {
             prevToken = t.toLower();
+        }
         i+=t.length();
     }
 

@@ -307,11 +307,13 @@ Load a fixed width font from @path.
 @firstChar represents the ASCII code of the first char.
 
 
-# Function Load:Font(path:String)
+# Function Load:Font(path:String, flags:Int=Image.Filter)
 
 Loads a bitmap font file created in tools like GlyphDesigner and alike. 
 
 @path represents the filename of the texfile that defines the font and its individual glyphs.
+
+@flags represents the Image filter that is applied at loading the image sheet.
 
 
 # Class ShadowCaster
