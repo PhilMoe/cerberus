@@ -2,6 +2,12 @@
 Import transcc
 Import reflection.reflector
 
+Import "native/stb_image.cpp"
+Import "native/stb_image.h"
+Import "native/stb_image_write.h"
+Import "native/stb_image_resize.h"
+Import "native/image.cpp"
+
 Class Builder
 
 	Method New( tcc:TransCC )
@@ -165,8 +171,30 @@ Class Builder
 			CopyFile src,dst
 		Endif
 	End
+
+	' srcFilename - image file for icon
+	' icons:String : array of icons to convert to. Multiple of 3..  [destFilename:String, sizeX:String, sizeY:String,..]
+	' round.. set to true to force image icon to be round
+	Method MakeIcons:Void(srcFilename:String,icons:String[],round:Int=False)
+		Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
+		Local iconFile:String = RealPath(iconPath+"\"+srcFilename)
+		
+		If Not FileType( iconFile )=FILETYPE_FILE Then iconFile = RealPath(srcFilename)
+				
+		If FileType( iconFile )=FILETYPE_FILE
+'			If FileSize(iconFile) = FileSize(CurrentDir()+"\icon.cache") Then Return
+			
+			For Local i:Int = 0 Until icons.Length() Step 3
+'				Print "building "+CurrentDir()+"/"+icons[i]
+				_CreateIcon(iconFile,CurrentDir()+"/"+icons[i],Int(icons[i+1]),Int(icons[i+2]),round)
+			Next
+			
+			' cache icon file
+'			CopyFile (iconFile,CurrentDir()+"\icon.cache")
+		Endif
+	End
 	
-	Method CopyIcon:Void()
+	Method CopyIcon:Void()		
 		If HostOS() = "winnt"
 			Local targetIcon:= CurrentDir()+"\cerberus.ico"
 			Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
@@ -281,3 +309,7 @@ Class Builder
 	End
 	
 End
+
+Extern
+Function _CreateIcon:Void(srcFile:String,destFile:String,w:Int,h:Int,round:Int)
+
