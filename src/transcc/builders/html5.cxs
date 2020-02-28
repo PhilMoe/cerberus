@@ -146,7 +146,9 @@ Class Html5Builder Extends Builder
 		main=ReplaceBlock( main,"CONFIG",Config() )
 		
 		SaveString main,"main.js"
-		
+
+		CopyIcon(GetConfigVar("HTML5_APP_ICON"),CurrentDir()+"\favicon.ico")
+				
 		If tcc.opt_run
 			Local p:=RealPath( "CerberusGame.html" )
 			Local t:=tcc.HTML_PLAYER+" ~q"+p+"~q"
