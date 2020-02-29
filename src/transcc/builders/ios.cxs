@@ -227,9 +227,26 @@ Class IosBuilder Extends Builder
 			Print ("Starting iOS simulator...")
 			Execute "open ~q"+sim_path+"~q"
 		Endif
-
 		CreateDataDir "data"
 
+		CreateDir "icons"
+		' https://docs.microsoft.com/en-us/xamarin/ios/app-fundamentals/images-icons/app-icons?tabs=windows
+		Local iconfiles:String[] = ["icons/iphone-app-1x-60px.png","60","60",
+									"icons/iphone-app-2x-120px.png","120","120",
+									"icons/iphone-app-3x-180px.png","180","180",
+									"icons/iphone-spotlight-1x-40px.png","40","40",
+									"icons/iphone-spotlight-2x-80px.png","80","80",
+									"icons/iphone-spotlight-3x-120px.png","120","120",
+									"icons/iphone-settings-3x-87px.png","87","87",
+									"icons/ipad-app-1x-76px.png","76","76",
+									"icons/ipad-app-2x-152px.png","152","152",
+									"icons/ipad-app-3x-167px.png","167","167",
+									"icons/ipad-spotlight-1x-40px.png","40","40",
+									"icons/ipad-spotlight-2x-80px.png","80","80",
+									"icons/ipad-spotlight-3x-120px.png","120","120",
+									"icons/ipad-settings-3x-58px.png","58","58"]
+		MakeIcons(GetConfigVar( "IOS_APP_ICON"),iconfiles)
+		
 		Local main:=LoadString( "main.mm" )
 		
 		main=ReplaceBlock( main,"TRANSCODE",transCode )

@@ -172,9 +172,6 @@ Class Builder
 		Endif
 	End
 
-	' srcFilename - image file for icon
-	' icons:String : array of icons to convert to. Multiple of 3..  [destFilename:String, sizeX:String, sizeY:String,..]
-	' round.. set to true to force image icon to be round
 	Method MakeIcons:Void(srcFilename:String,icons:String[],round:Int=False)
 		Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
 		Local iconFile:String = RealPath(iconPath+"\"+srcFilename)
@@ -194,19 +191,26 @@ Class Builder
 		Endif
 	End
 	
-	Method CopyIcon:Void()		
+	Method CopyIcon:Void(iFile:String,targetIcon:String)		
 		If HostOS() = "winnt"
-			Local targetIcon:= CurrentDir()+"\cerberus.ico"
 			Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
-			Local iconFile:String = RealPath(iconPath+"\"+GetConfigVar( "GLFW_APP_ICON"))
+			local iconFile:String = RealPath(iconPath+"\"+iFile)
 			If FileType( iconFile )=FILETYPE_FILE
 				'Print "Icon1== "+iconFile
-				CopyFile (iconFile,targetIcon)
+				If ExtractExt( iconFile).ToLower() = "ico"
+					CopyFile (iconFile,targetIcon)
+				Else
+					_ConvertToIco (iconFile,targetIcon)
+				End
 			Else
-				iconFile = RealPath(GetConfigVar( "GLFW_APP_ICON"))
+				iconFile = iFile
 				If FileType( iconFile )=FILETYPE_FILE
 					'Print "Icon2== "+iconFile
-					CopyFile (iconFile,targetIcon)		
+					If ExtractExt( iconFile).ToLower() = "ico"
+						CopyFile (iconFile,targetIcon)
+					Else
+						_ConvertToIco (iconFile,targetIcon)
+					End
 				Endif
 			Endif
 		Endif
@@ -312,4 +316,4 @@ End
 
 Extern
 Function _CreateIcon:Void(srcFile:String,destFile:String,w:Int,h:Int,round:Int)
-
+Function _ConvertToIco:Void(srcFile:String,destFile:String)
