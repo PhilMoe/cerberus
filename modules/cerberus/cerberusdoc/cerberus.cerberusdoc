@@ -3,6 +3,10 @@
 
 # Import cerberus.boxes
 
+# Import cerberus.deque
+
+# Import cerberus.interpolate
+
 # Import cerberus.lang
 
 # Import cerberus.list
@@ -12,8 +16,6 @@
 # Import cerberus.math
 
 # Import cerberus.random
-
-# Import cerberus.interpolate
 
 # Import cerberus.set
 

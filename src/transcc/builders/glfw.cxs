@@ -30,7 +30,7 @@ Class GlfwBuilder Extends Builder
 		
 		CreateDataDir dst+"/"+tconfig+"/data"
 
-		// need to rewrite resources.rc so that icon is rebuilt
+		' need to rewrite resources.rc so that icon is rebuilt
 		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"\cerberus.ico")
 		
 		Local main:=LoadString( "main.cpp" )
@@ -130,7 +130,7 @@ Class GlfwBuilder Extends Builder
 		
 		CreateDataDir "msvc/"+casedConfig+"/data"
 		
-		// need to rewrite resources.rc so that icon is rebuilt
+		' need to rewrite resources.rc so that icon is rebuilt
 		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"\cerberus.ico")
 		
 		Local main:=LoadString( "main.cpp" )
