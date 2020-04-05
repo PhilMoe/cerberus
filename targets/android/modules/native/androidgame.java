@@ -654,8 +654,8 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		float x,y,z;
 		switch( sensor.getType() ){
 		case Sensor.TYPE_ACCELEROMETER:
-//			switch( _display.getRotation() ){
-			switch( _display.getOrientation() ){	//deprecated in API 8, but we support 3...
+			switch( _display.getRotation() ){
+//			switch( _display.getOrientation() ){	//deprecated in API 8, but we support 3...
 			case Surface.ROTATION_0:
 				x=event.values[0]/-9.81f;
 				y=event.values[1]/9.81f;
