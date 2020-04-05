@@ -380,4 +380,73 @@ String bbRequestDir( String title,String dir ){
 	return str;
 }
 
+#else
+
+#include <tinyfiledialogs.h>
+/*
+String bbRequestFile2( String title,String filter,int save,String path ){
+
+	String ps;
+	if( save ){
+		ps = tinyfd_saveFileDialog (OS_STR(title), OS_STR(path), 0, NULL, NULL);
+	}else{
+		ps = tinyfd_openFileDialog (OS_STR(title), OS_STR(path), 0, NULL, NULL,0);
+	}
+
+	return ps;
+}
+*/
+
+void bbNotify( String title,String text,int serious ){
+
+	tinyfd_messageBox( OS_STR( title ),OS_STR( text ),"ok",serious ? "error" : "info",1 );
+}
+
+int bbConfirm( String title,String text,int serious ){
+
+	return tinyfd_messageBox( OS_STR( title ),OS_STR( text ),"okcancel",serious ? "error" : "info",1 );
+}
+
+int bbProceed( String title,String text,int serious ){
+
+	// Ok, no yesnocancal in tinyfd so we'll use kdialog...
+	
+	int result=tinyfd_messageBox( OS_STR( title ),OS_STR( text ),"yesnocancel",serious ? "error" : "info",1 );
+	
+	return result==2 ? -1 : result;
+	
+}
+
+String bbRequestFile( String title,String exts, int save,String path ){
+	char const * ps;
+	if( path=="" ) path=".";
+		
+	if( save ){
+		ps = tinyfd_saveFileDialog( OS_STR( title ),OS_STR( path ),0,0,0 );
+	}else{
+		ps = tinyfd_openFileDialog( OS_STR( title ),OS_STR( path ),0,0,0,0 );
+	}
+	if (! ps) {
+		return "";
+	}else{
+		return ps;
+	}
+		
+}
+
+String bbRequestDir( String title,String dir ){
+	char const * ps;
+
+	if( dir=="" ) dir=".";
+		
+	ps = tinyfd_selectFolderDialog( OS_STR( title ),OS_STR( dir ) );
+	if (! ps) {
+		return "";
+	}else{
+		return ps;
+	}
+}
+
+
+
 #endif

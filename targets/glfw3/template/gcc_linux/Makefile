@@ -12,17 +12,19 @@ CPPFLAGS=$(CCOPTS) \
 -I../glfw3/include \
 -I../openal/include \
 -I../stb \
+-I../tinyfiledialogs \
 -I../glfw3/deps \
 -I../glfw3/deps/vulkan \
 -D_GLFW_HAS_GLXGETPROCADDRESS \
 -pthread
 
 LD=g++
-LDFLAGS=$(LDOPTS)
+LDFLAGS=$(LDOPTS) -no-pie
 LDLIBS=-lGL -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor $(LIBOPTS) -lpthread -ldl 
 
 vpath %.c ../glfw3/src
 vpath %.c ../stb
+vpath %.c ../tinyfiledialogs
 vpath %.cpp ..
 
 OBJS0=\
@@ -44,6 +46,7 @@ osmesa_context.o \
 xkb_unicode.o \
 stb_vorbis.o \
 stb_image.o \
+tinyfiledialogs.o \
 main.o
 
 TMP=build/$(dir $(OUT))
