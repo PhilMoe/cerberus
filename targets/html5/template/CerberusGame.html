@@ -2,6 +2,7 @@
 
 <html>
 <head>
+<title>%%HTML5_APP_TITLE%%</title>
 <style type="text/css">
 body{
 	height: 100%;
@@ -47,8 +48,8 @@ div.splitter{
 
 var CANVAS_RESIZE_MODE=1;	//0=locked, 1=stretch, 2=resize
 
-var CANVAS_WIDTH=640;
-var CANVAS_HEIGHT=480;
+var CANVAS_WIDTH=%%HTML5_CANVAS_WIDTH%%;
+var CANVAS_HEIGHT=%%HTML5_CANVAS_HEIGHT%%;
 
 window.onload=function( e ){
 
@@ -173,7 +174,7 @@ window.onload=function( e ){
 
 <body>
 
-<div><canvas id="GameCanvas" width="640" height="480" tabindex="1"></canvas></div>
+<div><canvas id="GameCanvas" width="%%HTML5_CANVAS_WIDTH%%" height="%%HTML5_CANVAS_HEIGHT%%" tabindex="1"></canvas></div>
 
 <div id="Splitter" class="splitter"></div>
 

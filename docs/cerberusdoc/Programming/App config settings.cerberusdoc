@@ -32,12 +32,16 @@ The following app config settings are currently supported:
 
 'Html5 settings, defaults shown
 '
+#HTML5_APP_ICON=""
+#HTML5_APP_TITLE="CerberusGame"
+#HTML5_CANVAS_WIDTH=640
+#HTML5_CANVAS_HEIGHT=480
 #HTML5_WEBAUDIO_ENABLED=True			'Set to false to disable webaudio support for mojo audio, and to use older multimedia audio system instead.
 
 'GLFW settings, defaults shown
 '
-#GLFW_USE_MINGW=True					'Set to false on Windows to use MSVC instead of MinGW to build glfw apps. Needs VS 2015 installed.
-#GLFW_GCC_MSIZE_WINNT="32"				'When building glfw apps with mingw/gcc, controls whether 32 or 64 bit apps are generated.
+#GLFW_USE_MINGW=True					'Set to false on Windows to use MSVC instead of MinGW to build glfw apps. Needs at least VS 2015 installed.
+#GLFW_GCC_MSIZE_WINNT="64"				'When building glfw apps with mingw/gcc, controls whether 32 or 64 bit apps are generated.
 										'Set to "64" to force 64 bit builds on Windows (needs mingw64), or "" to use compiler default.
 #GLFW_GCC_MSIZE_LINUX=""				'Ditto for Linux.
 #GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
@@ -52,10 +56,9 @@ The following app config settings are currently supported:
 #GLFW_WINDOW_FULLSCREEN=False
 #GLFW_WINDOW_SAMPLES=0					'Set to number of samples for multisampling (glfw3 only).
 #GLFW_WINDOW_DECORATED=True				'Set to false to create a broderless window (glfw3 only).
-#GLFW_VERSION=2							'Set to GLFW version, ie: 2 or 3.			
 
-#GLFW_APP_ICON="myIcon.ico"				'On Windows you can set the app and window icon via this setting.  
-										'If no path is provided, TRANSCC will assume the source path as its location.
+#GLFW_APP_ICON=""
+
 #GLFW_APP_LABEL="My App"				'Human readable label for app. 
 										'Must be set for cerberus://internal to map to 'per user' app data dir.
 										'If not set (the default), cerberus://internal is shared by all users of app.
@@ -65,18 +68,35 @@ The following app config settings are currently supported:
 #GLFW_APP_PUBLISHER="My Company"		'Optional human readable publisher name for app. Must be filesystem friendly.
 										'Not defined by default.
 
+'FLASH settings, defaults shown
+#FLASH_APP_ICON=""
+#FLASH_RENDER_WHILE_SUSPENDED=False
 
 'IOS settings, defaults shown
 '
 #IOS_RETINA_ENABLED=True
 #IOS_ACCELEROMETER_ENABLED=True
-#IOS_DISPLAY_LINK_ENABLED=False
+#IOS_DISPLAY_LINK_ENABLED=True
+#IOS_APP_ICON=""
 
 'Android settings, defaults shown
 '
 #ANDROID_APP_LABEL="Cerberus X Game"
 #ANDROID_APP_PACKAGE="com.Cerberus_X.cxgame"
-#ANDROID_SCREEN_ORIENTATION="portrait"  			'one of: user, portrait, landscape
+#ANDROID_APP_ICON=""
+#ANDROID_SCREEN_ORIENTATION="user"					'"user", "portrait", "landscape"
+#ANDROID_GAMEPAD_ENABLED=False
+
+#ANDROID_MIN_SDK_VERSION="16"
+#ANDROID_TARGET_SDK_VERSION="28"
+#ANDROID_BUILD_TOOLS_VERSION="28.0.3"
+#ANDROID_GRADLE_VERSION="3.2.1"
+#ANDROID_GRADLE_DISTRIBUTION="gradle-4.6-all.zip"
+#ANDROID_REPOSITORIES=""
+#ANDROID_JAVA_SOURCE_VERSION="VERSION_1_8"
+#ANDROID_JAVA_TARGET_VERSION="VERSION_1_8"
+#ANDROID_APPLICATION_EXTRAS=""
+
 #ANDROID_VERSION_CODE="1"
 #ANDROID_VERSION_NAME="1.0"
 #ANDROID_NATIVE_GL_ENABLED=False					'for use with the opengl modules

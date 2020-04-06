@@ -47,7 +47,7 @@ void _CreateIcon(String srcFilename, String dstFilename, int w, int h,int round)
 	stbi_write_png(C_STR(dstFilename), w, h, 4, &output_pixels, 0);
 }
 
-// crudely buld the icon file... file format on wiki
+// crudely build the icon file... file format on wiki
 // https://en.wikipedia.org/wiki/ICO_(file_format)
 void _ConvertToIco(String srcFilename,String destFilename) {
 	// widths for icons

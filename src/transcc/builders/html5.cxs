@@ -140,7 +140,6 @@ Class Html5Builder Extends Builder
 		Local meta:="var META_DATA=~q"+MetaData()+"~q;~n"
 		
 		Local main:=LoadString( "main.js" )
-		
 		main=ReplaceBlock( main,"TRANSCODE",transCode )
 		main=ReplaceBlock( main,"METADATA",meta )
 		main=ReplaceBlock( main,"CONFIG",Config() )
@@ -149,6 +148,14 @@ Class Html5Builder Extends Builder
 
 		CopyIcon(GetConfigVar("HTML5_APP_ICON"),CurrentDir()+"\favicon.ico")
 				
+
+		Local game:=LoadString( "CerberusGame.html" )
+		game = game.Replace("%%HTML5_APP_TITLE%%", GetConfigVar("HTML5_APP_TITLE") )
+		game = game.Replace("%%HTML5_CANVAS_WIDTH%%", GetConfigVar("HTML5_CANVAS_WIDTH") )
+		game = game.Replace("%%HTML5_CANVAS_HEIGHT%%", GetConfigVar("HTML5_CANVAS_HEIGHT") )
+		SaveString game,"CerberusGame.html"
+
+
 		If tcc.opt_run
 			Local p:=RealPath( "CerberusGame.html" )
 			Local t:=tcc.HTML_PLAYER+" ~q"+p+"~q"

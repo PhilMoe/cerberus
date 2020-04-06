@@ -14535,7 +14535,7 @@ void _CreateIcon(String srcFilename, String dstFilename, int w, int h,int round)
 	stbi_write_png(C_STR(dstFilename), w, h, 4, &output_pixels, 0);
 }
 
-// crudely buld the icon file... file format on wiki
+// crudely build the icon file... file format on wiki
 // https://en.wikipedia.org/wiki/ICO_(file_format)
 void _ConvertToIco(String srcFilename,String destFilename) {
 	// widths for icons
@@ -18131,7 +18131,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-04-04",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-04-06",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -20676,6 +20676,11 @@ void c_Html5Builder::p_MakeTarget(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"main.js",7));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"HTML5_APP_ICON",14)),CurrentDir()+String(L"\\favicon.ico",12));
+	String t_game=LoadString(String(L"CerberusGame.html",17));
+	t_game=t_game.Replace(String(L"%%HTML5_APP_TITLE%%",19),bb_config_GetConfigVar(String(L"HTML5_APP_TITLE",15)));
+	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_WIDTH%%",22),bb_config_GetConfigVar(String(L"HTML5_CANVAS_WIDTH",18)));
+	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_HEIGHT%%",23),bb_config_GetConfigVar(String(L"HTML5_CANVAS_HEIGHT",19)));
+	SaveString(t_game,String(L"CerberusGame.html",17));
 	if(m_tcc->m_opt_run){
 		String t_p=RealPath(String(L"CerberusGame.html",17));
 		String t_t=m_tcc->m_HTML_PLAYER+String(L" \"",2)+t_p+String(L"\"",1);

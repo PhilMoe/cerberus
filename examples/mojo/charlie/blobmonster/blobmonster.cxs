@@ -1,4 +1,8 @@
-
+#HTML5_APP_ICON="icons/icon.png"
+#GLFW_APP_ICON="blobmonster.data/blob.png"
+#HTML5_APP_TITLE="BlobMonster"
+#HTML5_CANVAS_WIDTH=800
+#HTML5_CANVAS_HEIGHT=480
 Import mojo.app
 Import mojo.graphics
 Import cerberus.math
@@ -211,7 +215,7 @@ Class blob_monster Extends App
 		blobimage=LoadImage( "blob.png" )
 
 		theMonster=New BlobMonster(10,10,blobimage)
-		
+
 		SetUpdateRate 60
 
 	End
@@ -224,7 +228,7 @@ Class blob_monster Extends App
 
 	' Drawing code...
 	Method OnRender ()
-		Cls(0, 0, 0)
+		Cls(0, 0, 20)
 		
 		theMonster.Draw()
 		
