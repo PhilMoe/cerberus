@@ -8,6 +8,7 @@ FIX: [DOCS/databuffer] Fixed some typos.
 FIX: [DOCS/stack] Fixed some typos.
 FIX: [mojo/mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 MOD: [mojo/mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
+MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files and don't add a .TXT anymore.
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
 FIX: [TRANS] Fixed reporting the wrong error line number whehn using multiline Strings inside multiline comments.    (Author: dawlane)
 MOD: [TRANS] Changed TRANS in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
@@ -21,6 +22,7 @@ NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size
 NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.
 NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.
 NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area. 
+MOD: [TRANS] Data file filters are not being case sensitive anymore.
 
 ***** v2019-10-13b *****
 

@@ -19699,7 +19699,7 @@ void c_Builder::p_CreateDataDir(String t_dir){
 				String t_t=t_dir+String(L"/",1)+t_r;
 				int t_22=FileType(t_p);
 				if(t_22==1){
-					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+					if(bb_transcc_MatchPath(t_r.ToLower(),m_DATA_FILES.ToLower())){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
 						m_dataFiles->p_Set2(t_p,t_r);
@@ -19718,7 +19718,7 @@ void c_Builder::p_CreateDataDir(String t_dir){
 		String t_p2=t_3->p_NextObject();
 		String t_r2=bb_os_StripDir(t_p2);
 		String t_t2=t_dir+String(L"/",1)+t_r2;
-		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+		if(bb_transcc_MatchPath(t_r2.ToLower(),m_DATA_FILES.ToLower())){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
 			m_dataFiles->p_Set2(t_p2,t_r2);

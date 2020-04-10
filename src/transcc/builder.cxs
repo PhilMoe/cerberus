@@ -250,7 +250,7 @@ Class Builder
 					
 					Select FileType( p )
 					Case FILETYPE_FILE
-						If MatchPath( r,DATA_FILES )
+						If MatchPath( r.ToLower(),DATA_FILES.ToLower() )
 							CCopyFile p,t
 							udata.Insert t
 							dataFiles.Set p,r
@@ -269,7 +269,7 @@ Class Builder
 		For Local p:=Eachin app.fileImports
 			Local r:=StripDir( p )
 			Local t:=dir+"/"+r
-			If MatchPath( r,DATA_FILES )
+			If MatchPath( r.ToLower(),DATA_FILES.ToLower() )
 				CCopyFile p,t
 				udata.Insert t
 				dataFiles.Set p,r

@@ -1405,13 +1405,16 @@ Class Font
 				path = path + pl[pi]+"/"
 			Next
 		Endif
-		Local ts:String = url.ToLower()
-		If (ts.Find(".txt") > 0) Then
+		'Local ts:String = url.ToLower()
+		'If (ts.Find(".txt") > 0) Then
+		If (url.ToLower().Find(".txt") > 0) Or (url.ToLower().Find(".fnt") > 0) Then
 			iniText = app.LoadString(url)
-		Else
-			iniText = app.LoadString(url+".txt")
+		'Else
+		'	iniText = app.LoadString(url+".txt")
 		Endif
-
+#If CONFIG="debug"
+		If iniText.Length() = 0 Then Error("~n~nError in file graphics.cxs, Method Font.Load:Font(url:String, flags:Int=Image.Filter)~n~nCan not load font: "+url)
+#End
 		lines = iniText.Split(String.FromChar(13)+String.FromChar(10))
 		If lines.Length() < 2 then
 			lines = iniText.Split(String.FromChar(10))
