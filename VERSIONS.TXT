@@ -1,22 +1,26 @@
-***** v2020-04-06 *****
+***** v2020-04-10 *****
 
 MOD: [Android/InAppBilling] updated the underlying code to support the newest Google version.    (Author: Rich) 
 NEW: [brl.tween] Added a tweening module.    (Author: Rich) 
 MOD: [cerberus.interpolate] Added some funtionality to the interpolate module.    (Author: Rich) 
-MOD: [TRANS/Android]Changed TRANS in a way so modules can add libs and lift up versions more easily.    (Author: Rich) 
 MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
 FIX: [DOCS/databuffer] Fixed some typos.
 FIX: [DOCS/stack] Fixed some typos.
 FIX: [mojo/mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 MOD: [mojo/mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
-NEW: [TRANS/Android/IOS/GLFW/HTML5] Added app icon creation right into TRANS.    (Author: Rich)
+FIX: [TRANS] Fixed reporting the wrong error line number whehn using multiline Strings inside multiline comments.    (Author: dawlane)
+MOD: [TRANS] Changed TRANS in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
+NEW: [TRANS] Added app icon creation right into TRANS.    (Author: Rich)
 NEW: [IOS] Added #IOS_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [ANDROID] Added #ANDROID_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [FLASH] Added #FLASH_APP_ICON to set the favicon of the browser tab.    (Author: Rich)
 NEW: [HTML5] Added #HTML5_APP_ICON to set the favicon of the browser tab.    (Author: Rich)
 NEW: [HTML5] Added #HTML5_APP_TITLE to be able to set the title of the browser tab.
 NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size of the html5 canvas.
+NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.
+NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.
+NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area. 
 
 ***** v2019-10-13b *****
 

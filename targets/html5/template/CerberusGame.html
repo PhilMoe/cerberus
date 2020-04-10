@@ -46,10 +46,11 @@ div.splitter{
 </style>
 <script>
 
-var CANVAS_RESIZE_MODE=1;	//0=locked, 1=stretch, 2=resize
+var CANVAS_RESIZE_MODE=%%HTML5_CANVAS_RESIZE_MODE%%;	//0=locked, 1=stretch, 2=resize
 
 var CANVAS_WIDTH=%%HTML5_CANVAS_WIDTH%%;
 var CANVAS_HEIGHT=%%HTML5_CANVAS_HEIGHT%%;
+var CONSOLE_SHOW=%%HTML5_CONSOLE_SHOW%%;
 
 window.onload=function( e ){
 
@@ -84,7 +85,15 @@ window.onload=function( e ){
 	}
 	
 	function updateSize(){
-	
+
+	    if (CONSOLE_SHOW === 1) {
+	        splitter.style.display = "block";
+	        console.style.display = "block";
+	    } else {
+	        splitter.style.display = "none";
+	        console.style.display = "none";
+	    }
+	  
 		if( fscreen ){
 			canvasH=window.innerHeight;
 		}else if( canvasH<0 ){

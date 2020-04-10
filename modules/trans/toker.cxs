@@ -1,4 +1,3 @@
-
 ' Module trans.toker
 '
 ' Placed into the public domain 24/02/2011.
@@ -22,209 +21,306 @@ Const TOKE_INTLITEX=10
 '***** Tokenizer *****
 Class Toker
 
-	Global _symbols:StringSet
-	Global _keywords:StringSet
+    Global _symbols:StringSet
+    Global _keywords:StringSet
+ 
+    ' Flag for multi line comments. This should be used when needing to process tokens that have matching open and closing character such as strings.
+    Global _comments:Bool
 
-	Field _path$
-	Field _line
-	Field _source$
-	Field _length
-	Field _toke$
-	Field _tokeType
-	Field _tokePos
-	
-	Method _init()
-		If _keywords Return
-		
-		Const keywords:="void strict "+
-		"public private protected friend property "+
-		"bool int float string array object mod continue exit "+
-		"include import module extern "+
-		"new self super eachin true false null not "+
-		"extends abstract final select case default "+
-		"const local global field method function class "+
-		"and or shl shr end if then else elseif endif while wend repeat until forever "+
-		"for to step next return "+
-		"interface implements inline alias try catch throw throwable "+
-		"enumerate"
+    Field _path$
+    Field _line
+    Field _source$
+    Field _length
+    Field _toke$
+    Field _tokeType
+    Field _tokePos
+ 
+    Method _init()
+        If _keywords Return
+     
+        Const keywords:="void strict "+
+        "public private protected friend property "+
+        "bool int float string array object mod continue exit "+
+        "include import module extern "+
+        "new self super eachin true false null not "+
+        "extends abstract final select case default "+
+        "const local global field method function class "+
+        "and or shl shr end if then else elseif endif while wend repeat until forever "+
+        "for to step next return "+
+        "interface implements inline alias try catch throw throwable "+
+        "enumerate"
 
-		_keywords=New StringSet
-		For Local t:=Eachin keywords.Split( " " )
-			_keywords.Insert t
-		Next
-		_symbols=New StringSet
-		_symbols.Insert ".."
-		_symbols.Insert ":="
-		_symbols.Insert "*="
-		_symbols.Insert "/="
-		_symbols.Insert "+="
-		_symbols.Insert "-="
-		_symbols.Insert "|="
-		_symbols.Insert "&="
-		_symbols.Insert "~~="
-	End
-	
-	Method New( path$,source$ )
-		_init
-		_path=path
-		_line=1
-		_source=source
-		_length=_source.Length
-		_toke=""
-		_tokeType=TOKE_EOF
-		_tokePos=0
-	End
-	
-	Method New( toker:Toker )
-		_init
-		_path=toker._path
-		_line=toker._line
-		_source=toker._source
-		_length=_source.Length
-		_toke=toker._toke
-		_tokeType=toker._tokeType
-		_tokePos=toker._tokePos
-	End
-	
-	Method Path$()
-		Return _path
-	End
-	
-	Method Line:Int()
-		Return _line
-	End
-	
-	Method NextToke$()
-	
-		_toke=""
+        _keywords=New StringSet
+        For Local t:=Eachin keywords.Split( " " )
+            _keywords.Insert t
+        Next
+        _symbols=New StringSet
+        _symbols.Insert ".."
+        _symbols.Insert ":="
+        _symbols.Insert "*="
+        _symbols.Insert "/="
+        _symbols.Insert "+="
+        _symbols.Insert "-="
+        _symbols.Insert "|="
+        _symbols.Insert "&="
+        _symbols.Insert "~~="
+    End
+ 
+    Method New( path$,source$ )
+        _init
+        _path=path
+        _line=1
+        _source=source
+        _length=_source.Length
+        _toke=""
+        _tokeType=TOKE_EOF
+        _tokePos=0
+    End
+ 
+    Method New( toker:Toker )
+        _init
+        _path=toker._path
+        _line=toker._line
+        _source=toker._source
+        _length=_source.Length
+        _toke=toker._toke
+        _tokeType=toker._tokeType
+        _tokePos=toker._tokePos
+    End
+ 
+    Method Path$()
+        Return _path
+    End
+ 
+    Method Line:Int()
+        Return _line
+    End
+ 
+    Method NextToke$()
+ 
+        _toke=""
+     
+        ' Check for end of file and add a End-Of-File token
+        If _tokePos=_length
+            _tokeType=TOKE_EOF
+            Return _toke
+        Endif
+     
+        ' Preload chr and str with the current character code and it's string representation.
+        Local chr:=TCHR()
+        Local str:=TSTR()
+     
+        ' Preserve that current character position before advancing by one.
+        Local start:=_tokePos
+        _tokePos+=1
+     
+        ' If the current character is a new line or empty string, then skip.
+        If str="~n"
+            _tokeType=TOKE_SYMBOL
+            _line+=1
+     
+        ' If the character is a white space character then process until the end or first non-white space character.
+        Else If IsSpace( chr )
+            _tokeType=TOKE_SPACE
+            While _tokePos<_length And IsSpace( TCHR() ) And TSTR()<>"~n"
+                _tokePos+=1
+            Wend
+     
+        ' Proces any comments, either single line or multiline. Tricky as multiline comments use the preprocessor token.
+        Else If str="'" Or str="#"
+     
+            ' Capture the single line comment and process
+            If str="'"
+                _tokeType=TOKE_LINECOMMENT
+                While _tokePos<_length And TSTR()<>"~n"
+                    _tokePos+=1
+                Wend
+                If _tokePos<_length
+                    _tokePos+=1
+                    _line+=1
+                Endif
+            Else
+             
+                ' Process the next set of characters to see what we're dealing with
+                ' We're after capturing the rem/end to set the comments flag accordingly, while ignoring any #end within the comments.
+                Local t:="", cpos=_tokePos, chr:=_source[cpos]
+             
+                ' Process the next lot of characters without advancing the main token position pointer.
+                ' The exit condition may need to moved after the chr or t assignment.
+                While cpos<_length
+                    If String.FromChar( chr )="~n" Or String.FromChar( chr )=" " Exit ' Exit the loop if a new line or white space is encountered.
+                    chr=_source[cpos]
+                    t+=String.FromChar( chr )
+                    cpos+=1
+                Wend
+             
+                ' Test to see if what we have is either a rem or end.
+                ' NOTE: Using Contains is not an elegant solution.
+                If t.ToLower().Contains( "rem" ) And _comments=False    ' Only activate multiline comments, if multiline flag is off.
+                    _comments=True
+                    _tokeType=TOKE_LINECOMMENT
+                 
+                ' Deactivate multiline comments, if multiline flag is on and end is encountered.
+                ' Special note. The last #end will be a full comment in it's self.
+                Else If t.ToLower().Contains( "end" ) And _comments=True
+                    If String.FromChar( chr )="~n"
+                        _comments=False
+                    Endif
+                    ' NOTE: MAY HAVE TO TEST HERE FOR OTHER TYPES OF PREPROCESSOR NESTING SWITCHES eg. #If/#ELSE
+                    ' This may be better handled using a similar method in the preprocess.cxs file.
+                Endif
+             
+                ' Save the current character as a token. This will be "#"
+                _toke=_source[start.._tokePos]
+             
+            Endif
+     
+        ' If the current character starts with either and underscore or is an alpha-beta character.
+        ' Then the following toke will either be a identifier or a keyword
+        Else If str="_" Or IsAlpha( chr )
+            _tokeType=TOKE_IDENT
+            While _tokePos<_length
+                Local chr=_source[_tokePos]
+                If chr<>95 And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
+'                If chr<>Asc("_") And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
+                _tokePos+=1
+            Wend
+            _toke=_source[start.._tokePos]
+         
+            If _keywords.Contains( _toke.ToLower() ) _tokeType=TOKE_KEYWORD
+     
+        ' Process numerical tokens
+        Else If IsDigit( chr ) Or str="." And IsDigit( TCHR() )
+            _tokeType=TOKE_INTLIT
+            If str="." _tokeType=TOKE_FLOATLIT
+            While IsDigit( TCHR() )
+                _tokePos+=1
+            Wend
+         
+            If _tokeType=TOKE_INTLIT And TSTR()="." And IsDigit( TCHR(1) )
+                _tokeType=TOKE_FLOATLIT
+                _tokePos+=2
+                While IsDigit( TCHR() )
+                    _tokePos+=1
+                Wend
+            Endif
+         
+            If TSTR().ToLower()="e"
+                _tokeType=TOKE_FLOATLIT
+                _tokePos+=1
+                If TSTR()="+" Or TSTR()="-" _tokePos+=1
+                While IsDigit( TCHR() )
+                    _tokePos+=1
+                Wend
+            Endif
+     
+        ' Process binary tokens
+        Else If str="%" And IsBinDigit( TCHR() )
+            _tokeType=TOKE_INTLIT
+            _tokePos+=1
+            While IsBinDigit( TCHR() )
+                _tokePos+=1
+            Wend
+     
+        ' Process hexadecimal tokens
+        Else If str="$" And IsHexDigit( TCHR() )
+            _tokeType=TOKE_INTLIT
+            _tokePos+=1
+            While IsHexDigit( TCHR() )
+                _tokePos+=1
+            Wend
+     
+        ' Process string tokens
+        Else If str="~q"
+         
+            ' Loop through the characters and depending on if the comments flag is set, check for either a quote or a new line
+            _tokeType=TOKE_STRINGLIT
+            While _tokePos<_length
+                If _comments
+                    _tokeType=TOKE_LINECOMMENT
+                    If TSTR="~n" Exit
+                Else
+                    If TSTR="~q" Exit
+                Endif
+                _tokePos+=1
+            Wend
+         
+            If _tokePos<_length
+                _tokePos+=1
+            Else
+                If Not _comments _tokeType=TOKE_STRINGLITEX
+            Endif
+     
+        ' Process string literal charcters
+        Else If str="`"
+     
+            ' Loop through the characters and depending on if the comments flag is set, check for either a grave accent or a new line
+            _tokeType=TOKE_INTLIT
+            While _tokePos<_length
+                If _comments
+                    _tokeType=TOKE_LINECOMMENT
+                    If TSTR="~n" Exit
+                Else
+                    If TSTR="`" Exit
+                Endif
+                _tokePos+=1
+            Wend
+         
+            If _tokePos<_length
+                _tokePos+=1
+            Else
+                If Not _comments _tokeType=TOKE_INTLITEX
+            Endif
+     
+        ' Process any square bracketed tokens. This should be OK, as it checks for the newline character.
+        Else If str="["
+            _tokeType=TOKE_SYMBOL
+            Local i
+            While _tokePos+i<_length
+                If TSTR(i)="]"
+                    _tokePos+=i+1
+                    Exit
+                Endif
+                If TSTR(i)="~n" Or Not IsSpace( TCHR(i) ) Exit
+                i+=1
+            Wend
+        Else
+         
+            ' Tokenize anything that not been processed as a symbol token type
+            _tokeType=TOKE_SYMBOL
+            If _symbols.Contains( _source[_tokePos-1.._tokePos+1] ) _tokePos+=1
+        Endif
+     
+        ' If non of the above was processed, then tokenize whatever was left.
+        If Not _toke _toke=_source[start.._tokePos]
 
-		If _tokePos=_length
-			_tokeType=TOKE_EOF
-			Return _toke
-		Endif
-		
-		Local chr:=TCHR()
-		Local str:=TSTR()
-		Local start:=_tokePos
-		_tokePos+=1
-		
-		If str="~n"
-			_tokeType=TOKE_SYMBOL
-			_line+=1
-		Else If IsSpace( chr )
-			_tokeType=TOKE_SPACE
-			While _tokePos<_length And IsSpace( TCHR() ) And TSTR()<>"~n"
-				_tokePos+=1
-			Wend
-		Else If str="_" Or IsAlpha( chr )
-			_tokeType=TOKE_IDENT
-			While _tokePos<_length
-				Local chr=_source[_tokePos]
-				If chr<>95 And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
-'				If chr<>Asc("_") And Not IsAlpha( chr ) And Not IsDigit( chr ) Exit
-				_tokePos+=1
-			Wend
-			_toke=_source[start.._tokePos]
-			If _keywords.Contains( _toke.ToLower() ) _tokeType=TOKE_KEYWORD
-		Else If IsDigit( chr ) Or str="." And IsDigit( TCHR() )
-			_tokeType=TOKE_INTLIT
-			If str="." _tokeType=TOKE_FLOATLIT
-			While IsDigit( TCHR() )
-				_tokePos+=1
-			Wend
-			If _tokeType=TOKE_INTLIT And TSTR()="." And IsDigit( TCHR(1) )
-				_tokeType=TOKE_FLOATLIT
-				_tokePos+=2
-				While IsDigit( TCHR() )
-					_tokePos+=1
-				Wend
-			Endif
-			If TSTR().ToLower()="e"
-				_tokeType=TOKE_FLOATLIT
-				_tokePos+=1
-				If TSTR()="+" Or TSTR()="-" _tokePos+=1
-				While IsDigit( TCHR() )
-					_tokePos+=1
-				Wend
-			Endif
-		Else If str="%" And IsBinDigit( TCHR() )
-			_tokeType=TOKE_INTLIT
-			_tokePos+=1
-			While IsBinDigit( TCHR() )
-				_tokePos+=1
-			Wend
-		Else If str="$" And IsHexDigit( TCHR() )
-			_tokeType=TOKE_INTLIT
-			_tokePos+=1
-			While IsHexDigit( TCHR() )
-				_tokePos+=1
-			Wend
-		Else If str="~q"
-			_tokeType=TOKE_STRINGLIT
-			While _tokePos<_length And TSTR()<>"~q"
-				_tokePos+=1
-			Wend
-			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_STRINGLITEX
-		Else If str="`"
-			_tokeType=TOKE_INTLIT
-			While _tokePos<_length And TSTR()<>"`"
-				_tokePos+=1
-			Wend
-			If _tokePos<_length _tokePos+=1 Else _tokeType=TOKE_INTLITEX
-		Else If str="'"
-			_tokeType=TOKE_LINECOMMENT
-			While _tokePos<_length And TSTR()<>"~n"
-				_tokePos+=1
-			Wend
-			If _tokePos<_length
-				_tokePos+=1
-				_line+=1
-			Endif
-		Else If str="["
-			_tokeType=TOKE_SYMBOL
-			Local i
-			While _tokePos+i<_length
-				If TSTR(i)="]"
-					_tokePos+=i+1
-					Exit
-				Endif
-				If TSTR(i)="~n" Or Not IsSpace( TCHR(i) ) Exit
-				i+=1
-			Wend
-		Else
-			_tokeType=TOKE_SYMBOL
-			If _symbols.Contains( _source[_tokePos-1.._tokePos+1] ) _tokePos+=1
-		Endif
-		
-		If Not _toke _toke=_source[start.._tokePos]
-
-		Return _toke
-	End
-	
-	Method Toke$()
-		Return _toke
-	End
-	
-	Method TokeType()
-		Return _tokeType
-	End
-	
-	Method SkipSpace()
-		While _tokeType=TOKE_SPACE
-			NextToke
-		Wend
-	End
-	
+        Return _toke
+    End
+ 
+    Method Toke$()
+        Return _toke
+    End
+ 
+    Method TokeType()
+        Return _tokeType
+    End
+ 
+    Method SkipSpace()
+        While _tokeType=TOKE_SPACE
+            NextToke
+        Wend
+    End
+ 
 Private
 
-	Method TCHR( i=0 )
-		i+=_tokePos
-		If i<_length Return _source[i]
-	End
-	
-	Method TSTR$( i=0 )
-		i+=_tokePos
-		If i<_length Return _source[i..i+1]
-	End
-	
+    Method TCHR( i=0 )
+        i+=_tokePos
+        If i<_length Return _source[i]
+    End
+ 
+    Method TSTR$( i=0 )
+        i+=_tokePos
+        If i<_length Return _source[i..i+1]
+    End
+ 
 End
