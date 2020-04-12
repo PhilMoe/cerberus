@@ -1,17 +1,33 @@
 ***** v2020-04-10 *****
 
-MOD: [Android/InAppBilling] updated the underlying code to support the newest Google version.    (Author: Rich) 
-NEW: [brl.tween] Added a tweening module.    (Author: Rich) 
-MOD: [cerberus.interpolate] Added some funtionality to the interpolate module.    (Author: Rich) 
-MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
-FIX: [DOCS/databuffer] Fixed some typos.
-FIX: [DOCS/stack] Fixed some typos.
-FIX: [mojo/mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
-MOD: [mojo/mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
-MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files and don't add a .TXT anymore.
+FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.
+FIX: [DOCS/brl.databuffer] Fixed some typos.
+FIX: [DOCS/cerberus] Fixed missing entry for the deque module.
+FIX: [DOCS/cerberus.stack] Fixed some typos.
+FIX: [mojo] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.DefaultFlags)    (Author: Rich) 
+FIX: [mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
-FIX: [TRANS] Fixed reporting the wrong error line number whehn using multiline Strings inside multiline comments.    (Author: dawlane)
+
+MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 
+MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
+MOD: [mojo] Added filter param to Font.Load:Font(url:String, flags:Int=Image.DefaultFlags )    (Author: Rich) 
+MOD: [mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
+MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files and don't add a .TXT anymore.
 MOD: [TRANS] Changed TRANS in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
+MOD: [TRANS] Data file filters are not being case sensitive anymore.
+
+NEW: [cerberus.interpolate] Added InterpolateCustomLine:Float(dataY:Float[], pX:Float ).    (Author: Rich) 
+NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich) 
+NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich) 
+NEW: [cerberus.interpolate] Added InterpolateBackEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBackEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [brl.tween] Added a module to support easy tweening.    (Author: Rich) 
 NEW: [TRANS] Added app icon creation right into TRANS.    (Author: Rich)
 NEW: [IOS] Added #IOS_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [ANDROID] Added #ANDROID_APP_ICON to set icon of the app.    (Author: Rich)
@@ -22,7 +38,6 @@ NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size
 NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.
 NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.
 NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area. 
-MOD: [TRANS] Data file filters are not being case sensitive anymore.
 
 ***** v2019-10-13b *****
 
