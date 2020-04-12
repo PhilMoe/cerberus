@@ -1,6 +1,5 @@
 ## Cerberus X
 
-[![GitHub release](https://img.shields.io/github/releases/MikeHart66]()
 [![Twitter Follow](https://img.shields.io/twitter/follow/cerberus_x17.svg?style=social)]() 
 [![GitHub stars](https://img.shields.io/github/stars/KrautApps/cerberus.svg?style=social&label=Star)]()
 
@@ -27,7 +26,7 @@ Cerberus X is based on Monkey X programming language created by [Mark Sibly](htt
 	* https://www.cerberus-x.com/cxDocs/Home.html
 
 * Download pre-built **Cerberus X** for **Windows/Linux/Mac OS**:
-	* https://krautapps.itch.io/cerberus-x
+	* https://www.cerberus-x.com/community/resources/categories/cerberus-x.6/
 
 
 ### License
