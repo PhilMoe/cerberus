@@ -1,8 +1,8 @@
 ## Cerberus X
 
-[![GitHub release](https://img.shields.io/github/release/KrautApps/cerberus.svg)]() 
-[![Github Releases](https://img.shields.io/github/downloads/KrautApps/cerberus/latest/total.svg)]() 
-[![Github All Releases](https://img.shields.io/github/downloads/KrautApps/cerberus/total.svg)]() 
+[![GitHub release](https://img.shields.io/github/release/MikeHart66/cerberus.svg)]() 
+[![Github Releases](https://img.shields.io/github/downloads//MikeHart66/cerberus/latest/total.svg)]() 
+[![Github All Releases](https://img.shields.io/github/downloads//MikeHart66/cerberus/total.svg)]() 
 [![Twitter Follow](https://img.shields.io/twitter/follow/cerberus_x17.svg?style=social)]() 
 [![GitHub stars](https://img.shields.io/github/stars/KrautApps/cerberus.svg?style=social&label=Star)]()
 
