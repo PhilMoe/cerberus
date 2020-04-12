@@ -6,7 +6,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/cerberus_x17.svg?style=social)]() 
 [![GitHub stars](https://img.shields.io/github/stars/KrautApps/cerberus.svg?style=social&label=Star)]()
 
-![Cerberus X Logo](https://www.cerberus-x.com/community/styles/xenfracture/xenfracture/CBX_Logo_small.png)
+![Cerberus X Logo](https://www.cerberus-x.com/downloads/cx_logo_small.png)
 
 ### Cerberus X is a game development language, made for hobbyists, indies and professionals.
 
