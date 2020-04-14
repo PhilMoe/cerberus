@@ -15933,7 +15933,6 @@ class c_Toker : public Object{
 	c_Toker* m_new3();
 	int p_TCHR(int);
 	String p_TSTR(int);
-	static bool m__comments;
 	String p_NextToke();
 	String p_Toke();
 	int p_TokeType();
@@ -18132,7 +18131,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-04-10",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-04-12",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -22512,7 +22511,6 @@ String c_Toker::p_TSTR(int t_i){
 	}
 	return String();
 }
-bool c_Toker::m__comments;
 String c_Toker::p_NextToke(){
 	m__toke=String();
 	if(m__tokePos==m__length){
@@ -22533,139 +22531,90 @@ String c_Toker::p_NextToke(){
 				m__tokePos+=1;
 			}
 		}else{
-			if(t_str==String(L"'",1) || t_str==String(L"#",1)){
-				if(t_str==String(L"'",1)){
-					m__tokeType=9;
-					while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
-						m__tokePos+=1;
+			if(t_str==String(L"_",1) || ((bb_config_IsAlpha(t_chr))!=0)){
+				m__tokeType=2;
+				while(m__tokePos<m__length){
+					int t_chr2=(int)m__source[m__tokePos];
+					if(t_chr2!=95 && !((bb_config_IsAlpha(t_chr2))!=0) && !((bb_config_IsDigit(t_chr2))!=0)){
+						break;
 					}
-					if(m__tokePos<m__length){
-						m__tokePos+=1;
-						m__line+=1;
-					}
-				}else{
-					String t_t=String();
-					int t_cpos=m__tokePos;
-					int t_chr2=(int)m__source[t_cpos];
-					while(t_cpos<m__length){
-						if(String((Char)(t_chr2),1)==String(L"\n",1) || String((Char)(t_chr2),1)==String(L" ",1)){
-							break;
-						}
-						t_chr2=(int)m__source[t_cpos];
-						t_t=t_t+String((Char)(t_chr2),1);
-						t_cpos+=1;
-					}
-					if(t_t.ToLower().Contains(String(L"rem",3)) && m__comments==false){
-						m__comments=true;
-						m__tokeType=9;
-					}else{
-						if(t_t.ToLower().Contains(String(L"end",3)) && m__comments==true){
-							if(String((Char)(t_chr2),1)==String(L"\n",1)){
-								m__comments=false;
-							}
-						}
-					}
-					m__toke=m__source.Slice(t_start,m__tokePos);
+					m__tokePos+=1;
+				}
+				m__toke=m__source.Slice(t_start,m__tokePos);
+				if(m__keywords->p_Contains(m__toke.ToLower())){
+					m__tokeType=3;
 				}
 			}else{
-				if(t_str==String(L"_",1) || ((bb_config_IsAlpha(t_chr))!=0)){
-					m__tokeType=2;
-					while(m__tokePos<m__length){
-						int t_chr3=(int)m__source[m__tokePos];
-						if(t_chr3!=95 && !((bb_config_IsAlpha(t_chr3))!=0) && !((bb_config_IsDigit(t_chr3))!=0)){
-							break;
-						}
+				if(((bb_config_IsDigit(t_chr))!=0) || t_str==String(L".",1) && ((bb_config_IsDigit(p_TCHR(0)))!=0)){
+					m__tokeType=4;
+					if(t_str==String(L".",1)){
+						m__tokeType=5;
+					}
+					while((bb_config_IsDigit(p_TCHR(0)))!=0){
 						m__tokePos+=1;
 					}
-					m__toke=m__source.Slice(t_start,m__tokePos);
-					if(m__keywords->p_Contains(m__toke.ToLower())){
-						m__tokeType=3;
+					if(m__tokeType==4 && p_TSTR(0)==String(L".",1) && ((bb_config_IsDigit(p_TCHR(1)))!=0)){
+						m__tokeType=5;
+						m__tokePos+=2;
+						while((bb_config_IsDigit(p_TCHR(0)))!=0){
+							m__tokePos+=1;
+						}
 					}
-				}else{
-					if(((bb_config_IsDigit(t_chr))!=0) || t_str==String(L".",1) && ((bb_config_IsDigit(p_TCHR(0)))!=0)){
-						m__tokeType=4;
-						if(t_str==String(L".",1)){
-							m__tokeType=5;
+					if(p_TSTR(0).ToLower()==String(L"e",1)){
+						m__tokeType=5;
+						m__tokePos+=1;
+						if(p_TSTR(0)==String(L"+",1) || p_TSTR(0)==String(L"-",1)){
+							m__tokePos+=1;
 						}
 						while((bb_config_IsDigit(p_TCHR(0)))!=0){
 							m__tokePos+=1;
 						}
-						if(m__tokeType==4 && p_TSTR(0)==String(L".",1) && ((bb_config_IsDigit(p_TCHR(1)))!=0)){
-							m__tokeType=5;
-							m__tokePos+=2;
-							while((bb_config_IsDigit(p_TCHR(0)))!=0){
-								m__tokePos+=1;
-							}
-						}
-						if(p_TSTR(0).ToLower()==String(L"e",1)){
-							m__tokeType=5;
+					}
+				}else{
+					if(t_str==String(L"%",1) && ((bb_config_IsBinDigit(p_TCHR(0)))!=0)){
+						m__tokeType=4;
+						m__tokePos+=1;
+						while((bb_config_IsBinDigit(p_TCHR(0)))!=0){
 							m__tokePos+=1;
-							if(p_TSTR(0)==String(L"+",1) || p_TSTR(0)==String(L"-",1)){
-								m__tokePos+=1;
-							}
-							while((bb_config_IsDigit(p_TCHR(0)))!=0){
-								m__tokePos+=1;
-							}
 						}
 					}else{
-						if(t_str==String(L"%",1) && ((bb_config_IsBinDigit(p_TCHR(0)))!=0)){
+						if(t_str==String(L"$",1) && ((bb_config_IsHexDigit(p_TCHR(0)))!=0)){
 							m__tokeType=4;
 							m__tokePos+=1;
-							while((bb_config_IsBinDigit(p_TCHR(0)))!=0){
+							while((bb_config_IsHexDigit(p_TCHR(0)))!=0){
 								m__tokePos+=1;
 							}
 						}else{
-							if(t_str==String(L"$",1) && ((bb_config_IsHexDigit(p_TCHR(0)))!=0)){
-								m__tokeType=4;
-								m__tokePos+=1;
-								while((bb_config_IsHexDigit(p_TCHR(0)))!=0){
+							if(t_str==String(L"\"",1)){
+								m__tokeType=6;
+								while(m__tokePos<m__length && p_TSTR(0)!=String(L"\"",1)){
 									m__tokePos+=1;
 								}
+								if(m__tokePos<m__length){
+									m__tokePos+=1;
+								}else{
+									m__tokeType=7;
+								}
 							}else{
-								if(t_str==String(L"\"",1)){
-									m__tokeType=6;
-									while(m__tokePos<m__length){
-										if(m__comments){
-											m__tokeType=9;
-											if(p_TSTR(0)==String(L"\n",1)){
-												break;
-											}
-										}else{
-											if(p_TSTR(0)==String(L"\"",1)){
-												break;
-											}
-										}
+								if(t_str==String(L"`",1)){
+									m__tokeType=4;
+									while(m__tokePos<m__length && p_TSTR(0)!=String(L"`",1)){
 										m__tokePos+=1;
 									}
 									if(m__tokePos<m__length){
 										m__tokePos+=1;
 									}else{
-										if(!m__comments){
-											m__tokeType=7;
-										}
+										m__tokeType=10;
 									}
 								}else{
-									if(t_str==String(L"`",1)){
-										m__tokeType=4;
-										while(m__tokePos<m__length){
-											if(m__comments){
-												m__tokeType=9;
-												if(p_TSTR(0)==String(L"\n",1)){
-													break;
-												}
-											}else{
-												if(p_TSTR(0)==String(L"`",1)){
-													break;
-												}
-											}
+									if(t_str==String(L"'",1)){
+										m__tokeType=9;
+										while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
 											m__tokePos+=1;
 										}
 										if(m__tokePos<m__length){
 											m__tokePos+=1;
-										}else{
-											if(!m__comments){
-												m__tokeType=10;
-											}
+											m__line+=1;
 										}
 									}else{
 										if(t_str==String(L"[",1)){
@@ -35723,7 +35672,6 @@ int bbInit(){
 	bb_decl__envStack=(new c_List2)->m_new();
 	c_Toker::m__keywords=0;
 	c_Toker::m__symbols=0;
-	c_Toker::m__comments=false;
 	bb_config_ENV_MODPATH=String();
 	bb_parser_FILE_EXT=String(L".cxs",4);
 	bb_parser_FILE_EXT_OLD=String(L".monkey",7);

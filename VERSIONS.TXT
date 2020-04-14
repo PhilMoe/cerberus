@@ -1,4 +1,4 @@
-***** v2020-04-10 *****
+***** v2020-04-14 *****
 
 FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.
 FIX: [DOCS/brl.databuffer] Fixed some typos.
