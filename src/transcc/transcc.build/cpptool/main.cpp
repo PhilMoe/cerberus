@@ -14624,10 +14624,13 @@ void _ConvertToIco(String srcFilename,String destFilename) {
 
 		// delete temp file
 		// this bit of code from stb_image as i struggled to convert string to *wchar
+#if _WIN32
 		wchar_t wFilename[1024];
 		if (0 != MultiByteToWideChar(65001 /* UTF8 */, 0, C_STR(tmpname), -1, wFilename, sizeof(wFilename)))
 			remove(wFilename);
-
+#else
+		remove(OS_STR(tmpname));
+#endif
 		data_pointer = data_pointer + size_of_files[i];
 		i++;
 	}
@@ -18131,7 +18134,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-04-12",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-04-10",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);

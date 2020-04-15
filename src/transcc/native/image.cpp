@@ -136,10 +136,13 @@ void _ConvertToIco(String srcFilename,String destFilename) {
 
 		// delete temp file
 		// this bit of code from stb_image as i struggled to convert string to *wchar
+#if _WIN32
 		wchar_t wFilename[1024];
 		if (0 != MultiByteToWideChar(65001 /* UTF8 */, 0, C_STR(tmpname), -1, wFilename, sizeof(wFilename)))
 			remove(wFilename);
-
+#else
+		remove(OS_STR(tmpname));
+#endif
 		data_pointer = data_pointer + size_of_files[i];
 		i++;
 	}
