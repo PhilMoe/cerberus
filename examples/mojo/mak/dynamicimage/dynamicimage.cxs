@@ -1,4 +1,3 @@
-
 'Ok, looks a bit crap and doesn't make much sense, but it's just a test of offset, pitch, byte order etc...
 '
 Import mojo
@@ -21,9 +20,9 @@ Class MyApp Extends App
 		If KeyHit( KEY_SPACE )
 			fullscreen=Not fullscreen
 			If fullscreen
-				GlfwGame.GetGlfwGame().SetGlfwWindow( 1024,768,8,8,8,0,0,0,True )
+				SetDeviceWindow( 1024, 768, 1 )
 			Else
-				GlfwGame.GetGlfwGame().SetGlfwWindow( 640,480,8,8,8,0,0,0,False )
+				SetDeviceWindow( 640, 480, 4 )
 			Endif
 		End
 #Endif
