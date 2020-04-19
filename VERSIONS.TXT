@@ -1,104 +1,110 @@
-***** v2020-04-14 *****
+***** v2020-04-19 *****
 
-FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.
-FIX: [DOCS/brl.databuffer] Fixed some typos.
-FIX: [DOCS/cerberus] Fixed missing entry for the deque module.
-FIX: [DOCS/cerberus.stack] Fixed some typos.
+FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
+FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
+FIX: [DOCS/cerberus] Fixed missing entry for the deque module.    (Author: MikeHart)
+FIX: [DOCS/cerberus.stack] Fixed some typos.    (Author: MikeHart)
 FIX: [mojo] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.DefaultFlags)    (Author: Rich) 
 FIX: [mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
+FIX: [examples] Fixed mak/bbgametest -> missing z parameter in MouseEvent call.    (Author: MikeHart)
+FIX: [examples] Fixed mak/dynamicimage -> faulty fullscreen switch.    (Author: MikeHart)
+Fix: [TRANSCC/trans.toker + trans.preprocessor] Fixed TRANSCC reporting a wrong line number when preprocessor statements where used in some way.    (Author: dawlane) 
+Fix: [TRANSCC] Fixed TRANSCC not being able to install on an Android device when creating a release build on Linux and OSX.    (Author: Phil7) 
 
 MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 
+MOD: [DOCS/os] Removed double entries for LoadDir and DeleteDir.    (Author: MikeHart)
 MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
 MOD: [mojo] Added filter param to Font.Load:Font(url:String, flags:Int=Image.DefaultFlags )    (Author: Rich) 
 MOD: [mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
-MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files and don't add a .TXT anymore.
-MOD: [TRANS] Changed TRANS in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
-MOD: [TRANS] Data file filters are not being case sensitive anymore.
+MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files and don't add a .TXT anymore.    (Author: MikeHart)
+MOD: [TRANSCC] Changed TRANSCC in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
+MOD: [TRANSCC] Data file filters are not being case sensitive anymore.    (Author: MikeHart)
+MOD: [rebuildall.ps1] Reworked the build script for using MS Visual C++ 2017 Community edition.    (Author: dawlane)
 
 NEW: [cerberus.interpolate] Added InterpolateCustomLine:Float(dataY:Float[], pX:Float ).    (Author: Rich) 
-NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich) 
-NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich) 
-NEW: [cerberus.interpolate] Added InterpolateBackEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateBackEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateElasticEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateElasticEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateElasticEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateBounceEaseIn:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateBounceEaseOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
-NEW: [cerberus.interpolate] Added InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float). (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich) 
+NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich) 
+NEW: [cerberus.interpolate] Added InterpolateBackEaseOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBackEaseInOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseIn:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateElasticEaseInOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseIn:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
+NEW: [cerberus.interpolate] Added InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
 NEW: [brl.tween] Added a module to support easy tweening.    (Author: Rich) 
-NEW: [TRANS] Added app icon creation right into TRANS.    (Author: Rich)
+NEW: [TRANSCC] Added app icon creation right into TRANSCC.    (Author: Rich)
 NEW: [IOS] Added #IOS_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [ANDROID] Added #ANDROID_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [FLASH] Added #FLASH_APP_ICON to set the favicon of the browser tab.    (Author: Rich)
 NEW: [HTML5] Added #HTML5_APP_ICON to set the favicon of the browser tab.    (Author: Rich)
-NEW: [HTML5] Added #HTML5_APP_TITLE to be able to set the title of the browser tab.
-NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size of the html5 canvas.
-NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.
-NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.
-NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area. 
+NEW: [HTML5] Added #HTML5_APP_TITLE to be able to set the title of the browser tab.    (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size of the html5 canvas.    (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.    (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.    (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area.    (Author: MikeHart) 
 
 ***** v2019-10-13b *****
 
-MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs
-FIX: [GLFW] Added missing stb_write_image.h file on Linux
-FIX: [TED] Was still using the old PrefsDialog on Linux
+MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs    (Author: MikeHart) 
+FIX: [GLFW] Added missing stb_write_image.h file on Linux    (Author: MikeHart) 
+FIX: [TED] Was still using the old PrefsDialog on Linux    (Author: MikeHart) 
 
 ***** v2019-10-13 *****
 
-FIX: [ANDROID] change file permission of gradlew in template.    (Author: Dawlane)
-MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.
-FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: Dawlane)
-FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: Dawlane)
-MOD: [TED] Another attempt at fixing the capitalization of the API. 
-MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu. 
-MOD: [TED] Replaced Options dialog with a similar one like from Dawlane's version of TED. 
+FIX: [ANDROID] change file permission of gradlew in template.    (Author: dawlane)
+MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.    (Author: MikeHart) 
+FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: dawlane)
+FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: dawlane)
+MOD: [TED] Another attempt at fixing the capitalization of the API.     (Author: MikeHart) 
+MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu.     (Author: MikeHart) 
+MOD: [TED] Replaced Options dialog with a similar one like from dawlane's version of TED.     (Author: dawlane) 
            This dialog is much smaller and so can be displayed on small screens two.
-FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.
-MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.
-FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).
+FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.    (Author: MikeHart) 
+MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.    (Author: MikeHart) 
+FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).    (Author: MikeHart) 
 FIX: [MOJO1] Fixed missing usage of frame parameter in DrawImage9P.    (Author: Rich)
 MOD: [WIN8/WINPHONE8] Depreciated these targets. 
                       If you need them, move them out of the targets/depreciated folder.
-MOD: [TRANS/ANDROID] Reactivated logcat filtering.
+MOD: [TRANS/ANDROID] Reactivated logcat filtering.    (Author: MikeHart) 
 NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once. 
 
 
 ***** v2019-05-05 *****
 
-MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.
-MOD: [DOCS] Added A-Z shortcuts on top of indexes.
-MOD: [Trans/ANDROID] Release builds are installed automatically now.
-FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.
-FIX: [MAKEDOCS] Fixed brl.markdown bug.
-FIX: [TED] Fixed fixed displaying an iframe element in the docs.    (Author: Dawlane)
-FIX: [TED] Fixed scaling issues when displaying images.
-NEW: [TED] Added overwrite mode. Just press the insert key to toggle it.
-NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).
-NEW: [MOJO.APP] Added SetDeviceWindowIcon( _path:String ).
-NEW: [MOJO.APP] Added SetDeviceWindowTitle( _title:String ).
-NEW: [MOJO.APP] Added SetDeviceWindowSize( _width:Int, _height:Int ).
-NEW: [MOJO.APP] Added SetDeviceWindowPosition( _x:Int, _y:Int ).
-NEW: [MOJO.APP] Added SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )
-NEW: [MOJO.INPUT] Added SetMousePos:Void( _x:Int, _y:Int ).
-NEW: [MOJO.INPUT] Added SetClipboard:Void( _text:String ).
-NEW: [MOJO.INPUT] Added GetClipboard:String().
-NEW: [CERBERUS.INTERPOLATE] New module.
-NEW: [MOJO.COLOR] New module.
+MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.    (Author: MikeHart) 
+MOD: [DOCS] Added A-Z shortcuts on top of indexes.    (Author: Holzchopf)
+MOD: [Trans/ANDROID] Release builds are installed automatically now.    (Author: MikeHart) 
+FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.    (Author: MikeHart) 
+FIX: [MAKEDOCS] Fixed brl.markdown bug.    (Author: Holzchopf)
+FIX: [TED] Fixed fixed displaying an iframe element in the docs.    (Author: dawlane)
+FIX: [TED] Fixed scaling issues when displaying images.    (Author: MikeHart) 
+NEW: [TED] Added overwrite mode. Just press the insert key to toggle it.    (Author: MikeHart) 
+NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: MikeHart) 
+NEW: [MOJO.APP] Added SetDeviceWindowIcon( _path:String ).    (Author: MikeHart) 
+NEW: [MOJO.APP] Added SetDeviceWindowTitle( _title:String ).    (Author: MikeHart) 
+NEW: [MOJO.APP] Added SetDeviceWindowSize( _width:Int, _height:Int ).    (Author: MikeHart) 
+NEW: [MOJO.APP] Added SetDeviceWindowPosition( _x:Int, _y:Int ).    (Author: MikeHart) 
+NEW: [MOJO.APP] Added SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )    (Author: MikeHart) 
+NEW: [MOJO.INPUT] Added SetMousePos:Void( _x:Int, _y:Int ).    (Author: MikeHart) 
+NEW: [MOJO.INPUT] Added SetClipboard:Void( _text:String ).    (Author: MikeHart) 
+NEW: [MOJO.INPUT] Added GetClipboard:String().    (Author: MikeHart) 
+NEW: [CERBERUS.INTERPOLATE] New module.    (Author: Holzchopf) 
+NEW: [MOJO.COLOR] New module.    (Author: Holzchopf)
 
 ***** v2018-12-30 *****
 
-FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.
-FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.
-FIX: [brl.requesters] Fixed RequestFile not working with a set path.
-FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.
+FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.    (Author: MikeHart) 
+FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.    (Author: MikeHart) 
+FIX: [brl.requesters] Fixed RequestFile not working with a set path.    (Author: MikeHart) 
+FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.    (Author: MikeHart) 
 MOD: [example] Various changes to sample scripts     (Author: Paul59)
-FIX: [TED] Fixed "Open on Desktop" on Linux.    (Author: Dawlane)
-MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.
-MOD: [DOCS/MAKEDOCS] Numerous changes to the docs and MakeDocs itself.
-FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.
-MOD: [TED] Bigger changes so TED uses the QT5 webengine now and needs QT5.9.2 to compile.    (Author: Dawlane)
+FIX: [TED] Fixed "Open on Desktop" on Linux.    (Author: dawlane)
+MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.    (Author: MikeHart) 
+MOD: [DOCS/MAKEDOCS] Numerous changes to the docs and MakeDocs itself.    (Author: Holzchopf) 
+FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.    (Author: MikeHart) 
+MOD: [TED] Bigger changes so TED uses the QT5 webengine now and needs QT5.9.2 to compile.    (Author: dawlane)
 
 ***** v2018-08-10 *****
 
