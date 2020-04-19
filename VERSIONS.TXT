@@ -13,7 +13,6 @@ Fix: [TRANSCC/trans.toker + trans.preprocessor] Fixed TRANSCC reporting a wrong 
 Fix: [TRANSCC] Fixed TRANSCC not being able to install on an Android device when creating a release build on Linux and OSX.    (Author: Phil7) 
 
 MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 
-MOD: [DOCS/os] Removed double entries for LoadDir and DeleteDir.    (Author: MikeHart)
 MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
 MOD: [mojo] Added filter param to Font.Load:Font(url:String, flags:Int=Image.DefaultFlags )    (Author: Rich) 
 MOD: [mojo2] Added filter param to Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
