@@ -15104,6 +15104,8 @@ class c_HeadNode;
 class c_Enumerator;
 class c_Stack2;
 class c_ModuleDecl;
+class c_Stack3;
+class c_IntStack;
 class c_List2;
 class c_Node5;
 class c_HeadNode2;
@@ -15134,11 +15136,11 @@ class c_HeadNode4;
 class c_ClassDecl;
 class c_VoidType;
 class c_IdentType;
-class c_Stack3;
+class c_Stack4;
 class c_ArrayType;
 class c_UnaryExpr;
 class c_ArrayExpr;
-class c_Stack4;
+class c_Stack5;
 class c_ConstExpr;
 class c_ScopeExpr;
 class c_NewArrayExpr;
@@ -15165,13 +15167,13 @@ class c_FieldDecl;
 class c_LocalDecl;
 class c_Enumerator2;
 class c_DeclStmt;
-class c_Stack5;
+class c_Stack6;
 class c_ObjectType;
 class c_List6;
 class c_Node11;
 class c_HeadNode6;
 class c_ArgDecl;
-class c_Stack6;
+class c_Stack7;
 class c_List7;
 class c_Node12;
 class c_HeadNode7;
@@ -15185,7 +15187,7 @@ class c_ForEachinStmt;
 class c_AssignStmt;
 class c_ForStmt;
 class c_CatchStmt;
-class c_Stack7;
+class c_Stack8;
 class c_TryStmt;
 class c_ThrowStmt;
 class c_ExprStmt;
@@ -15206,7 +15208,7 @@ class c_Map7;
 class c_StringMap7;
 class c_Node15;
 class c_Enumerator4;
-class c_Stack8;
+class c_Stack9;
 class c_Translator;
 class c_CTranslator;
 class c_JavaTranslator;
@@ -15236,7 +15238,7 @@ class c_Map10;
 class c_StringMap10;
 class c_Node19;
 class c_Enumerator6;
-class c_Stack9;
+class c_Stack10;
 class c_Enumerator7;
 class c_TransCC : public Object{
 	public:
@@ -15530,11 +15532,11 @@ class c_Stack : public Object{
 	bool p_IsEmpty();
 	Array<String > p_ToArray();
 	static String m_NIL;
+	String p_Pop();
+	void p_Clear();
 	void p_Length(int);
 	int p_Length2();
 	String p_Get2(int);
-	String p_Pop();
-	void p_Clear();
 	void mark();
 };
 class c_StringStack : public c_Stack{
@@ -15882,6 +15884,32 @@ class c_ModuleDecl : public c_ScopeDecl{
 	int p_OnSemant();
 	void mark();
 };
+class c_Stack3 : public Object{
+	public:
+	Array<int > m_data;
+	int m_length;
+	c_Stack3();
+	c_Stack3* m_new();
+	c_Stack3* m_new2(Array<int >);
+	void p_Push7(int);
+	void p_Push8(Array<int >,int,int);
+	void p_Push9(Array<int >,int);
+	bool p_IsEmpty();
+	static int m_NIL;
+	void p_Length(int);
+	int p_Length2();
+	int p_Get2(int);
+	int p_Pop();
+	void p_Clear();
+	void mark();
+};
+class c_IntStack : public c_Stack3{
+	public:
+	c_IntStack();
+	c_IntStack* m_new(Array<int >);
+	c_IntStack* m_new2();
+	void mark();
+};
 c_ScopeDecl* bb_config_GetConfigScope();
 extern c_ScopeDecl* bb_decl__env;
 class c_List2 : public Object{
@@ -15936,12 +15964,16 @@ class c_Toker : public Object{
 	c_Toker* m_new3();
 	int p_TCHR(int);
 	String p_TSTR(int);
+	static int m__tokenFlags;
+	static bool m_Remarks();
 	String p_NextToke();
 	String p_Toke();
 	int p_TokeType();
 	String p_Path();
 	int p_Line();
 	int p_SkipSpace();
+	static int m_RemarksOn();
+	static int m_RemarksOff();
 	void mark();
 };
 class c_Set : public Object{
@@ -16321,16 +16353,16 @@ class c_IdentType : public c_Type{
 	String p_ToString();
 	void mark();
 };
-class c_Stack3 : public Object{
+class c_Stack4 : public Object{
 	public:
 	Array<c_Type* > m_data;
 	int m_length;
-	c_Stack3();
-	c_Stack3* m_new();
-	c_Stack3* m_new2(Array<c_Type* >);
-	void p_Push7(c_Type*);
-	void p_Push8(Array<c_Type* >,int,int);
-	void p_Push9(Array<c_Type* >,int);
+	c_Stack4();
+	c_Stack4* m_new();
+	c_Stack4* m_new2(Array<c_Type* >);
+	void p_Push10(c_Type*);
+	void p_Push11(Array<c_Type* >,int,int);
+	void p_Push12(Array<c_Type* >,int);
 	Array<c_Type* > p_ToArray();
 	void mark();
 };
@@ -16371,16 +16403,16 @@ class c_ArrayExpr : public c_Expr{
 	String p_Trans();
 	void mark();
 };
-class c_Stack4 : public Object{
+class c_Stack5 : public Object{
 	public:
 	Array<c_Expr* > m_data;
 	int m_length;
-	c_Stack4();
-	c_Stack4* m_new();
-	c_Stack4* m_new2(Array<c_Expr* >);
-	void p_Push10(c_Expr*);
-	void p_Push11(Array<c_Expr* >,int,int);
-	void p_Push12(Array<c_Expr* >,int);
+	c_Stack5();
+	c_Stack5* m_new();
+	c_Stack5* m_new2(Array<c_Expr* >);
+	void p_Push13(c_Expr*);
+	void p_Push14(Array<c_Expr* >,int,int);
+	void p_Push15(Array<c_Expr* >,int);
 	Array<c_Expr* > p_ToArray();
 	void mark();
 };
@@ -16687,16 +16719,16 @@ class c_DeclStmt : public c_Stmt{
 	String p_Trans();
 	void mark();
 };
-class c_Stack5 : public Object{
+class c_Stack6 : public Object{
 	public:
 	Array<c_IdentType* > m_data;
 	int m_length;
-	c_Stack5();
-	c_Stack5* m_new();
-	c_Stack5* m_new2(Array<c_IdentType* >);
-	void p_Push13(c_IdentType*);
-	void p_Push14(Array<c_IdentType* >,int,int);
-	void p_Push15(Array<c_IdentType* >,int);
+	c_Stack6();
+	c_Stack6* m_new();
+	c_Stack6* m_new2(Array<c_IdentType* >);
+	void p_Push16(c_IdentType*);
+	void p_Push17(Array<c_IdentType* >,int,int);
+	void p_Push18(Array<c_IdentType* >,int);
 	Array<c_IdentType* > p_ToArray();
 	void mark();
 };
@@ -16747,16 +16779,16 @@ class c_ArgDecl : public c_LocalDecl{
 	c_Decl* p_OnCopy();
 	void mark();
 };
-class c_Stack6 : public Object{
+class c_Stack7 : public Object{
 	public:
 	Array<c_ArgDecl* > m_data;
 	int m_length;
-	c_Stack6();
-	c_Stack6* m_new();
-	c_Stack6* m_new2(Array<c_ArgDecl* >);
-	void p_Push16(c_ArgDecl*);
-	void p_Push17(Array<c_ArgDecl* >,int,int);
-	void p_Push18(Array<c_ArgDecl* >,int);
+	c_Stack7();
+	c_Stack7* m_new();
+	c_Stack7* m_new2(Array<c_ArgDecl* >);
+	void p_Push19(c_ArgDecl*);
+	void p_Push20(Array<c_ArgDecl* >,int,int);
+	void p_Push21(Array<c_ArgDecl* >,int);
 	Array<c_ArgDecl* > p_ToArray();
 	void mark();
 };
@@ -16914,16 +16946,16 @@ class c_CatchStmt : public c_Stmt{
 	String p_Trans();
 	void mark();
 };
-class c_Stack7 : public Object{
+class c_Stack8 : public Object{
 	public:
 	Array<c_CatchStmt* > m_data;
 	int m_length;
-	c_Stack7();
-	c_Stack7* m_new();
-	c_Stack7* m_new2(Array<c_CatchStmt* >);
-	void p_Push19(c_CatchStmt*);
-	void p_Push20(Array<c_CatchStmt* >,int,int);
-	void p_Push21(Array<c_CatchStmt* >,int);
+	c_Stack8();
+	c_Stack8* m_new();
+	c_Stack8* m_new2(Array<c_CatchStmt* >);
+	void p_Push22(c_CatchStmt*);
+	void p_Push23(Array<c_CatchStmt* >,int,int);
+	void p_Push24(Array<c_CatchStmt* >,int);
 	static c_CatchStmt* m_NIL;
 	void p_Length(int);
 	int p_Length2();
@@ -17103,7 +17135,7 @@ class c_Reflector : public Object{
 	c_StringMap7* m_munged;
 	c_StringMap2* m_modexprs;
 	c_StringSet* m_refmods;
-	c_Stack8* m_classdecls;
+	c_Stack9* m_classdecls;
 	c_StringMap7* m_classids;
 	c_StringStack* m_output;
 	c_Reflector();
@@ -17192,19 +17224,19 @@ class c_Enumerator4 : public Object{
 	c_ClassDecl* p_NextObject();
 	void mark();
 };
-class c_Stack8 : public Object{
+class c_Stack9 : public Object{
 	public:
 	Array<c_ClassDecl* > m_data;
 	int m_length;
-	c_Stack8();
-	c_Stack8* m_new();
-	c_Stack8* m_new2(Array<c_ClassDecl* >);
+	c_Stack9();
+	c_Stack9* m_new();
+	c_Stack9* m_new2(Array<c_ClassDecl* >);
 	static c_ClassDecl* m_NIL;
 	void p_Length(int);
 	int p_Length2();
-	void p_Push22(c_ClassDecl*);
-	void p_Push23(Array<c_ClassDecl* >,int,int);
-	void p_Push24(Array<c_ClassDecl* >,int);
+	void p_Push25(c_ClassDecl*);
+	void p_Push26(Array<c_ClassDecl* >,int,int);
+	void p_Push27(Array<c_ClassDecl* >,int);
 	c_ClassDecl* p_Get2(int);
 	void mark();
 };
@@ -17367,7 +17399,7 @@ class c_CppTranslator : public c_CTranslator{
 	public:
 	bool m_unsafe;
 	int m_gc_mode;
-	c_Stack9* m_dbgLocals;
+	c_Stack10* m_dbgLocals;
 	String m_lastDbgInfo;
 	int m_pure;
 	c_CppTranslator();
@@ -17769,29 +17801,29 @@ class c_Enumerator6 : public Object{
 	c_GlobalDecl* p_NextObject();
 	void mark();
 };
-class c_Stack9 : public Object{
+class c_Stack10 : public Object{
 	public:
 	Array<c_LocalDecl* > m_data;
 	int m_length;
-	c_Stack9();
-	c_Stack9* m_new();
-	c_Stack9* m_new2(Array<c_LocalDecl* >);
+	c_Stack10();
+	c_Stack10* m_new();
+	c_Stack10* m_new2(Array<c_LocalDecl* >);
 	static c_LocalDecl* m_NIL;
 	void p_Clear();
 	c_Enumerator7* p_ObjectEnumerator();
 	void p_Length(int);
 	int p_Length2();
-	void p_Push25(c_LocalDecl*);
-	void p_Push26(Array<c_LocalDecl* >,int,int);
-	void p_Push27(Array<c_LocalDecl* >,int);
+	void p_Push28(c_LocalDecl*);
+	void p_Push29(Array<c_LocalDecl* >,int,int);
+	void p_Push30(Array<c_LocalDecl* >,int);
 	void mark();
 };
 class c_Enumerator7 : public Object{
 	public:
-	c_Stack9* m_stack;
+	c_Stack10* m_stack;
 	int m_index;
 	c_Enumerator7();
-	c_Enumerator7* m_new(c_Stack9*);
+	c_Enumerator7* m_new(c_Stack10*);
 	c_Enumerator7* m_new2();
 	bool p_HasNext();
 	c_LocalDecl* p_NextObject();
@@ -18134,7 +18166,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-04-10",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-04-19",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -19435,6 +19467,18 @@ Array<String > c_Stack::p_ToArray(){
 	return t_t;
 }
 String c_Stack::m_NIL;
+String c_Stack::p_Pop(){
+	m_length-=1;
+	String t_v=m_data[m_length];
+	m_data[m_length]=m_NIL;
+	return t_v;
+}
+void c_Stack::p_Clear(){
+	for(int t_i=0;t_i<m_length;t_i=t_i+1){
+		m_data[t_i]=m_NIL;
+	}
+	m_length=0;
+}
 void c_Stack::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
@@ -19452,18 +19496,6 @@ int c_Stack::p_Length2(){
 }
 String c_Stack::p_Get2(int t_index){
 	return m_data[t_index];
-}
-String c_Stack::p_Pop(){
-	m_length-=1;
-	String t_v=m_data[m_length];
-	m_data[m_length]=m_NIL;
-	return t_v;
-}
-void c_Stack::p_Clear(){
-	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		m_data[t_i]=m_NIL;
-	}
-	m_length=0;
 }
 void c_Stack::mark(){
 	Object::mark();
@@ -20180,7 +20212,7 @@ void c_AndroidBuilder::p_MakeTarget(){
 					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
 				}
 				String t__file=CurrentDir();
-				t__file=t__file+String(L"\\app\\build\\outputs\\apk\\release\\app-release.apk",46);
+				t__file=t__file+String(L"/app/build/outputs/apk/release/app-release.apk",46);
 				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
 				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
 			}
@@ -22344,6 +22376,83 @@ int c_ModuleDecl::p_OnSemant(){
 void c_ModuleDecl::mark(){
 	c_ScopeDecl::mark();
 }
+c_Stack3::c_Stack3(){
+	m_data=Array<int >();
+	m_length=0;
+}
+c_Stack3* c_Stack3::m_new(){
+	return this;
+}
+c_Stack3* c_Stack3::m_new2(Array<int > t_data){
+	this->m_data=t_data.Slice(0);
+	this->m_length=t_data.Length();
+	return this;
+}
+void c_Stack3::p_Push7(int t_value){
+	if(m_length==m_data.Length()){
+		m_data=m_data.Resize(m_length*2+10);
+	}
+	m_data[m_length]=t_value;
+	m_length+=1;
+}
+void c_Stack3::p_Push8(Array<int > t_values,int t_offset,int t_count){
+	for(int t_i=0;t_i<t_count;t_i=t_i+1){
+		p_Push7(t_values[t_offset+t_i]);
+	}
+}
+void c_Stack3::p_Push9(Array<int > t_values,int t_offset){
+	p_Push8(t_values,t_offset,t_values.Length()-t_offset);
+}
+bool c_Stack3::p_IsEmpty(){
+	return m_length==0;
+}
+int c_Stack3::m_NIL;
+void c_Stack3::p_Length(int t_newlength){
+	if(t_newlength<m_length){
+		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
+			m_data[t_i]=m_NIL;
+		}
+	}else{
+		if(t_newlength>m_data.Length()){
+			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+		}
+	}
+	m_length=t_newlength;
+}
+int c_Stack3::p_Length2(){
+	return m_length;
+}
+int c_Stack3::p_Get2(int t_index){
+	return m_data[t_index];
+}
+int c_Stack3::p_Pop(){
+	m_length-=1;
+	int t_v=m_data[m_length];
+	m_data[m_length]=m_NIL;
+	return t_v;
+}
+void c_Stack3::p_Clear(){
+	for(int t_i=0;t_i<m_length;t_i=t_i+1){
+		m_data[t_i]=m_NIL;
+	}
+	m_length=0;
+}
+void c_Stack3::mark(){
+	Object::mark();
+}
+c_IntStack::c_IntStack(){
+}
+c_IntStack* c_IntStack::m_new(Array<int > t_data){
+	c_Stack3::m_new2(t_data);
+	return this;
+}
+c_IntStack* c_IntStack::m_new2(){
+	c_Stack3::m_new();
+	return this;
+}
+void c_IntStack::mark(){
+	c_Stack3::mark();
+}
 c_ScopeDecl* bb_config_GetConfigScope(){
 	return (bb_config__cfgScope);
 }
@@ -22514,6 +22623,10 @@ String c_Toker::p_TSTR(int t_i){
 	}
 	return String();
 }
+int c_Toker::m__tokenFlags;
+bool c_Toker::m_Remarks(){
+	return ((m__tokenFlags&1)!=0);
+}
 String c_Toker::p_NextToke(){
 	m__toke=String();
 	if(m__tokePos==m__length){
@@ -22534,90 +22647,116 @@ String c_Toker::p_NextToke(){
 				m__tokePos+=1;
 			}
 		}else{
-			if(t_str==String(L"_",1) || ((bb_config_IsAlpha(t_chr))!=0)){
-				m__tokeType=2;
-				while(m__tokePos<m__length){
-					int t_chr2=(int)m__source[m__tokePos];
-					if(t_chr2!=95 && !((bb_config_IsAlpha(t_chr2))!=0) && !((bb_config_IsDigit(t_chr2))!=0)){
-						break;
-					}
+			if(t_str==String(L"'",1)){
+				m__tokeType=9;
+				while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
 					m__tokePos+=1;
 				}
-				m__toke=m__source.Slice(t_start,m__tokePos);
-				if(m__keywords->p_Contains(m__toke.ToLower())){
-					m__tokeType=3;
+				if(m__tokePos<m__length){
+					m__tokePos+=1;
+					m__line+=1;
 				}
 			}else{
-				if(((bb_config_IsDigit(t_chr))!=0) || t_str==String(L".",1) && ((bb_config_IsDigit(p_TCHR(0)))!=0)){
-					m__tokeType=4;
-					if(t_str==String(L".",1)){
-						m__tokeType=5;
-					}
-					while((bb_config_IsDigit(p_TCHR(0)))!=0){
+				if(t_str==String(L"_",1) || ((bb_config_IsAlpha(t_chr))!=0)){
+					m__tokeType=2;
+					while(m__tokePos<m__length){
+						int t_chr2=(int)m__source[m__tokePos];
+						if(t_chr2!=95 && !((bb_config_IsAlpha(t_chr2))!=0) && !((bb_config_IsDigit(t_chr2))!=0)){
+							break;
+						}
 						m__tokePos+=1;
 					}
-					if(m__tokeType==4 && p_TSTR(0)==String(L".",1) && ((bb_config_IsDigit(p_TCHR(1)))!=0)){
-						m__tokeType=5;
-						m__tokePos+=2;
-						while((bb_config_IsDigit(p_TCHR(0)))!=0){
-							m__tokePos+=1;
-						}
-					}
-					if(p_TSTR(0).ToLower()==String(L"e",1)){
-						m__tokeType=5;
-						m__tokePos+=1;
-						if(p_TSTR(0)==String(L"+",1) || p_TSTR(0)==String(L"-",1)){
-							m__tokePos+=1;
-						}
-						while((bb_config_IsDigit(p_TCHR(0)))!=0){
-							m__tokePos+=1;
-						}
+					m__toke=m__source.Slice(t_start,m__tokePos);
+					if(m__keywords->p_Contains(m__toke.ToLower())){
+						m__tokeType=3;
 					}
 				}else{
-					if(t_str==String(L"%",1) && ((bb_config_IsBinDigit(p_TCHR(0)))!=0)){
+					if(((bb_config_IsDigit(t_chr))!=0) || t_str==String(L".",1) && ((bb_config_IsDigit(p_TCHR(0)))!=0)){
 						m__tokeType=4;
-						m__tokePos+=1;
-						while((bb_config_IsBinDigit(p_TCHR(0)))!=0){
+						if(t_str==String(L".",1)){
+							m__tokeType=5;
+						}
+						while((bb_config_IsDigit(p_TCHR(0)))!=0){
 							m__tokePos+=1;
 						}
+						if(m__tokeType==4 && p_TSTR(0)==String(L".",1) && ((bb_config_IsDigit(p_TCHR(1)))!=0)){
+							m__tokeType=5;
+							m__tokePos+=2;
+							while((bb_config_IsDigit(p_TCHR(0)))!=0){
+								m__tokePos+=1;
+							}
+						}
+						if(p_TSTR(0).ToLower()==String(L"e",1)){
+							m__tokeType=5;
+							m__tokePos+=1;
+							if(p_TSTR(0)==String(L"+",1) || p_TSTR(0)==String(L"-",1)){
+								m__tokePos+=1;
+							}
+							while((bb_config_IsDigit(p_TCHR(0)))!=0){
+								m__tokePos+=1;
+							}
+						}
 					}else{
-						if(t_str==String(L"$",1) && ((bb_config_IsHexDigit(p_TCHR(0)))!=0)){
+						if(t_str==String(L"%",1) && ((bb_config_IsBinDigit(p_TCHR(0)))!=0)){
 							m__tokeType=4;
 							m__tokePos+=1;
-							while((bb_config_IsHexDigit(p_TCHR(0)))!=0){
+							while((bb_config_IsBinDigit(p_TCHR(0)))!=0){
 								m__tokePos+=1;
 							}
 						}else{
-							if(t_str==String(L"\"",1)){
-								m__tokeType=6;
-								while(m__tokePos<m__length && p_TSTR(0)!=String(L"\"",1)){
+							if(t_str==String(L"$",1) && ((bb_config_IsHexDigit(p_TCHR(0)))!=0)){
+								m__tokeType=4;
+								m__tokePos+=1;
+								while((bb_config_IsHexDigit(p_TCHR(0)))!=0){
 									m__tokePos+=1;
-								}
-								if(m__tokePos<m__length){
-									m__tokePos+=1;
-								}else{
-									m__tokeType=7;
 								}
 							}else{
-								if(t_str==String(L"`",1)){
-									m__tokeType=4;
-									while(m__tokePos<m__length && p_TSTR(0)!=String(L"`",1)){
+								if(t_str==String(L"\"",1)){
+									m__tokeType=6;
+									while(m__tokePos<m__length){
+										if(m_Remarks()){
+											m__tokeType=9;
+											if(p_TSTR(0)==String(L"\n",1)){
+												m__line+=1;
+												break;
+											}
+										}else{
+											if(p_TSTR(0)==String(L"\"",1)){
+												break;
+											}
+										}
 										m__tokePos+=1;
 									}
 									if(m__tokePos<m__length){
 										m__tokePos+=1;
 									}else{
-										m__tokeType=10;
+										if(!m_Remarks()){
+											m__tokeType=7;
+										}
 									}
 								}else{
-									if(t_str==String(L"'",1)){
-										m__tokeType=9;
-										while(m__tokePos<m__length && p_TSTR(0)!=String(L"\n",1)){
+									if(t_str==String(L"`",1)){
+										m__tokeType=6;
+										while(m__tokePos<m__length){
+											if(m_Remarks()){
+												m__tokeType=9;
+												if(p_TSTR(0)==String(L"\n",1)){
+													m__line+=1;
+													break;
+												}
+											}else{
+												if(p_TSTR(0)==String(L"`",1)){
+													break;
+												}
+											}
 											m__tokePos+=1;
 										}
 										if(m__tokePos<m__length){
 											m__tokePos+=1;
-											m__line+=1;
+										}else{
+											if(!m_Remarks()){
+												m__tokeType=7;
+											}
 										}
 									}else{
 										if(t_str==String(L"[",1)){
@@ -22669,6 +22808,14 @@ int c_Toker::p_SkipSpace(){
 	while(m__tokeType==1){
 		p_NextToke();
 	}
+	return 0;
+}
+int c_Toker::m_RemarksOn(){
+	m__tokenFlags|=1;
+	return 0;
+}
+int c_Toker::m_RemarksOff(){
+	m__tokenFlags&=-2;
 	return 0;
 }
 void c_Toker::mark(){
@@ -23352,14 +23499,14 @@ c_IdentType* c_Parser::p_ParseIdentType(){
 	if((p_CParse(String(L".",1)))!=0){
 		t_id=t_id+(String(L".",1)+p_ParseIdent());
 	}
-	c_Stack3* t_args=(new c_Stack3)->m_new();
+	c_Stack4* t_args=(new c_Stack4)->m_new();
 	if((p_CParse(String(L"<",1)))!=0){
 		do{
 			c_Type* t_arg=p_ParseType();
 			while((p_CParse(String(L"[]",2)))!=0){
 				t_arg=(t_arg->p_ArrayOf());
 			}
-			t_args->p_Push7(t_arg);
+			t_args->p_Push10(t_arg);
 		}while(!(!((p_CParse(String(L",",1)))!=0)));
 		p_Parse(String(L">",1));
 	}
@@ -23411,9 +23558,9 @@ c_Type* c_Parser::p_ParseDeclType(){
 }
 c_ArrayExpr* c_Parser::p_ParseArrayExpr(){
 	p_Parse(String(L"[",1));
-	c_Stack4* t_args=(new c_Stack4)->m_new();
+	c_Stack5* t_args=(new c_Stack5)->m_new();
 	do{
-		t_args->p_Push10(p_ParseExpr());
+		t_args->p_Push13(p_ParseExpr());
 	}while(!(!((p_CParse(String(L",",1)))!=0)));
 	p_Parse(String(L"]",1));
 	return (new c_ArrayExpr)->m_new(t_args->p_ToArray());
@@ -23514,7 +23661,7 @@ c_IdentType* c_Parser::p_CParseIdentType(bool t_inner){
 		}
 		return 0;
 	}
-	c_Stack3* t_args=(new c_Stack3)->m_new();
+	c_Stack4* t_args=(new c_Stack4)->m_new();
 	do{
 		c_Type* t_arg=p_CParsePrimitiveType();
 		if(!((t_arg)!=0)){
@@ -23526,7 +23673,7 @@ c_IdentType* c_Parser::p_CParseIdentType(bool t_inner){
 		while((p_CParse(String(L"[]",2)))!=0){
 			t_arg=(t_arg->p_ArrayOf());
 		}
-		t_args->p_Push7(t_arg);
+		t_args->p_Push10(t_arg);
 	}while(!(!((p_CParse(String(L",",1)))!=0)));
 	if(!((p_CParse(String(L">",1)))!=0)){
 		return 0;
@@ -24208,7 +24355,7 @@ int c_Parser::p_ParseSelectStmt(){
 int c_Parser::p_ParseTryStmt(){
 	p_Parse(String(L"try",3));
 	c_BlockDecl* t_block=(new c_BlockDecl)->m_new(m__block);
-	c_Stack7* t_catches=(new c_Stack7)->m_new();
+	c_Stack8* t_catches=(new c_Stack8)->m_new();
 	p_PushBlock(t_block);
 	while(m__toke!=String(L"end",3)){
 		if((p_CParse(String(L"catch",5)))!=0){
@@ -24217,7 +24364,7 @@ int c_Parser::p_ParseTryStmt(){
 			c_Type* t_ty=p_ParseType();
 			c_LocalDecl* t_init=(new c_LocalDecl)->m_new(t_id,0,t_ty,0);
 			c_BlockDecl* t_block2=(new c_BlockDecl)->m_new(m__block);
-			t_catches->p_Push19((new c_CatchStmt)->m_new(t_init,t_block2));
+			t_catches->p_Push22((new c_CatchStmt)->m_new(t_init,t_block2));
 			p_PopBlock();
 			p_PushBlock(t_block2);
 		}else{
@@ -24349,7 +24496,7 @@ c_FuncDecl* c_Parser::p_ParseFuncDecl(int t_attrs){
 		t_id=p_ParseIdent();
 		t_ty=p_ParseDeclType();
 	}
-	c_Stack6* t_args=(new c_Stack6)->m_new();
+	c_Stack7* t_args=(new c_Stack7)->m_new();
 	p_Parse(String(L"(",1));
 	p_SkipEols();
 	if(m__toke!=String(L")",1)){
@@ -24360,7 +24507,7 @@ c_FuncDecl* c_Parser::p_ParseFuncDecl(int t_attrs){
 			if((p_CParse(String(L"=",1)))!=0){
 				t_init=p_ParseExpr();
 			}
-			t_args->p_Push16((new c_ArgDecl)->m_new(t_id2,0,t_ty2,t_init));
+			t_args->p_Push19((new c_ArgDecl)->m_new(t_id2,0,t_ty2,t_init));
 			if(m__toke==String(L")",1)){
 				break;
 			}
@@ -24449,7 +24596,7 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 	String t_id=p_ParseIdent();
 	c_StringStack* t_args=(new c_StringStack)->m_new2();
 	c_IdentType* t_superTy=c_Type::m_objectType;
-	c_Stack5* t_imps=(new c_Stack5)->m_new();
+	c_Stack6* t_imps=(new c_Stack6)->m_new();
 	if((p_CParse(String(L"<",1)))!=0){
 		if((t_attrs&256)!=0){
 			bb_config_Err(String(L"Extern classes cannot be generic.",33));
@@ -24471,7 +24618,7 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 		}else{
 			if((t_attrs&4096)!=0){
 				do{
-					t_imps->p_Push13(p_ParseIdentType());
+					t_imps->p_Push16(p_ParseIdentType());
 				}while(!(!((p_CParse(String(L",",1)))!=0)));
 				t_superTy=c_Type::m_objectType;
 			}else{
@@ -24487,7 +24634,7 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 			bb_config_Err(String(L"Implements cannot be used with interfaces.",42));
 		}
 		do{
-			t_imps->p_Push13(p_ParseIdentType());
+			t_imps->p_Push16(p_ParseIdentType());
 		}while(!(!((p_CParse(String(L",",1)))!=0)));
 	}
 	do{
@@ -25751,7 +25898,7 @@ int c_ClassDecl::p_OnSemant(){
 		}
 	}
 	Array<c_ClassDecl* > t_impls=Array<c_ClassDecl* >(m_impltys.Length());
-	c_Stack8* t_implsall=(new c_Stack8)->m_new();
+	c_Stack9* t_implsall=(new c_Stack9)->m_new();
 	for(int t_i=0;t_i<m_impltys.Length();t_i=t_i+1){
 		c_ClassDecl* t_cdecl=m_impltys[t_i]->p_SemantClass();
 		if(!((t_cdecl->p_IsInterface())!=0)){
@@ -25763,13 +25910,13 @@ int c_ClassDecl::p_OnSemant(){
 			}
 		}
 		t_impls[t_i]=t_cdecl;
-		t_implsall->p_Push22(t_cdecl);
+		t_implsall->p_Push25(t_cdecl);
 		Array<c_ClassDecl* > t_=t_cdecl->m_implmentsAll;
 		int t_2=0;
 		while(t_2<t_.Length()){
 			c_ClassDecl* t_tdecl=t_[t_2];
 			t_2=t_2+1;
-			t_implsall->p_Push22(t_tdecl);
+			t_implsall->p_Push25(t_tdecl);
 		}
 	}
 	m_implmentsAll=Array<c_ClassDecl* >(t_implsall->p_Length2());
@@ -25948,41 +26095,41 @@ String c_IdentType::p_ToString(){
 void c_IdentType::mark(){
 	c_Type::mark();
 }
-c_Stack3::c_Stack3(){
+c_Stack4::c_Stack4(){
 	m_data=Array<c_Type* >();
 	m_length=0;
 }
-c_Stack3* c_Stack3::m_new(){
+c_Stack4* c_Stack4::m_new(){
 	return this;
 }
-c_Stack3* c_Stack3::m_new2(Array<c_Type* > t_data){
+c_Stack4* c_Stack4::m_new2(Array<c_Type* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-void c_Stack3::p_Push7(c_Type* t_value){
+void c_Stack4::p_Push10(c_Type* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack3::p_Push8(Array<c_Type* > t_values,int t_offset,int t_count){
+void c_Stack4::p_Push11(Array<c_Type* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push7(t_values[t_offset+t_i]);
+		p_Push10(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack3::p_Push9(Array<c_Type* > t_values,int t_offset){
-	p_Push8(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack4::p_Push12(Array<c_Type* > t_values,int t_offset){
+	p_Push11(t_values,t_offset,t_values.Length()-t_offset);
 }
-Array<c_Type* > c_Stack3::p_ToArray(){
+Array<c_Type* > c_Stack4::p_ToArray(){
 	Array<c_Type* > t_t=Array<c_Type* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		t_t[t_i]=m_data[t_i];
 	}
 	return t_t;
 }
-void c_Stack3::mark(){
+void c_Stack4::mark(){
 	Object::mark();
 }
 c_ArrayType::c_ArrayType(){
@@ -26137,41 +26284,41 @@ String c_ArrayExpr::p_Trans(){
 void c_ArrayExpr::mark(){
 	c_Expr::mark();
 }
-c_Stack4::c_Stack4(){
+c_Stack5::c_Stack5(){
 	m_data=Array<c_Expr* >();
 	m_length=0;
 }
-c_Stack4* c_Stack4::m_new(){
+c_Stack5* c_Stack5::m_new(){
 	return this;
 }
-c_Stack4* c_Stack4::m_new2(Array<c_Expr* > t_data){
+c_Stack5* c_Stack5::m_new2(Array<c_Expr* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-void c_Stack4::p_Push10(c_Expr* t_value){
+void c_Stack5::p_Push13(c_Expr* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack4::p_Push11(Array<c_Expr* > t_values,int t_offset,int t_count){
+void c_Stack5::p_Push14(Array<c_Expr* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push10(t_values[t_offset+t_i]);
+		p_Push13(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack4::p_Push12(Array<c_Expr* > t_values,int t_offset){
-	p_Push11(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack5::p_Push15(Array<c_Expr* > t_values,int t_offset){
+	p_Push14(t_values,t_offset,t_values.Length()-t_offset);
 }
-Array<c_Expr* > c_Stack4::p_ToArray(){
+Array<c_Expr* > c_Stack5::p_ToArray(){
 	Array<c_Expr* > t_t=Array<c_Expr* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		t_t[t_i]=m_data[t_i];
 	}
 	return t_t;
 }
-void c_Stack4::mark(){
+void c_Stack5::mark(){
 	Object::mark();
 }
 c_ConstExpr::c_ConstExpr(){
@@ -27558,41 +27705,41 @@ String c_DeclStmt::p_Trans(){
 void c_DeclStmt::mark(){
 	c_Stmt::mark();
 }
-c_Stack5::c_Stack5(){
+c_Stack6::c_Stack6(){
 	m_data=Array<c_IdentType* >();
 	m_length=0;
 }
-c_Stack5* c_Stack5::m_new(){
+c_Stack6* c_Stack6::m_new(){
 	return this;
 }
-c_Stack5* c_Stack5::m_new2(Array<c_IdentType* > t_data){
+c_Stack6* c_Stack6::m_new2(Array<c_IdentType* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-void c_Stack5::p_Push13(c_IdentType* t_value){
+void c_Stack6::p_Push16(c_IdentType* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack5::p_Push14(Array<c_IdentType* > t_values,int t_offset,int t_count){
+void c_Stack6::p_Push17(Array<c_IdentType* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push13(t_values[t_offset+t_i]);
+		p_Push16(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack5::p_Push15(Array<c_IdentType* > t_values,int t_offset){
-	p_Push14(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack6::p_Push18(Array<c_IdentType* > t_values,int t_offset){
+	p_Push17(t_values,t_offset,t_values.Length()-t_offset);
 }
-Array<c_IdentType* > c_Stack5::p_ToArray(){
+Array<c_IdentType* > c_Stack6::p_ToArray(){
 	Array<c_IdentType* > t_t=Array<c_IdentType* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		t_t[t_i]=m_data[t_i];
 	}
 	return t_t;
 }
-void c_Stack5::mark(){
+void c_Stack6::mark(){
 	Object::mark();
 }
 c_ObjectType::c_ObjectType(){
@@ -27724,41 +27871,41 @@ c_Decl* c_ArgDecl::p_OnCopy(){
 void c_ArgDecl::mark(){
 	c_LocalDecl::mark();
 }
-c_Stack6::c_Stack6(){
+c_Stack7::c_Stack7(){
 	m_data=Array<c_ArgDecl* >();
 	m_length=0;
 }
-c_Stack6* c_Stack6::m_new(){
+c_Stack7* c_Stack7::m_new(){
 	return this;
 }
-c_Stack6* c_Stack6::m_new2(Array<c_ArgDecl* > t_data){
+c_Stack7* c_Stack7::m_new2(Array<c_ArgDecl* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-void c_Stack6::p_Push16(c_ArgDecl* t_value){
+void c_Stack7::p_Push19(c_ArgDecl* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack6::p_Push17(Array<c_ArgDecl* > t_values,int t_offset,int t_count){
+void c_Stack7::p_Push20(Array<c_ArgDecl* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push16(t_values[t_offset+t_i]);
+		p_Push19(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack6::p_Push18(Array<c_ArgDecl* > t_values,int t_offset){
-	p_Push17(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack7::p_Push21(Array<c_ArgDecl* > t_values,int t_offset){
+	p_Push20(t_values,t_offset,t_values.Length()-t_offset);
 }
-Array<c_ArgDecl* > c_Stack6::p_ToArray(){
+Array<c_ArgDecl* > c_Stack7::p_ToArray(){
 	Array<c_ArgDecl* > t_t=Array<c_ArgDecl* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		t_t[t_i]=m_data[t_i];
 	}
 	return t_t;
 }
-void c_Stack6::mark(){
+void c_Stack7::mark(){
 	Object::mark();
 }
 c_List7::c_List7(){
@@ -28287,35 +28434,35 @@ String c_CatchStmt::p_Trans(){
 void c_CatchStmt::mark(){
 	c_Stmt::mark();
 }
-c_Stack7::c_Stack7(){
+c_Stack8::c_Stack8(){
 	m_data=Array<c_CatchStmt* >();
 	m_length=0;
 }
-c_Stack7* c_Stack7::m_new(){
+c_Stack8* c_Stack8::m_new(){
 	return this;
 }
-c_Stack7* c_Stack7::m_new2(Array<c_CatchStmt* > t_data){
+c_Stack8* c_Stack8::m_new2(Array<c_CatchStmt* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-void c_Stack7::p_Push19(c_CatchStmt* t_value){
+void c_Stack8::p_Push22(c_CatchStmt* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack7::p_Push20(Array<c_CatchStmt* > t_values,int t_offset,int t_count){
+void c_Stack8::p_Push23(Array<c_CatchStmt* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push19(t_values[t_offset+t_i]);
+		p_Push22(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack7::p_Push21(Array<c_CatchStmt* > t_values,int t_offset){
-	p_Push20(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack8::p_Push24(Array<c_CatchStmt* > t_values,int t_offset){
+	p_Push23(t_values,t_offset,t_values.Length()-t_offset);
 }
-c_CatchStmt* c_Stack7::m_NIL;
-void c_Stack7::p_Length(int t_newlength){
+c_CatchStmt* c_Stack8::m_NIL;
+void c_Stack8::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
 			m_data[t_i]=m_NIL;
@@ -28327,17 +28474,17 @@ void c_Stack7::p_Length(int t_newlength){
 	}
 	m_length=t_newlength;
 }
-int c_Stack7::p_Length2(){
+int c_Stack8::p_Length2(){
 	return m_length;
 }
-Array<c_CatchStmt* > c_Stack7::p_ToArray(){
+Array<c_CatchStmt* > c_Stack8::p_ToArray(){
 	Array<c_CatchStmt* > t_t=Array<c_CatchStmt* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		t_t[t_i]=m_data[t_i];
 	}
 	return t_t;
 }
-void c_Stack7::mark(){
+void c_Stack8::mark(){
 	Object::mark();
 }
 int bb_math_Max(int t_x,int t_y){
@@ -28620,6 +28767,9 @@ c_Expr* bb_preprocessor_EvalExpr(c_Toker* t_toker){
 	return t_expr;
 }
 bool bb_preprocessor_EvalBool(c_Toker* t_toker){
+	if(c_Toker::m_Remarks()){
+		return false;
+	}
 	c_Expr* t_expr=bb_preprocessor_EvalExpr(t_toker);
 	if(!((dynamic_cast<c_BoolType*>(t_expr->m_exprType))!=0)){
 		t_expr=t_expr->p_Cast((c_Type::m_boolType),1);
@@ -28658,6 +28808,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	int t_ifnest=0;
 	int t_line=0;
 	c_StringStack* t_source=(new c_StringStack)->m_new2();
+	c_StringStack* t_tracknesting=(new c_StringStack)->m_new2();
+	c_IntStack* t_trace=(new c_IntStack)->m_new2();
 	bb_decl_PushEnv(bb_config_GetConfigScope());
 	String t_p_cd=bb_config_GetConfigVar(String(L"CD",2));
 	String t_p_modpath=bb_config_GetConfigVar(String(L"MODPATH",7));
@@ -28748,7 +28900,12 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 		}
 		String t_2=t_stm;
 		if(t_2==String(L"rem",3)){
-			t_ifnest+=1;
+			if(!c_Toker::m_Remarks()){
+				c_Toker::m_RemarksOn();
+				t_ifnest+=1;
+				t_tracknesting->p_Push(bb_config__errInfo);
+				t_trace->p_Push7(t_line);
+			}
 		}else{
 			if(t_2==String(L"if",2)){
 				t_ifnest+=1;
@@ -28757,6 +28914,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 						t_cnest=t_ifnest;
 					}
 				}
+				t_tracknesting->p_Push(bb_config__errInfo);
+				t_trace->p_Push7(t_line);
 			}else{
 				if(t_2==String(L"else",4)){
 					if(!((t_ifnest)!=0)){
@@ -28769,6 +28928,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 							t_cnest=t_ifnest;
 						}
 					}
+					t_trace->p_Push7(t_line);
 				}else{
 					if(t_2==String(L"elseif",6)){
 						if(!((t_ifnest)!=0)){
@@ -28783,6 +28943,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 								}
 							}
 						}
+						t_trace->p_Push7(t_line);
 					}else{
 						if(t_2==String(L"end",3) || t_2==String(L"endif",5)){
 							if(!((t_ifnest)!=0)){
@@ -28791,6 +28952,12 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 							t_ifnest-=1;
 							if(t_ifnest<(t_cnest&65535)){
 								t_cnest=t_ifnest;
+							}
+							if(!t_tracknesting->p_IsEmpty()){
+								t_tracknesting->p_Pop();
+							}
+							if(c_Toker::m_Remarks()){
+								c_Toker::m_RemarksOff();
 							}
 						}else{
 							if(t_2==String(L"print",5)){
@@ -28858,6 +29025,27 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 			}
 		}
 	}while(!(false));
+	if(t_toker->p_TokeType()==0){
+		if(!t_tracknesting->p_IsEmpty()){
+			if(!t_trace->p_IsEmpty()){
+				String t_s=String(L" : Starts here.....",19);
+				for(int t_i=0;t_i<t_trace->p_Length2()-1;t_i=t_i+1){
+					if(t_i>0){
+						t_s=String();
+					}
+					bbPrint(bb_config__errInfo.Slice(0,bb_config__errInfo.Find(String(L"<",1),0)+1)+String(t_trace->p_Get2(t_i))+String(L">",1)+t_s);
+				}
+			}
+			if(t_trace->p_IsEmpty()){
+				bb_config__errInfo=t_tracknesting->p_Pop();
+			}else{
+				bb_config__errInfo=bb_config__errInfo.Slice(0,bb_config__errInfo.Find(String(L"<",1),0))+String(L"<",1)+String(t_trace->p_Pop())+String(L">",1);
+			}
+			bb_config_Err(String(L"End of file reached. Preprocessor Conditional or Remark block preprocess not closed.",84));
+		}
+		t_trace->p_Clear();
+		t_tracknesting->p_Clear();
+	}
 	bb_config_SetConfigVar2(String(L"MODPATH",7),t_p_modpath);
 	bb_config_SetConfigVar2(String(L"CD",2),t_p_cd);
 	bb_decl_PopEnv();
@@ -29136,7 +29324,7 @@ c_Reflector::c_Reflector(){
 	m_munged=(new c_StringMap7)->m_new();
 	m_modexprs=(new c_StringMap2)->m_new();
 	m_refmods=(new c_StringSet)->m_new();
-	m_classdecls=(new c_Stack8)->m_new();
+	m_classdecls=(new c_Stack9)->m_new();
 	m_classids=(new c_StringMap7)->m_new();
 	m_output=(new c_StringStack)->m_new2();
 }
@@ -29350,7 +29538,7 @@ String c_Reflector::p_TypeInfo(c_Type* t_ty){
 		}
 		int t_id=m_classdecls->p_Length2();
 		m_classids->p_Set7(t_name,t_id);
-		m_classdecls->p_Push22(t_cdecl);
+		m_classdecls->p_Push25(t_cdecl);
 		return String(L"_classes[",9)+String(t_id)+String(L"]",1);
 	}
 	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
@@ -29762,7 +29950,7 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 		c_ClassDecl* t_cdecl=dynamic_cast<c_ClassDecl*>(t_decl);
 		if(((t_cdecl)!=0) && p_ValidClass(t_cdecl)){
 			m_classids->p_Set7(p_DeclExpr((t_cdecl),true),m_classdecls->p_Length2());
-			m_classdecls->p_Push22(t_cdecl);
+			m_classdecls->p_Push25(t_cdecl);
 			continue;
 		}
 	}
@@ -30110,20 +30298,20 @@ c_ClassDecl* c_Enumerator4::p_NextObject(){
 void c_Enumerator4::mark(){
 	Object::mark();
 }
-c_Stack8::c_Stack8(){
+c_Stack9::c_Stack9(){
 	m_data=Array<c_ClassDecl* >();
 	m_length=0;
 }
-c_Stack8* c_Stack8::m_new(){
+c_Stack9* c_Stack9::m_new(){
 	return this;
 }
-c_Stack8* c_Stack8::m_new2(Array<c_ClassDecl* > t_data){
+c_Stack9* c_Stack9::m_new2(Array<c_ClassDecl* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-c_ClassDecl* c_Stack8::m_NIL;
-void c_Stack8::p_Length(int t_newlength){
+c_ClassDecl* c_Stack9::m_NIL;
+void c_Stack9::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
 			m_data[t_i]=m_NIL;
@@ -30135,28 +30323,28 @@ void c_Stack8::p_Length(int t_newlength){
 	}
 	m_length=t_newlength;
 }
-int c_Stack8::p_Length2(){
+int c_Stack9::p_Length2(){
 	return m_length;
 }
-void c_Stack8::p_Push22(c_ClassDecl* t_value){
+void c_Stack9::p_Push25(c_ClassDecl* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack8::p_Push23(Array<c_ClassDecl* > t_values,int t_offset,int t_count){
+void c_Stack9::p_Push26(Array<c_ClassDecl* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push22(t_values[t_offset+t_i]);
+		p_Push25(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack8::p_Push24(Array<c_ClassDecl* > t_values,int t_offset){
-	p_Push23(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack9::p_Push27(Array<c_ClassDecl* > t_values,int t_offset){
+	p_Push26(t_values,t_offset,t_values.Length()-t_offset);
 }
-c_ClassDecl* c_Stack8::p_Get2(int t_index){
+c_ClassDecl* c_Stack9::p_Get2(int t_index){
 	return m_data[t_index];
 }
-void c_Stack8::mark(){
+void c_Stack9::mark(){
 	Object::mark();
 }
 int bb_parser_ParseSource(String t_source,c_AppDecl* t_app,c_ModuleDecl* t_mdecl,int t_defattrs){
@@ -31764,7 +31952,7 @@ String bb_config_Enquote(String t_str,String t_lang){
 c_CppTranslator::c_CppTranslator(){
 	m_unsafe=false;
 	m_gc_mode=0;
-	m_dbgLocals=(new c_Stack9)->m_new();
+	m_dbgLocals=(new c_Stack10)->m_new();
 	m_lastDbgInfo=String();
 	m_pure=0;
 }
@@ -32091,7 +32279,7 @@ int c_CppTranslator::p_EmitFuncDecl(c_FuncDecl* t_decl){
 			t_args=t_args+String(L",",1);
 		}
 		t_args=t_args+(p_TransType(t_arg->m_type)+String(L" ",1)+t_arg->m_munged);
-		m_dbgLocals->p_Push25(t_arg);
+		m_dbgLocals->p_Push28(t_arg);
 	}
 	String t_id=t_decl->m_munged;
 	if((t_decl->p_ClassScope())!=0){
@@ -32658,7 +32846,7 @@ String c_CppTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
 		t_2=t_2+1;
 		p_MungDecl(t_c->m_init);
 		p_Emit(String(L"}catch(",7)+p_TransType(t_c->m_init->m_type)+String(L" ",1)+t_c->m_init->m_munged+String(L"){",2));
-		m_dbgLocals->p_Push25(t_c->m_init);
+		m_dbgLocals->p_Push28(t_c->m_init);
 		int t_unr2=p_EmitBlock(t_c->m_block,true);
 	}
 	p_Emit(String(L"}",1));
@@ -32668,7 +32856,7 @@ String c_CppTranslator::p_TransDeclStmt(c_DeclStmt* t_stmt){
 	c_LocalDecl* t_decl=dynamic_cast<c_LocalDecl*>(t_stmt->m_decl);
 	if((t_decl)!=0){
 		if((t_decl->m_ident).Length()!=0){
-			m_dbgLocals->p_Push25(t_decl);
+			m_dbgLocals->p_Push28(t_decl);
 		}
 		p_MungDecl(t_decl);
 		return p_TransLocalDecl(t_decl->m_munged,t_decl->m_init);
@@ -35589,29 +35777,29 @@ c_GlobalDecl* c_Enumerator6::p_NextObject(){
 void c_Enumerator6::mark(){
 	Object::mark();
 }
-c_Stack9::c_Stack9(){
+c_Stack10::c_Stack10(){
 	m_data=Array<c_LocalDecl* >();
 	m_length=0;
 }
-c_Stack9* c_Stack9::m_new(){
+c_Stack10* c_Stack10::m_new(){
 	return this;
 }
-c_Stack9* c_Stack9::m_new2(Array<c_LocalDecl* > t_data){
+c_Stack10* c_Stack10::m_new2(Array<c_LocalDecl* > t_data){
 	this->m_data=t_data.Slice(0);
 	this->m_length=t_data.Length();
 	return this;
 }
-c_LocalDecl* c_Stack9::m_NIL;
-void c_Stack9::p_Clear(){
+c_LocalDecl* c_Stack10::m_NIL;
+void c_Stack10::p_Clear(){
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
 		m_data[t_i]=m_NIL;
 	}
 	m_length=0;
 }
-c_Enumerator7* c_Stack9::p_ObjectEnumerator(){
+c_Enumerator7* c_Stack10::p_ObjectEnumerator(){
 	return (new c_Enumerator7)->m_new(this);
 }
-void c_Stack9::p_Length(int t_newlength){
+void c_Stack10::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
 			m_data[t_i]=m_NIL;
@@ -35623,32 +35811,32 @@ void c_Stack9::p_Length(int t_newlength){
 	}
 	m_length=t_newlength;
 }
-int c_Stack9::p_Length2(){
+int c_Stack10::p_Length2(){
 	return m_length;
 }
-void c_Stack9::p_Push25(c_LocalDecl* t_value){
+void c_Stack10::p_Push28(c_LocalDecl* t_value){
 	if(m_length==m_data.Length()){
 		m_data=m_data.Resize(m_length*2+10);
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
 }
-void c_Stack9::p_Push26(Array<c_LocalDecl* > t_values,int t_offset,int t_count){
+void c_Stack10::p_Push29(Array<c_LocalDecl* > t_values,int t_offset,int t_count){
 	for(int t_i=0;t_i<t_count;t_i=t_i+1){
-		p_Push25(t_values[t_offset+t_i]);
+		p_Push28(t_values[t_offset+t_i]);
 	}
 }
-void c_Stack9::p_Push27(Array<c_LocalDecl* > t_values,int t_offset){
-	p_Push26(t_values,t_offset,t_values.Length()-t_offset);
+void c_Stack10::p_Push30(Array<c_LocalDecl* > t_values,int t_offset){
+	p_Push29(t_values,t_offset,t_values.Length()-t_offset);
 }
-void c_Stack9::mark(){
+void c_Stack10::mark(){
 	Object::mark();
 }
 c_Enumerator7::c_Enumerator7(){
 	m_stack=0;
 	m_index=0;
 }
-c_Enumerator7* c_Enumerator7::m_new(c_Stack9* t_stack){
+c_Enumerator7* c_Enumerator7::m_new(c_Stack10* t_stack){
 	this->m_stack=t_stack;
 	return this;
 }
@@ -35675,6 +35863,7 @@ int bbInit(){
 	bb_decl__envStack=(new c_List2)->m_new();
 	c_Toker::m__keywords=0;
 	c_Toker::m__symbols=0;
+	c_Toker::m__tokenFlags=0;
 	bb_config_ENV_MODPATH=String();
 	bb_parser_FILE_EXT=String(L".cxs",4);
 	bb_parser_FILE_EXT_OLD=String(L".monkey",7);
@@ -35687,21 +35876,22 @@ int bbInit(){
 	c_Type::m_throwableType=(new c_IdentType)->m_new(String(L"cerberus.throwable",18),Array<c_Type* >());
 	c_Type::m_emptyArrayType=(new c_ArrayType)->m_new(c_Type::m_voidType);
 	c_Type::m_nullObjectType=(new c_IdentType)->m_new(String(),Array<c_Type* >());
-	c_Stack7::m_NIL=0;
+	c_Stack8::m_NIL=0;
 	bb_config__errStack=(new c_StringList)->m_new2();
+	c_Stack::m_NIL=String();
+	c_Stack3::m_NIL=0;
 	c_Stack2::m_NIL=0;
 	bb_config_ENV_HOST=String();
 	bb_config_ENV_CONFIG=String();
 	bb_config_ENV_TARGET=String();
 	bb_config_ENV_LANG=String();
-	c_Stack8::m_NIL=0;
-	c_Stack::m_NIL=String();
+	c_Stack9::m_NIL=0;
 	bb_translator__trans=0;
 	bb_html5_Info_Width=0;
 	bb_html5_Info_Height=0;
 	c_ClassDecl::m_nullObjectClass=(new c_ClassDecl)->m_new(String(L"{NULL}",6),1280,Array<String >(),0,Array<c_IdentType* >());
 	bb_decl__loopnest=0;
-	c_Stack9::m_NIL=0;
+	c_Stack10::m_NIL=0;
 	return 0;
 }
 void gc_mark(){
