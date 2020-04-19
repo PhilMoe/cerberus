@@ -10,6 +10,7 @@ FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cel
 FIX: [examples] Fixed mak/bbgametest -> missing z parameter in MouseEvent call.    (Author: MikeHart)
 FIX: [examples] Fixed mak/dynamicimage -> faulty fullscreen switch.    (Author: MikeHart)
 Fix: [TRANSCC] Fixed TRANSCC not being able to install on an Android device when creating a release build on Linux and OSX.    (Author: Phil7) 
+Fix: [TRANSCC] Fixed TRANSCC not reporting the correct line number in certain cases when preprocessor statements were used..    (Author: dawlane) 
 
 MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 
 MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
@@ -19,6 +20,8 @@ MOD: [mojo/mojo2] Font.Load(url:String, flags:Int=... ) accept now .FNT files an
 MOD: [TRANSCC] Changed TRANSCC in a way so modules can add Android libs and lift up versions more easily.    (Author: Rich) 
 MOD: [TRANSCC] Data file filters are not being case sensitive anymore.    (Author: MikeHart)
 MOD: [rebuildall.ps1] Reworked the build script for using MS Visual C++ 2017 Community edition.    (Author: dawlane)
+MOD: [rebuildall.sh] Reworked the build script.    (Author: dawlane)
+MOD: [building.txt] Updated the information.    (Author: dawlane)
 
 NEW: [cerberus.interpolate] Added InterpolateCustomLine:Float(dataY:Float[], pX:Float ).    (Author: Rich) 
 NEW: [cerberus.interpolate] Added InterpolateBackEaseIn:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich) 

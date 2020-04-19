@@ -99,7 +99,7 @@ MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2017\Community\MSBuil
 '
 'Must be set for AGK support.
 '
-'AGK_PATH="D:\Program Files (x86)\The Game Creators\AGK2"
+AGK_PATH="D:\Program Files (x86)\The Game Creators\AGK2"
 '
 '--------------------
 
