@@ -1,0 +1,160 @@
+
+'Deprecating!
+'
+'Use brl.filesystem and brl.filepath instead!
+'
+#If Not BRL_OS_IMPLEMENTED
+#If TARGET="stdcpp" Or TARGET="glfw"
+#BRL_OS_IMPLEMENTED=True
+Import "native/os.cpp"
+#Endif
+#Endif
+
+#If Not BRL_OS_IMPLEMENTED
+#Error "Native OS Module not implemented"
+#Endif
+
+Extern
+
+Function HostOS:String()
+Function AppPath:String()
+Function AppArgs:String[]()
+Function RealPath:String( path:String )
+Function FileType( path:String )
+Function FileSize( path:String )
+Function FileTime( path:String )
+Function CopyFile( src:String,dst:String )
+Function DeleteFile( path:String )
+Function LoadString:String( path:String )
+Function SaveString( str:String,path:String )
+Function LoadDir:String[]( path:String )
+Function CreateDir( path:String )
+Function DeleteDir( path:String )
+Function ChangeDir( path:String )
+Function CurrentDir:String()
+Function SetEnv( name:String,value:String )
+Function GetEnv:String( name:String )
+Function Execute( cmd:String )
+Function ExitApp( retcode:Int )
+
+Public
+
+Const FILETYPE_NONE=0
+Const FILETYPE_FILE=1
+Const FILETYPE_DIR=2
+
+Function LoadDir:String[]( path:String,recursive:Bool,hidden:Bool=False )
+
+	Local dirs:=New StringList,files:=New StringList
+	
+	dirs.AddLast ""
+	
+	While Not dirs.IsEmpty()
+
+		Local dir:String=dirs.RemoveFirst()
+
+		For Local f:String=Eachin LoadDir( path+"/"+dir )
+			If Not hidden And f.StartsWith(".") Continue
+		
+			If dir f=dir+"/"+f
+			
+			Select FileType( path+"/"+f )
+			Case FILETYPE_FILE
+				files.AddLast f
+			Case FILETYPE_DIR
+				If recursive
+					dirs.AddLast f
+				Else
+					files.AddLast f
+				Endif
+			End
+		Next
+	Wend
+
+	Return files.ToArray()
+End
+
+Function CopyDir( srcpath:String,dstpath:String,recursive:Bool=True,hidden:Bool=False )
+
+	If FileType( srcpath )<>FILETYPE_DIR Return False
+
+	'do this before create of destdir to allow a dir to be copied into itself!
+	'
+	Local files:=LoadDir( srcpath )
+	
+	Select FileType( dstpath )
+	Case FILETYPE_NONE
+		If Not CreateDir( dstpath ) Return False
+	Case FILETYPE_FILE 
+		Return False
+	End
+	
+	For Local f:String=Eachin files
+		If Not hidden And f.StartsWith(".") Continue
+		
+		Local srcp:String=srcpath+"/"+f
+		Local dstp:String=dstpath+"/"+f
+		
+		Select FileType( srcp )
+		Case FILETYPE_FILE
+			If Not CopyFile( srcp,dstp ) Return False
+		Case FILETYPE_DIR
+			If recursive And Not CopyDir( srcp,dstp,recursive,hidden ) Return False
+		End
+	Next
+	
+	Return True
+End
+
+Function DeleteDir( path:String, recursive:Bool=False )
+
+	If Not recursive Return DeleteDir( path )
+	
+	Select FileType( path )
+	Case FILETYPE_NONE Return True
+	Case FILETYPE_FILE Return False
+	End Select
+	
+	For Local f:String=Eachin LoadDir( path )
+		If f="." Or f=".." Continue
+
+		Local fpath:String=path+"/"+f
+
+		If FileType( fpath )=FILETYPE_DIR
+			If Not DeleteDir( fpath,True ) Return False
+		Else
+			If Not DeleteFile( fpath ) Return False
+		Endif
+	Next
+
+	Return DeleteDir( path:String )
+End
+
+Function StripDir:String( path:String )
+	Local i=path.FindLast( "/" )
+	If i=-1 i=path.FindLast( "\" )
+	If i<>-1 Return path[i+1..]
+	Return path
+End
+
+Function ExtractDir:String( path:String )
+	Local i=path.FindLast( "/" )
+	If i=-1 i=path.FindLast( "\" )
+	If i<>-1 Return path[..i]
+End
+
+Function StripExt:String( path:String )
+	Local i=path.FindLast( "." )
+	If i<>-1 And path.Find( "/",i+1 )=-1 And path.Find( "\",i+1 )=-1 Return path[..i]
+	Return path
+End
+
+Function ExtractExt:String( path:String )
+	Local i=path.FindLast( "." )
+	If i<>-1 And path.Find( "/",i+1 )=-1 And path.Find( "\",i+1 )=-1 Return path[i+1..]
+	Return ""
+End
+
+Function StripAll:String( path:String )
+	Return StripDir( StripExt( path ) )
+End
