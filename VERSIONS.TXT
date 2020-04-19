@@ -9,7 +9,6 @@ FIX: [mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Fi
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
 FIX: [examples] Fixed mak/bbgametest -> missing z parameter in MouseEvent call.    (Author: MikeHart)
 FIX: [examples] Fixed mak/dynamicimage -> faulty fullscreen switch.    (Author: MikeHart)
-Fix: [TRANSCC/trans.toker + trans.preprocessor] Fixed TRANSCC reporting a wrong line number when preprocessor statements where used in some way.    (Author: dawlane) 
 Fix: [TRANSCC] Fixed TRANSCC not being able to install on an Android device when creating a release build on Linux and OSX.    (Author: Phil7) 
 
 MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 

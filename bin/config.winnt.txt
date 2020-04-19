@@ -4,7 +4,7 @@
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext;D:\CerberusX\CerberusModulesx"
 '--------------------
 
 '--------------------
@@ -27,7 +27,7 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
 
 '***** 64 bit mingw *****
-MINGW_PATH="D:\Applications\Compilers\TDM-GCC-64"
+MINGW_PATH="D:\TDM-GCC-64"
 '--------------------
 
 '--------------------
@@ -37,7 +37,7 @@ MINGW_PATH="D:\Applications\Compilers\TDM-GCC-64"
 '
 'The Java JDK is currently available here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 '
-JDK_PATH="d:\programme\JavaSDK"
+JDK_PATH="D:\Program Files (x86)\Java\jdk1.8.0_172"
 '--------------------
 
 '--------------------
@@ -45,7 +45,7 @@ JDK_PATH="d:\programme\JavaSDK"
 '
 'Must be set to a valid dir for ANDROID target support
 '
-ANDROID_PATH="d:\programme\AndroidSDK"
+ANDROID_PATH="D:\Program Files\Android\Android Studio"
 '--------------------
 
 '--------------------
@@ -53,7 +53,7 @@ ANDROID_PATH="d:\programme\AndroidSDK"
 '
 'Must be set to a valid dir for ANDROID NDK target support
 '
-ANDROID_NDK_PATH="d:\devtools\android-ndk-r9"
+'ANDROID_NDK_PATH="D:\Program Files\Android\Android Studio\ndk-bundle"
 '--------------------
 
 '--------------------
@@ -63,7 +63,7 @@ ANDROID_NDK_PATH="d:\devtools\android-ndk-r9"
 '
 'Ant is currently available here: http://ant.apache.org/bindownload.cgi
 '
-ANT_PATH="D:\Programme\apache-ant-1.9.7"
+'ANT_PATH="D:\Programme\apache-ant-1.9.7"
 '--------------------
 
 '--------------------
@@ -73,7 +73,7 @@ ANT_PATH="D:\Programme\apache-ant-1.9.7"
 '
 'Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
 '
-FLEX_PATH="d:\devtools\flex-sdk"
+'FLEX_PATH="c:\flex_sdk_4.6"
 'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
 'FLASH_PLAYER="...?..."
 '--------------------
@@ -83,7 +83,7 @@ FLEX_PATH="d:\devtools\flex-sdk"
 '
 'PSM_PATH must be set for PSM target support.
 '
-PSM_PATH="d:\devtools\PSM_SDK"
+'PSM_PATH="d:\devtools\PSM_SDK"
 '--------------------
 
 '--------------------
@@ -91,9 +91,7 @@ PSM_PATH="d:\devtools\PSM_SDK"
 '
 'Must be set for XNA and GLFW target support.
 '
-'MSBUILD_PATH="${PROGRAMFILES}\MSBuild\14.0\Bin\MSBuild.exe"
-'MSBUILD_PATH="${PROGRAMFILES}\MSBuild\12.0\Bin\MSBuild.exe"
-MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
+MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 '--------------------
 
 '--------------------
@@ -101,10 +99,9 @@ MSBUILD_PATH="${WINDIR}\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 '
 'Must be set for AGK support.
 '
-AGK_PATH="C:/Program Files (x86)/The Game Creators/AGK2"
+'AGK_PATH="D:\Program Files (x86)\The Game Creators\AGK2"
 '
 '--------------------
 
 '--->> BEGIN OF JUNGLE IDE GENERATED CONFIG
-MINGW_PATH= "D:\Applications\Compilers\TDM-GCC-64"
 '--->> END OF JUNGLE IDE GENERATED CONFIG
