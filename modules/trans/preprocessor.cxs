@@ -2,6 +2,11 @@ Import parser
 '###################################################################
 ' This file scans the source file for module and preprocessor data.
 '###################################################################
+' NOTE: All comments should be viewed as a work-in-progress and my not be an accurate description of
+'		the internal workings of this file.
+
+' TODO:	Change the block tracking method to use the one in the file 'blktrace.cxs'.
+' TODO: Check comments for accuracy.
 
 ' The next three functions are used to evaluate tokens that are expressions.
 ' Evaluate the token an expression
@@ -62,7 +67,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 	'									The first being the total nexting level depth.
 	'									The second is to keep skip blocks within conditionals by setting by 17.
 	'									This means that nesting level depths are only permitted upto 65535. Any thing past this will be unpredictable. 
-	Local cnest,ifnest,line,source:=New StringStack, tracknesting:=New StringStack(), trace:=New IntStack()
+	Local cnest,ifnest,line,source:=New StringStack, tracknesting:=New IntStack(), trace:=New IntStack()
 	
 	PushEnv GetConfigScope()	' Preserver the current configuration scope.
 	
@@ -86,7 +91,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 		
 		'#######################
 		' SCAN FOR VALID TOKENS
-		' Description: 
+		' Description: TODO
 		If line
 			source.Push "~n"
 			While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
@@ -118,7 +123,8 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 					Local toke:=toker.Toke	' Get the current token string and advance to the next token
 					toker.NextToke
 					
-					' If there is a valid module object.
+					' If there is a valid module object, aka a source file etc.
+					' Then set the public/private flag or add a module to import to the list.
 					If mdecl
 						Select toke.ToLower()
 							Case "public"
@@ -203,7 +209,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 				If Not Toker.Remarks()
 					Toker.RemarksOn()
 					ifnest+=1
-					tracknesting.Push _errInfo ' Keep trace of the error line when a nesting value has been increased
+					tracknesting.Push line ' Keep trace of the error line when a nesting value has been increased
 					trace.Push line ' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
 				Endif
 				
@@ -215,7 +221,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 					If EvalBool( toker ) cnest=ifnest
 				Endif
 				
-				tracknesting.Push _errInfo	' Keep trace of the error line when a nesting value has been increased
+				tracknesting.Push line	' Keep trace of the error line when a nesting value has been increased
 				trace.Push line	' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
 				
 			Case "else"
@@ -333,17 +339,19 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 		' And if there was, list them out.
 		If Not tracknesting.IsEmpty()
 			
-			' List out any tract information
+			' List out any trace information
 			If Not trace.IsEmpty()
+				Print "~t~t-------------- Preprocessor Trace Log --------------"
 				Local s:=" : Starts here....."
 				For Local i:=0 Until trace.Length-1
 					If i>0 s=""
-					Print _errInfo[.. _errInfo.Find("<")+1]+trace.Get(i)+">"+s
+					Print _errInfo[.. _errInfo.FindLast("<")+1]+trace.Get(i)+">"+s
 				End
+				Print ""
 			Endif
 
 			' Safey check, if there is noting in the trace stack, then pop the last item off the tracknesting string stack, else use the trace string stack
-			If trace.IsEmpty() _errInfo=tracknesting.Pop Else _errInfo=_errInfo[.. _errInfo.Find("<")]+"<"+trace.Pop+">"		
+			If trace.IsEmpty() _errInfo=_errInfo[.. _errInfo.FindLast("<")]+"<"+tracknesting.Pop+">" Else _errInfo=_errInfo[.. _errInfo.FindLast("<")]+"<"+trace.Pop+">"		
 			Err "End of file reached. Preprocessor Conditional or Remark block preprocess not closed."
 		Endif
 		

@@ -137,6 +137,7 @@ The following app config settings are currently supported:
 'Misc
 '
 #CC_OPTS=""							'additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_LIBS=""							'Pass additional libraries to link against for GCC type compilers.
 
 </pre>
 

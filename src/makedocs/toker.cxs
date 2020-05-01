@@ -46,7 +46,7 @@ Class Toker
 		Const keywords:="void strict "+
 		"public private protected friend property "+
 		"bool int float string array object mod continue exit "+
-		"include import module extern "+
+		"include includedir import module extern "+
 		"new self super eachin true false null not "+
 		"extends abstract final select case default "+
 		"const local global field method function class "+

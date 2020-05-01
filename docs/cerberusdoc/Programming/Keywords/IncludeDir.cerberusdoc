@@ -1,0 +1,18 @@
+> Directive IncludeDir
+
+Module includedir directive.
+
+>> Syntax
+
+IncludeDir "directory"
+
+>> Description
+
+A Cerberus X program can add the content of a directory into the build folder for further addition during the compile process.
+If the directory contains subdirectories, all their content is copied too.
+Contrary to the Import directive, these files are not injected into the translated code and the main.* file.
+
+>> See also
+[[Strict]] | [[Import]] | [[Include]] ~n
+[Language reference](Language reference#modules)
+

@@ -17,7 +17,7 @@ To import another module, the Import keyword must be placed at the top of your s
 Cerberus X also supports cyclic imports, whereby modules can import each other, gaining access to each other's declarations.
 
 >> See also
-[[Strict]]~n
+[[Strict]] | [[Include]] | [[IncludeDir]]~n
 [Language reference](Language reference#modules)
 
 >> Example

@@ -312,7 +312,25 @@ Class Builder
 		
 	End
 	
+	Method CopySourceFiles:Void( dir:String )
+	
+		dir=RealPath( dir )
+'Print("CopySourceFiles targetdir = "+dir)	
+		For Local p:=Eachin app.fileIncludes
+			Local r:=StripDir( p )
+			Local t:=dir+"/"+r
+'Print ("CopySourceFiles = "+p)
+			CCopyFile p,t
+		Next
+	
+		For Local p:=Eachin app.dirIncludes
+'Print ("CopySourceDirs = "+p)
+			CopyDir( p, dir, True, True )
+		Next
+	End
+	
 End
+
 
 Extern
 Function _CreateIcon:Void(srcFile:String,destFile:String,w:Int,h:Int,round:Int)

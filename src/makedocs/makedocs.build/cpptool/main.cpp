@@ -1812,10 +1812,18 @@ public:
 	virtual bool PollJoystick( int port,Array<Float> joyx,Array<Float> joyy,Array<Float> joyz,Array<bool> buttons );
 	virtual void OpenUrl( String url );
 	virtual void SetMouseVisible( bool visible );
+	virtual void SetMousePos( double xpos, double ypos );
+	virtual void SetClipboard( String _text );
+	virtual String GetClipboard();
 	
 	virtual int GetDeviceWidth(){ return 0; }
 	virtual int GetDeviceHeight(){ return 0; }
 	virtual void SetDeviceWindow( int width,int height,int flags ){}
+	virtual void SetDeviceWindowIcon( String _path ){}
+	virtual void SetDeviceWindowPosition( int _x, int _y ){}
+	virtual void SetDeviceWindowSize( int _width, int _height ){}
+	virtual void SetDeviceWindowSizeLimits( int _minWidth, int _minHeight, int _maxWidth, int _maxHeight ){}
+	virtual void SetDeviceWindowTitle( String _title ){}
 	virtual Array<BBDisplayMode*> GetDisplayModes(){ return Array<BBDisplayMode*>(); }
 	virtual BBDisplayMode *GetDesktopMode(){ return 0; }
 	virtual void SetSwapInterval( int interval ){}
@@ -1963,6 +1971,16 @@ void BBGame::OpenUrl( String url ){
 }
 
 void BBGame::SetMouseVisible( bool visible ){
+}
+
+void BBGame::SetMousePos( double xpos, double ypos ){
+}
+
+void BBGame::SetClipboard( String _text ){
+}
+
+String BBGame::GetClipboard(){
+	return "";
 }
 
 //***** C++ Game *****
@@ -2383,44 +2401,50 @@ int CopyFile( String srcpath,String dstpath ){
 
 #if _WIN32
 
-	if( CopyFileW( OS_STR(srcpath),OS_STR(dstpath),FALSE ) ) return 1;
-	return 0;
-	
+    if( CopyFileW( OS_STR(srcpath),OS_STR(dstpath),FALSE ) ) return 1;
+    return 0;
+
 #elif __APPLE__
 
-	// Would like to use COPY_ALL here, but it breaks trans on MacOS - produces weird 'pch out of date' error with copied projects.
-	//
-	// Ranlib strikes back!
-	//
-	if( copyfile( OS_STR(srcpath),OS_STR(dstpath),0,COPYFILE_DATA )>=0 ) return 1;
-	return 0;
-	
+    // Would like to use COPY_ALL here, but it breaks trans on MacOS - produces weird 'pch out of date' error with copied projects.
+    //
+    // Ranlib strikes back!
+    //
+    // DAWLANE - Added file attributes COPYFILE_XATTR | COPYFILE_STAT (NEEDS CONFIRMING)
+    if( copyfile( OS_STR(srcpath),OS_STR(dstpath),0,COPYFILE_XATTR | COPYFILE_STAT | COPYFILE_DATA )>=0 ) return 1;
+    return 0;
+
 #else
 
-	int err=-1;
-	if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR( "rb" ) ) ){
-		err=-2;
-		if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR( "wb" ) ) ){
-			err=0;
-			char buf[1024];
-			while( int n=fread( buf,1,1024,srcp ) ){
-				if( fwrite( buf,1,n,dstp )!=n ){
-					err=-3;
-					break;
-				}
-			}
-			fclose( dstp );
-		}else{
-//			printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
-			fflush( stdout );
-		}
-		fclose( srcp );
-	}else{
-//		printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
-		fflush( stdout );
-	}
-	return err==0;
-	
+    int err=-1;
+    if( FILE *srcp=_fopen( OS_STR( srcpath ),OS_STR( "rb" ) ) ){
+        err=-2;
+        if( FILE *dstp=_fopen( OS_STR( dstpath ),OS_STR( "wb" ) ) ){
+            err=0;
+            char buf[1024];
+            while( int n=fread( buf,1,1024,srcp ) ){
+                if( fwrite( buf,1,n,dstp )!=n ){
+                    err=-3;
+                    break;
+                }
+            }
+            fclose( dstp );
+     
+            // DAWLANE - Copy over the file attributes.
+            struct stat st;
+            stat( OS_STR( srcpath ), &st );
+            chmod( OS_STR( dstpath ), st.st_mode );
+        }else{
+//            printf( "FOPEN 'wb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+            fflush( stdout );
+        }
+        fclose( srcp );
+    }else{
+//        printf( "FOPEN 'rb' for CopyFile(%s,%s) failed\n",C_STR(srcpath),C_STR(dstpath) );
+        fflush( stdout );
+    }
+    return err==0;
+
 #endif
 }
 
@@ -2541,7 +2565,10 @@ class c_Markdown;
 class c_Stack5;
 class c_StringObject;
 class c_NodeEnumerator2;
+class c_Map5;
+class c_IntMap;
 class c_NodeEnumerator3;
+class c_Node6;
 class c_ILinkResolver : public virtual gc_interface{
 	public:
 	virtual String p_ResolveLink(String,String)=0;
@@ -2829,6 +2856,7 @@ class c_ApiDoccer : public Object{
 	void p_Error(String);
 	void p_ParseDocFile(String,c_DocDecl*,String);
 	void p_CopyDocsData(String,String);
+	void p__CopyDoccDecl(c_DocDecl*,c_Stack2*);
 	void p_ParseSourceFile(String,c_DocDecl*,String);
 	void p_ParseIn(String,c_DocDecl*,String);
 	void p_Parse();
@@ -2866,12 +2894,13 @@ class c_Toker : public Object{
 };
 class c_Parser : public c_Toker{
 	public:
+	c_Stack2* m_listofdecls;
 	c_Parser();
 	c_Parser* m_new(String);
 	c_Parser* m_new2();
 	c_Toker* p_Store();
 	String p_NextSpace();
-	String p_NextCdata(String);
+	String p_NextCdata(String,bool);
 	void p_Pop();
 	void p_Error(String);
 	void p_PopSpace(bool);
@@ -3261,6 +3290,28 @@ class c_NodeEnumerator2 : public Object{
 	c_Node4* p_NextObject();
 	void mark();
 };
+class c_Map5 : public Object{
+	public:
+	c_Node6* m_root;
+	c_Map5();
+	c_Map5* m_new();
+	virtual int p_Compare3(int,int)=0;
+	c_Node6* p_FindNode2(int);
+	bool p_Contains2(int);
+	int p_RotateLeft5(c_Node6*);
+	int p_RotateRight5(c_Node6*);
+	int p_InsertFixup5(c_Node6*);
+	bool p_Add6(int,String);
+	String p_Get(int);
+	void mark();
+};
+class c_IntMap : public c_Map5{
+	public:
+	c_IntMap();
+	c_IntMap* m_new();
+	int p_Compare3(int,int);
+	void mark();
+};
 class c_NodeEnumerator3 : public Object{
 	public:
 	c_Node3* m_node;
@@ -3269,6 +3320,19 @@ class c_NodeEnumerator3 : public Object{
 	c_NodeEnumerator3* m_new2();
 	bool p_HasNext();
 	c_Node3* p_NextObject();
+	void mark();
+};
+class c_Node6 : public Object{
+	public:
+	int m_key;
+	c_Node6* m_right;
+	c_Node6* m_left;
+	String m_value;
+	int m_color;
+	c_Node6* m_parent;
+	c_Node6();
+	c_Node6* m_new(int,String,int,c_Node6*);
+	c_Node6* m_new2();
 	void mark();
 };
 int bbMain();
@@ -3976,11 +4040,22 @@ void c_Makedocs::p_WriteDeclFiles(){
 		c_DocDecl* t_d3=t_3->p_NextObject();
 		String t_ktxt=t_d3->p_GetKindName();
 		if(t_ktxt!=String(L"Unspecified",11)){
-			String t_str2=t_d3->p_GetScopeIdent()+t_d3->m_ident+t_d3->p_GetDocType(false).Replace(String(L" ",1),String());
-			t_txt=t_txt+(t_ktxt+String(L" ",1)+t_str2);
-			t_txt=t_txt+(String(L";",1)+p_BuildDocLink(t_d3,0));
-			t_txt=t_txt+String(L";",1);
-			t_txt=t_txt+String(L"\n",1);
+			String t_str2=t_ktxt+String(L";",1);
+			t_str2=t_str2+(t_d3->m_ident+String(L";",1));
+			String t_stxt=t_d3->p_GetScopeIdent();
+			if(t_stxt.EndsWith(String(L".",1))){
+				t_stxt=t_stxt.Slice(0,-1);
+			}
+			t_str2=t_str2+(t_stxt+String(L";",1));
+			String t_dtxt=String();
+			if((t_d3->m_target)!=0){
+				t_dtxt=t_d3->m_target->p_GetDocType(false);
+			}else{
+				t_dtxt=t_d3->p_GetDocType(false);
+			}
+			t_dtxt=t_dtxt.Replace(String(L"~",1),String(L"~~",2)).Replace(String(L";",1),String(L"~s",2));
+			t_str2=t_str2+(t_d3->m_ident+t_dtxt+String(L";",1));
+			t_txt=t_txt+(t_str2+String(L"\n",1));
 		}
 	}
 	SaveString(t_txt,String(L"docs/html/decls.txt",19));
@@ -4151,6 +4226,7 @@ void c_Makedocs::p_WriteDocs(){
 		p_SetErrInfoFile(t_index->p_Key());
 		t_linkidents=t_index->p_Key().Split(String(L"/",1));
 		t_linkurls=p__LinkUrlsFromIdents(t_linkidents);
+		c_IntMap* t_indexshortcuts=(new c_IntMap)->m_new();
 		String t_indexname=t_linkidents[t_linkidents.Length()-1];
 		t_indexpager->p_Clear();
 		t_indexpager->p_SetString(String(L"INDEX",5),t_indexname);
@@ -4163,7 +4239,19 @@ void c_Makedocs::p_WriteDocs(){
 				t_indexpager->p_AddItem();
 				m_curdecl=t_decl;
 				m_apidoccer->p_SetPagerStrings(t_indexpager,t_decl,true);
+				String t_scdest=t_decl->p_GetIdent();
+				int t_sckey=(int)t_scdest.ToLower()[0];
+				if(!t_indexshortcuts->p_Contains2(t_sckey)){
+					t_indexshortcuts->p_Add6(t_sckey,String(L"#",1)+t_scdest);
+				}
 			}
+		}
+		t_indexpager->p_EndList();
+		t_indexpager->p_BeginList(String(L"INDEX_SHORTCUTS",15));
+		for(int t_i2=97;t_i2<=122;t_i2=t_i2+1){
+			t_indexpager->p_AddItem();
+			t_indexpager->p_SetString(String(L"IDENT",5),String((Char)(t_i2),1));
+			t_indexpager->p_SetString(String(L"URL",3),t_indexshortcuts->p_Get(t_i2));
 		}
 		t_indexpager->p_EndList();
 		t_page=t_indexpager->p_MakePage();
@@ -4194,7 +4282,7 @@ void c_Makedocs::p_WriteExamples(){
 	}
 }
 c_Makedocs* c_Makedocs::m_new(){
-	bbPrint(String(L"Makedocs 2018-12-21",19));
+	bbPrint(String(L"Makedocs 2020-04-26",19));
 	p_ParseAppArgs();
 	p_BrowseToCxRoot();
 	p_LoadTemplateName();
@@ -5709,14 +5797,14 @@ void c_ApiDoccer::p_ParseDocFile(String t_pPath,c_DocDecl* t_pScope,String t_pMo
 		while(!(m_parser->m__tokeType==0)){
 			c_Toker* t_state=m_parser->p_Store();
 			m_parser->p_NextSpace();
-			if((m_parser->p_NextCdata(String(L"# ",2))).Length()!=0){
+			if((m_parser->p_NextCdata(String(L"# ",2),false)).Length()!=0){
 				m_parser->p_NextToke();
 				t_curdecl=m_parser->p_ParseDecl(t_curdecl);
 				m_parser->p_NextRestOfLine();
 				m_cursect=800;
 				m_curparagraph=0;
 			}else{
-				if((m_parser->p_NextCdata(String(L"'# ",3))).Length()!=0){
+				if((m_parser->p_NextCdata(String(L"'# ",3),false)).Length()!=0){
 					m_parser->p_NextRestOfLine();
 				}else{
 					m_parser->p_Restore(t_state);
@@ -5742,6 +5830,17 @@ void c_ApiDoccer::p_CopyDocsData(String t_pPath,String t_pModulePath){
 	if(FileType(t_path)==2){
 		String t_dst=String(L"docs/html/data/",15)+t_pModulePath.Replace(String(L".",1),String(L"/",1));
 		m_maker->p_CopyDir(t_path,t_dst,true);
+	}
+}
+void c_ApiDoccer::p__CopyDoccDecl(c_DocDecl* t_pDoccDecl,c_Stack2* t_pDecls){
+	c_Enumerator2* t_=t_pDecls->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_DocDecl* t_ld=t_->p_NextObject();
+		c_Enumerator2* t_2=t_pDoccDecl->m_childs->p_ObjectEnumerator();
+		while(t_2->p_HasNext()){
+			c_DocDecl* t_d=t_2->p_NextObject();
+			t_ld->p_Add((new c_DocDecl)->m_new(t_d->m_kind,t_d->m_ident));
+		}
 	}
 }
 void c_ApiDoccer::p_ParseSourceFile(String t_pPath,c_DocDecl* t_pScope,String t_pModulePath){
@@ -5786,7 +5885,7 @@ void c_ApiDoccer::p_ParseSourceFile(String t_pPath,c_DocDecl* t_pScope,String t_
 			}
 			c_Toker* t_state=m_parser->p_Store();
 			m_parser->p_NextSpace();
-			if((m_parser->p_NextCdata(String(L"#Rem",4))).Length()!=0){
+			if((m_parser->p_NextCdata(String(L"#rem",4),true)).Length()!=0){
 				m_parser->p_NextToke();
 				bool t_doanalyse=!(t_indoc || t_inrem);
 				if(t_doanalyse && m_parser->p_PopToken(String(L"cerberusdoc",11),false)){
@@ -5830,7 +5929,7 @@ void c_ApiDoccer::p_ParseSourceFile(String t_pPath,c_DocDecl* t_pScope,String t_
 					}
 				}
 			}else{
-				if((m_parser->p_NextCdata(String(L"#If",3))).Length()!=0){
+				if((m_parser->p_NextCdata(String(L"#if",3),true)).Length()!=0){
 					if(t_indoc){
 						m_parser->p_Restore(t_state);
 						String t_str2=m_parser->p_NextRestOfLine();
@@ -5841,7 +5940,7 @@ void c_ApiDoccer::p_ParseSourceFile(String t_pPath,c_DocDecl* t_pScope,String t_
 						t_docblocks->p_Push7(2);
 					}
 				}else{
-					if((m_parser->p_NextCdata(String(L"#End",4))).Length()!=0){
+					if((m_parser->p_NextCdata(String(L"#end",4),true)).Length()!=0){
 						t_docblocks->p_Pop();
 						if(t_docblocks->p_Length2()>0 && t_docblocks->p_Get(0)==0){
 							m_parser->p_Restore(t_state);
@@ -5867,6 +5966,10 @@ void c_ApiDoccer::p_ParseSourceFile(String t_pPath,c_DocDecl* t_pScope,String t_
 											while(t_2->p_HasNext()){
 												c_DocDecl* t_d=t_2->p_NextObject();
 												t_curdecl->p_Add(t_d);
+											}
+											if((m_parser->m_listofdecls)!=0){
+												m_parser->m_listofdecls->p_RemoveEach(t_curdecl);
+												p__CopyDoccDecl(t_doccdecl,m_parser->m_listofdecls);
 											}
 											t_doccdecl=0;
 										}
@@ -6043,7 +6146,11 @@ void c_ApiDoccer::p_SetPagerStrings(c_PageMaker* t_pPager,c_DocDecl* t_pDecl,boo
 	t_pPager->p_SetString(String(L"IDENT",5),t_tdecl->p_GetIdent());
 	t_pPager->p_SetString(String(L"URL",3),m_maker->p_BuildDocLink(t_tdecl,0));
 	t_pPager->p_SetString(String(L"SCOPE",5),t_tdecl->p_GetScopeIdent());
-	t_txt=t_tdecl->p_GetTextOfChild(850);
+	if(t_tdecl->m_kind==601){
+		t_txt=t_tdecl->m_parent->p_GetTextOfChild(850);
+	}else{
+		t_txt=t_tdecl->p_GetTextOfChild(850);
+	}
 	t_txt=p_StripParagraph(m_maker->m_marker->p_ToHtml(t_txt));
 	t_pPager->p_SetString(String(L"SUMMARY",7),t_txt);
 	if(t_pOnlyForIndex){
@@ -6237,7 +6344,7 @@ int c_Toker::p__init(){
 		return 0;
 	}
 	m__keywords=(new c_StringSet)->m_new();
-	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",437).Split(String(L" ",1));
+	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include includedir import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",448).Split(String(L" ",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
 		String t_t=t_[t_2];
@@ -6431,6 +6538,7 @@ void c_Toker::mark(){
 	Object::mark();
 }
 c_Parser::c_Parser(){
+	m_listofdecls=0;
 }
 c_Parser* c_Parser::m_new(String t_pText){
 	c_Toker::m_new(String(),t_pText);
@@ -6467,7 +6575,7 @@ String c_Parser::p_NextSpace(){
 	m__tokeType=1;
 	return m__toke;
 }
-String c_Parser::p_NextCdata(String t_pString){
+String c_Parser::p_NextCdata(String t_pString,bool t_pCaseInsensitive){
 	m__toke=String();
 	if(m__tokePos==m__length){
 		m__tokeType=0;
@@ -6476,7 +6584,7 @@ String c_Parser::p_NextCdata(String t_pString){
 	int t_ln=t_pString.Length();
 	if(m__tokePos+t_ln<m__length){
 		String t_sstr=m__source.Slice(m__tokePos,m__tokePos+t_ln);
-		if(t_sstr==t_pString){
+		if(t_sstr==t_pString || t_pCaseInsensitive && t_sstr.ToLower()==t_pString.ToLower()){
 			m__toke=t_sstr;
 			m__tokeType=12;
 			m__tokePos+=t_ln;
@@ -7003,6 +7111,7 @@ c_DocDecl* c_Parser::p_ParseEnumDecl(c_DocDecl* t_pScope,int t_pKind){
 	}while(!(false));
 }
 c_DocDecl* c_Parser::p_ParseDecl(c_DocDecl* t_pScope){
+	m_listofdecls=0;
 	String t_1=m__toke.ToLower();
 	if(t_1==String(L"module",6)){
 		p_Pop();
@@ -7054,6 +7163,9 @@ c_DocDecl* c_Parser::p_ParseDecl(c_DocDecl* t_pScope){
 										t_kind=421;
 									}
 									c_Stack2* t_decls=p_ParseVariableSet(t_scope3,t_kind);
+									if(t_decls->p_Length2()>1){
+										m_listofdecls=t_decls;
+									}
 									return t_decls->p_Get(0);
 								}else{
 									t_scope3=p_GetModuleScope(t_pScope);
@@ -7065,6 +7177,9 @@ c_DocDecl* c_Parser::p_ParseDecl(c_DocDecl* t_pScope){
 										t_kind2=321;
 									}
 									c_Stack2* t_decls2=p_ParseVariableSet(t_scope3,t_kind2);
+									if(t_decls2->p_Length2()>1){
+										m_listofdecls=t_decls2;
+									}
 									return t_decls2->p_Get(0);
 								}
 							}else{
@@ -7086,6 +7201,9 @@ c_DocDecl* c_Parser::p_ParseDecl(c_DocDecl* t_pScope){
 										c_DocDecl* t_scope5=p_GetClassScope(t_pScope);
 										if((t_scope5)!=0){
 											c_Stack2* t_decls3=p_ParseVariableSet(t_scope5,423);
+											if(t_decls3->p_Length2()>1){
+												m_listofdecls=t_decls3;
+											}
 											return t_decls3->p_Get(0);
 										}else{
 											p_Error(String(L"Field declaration must be at class scope",40));
@@ -8615,66 +8733,63 @@ String c_Markdown::p_ReplacePrefixTags(String t_src,String t_tag,String t_html){
 }
 String c_Markdown::p_ReplaceLinks(String t_src){
 	int t_i=0;
+	int t_i0=0;
+	int t_i1=0;
+	int t_i2=0;
+	String t_lnk=String();
+	String t_txt=String();
+	String t_res=String();
 	do{
-		int t_i0=p_Find3(t_src,String(L"[[",2),t_i);
-		if(t_i0==-1){
-			break;
+		t_lnk=String();
+		t_txt=String();
+		t_i0=p_Find3(t_src,String(L"[[",2),t_i);
+		if(t_i0>-1){
+			t_i1=p_Find3(t_src,String(L"]]",2),t_i0+2);
+			if(t_i1>-1){
+				t_lnk=t_src.Slice(t_i0+2,t_i1);
+				t_i2=p_Find3(t_lnk,String(L"|",1),0);
+				if(t_i2>-1){
+					t_txt=t_lnk.Slice(t_i2+1);
+					t_lnk=t_lnk.Slice(0,t_i2);
+				}
+				t_res=m__resolver->p_ResolveLink(t_lnk,t_txt);
+				t_src=t_src.Slice(0,t_i0)+t_res+t_src.Slice(t_i1+2);
+				t_i=t_i0+t_res.Length();
+				continue;
+			}
 		}
-		int t_i1=p_Find3(t_src,String(L"]]",2),t_i0+2);
-		if(t_i1==-1){
-			break;
+		t_i0=p_Find3(t_src,String(L"![",2),t_i);
+		if(t_i0>-1){
+			t_i1=p_Find3(t_src,String(L"](",2),t_i0+2);
+			if(t_i1>-1){
+				t_i2=p_Find3(t_src,String(L")",1),t_i1+2);
+				if(t_i2>-1){
+					t_txt=t_src.Slice(t_i0+2,t_i1);
+					t_lnk=t_src.Slice(t_i1+2,t_i2);
+					t_res=m__resolver->p_ResolveLink(String(L"<img>",5)+t_lnk,t_txt);
+					t_src=t_src.Slice(0,t_i0)+t_res+t_src.Slice(t_i2+1);
+					t_i=t_i0+t_res.Length();
+					continue;
+				}
+			}
 		}
-		String t_p=t_src.Slice(t_i0+2,t_i1);
-		String t_t=String();
-		int t_j=t_p.Find(String(L"|",1),0);
-		if(t_j!=-1){
-			t_t=t_p.Slice(t_j+1);
-			t_p=t_p.Slice(0,t_j);
+		t_i0=p_Find3(t_src,String(L"[",1),t_i);
+		if(t_i0>-1){
+			t_i1=p_Find3(t_src,String(L"](",2),t_i0+1);
+			if(t_i1>-1){
+				t_i2=p_Find3(t_src,String(L")",1),t_i1+2);
+				if(t_i2>-1){
+					t_txt=t_src.Slice(t_i0+1,t_i1);
+					t_lnk=t_src.Slice(t_i1+2,t_i2);
+					t_res=m__resolver->p_ResolveLink(t_lnk,t_txt);
+					t_src=t_src.Slice(0,t_i0)+t_res+t_src.Slice(t_i2+1);
+					t_i=t_i0+t_res.Length();
+					continue;
+				}
+			}
 		}
-		String t_r=m__resolver->p_ResolveLink(t_p,t_t);
-		t_src=t_src.Slice(0,t_i0)+t_r+t_src.Slice(t_i1+2);
-		t_i=t_i0+t_r.Length();
-	}while(!(false));
-	t_i=0;
-	do{
-		int t_i02=p_Find3(t_src,String(L"![",2),t_i);
-		if(t_i02==-1){
-			break;
-		}
-		int t_i12=p_Find3(t_src,String(L"](",2),t_i02+1);
-		if(t_i12==-1 || t_i12==t_i02+1){
-			break;
-		}
-		int t_i2=p_Find3(t_src,String(L")",1),t_i12+2);
-		if(t_i2==-1 || t_i2==t_i12+2){
-			break;
-		}
-		String t_t2=t_src.Slice(t_i02+2,t_i12);
-		String t_p2=t_src.Slice(t_i12+2,t_i2);
-		String t_r2=m__resolver->p_ResolveLink(String(L"<img>",5)+t_p2,t_t2);
-		t_src=t_src.Slice(0,t_i02)+t_r2+t_src.Slice(t_i2+1);
-		t_i=t_i02+t_r2.Length();
-	}while(!(false));
-	t_i=0;
-	do{
-		int t_i03=p_Find3(t_src,String(L"[",1),t_i);
-		if(t_i03==-1){
-			break;
-		}
-		int t_i13=p_Find3(t_src,String(L"](",2),t_i03+1);
-		if(t_i13==-1 || t_i13==t_i03+1){
-			break;
-		}
-		int t_i22=p_Find3(t_src,String(L")",1),t_i13+2);
-		if(t_i22==-1 || t_i22==t_i13+2){
-			break;
-		}
-		String t_t3=t_src.Slice(t_i03+1,t_i13);
-		String t_p3=t_src.Slice(t_i13+2,t_i22);
-		String t_r3=m__resolver->p_ResolveLink(t_p3,t_t3);
-		t_src=t_src.Slice(0,t_i03)+t_r3+t_src.Slice(t_i22+1);
-		t_i=t_i03+t_r3.Length();
-	}while(!(false));
+		t_i+=1;
+	}while(!(t_i0==-1));
 	return t_src;
 }
 String c_Markdown::p_ReplaceEscs(String t_src){
@@ -8922,6 +9037,162 @@ c_Node4* c_NodeEnumerator2::p_NextObject(){
 void c_NodeEnumerator2::mark(){
 	Object::mark();
 }
+c_Map5::c_Map5(){
+	m_root=0;
+}
+c_Map5* c_Map5::m_new(){
+	return this;
+}
+c_Node6* c_Map5::p_FindNode2(int t_key){
+	c_Node6* t_node=m_root;
+	while((t_node)!=0){
+		int t_cmp=p_Compare3(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+bool c_Map5::p_Contains2(int t_key){
+	return p_FindNode2(t_key)!=0;
+}
+int c_Map5::p_RotateLeft5(c_Node6* t_node){
+	c_Node6* t_child=t_node->m_right;
+	t_node->m_right=t_child->m_left;
+	if((t_child->m_left)!=0){
+		t_child->m_left->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_left){
+			t_node->m_parent->m_left=t_child;
+		}else{
+			t_node->m_parent->m_right=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_left=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map5::p_RotateRight5(c_Node6* t_node){
+	c_Node6* t_child=t_node->m_left;
+	t_node->m_left=t_child->m_right;
+	if((t_child->m_right)!=0){
+		t_child->m_right->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_right){
+			t_node->m_parent->m_right=t_child;
+		}else{
+			t_node->m_parent->m_left=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_right=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map5::p_InsertFixup5(c_Node6* t_node){
+	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
+		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
+			c_Node6* t_uncle=t_node->m_parent->m_parent->m_right;
+			if(((t_uncle)!=0) && t_uncle->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle->m_color=1;
+				t_uncle->m_parent->m_color=-1;
+				t_node=t_uncle->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_right){
+					t_node=t_node->m_parent;
+					p_RotateLeft5(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateRight5(t_node->m_parent->m_parent);
+			}
+		}else{
+			c_Node6* t_uncle2=t_node->m_parent->m_parent->m_left;
+			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle2->m_color=1;
+				t_uncle2->m_parent->m_color=-1;
+				t_node=t_uncle2->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_left){
+					t_node=t_node->m_parent;
+					p_RotateRight5(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateLeft5(t_node->m_parent->m_parent);
+			}
+		}
+	}
+	m_root->m_color=1;
+	return 0;
+}
+bool c_Map5::p_Add6(int t_key,String t_value){
+	c_Node6* t_node=m_root;
+	c_Node6* t_parent=0;
+	int t_cmp=0;
+	while((t_node)!=0){
+		t_parent=t_node;
+		t_cmp=p_Compare3(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return false;
+			}
+		}
+	}
+	t_node=(new c_Node6)->m_new(t_key,t_value,-1,t_parent);
+	if((t_parent)!=0){
+		if(t_cmp>0){
+			t_parent->m_right=t_node;
+		}else{
+			t_parent->m_left=t_node;
+		}
+		p_InsertFixup5(t_node);
+	}else{
+		m_root=t_node;
+	}
+	return true;
+}
+String c_Map5::p_Get(int t_key){
+	c_Node6* t_node=p_FindNode2(t_key);
+	if((t_node)!=0){
+		return t_node->m_value;
+	}
+	return String();
+}
+void c_Map5::mark(){
+	Object::mark();
+}
+c_IntMap::c_IntMap(){
+}
+c_IntMap* c_IntMap::m_new(){
+	c_Map5::m_new();
+	return this;
+}
+int c_IntMap::p_Compare3(int t_lhs,int t_rhs){
+	return t_lhs-t_rhs;
+}
+void c_IntMap::mark(){
+	c_Map5::mark();
+}
 c_NodeEnumerator3::c_NodeEnumerator3(){
 	m_node=0;
 }
@@ -8941,6 +9212,27 @@ c_Node3* c_NodeEnumerator3::p_NextObject(){
 	return t_t;
 }
 void c_NodeEnumerator3::mark(){
+	Object::mark();
+}
+c_Node6::c_Node6(){
+	m_key=0;
+	m_right=0;
+	m_left=0;
+	m_value=String();
+	m_color=0;
+	m_parent=0;
+}
+c_Node6* c_Node6::m_new(int t_key,String t_value,int t_color,c_Node6* t_parent){
+	this->m_key=t_key;
+	this->m_value=t_value;
+	this->m_color=t_color;
+	this->m_parent=t_parent;
+	return this;
+}
+c_Node6* c_Node6::m_new2(){
+	return this;
+}
+void c_Node6::mark(){
 	Object::mark();
 }
 int bbMain(){

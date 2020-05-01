@@ -628,7 +628,7 @@ Class Reflector
 		Emit " End"
 		Emit "End"
 		
-		Local source:=output.Join( "~n" )
+		Local source:=output.Join( "~n" )+"~n" ' Append a new line character to avoid EOF issues.
 		
 		Local attrs:=DECL_REFLECTOR
 		

@@ -1,0 +1,17 @@
+> Directive Include
+
+Module include directive.
+
+>> Syntax
+
+Include "filename"
+
+>> Description
+
+A Cerberus X program can add files into the build folder for further addition during the compile process.
+Contrary to the Import directive, these files are not injected into the translated code and the main.* file.
+
+>> See also
+[[Strict]] | [[Import]] | [[IncludeDir]] ~n
+[Language reference](Language reference#modules)
+

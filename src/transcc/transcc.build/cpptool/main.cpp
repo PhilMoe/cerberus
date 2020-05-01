@@ -15120,19 +15120,29 @@ class c_Map5;
 class c_StringMap5;
 class c_Node7;
 class c_Parser;
+class c_BlockTrace;
+class c_List3;
+class c_IntList;
+class c_Map6;
+class c_IntMap;
+class c_Node8;
+class c_TraceRecord;
+class c_List4;
+class c_Node9;
+class c_HeadNode3;
 class c_NumericType;
 class c_IntType;
 class c_FloatType;
 class c_AliasDecl;
-class c_List3;
-class c_Node8;
-class c_HeadNode3;
+class c_List5;
+class c_Node10;
+class c_HeadNode4;
 class c_BlockDecl;
 class c_FuncDecl;
-class c_List4;
+class c_List6;
 class c_FuncDeclList;
-class c_Node9;
-class c_HeadNode4;
+class c_Node11;
+class c_HeadNode5;
 class c_ClassDecl;
 class c_VoidType;
 class c_IdentType;
@@ -15149,11 +15159,16 @@ class c_CastExpr;
 class c_IdentExpr;
 class c_SelfExpr;
 class c_Stmt;
-class c_List5;
-class c_Node10;
-class c_HeadNode5;
+class c_List7;
+class c_Node12;
+class c_HeadNode6;
 class c_InvokeSuperExpr;
 class c_IdentTypeExpr;
+class c_Node13;
+class c_HeadNode7;
+class c_Enumerator2;
+class c_MapKeys;
+class c_KeyEnumerator;
 class c_FuncCallExpr;
 class c_SliceExpr;
 class c_IndexExpr;
@@ -15165,18 +15180,18 @@ class c_VarDecl;
 class c_GlobalDecl;
 class c_FieldDecl;
 class c_LocalDecl;
-class c_Enumerator2;
+class c_Enumerator3;
 class c_DeclStmt;
 class c_Stack6;
 class c_ObjectType;
-class c_List6;
-class c_Node11;
-class c_HeadNode6;
+class c_List8;
+class c_Node14;
+class c_HeadNode8;
 class c_ArgDecl;
 class c_Stack7;
-class c_List7;
-class c_Node12;
-class c_HeadNode7;
+class c_List9;
+class c_Node15;
+class c_HeadNode9;
 class c_ReturnStmt;
 class c_BreakStmt;
 class c_ContinueStmt;
@@ -15191,23 +15206,23 @@ class c_Stack8;
 class c_TryStmt;
 class c_ThrowStmt;
 class c_ExprStmt;
-class c_Enumerator3;
-class c_List8;
-class c_Node13;
-class c_HeadNode8;
+class c_Enumerator4;
+class c_List10;
+class c_Node16;
+class c_HeadNode10;
 class c_InvokeMemberExpr;
 class c_Target;
-class c_Map6;
+class c_Map7;
 class c_StringMap6;
-class c_Node14;
+class c_Node17;
 class c_NodeEnumerator2;
 class c_Reflector;
 class c_MapValues;
 class c_ValueEnumerator;
-class c_Map7;
+class c_Map8;
 class c_StringMap7;
-class c_Node15;
-class c_Enumerator4;
+class c_Node18;
+class c_Enumerator5;
 class c_Stack9;
 class c_Translator;
 class c_CTranslator;
@@ -15220,26 +15235,26 @@ class c_FileStream;
 class c_DataBuffer;
 class c_AsTranslator;
 class c_CsTranslator;
-class c_List9;
-class c_Node16;
-class c_HeadNode9;
-class c_Enumerator5;
+class c_List11;
+class c_Node19;
+class c_HeadNode11;
+class c_Enumerator6;
 class c_InvokeExpr;
 class c_StmtExpr;
 class c_MemberVarExpr;
 class c_VarExpr;
-class c_Map8;
-class c_StringMap8;
-class c_Node17;
 class c_Map9;
-class c_StringMap9;
-class c_Node18;
+class c_StringMap8;
+class c_Node20;
 class c_Map10;
+class c_StringMap9;
+class c_Node21;
+class c_Map11;
 class c_StringMap10;
-class c_Node19;
-class c_Enumerator6;
-class c_Stack10;
+class c_Node22;
 class c_Enumerator7;
+class c_Stack10;
+class c_Enumerator8;
 class c_TransCC : public Object{
 	public:
 	Array<String > m_args;
@@ -15350,27 +15365,27 @@ class c_Decl : public Object{
 };
 class c_ScopeDecl : public c_Decl{
 	public:
-	c_List3* m_decls;
+	c_List5* m_decls;
 	c_StringMap4* m_declsMap;
-	c_List3* m_semanted;
+	c_List5* m_semanted;
 	c_ScopeDecl();
 	c_ScopeDecl* m_new();
 	int p_InsertDecl(c_Decl*);
 	virtual Object* p_GetDecl(String);
 	Object* p_FindDecl(String);
-	int p_InsertDecls(c_List3*);
+	int p_InsertDecls(c_List5*);
 	virtual c_FuncDecl* p_FindFuncDecl(String,Array<c_Expr* >,int);
-	c_List3* p_Decls();
+	c_List5* p_Decls();
 	c_Type* p_FindType(String,Array<c_Type* >);
-	c_List4* p_MethodDecls(String);
-	c_List3* p_Semanted();
-	c_List4* p_SemantedMethods(String);
+	c_List6* p_MethodDecls(String);
+	c_List5* p_Semanted();
+	c_List6* p_SemantedMethods(String);
 	virtual c_ValDecl* p_FindValDecl(String);
 	c_Decl* p_OnCopy();
 	int p_OnSemant();
-	c_List4* p_SemantedFuncs(String);
+	c_List6* p_SemantedFuncs(String);
 	c_ModuleDecl* p_FindModuleDecl(String);
-	c_List4* p_FuncDecls(String);
+	c_List6* p_FuncDecls(String);
 	c_ScopeDecl* p_FindScopeDecl(String);
 	void mark();
 };
@@ -15532,11 +15547,11 @@ class c_Stack : public Object{
 	bool p_IsEmpty();
 	Array<String > p_ToArray();
 	static String m_NIL;
-	String p_Pop();
-	void p_Clear();
 	void p_Length(int);
 	int p_Length2();
 	String p_Get2(int);
+	String p_Pop();
+	void p_Clear();
 	void mark();
 };
 class c_StringStack : public c_Stack{
@@ -15574,6 +15589,7 @@ class c_Builder : public Object{
 	void p_CreateDataDir(String);
 	void p_MakeIcons(String,Array<String >,int);
 	bool p_Execute(String,bool);
+	void p_CopySourceFiles(String);
 	void p_CopyIcon(String,String);
 	void mark();
 };
@@ -15896,10 +15912,10 @@ class c_Stack3 : public Object{
 	void p_Push9(Array<int >,int);
 	bool p_IsEmpty();
 	static int m_NIL;
+	int p_Pop();
 	void p_Length(int);
 	int p_Length2();
 	int p_Get2(int);
-	int p_Pop();
 	void p_Clear();
 	void mark();
 };
@@ -16045,9 +16061,11 @@ class c_AppDecl : public c_ScopeDecl{
 	c_StringMap5* m_imported;
 	c_ModuleDecl* m_mainModule;
 	c_StringList* m_fileImports;
-	c_List3* m_allSemantedDecls;
-	c_List8* m_semantedGlobals;
-	c_List6* m_semantedClasses;
+	c_StringList* m_fileIncludes;
+	c_StringList* m_dirIncludes;
+	c_List5* m_allSemantedDecls;
+	c_List10* m_semantedGlobals;
+	c_List8* m_semantedClasses;
 	c_FuncDecl* m_mainFunc;
 	c_AppDecl();
 	int p_InsertModule(c_ModuleDecl*);
@@ -16104,11 +16122,11 @@ class c_Parser : public Object{
 	int m__defattrs;
 	int m__tokeType;
 	c_BlockDecl* m__block;
-	c_List7* m__blockStack;
+	c_List9* m__blockStack;
 	c_StringList* m__errStack;
 	int m__selTmpId;
 	c_Parser();
-	int p_SetErr();
+	int p_SetErr(int);
 	int p_CParse(String);
 	int p_SkipEols();
 	String p_NextToke();
@@ -16120,6 +16138,8 @@ class c_Parser : public Object{
 	String p_ParseIdent();
 	String p_ParseModPath();
 	int p_ImportModule(String,int);
+	int p_IncludeFiles(String);
+	int p_IncludeDirs(String);
 	int p_Parse(String);
 	c_Type* p_CParsePrimitiveType();
 	c_IdentType* p_ParseIdentType();
@@ -16129,6 +16149,7 @@ class c_Parser : public Object{
 	int p_AtEos();
 	Array<c_Expr* > p_ParseArgs2(int);
 	c_IdentType* p_CParseIdentType(bool);
+	c_TraceRecord* p_BackTrace(int);
 	c_Expr* p_ParsePrimaryExpr(int);
 	c_Expr* p_ParseUnaryExpr();
 	c_Expr* p_ParseMulDivExpr();
@@ -16140,15 +16161,19 @@ class c_Parser : public Object{
 	c_Expr* p_ParseOrExpr();
 	c_Expr* p_ParseExpr();
 	c_Decl* p_ParseDecl(String,int);
-	c_List3* p_ParseDecls(String,int);
-	c_List3* p_ParseEnumStmt(int,bool);
-	c_List3* p_ParseEnum(String,int);
+	c_List5* p_ParseDecls(String,int);
+	c_List5* p_ParseEnumStmt(int,bool);
+	c_List5* p_ParseEnum(String,int);
 	int p_PushBlock(c_BlockDecl*);
 	int p_ParseDeclStmts();
 	int p_ParseReturnStmt();
 	int p_ParseExitStmt();
 	int p_ParseContinueStmt();
+	int p_AtEOF(int,String);
+	int p_AtEOF2(String,String);
 	int p_PopBlock();
+	int p_AtEos2();
+	int p_ParseBlockEnd(String,String,int);
 	int p_ParseIfStmt(String);
 	int p_ParseWhileStmt();
 	int p_PushErr();
@@ -16162,6 +16187,134 @@ class c_Parser : public Object{
 	c_FuncDecl* p_ParseFuncDecl(int);
 	c_ClassDecl* p_ParseClassDecl(int);
 	int p_ParseMain();
+	void mark();
+};
+class c_BlockTrace : public Object{
+	public:
+	c_IntMap* m__map;
+	c_List4* m__record;
+	c_BlockTrace();
+	c_BlockTrace* m_new();
+	static c_BlockTrace* m__Blocks;
+	static int m_Clear();
+	c_TraceRecord* p_LastBlockItem();
+	c_IntList* p_BlockLineList(int);
+	int p_Unwind(int);
+	static int m_TraceLog(int);
+	static int m_Str2Code(String);
+	static int m_TraceLog2(String);
+	c_TraceRecord* p_RemoveRecord();
+	static c_TraceRecord* m_Pop();
+	static String m_Code2Str(int);
+	int p_AddRecord(c_TraceRecord*);
+	static int m_Push(int,int);
+	static int m_Push2(String,int);
+	void mark();
+};
+class c_List3 : public Object{
+	public:
+	c_Node13* m__head;
+	c_List3();
+	c_List3* m_new();
+	c_Node13* p_AddLast3(int);
+	c_List3* m_new2(Array<int >);
+	c_Enumerator2* p_ObjectEnumerator();
+	virtual int p_Compare2(int,int);
+	int p_Sort(int);
+	int p_Count();
+	Array<int > p_ToArray();
+	void mark();
+};
+class c_IntList : public c_List3{
+	public:
+	c_IntList();
+	c_IntList* m_new(Array<int >);
+	c_IntList* m_new2();
+	int p_Compare2(int,int);
+	void mark();
+};
+class c_Map6 : public Object{
+	public:
+	c_Node8* m_root;
+	c_Map6();
+	c_Map6* m_new();
+	int p_Clear();
+	virtual int p_Compare2(int,int)=0;
+	c_Node8* p_FindNode2(int);
+	c_IntList* p_Get2(int);
+	c_MapKeys* p_Keys();
+	c_Node8* p_FirstNode();
+	bool p_Contains2(int);
+	int p_RotateLeft6(c_Node8*);
+	int p_RotateRight6(c_Node8*);
+	int p_InsertFixup6(c_Node8*);
+	bool p_Add(int,c_IntList*);
+	void mark();
+};
+class c_IntMap : public c_Map6{
+	public:
+	c_IntMap();
+	c_IntMap* m_new();
+	int p_Compare2(int,int);
+	void mark();
+};
+class c_Node8 : public Object{
+	public:
+	int m_key;
+	c_Node8* m_right;
+	c_Node8* m_left;
+	c_IntList* m_value;
+	c_Node8* m_parent;
+	int m_color;
+	c_Node8();
+	c_Node8* p_NextNode();
+	c_Node8* m_new(int,c_IntList*,int,c_Node8*);
+	c_Node8* m_new2();
+	void mark();
+};
+class c_TraceRecord : public Object{
+	public:
+	int m__line;
+	int m__toke;
+	c_TraceRecord();
+	int p_Line();
+	int p_Toke();
+	c_TraceRecord* m_new(int,int);
+	c_TraceRecord* m_new2();
+	void mark();
+};
+class c_List4 : public Object{
+	public:
+	c_Node9* m__head;
+	c_List4();
+	c_List4* m_new();
+	c_Node9* p_AddLast4(c_TraceRecord*);
+	c_List4* m_new2(Array<c_TraceRecord* >);
+	int p_Clear();
+	bool p_IsEmpty();
+	c_TraceRecord* p_Last();
+	c_TraceRecord* p_RemoveLast();
+	bool p_Equals3(c_TraceRecord*,c_TraceRecord*);
+	c_Node9* p_FindLast5(c_TraceRecord*,c_Node9*);
+	c_Node9* p_FindLast6(c_TraceRecord*);
+	void p_RemoveLast4(c_TraceRecord*);
+	void mark();
+};
+class c_Node9 : public Object{
+	public:
+	c_Node9* m__succ;
+	c_Node9* m__pred;
+	c_TraceRecord* m__data;
+	c_Node9();
+	c_Node9* m_new(c_Node9*,c_Node9*,c_TraceRecord*);
+	c_Node9* m_new2();
+	int p_Remove();
+	void mark();
+};
+class c_HeadNode3 : public c_Node9{
+	public:
+	c_HeadNode3();
+	c_HeadNode3* m_new();
 	void mark();
 };
 int bb_config_InternalErr(String);
@@ -16205,36 +16358,36 @@ class c_AliasDecl : public c_Decl{
 	int p_OnSemant();
 	void mark();
 };
-class c_List3 : public Object{
+class c_List5 : public Object{
 	public:
-	c_Node8* m__head;
-	c_List3();
-	c_List3* m_new();
-	c_Node8* p_AddLast3(c_Decl*);
-	c_List3* m_new2(Array<c_Decl* >);
-	c_Enumerator2* p_ObjectEnumerator();
+	c_Node10* m__head;
+	c_List5();
+	c_List5* m_new();
+	c_Node10* p_AddLast5(c_Decl*);
+	c_List5* m_new2(Array<c_Decl* >);
+	c_Enumerator3* p_ObjectEnumerator();
 	int p_Count();
 	void mark();
 };
-class c_Node8 : public Object{
+class c_Node10 : public Object{
 	public:
-	c_Node8* m__succ;
-	c_Node8* m__pred;
+	c_Node10* m__succ;
+	c_Node10* m__pred;
 	c_Decl* m__data;
-	c_Node8();
-	c_Node8* m_new(c_Node8*,c_Node8*,c_Decl*);
-	c_Node8* m_new2();
+	c_Node10();
+	c_Node10* m_new(c_Node10*,c_Node10*,c_Decl*);
+	c_Node10* m_new2();
 	void mark();
 };
-class c_HeadNode3 : public c_Node8{
+class c_HeadNode4 : public c_Node10{
 	public:
-	c_HeadNode3();
-	c_HeadNode3* m_new();
+	c_HeadNode4();
+	c_HeadNode4* m_new();
 	void mark();
 };
 class c_BlockDecl : public c_ScopeDecl{
 	public:
-	c_List5* m_stmts;
+	c_List7* m_stmts;
 	c_BlockDecl();
 	int p_AddStmt(c_Stmt*);
 	c_BlockDecl* m_new(c_ScopeDecl*);
@@ -16264,36 +16417,36 @@ class c_FuncDecl : public c_BlockDecl{
 	bool p_IsVirtual();
 	void mark();
 };
-class c_List4 : public Object{
+class c_List6 : public Object{
 	public:
-	c_Node9* m__head;
-	c_List4();
-	c_List4* m_new();
-	c_Node9* p_AddLast4(c_FuncDecl*);
-	c_List4* m_new2(Array<c_FuncDecl* >);
-	c_Enumerator3* p_ObjectEnumerator();
+	c_Node11* m__head;
+	c_List6();
+	c_List6* m_new();
+	c_Node11* p_AddLast6(c_FuncDecl*);
+	c_List6* m_new2(Array<c_FuncDecl* >);
+	c_Enumerator4* p_ObjectEnumerator();
 	void mark();
 };
-class c_FuncDeclList : public c_List4{
+class c_FuncDeclList : public c_List6{
 	public:
 	c_FuncDeclList();
 	c_FuncDeclList* m_new();
 	void mark();
 };
-class c_Node9 : public Object{
+class c_Node11 : public Object{
 	public:
-	c_Node9* m__succ;
-	c_Node9* m__pred;
+	c_Node11* m__succ;
+	c_Node11* m__pred;
 	c_FuncDecl* m__data;
-	c_Node9();
-	c_Node9* m_new(c_Node9*,c_Node9*,c_FuncDecl*);
-	c_Node9* m_new2();
+	c_Node11();
+	c_Node11* m_new(c_Node11*,c_Node11*,c_FuncDecl*);
+	c_Node11* m_new2();
 	void mark();
 };
-class c_HeadNode4 : public c_Node9{
+class c_HeadNode5 : public c_Node11{
 	public:
-	c_HeadNode4();
-	c_HeadNode4* m_new();
+	c_HeadNode5();
+	c_HeadNode5* m_new();
 	void mark();
 };
 class c_ClassDecl : public c_ScopeDecl{
@@ -16303,7 +16456,7 @@ class c_ClassDecl : public c_ScopeDecl{
 	c_IdentType* m_superTy;
 	Array<c_IdentType* > m_impltys;
 	c_ObjectType* m_objectType;
-	c_List6* m_instances;
+	c_List8* m_instances;
 	c_ClassDecl* m_instanceof;
 	Array<c_Type* > m_instArgs;
 	Array<c_ClassDecl* > m_implmentsAll;
@@ -16525,32 +16678,32 @@ class c_Stmt : public Object{
 	virtual String p_Trans()=0;
 	void mark();
 };
-class c_List5 : public Object{
+class c_List7 : public Object{
 	public:
-	c_Node10* m__head;
-	c_List5();
-	c_List5* m_new();
-	c_Node10* p_AddLast5(c_Stmt*);
-	c_List5* m_new2(Array<c_Stmt* >);
+	c_Node12* m__head;
+	c_List7();
+	c_List7* m_new();
+	c_Node12* p_AddLast7(c_Stmt*);
+	c_List7* m_new2(Array<c_Stmt* >);
 	bool p_IsEmpty();
-	c_Enumerator5* p_ObjectEnumerator();
-	c_Node10* p_AddFirst(c_Stmt*);
+	c_Enumerator6* p_ObjectEnumerator();
+	c_Node12* p_AddFirst(c_Stmt*);
 	void mark();
 };
-class c_Node10 : public Object{
+class c_Node12 : public Object{
 	public:
-	c_Node10* m__succ;
-	c_Node10* m__pred;
+	c_Node12* m__succ;
+	c_Node12* m__pred;
 	c_Stmt* m__data;
-	c_Node10();
-	c_Node10* m_new(c_Node10*,c_Node10*,c_Stmt*);
-	c_Node10* m_new2();
+	c_Node12();
+	c_Node12* m_new(c_Node12*,c_Node12*,c_Stmt*);
+	c_Node12* m_new2();
 	void mark();
 };
-class c_HeadNode5 : public c_Node10{
+class c_HeadNode6 : public c_Node12{
 	public:
-	c_HeadNode5();
-	c_HeadNode5* m_new();
+	c_HeadNode6();
+	c_HeadNode6* m_new();
 	void mark();
 };
 class c_InvokeSuperExpr : public c_Expr{
@@ -16577,6 +16730,52 @@ class c_IdentTypeExpr : public c_Expr{
 	c_Expr* p_Semant();
 	c_ScopeDecl* p_SemantScope();
 	c_Expr* p_SemantFunc(Array<c_Expr* >);
+	void mark();
+};
+class c_Node13 : public Object{
+	public:
+	c_Node13* m__succ;
+	c_Node13* m__pred;
+	int m__data;
+	c_Node13();
+	c_Node13* m_new(c_Node13*,c_Node13*,int);
+	c_Node13* m_new2();
+	void mark();
+};
+class c_HeadNode7 : public c_Node13{
+	public:
+	c_HeadNode7();
+	c_HeadNode7* m_new();
+	void mark();
+};
+class c_Enumerator2 : public Object{
+	public:
+	c_List3* m__list;
+	c_Node13* m__curr;
+	c_Enumerator2();
+	c_Enumerator2* m_new(c_List3*);
+	c_Enumerator2* m_new2();
+	bool p_HasNext();
+	int p_NextObject();
+	void mark();
+};
+class c_MapKeys : public Object{
+	public:
+	c_Map6* m_map;
+	c_MapKeys();
+	c_MapKeys* m_new(c_Map6*);
+	c_MapKeys* m_new2();
+	c_KeyEnumerator* p_ObjectEnumerator();
+	void mark();
+};
+class c_KeyEnumerator : public Object{
+	public:
+	c_Node8* m_node;
+	c_KeyEnumerator();
+	c_KeyEnumerator* m_new(c_Node8*);
+	c_KeyEnumerator* m_new2();
+	bool p_HasNext();
+	int p_NextObject();
 	void mark();
 };
 class c_FuncCallExpr : public c_Expr{
@@ -16696,13 +16895,13 @@ class c_LocalDecl : public c_VarDecl{
 	c_Decl* p_OnCopy();
 	void mark();
 };
-class c_Enumerator2 : public Object{
+class c_Enumerator3 : public Object{
 	public:
-	c_List3* m__list;
-	c_Node8* m__curr;
-	c_Enumerator2();
-	c_Enumerator2* m_new(c_List3*);
-	c_Enumerator2* m_new2();
+	c_List5* m__list;
+	c_Node10* m__curr;
+	c_Enumerator3();
+	c_Enumerator3* m_new(c_List5*);
+	c_Enumerator3* m_new2();
 	bool p_HasNext();
 	c_Decl* p_NextObject();
 	void mark();
@@ -16744,30 +16943,30 @@ class c_ObjectType : public c_Type{
 	String p_ToString();
 	void mark();
 };
-class c_List6 : public Object{
+class c_List8 : public Object{
 	public:
-	c_Node11* m__head;
-	c_List6();
-	c_List6* m_new();
-	c_Node11* p_AddLast6(c_ClassDecl*);
-	c_List6* m_new2(Array<c_ClassDecl* >);
-	c_Enumerator4* p_ObjectEnumerator();
+	c_Node14* m__head;
+	c_List8();
+	c_List8* m_new();
+	c_Node14* p_AddLast8(c_ClassDecl*);
+	c_List8* m_new2(Array<c_ClassDecl* >);
+	c_Enumerator5* p_ObjectEnumerator();
 	void mark();
 };
-class c_Node11 : public Object{
+class c_Node14 : public Object{
 	public:
-	c_Node11* m__succ;
-	c_Node11* m__pred;
+	c_Node14* m__succ;
+	c_Node14* m__pred;
 	c_ClassDecl* m__data;
-	c_Node11();
-	c_Node11* m_new(c_Node11*,c_Node11*,c_ClassDecl*);
-	c_Node11* m_new2();
+	c_Node14();
+	c_Node14* m_new(c_Node14*,c_Node14*,c_ClassDecl*);
+	c_Node14* m_new2();
 	void mark();
 };
-class c_HeadNode6 : public c_Node11{
+class c_HeadNode8 : public c_Node14{
 	public:
-	c_HeadNode6();
-	c_HeadNode6* m_new();
+	c_HeadNode8();
+	c_HeadNode8* m_new();
 	void mark();
 };
 class c_ArgDecl : public c_LocalDecl{
@@ -16792,35 +16991,35 @@ class c_Stack7 : public Object{
 	Array<c_ArgDecl* > p_ToArray();
 	void mark();
 };
-class c_List7 : public Object{
+class c_List9 : public Object{
 	public:
-	c_Node12* m__head;
-	c_List7();
-	c_List7* m_new();
-	c_Node12* p_AddLast7(c_BlockDecl*);
-	c_List7* m_new2(Array<c_BlockDecl* >);
+	c_Node15* m__head;
+	c_List9();
+	c_List9* m_new();
+	c_Node15* p_AddLast9(c_BlockDecl*);
+	c_List9* m_new2(Array<c_BlockDecl* >);
 	c_BlockDecl* p_RemoveLast();
-	bool p_Equals3(c_BlockDecl*,c_BlockDecl*);
-	c_Node12* p_FindLast5(c_BlockDecl*,c_Node12*);
-	c_Node12* p_FindLast6(c_BlockDecl*);
-	void p_RemoveLast4(c_BlockDecl*);
+	bool p_Equals4(c_BlockDecl*,c_BlockDecl*);
+	c_Node15* p_FindLast7(c_BlockDecl*,c_Node15*);
+	c_Node15* p_FindLast8(c_BlockDecl*);
+	void p_RemoveLast5(c_BlockDecl*);
 	void mark();
 };
-class c_Node12 : public Object{
+class c_Node15 : public Object{
 	public:
-	c_Node12* m__succ;
-	c_Node12* m__pred;
+	c_Node15* m__succ;
+	c_Node15* m__pred;
 	c_BlockDecl* m__data;
-	c_Node12();
-	c_Node12* m_new(c_Node12*,c_Node12*,c_BlockDecl*);
-	c_Node12* m_new2();
+	c_Node15();
+	c_Node15* m_new(c_Node15*,c_Node15*,c_BlockDecl*);
+	c_Node15* m_new2();
 	int p_Remove();
 	void mark();
 };
-class c_HeadNode7 : public c_Node12{
+class c_HeadNode9 : public c_Node15{
 	public:
-	c_HeadNode7();
-	c_HeadNode7* m_new();
+	c_HeadNode9();
+	c_HeadNode9* m_new();
 	void mark();
 };
 class c_ReturnStmt : public c_Stmt{
@@ -16999,43 +17198,43 @@ class c_ExprStmt : public c_Stmt{
 	void mark();
 };
 c_ModuleDecl* bb_parser_ParseModule(String,String,c_AppDecl*);
-class c_Enumerator3 : public Object{
+class c_Enumerator4 : public Object{
 	public:
-	c_List4* m__list;
-	c_Node9* m__curr;
-	c_Enumerator3();
-	c_Enumerator3* m_new(c_List4*);
-	c_Enumerator3* m_new2();
+	c_List6* m__list;
+	c_Node11* m__curr;
+	c_Enumerator4();
+	c_Enumerator4* m_new(c_List6*);
+	c_Enumerator4* m_new2();
 	bool p_HasNext();
 	c_FuncDecl* p_NextObject();
 	void mark();
 };
 extern c_StringList* bb_config__errStack;
 int bb_config_PushErr(String);
-class c_List8 : public Object{
+class c_List10 : public Object{
 	public:
-	c_Node13* m__head;
-	c_List8();
-	c_List8* m_new();
-	c_Node13* p_AddLast8(c_GlobalDecl*);
-	c_List8* m_new2(Array<c_GlobalDecl* >);
-	c_Enumerator6* p_ObjectEnumerator();
+	c_Node16* m__head;
+	c_List10();
+	c_List10* m_new();
+	c_Node16* p_AddLast10(c_GlobalDecl*);
+	c_List10* m_new2(Array<c_GlobalDecl* >);
+	c_Enumerator7* p_ObjectEnumerator();
 	void mark();
 };
-class c_Node13 : public Object{
+class c_Node16 : public Object{
 	public:
-	c_Node13* m__succ;
-	c_Node13* m__pred;
+	c_Node16* m__succ;
+	c_Node16* m__pred;
 	c_GlobalDecl* m__data;
-	c_Node13();
-	c_Node13* m_new(c_Node13*,c_Node13*,c_GlobalDecl*);
-	c_Node13* m_new2();
+	c_Node16();
+	c_Node16* m_new(c_Node16*,c_Node16*,c_GlobalDecl*);
+	c_Node16* m_new2();
 	void mark();
 };
-class c_HeadNode8 : public c_Node13{
+class c_HeadNode10 : public c_Node16{
 	public:
-	c_HeadNode8();
-	c_HeadNode8* m_new();
+	c_HeadNode10();
+	c_HeadNode10* m_new();
 	void mark();
 };
 int bb_config_PopErr();
@@ -17071,53 +17270,53 @@ class c_Target : public Object{
 	c_Target* m_new2();
 	void mark();
 };
-class c_Map6 : public Object{
+class c_Map7 : public Object{
 	public:
-	c_Node14* m_root;
-	c_Map6();
-	c_Map6* m_new();
+	c_Node17* m_root;
+	c_Map7();
+	c_Map7* m_new();
 	virtual int p_Compare(String,String)=0;
-	int p_RotateLeft6(c_Node14*);
-	int p_RotateRight6(c_Node14*);
-	int p_InsertFixup6(c_Node14*);
+	int p_RotateLeft7(c_Node17*);
+	int p_RotateRight7(c_Node17*);
+	int p_InsertFixup7(c_Node17*);
 	bool p_Set6(String,c_Target*);
-	c_Node14* p_FirstNode();
+	c_Node17* p_FirstNode();
 	c_NodeEnumerator2* p_ObjectEnumerator();
-	c_Node14* p_FindNode(String);
+	c_Node17* p_FindNode(String);
 	c_Target* p_Get(String);
 	void mark();
 };
-class c_StringMap6 : public c_Map6{
+class c_StringMap6 : public c_Map7{
 	public:
 	c_StringMap6();
 	c_StringMap6* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node14 : public Object{
+class c_Node17 : public Object{
 	public:
 	String m_key;
-	c_Node14* m_right;
-	c_Node14* m_left;
+	c_Node17* m_right;
+	c_Node17* m_left;
 	c_Target* m_value;
 	int m_color;
-	c_Node14* m_parent;
-	c_Node14();
-	c_Node14* m_new(String,c_Target*,int,c_Node14*);
-	c_Node14* m_new2();
-	c_Node14* p_NextNode();
+	c_Node17* m_parent;
+	c_Node17();
+	c_Node17* m_new(String,c_Target*,int,c_Node17*);
+	c_Node17* m_new2();
+	c_Node17* p_NextNode();
 	String p_Key();
 	void mark();
 };
 void bb_config_PopConfigScope();
 class c_NodeEnumerator2 : public Object{
 	public:
-	c_Node14* m_node;
+	c_Node17* m_node;
 	c_NodeEnumerator2();
-	c_NodeEnumerator2* m_new(c_Node14*);
+	c_NodeEnumerator2* m_new(c_Node17*);
 	c_NodeEnumerator2* m_new2();
 	bool p_HasNext();
-	c_Node14* p_NextObject();
+	c_Node17* p_NextObject();
 	void mark();
 };
 extern String bb_config_ENV_HOST;
@@ -17178,48 +17377,48 @@ class c_ValueEnumerator : public Object{
 	c_ModuleDecl* p_NextObject();
 	void mark();
 };
-class c_Map7 : public Object{
+class c_Map8 : public Object{
 	public:
-	c_Node15* m_root;
-	c_Map7();
-	c_Map7* m_new();
+	c_Node18* m_root;
+	c_Map8();
+	c_Map8* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node15* p_FindNode(String);
+	c_Node18* p_FindNode(String);
 	bool p_Contains(String);
 	int p_Get(String);
-	int p_RotateLeft7(c_Node15*);
-	int p_RotateRight7(c_Node15*);
-	int p_InsertFixup7(c_Node15*);
+	int p_RotateLeft8(c_Node18*);
+	int p_RotateRight8(c_Node18*);
+	int p_InsertFixup8(c_Node18*);
 	bool p_Set7(String,int);
 	void mark();
 };
-class c_StringMap7 : public c_Map7{
+class c_StringMap7 : public c_Map8{
 	public:
 	c_StringMap7();
 	c_StringMap7* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node15 : public Object{
+class c_Node18 : public Object{
 	public:
 	String m_key;
-	c_Node15* m_right;
-	c_Node15* m_left;
+	c_Node18* m_right;
+	c_Node18* m_left;
 	int m_value;
 	int m_color;
-	c_Node15* m_parent;
-	c_Node15();
-	c_Node15* m_new(String,int,int,c_Node15*);
-	c_Node15* m_new2();
+	c_Node18* m_parent;
+	c_Node18();
+	c_Node18* m_new(String,int,int,c_Node18*);
+	c_Node18* m_new2();
 	void mark();
 };
-class c_Enumerator4 : public Object{
+class c_Enumerator5 : public Object{
 	public:
-	c_List6* m__list;
-	c_Node11* m__curr;
-	c_Enumerator4();
-	c_Enumerator4* m_new(c_List6*);
-	c_Enumerator4* m_new2();
+	c_List8* m__list;
+	c_Node14* m__curr;
+	c_Enumerator5();
+	c_Enumerator5* m_new(c_List8*);
+	c_Enumerator5* m_new2();
 	bool p_HasNext();
 	c_ClassDecl* p_NextObject();
 	void mark();
@@ -17589,45 +17788,45 @@ class c_CsTranslator : public c_CTranslator{
 	String p_TransTryStmt(c_TryStmt*);
 	void mark();
 };
-class c_List9 : public Object{
+class c_List11 : public Object{
 	public:
-	c_Node16* m__head;
-	c_List9();
-	c_List9* m_new();
-	c_Node16* p_AddLast9(c_ModuleDecl*);
-	c_List9* m_new2(Array<c_ModuleDecl* >);
+	c_Node19* m__head;
+	c_List11();
+	c_List11* m_new();
+	c_Node19* p_AddLast11(c_ModuleDecl*);
+	c_List11* m_new2(Array<c_ModuleDecl* >);
 	bool p_IsEmpty();
 	c_ModuleDecl* p_RemoveLast();
-	bool p_Equals4(c_ModuleDecl*,c_ModuleDecl*);
-	c_Node16* p_FindLast7(c_ModuleDecl*,c_Node16*);
-	c_Node16* p_FindLast8(c_ModuleDecl*);
-	void p_RemoveLast5(c_ModuleDecl*);
+	bool p_Equals5(c_ModuleDecl*,c_ModuleDecl*);
+	c_Node19* p_FindLast9(c_ModuleDecl*,c_Node19*);
+	c_Node19* p_FindLast10(c_ModuleDecl*);
+	void p_RemoveLast6(c_ModuleDecl*);
 	void mark();
 };
-class c_Node16 : public Object{
+class c_Node19 : public Object{
 	public:
-	c_Node16* m__succ;
-	c_Node16* m__pred;
+	c_Node19* m__succ;
+	c_Node19* m__pred;
 	c_ModuleDecl* m__data;
-	c_Node16();
-	c_Node16* m_new(c_Node16*,c_Node16*,c_ModuleDecl*);
-	c_Node16* m_new2();
+	c_Node19();
+	c_Node19* m_new(c_Node19*,c_Node19*,c_ModuleDecl*);
+	c_Node19* m_new2();
 	int p_Remove();
 	void mark();
 };
-class c_HeadNode9 : public c_Node16{
+class c_HeadNode11 : public c_Node19{
 	public:
-	c_HeadNode9();
-	c_HeadNode9* m_new();
+	c_HeadNode11();
+	c_HeadNode11* m_new();
 	void mark();
 };
-class c_Enumerator5 : public Object{
+class c_Enumerator6 : public Object{
 	public:
-	c_List5* m__list;
-	c_Node10* m__curr;
-	c_Enumerator5();
-	c_Enumerator5* m_new(c_List5*);
-	c_Enumerator5* m_new2();
+	c_List7* m__list;
+	c_Node12* m__curr;
+	c_Enumerator6();
+	c_Enumerator6* m_new(c_List7*);
+	c_Enumerator6* m_new2();
 	bool p_HasNext();
 	c_Stmt* p_NextObject();
 	void mark();
@@ -17688,115 +17887,115 @@ class c_VarExpr : public c_Expr{
 	void mark();
 };
 extern int bb_decl__loopnest;
-class c_Map8 : public Object{
+class c_Map9 : public Object{
 	public:
-	c_Node17* m_root;
-	c_Map8();
-	c_Map8* m_new();
+	c_Node20* m_root;
+	c_Map9();
+	c_Map9* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node17* p_FindNode(String);
+	c_Node20* p_FindNode(String);
 	c_FuncDeclList* p_Get(String);
-	int p_RotateLeft8(c_Node17*);
-	int p_RotateRight8(c_Node17*);
-	int p_InsertFixup8(c_Node17*);
+	int p_RotateLeft9(c_Node20*);
+	int p_RotateRight9(c_Node20*);
+	int p_InsertFixup9(c_Node20*);
 	bool p_Set8(String,c_FuncDeclList*);
 	void mark();
 };
-class c_StringMap8 : public c_Map8{
+class c_StringMap8 : public c_Map9{
 	public:
 	c_StringMap8();
 	c_StringMap8* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node17 : public Object{
+class c_Node20 : public Object{
 	public:
 	String m_key;
-	c_Node17* m_right;
-	c_Node17* m_left;
+	c_Node20* m_right;
+	c_Node20* m_left;
 	c_FuncDeclList* m_value;
 	int m_color;
-	c_Node17* m_parent;
-	c_Node17();
-	c_Node17* m_new(String,c_FuncDeclList*,int,c_Node17*);
-	c_Node17* m_new2();
+	c_Node20* m_parent;
+	c_Node20();
+	c_Node20* m_new(String,c_FuncDeclList*,int,c_Node20*);
+	c_Node20* m_new2();
 	void mark();
 };
-class c_Map9 : public Object{
+class c_Map10 : public Object{
 	public:
-	c_Node18* m_root;
-	c_Map9();
-	c_Map9* m_new();
+	c_Node21* m_root;
+	c_Map10();
+	c_Map10* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node18* p_FindNode(String);
+	c_Node21* p_FindNode(String);
 	bool p_Contains(String);
-	int p_RotateLeft9(c_Node18*);
-	int p_RotateRight9(c_Node18*);
-	int p_InsertFixup9(c_Node18*);
+	int p_RotateLeft10(c_Node21*);
+	int p_RotateRight10(c_Node21*);
+	int p_InsertFixup10(c_Node21*);
 	bool p_Set9(String,c_FuncDecl*);
 	void mark();
 };
-class c_StringMap9 : public c_Map9{
+class c_StringMap9 : public c_Map10{
 	public:
 	c_StringMap9();
 	c_StringMap9* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node18 : public Object{
+class c_Node21 : public Object{
 	public:
 	String m_key;
-	c_Node18* m_right;
-	c_Node18* m_left;
+	c_Node21* m_right;
+	c_Node21* m_left;
 	c_FuncDecl* m_value;
 	int m_color;
-	c_Node18* m_parent;
-	c_Node18();
-	c_Node18* m_new(String,c_FuncDecl*,int,c_Node18*);
-	c_Node18* m_new2();
+	c_Node21* m_parent;
+	c_Node21();
+	c_Node21* m_new(String,c_FuncDecl*,int,c_Node21*);
+	c_Node21* m_new2();
 	void mark();
 };
-class c_Map10 : public Object{
+class c_Map11 : public Object{
 	public:
-	c_Node19* m_root;
-	c_Map10();
-	c_Map10* m_new();
+	c_Node22* m_root;
+	c_Map11();
+	c_Map11* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node19* p_FindNode(String);
+	c_Node22* p_FindNode(String);
 	c_StringSet* p_Get(String);
-	int p_RotateLeft10(c_Node19*);
-	int p_RotateRight10(c_Node19*);
-	int p_InsertFixup10(c_Node19*);
+	int p_RotateLeft11(c_Node22*);
+	int p_RotateRight11(c_Node22*);
+	int p_InsertFixup11(c_Node22*);
 	bool p_Set10(String,c_StringSet*);
 	void mark();
 };
-class c_StringMap10 : public c_Map10{
+class c_StringMap10 : public c_Map11{
 	public:
 	c_StringMap10();
 	c_StringMap10* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node19 : public Object{
+class c_Node22 : public Object{
 	public:
 	String m_key;
-	c_Node19* m_right;
-	c_Node19* m_left;
+	c_Node22* m_right;
+	c_Node22* m_left;
 	c_StringSet* m_value;
 	int m_color;
-	c_Node19* m_parent;
-	c_Node19();
-	c_Node19* m_new(String,c_StringSet*,int,c_Node19*);
-	c_Node19* m_new2();
+	c_Node22* m_parent;
+	c_Node22();
+	c_Node22* m_new(String,c_StringSet*,int,c_Node22*);
+	c_Node22* m_new2();
 	void mark();
 };
-class c_Enumerator6 : public Object{
+class c_Enumerator7 : public Object{
 	public:
-	c_List8* m__list;
-	c_Node13* m__curr;
-	c_Enumerator6();
-	c_Enumerator6* m_new(c_List8*);
-	c_Enumerator6* m_new2();
+	c_List10* m__list;
+	c_Node16* m__curr;
+	c_Enumerator7();
+	c_Enumerator7* m_new(c_List10*);
+	c_Enumerator7* m_new2();
 	bool p_HasNext();
 	c_GlobalDecl* p_NextObject();
 	void mark();
@@ -17810,7 +18009,7 @@ class c_Stack10 : public Object{
 	c_Stack10* m_new2(Array<c_LocalDecl* >);
 	static c_LocalDecl* m_NIL;
 	void p_Clear();
-	c_Enumerator7* p_ObjectEnumerator();
+	c_Enumerator8* p_ObjectEnumerator();
 	void p_Length(int);
 	int p_Length2();
 	void p_Push28(c_LocalDecl*);
@@ -17818,13 +18017,13 @@ class c_Stack10 : public Object{
 	void p_Push30(Array<c_LocalDecl* >,int);
 	void mark();
 };
-class c_Enumerator7 : public Object{
+class c_Enumerator8 : public Object{
 	public:
 	c_Stack10* m_stack;
 	int m_index;
-	c_Enumerator7();
-	c_Enumerator7* m_new(c_Stack10*);
-	c_Enumerator7* m_new2();
+	c_Enumerator8();
+	c_Enumerator8* m_new(c_Stack10*);
+	c_Enumerator8* m_new2();
 	bool p_HasNext();
 	c_LocalDecl* p_NextObject();
 	void mark();
@@ -18166,7 +18365,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-04-19",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-05-01",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -18179,7 +18378,7 @@ void c_TransCC::p_Run(Array<String > t_args){
 		String t_valid=String();
 		c_NodeEnumerator2* t_=m__targets->p_ObjectEnumerator();
 		while(t_->p_HasNext()){
-			c_Node14* t_it=t_->p_NextObject();
+			c_Node17* t_it=t_->p_NextObject();
 			t_valid=t_valid+(String(L" ",1)+t_it->p_Key().Replace(String(L" ",1),String(L"_",1)));
 		}
 		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_cerberus_source_file>",141));
@@ -18419,16 +18618,16 @@ int c_Decl::p_Semant(){
 	if((m_scope)!=0){
 		if((p_IsExtern())!=0){
 			if((dynamic_cast<c_ModuleDecl*>(m_scope))!=0){
-				p_AppScope()->m_allSemantedDecls->p_AddLast3(this);
+				p_AppScope()->m_allSemantedDecls->p_AddLast5(this);
 			}
 		}else{
-			m_scope->m_semanted->p_AddLast3(this);
+			m_scope->m_semanted->p_AddLast5(this);
 			if((dynamic_cast<c_GlobalDecl*>(this))!=0){
-				p_AppScope()->m_semantedGlobals->p_AddLast8(dynamic_cast<c_GlobalDecl*>(this));
+				p_AppScope()->m_semantedGlobals->p_AddLast10(dynamic_cast<c_GlobalDecl*>(this));
 			}
 			if((dynamic_cast<c_ModuleDecl*>(m_scope))!=0){
-				p_AppScope()->m_semanted->p_AddLast3(this);
-				p_AppScope()->m_allSemantedDecls->p_AddLast3(this);
+				p_AppScope()->m_semanted->p_AddLast5(this);
+				p_AppScope()->m_allSemantedDecls->p_AddLast5(this);
 			}
 		}
 		bb_decl_PopEnv();
@@ -18465,9 +18664,9 @@ void c_Decl::mark(){
 	Object::mark();
 }
 c_ScopeDecl::c_ScopeDecl(){
-	m_decls=(new c_List3)->m_new();
+	m_decls=(new c_List5)->m_new();
 	m_declsMap=(new c_StringMap4)->m_new();
-	m_semanted=(new c_List3)->m_new();
+	m_semanted=(new c_List5)->m_new();
 }
 c_ScopeDecl* c_ScopeDecl::m_new(){
 	c_Decl::m_new();
@@ -18482,7 +18681,7 @@ int c_ScopeDecl::p_InsertDecl(c_Decl* t_decl){
 		return 0;
 	}
 	t_decl->m_scope=this;
-	m_decls->p_AddLast3(t_decl);
+	m_decls->p_AddLast5(t_decl);
 	c_StringMap4* t_decls=0;
 	Object* t_tdecl=m_declsMap->p_Get(t_ident);
 	if((dynamic_cast<c_FuncDecl*>(t_decl))!=0){
@@ -18492,7 +18691,7 @@ int c_ScopeDecl::p_InsertDecl(c_Decl* t_decl){
 				t_funcs=(new c_FuncDeclList)->m_new();
 				m_declsMap->p_Insert2(t_ident,(t_funcs));
 			}
-			t_funcs->p_AddLast4(dynamic_cast<c_FuncDecl*>(t_decl));
+			t_funcs->p_AddLast6(dynamic_cast<c_FuncDecl*>(t_decl));
 		}else{
 			bb_config_Err(String(L"Duplicate identifier '",22)+t_ident+String(L"'.",2));
 		}
@@ -18504,7 +18703,7 @@ int c_ScopeDecl::p_InsertDecl(c_Decl* t_decl){
 		}
 	}
 	if((t_decl->p_IsSemanted())!=0){
-		m_semanted->p_AddLast3(t_decl);
+		m_semanted->p_AddLast5(t_decl);
 	}
 	return 0;
 }
@@ -18536,8 +18735,8 @@ Object* c_ScopeDecl::p_FindDecl(String t_ident){
 	}
 	return 0;
 }
-int c_ScopeDecl::p_InsertDecls(c_List3* t_decls){
-	c_Enumerator2* t_=t_decls->p_ObjectEnumerator();
+int c_ScopeDecl::p_InsertDecls(c_List5* t_decls){
+	c_Enumerator3* t_=t_decls->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		p_InsertDecl(t_decl);
@@ -18549,7 +18748,7 @@ c_FuncDecl* c_ScopeDecl::p_FindFuncDecl(String t_ident,Array<c_Expr* > t_argExpr
 	if(!((t_funcs)!=0)){
 		return 0;
 	}
-	c_Enumerator3* t_=t_funcs->p_ObjectEnumerator();
+	c_Enumerator4* t_=t_funcs->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_FuncDecl* t_func=t_->p_NextObject();
 		t_func->p_Semant();
@@ -18557,7 +18756,7 @@ c_FuncDecl* c_ScopeDecl::p_FindFuncDecl(String t_ident,Array<c_Expr* > t_argExpr
 	c_FuncDecl* t_match=0;
 	int t_isexact=0;
 	String t_err=String();
-	c_Enumerator3* t_2=t_funcs->p_ObjectEnumerator();
+	c_Enumerator4* t_2=t_funcs->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_FuncDecl* t_func2=t_2->p_NextObject();
 		Array<c_ArgDecl* > t_argDecls=t_func2->m_argDecls;
@@ -18631,7 +18830,7 @@ c_FuncDecl* c_ScopeDecl::p_FindFuncDecl(String t_ident,Array<c_Expr* > t_argExpr
 	t_match->p_AssertAccess();
 	return t_match;
 }
-c_List3* c_ScopeDecl::p_Decls(){
+c_List5* c_ScopeDecl::p_Decls(){
 	return m_decls;
 }
 c_Type* c_ScopeDecl::p_FindType(String t_ident,Array<c_Type* > t_args){
@@ -18657,9 +18856,9 @@ c_Type* c_ScopeDecl::p_FindType(String t_ident,Array<c_Type* > t_args){
 	}
 	return 0;
 }
-c_List4* c_ScopeDecl::p_MethodDecls(String t_id){
-	c_List4* t_fdecls=(new c_List4)->m_new();
-	c_Enumerator2* t_=m_decls->p_ObjectEnumerator();
+c_List6* c_ScopeDecl::p_MethodDecls(String t_id){
+	c_List6* t_fdecls=(new c_List6)->m_new();
+	c_Enumerator3* t_=m_decls->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if(((t_id).Length()!=0) && t_decl->m_ident!=t_id){
@@ -18667,17 +18866,17 @@ c_List4* c_ScopeDecl::p_MethodDecls(String t_id){
 		}
 		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
 		if(((t_fdecl)!=0) && t_fdecl->p_IsMethod()){
-			t_fdecls->p_AddLast4(t_fdecl);
+			t_fdecls->p_AddLast6(t_fdecl);
 		}
 	}
 	return t_fdecls;
 }
-c_List3* c_ScopeDecl::p_Semanted(){
+c_List5* c_ScopeDecl::p_Semanted(){
 	return m_semanted;
 }
-c_List4* c_ScopeDecl::p_SemantedMethods(String t_id){
-	c_List4* t_fdecls=(new c_List4)->m_new();
-	c_Enumerator2* t_=m_semanted->p_ObjectEnumerator();
+c_List6* c_ScopeDecl::p_SemantedMethods(String t_id){
+	c_List6* t_fdecls=(new c_List6)->m_new();
+	c_Enumerator3* t_=m_semanted->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if(((t_id).Length()!=0) && t_decl->m_ident!=t_id){
@@ -18685,7 +18884,7 @@ c_List4* c_ScopeDecl::p_SemantedMethods(String t_id){
 		}
 		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
 		if(((t_fdecl)!=0) && t_fdecl->p_IsMethod()){
-			t_fdecls->p_AddLast4(t_fdecl);
+			t_fdecls->p_AddLast6(t_fdecl);
 		}
 	}
 	return t_fdecls;
@@ -18706,9 +18905,9 @@ c_Decl* c_ScopeDecl::p_OnCopy(){
 int c_ScopeDecl::p_OnSemant(){
 	return 0;
 }
-c_List4* c_ScopeDecl::p_SemantedFuncs(String t_id){
-	c_List4* t_fdecls=(new c_List4)->m_new();
-	c_Enumerator2* t_=m_semanted->p_ObjectEnumerator();
+c_List6* c_ScopeDecl::p_SemantedFuncs(String t_id){
+	c_List6* t_fdecls=(new c_List6)->m_new();
+	c_Enumerator3* t_=m_semanted->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if(((t_id).Length()!=0) && t_decl->m_ident!=t_id){
@@ -18716,7 +18915,7 @@ c_List4* c_ScopeDecl::p_SemantedFuncs(String t_id){
 		}
 		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
 		if((t_fdecl)!=0){
-			t_fdecls->p_AddLast4(t_fdecl);
+			t_fdecls->p_AddLast6(t_fdecl);
 		}
 	}
 	return t_fdecls;
@@ -18733,9 +18932,9 @@ c_ModuleDecl* c_ScopeDecl::p_FindModuleDecl(String t_ident){
 	}
 	return 0;
 }
-c_List4* c_ScopeDecl::p_FuncDecls(String t_id){
-	c_List4* t_fdecls=(new c_List4)->m_new();
-	c_Enumerator2* t_=m_decls->p_ObjectEnumerator();
+c_List6* c_ScopeDecl::p_FuncDecls(String t_id){
+	c_List6* t_fdecls=(new c_List6)->m_new();
+	c_Enumerator3* t_=m_decls->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if(((t_id).Length()!=0) && t_decl->m_ident!=t_id){
@@ -18743,7 +18942,7 @@ c_List4* c_ScopeDecl::p_FuncDecls(String t_id){
 		}
 		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
 		if((t_fdecl)!=0){
-			t_fdecls->p_AddLast4(t_fdecl);
+			t_fdecls->p_AddLast6(t_fdecl);
 		}
 	}
 	return t_fdecls;
@@ -19467,18 +19666,6 @@ Array<String > c_Stack::p_ToArray(){
 	return t_t;
 }
 String c_Stack::m_NIL;
-String c_Stack::p_Pop(){
-	m_length-=1;
-	String t_v=m_data[m_length];
-	m_data[m_length]=m_NIL;
-	return t_v;
-}
-void c_Stack::p_Clear(){
-	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		m_data[t_i]=m_NIL;
-	}
-	m_length=0;
-}
 void c_Stack::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
@@ -19496,6 +19683,18 @@ int c_Stack::p_Length2(){
 }
 String c_Stack::p_Get2(int t_index){
 	return m_data[t_index];
+}
+String c_Stack::p_Pop(){
+	m_length-=1;
+	String t_v=m_data[m_length];
+	m_data[m_length]=m_NIL;
+	return t_v;
+}
+void c_Stack::p_Clear(){
+	for(int t_i=0;t_i<m_length;t_i=t_i+1){
+		m_data[t_i]=m_NIL;
+	}
+	m_length=0;
 }
 void c_Stack::mark(){
 	Object::mark();
@@ -19806,6 +20005,21 @@ void c_Builder::p_MakeIcons(String t_srcFilename,Array<String > t_icons,int t_ro
 }
 bool c_Builder::p_Execute(String t_cmd,bool t_failHard){
 	return m_tcc->p_Execute(t_cmd,t_failHard);
+}
+void c_Builder::p_CopySourceFiles(String t_dir){
+	t_dir=RealPath(t_dir);
+	c_Enumerator* t_=m_app->m_fileIncludes->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		String t_p=t_->p_NextObject();
+		String t_r=bb_os_StripDir(t_p);
+		String t_t=t_dir+String(L"/",1)+t_r;
+		p_CCopyFile(t_p,t_t);
+	}
+	c_Enumerator* t_2=m_app->m_dirIncludes->p_ObjectEnumerator();
+	while(t_2->p_HasNext()){
+		String t_p2=t_2->p_NextObject();
+		bb_os_CopyDir(t_p2,t_dir,true,true);
+	}
 }
 void c_Builder::p_CopyIcon(String t_iFile,String t_targetIcon){
 	if(HostOS()==String(L"winnt",5)){
@@ -20510,7 +20724,8 @@ void c_GlfwBuilder::p_MakeGcc(){
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
 	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
-	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
+	p_CopySourceFiles(String(L".",1));
+	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/cerberus.ico",13));
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
@@ -21259,6 +21474,7 @@ void c_StdcppBuilder::p_MakeTarget(){
 			}
 		}
 	}
+	p_CopySourceFiles(String(L".",1));
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
@@ -22265,7 +22481,7 @@ int c_ModuleDecl::p_ImportModule(String t_modpath,int t_attrs){
 	return 0;
 }
 int c_ModuleDecl::p_SemantAll(){
-	c_Enumerator2* t_=p_Decls()->p_ObjectEnumerator();
+	c_Enumerator3* t_=p_Decls()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if((dynamic_cast<c_AliasDecl*>(t_decl))!=0){
@@ -22274,10 +22490,10 @@ int c_ModuleDecl::p_SemantAll(){
 		c_ClassDecl* t_cdecl=dynamic_cast<c_ClassDecl*>(t_decl);
 		if((t_cdecl)!=0){
 			if((t_cdecl->m_args).Length()!=0){
-				c_Enumerator4* t_2=t_cdecl->m_instances->p_ObjectEnumerator();
+				c_Enumerator5* t_2=t_cdecl->m_instances->p_ObjectEnumerator();
 				while(t_2->p_HasNext()){
 					c_ClassDecl* t_inst=t_2->p_NextObject();
-					c_Enumerator2* t_3=t_inst->p_Decls()->p_ObjectEnumerator();
+					c_Enumerator3* t_3=t_inst->p_Decls()->p_ObjectEnumerator();
 					while(t_3->p_HasNext()){
 						c_Decl* t_decl2=t_3->p_NextObject();
 						if((dynamic_cast<c_AliasDecl*>(t_decl2))!=0){
@@ -22288,7 +22504,7 @@ int c_ModuleDecl::p_SemantAll(){
 				}
 			}else{
 				t_decl->p_Semant();
-				c_Enumerator2* t_4=t_cdecl->p_Decls()->p_ObjectEnumerator();
+				c_Enumerator3* t_4=t_cdecl->p_Decls()->p_ObjectEnumerator();
 				while(t_4->p_HasNext()){
 					c_Decl* t_decl3=t_4->p_NextObject();
 					if((dynamic_cast<c_AliasDecl*>(t_decl3))!=0){
@@ -22311,9 +22527,9 @@ Object* c_ModuleDecl::p_GetDecl2(String t_ident){
 	return c_ScopeDecl::p_GetDecl(t_ident);
 }
 Object* c_ModuleDecl::p_GetDecl(String t_ident){
-	c_List9* t_todo=(new c_List9)->m_new();
+	c_List11* t_todo=(new c_List11)->m_new();
 	c_StringMap5* t_done=(new c_StringMap5)->m_new();
-	t_todo->p_AddLast9(this);
+	t_todo->p_AddLast11(this);
 	t_done->p_Insert3(m_filepath,this);
 	Object* t_decl=0;
 	String t_declmod=String();
@@ -22328,7 +22544,7 @@ Object* c_ModuleDecl::p_GetDecl(String t_ident){
 			c_FuncDeclList* t_flist=dynamic_cast<c_FuncDeclList*>(t_tdecl);
 			if((t_flist)!=0){
 				bool t_pub=false;
-				c_Enumerator3* t_=t_flist->p_ObjectEnumerator();
+				c_Enumerator4* t_=t_flist->p_ObjectEnumerator();
 				while(t_->p_HasNext()){
 					c_FuncDecl* t_fdecl=t_->p_NextObject();
 					if(!((t_fdecl->p_CheckAccess())!=0)){
@@ -22363,7 +22579,7 @@ Object* c_ModuleDecl::p_GetDecl(String t_ident){
 		while(t_2->p_HasNext()){
 			c_ModuleDecl* t_mdecl2=t_2->p_NextObject();
 			if(!t_done->p_Contains(t_mdecl2->m_filepath)){
-				t_todo->p_AddLast9(t_mdecl2);
+				t_todo->p_AddLast11(t_mdecl2);
 				t_done->p_Insert3(t_mdecl2->m_filepath,t_mdecl2);
 			}
 		}
@@ -22407,6 +22623,12 @@ bool c_Stack3::p_IsEmpty(){
 	return m_length==0;
 }
 int c_Stack3::m_NIL;
+int c_Stack3::p_Pop(){
+	m_length-=1;
+	int t_v=m_data[m_length];
+	m_data[m_length]=m_NIL;
+	return t_v;
+}
 void c_Stack3::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
@@ -22424,12 +22646,6 @@ int c_Stack3::p_Length2(){
 }
 int c_Stack3::p_Get2(int t_index){
 	return m_data[t_index];
-}
-int c_Stack3::p_Pop(){
-	m_length-=1;
-	int t_v=m_data[m_length];
-	m_data[m_length]=m_NIL;
-	return t_v;
 }
 void c_Stack3::p_Clear(){
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
@@ -22565,7 +22781,7 @@ int c_Toker::p__init(){
 		return 0;
 	}
 	m__keywords=(new c_StringSet)->m_new();
-	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",437).Split(String(L" ",1));
+	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include includedir import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",448).Split(String(L" ",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
 		String t_t=t_[t_2];
@@ -23082,9 +23298,11 @@ c_AppDecl::c_AppDecl(){
 	m_imported=(new c_StringMap5)->m_new();
 	m_mainModule=0;
 	m_fileImports=(new c_StringList)->m_new2();
-	m_allSemantedDecls=(new c_List3)->m_new();
-	m_semantedGlobals=(new c_List8)->m_new();
-	m_semantedClasses=(new c_List6)->m_new();
+	m_fileIncludes=(new c_StringList)->m_new2();
+	m_dirIncludes=(new c_StringList)->m_new2();
+	m_allSemantedDecls=(new c_List5)->m_new();
+	m_semantedGlobals=(new c_List10)->m_new();
+	m_semantedClasses=(new c_List8)->m_new();
 	m_mainFunc=0;
 }
 int c_AppDecl::p_InsertModule(c_ModuleDecl* t_mdecl){
@@ -23103,7 +23321,7 @@ int c_AppDecl::p_FinalizeClasses(){
 	bb_decl__env=0;
 	do{
 		int t_more=0;
-		c_Enumerator4* t_=m_semantedClasses->p_ObjectEnumerator();
+		c_Enumerator5* t_=m_semantedClasses->p_ObjectEnumerator();
 		while(t_->p_HasNext()){
 			c_ClassDecl* t_cdecl=t_->p_NextObject();
 			t_more+=t_cdecl->p_UpdateLiveMethods();
@@ -23112,7 +23330,7 @@ int c_AppDecl::p_FinalizeClasses(){
 			break;
 		}
 	}while(!(false));
-	c_Enumerator4* t_2=m_semantedClasses->p_ObjectEnumerator();
+	c_Enumerator5* t_2=m_semantedClasses->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_ClassDecl* t_cdecl2=t_2->p_NextObject();
 		t_cdecl2->p_FinalizeClass();
@@ -23353,13 +23571,16 @@ c_Parser::c_Parser(){
 	m__defattrs=0;
 	m__tokeType=0;
 	m__block=0;
-	m__blockStack=(new c_List7)->m_new();
+	m__blockStack=(new c_List9)->m_new();
 	m__errStack=(new c_StringList)->m_new2();
 	m__selTmpId=0;
 }
-int c_Parser::p_SetErr(){
+int c_Parser::p_SetErr(int t_line){
+	if(t_line==-1){
+		t_line=m__toker->p_Line();
+	}
 	if((m__toker->p_Path()).Length()!=0){
-		bb_config__errInfo=m__toker->p_Path()+String(L"<",1)+String(m__toker->p_Line())+String(L">",1);
+		bb_config__errInfo=m__toker->p_Path()+String(L"<",1)+String(t_line)+String(L">",1);
 	}
 	return 0;
 }
@@ -23373,7 +23594,7 @@ int c_Parser::p_CParse(String t_toke){
 int c_Parser::p_SkipEols(){
 	while((p_CParse(String(L"\n",1)))!=0){
 	}
-	p_SetErr();
+	p_SetErr(-1);
 	return 0;
 }
 String c_Parser::p_NextToke(){
@@ -23403,7 +23624,7 @@ c_Parser* c_Parser::m_new(c_Toker* t_toker,c_AppDecl* t_app,c_ModuleDecl* t_mdec
 	m__app=t_app;
 	m__module=t_mdecl;
 	m__defattrs=t_defattrs;
-	p_SetErr();
+	p_SetErr(-1);
 	p_NextToke();
 	return this;
 }
@@ -23446,7 +23667,7 @@ String c_Parser::p_ParseIdent(){
 		if(t_3==String(L"object",6) || t_3==String(L"throwable",9)){
 		}else{
 			if(m__tokeType!=2){
-				bb_config_Err(String(L"Syntax error - expecting identifier.",36));
+				bb_config_Err(String(L"Syntax error - Expecting identifier.",36));
 			}
 		}
 	}
@@ -23464,9 +23685,27 @@ String c_Parser::p_ParseModPath(){
 int c_Parser::p_ImportModule(String t_modpath,int t_attrs){
 	return 0;
 }
+int c_Parser::p_IncludeFiles(String t_filepath){
+	t_filepath=p_RealPath(t_filepath);
+	bbPrint(String(L"IncludeFiles=",13)+t_filepath);
+	if(FileType(t_filepath)!=1){
+		bb_config_Err(String(L"Source File '",13)+t_filepath+String(L"' not found.",12));
+	}
+	m__app->m_fileIncludes->p_AddLast(t_filepath);
+	return 0;
+}
+int c_Parser::p_IncludeDirs(String t_filepath){
+	t_filepath=p_RealPath(t_filepath);
+	bbPrint(String(L"IncludeDirs=",12)+t_filepath);
+	if(FileType(t_filepath)!=2){
+		bb_config_Err(String(L"Source directory '",18)+t_filepath+String(L"' not found.",12));
+	}
+	m__app->m_dirIncludes->p_AddLast(t_filepath);
+	return 0;
+}
 int c_Parser::p_Parse(String t_toke){
 	if(!((p_CParse(t_toke))!=0)){
-		bb_config_Err(String(L"Syntax error - expecting '",26)+t_toke+String(L"'.",2));
+		bb_config_Err(String(L"Syntax error - Expecting '",26)+t_toke+String(L"'.",2));
 	}
 	return 0;
 }
@@ -23680,6 +23919,12 @@ c_IdentType* c_Parser::p_CParseIdentType(bool t_inner){
 	}
 	return (new c_IdentType)->m_new(t_id,t_args->p_ToArray());
 }
+c_TraceRecord* c_Parser::p_BackTrace(int t_tokeID){
+	int t_blk=c_BlockTrace::m_TraceLog(t_tokeID);
+	c_TraceRecord* t_record=c_BlockTrace::m_Pop();
+	p_SetErr(t_record->p_Line());
+	return t_record;
+}
 c_Expr* c_Parser::p_ParsePrimaryExpr(int t_stmt){
 	c_Expr* t_expr=0;
 	String t_7=m__toke;
@@ -23781,7 +24026,14 @@ c_Expr* c_Parser::p_ParsePrimaryExpr(int t_stmt){
 																t_expr=((new c_ConstExpr)->m_new((c_Type::m_stringType),bb_config_Dequote(m__toke,String(L"cerberus",8))));
 																p_NextToke();
 															}else{
-																bb_config_Err(String(L"Syntax error - unexpected token '",33)+m__toke+String(L"'",1));
+																if(t_8==0){
+																	c_TraceRecord* t_record=p_BackTrace(0);
+																	bb_config_Err(String(L"End-Of-File. ",13)+c_BlockTrace::m_Code2Str(t_record->p_Toke())+String(L" block incorrectly terminated.",30));
+																}else{
+																	c_TraceRecord* t_record2=p_BackTrace(0);
+																	p_SetErr(m__toker->p_Line());
+																	bb_config_Err(String(L"Syntax error - Unexpected token '",33)+m__toke+String(L"'.",2));
+																}
 															}
 														}
 													}
@@ -23956,7 +24208,7 @@ c_Expr* c_Parser::p_ParseExpr(){
 	return p_ParseOrExpr();
 }
 c_Decl* c_Parser::p_ParseDecl(String t_toke,int t_attrs){
-	p_SetErr();
+	p_SetErr(-1);
 	String t_id=p_ParseIdent();
 	c_Type* t_ty=0;
 	c_Expr* t_init=0;
@@ -24013,26 +24265,26 @@ c_Decl* c_Parser::p_ParseDecl(String t_toke,int t_attrs){
 	}
 	return (t_decl);
 }
-c_List3* c_Parser::p_ParseDecls(String t_toke,int t_attrs){
+c_List5* c_Parser::p_ParseDecls(String t_toke,int t_attrs){
 	if((t_toke).Length()!=0){
 		p_Parse(t_toke);
 	}
-	c_List3* t_decls=(new c_List3)->m_new();
+	c_List5* t_decls=(new c_List5)->m_new();
 	do{
 		c_Decl* t_decl=p_ParseDecl(t_toke,t_attrs);
-		t_decls->p_AddLast3(t_decl);
+		t_decls->p_AddLast5(t_decl);
 		if(!((p_CParse(String(L",",1)))!=0)){
 			return t_decls;
 		}
 	}while(!(false));
 }
-c_List3* c_Parser::p_ParseEnumStmt(int t_attrs,bool t_createDeclList){
+c_List5* c_Parser::p_ParseEnumStmt(int t_attrs,bool t_createDeclList){
 	if((t_attrs&256)!=0){
 		bb_config_Err(String(L"Enumerations cannot be extern.",30));
 	}
-	c_List3* t_declList=0;
+	c_List5* t_declList=0;
 	if(t_createDeclList){
-		t_declList=(new c_List3)->m_new();
+		t_declList=(new c_List5)->m_new();
 	}
 	String t_toke=m__toke;
 	p_NextToke();
@@ -24060,18 +24312,18 @@ c_List3* c_Parser::p_ParseEnumStmt(int t_attrs,bool t_createDeclList){
 		}
 		t_i+=1;
 		if(t_createDeclList){
-			t_declList->p_AddLast3(t_decl);
+			t_declList->p_AddLast5(t_decl);
 		}else{
 			m__block->p_AddStmt((new c_DeclStmt)->m_new(t_decl));
 		}
 	}while(!(!((p_CParse(String(L",",1)))!=0)));
 	return t_declList;
 }
-c_List3* c_Parser::p_ParseEnum(String t_toke,int t_attrs){
+c_List5* c_Parser::p_ParseEnum(String t_toke,int t_attrs){
 	return p_ParseEnumStmt(t_attrs,true);
 }
 int c_Parser::p_PushBlock(c_BlockDecl* t_block){
-	m__blockStack->p_AddLast7(m__block);
+	m__blockStack->p_AddLast9(m__block);
 	m__errStack->p_AddLast(bb_config__errInfo);
 	m__block=t_block;
 	return 0;
@@ -24104,12 +24356,40 @@ int c_Parser::p_ParseContinueStmt(){
 	m__block->p_AddStmt((new c_ContinueStmt)->m_new());
 	return 0;
 }
+int c_Parser::p_AtEOF(int t_tokeID,String t_msg){
+	p_SetErr(c_BlockTrace::m_TraceLog(t_tokeID));
+	bb_config_Err(String(L"End-Of-File Reached. ",21)+t_msg+String(L" block not terminated correctly.",32));
+	return 0;
+}
+int c_Parser::p_AtEOF2(String t_tokeID,String t_msg){
+	p_SetErr(c_BlockTrace::m_TraceLog2(t_tokeID));
+	bb_config_Err(String(L"End-Of-File Reached. ",21)+t_msg+String(L" block not terminated correctly.",32));
+	return 0;
+}
 int c_Parser::p_PopBlock(){
 	m__block=m__blockStack->p_RemoveLast();
 	bb_config__errInfo=m__errStack->p_RemoveLast();
 	return 0;
 }
+int c_Parser::p_AtEos2(){
+	return ((m__toke==String() || m__toke==String(L";",1) || m__toke==String(L"\n",1))?1:0);
+}
+int c_Parser::p_ParseBlockEnd(String t_toke,String t_msg,int t_log){
+	p_SetErr(-1);
+	if(!((p_CParse(t_toke))!=0) && p_AtEos2()==0 && m__tokeType!=9){
+		if(t_msg!=String()){
+			if((t_log)!=0){
+				c_BlockTrace::m_TraceLog2(t_toke);
+			}
+			bb_config_Err(t_msg);
+		}
+		return 1;
+	}
+	return 0;
+}
 int c_Parser::p_ParseIfStmt(String t_term){
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=4;
 	p_CParse(String(L"if",2));
 	c_Expr* t_expr=p_ParseExpr();
 	p_CParse(String(L"then",4));
@@ -24124,14 +24404,19 @@ int c_Parser::p_ParseIfStmt(String t_term){
 		}
 		t_eatTerm=1;
 	}
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_thenBlock);
 	while(m__toke!=t_term){
+		if(m__tokeType==0){
+			p_AtEOF(t_tokeID,String(L"Conditional",11));
+		}
 		String t_16=m__toke;
 		if(t_16==String(L"endif",5)){
 			if(t_term==String(L"end",3)){
 				break;
 			}
-			bb_config_Err(String(L"Syntax error - expecting 'End'.",31));
+			p_SetErr(c_BlockTrace::m_TraceLog(t_tokeID));
+			bb_config_Err(String(L"Syntax error - Expecting conditional blocks to terminate with 'End', 'End If' or 'Endif'.",89));
 		}else{
 			if(t_16==String(L"else",4) || t_16==String(L"elseif",6)){
 				int t_elif=((m__toke==String(L"elseif",6))?1:0);
@@ -24150,10 +24435,11 @@ int c_Parser::p_ParseIfStmt(String t_term){
 		}
 	}
 	p_PopBlock();
+	c_TraceRecord* t_blkTrace=c_BlockTrace::m_Pop();
 	if((t_eatTerm)!=0){
 		p_NextToke();
 		if(t_term==String(L"end",3)){
-			p_CParse(String(L"if",2));
+			p_ParseBlockEnd(String(L"if",2),String(L"Syntax error - Expecting conditional blocks to terminate with 'End', 'Endif' Or 'End If'.",89),1);
 		}
 	}
 	c_IfStmt* t_stmt=(new c_IfStmt)->m_new(t_expr,t_thenBlock,t_elseBlock);
@@ -24161,18 +24447,37 @@ int c_Parser::p_ParseIfStmt(String t_term){
 	return 0;
 }
 int c_Parser::p_ParseWhileStmt(){
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=6;
+	p_SetErr(-1);
+	String t_errLine=bb_config__errInfo;
 	p_Parse(String(L"while",5));
 	c_Expr* t_expr=p_ParseExpr();
 	c_BlockDecl* t_block=(new c_BlockDecl)->m_new(m__block);
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_block);
-	while(!((p_CParse(String(L"wend",4)))!=0)){
-		if((p_CParse(String(L"end",3)))!=0){
-			p_CParse(String(L"while",5));
+	while(true){
+		if(m__tokeType==0){
+			p_AtEOF(t_tokeID,String(L"While/Wend/End While iterator",29));
+		}
+		if(!((p_CParse(String(L"wend",4)))!=0)){
+			if((p_CParse(String(L"end",3)))!=0){
+				if(!((p_ParseBlockEnd(String(L"while",5),String(L"Syntax error - Expecting 'while' block to terminate with 'End' or 'End While'.",78),0))!=0)){
+					break;
+				}
+				break;
+			}
+		}else{
+			if(!((p_AtEos2())!=0)){
+				p_SetErr(-1);
+				bb_config_Err(String(L"Syntax error - Wend does not except a variable or expression.",61));
+			}
 			break;
 		}
 		p_ParseStmt();
 	}
 	p_PopBlock();
+	c_TraceRecord* t_blkTrace=c_BlockTrace::m_Pop();
 	c_WhileStmt* t_stmt=(new c_WhileStmt)->m_new(t_expr,t_block);
 	m__block->p_AddStmt(t_stmt);
 	return 0;
@@ -24186,13 +24491,20 @@ int c_Parser::p_PopErr(){
 	return 0;
 }
 int c_Parser::p_ParseRepeatStmt(){
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=5;
 	p_Parse(String(L"repeat",6));
 	c_BlockDecl* t_block=(new c_BlockDecl)->m_new(m__block);
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_block);
-	while(m__toke!=String(L"until",5) && m__toke!=String(L"forever",7)){
+	while(m__toke!=String(L"until",5) && m__toke!=String(L"forever",7) && m__tokeType!=0){
 		p_ParseStmt();
 	}
 	p_PopBlock();
+	if(m__tokeType==0){
+		p_AtEOF(t_tokeID,String(L"Repeat/Until/Forever",20));
+	}
+	c_TraceRecord* t_blkTrace=c_BlockTrace::m_Pop();
 	c_Expr* t_expr=0;
 	if((p_CParse(String(L"until",5)))!=0){
 		p_PushErr();
@@ -24207,6 +24519,8 @@ int c_Parser::p_ParseRepeatStmt(){
 	return 0;
 }
 int c_Parser::p_ParseForStmt(){
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=1;
 	p_Parse(String(L"for",3));
 	String t_varid=String();
 	c_Type* t_varty=0;
@@ -24226,18 +24540,48 @@ int c_Parser::p_ParseForStmt(){
 	if((p_CParse(String(L"eachin",6)))!=0){
 		c_Expr* t_expr=p_ParseExpr();
 		c_BlockDecl* t_block=(new c_BlockDecl)->m_new(m__block);
+		c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 		p_PushBlock(t_block);
-		while(!((p_CParse(String(L"next",4)))!=0)){
-			if((p_CParse(String(L"end",3)))!=0){
-				p_CParse(String(L"for",3));
+		while(true){
+			if(m__tokeType==0){
+				p_AtEOF(t_tokeID,String(L"For/Next/End For",16));
+			}
+			if((p_CParse(String(L"next",4)))!=0){
+				if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+					bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+				}
+				if(!((p_AtEos2())!=0)){
+					c_BlockTrace::m_TraceLog(t_tokeID);
+					bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+				}
 				break;
+			}else{
+				if((p_CParse(String(L"end",3)))!=0){
+					if(m__toke!=String(L"for",3)){
+						if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+							bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+						}
+						if(!((p_AtEos2())!=0)){
+							c_BlockTrace::m_TraceLog(t_tokeID);
+							bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+						}
+					}else{
+						p_NextToke();
+						if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+							bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+						}
+						if(!((p_AtEos2())!=0)){
+							c_BlockTrace::m_TraceLog(t_tokeID);
+							bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+						}
+					}
+					break;
+				}
 			}
 			p_ParseStmt();
 		}
-		if(m__tokeType==2 && p_ParseIdent()!=t_varid){
-			bb_config_Err(String(L"Next variable name does not match For variable name",51));
-		}
 		p_PopBlock();
+		c_TraceRecord* t_blkTrace=c_BlockTrace::m_Pop();
 		c_ForEachinStmt* t_stmt=(new c_ForEachinStmt)->m_new(t_varid,t_varty,t_varlocal,t_expr,t_block);
 		m__block->p_AddStmt(t_stmt);
 		return 0;
@@ -24272,32 +24616,68 @@ int c_Parser::p_ParseForStmt(){
 	t_expr2=((new c_BinaryCompareExpr)->m_new(t_op,((new c_IdentExpr)->m_new(t_varid,0)),t_term));
 	t_incr=((new c_AssignStmt)->m_new(String(L"=",1),((new c_IdentExpr)->m_new(t_varid,0)),((new c_BinaryMathExpr)->m_new(String(L"+",1),((new c_IdentExpr)->m_new(t_varid,0)),t_stp))));
 	c_BlockDecl* t_block2=(new c_BlockDecl)->m_new(m__block);
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_block2);
-	while(!((p_CParse(String(L"next",4)))!=0)){
-		if((p_CParse(String(L"end",3)))!=0){
-			p_CParse(String(L"for",3));
+	while(true){
+		if(m__tokeType==0){
+			p_AtEOF(t_tokeID,String(L"For/Next/End For",16));
+		}
+		if((p_CParse(String(L"next",4)))!=0){
+			if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+				bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+			}
+			if(!((p_AtEos2())!=0)){
+				c_BlockTrace::m_TraceLog(t_tokeID);
+				bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+			}
 			break;
+		}else{
+			if((p_CParse(String(L"end",3)))!=0){
+				if(m__toke!=String(L"for",3)){
+					if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+						bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+					}
+					if(!((p_AtEos2())!=0)){
+						c_BlockTrace::m_TraceLog(t_tokeID);
+						bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+					}
+				}else{
+					p_NextToke();
+					if(m__tokeType==2 && p_ParseIdent()!=t_varid){
+						bb_config_Err(String(L"Syntax error - Next variable name does not match For variable name",66));
+					}
+					if(!((p_AtEos2())!=0)){
+						c_BlockTrace::m_TraceLog(t_tokeID);
+						bb_config_Err(String(L"Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'.",85));
+					}
+				}
+				break;
+			}
 		}
 		p_ParseStmt();
 	}
-	if(m__tokeType==2 && p_ParseIdent()!=t_varid){
-		bb_config_Err(String(L"Next variable name does not match For variable name",51));
-	}
 	p_PopBlock();
+	c_TraceRecord* t_blkTrace2=c_BlockTrace::m_Pop();
 	c_ForStmt* t_stmt2=(new c_ForStmt)->m_new(t_init,t_expr2,t_incr,t_block2);
 	m__block->p_AddStmt(t_stmt2);
 	return 0;
 }
 int c_Parser::p_ParseSelectStmt(){
 	p_Parse(String(L"select",6));
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=9;
 	c_Expr* t_expr=p_ParseExpr();
 	c_BlockDecl* t_block=m__block;
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	m__selTmpId+=1;
 	String t_tmpId=String(m__selTmpId);
 	t_block->p_AddStmt((new c_DeclStmt)->m_new2(t_tmpId,0,t_expr));
 	c_IdentExpr* t_tmpExpr=(new c_IdentExpr)->m_new(t_tmpId,0);
 	while(m__toke!=String(L"end",3) && m__toke!=String(L"default",7)){
-		p_SetErr();
+		p_SetErr(-1);
+		if(m__tokeType==0){
+			break;
+		}
 		String t_17=m__toke;
 		if(t_17==String(L"\n",1)){
 			p_NextToke();
@@ -24326,7 +24706,7 @@ int c_Parser::p_ParseSelectStmt(){
 				p_PopBlock();
 				t_block=t_elseBlock;
 			}else{
-				bb_config_Err(String(L"Syntax error - expecting 'Case', 'Default' or 'End'.",52));
+				bb_config_Err(String(L"Syntax error - Expecting 'Case', 'Default' or 'End'.",52));
 			}
 		}
 	}
@@ -24334,7 +24714,10 @@ int c_Parser::p_ParseSelectStmt(){
 		p_NextToke();
 		p_PushBlock(t_block);
 		while(m__toke!=String(L"end",3)){
-			p_SetErr();
+			if(m__tokeType==0){
+				break;
+			}
+			p_SetErr(-1);
 			String t_18=m__toke;
 			if(t_18==String(L"case",4)){
 				bb_config_Err(String(L"Case can not appear after default.",34));
@@ -24347,17 +24730,27 @@ int c_Parser::p_ParseSelectStmt(){
 		}
 		p_PopBlock();
 	}
-	p_SetErr();
+	if(m__tokeType==0){
+		p_AtEOF(t_tokeID,String(L"Selec/Case",10));
+	}
+	p_SetErr(-1);
 	p_Parse(String(L"end",3));
-	p_CParse(String(L"select",6));
+	p_ParseBlockEnd(String(L"select",6),String(L"Syntax error -Expecting 'Select' block to terminate with 'End' or 'End Select'.",79),0);
+	c_BlockTrace::m_Pop();
 	return 0;
 }
 int c_Parser::p_ParseTryStmt(){
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=6;
 	p_Parse(String(L"try",3));
 	c_BlockDecl* t_block=(new c_BlockDecl)->m_new(m__block);
 	c_Stack8* t_catches=(new c_Stack8)->m_new();
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_block);
 	while(m__toke!=String(L"end",3)){
+		if(m__tokeType==0){
+			p_AtEOF(t_tokeID,String(L"Try/End Try",11));
+		}
 		if((p_CParse(String(L"catch",5)))!=0){
 			String t_id=p_ParseIdent();
 			p_Parse(String(L":",1));
@@ -24375,8 +24768,9 @@ int c_Parser::p_ParseTryStmt(){
 		bb_config_Err(String(L"Try block must have at least one catch block",44));
 	}
 	p_PopBlock();
+	c_TraceRecord* t_record=c_BlockTrace::m_Pop();
 	p_NextToke();
-	p_CParse(String(L"try",3));
+	p_ParseBlockEnd(String(L"try",3),String(L"Expecting 'Try' block must terminate with 'End' or 'End Try'.",61),0);
 	m__block->p_AddStmt((new c_TryStmt)->m_new(t_block,t_catches->p_ToArray()));
 	return 0;
 }
@@ -24386,7 +24780,7 @@ int c_Parser::p_ParseThrowStmt(){
 	return 0;
 }
 int c_Parser::p_ParseStmt(){
-	p_SetErr();
+	p_SetErr(-1);
 	String t_19=m__toke;
 	if(t_19==String(L";",1) || t_19==String(L"\n",1)){
 		p_NextToke();
@@ -24468,9 +24862,12 @@ int c_Parser::p_ParseStmt(){
 	return 0;
 }
 c_FuncDecl* c_Parser::p_ParseFuncDecl(int t_attrs){
-	p_SetErr();
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=2;
+	p_SetErr(-1);
 	if((p_CParse(String(L"method",6)))!=0){
 		t_attrs|=1;
+		t_tokeID=3;
 	}else{
 		if(!((p_CParse(String(L"function",8)))!=0)){
 			bb_config_InternalErr(String(L"Internal error",14));
@@ -24567,32 +24964,45 @@ c_FuncDecl* c_Parser::p_ParseFuncDecl(int t_attrs){
 	if(((t_funcDecl->p_IsExtern())!=0) || ((t_funcDecl->p_IsAbstract())!=0)){
 		return t_funcDecl;
 	}
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	p_PushBlock(t_funcDecl);
 	while(m__toke!=String(L"end",3)){
 		p_ParseStmt();
 	}
 	p_PopBlock();
-	p_NextToke();
-	if((t_attrs&3)!=0){
-		p_CParse(String(L"method",6));
+	c_TraceRecord* t_blkTrace=c_BlockTrace::m_Pop();
+	if(m__toke==String(L"end",3)){
+		p_NextToke();
+		String t_blkend=String(L"function",8);
+		String t_msg=String(L"Syntax error - Expecting Function block to terminate with 'End' or 'End Function'.",82);
+		if((t_attrs&3)!=0){
+			t_blkend=String(L"method",6);
+			t_msg=String(L"Syntax error - Expecting Method block to terminate with 'End' Or 'End Method'.",78);
+		}
+		p_SetErr(-1);
+		p_ParseBlockEnd(t_blkend,t_msg,0);
 	}else{
-		p_CParse(String(L"function",8));
+		p_NextToke();
 	}
 	return t_funcDecl;
 }
 c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
-	p_SetErr();
+	p_SetErr(-1);
 	String t_toke=m__toke;
+	int t_lineStart=m__toker->p_Line();
+	int t_tokeID=7;
 	if((p_CParse(String(L"interface",9)))!=0){
 		if((t_attrs&256)!=0){
 			bb_config_Err(String(L"Interfaces cannot be extern.",28));
 		}
 		t_attrs|=5120;
+		t_tokeID=8;
 	}else{
 		if(!((p_CParse(String(L"class",5)))!=0)){
 			bb_config_InternalErr(String(L"Internal error",14));
 		}
 	}
+	c_BlockTrace::m_Push(t_tokeID,t_lineStart);
 	String t_id=p_ParseIdent();
 	c_StringStack* t_args=(new c_StringStack)->m_new2();
 	c_IdentType* t_superTy=c_Type::m_objectType;
@@ -24717,7 +25127,10 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 										}
 										t_classDecl->p_InsertDecl(p_ParseFuncDecl(t_decl_attrs|t_func_attrs));
 									}else{
-										bb_config_Err(String(L"Syntax error - expecting class member declaration.",50));
+										if(m__tokeType==0){
+											p_AtEOF(0,String(L"Code",4));
+										}
+										bb_config_Err(String(L"Syntax error - Expecting class member declaration.",50));
 									}
 								}
 							}
@@ -24728,8 +25141,20 @@ c_ClassDecl* c_Parser::p_ParseClassDecl(int t_attrs){
 		}
 	}while(!(false));
 	if((t_toke).Length()!=0){
-		p_CParse(t_toke);
+		String t_msg=String();
+		if(t_toke==String(L"class",5)){
+			t_msg=String(L"Syntax error - Expecting 'Class' to terminate with 'End' or 'End Class'.",72);
+		}else{
+			if(t_toke==String(L"interface",9)){
+				t_msg=String(L"Syntax error - Expecting 'Interface' to terminate with 'End' or 'End Interface'.",80);
+			}
+		}
+		if(t_msg!=String()){
+			p_SetErr(-1);
+			p_ParseBlockEnd(t_toke,t_msg,1);
+		}
 	}
+	c_TraceRecord* t_recor=c_BlockTrace::m_Pop();
 	return t_classDecl;
 }
 int c_Parser::p_ParseMain(){
@@ -24738,8 +25163,9 @@ int c_Parser::p_ParseMain(){
 		m__module->m_attrs|=1;
 	}
 	int t_attrs=0;
+	c_BlockTrace::m_Clear();
 	while((m__toke).Length()!=0){
-		p_SetErr();
+		p_SetErr(-1);
 		String t_23=m__toke;
 		if(t_23==String(L"\n",1)){
 			p_NextToke();
@@ -24763,55 +25189,65 @@ int c_Parser::p_ParseMain(){
 								p_ImportModule(p_ParseModPath(),t_attrs);
 							}
 						}else{
-							if(t_23==String(L"friend",6)){
+							if(t_23==String(L"include",7)){
 								p_NextToke();
-								String t_modpath=p_ParseModPath();
-								m__module->m_friends->p_Insert(t_modpath);
+								p_IncludeFiles(p_ParseStringLit());
 							}else{
-								if(t_23==String(L"alias",5)){
+								if(t_23==String(L"includedir",10)){
 									p_NextToke();
-									do{
-										String t_ident=p_ParseIdent();
-										p_Parse(String(L"=",1));
-										Object* t_decl=0;
-										String t_24=m__toke;
-										if(t_24==String(L"int",3)){
-											t_decl=(c_Type::m_intType);
-										}else{
-											if(t_24==String(L"float",5)){
-												t_decl=(c_Type::m_floatType);
-											}else{
-												if(t_24==String(L"string",6)){
-													t_decl=(c_Type::m_stringType);
-												}
-											}
-										}
-										if((t_decl)!=0){
-											m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
-											p_NextToke();
-											continue;
-										}
-										c_ScopeDecl* t_scope=(m__module);
-										bb_decl_PushEnv(m__module);
-										do{
-											String t_id=p_ParseIdent();
-											t_decl=t_scope->p_FindDecl(t_id);
-											if(!((t_decl)!=0)){
-												bb_config_Err(String(L"Identifier '",12)+t_id+String(L"' not found.",12));
-											}
-											if(!((p_CParse(String(L".",1)))!=0)){
-												break;
-											}
-											t_scope=dynamic_cast<c_ScopeDecl*>(t_decl);
-											if(!((t_scope)!=0) || ((dynamic_cast<c_FuncDecl*>(t_scope))!=0)){
-												bb_config_Err(String(L"Invalid scope '",15)+t_id+String(L"'.",2));
-											}
-										}while(!(false));
-										bb_decl_PopEnv();
-										m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
-									}while(!(!((p_CParse(String(L",",1)))!=0)));
+									p_IncludeDirs(p_ParseStringLit());
 								}else{
-									break;
+									if(t_23==String(L"friend",6)){
+										p_NextToke();
+										String t_modpath=p_ParseModPath();
+										m__module->m_friends->p_Insert(t_modpath);
+									}else{
+										if(t_23==String(L"alias",5)){
+											p_NextToke();
+											do{
+												String t_ident=p_ParseIdent();
+												p_Parse(String(L"=",1));
+												Object* t_decl=0;
+												String t_24=m__toke;
+												if(t_24==String(L"int",3)){
+													t_decl=(c_Type::m_intType);
+												}else{
+													if(t_24==String(L"float",5)){
+														t_decl=(c_Type::m_floatType);
+													}else{
+														if(t_24==String(L"string",6)){
+															t_decl=(c_Type::m_stringType);
+														}
+													}
+												}
+												if((t_decl)!=0){
+													m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
+													p_NextToke();
+													continue;
+												}
+												c_ScopeDecl* t_scope=(m__module);
+												bb_decl_PushEnv(m__module);
+												do{
+													String t_id=p_ParseIdent();
+													t_decl=t_scope->p_FindDecl(t_id);
+													if(!((t_decl)!=0)){
+														bb_config_Err(String(L"Identifier '",12)+t_id+String(L"' not found.",12));
+													}
+													if(!((p_CParse(String(L".",1)))!=0)){
+														break;
+													}
+													t_scope=dynamic_cast<c_ScopeDecl*>(t_decl);
+													if(!((t_scope)!=0) || ((dynamic_cast<c_FuncDecl*>(t_scope))!=0)){
+														bb_config_Err(String(L"Invalid scope '",15)+t_id+String(L"'.",2));
+													}
+												}while(!(false));
+												bb_decl_PopEnv();
+												m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
+											}while(!(!((p_CParse(String(L",",1)))!=0)));
+										}else{
+											break;
+										}
+									}
 								}
 							}
 						}
@@ -24821,7 +25257,7 @@ int c_Parser::p_ParseMain(){
 		}
 	}
 	while((m__toke).Length()!=0){
-		p_SetErr();
+		p_SetErr(-1);
 		String t_25=m__toke;
 		if(t_25==String(L"\n",1)){
 			p_NextToke();
@@ -24861,7 +25297,7 @@ int c_Parser::p_ParseMain(){
 										if(t_25==String(L"function",8)){
 											m__module->p_InsertDecl(p_ParseFuncDecl(t_attrs));
 										}else{
-											bb_config_Err(String(L"Syntax error - expecting declaration.",37));
+											bb_config_Err(String(L"Syntax error - Expecting declaration.",37));
 										}
 									}
 								}
@@ -24877,6 +25313,659 @@ int c_Parser::p_ParseMain(){
 }
 void c_Parser::mark(){
 	Object::mark();
+}
+c_BlockTrace::c_BlockTrace(){
+	m__map=(new c_IntMap)->m_new();
+	m__record=(new c_List4)->m_new();
+}
+c_BlockTrace* c_BlockTrace::m_new(){
+	return this;
+}
+c_BlockTrace* c_BlockTrace::m__Blocks;
+int c_BlockTrace::m_Clear(){
+	m__Blocks->m__map->p_Clear();
+	m__Blocks->m__record->p_Clear();
+	return 0;
+}
+c_TraceRecord* c_BlockTrace::p_LastBlockItem(){
+	if(m__record->p_IsEmpty()){
+		return 0;
+	}
+	return m__record->p_Last();
+}
+c_IntList* c_BlockTrace::p_BlockLineList(int t_token){
+	c_IntList* t_blklines=(new c_IntList)->m_new2();
+	int t_lastblkline=p_LastBlockItem()->p_Line();
+	if(t_token>0){
+		c_IntList* t_tokelines=m__map->p_Get2(t_token);
+		if(t_lastblkline>0){
+			t_blklines->p_AddLast3(t_lastblkline);
+		}
+		c_Enumerator2* t_=t_tokelines->p_ObjectEnumerator();
+		while(t_->p_HasNext()){
+			int t_i=t_->p_NextObject();
+			if(t_i>t_lastblkline){
+				t_blklines->p_AddLast3(t_i);
+			}
+		}
+	}else{
+		if(t_lastblkline>0){
+			t_blklines->p_AddLast3(t_lastblkline);
+		}
+		c_KeyEnumerator* t_2=m__map->p_Keys()->p_ObjectEnumerator();
+		while(t_2->p_HasNext()){
+			int t_i2=t_2->p_NextObject();
+			c_Enumerator2* t_3=m__map->p_Get2(t_i2)->p_ObjectEnumerator();
+			while(t_3->p_HasNext()){
+				int t_j=t_3->p_NextObject();
+				if(t_j>t_lastblkline){
+					t_blklines->p_AddLast3(t_j);
+				}
+			}
+		}
+		t_blklines->p_Sort(1);
+	}
+	return t_blklines;
+}
+int c_BlockTrace::p_Unwind(int t_token){
+	Array<int > t_blklines=m__Blocks->p_BlockLineList(t_token)->p_ToArray();
+	String t_path=bb_config__errInfo.Slice(0,bb_config__errInfo.FindLast(String(L"<",1)));
+	bbPrint(String(L"\n\t------------ BLOCK TRACE ------------",39));
+	bbPrint(String(L"FILE: ",6)+t_path);
+	int t_i=0;
+	while(t_i<t_blklines.Length()){
+		String t_str=String();
+		int t_col=0;
+		while(t_col<10){
+			if(t_i>=t_blklines.Length()){
+				break;
+			}
+			t_str=t_str+(String(t_blklines[t_i])+String(L", ",2));
+			t_i+=1;
+			t_col+=1;
+		}
+		bbPrint(String(L"Statement Blocks at lines: ",27)+t_str.Slice(0,t_str.Length()-2));
+	}
+	bbPrint(String());
+	return t_blklines[0];
+}
+int c_BlockTrace::m_TraceLog(int t_token){
+	return m__Blocks->p_Unwind(t_token);
+}
+int c_BlockTrace::m_Str2Code(String t_toke){
+	String t_2=t_toke.ToLower();
+	if(t_2==String(L"for",3)){
+		return 1;
+	}else{
+		if(t_2==String(L"function",8)){
+			return 2;
+		}else{
+			if(t_2==String(L"method",6)){
+				return 3;
+			}else{
+				if(t_2==String(L"if",2)){
+					return 4;
+				}else{
+					if(t_2==String(L"repeat",6)){
+						return 5;
+					}else{
+						if(t_2==String(L"while",5)){
+							return 6;
+						}else{
+							if(t_2==String(L"try",3)){
+								return 6;
+							}else{
+								if(t_2==String(L"class",5)){
+									return 7;
+								}else{
+									if(t_2==String(L"interface",9)){
+										return 8;
+									}else{
+										if(t_2==String(L"select",6)){
+											return 9;
+										}else{
+											return 0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+int c_BlockTrace::m_TraceLog2(String t_token){
+	return m__Blocks->p_Unwind(m_Str2Code(t_token));
+}
+c_TraceRecord* c_BlockTrace::p_RemoveRecord(){
+	if(m__record->p_IsEmpty()){
+		return 0;
+	}
+	return m__record->p_RemoveLast();
+}
+c_TraceRecord* c_BlockTrace::m_Pop(){
+	return m__Blocks->p_RemoveRecord();
+}
+String c_BlockTrace::m_Code2Str(int t_code){
+	int t_1=t_code;
+	if(t_1==1){
+		return String(L"For",3);
+	}else{
+		if(t_1==2){
+			return String(L"Function",8);
+		}else{
+			if(t_1==3){
+				return String(L"Method",6);
+			}else{
+				if(t_1==4){
+					return String(L"If",2);
+				}else{
+					if(t_1==5){
+						return String(L"Repeat",6);
+					}else{
+						if(t_1==6){
+							return String(L"While",5);
+						}else{
+							if(t_1==6){
+								return String(L"Try",3);
+							}else{
+								if(t_1==7){
+									return String(L"Class",5);
+								}else{
+									if(t_1==8){
+										return String(L"Try",3);
+									}else{
+										if(t_1==9){
+											return String(L"Select",6);
+										}else{
+											return String();
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+int c_BlockTrace::p_AddRecord(c_TraceRecord* t_record){
+	int t_token=t_record->p_Toke();
+	if(!m__map->p_Contains2(t_token)){
+		c_IntList* t_newlist=(new c_IntList)->m_new2();
+		t_newlist->p_AddLast3(t_record->p_Line());
+		m__map->p_Add(t_token,t_newlist);
+	}else{
+		m__map->p_Get2(t_token)->p_AddLast3(t_record->p_Line());
+	}
+	m__record->p_AddLast4(t_record);
+	return 0;
+}
+int c_BlockTrace::m_Push(int t_toke,int t_line){
+	m__Blocks->p_AddRecord((new c_TraceRecord)->m_new(t_toke,t_line));
+	return 0;
+}
+int c_BlockTrace::m_Push2(String t_toke,int t_line){
+	m__Blocks->p_AddRecord((new c_TraceRecord)->m_new(m_Str2Code(t_toke),t_line));
+	return 0;
+}
+void c_BlockTrace::mark(){
+	Object::mark();
+}
+c_List3::c_List3(){
+	m__head=((new c_HeadNode7)->m_new());
+}
+c_List3* c_List3::m_new(){
+	return this;
+}
+c_Node13* c_List3::p_AddLast3(int t_data){
+	return (new c_Node13)->m_new(m__head,m__head->m__pred,t_data);
+}
+c_List3* c_List3::m_new2(Array<int > t_data){
+	Array<int > t_=t_data;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		int t_t=t_[t_2];
+		t_2=t_2+1;
+		p_AddLast3(t_t);
+	}
+	return this;
+}
+c_Enumerator2* c_List3::p_ObjectEnumerator(){
+	return (new c_Enumerator2)->m_new(this);
+}
+int c_List3::p_Compare2(int t_lhs,int t_rhs){
+	bbError(String(L"Unable to compare items",23));
+	return 0;
+}
+int c_List3::p_Sort(int t_ascending){
+	int t_ccsgn=-1;
+	if((t_ascending)!=0){
+		t_ccsgn=1;
+	}
+	int t_insize=1;
+	do{
+		int t_merges=0;
+		c_Node13* t_tail=m__head;
+		c_Node13* t_p=m__head->m__succ;
+		while(t_p!=m__head){
+			t_merges+=1;
+			c_Node13* t_q=t_p->m__succ;
+			int t_qsize=t_insize;
+			int t_psize=1;
+			while(t_psize<t_insize && t_q!=m__head){
+				t_psize+=1;
+				t_q=t_q->m__succ;
+			}
+			do{
+				c_Node13* t_t=0;
+				if(((t_psize)!=0) && ((t_qsize)!=0) && t_q!=m__head){
+					int t_cc=p_Compare2(t_p->m__data,t_q->m__data)*t_ccsgn;
+					if(t_cc<=0){
+						t_t=t_p;
+						t_p=t_p->m__succ;
+						t_psize-=1;
+					}else{
+						t_t=t_q;
+						t_q=t_q->m__succ;
+						t_qsize-=1;
+					}
+				}else{
+					if((t_psize)!=0){
+						t_t=t_p;
+						t_p=t_p->m__succ;
+						t_psize-=1;
+					}else{
+						if(((t_qsize)!=0) && t_q!=m__head){
+							t_t=t_q;
+							t_q=t_q->m__succ;
+							t_qsize-=1;
+						}else{
+							break;
+						}
+					}
+				}
+				t_t->m__pred=t_tail;
+				t_tail->m__succ=t_t;
+				t_tail=t_t;
+			}while(!(false));
+			t_p=t_q;
+		}
+		t_tail->m__succ=m__head;
+		m__head->m__pred=t_tail;
+		if(t_merges<=1){
+			return 0;
+		}
+		t_insize*=2;
+	}while(!(false));
+}
+int c_List3::p_Count(){
+	int t_n=0;
+	c_Node13* t_node=m__head->m__succ;
+	while(t_node!=m__head){
+		t_node=t_node->m__succ;
+		t_n+=1;
+	}
+	return t_n;
+}
+Array<int > c_List3::p_ToArray(){
+	Array<int > t_arr=Array<int >(p_Count());
+	int t_i=0;
+	c_Enumerator2* t_=this->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		int t_t=t_->p_NextObject();
+		t_arr[t_i]=t_t;
+		t_i+=1;
+	}
+	return t_arr;
+}
+void c_List3::mark(){
+	Object::mark();
+}
+c_IntList::c_IntList(){
+}
+c_IntList* c_IntList::m_new(Array<int > t_data){
+	c_List3::m_new2(t_data);
+	return this;
+}
+c_IntList* c_IntList::m_new2(){
+	c_List3::m_new();
+	return this;
+}
+int c_IntList::p_Compare2(int t_lhs,int t_rhs){
+	return t_lhs-t_rhs;
+}
+void c_IntList::mark(){
+	c_List3::mark();
+}
+c_Map6::c_Map6(){
+	m_root=0;
+}
+c_Map6* c_Map6::m_new(){
+	return this;
+}
+int c_Map6::p_Clear(){
+	m_root=0;
+	return 0;
+}
+c_Node8* c_Map6::p_FindNode2(int t_key){
+	c_Node8* t_node=m_root;
+	while((t_node)!=0){
+		int t_cmp=p_Compare2(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_IntList* c_Map6::p_Get2(int t_key){
+	c_Node8* t_node=p_FindNode2(t_key);
+	if((t_node)!=0){
+		return t_node->m_value;
+	}
+	return 0;
+}
+c_MapKeys* c_Map6::p_Keys(){
+	return (new c_MapKeys)->m_new(this);
+}
+c_Node8* c_Map6::p_FirstNode(){
+	if(!((m_root)!=0)){
+		return 0;
+	}
+	c_Node8* t_node=m_root;
+	while((t_node->m_left)!=0){
+		t_node=t_node->m_left;
+	}
+	return t_node;
+}
+bool c_Map6::p_Contains2(int t_key){
+	return p_FindNode2(t_key)!=0;
+}
+int c_Map6::p_RotateLeft6(c_Node8* t_node){
+	c_Node8* t_child=t_node->m_right;
+	t_node->m_right=t_child->m_left;
+	if((t_child->m_left)!=0){
+		t_child->m_left->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_left){
+			t_node->m_parent->m_left=t_child;
+		}else{
+			t_node->m_parent->m_right=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_left=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map6::p_RotateRight6(c_Node8* t_node){
+	c_Node8* t_child=t_node->m_left;
+	t_node->m_left=t_child->m_right;
+	if((t_child->m_right)!=0){
+		t_child->m_right->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_right){
+			t_node->m_parent->m_right=t_child;
+		}else{
+			t_node->m_parent->m_left=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_right=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map6::p_InsertFixup6(c_Node8* t_node){
+	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
+		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
+			c_Node8* t_uncle=t_node->m_parent->m_parent->m_right;
+			if(((t_uncle)!=0) && t_uncle->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle->m_color=1;
+				t_uncle->m_parent->m_color=-1;
+				t_node=t_uncle->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_right){
+					t_node=t_node->m_parent;
+					p_RotateLeft6(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateRight6(t_node->m_parent->m_parent);
+			}
+		}else{
+			c_Node8* t_uncle2=t_node->m_parent->m_parent->m_left;
+			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle2->m_color=1;
+				t_uncle2->m_parent->m_color=-1;
+				t_node=t_uncle2->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_left){
+					t_node=t_node->m_parent;
+					p_RotateRight6(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateLeft6(t_node->m_parent->m_parent);
+			}
+		}
+	}
+	m_root->m_color=1;
+	return 0;
+}
+bool c_Map6::p_Add(int t_key,c_IntList* t_value){
+	c_Node8* t_node=m_root;
+	c_Node8* t_parent=0;
+	int t_cmp=0;
+	while((t_node)!=0){
+		t_parent=t_node;
+		t_cmp=p_Compare2(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return false;
+			}
+		}
+	}
+	t_node=(new c_Node8)->m_new(t_key,t_value,-1,t_parent);
+	if((t_parent)!=0){
+		if(t_cmp>0){
+			t_parent->m_right=t_node;
+		}else{
+			t_parent->m_left=t_node;
+		}
+		p_InsertFixup6(t_node);
+	}else{
+		m_root=t_node;
+	}
+	return true;
+}
+void c_Map6::mark(){
+	Object::mark();
+}
+c_IntMap::c_IntMap(){
+}
+c_IntMap* c_IntMap::m_new(){
+	c_Map6::m_new();
+	return this;
+}
+int c_IntMap::p_Compare2(int t_lhs,int t_rhs){
+	return t_lhs-t_rhs;
+}
+void c_IntMap::mark(){
+	c_Map6::mark();
+}
+c_Node8::c_Node8(){
+	m_key=0;
+	m_right=0;
+	m_left=0;
+	m_value=0;
+	m_parent=0;
+	m_color=0;
+}
+c_Node8* c_Node8::p_NextNode(){
+	c_Node8* t_node=0;
+	if((m_right)!=0){
+		t_node=m_right;
+		while((t_node->m_left)!=0){
+			t_node=t_node->m_left;
+		}
+		return t_node;
+	}
+	t_node=this;
+	c_Node8* t_parent=this->m_parent;
+	while(((t_parent)!=0) && t_node==t_parent->m_right){
+		t_node=t_parent;
+		t_parent=t_parent->m_parent;
+	}
+	return t_parent;
+}
+c_Node8* c_Node8::m_new(int t_key,c_IntList* t_value,int t_color,c_Node8* t_parent){
+	this->m_key=t_key;
+	this->m_value=t_value;
+	this->m_color=t_color;
+	this->m_parent=t_parent;
+	return this;
+}
+c_Node8* c_Node8::m_new2(){
+	return this;
+}
+void c_Node8::mark(){
+	Object::mark();
+}
+c_TraceRecord::c_TraceRecord(){
+	m__line=0;
+	m__toke=0;
+}
+int c_TraceRecord::p_Line(){
+	return m__line;
+}
+int c_TraceRecord::p_Toke(){
+	return m__toke;
+}
+c_TraceRecord* c_TraceRecord::m_new(int t_toke,int t_line){
+	m__toke=t_toke;
+	m__line=t_line;
+	return this;
+}
+c_TraceRecord* c_TraceRecord::m_new2(){
+	return this;
+}
+void c_TraceRecord::mark(){
+	Object::mark();
+}
+c_List4::c_List4(){
+	m__head=((new c_HeadNode3)->m_new());
+}
+c_List4* c_List4::m_new(){
+	return this;
+}
+c_Node9* c_List4::p_AddLast4(c_TraceRecord* t_data){
+	return (new c_Node9)->m_new(m__head,m__head->m__pred,t_data);
+}
+c_List4* c_List4::m_new2(Array<c_TraceRecord* > t_data){
+	Array<c_TraceRecord* > t_=t_data;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_TraceRecord* t_t=t_[t_2];
+		t_2=t_2+1;
+		p_AddLast4(t_t);
+	}
+	return this;
+}
+int c_List4::p_Clear(){
+	m__head->m__succ=m__head;
+	m__head->m__pred=m__head;
+	return 0;
+}
+bool c_List4::p_IsEmpty(){
+	return m__head->m__succ==m__head;
+}
+c_TraceRecord* c_List4::p_Last(){
+	return m__head->m__pred->m__data;
+}
+c_TraceRecord* c_List4::p_RemoveLast(){
+	c_TraceRecord* t_data=m__head->m__pred->m__data;
+	m__head->m__pred->p_Remove();
+	return t_data;
+}
+bool c_List4::p_Equals3(c_TraceRecord* t_lhs,c_TraceRecord* t_rhs){
+	return t_lhs==t_rhs;
+}
+c_Node9* c_List4::p_FindLast5(c_TraceRecord* t_value,c_Node9* t_start){
+	while(t_start!=m__head){
+		if(p_Equals3(t_value,t_start->m__data)){
+			return t_start;
+		}
+		t_start=t_start->m__pred;
+	}
+	return 0;
+}
+c_Node9* c_List4::p_FindLast6(c_TraceRecord* t_value){
+	return p_FindLast5(t_value,m__head->m__pred);
+}
+void c_List4::p_RemoveLast4(c_TraceRecord* t_value){
+	c_Node9* t_node=p_FindLast6(t_value);
+	if((t_node)!=0){
+		t_node->p_Remove();
+	}
+}
+void c_List4::mark(){
+	Object::mark();
+}
+c_Node9::c_Node9(){
+	m__succ=0;
+	m__pred=0;
+	m__data=0;
+}
+c_Node9* c_Node9::m_new(c_Node9* t_succ,c_Node9* t_pred,c_TraceRecord* t_data){
+	m__succ=t_succ;
+	m__pred=t_pred;
+	m__succ->m__pred=this;
+	m__pred->m__succ=this;
+	m__data=t_data;
+	return this;
+}
+c_Node9* c_Node9::m_new2(){
+	return this;
+}
+int c_Node9::p_Remove(){
+	m__succ->m__pred=m__pred;
+	m__pred->m__succ=m__succ;
+	return 0;
+}
+void c_Node9::mark(){
+	Object::mark();
+}
+c_HeadNode3::c_HeadNode3(){
+}
+c_HeadNode3* c_HeadNode3::m_new(){
+	c_Node9::m_new2();
+	m__succ=(this);
+	m__pred=(this);
+	return this;
+}
+void c_HeadNode3::mark(){
+	c_Node9::mark();
 }
 int bb_config_InternalErr(String t_err){
 	bbPrint(bb_config__errInfo+String(L" : ",3)+t_err);
@@ -25170,46 +26259,46 @@ int c_AliasDecl::p_OnSemant(){
 void c_AliasDecl::mark(){
 	c_Decl::mark();
 }
-c_List3::c_List3(){
-	m__head=((new c_HeadNode3)->m_new());
+c_List5::c_List5(){
+	m__head=((new c_HeadNode4)->m_new());
 }
-c_List3* c_List3::m_new(){
+c_List5* c_List5::m_new(){
 	return this;
 }
-c_Node8* c_List3::p_AddLast3(c_Decl* t_data){
-	return (new c_Node8)->m_new(m__head,m__head->m__pred,t_data);
+c_Node10* c_List5::p_AddLast5(c_Decl* t_data){
+	return (new c_Node10)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List3* c_List3::m_new2(Array<c_Decl* > t_data){
+c_List5* c_List5::m_new2(Array<c_Decl* > t_data){
 	Array<c_Decl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_Decl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast3(t_t);
+		p_AddLast5(t_t);
 	}
 	return this;
 }
-c_Enumerator2* c_List3::p_ObjectEnumerator(){
-	return (new c_Enumerator2)->m_new(this);
+c_Enumerator3* c_List5::p_ObjectEnumerator(){
+	return (new c_Enumerator3)->m_new(this);
 }
-int c_List3::p_Count(){
+int c_List5::p_Count(){
 	int t_n=0;
-	c_Node8* t_node=m__head->m__succ;
+	c_Node10* t_node=m__head->m__succ;
 	while(t_node!=m__head){
 		t_node=t_node->m__succ;
 		t_n+=1;
 	}
 	return t_n;
 }
-void c_List3::mark(){
+void c_List5::mark(){
 	Object::mark();
 }
-c_Node8::c_Node8(){
+c_Node10::c_Node10(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node8* c_Node8::m_new(c_Node8* t_succ,c_Node8* t_pred,c_Decl* t_data){
+c_Node10* c_Node10::m_new(c_Node10* t_succ,c_Node10* t_pred,c_Decl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -25217,28 +26306,28 @@ c_Node8* c_Node8::m_new(c_Node8* t_succ,c_Node8* t_pred,c_Decl* t_data){
 	m__data=t_data;
 	return this;
 }
-c_Node8* c_Node8::m_new2(){
+c_Node10* c_Node10::m_new2(){
 	return this;
 }
-void c_Node8::mark(){
+void c_Node10::mark(){
 	Object::mark();
 }
-c_HeadNode3::c_HeadNode3(){
+c_HeadNode4::c_HeadNode4(){
 }
-c_HeadNode3* c_HeadNode3::m_new(){
-	c_Node8::m_new2();
+c_HeadNode4* c_HeadNode4::m_new(){
+	c_Node10::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode3::mark(){
-	c_Node8::mark();
+void c_HeadNode4::mark(){
+	c_Node10::mark();
 }
 c_BlockDecl::c_BlockDecl(){
-	m_stmts=(new c_List5)->m_new();
+	m_stmts=(new c_List7)->m_new();
 }
 int c_BlockDecl::p_AddStmt(c_Stmt* t_stmt){
-	m_stmts->p_AddLast5(t_stmt);
+	m_stmts->p_AddLast7(t_stmt);
 	return 0;
 }
 c_BlockDecl* c_BlockDecl::m_new(c_ScopeDecl* t_scope){
@@ -25252,7 +26341,7 @@ c_BlockDecl* c_BlockDecl::m_new2(){
 }
 c_Decl* c_BlockDecl::p_OnCopy(){
 	c_BlockDecl* t_t=(new c_BlockDecl)->m_new2();
-	c_Enumerator5* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_t->p_AddStmt(t_stmt->p_Copy2(t_t));
@@ -25261,7 +26350,7 @@ c_Decl* c_BlockDecl::p_OnCopy(){
 }
 int c_BlockDecl::p_OnSemant(){
 	bb_decl_PushEnv(this);
-	c_Enumerator5* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_stmt->p_Semant();
@@ -25346,7 +26435,7 @@ c_Decl* c_FuncDecl::p_OnCopy(){
 		t_args[t_i]=dynamic_cast<c_ArgDecl*>(t_args[t_i]->p_Copy());
 	}
 	c_FuncDecl* t_t=(new c_FuncDecl)->m_new(m_ident,m_attrs,m_retType,t_args);
-	c_Enumerator5* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_t->p_AddStmt(t_stmt->p_Copy2(t_t));
@@ -25372,7 +26461,7 @@ int c_FuncDecl::p_OnSemant(){
 		p_InsertDecl(t_arg);
 		t_arg->p_Semant();
 	}
-	c_Enumerator3* t_3=m_scope->p_SemantedFuncs(m_ident)->p_ObjectEnumerator();
+	c_Enumerator4* t_3=m_scope->p_SemantedFuncs(m_ident)->p_ObjectEnumerator();
 	while(t_3->p_HasNext()){
 		c_FuncDecl* t_decl=t_3->p_NextObject();
 		if(t_decl!=this && p_EqualsArgs(t_decl)){
@@ -25388,7 +26477,7 @@ int c_FuncDecl::p_OnSemant(){
 	if(((t_sclass)!=0) && p_IsMethod()){
 		while((t_sclass)!=0){
 			int t_found=0;
-			c_Enumerator3* t_4=t_sclass->p_MethodDecls(m_ident)->p_ObjectEnumerator();
+			c_Enumerator4* t_4=t_sclass->p_MethodDecls(m_ident)->p_ObjectEnumerator();
 			while(t_4->p_HasNext()){
 				c_FuncDecl* t_decl2=t_4->p_NextObject();
 				t_found=1;
@@ -25433,46 +26522,46 @@ bool c_FuncDecl::p_IsVirtual(){
 void c_FuncDecl::mark(){
 	c_BlockDecl::mark();
 }
-c_List4::c_List4(){
-	m__head=((new c_HeadNode4)->m_new());
+c_List6::c_List6(){
+	m__head=((new c_HeadNode5)->m_new());
 }
-c_List4* c_List4::m_new(){
+c_List6* c_List6::m_new(){
 	return this;
 }
-c_Node9* c_List4::p_AddLast4(c_FuncDecl* t_data){
-	return (new c_Node9)->m_new(m__head,m__head->m__pred,t_data);
+c_Node11* c_List6::p_AddLast6(c_FuncDecl* t_data){
+	return (new c_Node11)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List4* c_List4::m_new2(Array<c_FuncDecl* > t_data){
+c_List6* c_List6::m_new2(Array<c_FuncDecl* > t_data){
 	Array<c_FuncDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_FuncDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast4(t_t);
+		p_AddLast6(t_t);
 	}
 	return this;
 }
-c_Enumerator3* c_List4::p_ObjectEnumerator(){
-	return (new c_Enumerator3)->m_new(this);
+c_Enumerator4* c_List6::p_ObjectEnumerator(){
+	return (new c_Enumerator4)->m_new(this);
 }
-void c_List4::mark(){
+void c_List6::mark(){
 	Object::mark();
 }
 c_FuncDeclList::c_FuncDeclList(){
 }
 c_FuncDeclList* c_FuncDeclList::m_new(){
-	c_List4::m_new();
+	c_List6::m_new();
 	return this;
 }
 void c_FuncDeclList::mark(){
-	c_List4::mark();
+	c_List6::mark();
 }
-c_Node9::c_Node9(){
+c_Node11::c_Node11(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node9* c_Node9::m_new(c_Node9* t_succ,c_Node9* t_pred,c_FuncDecl* t_data){
+c_Node11* c_Node11::m_new(c_Node11* t_succ,c_Node11* t_pred,c_FuncDecl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -25480,22 +26569,22 @@ c_Node9* c_Node9::m_new(c_Node9* t_succ,c_Node9* t_pred,c_FuncDecl* t_data){
 	m__data=t_data;
 	return this;
 }
-c_Node9* c_Node9::m_new2(){
+c_Node11* c_Node11::m_new2(){
 	return this;
 }
-void c_Node9::mark(){
+void c_Node11::mark(){
 	Object::mark();
 }
-c_HeadNode4::c_HeadNode4(){
+c_HeadNode5::c_HeadNode5(){
 }
-c_HeadNode4* c_HeadNode4::m_new(){
-	c_Node9::m_new2();
+c_HeadNode5* c_HeadNode5::m_new(){
+	c_Node11::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode4::mark(){
-	c_Node9::mark();
+void c_HeadNode5::mark(){
+	c_Node11::mark();
 }
 c_ClassDecl::c_ClassDecl(){
 	m_superClass=0;
@@ -25518,7 +26607,7 @@ c_ClassDecl* c_ClassDecl::m_new(String t_ident,int t_attrs,Array<String > t_args
 	this->m_impltys=t_impls;
 	this->m_objectType=(new c_ObjectType)->m_new(this);
 	if((t_args).Length()!=0){
-		m_instances=(new c_List6)->m_new();
+		m_instances=(new c_List8)->m_new();
 	}
 	return this;
 }
@@ -25611,7 +26700,7 @@ c_ClassDecl* c_ClassDecl::p_GenClassInstance(Array<c_Type* > t_instArgs){
 		if(!((m_args).Length()!=0)){
 			return this;
 		}
-		c_Enumerator4* t_=m_instances->p_ObjectEnumerator();
+		c_Enumerator5* t_=m_instances->p_ObjectEnumerator();
 		while(t_->p_HasNext()){
 			c_ClassDecl* t_inst=t_->p_NextObject();
 			if(bb_decl__env->p_ClassScope()==t_inst){
@@ -25622,7 +26711,7 @@ c_ClassDecl* c_ClassDecl::p_GenClassInstance(Array<c_Type* > t_instArgs){
 	if(m_args.Length()!=t_instArgs.Length()){
 		bb_config_Err(String(L"Wrong number of type arguments for class ",41)+p_ToString());
 	}
-	c_Enumerator4* t_2=m_instances->p_ObjectEnumerator();
+	c_Enumerator5* t_2=m_instances->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_ClassDecl* t_inst2=t_2->p_NextObject();
 		int t_equal=1;
@@ -25643,11 +26732,11 @@ c_ClassDecl* c_ClassDecl::p_GenClassInstance(Array<c_Type* > t_instArgs){
 	t_inst3->m_scope=m_scope;
 	t_inst3->m_instanceof=this;
 	t_inst3->m_instArgs=t_instArgs;
-	m_instances->p_AddLast6(t_inst3);
+	m_instances->p_AddLast8(t_inst3);
 	for(int t_i2=0;t_i2<m_args.Length();t_i2=t_i2+1){
 		t_inst3->p_InsertDecl((new c_AliasDecl)->m_new(m_args[t_i2],0,(t_instArgs[t_i2])));
 	}
-	c_Enumerator2* t_3=m_decls->p_ObjectEnumerator();
+	c_Enumerator3* t_3=m_decls->p_ObjectEnumerator();
 	while(t_3->p_HasNext()){
 		c_Decl* t_decl=t_3->p_NextObject();
 		t_inst3->p_InsertDecl(t_decl->p_Copy());
@@ -25668,24 +26757,24 @@ int c_ClassDecl::p_UpdateLiveMethods(){
 		return 0;
 	}
 	int t_n=0;
-	c_Enumerator3* t_=p_MethodDecls(String())->p_ObjectEnumerator();
+	c_Enumerator4* t_=p_MethodDecls(String())->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_FuncDecl* t_decl=t_->p_NextObject();
 		if((t_decl->p_IsSemanted())!=0){
 			continue;
 		}
 		int t_live=0;
-		c_List4* t_unsem=(new c_List4)->m_new();
-		t_unsem->p_AddLast4(t_decl);
+		c_List6* t_unsem=(new c_List6)->m_new();
+		t_unsem->p_AddLast6(t_decl);
 		c_ClassDecl* t_sclass=m_superClass;
 		while((t_sclass)!=0){
-			c_Enumerator3* t_2=t_sclass->p_MethodDecls(t_decl->m_ident)->p_ObjectEnumerator();
+			c_Enumerator4* t_2=t_sclass->p_MethodDecls(t_decl->m_ident)->p_ObjectEnumerator();
 			while(t_2->p_HasNext()){
 				c_FuncDecl* t_decl2=t_2->p_NextObject();
 				if((t_decl2->p_IsSemanted())!=0){
 					t_live=1;
 				}else{
-					t_unsem->p_AddLast4(t_decl2);
+					t_unsem->p_AddLast6(t_decl2);
 					if((t_decl2->p_IsExtern())!=0){
 						t_live=1;
 					}
@@ -25704,13 +26793,13 @@ int c_ClassDecl::p_UpdateLiveMethods(){
 				while(t_4<t_3.Length()){
 					c_ClassDecl* t_iface=t_3[t_4];
 					t_4=t_4+1;
-					c_Enumerator3* t_5=t_iface->p_MethodDecls(t_decl->m_ident)->p_ObjectEnumerator();
+					c_Enumerator4* t_5=t_iface->p_MethodDecls(t_decl->m_ident)->p_ObjectEnumerator();
 					while(t_5->p_HasNext()){
 						c_FuncDecl* t_decl22=t_5->p_NextObject();
 						if((t_decl22->p_IsSemanted())!=0){
 							t_live=1;
 						}else{
-							t_unsem->p_AddLast4(t_decl22);
+							t_unsem->p_AddLast6(t_decl22);
 							if((t_decl22->p_IsExtern())!=0){
 								t_live=1;
 							}
@@ -25726,7 +26815,7 @@ int c_ClassDecl::p_UpdateLiveMethods(){
 		if(!((t_live)!=0)){
 			continue;
 		}
-		c_Enumerator3* t_6=t_unsem->p_ObjectEnumerator();
+		c_Enumerator4* t_6=t_unsem->p_ObjectEnumerator();
 		while(t_6->p_HasNext()){
 			c_FuncDecl* t_decl3=t_6->p_NextObject();
 			t_decl3->p_Semant();
@@ -25747,7 +26836,7 @@ int c_ClassDecl::p_FinalizeClass(){
 		return 0;
 	}
 	bb_config_PushErr(m_errInfo);
-	c_Enumerator2* t_=p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_=p_Semanted()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		c_FieldDecl* t_fdecl=dynamic_cast<c_FieldDecl*>(t_decl);
@@ -25756,7 +26845,7 @@ int c_ClassDecl::p_FinalizeClass(){
 		}
 		c_ClassDecl* t_cdecl=m_superClass;
 		while((t_cdecl)!=0){
-			c_Enumerator2* t_2=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+			c_Enumerator3* t_2=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 			while(t_2->p_HasNext()){
 				c_Decl* t_decl2=t_2->p_NextObject();
 				if(t_decl2->m_ident==t_fdecl->m_ident){
@@ -25773,14 +26862,14 @@ int c_ClassDecl::p_FinalizeClass(){
 		}
 	}else{
 		c_ClassDecl* t_cdecl2=this;
-		c_List4* t_impls=(new c_List4)->m_new();
+		c_List6* t_impls=(new c_List6)->m_new();
 		while(((t_cdecl2)!=0) && !((p_IsAbstract())!=0)){
-			c_Enumerator3* t_3=t_cdecl2->p_SemantedMethods(String())->p_ObjectEnumerator();
+			c_Enumerator4* t_3=t_cdecl2->p_SemantedMethods(String())->p_ObjectEnumerator();
 			while(t_3->p_HasNext()){
 				c_FuncDecl* t_decl3=t_3->p_NextObject();
 				if((t_decl3->p_IsAbstract())!=0){
 					int t_found=0;
-					c_Enumerator3* t_4=t_impls->p_ObjectEnumerator();
+					c_Enumerator4* t_4=t_impls->p_ObjectEnumerator();
 					while(t_4->p_HasNext()){
 						c_FuncDecl* t_decl22=t_4->p_NextObject();
 						if(t_decl3->m_ident==t_decl22->m_ident && t_decl3->p_EqualsFunc(t_decl22)){
@@ -25796,7 +26885,7 @@ int c_ClassDecl::p_FinalizeClass(){
 						break;
 					}
 				}else{
-					t_impls->p_AddLast4(t_decl3);
+					t_impls->p_AddLast6(t_decl3);
 				}
 			}
 			t_cdecl2=t_cdecl2->m_superClass;
@@ -25829,11 +26918,11 @@ int c_ClassDecl::p_FinalizeClass(){
 		if(t_found2){
 			continue;
 		}
-		c_Enumerator3* t_9=t_iface->p_SemantedMethods(String())->p_ObjectEnumerator();
+		c_Enumerator4* t_9=t_iface->p_SemantedMethods(String())->p_ObjectEnumerator();
 		while(t_9->p_HasNext()){
 			c_FuncDecl* t_decl4=t_9->p_NextObject();
 			bool t_found3=false;
-			c_Enumerator3* t_10=p_SemantedMethods(t_decl4->m_ident)->p_ObjectEnumerator();
+			c_Enumerator4* t_10=p_SemantedMethods(t_decl4->m_ident)->p_ObjectEnumerator();
 			while(t_10->p_HasNext()){
 				c_FuncDecl* t_decl23=t_10->p_NextObject();
 				if(t_decl4->p_EqualsFunc(t_decl23)){
@@ -25926,7 +27015,7 @@ int c_ClassDecl::p_OnSemant(){
 	m_implments=t_impls;
 	bb_decl_PopEnv();
 	if(!((p_IsAbstract())!=0)){
-		c_Enumerator2* t_3=m_decls->p_ObjectEnumerator();
+		c_Enumerator3* t_3=m_decls->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
 			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
@@ -25938,7 +27027,7 @@ int c_ClassDecl::p_OnSemant(){
 	}
 	if(!((p_IsExtern())!=0) && !((p_IsInterface())!=0)){
 		c_FuncDecl* t_fdecl2=0;
-		c_Enumerator3* t_4=p_FuncDecls(String())->p_ObjectEnumerator();
+		c_Enumerator4* t_4=p_FuncDecls(String())->p_ObjectEnumerator();
 		while(t_4->p_HasNext()){
 			c_FuncDecl* t_decl2=t_4->p_NextObject();
 			if(!t_decl2->p_IsCtor()){
@@ -25966,7 +27055,7 @@ int c_ClassDecl::p_OnSemant(){
 			p_InsertDecl(t_fdecl2);
 		}
 	}
-	p_AppScope()->m_semantedClasses->p_AddLast6(this);
+	p_AppScope()->m_semantedClasses->p_AddLast8(this);
 	return 0;
 }
 int c_ClassDecl::p_ExtendsClass(c_ClassDecl* t_cdecl){
@@ -26712,7 +27801,7 @@ int c_IdentExpr::p__Semant(){
 }
 int c_IdentExpr::p_IdentErr(){
 	String t_close=String();
-	c_Enumerator2* t_=m_scope->p_Decls()->p_ObjectEnumerator();
+	c_Enumerator3* t_=m_scope->p_Decls()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		if(m_ident.ToLower()==t_decl->m_ident.ToLower()){
@@ -26889,43 +27978,43 @@ int c_Stmt::p_Semant(){
 void c_Stmt::mark(){
 	Object::mark();
 }
-c_List5::c_List5(){
-	m__head=((new c_HeadNode5)->m_new());
+c_List7::c_List7(){
+	m__head=((new c_HeadNode6)->m_new());
 }
-c_List5* c_List5::m_new(){
+c_List7* c_List7::m_new(){
 	return this;
 }
-c_Node10* c_List5::p_AddLast5(c_Stmt* t_data){
-	return (new c_Node10)->m_new(m__head,m__head->m__pred,t_data);
+c_Node12* c_List7::p_AddLast7(c_Stmt* t_data){
+	return (new c_Node12)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List5* c_List5::m_new2(Array<c_Stmt* > t_data){
+c_List7* c_List7::m_new2(Array<c_Stmt* > t_data){
 	Array<c_Stmt* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_Stmt* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast5(t_t);
+		p_AddLast7(t_t);
 	}
 	return this;
 }
-bool c_List5::p_IsEmpty(){
+bool c_List7::p_IsEmpty(){
 	return m__head->m__succ==m__head;
 }
-c_Enumerator5* c_List5::p_ObjectEnumerator(){
-	return (new c_Enumerator5)->m_new(this);
+c_Enumerator6* c_List7::p_ObjectEnumerator(){
+	return (new c_Enumerator6)->m_new(this);
 }
-c_Node10* c_List5::p_AddFirst(c_Stmt* t_data){
-	return (new c_Node10)->m_new(m__head->m__succ,m__head,t_data);
+c_Node12* c_List7::p_AddFirst(c_Stmt* t_data){
+	return (new c_Node12)->m_new(m__head->m__succ,m__head,t_data);
 }
-void c_List5::mark(){
+void c_List7::mark(){
 	Object::mark();
 }
-c_Node10::c_Node10(){
+c_Node12::c_Node12(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node10* c_Node10::m_new(c_Node10* t_succ,c_Node10* t_pred,c_Stmt* t_data){
+c_Node12* c_Node12::m_new(c_Node12* t_succ,c_Node12* t_pred,c_Stmt* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -26933,22 +28022,22 @@ c_Node10* c_Node10::m_new(c_Node10* t_succ,c_Node10* t_pred,c_Stmt* t_data){
 	m__data=t_data;
 	return this;
 }
-c_Node10* c_Node10::m_new2(){
+c_Node12* c_Node12::m_new2(){
 	return this;
 }
-void c_Node10::mark(){
+void c_Node12::mark(){
 	Object::mark();
 }
-c_HeadNode5::c_HeadNode5(){
+c_HeadNode6::c_HeadNode6(){
 }
-c_HeadNode5* c_HeadNode5::m_new(){
-	c_Node10::m_new2();
+c_HeadNode6* c_HeadNode6::m_new(){
+	c_Node12::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode5::mark(){
-	c_Node10::mark();
+void c_HeadNode6::mark(){
+	c_Node12::mark();
 }
 c_InvokeSuperExpr::c_InvokeSuperExpr(){
 	m_ident=String();
@@ -27043,6 +28132,99 @@ c_Expr* c_IdentTypeExpr::p_SemantFunc(Array<c_Expr* > t_args){
 }
 void c_IdentTypeExpr::mark(){
 	c_Expr::mark();
+}
+c_Node13::c_Node13(){
+	m__succ=0;
+	m__pred=0;
+	m__data=0;
+}
+c_Node13* c_Node13::m_new(c_Node13* t_succ,c_Node13* t_pred,int t_data){
+	m__succ=t_succ;
+	m__pred=t_pred;
+	m__succ->m__pred=this;
+	m__pred->m__succ=this;
+	m__data=t_data;
+	return this;
+}
+c_Node13* c_Node13::m_new2(){
+	return this;
+}
+void c_Node13::mark(){
+	Object::mark();
+}
+c_HeadNode7::c_HeadNode7(){
+}
+c_HeadNode7* c_HeadNode7::m_new(){
+	c_Node13::m_new2();
+	m__succ=(this);
+	m__pred=(this);
+	return this;
+}
+void c_HeadNode7::mark(){
+	c_Node13::mark();
+}
+c_Enumerator2::c_Enumerator2(){
+	m__list=0;
+	m__curr=0;
+}
+c_Enumerator2* c_Enumerator2::m_new(c_List3* t_list){
+	m__list=t_list;
+	m__curr=t_list->m__head->m__succ;
+	return this;
+}
+c_Enumerator2* c_Enumerator2::m_new2(){
+	return this;
+}
+bool c_Enumerator2::p_HasNext(){
+	while(m__curr->m__succ->m__pred!=m__curr){
+		m__curr=m__curr->m__succ;
+	}
+	return m__curr!=m__list->m__head;
+}
+int c_Enumerator2::p_NextObject(){
+	int t_data=m__curr->m__data;
+	m__curr=m__curr->m__succ;
+	return t_data;
+}
+void c_Enumerator2::mark(){
+	Object::mark();
+}
+c_MapKeys::c_MapKeys(){
+	m_map=0;
+}
+c_MapKeys* c_MapKeys::m_new(c_Map6* t_map){
+	this->m_map=t_map;
+	return this;
+}
+c_MapKeys* c_MapKeys::m_new2(){
+	return this;
+}
+c_KeyEnumerator* c_MapKeys::p_ObjectEnumerator(){
+	return (new c_KeyEnumerator)->m_new(m_map->p_FirstNode());
+}
+void c_MapKeys::mark(){
+	Object::mark();
+}
+c_KeyEnumerator::c_KeyEnumerator(){
+	m_node=0;
+}
+c_KeyEnumerator* c_KeyEnumerator::m_new(c_Node8* t_node){
+	this->m_node=t_node;
+	return this;
+}
+c_KeyEnumerator* c_KeyEnumerator::m_new2(){
+	return this;
+}
+bool c_KeyEnumerator::p_HasNext(){
+	return m_node!=0;
+}
+int c_KeyEnumerator::p_NextObject(){
+	c_Node8* t_t=m_node;
+	m_node=m_node->p_NextNode();
+	return t_t->m_key;
+}
+void c_KeyEnumerator::mark(){
+	Object::mark();
 }
 c_FuncCallExpr::c_FuncCallExpr(){
 	m_expr=0;
@@ -27648,30 +28830,30 @@ c_Decl* c_LocalDecl::p_OnCopy(){
 void c_LocalDecl::mark(){
 	c_VarDecl::mark();
 }
-c_Enumerator2::c_Enumerator2(){
+c_Enumerator3::c_Enumerator3(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator2* c_Enumerator2::m_new(c_List3* t_list){
+c_Enumerator3* c_Enumerator3::m_new(c_List5* t_list){
 	m__list=t_list;
 	m__curr=t_list->m__head->m__succ;
 	return this;
 }
-c_Enumerator2* c_Enumerator2::m_new2(){
+c_Enumerator3* c_Enumerator3::m_new2(){
 	return this;
 }
-bool c_Enumerator2::p_HasNext(){
+bool c_Enumerator3::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		m__curr=m__curr->m__succ;
 	}
 	return m__curr!=m__list->m__head;
 }
-c_Decl* c_Enumerator2::p_NextObject(){
+c_Decl* c_Enumerator3::p_NextObject(){
 	c_Decl* t_data=m__curr->m__data;
 	m__curr=m__curr->m__succ;
 	return t_data;
 }
-void c_Enumerator2::mark(){
+void c_Enumerator3::mark(){
 	Object::mark();
 }
 c_DeclStmt::c_DeclStmt(){
@@ -27793,37 +28975,37 @@ String c_ObjectType::p_ToString(){
 void c_ObjectType::mark(){
 	c_Type::mark();
 }
-c_List6::c_List6(){
-	m__head=((new c_HeadNode6)->m_new());
+c_List8::c_List8(){
+	m__head=((new c_HeadNode8)->m_new());
 }
-c_List6* c_List6::m_new(){
+c_List8* c_List8::m_new(){
 	return this;
 }
-c_Node11* c_List6::p_AddLast6(c_ClassDecl* t_data){
-	return (new c_Node11)->m_new(m__head,m__head->m__pred,t_data);
+c_Node14* c_List8::p_AddLast8(c_ClassDecl* t_data){
+	return (new c_Node14)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List6* c_List6::m_new2(Array<c_ClassDecl* > t_data){
+c_List8* c_List8::m_new2(Array<c_ClassDecl* > t_data){
 	Array<c_ClassDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_ClassDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast6(t_t);
+		p_AddLast8(t_t);
 	}
 	return this;
 }
-c_Enumerator4* c_List6::p_ObjectEnumerator(){
-	return (new c_Enumerator4)->m_new(this);
+c_Enumerator5* c_List8::p_ObjectEnumerator(){
+	return (new c_Enumerator5)->m_new(this);
 }
-void c_List6::mark(){
+void c_List8::mark(){
 	Object::mark();
 }
-c_Node11::c_Node11(){
+c_Node14::c_Node14(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node11* c_Node11::m_new(c_Node11* t_succ,c_Node11* t_pred,c_ClassDecl* t_data){
+c_Node14* c_Node14::m_new(c_Node14* t_succ,c_Node14* t_pred,c_ClassDecl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -27831,22 +29013,22 @@ c_Node11* c_Node11::m_new(c_Node11* t_succ,c_Node11* t_pred,c_ClassDecl* t_data)
 	m__data=t_data;
 	return this;
 }
-c_Node11* c_Node11::m_new2(){
+c_Node14* c_Node14::m_new2(){
 	return this;
 }
-void c_Node11::mark(){
+void c_Node14::mark(){
 	Object::mark();
 }
-c_HeadNode6::c_HeadNode6(){
+c_HeadNode8::c_HeadNode8(){
 }
-c_HeadNode6* c_HeadNode6::m_new(){
-	c_Node11::m_new2();
+c_HeadNode8* c_HeadNode8::m_new(){
+	c_Node14::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode6::mark(){
-	c_Node11::mark();
+void c_HeadNode8::mark(){
+	c_Node14::mark();
 }
 c_ArgDecl::c_ArgDecl(){
 }
@@ -27908,60 +29090,60 @@ Array<c_ArgDecl* > c_Stack7::p_ToArray(){
 void c_Stack7::mark(){
 	Object::mark();
 }
-c_List7::c_List7(){
-	m__head=((new c_HeadNode7)->m_new());
+c_List9::c_List9(){
+	m__head=((new c_HeadNode9)->m_new());
 }
-c_List7* c_List7::m_new(){
+c_List9* c_List9::m_new(){
 	return this;
 }
-c_Node12* c_List7::p_AddLast7(c_BlockDecl* t_data){
-	return (new c_Node12)->m_new(m__head,m__head->m__pred,t_data);
+c_Node15* c_List9::p_AddLast9(c_BlockDecl* t_data){
+	return (new c_Node15)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List7* c_List7::m_new2(Array<c_BlockDecl* > t_data){
+c_List9* c_List9::m_new2(Array<c_BlockDecl* > t_data){
 	Array<c_BlockDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_BlockDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast7(t_t);
+		p_AddLast9(t_t);
 	}
 	return this;
 }
-c_BlockDecl* c_List7::p_RemoveLast(){
+c_BlockDecl* c_List9::p_RemoveLast(){
 	c_BlockDecl* t_data=m__head->m__pred->m__data;
 	m__head->m__pred->p_Remove();
 	return t_data;
 }
-bool c_List7::p_Equals3(c_BlockDecl* t_lhs,c_BlockDecl* t_rhs){
+bool c_List9::p_Equals4(c_BlockDecl* t_lhs,c_BlockDecl* t_rhs){
 	return t_lhs==t_rhs;
 }
-c_Node12* c_List7::p_FindLast5(c_BlockDecl* t_value,c_Node12* t_start){
+c_Node15* c_List9::p_FindLast7(c_BlockDecl* t_value,c_Node15* t_start){
 	while(t_start!=m__head){
-		if(p_Equals3(t_value,t_start->m__data)){
+		if(p_Equals4(t_value,t_start->m__data)){
 			return t_start;
 		}
 		t_start=t_start->m__pred;
 	}
 	return 0;
 }
-c_Node12* c_List7::p_FindLast6(c_BlockDecl* t_value){
-	return p_FindLast5(t_value,m__head->m__pred);
+c_Node15* c_List9::p_FindLast8(c_BlockDecl* t_value){
+	return p_FindLast7(t_value,m__head->m__pred);
 }
-void c_List7::p_RemoveLast4(c_BlockDecl* t_value){
-	c_Node12* t_node=p_FindLast6(t_value);
+void c_List9::p_RemoveLast5(c_BlockDecl* t_value){
+	c_Node15* t_node=p_FindLast8(t_value);
 	if((t_node)!=0){
 		t_node->p_Remove();
 	}
 }
-void c_List7::mark(){
+void c_List9::mark(){
 	Object::mark();
 }
-c_Node12::c_Node12(){
+c_Node15::c_Node15(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node12* c_Node12::m_new(c_Node12* t_succ,c_Node12* t_pred,c_BlockDecl* t_data){
+c_Node15* c_Node15::m_new(c_Node15* t_succ,c_Node15* t_pred,c_BlockDecl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -27969,27 +29151,27 @@ c_Node12* c_Node12::m_new(c_Node12* t_succ,c_Node12* t_pred,c_BlockDecl* t_data)
 	m__data=t_data;
 	return this;
 }
-c_Node12* c_Node12::m_new2(){
+c_Node15* c_Node15::m_new2(){
 	return this;
 }
-int c_Node12::p_Remove(){
+int c_Node15::p_Remove(){
 	m__succ->m__pred=m__pred;
 	m__pred->m__succ=m__succ;
 	return 0;
 }
-void c_Node12::mark(){
+void c_Node15::mark(){
 	Object::mark();
 }
-c_HeadNode7::c_HeadNode7(){
+c_HeadNode9::c_HeadNode9(){
 }
-c_HeadNode7* c_HeadNode7::m_new(){
-	c_Node12::m_new2();
+c_HeadNode9* c_HeadNode9::m_new(){
+	c_Node15::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode7::mark(){
-	c_Node12::mark();
+void c_HeadNode9::mark(){
+	c_Node15::mark();
 }
 c_ReturnStmt::c_ReturnStmt(){
 	m_expr=0;
@@ -28611,30 +29793,30 @@ c_ModuleDecl* bb_parser_ParseModule(String t_modpath,String t_filepath,c_AppDecl
 	t_parser->p_ParseMain();
 	return t_parser->m__module;
 }
-c_Enumerator3::c_Enumerator3(){
+c_Enumerator4::c_Enumerator4(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator3* c_Enumerator3::m_new(c_List4* t_list){
+c_Enumerator4* c_Enumerator4::m_new(c_List6* t_list){
 	m__list=t_list;
 	m__curr=t_list->m__head->m__succ;
 	return this;
 }
-c_Enumerator3* c_Enumerator3::m_new2(){
+c_Enumerator4* c_Enumerator4::m_new2(){
 	return this;
 }
-bool c_Enumerator3::p_HasNext(){
+bool c_Enumerator4::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		m__curr=m__curr->m__succ;
 	}
 	return m__curr!=m__list->m__head;
 }
-c_FuncDecl* c_Enumerator3::p_NextObject(){
+c_FuncDecl* c_Enumerator4::p_NextObject(){
 	c_FuncDecl* t_data=m__curr->m__data;
 	m__curr=m__curr->m__succ;
 	return t_data;
 }
-void c_Enumerator3::mark(){
+void c_Enumerator4::mark(){
 	Object::mark();
 }
 c_StringList* bb_config__errStack;
@@ -28643,37 +29825,37 @@ int bb_config_PushErr(String t_errInfo){
 	bb_config__errInfo=t_errInfo;
 	return 0;
 }
-c_List8::c_List8(){
-	m__head=((new c_HeadNode8)->m_new());
+c_List10::c_List10(){
+	m__head=((new c_HeadNode10)->m_new());
 }
-c_List8* c_List8::m_new(){
+c_List10* c_List10::m_new(){
 	return this;
 }
-c_Node13* c_List8::p_AddLast8(c_GlobalDecl* t_data){
-	return (new c_Node13)->m_new(m__head,m__head->m__pred,t_data);
+c_Node16* c_List10::p_AddLast10(c_GlobalDecl* t_data){
+	return (new c_Node16)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List8* c_List8::m_new2(Array<c_GlobalDecl* > t_data){
+c_List10* c_List10::m_new2(Array<c_GlobalDecl* > t_data){
 	Array<c_GlobalDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_GlobalDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast8(t_t);
+		p_AddLast10(t_t);
 	}
 	return this;
 }
-c_Enumerator6* c_List8::p_ObjectEnumerator(){
-	return (new c_Enumerator6)->m_new(this);
+c_Enumerator7* c_List10::p_ObjectEnumerator(){
+	return (new c_Enumerator7)->m_new(this);
 }
-void c_List8::mark(){
+void c_List10::mark(){
 	Object::mark();
 }
-c_Node13::c_Node13(){
+c_Node16::c_Node16(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node13* c_Node13::m_new(c_Node13* t_succ,c_Node13* t_pred,c_GlobalDecl* t_data){
+c_Node16* c_Node16::m_new(c_Node16* t_succ,c_Node16* t_pred,c_GlobalDecl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -28681,22 +29863,22 @@ c_Node13* c_Node13::m_new(c_Node13* t_succ,c_Node13* t_pred,c_GlobalDecl* t_data
 	m__data=t_data;
 	return this;
 }
-c_Node13* c_Node13::m_new2(){
+c_Node16* c_Node16::m_new2(){
 	return this;
 }
-void c_Node13::mark(){
+void c_Node16::mark(){
 	Object::mark();
 }
-c_HeadNode8::c_HeadNode8(){
+c_HeadNode10::c_HeadNode10(){
 }
-c_HeadNode8* c_HeadNode8::m_new(){
-	c_Node13::m_new2();
+c_HeadNode10* c_HeadNode10::m_new(){
+	c_Node16::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode8::mark(){
-	c_Node13::mark();
+void c_HeadNode10::mark(){
+	c_Node16::mark();
 }
 int bb_config_PopErr(){
 	bb_config__errInfo=bb_config__errStack->p_RemoveLast();
@@ -28808,7 +29990,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	int t_ifnest=0;
 	int t_line=0;
 	c_StringStack* t_source=(new c_StringStack)->m_new2();
-	c_StringStack* t_tracknesting=(new c_StringStack)->m_new2();
+	c_IntStack* t_tracknesting=(new c_IntStack)->m_new2();
 	c_IntStack* t_trace=(new c_IntStack)->m_new2();
 	bb_decl_PushEnv(bb_config_GetConfigScope());
 	String t_p_cd=bb_config_GetConfigVar(String(L"CD",2));
@@ -28903,7 +30085,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 			if(!c_Toker::m_Remarks()){
 				c_Toker::m_RemarksOn();
 				t_ifnest+=1;
-				t_tracknesting->p_Push(bb_config__errInfo);
+				t_tracknesting->p_Push7(t_line);
 				t_trace->p_Push7(t_line);
 			}
 		}else{
@@ -28914,7 +30096,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 						t_cnest=t_ifnest;
 					}
 				}
-				t_tracknesting->p_Push(bb_config__errInfo);
+				t_tracknesting->p_Push7(t_line);
 				t_trace->p_Push7(t_line);
 			}else{
 				if(t_2==String(L"else",4)){
@@ -29028,18 +30210,20 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	if(t_toker->p_TokeType()==0){
 		if(!t_tracknesting->p_IsEmpty()){
 			if(!t_trace->p_IsEmpty()){
+				bbPrint(String(L"\t\t-------------- Preprocessor Trace Log --------------",54));
 				String t_s=String(L" : Starts here.....",19);
 				for(int t_i=0;t_i<t_trace->p_Length2()-1;t_i=t_i+1){
 					if(t_i>0){
 						t_s=String();
 					}
-					bbPrint(bb_config__errInfo.Slice(0,bb_config__errInfo.Find(String(L"<",1),0)+1)+String(t_trace->p_Get2(t_i))+String(L">",1)+t_s);
+					bbPrint(bb_config__errInfo.Slice(0,bb_config__errInfo.FindLast(String(L"<",1))+1)+String(t_trace->p_Get2(t_i))+String(L">",1)+t_s);
 				}
+				bbPrint(String());
 			}
 			if(t_trace->p_IsEmpty()){
-				bb_config__errInfo=t_tracknesting->p_Pop();
+				bb_config__errInfo=bb_config__errInfo.Slice(0,bb_config__errInfo.FindLast(String(L"<",1)))+String(L"<",1)+String(t_tracknesting->p_Pop())+String(L">",1);
 			}else{
-				bb_config__errInfo=bb_config__errInfo.Slice(0,bb_config__errInfo.Find(String(L"<",1),0))+String(L"<",1)+String(t_trace->p_Pop())+String(L">",1);
+				bb_config__errInfo=bb_config__errInfo.Slice(0,bb_config__errInfo.FindLast(String(L"<",1)))+String(L"<",1)+String(t_trace->p_Pop())+String(L">",1);
 			}
 			bb_config_Err(String(L"End of file reached. Preprocessor Conditional or Remark block preprocess not closed.",84));
 		}
@@ -29070,14 +30254,14 @@ c_Target* c_Target::m_new2(){
 void c_Target::mark(){
 	Object::mark();
 }
-c_Map6::c_Map6(){
+c_Map7::c_Map7(){
 	m_root=0;
 }
-c_Map6* c_Map6::m_new(){
+c_Map7* c_Map7::m_new(){
 	return this;
 }
-int c_Map6::p_RotateLeft6(c_Node14* t_node){
-	c_Node14* t_child=t_node->m_right;
+int c_Map7::p_RotateLeft7(c_Node17* t_node){
+	c_Node17* t_child=t_node->m_right;
 	t_node->m_right=t_child->m_left;
 	if((t_child->m_left)!=0){
 		t_child->m_left->m_parent=t_node;
@@ -29096,8 +30280,8 @@ int c_Map6::p_RotateLeft6(c_Node14* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map6::p_RotateRight6(c_Node14* t_node){
-	c_Node14* t_child=t_node->m_left;
+int c_Map7::p_RotateRight7(c_Node17* t_node){
+	c_Node17* t_child=t_node->m_left;
 	t_node->m_left=t_child->m_right;
 	if((t_child->m_right)!=0){
 		t_child->m_right->m_parent=t_node;
@@ -29116,10 +30300,10 @@ int c_Map6::p_RotateRight6(c_Node14* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map6::p_InsertFixup6(c_Node14* t_node){
+int c_Map7::p_InsertFixup7(c_Node17* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node14* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node17* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -29128,14 +30312,14 @@ int c_Map6::p_InsertFixup6(c_Node14* t_node){
 			}else{
 				if(t_node==t_node->m_parent->m_right){
 					t_node=t_node->m_parent;
-					p_RotateLeft6(t_node);
+					p_RotateLeft7(t_node);
 				}
 				t_node->m_parent->m_color=1;
 				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateRight6(t_node->m_parent->m_parent);
+				p_RotateRight7(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node14* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node17* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -29144,20 +30328,20 @@ int c_Map6::p_InsertFixup6(c_Node14* t_node){
 			}else{
 				if(t_node==t_node->m_parent->m_left){
 					t_node=t_node->m_parent;
-					p_RotateRight6(t_node);
+					p_RotateRight7(t_node);
 				}
 				t_node->m_parent->m_color=1;
 				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateLeft6(t_node->m_parent->m_parent);
+				p_RotateLeft7(t_node->m_parent->m_parent);
 			}
 		}
 	}
 	m_root->m_color=1;
 	return 0;
 }
-bool c_Map6::p_Set6(String t_key,c_Target* t_value){
-	c_Node14* t_node=m_root;
-	c_Node14* t_parent=0;
+bool c_Map7::p_Set6(String t_key,c_Target* t_value){
+	c_Node17* t_node=m_root;
+	c_Node17* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -29173,34 +30357,34 @@ bool c_Map6::p_Set6(String t_key,c_Target* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node14)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node17)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			t_parent->m_right=t_node;
 		}else{
 			t_parent->m_left=t_node;
 		}
-		p_InsertFixup6(t_node);
+		p_InsertFixup7(t_node);
 	}else{
 		m_root=t_node;
 	}
 	return true;
 }
-c_Node14* c_Map6::p_FirstNode(){
+c_Node17* c_Map7::p_FirstNode(){
 	if(!((m_root)!=0)){
 		return 0;
 	}
-	c_Node14* t_node=m_root;
+	c_Node17* t_node=m_root;
 	while((t_node->m_left)!=0){
 		t_node=t_node->m_left;
 	}
 	return t_node;
 }
-c_NodeEnumerator2* c_Map6::p_ObjectEnumerator(){
+c_NodeEnumerator2* c_Map7::p_ObjectEnumerator(){
 	return (new c_NodeEnumerator2)->m_new(p_FirstNode());
 }
-c_Node14* c_Map6::p_FindNode(String t_key){
-	c_Node14* t_node=m_root;
+c_Node17* c_Map7::p_FindNode(String t_key){
+	c_Node17* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -29215,29 +30399,29 @@ c_Node14* c_Map6::p_FindNode(String t_key){
 	}
 	return t_node;
 }
-c_Target* c_Map6::p_Get(String t_key){
-	c_Node14* t_node=p_FindNode(t_key);
+c_Target* c_Map7::p_Get(String t_key){
+	c_Node17* t_node=p_FindNode(t_key);
 	if((t_node)!=0){
 		return t_node->m_value;
 	}
 	return 0;
 }
-void c_Map6::mark(){
+void c_Map7::mark(){
 	Object::mark();
 }
 c_StringMap6::c_StringMap6(){
 }
 c_StringMap6* c_StringMap6::m_new(){
-	c_Map6::m_new();
+	c_Map7::m_new();
 	return this;
 }
 int c_StringMap6::p_Compare(String t_lhs,String t_rhs){
 	return t_lhs.Compare(t_rhs);
 }
 void c_StringMap6::mark(){
-	c_Map6::mark();
+	c_Map7::mark();
 }
-c_Node14::c_Node14(){
+c_Node17::c_Node17(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -29245,18 +30429,18 @@ c_Node14::c_Node14(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node14* c_Node14::m_new(String t_key,c_Target* t_value,int t_color,c_Node14* t_parent){
+c_Node17* c_Node17::m_new(String t_key,c_Target* t_value,int t_color,c_Node17* t_parent){
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
 	this->m_parent=t_parent;
 	return this;
 }
-c_Node14* c_Node14::m_new2(){
+c_Node17* c_Node17::m_new2(){
 	return this;
 }
-c_Node14* c_Node14::p_NextNode(){
-	c_Node14* t_node=0;
+c_Node17* c_Node17::p_NextNode(){
+	c_Node17* t_node=0;
 	if((m_right)!=0){
 		t_node=m_right;
 		while((t_node->m_left)!=0){
@@ -29265,17 +30449,17 @@ c_Node14* c_Node14::p_NextNode(){
 		return t_node;
 	}
 	t_node=this;
-	c_Node14* t_parent=this->m_parent;
+	c_Node17* t_parent=this->m_parent;
 	while(((t_parent)!=0) && t_node==t_parent->m_right){
 		t_node=t_parent;
 		t_parent=t_parent->m_parent;
 	}
 	return t_parent;
 }
-String c_Node14::p_Key(){
+String c_Node17::p_Key(){
 	return m_key;
 }
-void c_Node14::mark(){
+void c_Node17::mark(){
 	Object::mark();
 }
 void bb_config_PopConfigScope(){
@@ -29284,7 +30468,7 @@ void bb_config_PopConfigScope(){
 c_NodeEnumerator2::c_NodeEnumerator2(){
 	m_node=0;
 }
-c_NodeEnumerator2* c_NodeEnumerator2::m_new(c_Node14* t_node){
+c_NodeEnumerator2* c_NodeEnumerator2::m_new(c_Node17* t_node){
 	this->m_node=t_node;
 	return this;
 }
@@ -29294,8 +30478,8 @@ c_NodeEnumerator2* c_NodeEnumerator2::m_new2(){
 bool c_NodeEnumerator2::p_HasNext(){
 	return m_node!=0;
 }
-c_Node14* c_NodeEnumerator2::p_NextObject(){
-	c_Node14* t_t=m_node;
+c_Node17* c_NodeEnumerator2::p_NextObject(){
+	c_Node17* t_t=m_node;
 	m_node=m_node->p_NextNode();
 	return t_t;
 }
@@ -29529,7 +30713,7 @@ String c_Reflector::p_TypeInfo(c_Type* t_ty){
 		}
 		c_Type* t_[]={t_elemType};
 		c_ClassDecl* t_cdecl=m_boxesmod->p_FindType(String(L"ArrayObject",11),Array<c_Type* >(t_,1))->p_GetClass();
-		c_Enumerator2* t_2=t_cdecl->p_Decls()->p_ObjectEnumerator();
+		c_Enumerator3* t_2=t_cdecl->p_Decls()->p_ObjectEnumerator();
 		while(t_2->p_HasNext()){
 			c_Decl* t_decl=t_2->p_NextObject();
 			if(!((dynamic_cast<c_AliasDecl*>(t_decl))!=0)){
@@ -29638,7 +30822,7 @@ String c_Reflector::p_Emit3(c_ClassDecl* t_cdecl){
 	c_StringStack* t_methods=(new c_StringStack)->m_new2();
 	c_StringStack* t_functions=(new c_StringStack)->m_new2();
 	c_StringStack* t_ctors=(new c_StringStack)->m_new2();
-	c_Enumerator2* t_3=t_cdecl->p_Decls()->p_ObjectEnumerator();
+	c_Enumerator3* t_3=t_cdecl->p_Decls()->p_ObjectEnumerator();
 	while(t_3->p_HasNext()){
 		c_Decl* t_decl=t_3->p_NextObject();
 		if((dynamic_cast<c_AliasDecl*>(t_decl))!=0){
@@ -29941,7 +31125,7 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 			bbPrint(String(L"Semanting more: ",16)+String(t_n));
 		}
 	}while(!(false));
-	c_Enumerator2* t_4=t_app->m_allSemantedDecls->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->m_allSemantedDecls->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl=t_4->p_NextObject();
 		if(!m_refmods->p_Contains(t_decl->p_ModuleScope()->m_filepath)){
@@ -29961,7 +31145,7 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 	if(m_debug){
 		bbPrint(String(L"Generating reflection info",26));
 	}
-	c_Enumerator2* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
+	c_Enumerator3* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_Decl* t_decl2=t_5->p_NextObject();
 		if(!m_refmods->p_Contains(t_decl2->p_ModuleScope()->m_filepath)){
@@ -30042,7 +31226,7 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 	p_Emit(String(L"  Return _unknownClass",22));
 	p_Emit(String(L" End",4));
 	p_Emit(String(L"End",3));
-	String t_source=m_output->p_Join(String(L"\n",1));
+	String t_source=m_output->p_Join(String(L"\n",1))+String(L"\n",1);
 	int t_attrs=8388608;
 	if(m_debug){
 		bbPrint(String(L"Reflection source:\n",19)+t_source);
@@ -30094,14 +31278,14 @@ c_ModuleDecl* c_ValueEnumerator::p_NextObject(){
 void c_ValueEnumerator::mark(){
 	Object::mark();
 }
-c_Map7::c_Map7(){
+c_Map8::c_Map8(){
 	m_root=0;
 }
-c_Map7* c_Map7::m_new(){
+c_Map8* c_Map8::m_new(){
 	return this;
 }
-c_Node15* c_Map7::p_FindNode(String t_key){
-	c_Node15* t_node=m_root;
+c_Node18* c_Map8::p_FindNode(String t_key){
+	c_Node18* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -30116,18 +31300,18 @@ c_Node15* c_Map7::p_FindNode(String t_key){
 	}
 	return t_node;
 }
-bool c_Map7::p_Contains(String t_key){
+bool c_Map8::p_Contains(String t_key){
 	return p_FindNode(t_key)!=0;
 }
-int c_Map7::p_Get(String t_key){
-	c_Node15* t_node=p_FindNode(t_key);
+int c_Map8::p_Get(String t_key){
+	c_Node18* t_node=p_FindNode(t_key);
 	if((t_node)!=0){
 		return t_node->m_value;
 	}
 	return 0;
 }
-int c_Map7::p_RotateLeft7(c_Node15* t_node){
-	c_Node15* t_child=t_node->m_right;
+int c_Map8::p_RotateLeft8(c_Node18* t_node){
+	c_Node18* t_child=t_node->m_right;
 	t_node->m_right=t_child->m_left;
 	if((t_child->m_left)!=0){
 		t_child->m_left->m_parent=t_node;
@@ -30146,8 +31330,8 @@ int c_Map7::p_RotateLeft7(c_Node15* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map7::p_RotateRight7(c_Node15* t_node){
-	c_Node15* t_child=t_node->m_left;
+int c_Map8::p_RotateRight8(c_Node18* t_node){
+	c_Node18* t_child=t_node->m_left;
 	t_node->m_left=t_child->m_right;
 	if((t_child->m_right)!=0){
 		t_child->m_right->m_parent=t_node;
@@ -30166,10 +31350,10 @@ int c_Map7::p_RotateRight7(c_Node15* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map7::p_InsertFixup7(c_Node15* t_node){
+int c_Map8::p_InsertFixup8(c_Node18* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node15* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node18* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -30178,14 +31362,14 @@ int c_Map7::p_InsertFixup7(c_Node15* t_node){
 			}else{
 				if(t_node==t_node->m_parent->m_right){
 					t_node=t_node->m_parent;
-					p_RotateLeft7(t_node);
+					p_RotateLeft8(t_node);
 				}
 				t_node->m_parent->m_color=1;
 				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateRight7(t_node->m_parent->m_parent);
+				p_RotateRight8(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node15* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node18* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -30194,20 +31378,20 @@ int c_Map7::p_InsertFixup7(c_Node15* t_node){
 			}else{
 				if(t_node==t_node->m_parent->m_left){
 					t_node=t_node->m_parent;
-					p_RotateRight7(t_node);
+					p_RotateRight8(t_node);
 				}
 				t_node->m_parent->m_color=1;
 				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateLeft7(t_node->m_parent->m_parent);
+				p_RotateLeft8(t_node->m_parent->m_parent);
 			}
 		}
 	}
 	m_root->m_color=1;
 	return 0;
 }
-bool c_Map7::p_Set7(String t_key,int t_value){
-	c_Node15* t_node=m_root;
-	c_Node15* t_parent=0;
+bool c_Map8::p_Set7(String t_key,int t_value){
+	c_Node18* t_node=m_root;
+	c_Node18* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -30223,35 +31407,35 @@ bool c_Map7::p_Set7(String t_key,int t_value){
 			}
 		}
 	}
-	t_node=(new c_Node15)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node18)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			t_parent->m_right=t_node;
 		}else{
 			t_parent->m_left=t_node;
 		}
-		p_InsertFixup7(t_node);
+		p_InsertFixup8(t_node);
 	}else{
 		m_root=t_node;
 	}
 	return true;
 }
-void c_Map7::mark(){
+void c_Map8::mark(){
 	Object::mark();
 }
 c_StringMap7::c_StringMap7(){
 }
 c_StringMap7* c_StringMap7::m_new(){
-	c_Map7::m_new();
+	c_Map8::m_new();
 	return this;
 }
 int c_StringMap7::p_Compare(String t_lhs,String t_rhs){
 	return t_lhs.Compare(t_rhs);
 }
 void c_StringMap7::mark(){
-	c_Map7::mark();
+	c_Map8::mark();
 }
-c_Node15::c_Node15(){
+c_Node18::c_Node18(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -30259,43 +31443,43 @@ c_Node15::c_Node15(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node15* c_Node15::m_new(String t_key,int t_value,int t_color,c_Node15* t_parent){
+c_Node18* c_Node18::m_new(String t_key,int t_value,int t_color,c_Node18* t_parent){
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
 	this->m_parent=t_parent;
 	return this;
 }
-c_Node15* c_Node15::m_new2(){
+c_Node18* c_Node18::m_new2(){
 	return this;
 }
-void c_Node15::mark(){
+void c_Node18::mark(){
 	Object::mark();
 }
-c_Enumerator4::c_Enumerator4(){
+c_Enumerator5::c_Enumerator5(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator4* c_Enumerator4::m_new(c_List6* t_list){
+c_Enumerator5* c_Enumerator5::m_new(c_List8* t_list){
 	m__list=t_list;
 	m__curr=t_list->m__head->m__succ;
 	return this;
 }
-c_Enumerator4* c_Enumerator4::m_new2(){
+c_Enumerator5* c_Enumerator5::m_new2(){
 	return this;
 }
-bool c_Enumerator4::p_HasNext(){
+bool c_Enumerator5::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		m__curr=m__curr->m__succ;
 	}
 	return m__curr!=m__list->m__head;
 }
-c_ClassDecl* c_Enumerator4::p_NextObject(){
+c_ClassDecl* c_Enumerator5::p_NextObject(){
 	c_ClassDecl* t_data=m__curr->m__data;
 	m__curr=m__curr->m__succ;
 	return t_data;
 }
-void c_Enumerator4::mark(){
+void c_Enumerator5::mark(){
 	Object::mark();
 }
 c_Stack9::c_Stack9(){
@@ -30465,7 +31649,7 @@ int c_CTranslator::p_MungMethodDecl(c_FuncDecl* t_fdecl){
 	}
 	c_FuncDeclList* t_funcs=m_funcMungs->p_Get(t_fdecl->m_ident);
 	if((t_funcs)!=0){
-		c_Enumerator3* t_=t_funcs->p_ObjectEnumerator();
+		c_Enumerator4* t_=t_funcs->p_ObjectEnumerator();
 		while(t_->p_HasNext()){
 			c_FuncDecl* t_tdecl=t_->p_NextObject();
 			if(t_fdecl->p_EqualsArgs(t_tdecl)){
@@ -30487,7 +31671,7 @@ int c_CTranslator::p_MungMethodDecl(c_FuncDecl* t_fdecl){
 	}
 	m_mungedFuncs->p_Set9(t_id,t_fdecl);
 	t_fdecl->m_munged=String(L"p_",2)+t_id;
-	t_funcs->p_AddLast4(t_fdecl);
+	t_funcs->p_AddLast6(t_fdecl);
 	return 0;
 }
 int c_CTranslator::p_MungDecl(c_Decl* t_decl){
@@ -30641,7 +31825,7 @@ int c_CTranslator::p_EmitBlock(c_BlockDecl* t_block,bool t_realBlock){
 		}
 	}
 	c_Stmt* t_lastStmt=0;
-	c_Enumerator5* t_=t_block->m_stmts->p_ObjectEnumerator();
+	c_Enumerator6* t_=t_block->m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		bb_config__errInfo=t_stmt->m_errInfo;
@@ -31200,7 +32384,7 @@ int c_JavaTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 			t_bases=t_bases+t_iface->m_munged;
 		}
 		p_Emit(String(L"interface ",10)+t_classid+t_bases+String(L"{",1));
-		c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
 			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
@@ -31234,7 +32418,7 @@ int c_JavaTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 		}
 	}
 	p_Emit(t_q+String(L"class ",6)+t_classid+String(L" extends ",9)+t_superid+t_bases2+String(L"{",1));
-	c_Enumerator2* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_6->p_HasNext()){
 		c_Decl* t_decl2=t_6->p_NextObject();
 		c_FieldDecl* t_tdecl=dynamic_cast<c_FieldDecl*>(t_decl2);
@@ -31287,7 +32471,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 		c_ModuleDecl* t_decl=t_->p_NextObject();
 		p_MungDecl(t_decl);
 	}
-	c_Enumerator2* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		p_MungDecl(t_decl2);
@@ -31295,7 +32479,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 		if(!((t_cdecl)!=0)){
 			continue;
 		}
-		c_Enumerator2* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl3=t_3->p_NextObject();
 			if(((dynamic_cast<c_FuncDecl*>(t_decl3))!=0) && dynamic_cast<c_FuncDecl*>(t_decl3)->p_IsCtor()){
@@ -31304,7 +32488,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 			p_MungDecl(t_decl3);
 		}
 	}
-	c_Enumerator2* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl4=t_4->p_NextObject();
 		c_ClassDecl* t_cdecl2=dynamic_cast<c_ClassDecl*>(t_decl4);
@@ -31316,7 +32500,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 	while(t_5->p_HasNext()){
 		c_ModuleDecl* t_mdecl=t_5->p_NextObject();
 		p_Emit(String(L"class ",6)+t_mdecl->m_munged+String(L"{",1));
-		c_Enumerator2* t_6=t_mdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_6=t_mdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_6->p_HasNext()){
 			c_Decl* t_decl5=t_6->p_NextObject();
 			if(((t_decl5->p_IsExtern())!=0) || ((t_decl5->m_scope->p_ClassScope())!=0)){
@@ -31336,7 +32520,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 		if(t_mdecl==t_app->m_mainModule){
 			p_BeginLocalScope();
 			p_Emit(String(L"public static int bbInit(){",27));
-			c_Enumerator6* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+			c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 			while(t_7->p_HasNext()){
 				c_GlobalDecl* t_decl6=t_7->p_NextObject();
 				p_Emit(p_TransGlobal(t_decl6)+String(L"=",1)+t_decl6->m_init->p_Trans()+String(L";",1));
@@ -32107,7 +33291,7 @@ int c_CppTranslator::p_EmitSetErr(String t_info){
 		return 0;
 	}
 	m_lastDbgInfo=t_info;
-	c_Enumerator7* t_=m_dbgLocals->p_ObjectEnumerator();
+	c_Enumerator8* t_=m_dbgLocals->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_LocalDecl* t_decl=t_->p_NextObject();
 		if(((t_decl->m_ident).Length()!=0) && p_IsDebuggable(t_decl->m_type)){
@@ -32193,7 +33377,7 @@ int c_CppTranslator::p_EmitClassProto(c_ClassDecl* t_classDecl){
 		}
 		p_Emit(String(L"class ",6)+t_classid+t_bases+String(L"{",1));
 		p_Emit(String(L"public:",7));
-		c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
 			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
@@ -32215,7 +33399,7 @@ int c_CppTranslator::p_EmitClassProto(c_ClassDecl* t_classDecl){
 	}
 	p_Emit(String(L"class ",6)+t_classid+t_bases2+String(L"{",1));
 	p_Emit(String(L"public:",7));
-	c_Enumerator2* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_6->p_HasNext()){
 		c_Decl* t_decl2=t_6->p_NextObject();
 		c_FieldDecl* t_fdecl2=dynamic_cast<c_FieldDecl*>(t_decl2);
@@ -32225,7 +33409,7 @@ int c_CppTranslator::p_EmitClassProto(c_ClassDecl* t_classDecl){
 		}
 	}
 	p_Emit(t_classid+String(L"();",3));
-	c_Enumerator2* t_7=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_7=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_7->p_HasNext()){
 		c_Decl* t_decl3=t_7->p_NextObject();
 		c_FuncDecl* t_fdecl3=dynamic_cast<c_FuncDecl*>(t_decl3);
@@ -32328,7 +33512,7 @@ int c_CppTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 	if(m_gc_mode==2){
 		p_Emit(String(L"GC_CTOR",7));
 	}
-	c_Enumerator2* t_=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		c_FieldDecl* t_fdecl=dynamic_cast<c_FieldDecl*>(t_decl);
@@ -32339,7 +33523,7 @@ int c_CppTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 	}
 	p_Emit(String(L"}",1));
 	p_EndLocalScope();
-	c_Enumerator2* t_2=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		c_FuncDecl* t_fdecl2=dynamic_cast<c_FuncDecl*>(t_decl2);
@@ -32357,7 +33541,7 @@ int c_CppTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 	if((t_classDecl->m_superClass)!=0){
 		p_Emit(t_classDecl->m_superClass->m_munged+String(L"::mark();",9));
 	}
-	c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_3->p_HasNext()){
 		c_Decl* t_decl3=t_3->p_NextObject();
 		c_FieldDecl* t_fdecl3=dynamic_cast<c_FieldDecl*>(t_decl3);
@@ -32372,7 +33556,7 @@ int c_CppTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 		if(((t_classDecl->m_superClass)!=0) && !((t_classDecl->m_superClass->p_IsExtern())!=0)){
 			p_Emit(String(L"t=",2)+t_classDecl->m_superClass->m_munged+String(L"::debug()+t;",12));
 		}
-		c_Enumerator2* t_4=t_classDecl->p_Decls()->p_ObjectEnumerator();
+		c_Enumerator3* t_4=t_classDecl->p_Decls()->p_ObjectEnumerator();
 		while(t_4->p_HasNext()){
 			c_Decl* t_decl4=t_4->p_NextObject();
 			if(!((t_decl4->p_IsSemanted())!=0)){
@@ -32409,7 +33593,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 		c_ModuleDecl* t_decl=t_->p_NextObject();
 		p_MungDecl(t_decl);
 	}
-	c_Enumerator2* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		p_MungDecl(t_decl2);
@@ -32418,13 +33602,13 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 			continue;
 		}
 		p_Emit(String(L"class ",6)+t_decl2->m_munged+String(L";",1));
-		c_Enumerator2* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl3=t_3->p_NextObject();
 			p_MungDecl(t_decl3);
 		}
 	}
-	c_Enumerator2* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl4=t_4->p_NextObject();
 		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
@@ -32443,7 +33627,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 			continue;
 		}
 	}
-	c_Enumerator2* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
+	c_Enumerator3* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_Decl* t_decl5=t_5->p_NextObject();
 		c_ClassDecl* t_cdecl3=dynamic_cast<c_ClassDecl*>(t_decl5);
@@ -32456,7 +33640,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 			p_Emit(String(L"String dbg_value( ",18)+t_cdecl3->m_munged+String(L" **p ){ return dbg_ptr_value( *p ); }",37));
 		}
 	}
-	c_Enumerator2* t_6=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_6=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_6->p_HasNext()){
 		c_Decl* t_decl6=t_6->p_NextObject();
 		c_GlobalDecl* t_gdecl2=dynamic_cast<c_GlobalDecl*>(t_decl6);
@@ -32478,7 +33662,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 	p_BeginLocalScope();
 	p_Emit(String(L"int bbInit(){",13));
 	p_Emit(String(L"GC_CTOR",7));
-	c_Enumerator6* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_7->p_HasNext()){
 		c_GlobalDecl* t_decl7=t_7->p_NextObject();
 		String t_munged=p_TransGlobal(t_decl7);
@@ -32491,7 +33675,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 	p_Emit(String(L"}",1));
 	p_EndLocalScope();
 	p_Emit(String(L"void gc_mark(){",15));
-	c_Enumerator6* t_8=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator7* t_8=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_8->p_HasNext()){
 		c_GlobalDecl* t_decl8=t_8->p_NextObject();
 		p_EmitMark(p_TransGlobal(t_decl8),t_decl8->m_type,true);
@@ -33010,7 +34194,7 @@ int c_JsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 	String t_superid=t_classDecl->m_superClass->m_munged;
 	p_Emit(String(L"function ",9)+t_classid+String(L"(){",3));
 	p_Emit(t_superid+String(L".call(this);",12));
-	c_Enumerator2* t_=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Decl* t_decl=t_->p_NextObject();
 		c_FieldDecl* t_fdecl=dynamic_cast<c_FieldDecl*>(t_decl);
@@ -33046,7 +34230,7 @@ int c_JsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 	if(t_superid!=String(L"Object",6)){
 		p_Emit(t_classid+String(L".prototype=extend_class(",24)+t_superid+String(L");",2));
 	}
-	c_Enumerator2* t_4=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl2=t_4->p_NextObject();
 		if((t_decl2->p_IsExtern())!=0){
@@ -33072,7 +34256,7 @@ String c_JsTranslator::p_TransApp(c_AppDecl* t_app){
 		c_ModuleDecl* t_decl=t_->p_NextObject();
 		p_MungDecl(t_decl);
 	}
-	c_Enumerator2* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		p_MungDecl(t_decl2);
@@ -33080,13 +34264,13 @@ String c_JsTranslator::p_TransApp(c_AppDecl* t_app){
 		if(!((t_cdecl)!=0)){
 			continue;
 		}
-		c_Enumerator2* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl3=t_3->p_NextObject();
 			p_MungDecl(t_decl3);
 		}
 	}
-	c_Enumerator2* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl4=t_4->p_NextObject();
 		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
@@ -33106,7 +34290,7 @@ String c_JsTranslator::p_TransApp(c_AppDecl* t_app){
 		}
 	}
 	p_Emit(String(L"function bbInit(){",18));
-	c_Enumerator6* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_GlobalDecl* t_decl5=t_5->p_NextObject();
 		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
@@ -33827,7 +35011,7 @@ int c_AsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 			t_bases=t_bases+t_iface->m_munged;
 		}
 		p_Emit(String(L"interface ",10)+t_classid+t_bases+String(L"{",1));
-		c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
 			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
@@ -33853,7 +35037,7 @@ int c_AsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 		t_bases2=t_bases2+t_iface2->m_munged;
 	}
 	p_Emit(String(L"class ",6)+t_classid+String(L" extends ",9)+t_superid+t_bases2+String(L"{",1));
-	c_Enumerator2* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_6->p_HasNext()){
 		c_Decl* t_decl2=t_6->p_NextObject();
 		c_FieldDecl* t_tdecl=dynamic_cast<c_FieldDecl*>(t_decl2);
@@ -33882,7 +35066,7 @@ String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
 		c_ModuleDecl* t_decl=t_->p_NextObject();
 		p_MungDecl(t_decl);
 	}
-	c_Enumerator2* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		p_MungDecl(t_decl2);
@@ -33890,7 +35074,7 @@ String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
 		if(!((t_cdecl)!=0)){
 			continue;
 		}
-		c_Enumerator2* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl3=t_3->p_NextObject();
 			if(((dynamic_cast<c_FuncDecl*>(t_decl3))!=0) && dynamic_cast<c_FuncDecl*>(t_decl3)->p_IsCtor()){
@@ -33899,7 +35083,7 @@ String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
 			p_MungDecl(t_decl3);
 		}
 	}
-	c_Enumerator2* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl4=t_4->p_NextObject();
 		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
@@ -33920,7 +35104,7 @@ String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
 	}
 	p_BeginLocalScope();
 	p_Emit(String(L"function bbInit():void{",23));
-	c_Enumerator6* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_GlobalDecl* t_decl5=t_5->p_NextObject();
 		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
@@ -34481,7 +35665,7 @@ int c_CsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 			t_bases=t_bases+t_iface->m_munged;
 		}
 		p_Emit(String(L"interface ",10)+t_classid+t_bases+String(L"{",1));
-		c_Enumerator2* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl=t_3->p_NextObject();
 			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
@@ -34511,7 +35695,7 @@ int c_CsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
 		}
 	}
 	p_Emit(t_q+String(L"class ",6)+t_classid+t_bases2+String(L"{",1));
-	c_Enumerator2* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
 	while(t_6->p_HasNext()){
 		c_Decl* t_decl2=t_6->p_NextObject();
 		c_FieldDecl* t_tdecl=dynamic_cast<c_FieldDecl*>(t_decl2);
@@ -34541,7 +35725,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 		c_ModuleDecl* t_decl=t_->p_NextObject();
 		p_MungDecl(t_decl);
 	}
-	c_Enumerator2* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_2->p_HasNext()){
 		c_Decl* t_decl2=t_2->p_NextObject();
 		p_MungDecl(t_decl2);
@@ -34549,7 +35733,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 		if(!((t_cdecl)!=0)){
 			continue;
 		}
-		c_Enumerator2* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_3->p_HasNext()){
 			c_Decl* t_decl3=t_3->p_NextObject();
 			if(((dynamic_cast<c_FuncDecl*>(t_decl3))!=0) && dynamic_cast<c_FuncDecl*>(t_decl3)->p_IsCtor()){
@@ -34558,7 +35742,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 			p_MungDecl(t_decl3);
 		}
 	}
-	c_Enumerator2* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
 	while(t_4->p_HasNext()){
 		c_Decl* t_decl4=t_4->p_NextObject();
 		c_ClassDecl* t_cdecl2=dynamic_cast<c_ClassDecl*>(t_decl4);
@@ -34571,7 +35755,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 	while(t_5->p_HasNext()){
 		c_ModuleDecl* t_mdecl=t_5->p_NextObject();
 		p_Emit(String(L"class ",6)+t_mdecl->m_munged+String(L"{",1));
-		c_Enumerator2* t_6=t_mdecl->p_Semanted()->p_ObjectEnumerator();
+		c_Enumerator3* t_6=t_mdecl->p_Semanted()->p_ObjectEnumerator();
 		while(t_6->p_HasNext()){
 			c_Decl* t_decl5=t_6->p_NextObject();
 			if(((t_decl5->p_IsExtern())!=0) || ((t_decl5->m_scope->p_ClassScope())!=0)){
@@ -34591,7 +35775,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 		if(t_mdecl==t_app->m_mainModule){
 			p_BeginLocalScope();
 			p_Emit(String(L"public static int bbInit(){",27));
-			c_Enumerator6* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+			c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 			while(t_7->p_HasNext()){
 				c_GlobalDecl* t_decl6=t_7->p_NextObject();
 				p_Emit(p_TransGlobal(t_decl6)+String(L"=",1)+t_decl6->m_init->p_Trans()+String(L";",1));
@@ -34956,63 +36140,63 @@ String c_CsTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
 void c_CsTranslator::mark(){
 	c_CTranslator::mark();
 }
-c_List9::c_List9(){
-	m__head=((new c_HeadNode9)->m_new());
+c_List11::c_List11(){
+	m__head=((new c_HeadNode11)->m_new());
 }
-c_List9* c_List9::m_new(){
+c_List11* c_List11::m_new(){
 	return this;
 }
-c_Node16* c_List9::p_AddLast9(c_ModuleDecl* t_data){
-	return (new c_Node16)->m_new(m__head,m__head->m__pred,t_data);
+c_Node19* c_List11::p_AddLast11(c_ModuleDecl* t_data){
+	return (new c_Node19)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List9* c_List9::m_new2(Array<c_ModuleDecl* > t_data){
+c_List11* c_List11::m_new2(Array<c_ModuleDecl* > t_data){
 	Array<c_ModuleDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_ModuleDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast9(t_t);
+		p_AddLast11(t_t);
 	}
 	return this;
 }
-bool c_List9::p_IsEmpty(){
+bool c_List11::p_IsEmpty(){
 	return m__head->m__succ==m__head;
 }
-c_ModuleDecl* c_List9::p_RemoveLast(){
+c_ModuleDecl* c_List11::p_RemoveLast(){
 	c_ModuleDecl* t_data=m__head->m__pred->m__data;
 	m__head->m__pred->p_Remove();
 	return t_data;
 }
-bool c_List9::p_Equals4(c_ModuleDecl* t_lhs,c_ModuleDecl* t_rhs){
+bool c_List11::p_Equals5(c_ModuleDecl* t_lhs,c_ModuleDecl* t_rhs){
 	return t_lhs==t_rhs;
 }
-c_Node16* c_List9::p_FindLast7(c_ModuleDecl* t_value,c_Node16* t_start){
+c_Node19* c_List11::p_FindLast9(c_ModuleDecl* t_value,c_Node19* t_start){
 	while(t_start!=m__head){
-		if(p_Equals4(t_value,t_start->m__data)){
+		if(p_Equals5(t_value,t_start->m__data)){
 			return t_start;
 		}
 		t_start=t_start->m__pred;
 	}
 	return 0;
 }
-c_Node16* c_List9::p_FindLast8(c_ModuleDecl* t_value){
-	return p_FindLast7(t_value,m__head->m__pred);
+c_Node19* c_List11::p_FindLast10(c_ModuleDecl* t_value){
+	return p_FindLast9(t_value,m__head->m__pred);
 }
-void c_List9::p_RemoveLast5(c_ModuleDecl* t_value){
-	c_Node16* t_node=p_FindLast8(t_value);
+void c_List11::p_RemoveLast6(c_ModuleDecl* t_value){
+	c_Node19* t_node=p_FindLast10(t_value);
 	if((t_node)!=0){
 		t_node->p_Remove();
 	}
 }
-void c_List9::mark(){
+void c_List11::mark(){
 	Object::mark();
 }
-c_Node16::c_Node16(){
+c_Node19::c_Node19(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node16* c_Node16::m_new(c_Node16* t_succ,c_Node16* t_pred,c_ModuleDecl* t_data){
+c_Node19* c_Node19::m_new(c_Node19* t_succ,c_Node19* t_pred,c_ModuleDecl* t_data){
 	m__succ=t_succ;
 	m__pred=t_pred;
 	m__succ->m__pred=this;
@@ -35020,52 +36204,52 @@ c_Node16* c_Node16::m_new(c_Node16* t_succ,c_Node16* t_pred,c_ModuleDecl* t_data
 	m__data=t_data;
 	return this;
 }
-c_Node16* c_Node16::m_new2(){
+c_Node19* c_Node19::m_new2(){
 	return this;
 }
-int c_Node16::p_Remove(){
+int c_Node19::p_Remove(){
 	m__succ->m__pred=m__pred;
 	m__pred->m__succ=m__succ;
 	return 0;
 }
-void c_Node16::mark(){
+void c_Node19::mark(){
 	Object::mark();
 }
-c_HeadNode9::c_HeadNode9(){
+c_HeadNode11::c_HeadNode11(){
 }
-c_HeadNode9* c_HeadNode9::m_new(){
-	c_Node16::m_new2();
+c_HeadNode11* c_HeadNode11::m_new(){
+	c_Node19::m_new2();
 	m__succ=(this);
 	m__pred=(this);
 	return this;
 }
-void c_HeadNode9::mark(){
-	c_Node16::mark();
+void c_HeadNode11::mark(){
+	c_Node19::mark();
 }
-c_Enumerator5::c_Enumerator5(){
+c_Enumerator6::c_Enumerator6(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator5* c_Enumerator5::m_new(c_List5* t_list){
+c_Enumerator6* c_Enumerator6::m_new(c_List7* t_list){
 	m__list=t_list;
 	m__curr=t_list->m__head->m__succ;
 	return this;
 }
-c_Enumerator5* c_Enumerator5::m_new2(){
+c_Enumerator6* c_Enumerator6::m_new2(){
 	return this;
 }
-bool c_Enumerator5::p_HasNext(){
+bool c_Enumerator6::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		m__curr=m__curr->m__succ;
 	}
 	return m__curr!=m__list->m__head;
 }
-c_Stmt* c_Enumerator5::p_NextObject(){
+c_Stmt* c_Enumerator6::p_NextObject(){
 	c_Stmt* t_data=m__curr->m__data;
 	m__curr=m__curr->m__succ;
 	return t_data;
 }
-void c_Enumerator5::mark(){
+void c_Enumerator6::mark(){
 	Object::mark();
 }
 c_InvokeExpr::c_InvokeExpr(){
@@ -35230,189 +36414,14 @@ void c_VarExpr::mark(){
 	c_Expr::mark();
 }
 int bb_decl__loopnest;
-c_Map8::c_Map8(){
-	m_root=0;
-}
-c_Map8* c_Map8::m_new(){
-	return this;
-}
-c_Node17* c_Map8::p_FindNode(String t_key){
-	c_Node17* t_node=m_root;
-	while((t_node)!=0){
-		int t_cmp=p_Compare(t_key,t_node->m_key);
-		if(t_cmp>0){
-			t_node=t_node->m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node->m_left;
-			}else{
-				return t_node;
-			}
-		}
-	}
-	return t_node;
-}
-c_FuncDeclList* c_Map8::p_Get(String t_key){
-	c_Node17* t_node=p_FindNode(t_key);
-	if((t_node)!=0){
-		return t_node->m_value;
-	}
-	return 0;
-}
-int c_Map8::p_RotateLeft8(c_Node17* t_node){
-	c_Node17* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
-	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
-	}
-	t_child->m_parent=t_node->m_parent;
-	if((t_node->m_parent)!=0){
-		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
-		}else{
-			t_node->m_parent->m_right=t_child;
-		}
-	}else{
-		m_root=t_child;
-	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
-	return 0;
-}
-int c_Map8::p_RotateRight8(c_Node17* t_node){
-	c_Node17* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
-	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
-	}
-	t_child->m_parent=t_node->m_parent;
-	if((t_node->m_parent)!=0){
-		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
-		}else{
-			t_node->m_parent->m_left=t_child;
-		}
-	}else{
-		m_root=t_child;
-	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
-	return 0;
-}
-int c_Map8::p_InsertFixup8(c_Node17* t_node){
-	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
-		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node17* t_uncle=t_node->m_parent->m_parent->m_right;
-			if(((t_uncle)!=0) && t_uncle->m_color==-1){
-				t_node->m_parent->m_color=1;
-				t_uncle->m_color=1;
-				t_uncle->m_parent->m_color=-1;
-				t_node=t_uncle->m_parent;
-			}else{
-				if(t_node==t_node->m_parent->m_right){
-					t_node=t_node->m_parent;
-					p_RotateLeft8(t_node);
-				}
-				t_node->m_parent->m_color=1;
-				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateRight8(t_node->m_parent->m_parent);
-			}
-		}else{
-			c_Node17* t_uncle2=t_node->m_parent->m_parent->m_left;
-			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
-				t_node->m_parent->m_color=1;
-				t_uncle2->m_color=1;
-				t_uncle2->m_parent->m_color=-1;
-				t_node=t_uncle2->m_parent;
-			}else{
-				if(t_node==t_node->m_parent->m_left){
-					t_node=t_node->m_parent;
-					p_RotateRight8(t_node);
-				}
-				t_node->m_parent->m_color=1;
-				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateLeft8(t_node->m_parent->m_parent);
-			}
-		}
-	}
-	m_root->m_color=1;
-	return 0;
-}
-bool c_Map8::p_Set8(String t_key,c_FuncDeclList* t_value){
-	c_Node17* t_node=m_root;
-	c_Node17* t_parent=0;
-	int t_cmp=0;
-	while((t_node)!=0){
-		t_parent=t_node;
-		t_cmp=p_Compare(t_key,t_node->m_key);
-		if(t_cmp>0){
-			t_node=t_node->m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node->m_left;
-			}else{
-				t_node->m_value=t_value;
-				return false;
-			}
-		}
-	}
-	t_node=(new c_Node17)->m_new(t_key,t_value,-1,t_parent);
-	if((t_parent)!=0){
-		if(t_cmp>0){
-			t_parent->m_right=t_node;
-		}else{
-			t_parent->m_left=t_node;
-		}
-		p_InsertFixup8(t_node);
-	}else{
-		m_root=t_node;
-	}
-	return true;
-}
-void c_Map8::mark(){
-	Object::mark();
-}
-c_StringMap8::c_StringMap8(){
-}
-c_StringMap8* c_StringMap8::m_new(){
-	c_Map8::m_new();
-	return this;
-}
-int c_StringMap8::p_Compare(String t_lhs,String t_rhs){
-	return t_lhs.Compare(t_rhs);
-}
-void c_StringMap8::mark(){
-	c_Map8::mark();
-}
-c_Node17::c_Node17(){
-	m_key=String();
-	m_right=0;
-	m_left=0;
-	m_value=0;
-	m_color=0;
-	m_parent=0;
-}
-c_Node17* c_Node17::m_new(String t_key,c_FuncDeclList* t_value,int t_color,c_Node17* t_parent){
-	this->m_key=t_key;
-	this->m_value=t_value;
-	this->m_color=t_color;
-	this->m_parent=t_parent;
-	return this;
-}
-c_Node17* c_Node17::m_new2(){
-	return this;
-}
-void c_Node17::mark(){
-	Object::mark();
-}
 c_Map9::c_Map9(){
 	m_root=0;
 }
 c_Map9* c_Map9::m_new(){
 	return this;
 }
-c_Node18* c_Map9::p_FindNode(String t_key){
-	c_Node18* t_node=m_root;
+c_Node20* c_Map9::p_FindNode(String t_key){
+	c_Node20* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -35427,11 +36436,15 @@ c_Node18* c_Map9::p_FindNode(String t_key){
 	}
 	return t_node;
 }
-bool c_Map9::p_Contains(String t_key){
-	return p_FindNode(t_key)!=0;
+c_FuncDeclList* c_Map9::p_Get(String t_key){
+	c_Node20* t_node=p_FindNode(t_key);
+	if((t_node)!=0){
+		return t_node->m_value;
+	}
+	return 0;
 }
-int c_Map9::p_RotateLeft9(c_Node18* t_node){
-	c_Node18* t_child=t_node->m_right;
+int c_Map9::p_RotateLeft9(c_Node20* t_node){
+	c_Node20* t_child=t_node->m_right;
 	t_node->m_right=t_child->m_left;
 	if((t_child->m_left)!=0){
 		t_child->m_left->m_parent=t_node;
@@ -35450,8 +36463,8 @@ int c_Map9::p_RotateLeft9(c_Node18* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map9::p_RotateRight9(c_Node18* t_node){
-	c_Node18* t_child=t_node->m_left;
+int c_Map9::p_RotateRight9(c_Node20* t_node){
+	c_Node20* t_child=t_node->m_left;
 	t_node->m_left=t_child->m_right;
 	if((t_child->m_right)!=0){
 		t_child->m_right->m_parent=t_node;
@@ -35470,10 +36483,10 @@ int c_Map9::p_RotateRight9(c_Node18* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map9::p_InsertFixup9(c_Node18* t_node){
+int c_Map9::p_InsertFixup9(c_Node20* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node18* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node20* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -35489,7 +36502,7 @@ int c_Map9::p_InsertFixup9(c_Node18* t_node){
 				p_RotateRight9(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node18* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node20* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -35509,9 +36522,9 @@ int c_Map9::p_InsertFixup9(c_Node18* t_node){
 	m_root->m_color=1;
 	return 0;
 }
-bool c_Map9::p_Set9(String t_key,c_FuncDecl* t_value){
-	c_Node18* t_node=m_root;
-	c_Node18* t_parent=0;
+bool c_Map9::p_Set8(String t_key,c_FuncDeclList* t_value){
+	c_Node20* t_node=m_root;
+	c_Node20* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -35527,7 +36540,7 @@ bool c_Map9::p_Set9(String t_key,c_FuncDecl* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node18)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node20)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			t_parent->m_right=t_node;
@@ -35543,19 +36556,19 @@ bool c_Map9::p_Set9(String t_key,c_FuncDecl* t_value){
 void c_Map9::mark(){
 	Object::mark();
 }
-c_StringMap9::c_StringMap9(){
+c_StringMap8::c_StringMap8(){
 }
-c_StringMap9* c_StringMap9::m_new(){
+c_StringMap8* c_StringMap8::m_new(){
 	c_Map9::m_new();
 	return this;
 }
-int c_StringMap9::p_Compare(String t_lhs,String t_rhs){
+int c_StringMap8::p_Compare(String t_lhs,String t_rhs){
 	return t_lhs.Compare(t_rhs);
 }
-void c_StringMap9::mark(){
+void c_StringMap8::mark(){
 	c_Map9::mark();
 }
-c_Node18::c_Node18(){
+c_Node20::c_Node20(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -35563,17 +36576,17 @@ c_Node18::c_Node18(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node18* c_Node18::m_new(String t_key,c_FuncDecl* t_value,int t_color,c_Node18* t_parent){
+c_Node20* c_Node20::m_new(String t_key,c_FuncDeclList* t_value,int t_color,c_Node20* t_parent){
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
 	this->m_parent=t_parent;
 	return this;
 }
-c_Node18* c_Node18::m_new2(){
+c_Node20* c_Node20::m_new2(){
 	return this;
 }
-void c_Node18::mark(){
+void c_Node20::mark(){
 	Object::mark();
 }
 c_Map10::c_Map10(){
@@ -35582,8 +36595,8 @@ c_Map10::c_Map10(){
 c_Map10* c_Map10::m_new(){
 	return this;
 }
-c_Node19* c_Map10::p_FindNode(String t_key){
-	c_Node19* t_node=m_root;
+c_Node21* c_Map10::p_FindNode(String t_key){
+	c_Node21* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -35598,15 +36611,11 @@ c_Node19* c_Map10::p_FindNode(String t_key){
 	}
 	return t_node;
 }
-c_StringSet* c_Map10::p_Get(String t_key){
-	c_Node19* t_node=p_FindNode(t_key);
-	if((t_node)!=0){
-		return t_node->m_value;
-	}
-	return 0;
+bool c_Map10::p_Contains(String t_key){
+	return p_FindNode(t_key)!=0;
 }
-int c_Map10::p_RotateLeft10(c_Node19* t_node){
-	c_Node19* t_child=t_node->m_right;
+int c_Map10::p_RotateLeft10(c_Node21* t_node){
+	c_Node21* t_child=t_node->m_right;
 	t_node->m_right=t_child->m_left;
 	if((t_child->m_left)!=0){
 		t_child->m_left->m_parent=t_node;
@@ -35625,8 +36634,8 @@ int c_Map10::p_RotateLeft10(c_Node19* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map10::p_RotateRight10(c_Node19* t_node){
-	c_Node19* t_child=t_node->m_left;
+int c_Map10::p_RotateRight10(c_Node21* t_node){
+	c_Node21* t_child=t_node->m_left;
 	t_node->m_left=t_child->m_right;
 	if((t_child->m_right)!=0){
 		t_child->m_right->m_parent=t_node;
@@ -35645,10 +36654,10 @@ int c_Map10::p_RotateRight10(c_Node19* t_node){
 	t_node->m_parent=t_child;
 	return 0;
 }
-int c_Map10::p_InsertFixup10(c_Node19* t_node){
+int c_Map10::p_InsertFixup10(c_Node21* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node19* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node21* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -35664,7 +36673,7 @@ int c_Map10::p_InsertFixup10(c_Node19* t_node){
 				p_RotateRight10(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node19* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node21* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -35684,9 +36693,9 @@ int c_Map10::p_InsertFixup10(c_Node19* t_node){
 	m_root->m_color=1;
 	return 0;
 }
-bool c_Map10::p_Set10(String t_key,c_StringSet* t_value){
-	c_Node19* t_node=m_root;
-	c_Node19* t_parent=0;
+bool c_Map10::p_Set9(String t_key,c_FuncDecl* t_value){
+	c_Node21* t_node=m_root;
+	c_Node21* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -35702,7 +36711,7 @@ bool c_Map10::p_Set10(String t_key,c_StringSet* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node19)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node21)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			t_parent->m_right=t_node;
@@ -35718,19 +36727,19 @@ bool c_Map10::p_Set10(String t_key,c_StringSet* t_value){
 void c_Map10::mark(){
 	Object::mark();
 }
-c_StringMap10::c_StringMap10(){
+c_StringMap9::c_StringMap9(){
 }
-c_StringMap10* c_StringMap10::m_new(){
+c_StringMap9* c_StringMap9::m_new(){
 	c_Map10::m_new();
 	return this;
 }
-int c_StringMap10::p_Compare(String t_lhs,String t_rhs){
+int c_StringMap9::p_Compare(String t_lhs,String t_rhs){
 	return t_lhs.Compare(t_rhs);
 }
-void c_StringMap10::mark(){
+void c_StringMap9::mark(){
 	c_Map10::mark();
 }
-c_Node19::c_Node19(){
+c_Node21::c_Node21(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -35738,43 +36747,218 @@ c_Node19::c_Node19(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node19* c_Node19::m_new(String t_key,c_StringSet* t_value,int t_color,c_Node19* t_parent){
+c_Node21* c_Node21::m_new(String t_key,c_FuncDecl* t_value,int t_color,c_Node21* t_parent){
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
 	this->m_parent=t_parent;
 	return this;
 }
-c_Node19* c_Node19::m_new2(){
+c_Node21* c_Node21::m_new2(){
 	return this;
 }
-void c_Node19::mark(){
+void c_Node21::mark(){
 	Object::mark();
 }
-c_Enumerator6::c_Enumerator6(){
+c_Map11::c_Map11(){
+	m_root=0;
+}
+c_Map11* c_Map11::m_new(){
+	return this;
+}
+c_Node22* c_Map11::p_FindNode(String t_key){
+	c_Node22* t_node=m_root;
+	while((t_node)!=0){
+		int t_cmp=p_Compare(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_StringSet* c_Map11::p_Get(String t_key){
+	c_Node22* t_node=p_FindNode(t_key);
+	if((t_node)!=0){
+		return t_node->m_value;
+	}
+	return 0;
+}
+int c_Map11::p_RotateLeft11(c_Node22* t_node){
+	c_Node22* t_child=t_node->m_right;
+	t_node->m_right=t_child->m_left;
+	if((t_child->m_left)!=0){
+		t_child->m_left->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_left){
+			t_node->m_parent->m_left=t_child;
+		}else{
+			t_node->m_parent->m_right=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_left=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map11::p_RotateRight11(c_Node22* t_node){
+	c_Node22* t_child=t_node->m_left;
+	t_node->m_left=t_child->m_right;
+	if((t_child->m_right)!=0){
+		t_child->m_right->m_parent=t_node;
+	}
+	t_child->m_parent=t_node->m_parent;
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_right){
+			t_node->m_parent->m_right=t_child;
+		}else{
+			t_node->m_parent->m_left=t_child;
+		}
+	}else{
+		m_root=t_child;
+	}
+	t_child->m_right=t_node;
+	t_node->m_parent=t_child;
+	return 0;
+}
+int c_Map11::p_InsertFixup11(c_Node22* t_node){
+	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
+		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
+			c_Node22* t_uncle=t_node->m_parent->m_parent->m_right;
+			if(((t_uncle)!=0) && t_uncle->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle->m_color=1;
+				t_uncle->m_parent->m_color=-1;
+				t_node=t_uncle->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_right){
+					t_node=t_node->m_parent;
+					p_RotateLeft11(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateRight11(t_node->m_parent->m_parent);
+			}
+		}else{
+			c_Node22* t_uncle2=t_node->m_parent->m_parent->m_left;
+			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle2->m_color=1;
+				t_uncle2->m_parent->m_color=-1;
+				t_node=t_uncle2->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_left){
+					t_node=t_node->m_parent;
+					p_RotateRight11(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateLeft11(t_node->m_parent->m_parent);
+			}
+		}
+	}
+	m_root->m_color=1;
+	return 0;
+}
+bool c_Map11::p_Set10(String t_key,c_StringSet* t_value){
+	c_Node22* t_node=m_root;
+	c_Node22* t_parent=0;
+	int t_cmp=0;
+	while((t_node)!=0){
+		t_parent=t_node;
+		t_cmp=p_Compare(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				t_node->m_value=t_value;
+				return false;
+			}
+		}
+	}
+	t_node=(new c_Node22)->m_new(t_key,t_value,-1,t_parent);
+	if((t_parent)!=0){
+		if(t_cmp>0){
+			t_parent->m_right=t_node;
+		}else{
+			t_parent->m_left=t_node;
+		}
+		p_InsertFixup11(t_node);
+	}else{
+		m_root=t_node;
+	}
+	return true;
+}
+void c_Map11::mark(){
+	Object::mark();
+}
+c_StringMap10::c_StringMap10(){
+}
+c_StringMap10* c_StringMap10::m_new(){
+	c_Map11::m_new();
+	return this;
+}
+int c_StringMap10::p_Compare(String t_lhs,String t_rhs){
+	return t_lhs.Compare(t_rhs);
+}
+void c_StringMap10::mark(){
+	c_Map11::mark();
+}
+c_Node22::c_Node22(){
+	m_key=String();
+	m_right=0;
+	m_left=0;
+	m_value=0;
+	m_color=0;
+	m_parent=0;
+}
+c_Node22* c_Node22::m_new(String t_key,c_StringSet* t_value,int t_color,c_Node22* t_parent){
+	this->m_key=t_key;
+	this->m_value=t_value;
+	this->m_color=t_color;
+	this->m_parent=t_parent;
+	return this;
+}
+c_Node22* c_Node22::m_new2(){
+	return this;
+}
+void c_Node22::mark(){
+	Object::mark();
+}
+c_Enumerator7::c_Enumerator7(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator6* c_Enumerator6::m_new(c_List8* t_list){
+c_Enumerator7* c_Enumerator7::m_new(c_List10* t_list){
 	m__list=t_list;
 	m__curr=t_list->m__head->m__succ;
 	return this;
 }
-c_Enumerator6* c_Enumerator6::m_new2(){
+c_Enumerator7* c_Enumerator7::m_new2(){
 	return this;
 }
-bool c_Enumerator6::p_HasNext(){
+bool c_Enumerator7::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		m__curr=m__curr->m__succ;
 	}
 	return m__curr!=m__list->m__head;
 }
-c_GlobalDecl* c_Enumerator6::p_NextObject(){
+c_GlobalDecl* c_Enumerator7::p_NextObject(){
 	c_GlobalDecl* t_data=m__curr->m__data;
 	m__curr=m__curr->m__succ;
 	return t_data;
 }
-void c_Enumerator6::mark(){
+void c_Enumerator7::mark(){
 	Object::mark();
 }
 c_Stack10::c_Stack10(){
@@ -35796,8 +36980,8 @@ void c_Stack10::p_Clear(){
 	}
 	m_length=0;
 }
-c_Enumerator7* c_Stack10::p_ObjectEnumerator(){
-	return (new c_Enumerator7)->m_new(this);
+c_Enumerator8* c_Stack10::p_ObjectEnumerator(){
+	return (new c_Enumerator8)->m_new(this);
 }
 void c_Stack10::p_Length(int t_newlength){
 	if(t_newlength<m_length){
@@ -35832,25 +37016,25 @@ void c_Stack10::p_Push30(Array<c_LocalDecl* > t_values,int t_offset){
 void c_Stack10::mark(){
 	Object::mark();
 }
-c_Enumerator7::c_Enumerator7(){
+c_Enumerator8::c_Enumerator8(){
 	m_stack=0;
 	m_index=0;
 }
-c_Enumerator7* c_Enumerator7::m_new(c_Stack10* t_stack){
+c_Enumerator8* c_Enumerator8::m_new(c_Stack10* t_stack){
 	this->m_stack=t_stack;
 	return this;
 }
-c_Enumerator7* c_Enumerator7::m_new2(){
+c_Enumerator8* c_Enumerator8::m_new2(){
 	return this;
 }
-bool c_Enumerator7::p_HasNext(){
+bool c_Enumerator8::p_HasNext(){
 	return m_index<m_stack->p_Length2();
 }
-c_LocalDecl* c_Enumerator7::p_NextObject(){
+c_LocalDecl* c_Enumerator8::p_NextObject(){
 	m_index+=1;
 	return m_stack->m_data[m_index-1];
 }
-void c_Enumerator7::mark(){
+void c_Enumerator8::mark(){
 	Object::mark();
 }
 int bbInit(){
@@ -35867,6 +37051,7 @@ int bbInit(){
 	bb_config_ENV_MODPATH=String();
 	bb_parser_FILE_EXT=String(L".cxs",4);
 	bb_parser_FILE_EXT_OLD=String(L".monkey",7);
+	c_BlockTrace::m__Blocks=(new c_BlockTrace)->m_new();
 	bb_config_ENV_SAFEMODE=0;
 	c_Type::m_intType=(new c_IntType)->m_new();
 	c_Type::m_floatType=(new c_FloatType)->m_new();
@@ -35878,7 +37063,6 @@ int bbInit(){
 	c_Type::m_nullObjectType=(new c_IdentType)->m_new(String(),Array<c_Type* >());
 	c_Stack8::m_NIL=0;
 	bb_config__errStack=(new c_StringList)->m_new2();
-	c_Stack::m_NIL=String();
 	c_Stack3::m_NIL=0;
 	c_Stack2::m_NIL=0;
 	bb_config_ENV_HOST=String();
@@ -35886,6 +37070,7 @@ int bbInit(){
 	bb_config_ENV_TARGET=String();
 	bb_config_ENV_LANG=String();
 	c_Stack9::m_NIL=0;
+	c_Stack::m_NIL=String();
 	bb_translator__trans=0;
 	bb_html5_Info_Width=0;
 	bb_html5_Info_Height=0;

@@ -1,4 +1,4 @@
-***** v2020-04-19 *****
+***** v2020-05-01 *****
 
 FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
 FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
@@ -36,6 +36,7 @@ NEW: [cerberus.interpolate] Added InterpolateBounceEaseOut:Float(pY0:Float, pY1:
 NEW: [cerberus.interpolate] Added InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
 NEW: [brl.tween] Added a module to support easy tweening.    (Author: Rich) 
 NEW: [TRANSCC] Added app icon creation right into TRANSCC.    (Author: Rich)
+NEW: [TRANSCC] Added the Include and IncludeDir directive to add specific files and the complete content of directories to the build folder.    (Author: MikeHart)
 NEW: [IOS] Added #IOS_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [ANDROID] Added #ANDROID_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [FLASH] Added #FLASH_APP_ICON to set the favicon of the browser tab.    (Author: Rich)
