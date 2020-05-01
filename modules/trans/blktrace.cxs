@@ -5,6 +5,7 @@
 
 '#########################################################################
 ' Classes to keep track of code block starts for use in tracing errors
+' FILE VERSION 0.1
 ' TODO: Modify the file preprocessor.cxs to make use of these classes
 Import trans
 
@@ -69,13 +70,13 @@ Class BlockTrace
 	
 	' Internal method to remove and return the last item on the work list.
 	Method RemoveRecord:TraceRecord()
-		If _record.IsEmpty Return Null
+		If _record.IsEmpty Return Null	' Safe check. Return a Null if there is no item.
 		Return _record.RemoveLast
 	End
 	
 	' Internal method to return the last item on the work list.
 	Method LastBlockItem:TraceRecord()
-		If _record.IsEmpty Return Null
+		If _record.IsEmpty Return Null ' Safe check. Return a Null if there is no item.
 		Return _record.Last
 	End
 	
@@ -83,7 +84,10 @@ Class BlockTrace
 	' to be sent back to the trace log function.
 	Method BlockLineList:IntList( token )
 		Local blklines:=New IntList
-		Local lastblkline:=LastBlockItem().Line()
+		Local lastblkline:Int
+		
+		' Only add the last item line if there is one.
+		If LastBlockItem()<>Null lastblkline=LastBlockItem.Line()
 		
 		' If the token passed is known, then only build a list for that token block.
 		If token>BLK_UNKNOWN
@@ -139,7 +143,8 @@ Class BlockTrace
 		
 		Print ""
 		
-		Return blklines[0]
+		' Return either the first line if there is one or zero.
+		If blklines.Length>0 Return blklines[0] Else Return 0
 	End
 	
 	' External function to get the last item stored on the work list.

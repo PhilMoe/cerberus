@@ -406,7 +406,7 @@ Class Parser
 	Method BackTrace:TraceRecord( tokeID )
 		Local blk:=BlockTrace.TraceLog( tokeID )
 		Local record:=BlockTrace.Pop
-		SetErr( record.Line )
+		If record<>Null SetErr( record.Line )
 		Return record
 	End
 	
@@ -766,7 +766,7 @@ Class Parser
 					
 					Default
 						Local record:=BackTrace( BlockTrace.BLK_UNKNOWN )
-						SetErr( _toker.Line )
+						If record<>Null SetErr( _toker.Line ) Else SetErr
 						Err "Syntax error - Unexpected token '"+_toke+"'."
 				End Select
 		End Select
