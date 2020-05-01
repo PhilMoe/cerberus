@@ -23922,7 +23922,9 @@ c_IdentType* c_Parser::p_CParseIdentType(bool t_inner){
 c_TraceRecord* c_Parser::p_BackTrace(int t_tokeID){
 	int t_blk=c_BlockTrace::m_TraceLog(t_tokeID);
 	c_TraceRecord* t_record=c_BlockTrace::m_Pop();
-	p_SetErr(t_record->p_Line());
+	if(t_record!=0){
+		p_SetErr(t_record->p_Line());
+	}
 	return t_record;
 }
 c_Expr* c_Parser::p_ParsePrimaryExpr(int t_stmt){
@@ -24031,7 +24033,11 @@ c_Expr* c_Parser::p_ParsePrimaryExpr(int t_stmt){
 																	bb_config_Err(String(L"End-Of-File. ",13)+c_BlockTrace::m_Code2Str(t_record->p_Toke())+String(L" block incorrectly terminated.",30));
 																}else{
 																	c_TraceRecord* t_record2=p_BackTrace(0);
-																	p_SetErr(m__toker->p_Line());
+																	if(t_record2!=0){
+																		p_SetErr(m__toker->p_Line());
+																	}else{
+																		p_SetErr(-1);
+																	}
 																	bb_config_Err(String(L"Syntax error - Unexpected token '",33)+m__toke+String(L"'.",2));
 																}
 															}
@@ -25335,7 +25341,10 @@ c_TraceRecord* c_BlockTrace::p_LastBlockItem(){
 }
 c_IntList* c_BlockTrace::p_BlockLineList(int t_token){
 	c_IntList* t_blklines=(new c_IntList)->m_new2();
-	int t_lastblkline=p_LastBlockItem()->p_Line();
+	int t_lastblkline=0;
+	if(p_LastBlockItem()!=0){
+		t_lastblkline=p_LastBlockItem()->p_Line();
+	}
 	if(t_token>0){
 		c_IntList* t_tokelines=m__map->p_Get2(t_token);
 		if(t_lastblkline>0){
@@ -25387,7 +25396,11 @@ int c_BlockTrace::p_Unwind(int t_token){
 		bbPrint(String(L"Statement Blocks at lines: ",27)+t_str.Slice(0,t_str.Length()-2));
 	}
 	bbPrint(String());
-	return t_blklines[0];
+	if(t_blklines.Length()>0){
+		return t_blklines[0];
+	}else{
+		return 0;
+	}
 }
 int c_BlockTrace::m_TraceLog(int t_token){
 	return m__Blocks->p_Unwind(t_token);
