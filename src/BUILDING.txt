@@ -74,7 +74,6 @@ It is recommended that you use the 64 bit version of TDM GCC 4.7/5.1.0.
 
 To build the IDE for Cerberus, you will need to have Visual Studio 2017 installed.
 
-
 You will find a power-shell script called rebuildall.ps1 that should work on Win7+.
 
 NOTE: Before using this script make sure that the execution policy for the current user be set to unrestricted.
@@ -100,4 +99,19 @@ C:\MinGW
 C:\Qt5\5.9.2\msvc2017_64
 
 ======= Mac OS X =======
-TODO
+You will require XCode at least 8.2, the xcode command line tools and the Qt SDK versions (5.9.x).
+As Apple do change their tools often, you should check out the latest documentation.
+But in general, once you have XCode installed. You can usually find the place to download the tools in general/download/components.
+You just have to go looking for them. Or you can install the command line tools by opening a terminal, found in Applications->Utilities.
+And typing xcode-select --install.
+
+You will find a bash script called rebuildall_macos.sh.
+If you have installed the Qt SDK directly from https://www.qt.io/
+And you have installed them to your home directory as a directory called Qt, or created a symbolic link to the Qt SDK in your home directory.
+Then the script will automatically use those files, with the default being 5.9.2 if installed.
+You can pass the Qt version to use from the command line.
+
+Then type:
+.\rebuildall_macos.sh QTVER
+NOTE: The parameter QTVER is the version of Qt to use if you have got the Qt SDK from https://www.qt.io/
+The default is to use Qt 5.9.2.
