@@ -1124,7 +1124,7 @@ Highlighter::Highlighter( CodeEditor *editor ):QSyntaxHighlighter( editor->docum
         const QString &kws=
             "Void;Strict;Public;Private;Protected;Friend;Property;"
             "Bool;Int;Float;String;Array;Object;Mod;Continue;Exit;"
-            "Include;IncludeDir;Import;Module;Extern;"
+            "Include;Import;Module;Extern;"
             "New;Self;Super;Eachin;True;False;Null;Not;"
             "Extends;Abstract;Final;Native;Select;Case;Default;"
             "Const;Local;Global;Field;Method;Function;Class;Interface;Implements;Enumerate;"

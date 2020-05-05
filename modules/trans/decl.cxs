@@ -1472,7 +1472,6 @@ Class AppDecl Extends ScopeDecl
 	
 	Field fileImports:=New StringList
 	Field fileIncludes:=New StringList
-	Field dirIncludes:=New StringList
 	
 	Method InsertModule( mdecl:ModuleDecl )
 		mdecl.scope=Self

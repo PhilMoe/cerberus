@@ -1,9 +1,10 @@
-***** v2020-05-01 *****
+***** v2020-05-05 *****
 
 FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
 FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
 FIX: [DOCS/cerberus] Fixed missing entry for the deque module.    (Author: MikeHart)
 FIX: [DOCS/cerberus.stack] Fixed some typos.    (Author: MikeHart)
+FIX: [DOCS/os] Fixed description of the StripExt statement.    (Author: MikeHart)
 FIX: [mojo] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.DefaultFlags)    (Author: Rich) 
 FIX: [mojo2] Fixed padded usage in Font.Load:Font(url:String, flags:Int=Image.Filter )    (Author: Rich) 
 FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: Rich) 
@@ -36,7 +37,7 @@ NEW: [cerberus.interpolate] Added InterpolateBounceEaseOut:Float(pY0:Float, pY1:
 NEW: [cerberus.interpolate] Added InterpolateBounceEaseInOut:Float(pY0:Float, pY1:Float, pX:Float).    (Author: Rich)
 NEW: [brl.tween] Added a module to support easy tweening.    (Author: Rich) 
 NEW: [TRANSCC] Added app icon creation right into TRANSCC.    (Author: Rich)
-NEW: [TRANSCC] Added the Include and IncludeDir directive to add specific files and the complete content of directories to the build folder.    (Author: MikeHart)
+NEW: [TRANSCC] Added the Include directive to add files/directories to the build folder (GLFW/STDCPP).    (Author: MikeHart)
 NEW: [IOS] Added #IOS_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [ANDROID] Added #ANDROID_APP_ICON to set icon of the app.    (Author: Rich)
 NEW: [FLASH] Added #FLASH_APP_ICON to set the favicon of the browser tab.    (Author: Rich)

@@ -313,19 +313,66 @@ Class Builder
 	End
 	
 	Method CopySourceFiles:Void( dir:String )
-	
 		dir=RealPath( dir )
-'Print("CopySourceFiles targetdir = "+dir)	
+		'Local srcDir:= ExtractDir(tcc.opt_srcpath)
+				
 		For Local p:=Eachin app.fileIncludes
-			Local r:=StripDir( p )
-			Local t:=dir+"/"+r
-'Print ("CopySourceFiles = "+p)
-			CCopyFile p,t
-		Next
-	
-		For Local p:=Eachin app.dirIncludes
-'Print ("CopySourceDirs = "+p)
-			CopyDir( p, dir, True, True )
+			Local oSub:Bool = False
+			Local oExt:String = "*"
+			Local oOut:String = ""
+			Local src:String = ""
+
+			Local p2:= p.Split(" ")
+			
+			For Local p3 := Eachin p2
+				Select p3[..4]
+					Case "-sub"
+						oSub=True
+					Case "-ext"
+						oExt = p3[5..]
+					Case "-out"
+						oOut = p3[5..]
+						If (oOut[..1]="\" Or oOut[..1]="/") oOut = oOut[1..]
+						Local ol:= oOut.Length()
+						If (oOut[ol-1..]="\" Or oOut[ol-1..]="/") oOut = oOut[..ol-1]
+					Default
+						src = p3
+				End
+			Next
+			
+			Local targetDir:= dir
+			If oOut.Length() > 0
+				' Create sub directories
+				targetDir += "/"+oOut
+				Local outs:= oOut.Split("/")
+				oOut = ""
+				For Local out := Eachin outs
+					oOut += "/"+out
+					If (FileType(dir+oOut) <> FILETYPE_DIR) 	CreateDir(dir+oOut)
+				Next
+			Endif
+			
+			Local exts := oExt.Split(";")
+
+			If FileType(src)=FILETYPE_FILE
+				Local filename:=StripDir( src )
+				CCopyFile src,targetDir+"/"+filename
+			Else
+				Local exts:=oExt.Split(";")
+				Local files:= LoadDir(src, oSub, False)
+				For Local file:= Eachin files
+					Local subDir:= ExtractDir(file)
+
+					If (FileType(targetDir+"/"+subDir) <> FILETYPE_DIR) 	CreateDir(targetDir+"/"+subDir)
+					If FileType(src+"/"+file)=FILETYPE_FILE
+						For Local ext := Eachin exts
+							If ext = ExtractExt(file) Or ext = "*" 
+								CCopyFile src+"/"+file,targetDir+"/"+file
+							Endif
+						Next
+					Endif
+				Next
+			Endif
 		Next
 	End
 	

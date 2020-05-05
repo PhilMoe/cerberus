@@ -1857,30 +1857,6 @@ Class Parser
 		
 	End
 	
-	Method IncludeFiles( filepath$ )
-
-		filepath=RealPath( filepath )
-Print ("IncludeFiles="+filepath)		
-		If FileType( filepath )<>FILETYPE_FILE
-			Err "Source File '"+filepath+"' not found."
-		Endif
-		
-		_app.fileIncludes.AddLast filepath
-		
-	End
-	
-	Method IncludeDirs( filepath$ )
-
-		filepath=RealPath( filepath )
-Print ("IncludeDirs="+filepath)		
-		If FileType( filepath )<>FILETYPE_DIR
-			Err "Source directory '"+filepath+"' not found."
-		Endif
-		
-		_app.dirIncludes.AddLast filepath
-		
-	End
-	
 	Method ImportModule( modpath$,attrs )
 		'done by preprocessor now...
 	End
@@ -1921,10 +1897,14 @@ Print ("IncludeDirs="+filepath)
 					Endif
 				Case "include"
 					NextToke
-					IncludeFiles (ParseStringLit() )
-				Case "includedir"
-					NextToke
-					IncludeDirs (ParseStringLit() )
+					Local filepath:String = ParseStringLit()
+					Local iOpt:= filepath.Find(" ")
+					If iOpt > 1
+						filepath = RealPath(filepath[..iOpt])+filepath[iOpt..]
+					Else
+						filepath = RealPath(filepath)
+					Endif	
+					_app.fileIncludes.AddLast(filepath )
 				Case "friend"
 					NextToke
 					Local modpath:=ParseModPath()

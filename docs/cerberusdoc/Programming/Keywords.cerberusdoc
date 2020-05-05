@@ -3,7 +3,7 @@
 The identifiers below are language keywords and are reserved for use by the Cerberus X language; these keywords are case-insensitive.
 
 >> Module control
-[[Strict]] | [[Import]] | [[Extern]] | [[Include]] | [[IncludeDir]]
+[[Strict]] | [[Import]] | [[Extern]] | [[Include]]
 
 >> Declarations
 [[Const]] | [[Local]] | [[Global]] | [[Field]] | [[Alias]] | [[Enumerate]]

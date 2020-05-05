@@ -277,7 +277,7 @@ path - a file system path.
 
 # Function StripExt:String(path:String)
 
-Extracts and returns the file extension of a file system path.
+Removes the file type extension from a file system path.
 
 Parameters: 
 

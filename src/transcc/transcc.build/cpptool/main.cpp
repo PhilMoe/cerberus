@@ -16062,7 +16062,6 @@ class c_AppDecl : public c_ScopeDecl{
 	c_ModuleDecl* m_mainModule;
 	c_StringList* m_fileImports;
 	c_StringList* m_fileIncludes;
-	c_StringList* m_dirIncludes;
 	c_List5* m_allSemantedDecls;
 	c_List10* m_semantedGlobals;
 	c_List8* m_semantedClasses;
@@ -16138,8 +16137,6 @@ class c_Parser : public Object{
 	String p_ParseIdent();
 	String p_ParseModPath();
 	int p_ImportModule(String,int);
-	int p_IncludeFiles(String);
-	int p_IncludeDirs(String);
 	int p_Parse(String);
 	c_Type* p_CParsePrimitiveType();
 	c_IdentType* p_ParseIdentType();
@@ -18365,7 +18362,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-05-01",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-05-05",35));
 	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
@@ -20011,14 +20008,83 @@ void c_Builder::p_CopySourceFiles(String t_dir){
 	c_Enumerator* t_=m_app->m_fileIncludes->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		String t_p=t_->p_NextObject();
-		String t_r=bb_os_StripDir(t_p);
-		String t_t=t_dir+String(L"/",1)+t_r;
-		p_CCopyFile(t_p,t_t);
-	}
-	c_Enumerator* t_2=m_app->m_dirIncludes->p_ObjectEnumerator();
-	while(t_2->p_HasNext()){
-		String t_p2=t_2->p_NextObject();
-		bb_os_CopyDir(t_p2,t_dir,true,true);
+		bool t_oSub=false;
+		String t_oExt=String(L"*",1);
+		String t_oOut=String();
+		String t_src=String();
+		Array<String > t_p2=t_p.Split(String(L" ",1));
+		Array<String > t_2=t_p2;
+		int t_3=0;
+		while(t_3<t_2.Length()){
+			String t_p3=t_2[t_3];
+			t_3=t_3+1;
+			String t_4=t_p3.Slice(0,4);
+			if(t_4==String(L"-sub",4)){
+				t_oSub=true;
+			}else{
+				if(t_4==String(L"-ext",4)){
+					t_oExt=t_p3.Slice(5);
+				}else{
+					if(t_4==String(L"-out",4)){
+						t_oOut=t_p3.Slice(5);
+						if(t_oOut.Slice(0,1)==String(L"\\",1) || t_oOut.Slice(0,1)==String(L"/",1)){
+							t_oOut=t_oOut.Slice(1);
+						}
+						int t_ol=t_oOut.Length();
+						if(t_oOut.Slice(t_ol-1)==String(L"\\",1) || t_oOut.Slice(t_ol-1)==String(L"/",1)){
+							t_oOut=t_oOut.Slice(0,t_ol-1);
+						}
+					}else{
+						t_src=t_p3;
+					}
+				}
+			}
+		}
+		String t_targetDir=t_dir;
+		if(t_oOut.Length()>0){
+			t_targetDir=t_targetDir+(String(L"/",1)+t_oOut);
+			Array<String > t_outs=t_oOut.Split(String(L"/",1));
+			t_oOut=String();
+			Array<String > t_5=t_outs;
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_out=t_5[t_6];
+				t_6=t_6+1;
+				t_oOut=t_oOut+(String(L"/",1)+t_out);
+				if(FileType(t_dir+t_oOut)!=2){
+					CreateDir(t_dir+t_oOut);
+				}
+			}
+		}
+		Array<String > t_exts=t_oExt.Split(String(L";",1));
+		if(FileType(t_src)==1){
+			String t_filename=bb_os_StripDir(t_src);
+			p_CCopyFile(t_src,t_targetDir+String(L"/",1)+t_filename);
+		}else{
+			Array<String > t_exts2=t_oExt.Split(String(L";",1));
+			Array<String > t_files=bb_os_LoadDir(t_src,t_oSub,false);
+			Array<String > t_7=t_files;
+			int t_8=0;
+			while(t_8<t_7.Length()){
+				String t_file=t_7[t_8];
+				t_8=t_8+1;
+				String t_subDir=bb_os_ExtractDir(t_file);
+				if(FileType(t_targetDir+String(L"/",1)+t_subDir)!=2){
+					CreateDir(t_targetDir+String(L"/",1)+t_subDir);
+				}
+				if(FileType(t_src+String(L"/",1)+t_file)==1){
+					Array<String > t_9=t_exts2;
+					int t_10=0;
+					while(t_10<t_9.Length()){
+						String t_ext=t_9[t_10];
+						t_10=t_10+1;
+						if(t_ext==bb_os_ExtractExt(t_file) || t_ext==String(L"*",1)){
+							p_CCopyFile(t_src+String(L"/",1)+t_file,t_targetDir+String(L"/",1)+t_file);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 void c_Builder::p_CopyIcon(String t_iFile,String t_targetIcon){
@@ -22781,7 +22847,7 @@ int c_Toker::p__init(){
 		return 0;
 	}
 	m__keywords=(new c_StringSet)->m_new();
-	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include includedir import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",448).Split(String(L" ",1));
+	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",437).Split(String(L" ",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
 		String t_t=t_[t_2];
@@ -23299,7 +23365,6 @@ c_AppDecl::c_AppDecl(){
 	m_mainModule=0;
 	m_fileImports=(new c_StringList)->m_new2();
 	m_fileIncludes=(new c_StringList)->m_new2();
-	m_dirIncludes=(new c_StringList)->m_new2();
 	m_allSemantedDecls=(new c_List5)->m_new();
 	m_semantedGlobals=(new c_List10)->m_new();
 	m_semantedClasses=(new c_List8)->m_new();
@@ -23683,24 +23748,6 @@ String c_Parser::p_ParseModPath(){
 	return t_path;
 }
 int c_Parser::p_ImportModule(String t_modpath,int t_attrs){
-	return 0;
-}
-int c_Parser::p_IncludeFiles(String t_filepath){
-	t_filepath=p_RealPath(t_filepath);
-	bbPrint(String(L"IncludeFiles=",13)+t_filepath);
-	if(FileType(t_filepath)!=1){
-		bb_config_Err(String(L"Source File '",13)+t_filepath+String(L"' not found.",12));
-	}
-	m__app->m_fileIncludes->p_AddLast(t_filepath);
-	return 0;
-}
-int c_Parser::p_IncludeDirs(String t_filepath){
-	t_filepath=p_RealPath(t_filepath);
-	bbPrint(String(L"IncludeDirs=",12)+t_filepath);
-	if(FileType(t_filepath)!=2){
-		bb_config_Err(String(L"Source directory '",18)+t_filepath+String(L"' not found.",12));
-	}
-	m__app->m_dirIncludes->p_AddLast(t_filepath);
 	return 0;
 }
 int c_Parser::p_Parse(String t_toke){
@@ -25197,62 +25244,64 @@ int c_Parser::p_ParseMain(){
 						}else{
 							if(t_23==String(L"include",7)){
 								p_NextToke();
-								p_IncludeFiles(p_ParseStringLit());
-							}else{
-								if(t_23==String(L"includedir",10)){
-									p_NextToke();
-									p_IncludeDirs(p_ParseStringLit());
+								String t_filepath=p_ParseStringLit();
+								int t_iOpt=t_filepath.Find(String(L" ",1),0);
+								if(t_iOpt>1){
+									t_filepath=p_RealPath(t_filepath.Slice(0,t_iOpt))+t_filepath.Slice(t_iOpt);
 								}else{
-									if(t_23==String(L"friend",6)){
+									t_filepath=p_RealPath(t_filepath);
+								}
+								m__app->m_fileIncludes->p_AddLast(t_filepath);
+							}else{
+								if(t_23==String(L"friend",6)){
+									p_NextToke();
+									String t_modpath=p_ParseModPath();
+									m__module->m_friends->p_Insert(t_modpath);
+								}else{
+									if(t_23==String(L"alias",5)){
 										p_NextToke();
-										String t_modpath=p_ParseModPath();
-										m__module->m_friends->p_Insert(t_modpath);
-									}else{
-										if(t_23==String(L"alias",5)){
-											p_NextToke();
-											do{
-												String t_ident=p_ParseIdent();
-												p_Parse(String(L"=",1));
-												Object* t_decl=0;
-												String t_24=m__toke;
-												if(t_24==String(L"int",3)){
-													t_decl=(c_Type::m_intType);
+										do{
+											String t_ident=p_ParseIdent();
+											p_Parse(String(L"=",1));
+											Object* t_decl=0;
+											String t_24=m__toke;
+											if(t_24==String(L"int",3)){
+												t_decl=(c_Type::m_intType);
+											}else{
+												if(t_24==String(L"float",5)){
+													t_decl=(c_Type::m_floatType);
 												}else{
-													if(t_24==String(L"float",5)){
-														t_decl=(c_Type::m_floatType);
-													}else{
-														if(t_24==String(L"string",6)){
-															t_decl=(c_Type::m_stringType);
-														}
+													if(t_24==String(L"string",6)){
+														t_decl=(c_Type::m_stringType);
 													}
 												}
-												if((t_decl)!=0){
-													m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
-													p_NextToke();
-													continue;
-												}
-												c_ScopeDecl* t_scope=(m__module);
-												bb_decl_PushEnv(m__module);
-												do{
-													String t_id=p_ParseIdent();
-													t_decl=t_scope->p_FindDecl(t_id);
-													if(!((t_decl)!=0)){
-														bb_config_Err(String(L"Identifier '",12)+t_id+String(L"' not found.",12));
-													}
-													if(!((p_CParse(String(L".",1)))!=0)){
-														break;
-													}
-													t_scope=dynamic_cast<c_ScopeDecl*>(t_decl);
-													if(!((t_scope)!=0) || ((dynamic_cast<c_FuncDecl*>(t_scope))!=0)){
-														bb_config_Err(String(L"Invalid scope '",15)+t_id+String(L"'.",2));
-													}
-												}while(!(false));
-												bb_decl_PopEnv();
+											}
+											if((t_decl)!=0){
 												m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
-											}while(!(!((p_CParse(String(L",",1)))!=0)));
-										}else{
-											break;
-										}
+												p_NextToke();
+												continue;
+											}
+											c_ScopeDecl* t_scope=(m__module);
+											bb_decl_PushEnv(m__module);
+											do{
+												String t_id=p_ParseIdent();
+												t_decl=t_scope->p_FindDecl(t_id);
+												if(!((t_decl)!=0)){
+													bb_config_Err(String(L"Identifier '",12)+t_id+String(L"' not found.",12));
+												}
+												if(!((p_CParse(String(L".",1)))!=0)){
+													break;
+												}
+												t_scope=dynamic_cast<c_ScopeDecl*>(t_decl);
+												if(!((t_scope)!=0) || ((dynamic_cast<c_FuncDecl*>(t_scope))!=0)){
+													bb_config_Err(String(L"Invalid scope '",15)+t_id+String(L"'.",2));
+												}
+											}while(!(false));
+											bb_decl_PopEnv();
+											m__module->p_InsertDecl((new c_AliasDecl)->m_new(t_ident,t_attrs,t_decl));
+										}while(!(!((p_CParse(String(L",",1)))!=0)));
+									}else{
+										break;
 									}
 								}
 							}

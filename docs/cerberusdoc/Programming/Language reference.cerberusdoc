@@ -245,7 +245,7 @@ The following identifiers are [[Keywords|Language keywords]] and are reserved fo
 
 <pre>
 Void Strict Public Private Property Bool Int Float String Array
-Object Mod Continue Exit Import Include IncludeDir Extern New Self Super Try Catch
+Object Mod Continue Exit Import Include Extern New Self Super Try Catch
 Eachin True False Not Extends Abstract Final Select Case Default
 Const Enumerate Local Global Field Method Function Class And Or Shl Shr
 End If Then Else ElseIf EndIf While Wend Repeat Until Forever 
