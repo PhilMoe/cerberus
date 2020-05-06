@@ -3,6 +3,9 @@
 !/bin/themes
 !/bin/icons
 !/bin/templates
+!/bin/data
+!/bin/internal
+!/bin/external
 
 
 .bmx
