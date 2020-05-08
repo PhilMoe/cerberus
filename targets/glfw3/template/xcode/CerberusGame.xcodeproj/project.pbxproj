@@ -36,6 +36,7 @@
 		7CE1AA8817E154F600D079FE /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CE1AA7817E154F600D079FE /* window.c */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		D56BBAB62465D8E50020D5F1 /* cerberus.icns in Resources */ = {isa = PBXBuildFile; fileRef = D56BBAB52465D8E50020D5F1 /* cerberus.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,7 +82,8 @@
 		7CE1AA8B17E16F2900D079FE /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../glfw3/include/GLFW/glfw3.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* CerberusGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CerberusGame-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* CerberusGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CerberusGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D5AB6DFD2465D69E00F9D037 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D56BBAB52465D8E50020D5F1 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cerberus.icns; sourceTree = "<group>"; };
+		D56E880E2465D45F0048BE3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +186,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D56BBAB52465D8E50020D5F1 /* cerberus.icns */,
 				7CD5046C165B1A60009581D7 /* external */,
 				7CD5046D165B1A60009581D7 /* internal */,
 				7CACF8E612B5D1AF002E52F2 /* data */,
@@ -242,9 +245,9 @@
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				Base,
+				en,
 				fr,
 				ja,
-				en,
 				de,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CerberusGame */;
@@ -266,6 +269,7 @@
 				7CD5046E165B1A60009581D7 /* external in Resources */,
 				5B9A66EA1F2F246600EF062C /* include in Resources */,
 				7CD5046F165B1A60009581D7 /* internal in Resources */,
+				D56BBAB62465D8E50020D5F1 /* cerberus.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +307,7 @@
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				D5AB6DFD2465D69E00F9D037 /* en */,
+				D56E880E2465D45F0048BE3E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
