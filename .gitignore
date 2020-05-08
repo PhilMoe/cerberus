@@ -6,6 +6,7 @@
 !/bin/data
 !/bin/internal
 !/bin/external
+!/bin/macdeploy*.command
 
 
 .bmx
