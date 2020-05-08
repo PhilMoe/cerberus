@@ -1,4 +1,4 @@
-***** v2020-05-05 *****
+***** v2020-05-08 *****
 
 FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
 FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
@@ -47,6 +47,7 @@ NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size
 NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.    (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.    (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area.    (Author: MikeHart) 
+NEW: [rebuildall_macos.sh] New script to build CX on OSX right from the github repository.    (Author: dawlane)
 
 ***** v2019-10-13b *****
 
