@@ -17,12 +17,6 @@ echo
 echo "building cserver"
 ../bin/transcc_macos "-target=Desktop_Game" -builddir=cserver.build -clean -config=release +CPP_GC_MODE=1 cserver/cserver.cxs
 
-# Update the plist file first to to set the executable and bundle id.
-#defaults write /absolute/path/to/Info.plist CFBundleExecutable -string <Executable>
-#plutil -insert CFBundleExecutable -string <Executable> Info.plist
-defaults write $DIR/cserver/cserver.build/glfw3/xcode/build/Release/CerberusGame.app/Contents/info.plist CFBundleExecutable -string "cserver_macos"
-defaults write $DIR/cserver/cserver.build/glfw3/xcode/build/Release/CerberusGame.app/Contents/info.plist CFBundleIdentifier -string "com.whiteskygames.cserver_macos"
-mv cserver/cserver.build/glfw3/xcode/build/Release/CerberusGame.app/Contents/MacOS/CerberusGame cserver/cserver.build/glfw3/xcode/build/Release/CerberusGame.app/Contents/MacOS/cserver_macos
 mv cserver/cserver.build/glfw3/xcode/build/Release/CerberusGame.app ../bin/cserver_macos.app
 rm -rf cserver/cserver.build
 
