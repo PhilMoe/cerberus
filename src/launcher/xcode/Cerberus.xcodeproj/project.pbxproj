@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		96693B3520C2ACD00061DD43 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 96693B3420C2ACD00061DD43 /* main.m */; };
+		D5928CEA2465A01B005D9702 /* cerberus.icns in Resources */ = {isa = PBXBuildFile; fileRef = D5928CE92465A01B005D9702 /* cerberus.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -15,6 +16,8 @@
 		96693B3420C2ACD00061DD43 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		96693B3B20C2ACD00061DD43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		968B6FCA20C5765D0033B248 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = cerberus.icns; path = ../cerberus.icns; sourceTree = "<group>"; };
+		D5928CE724659F6F005D9702 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = cerberus.icns; path = ../cerberus.icns; sourceTree = "<group>"; };
+		D5928CE92465A01B005D9702 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cerberus.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +35,8 @@
 			isa = PBXGroup;
 			children = (
 				968B6FCA20C5765D0033B248 /* cerberus.icns */,
+				D5928CE724659F6F005D9702 /* cerberus.icns */,
+				D5928CE92465A01B005D9702 /* cerberus.icns */,
 				96693B2F20C2ACD00061DD43 /* Cerberus */,
 				96693B2E20C2ACD00061DD43 /* Products */,
 			);
@@ -64,6 +69,7 @@
 			buildPhases = (
 				96693B2920C2ACD00061DD43 /* Sources */,
 				96693B2A20C2ACD00061DD43 /* Frameworks */,
+				D5928CE624659F4F005D9702 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -105,6 +111,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D5928CE624659F4F005D9702 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5928CEA2465A01B005D9702 /* cerberus.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		96693B2920C2ACD00061DD43 /* Sources */ = {
