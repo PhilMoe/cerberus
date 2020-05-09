@@ -183,21 +183,21 @@ index - valid integer index. Must be>=0 and <length.
 
 # Method Find:Int(value:T,start:Int=0)
 
-Finds the index of the first element in the statch equal to @value. The stack is searched starting at index @start.
+Finds the index of the first element in the stack equal to @value. The stack is searched starting at index @start.
 
 If not matching element is found, -1 is returned.
 
 
 # Method FindLast:Int(value:T)
 
-Finds the index of the last element in the statch equal to @value.
+Finds the index of the last element in the stack equal to @value.
 
 If not matching element is found, -1 is returned.
 
 
 # Method FindLast:Int(value:T,start:Int)
 
-Finds the index of the last element in the statch equal to @value. The stack is searched starting at index @start.
+Finds the index of the last element in the stack equal to @value. The stack is searched starting at index @start.
 
 If not matching element is found, -1 is returned.
 

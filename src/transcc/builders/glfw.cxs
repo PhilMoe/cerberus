@@ -30,7 +30,10 @@ Class GlfwBuilder Extends Builder
 		
 		CreateDataDir dst+"/"+tconfig+"/data"
 
-		CopyIcon()
+		CopySourceFiles(".")
+		
+		' need to rewrite resources.rc so that icon is rebuilt
+		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"/cerberus.ico")
 		
 		Local main:=LoadString( "main.cpp" )
 		
@@ -129,7 +132,8 @@ Class GlfwBuilder Extends Builder
 		
 		CreateDataDir "msvc/"+casedConfig+"/data"
 		
-		CopyIcon()
+		' need to rewrite resources.rc so that icon is rebuilt
+		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"\cerberus.ico")
 		
 		Local main:=LoadString( "main.cpp" )
 		
@@ -158,6 +162,8 @@ Class GlfwBuilder Extends Builder
 	Method MakeXcode:Void()
 
 		CreateDataDir "xcode/data"
+		
+		CopySourceFiles("xcode")
 
 		Local main:=LoadString( "main.cpp" )
 		

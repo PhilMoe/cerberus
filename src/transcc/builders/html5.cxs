@@ -140,15 +140,26 @@ Class Html5Builder Extends Builder
 		Local meta:="var META_DATA=~q"+MetaData()+"~q;~n"
 		
 		Local main:=LoadString( "main.js" )
-		
 		main=ReplaceBlock( main,"TRANSCODE",transCode )
 		main=ReplaceBlock( main,"METADATA",meta )
 		main=ReplaceBlock( main,"CONFIG",Config() )
 		
 		SaveString main,"main.js"
-		
+
+		CopyIcon(GetConfigVar("HTML5_APP_ICON"),CurrentDir()+"\favicon.ico")
+				
+
+		Local game:=LoadString( "CerberusGame.html" )
+		game = game.Replace("%%HTML5_CONSOLE_SHOW%%", GetConfigVar("HTML5_CONSOLE_SHOW") )
+		game = game.Replace("%%HTML5_APP_TITLE%%", GetConfigVar("HTML5_APP_TITLE") )
+		game = game.Replace("%%HTML5_CANVAS_WIDTH%%", GetConfigVar("HTML5_CANVAS_WIDTH") )
+		game = game.Replace("%%HTML5_CANVAS_HEIGHT%%", GetConfigVar("HTML5_CANVAS_HEIGHT") )
+		game = game.Replace("%%HTML5_CANVAS_RESIZE_MODE%%", GetConfigVar("HTML5_CANVAS_RESIZE_MODE") )
+		SaveString game, GetConfigVar("HTML5_APP_FILENAME")
+
+
 		If tcc.opt_run
-			Local p:=RealPath( "CerberusGame.html" )
+			Local p:=RealPath( GetConfigVar("HTML5_APP_FILENAME") )
 			Local t:=tcc.HTML_PLAYER+" ~q"+p+"~q"
 			Execute t,False
 		Endif

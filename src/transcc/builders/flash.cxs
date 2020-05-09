@@ -74,6 +74,8 @@ Class FlashBuilder Extends Builder
 
 			DeleteFile "main.swf"
 
+			CopyIcon(GetConfigVar("FLASH_APP_ICON"),CurrentDir()+"\favicon.ico")
+			
 			Execute "mxmlc"+cc_opts+" CerberusGame.as"
 			
 			If tcc.opt_run

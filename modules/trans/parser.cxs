@@ -3,7 +3,16 @@
 ' Placed into the public domain 24/02/2011.
 ' No warranty implied; use at your own risk.
 
+'######################################################################################################
+' This file scans the source file for syntax and builds a statement block ready for semantic analysis.
+'######################################################################################################
+' NOTE: All comments should be viewed as a work-in-progress and my not be an accurate description of
+'		the internal workings of this file.
+
+' TODO: Commplete and check comments for accuracy.
+
 Import trans
+Import blktrace
 
 Global FILE_EXT_OLD$=".monkey"
 Global FILE_EXT$=".cxs"
@@ -356,8 +365,9 @@ Class Parser
 	Field _module:ModuleDecl
 	Field _defattrs
 	
-	Method SetErr()
-		If _toker.Path _errInfo=_toker.Path+"<"+_toker.Line+">"
+	Method SetErr( line=-1 )
+		If line=-1 line=_toker.Line
+		If _toker.Path _errInfo=_toker.Path+"<"+line+">"
 	End
 	
 	Method PushErr()
@@ -366,6 +376,38 @@ Class Parser
 	
 	Method PopErr()
 		_errInfo=_errStack.RemoveLast()
+	End
+	
+	' Check that the optional terminators are valid.
+	Method ParseBlockEnd( toke$, msg$="", log=False )
+		SetErr
+		If Not CParse( toke ) And AtEos2=False And _tokeType<>TOKE_LINECOMMENT
+			If msg<>""
+				If log BlockTrace.TraceLog( toke )
+				Err msg
+			Endif
+			Return True
+		Endif
+		Return False
+	End
+	
+	' End of file error reporting.
+	Method AtEOF( tokeID, msg$ )	
+		SetErr( BlockTrace.TraceLog( tokeID ) )
+		Err "End-Of-File Reached. "+msg+" block not terminated correctly."
+	End
+	
+	' End of file error reporting. String token version.
+	Method AtEOF( tokeID$, msg$ )	
+		SetErr( BlockTrace.TraceLog( tokeID ) )
+		Err "End-Of-File Reached. "+msg+" block not terminated correctly."
+	End
+	
+	Method BackTrace:TraceRecord( tokeID )
+		Local blk:=BlockTrace.TraceLog( tokeID )
+		Local record:=BlockTrace.Pop
+		If record<>Null SetErr( record.Line )
+		Return record
 	End
 	
 	Method PushBlock( block:BlockDecl )
@@ -401,7 +443,7 @@ Class Parser
 			Case TOKE_SYMBOL
 				If _toke[0]=91 And _toke[_toke.Length-1]=93
 					'			If _toke[0]=Asc("[") And _toke[_toke.Length-1]=Asc("]")
-					_toke="[]"
+					_toke="[]"	' Set toke for empty array parsing.
 				Endif
 		End
 
@@ -420,12 +462,16 @@ Class Parser
 
 	Method Parse( toke$ )
 		If Not CParse( toke )
-			Err "Syntax error - expecting '"+toke+"'."
+			Err "Syntax error - Expecting '"+toke+"'."
 		Endif
 	End
 	
 	Method AtEos()
 		Return _toke="" Or _toke=";" Or _toke="~n" Or _toke="else"
+	End
+	
+	Method AtEos2()
+		Return _toke="" Or _toke=";" Or _toke="~n"
 	End
 	
 	Method SkipEols()
@@ -448,7 +494,7 @@ Class Parser
 			Case "object","throwable"
 				'
 			Default
-				If _tokeType<>TOKE_IDENT Err "Syntax error - expecting identifier."
+				If _tokeType<>TOKE_IDENT Err "Syntax error - Expecting identifier."
 		End
 		Local id$=_toke
 		NextToke
@@ -701,14 +747,27 @@ Class Parser
 					Case TOKE_INTLIT
 						expr=New ConstExpr( Type.intType,_toke )
 						NextToke
+						
 					Case TOKE_FLOATLIT
 						expr=New ConstExpr( Type.floatType,_toke )
 						NextToke
+						
 					Case TOKE_STRINGLIT
 						expr=New ConstExpr( Type.stringType,Dequote( _toke,"cerberus" ) )
 						NextToke
+						
+					' In the case the parser should reach the end of the file and there is no known
+					' open blocks. Provide a trace log and highlight the last known block that is still
+					' on the record list.
+					Case TOKE_EOF
+						Local record:=BackTrace( BlockTrace.BLK_UNKNOWN )
+						Err "End-Of-File. "+
+							BlockTrace.Code2Str( record.Toke )+" block incorrectly terminated."
+					
 					Default
-						Err "Syntax error - unexpected token '"+_toke+"'"
+						Local record:=BackTrace( BlockTrace.BLK_UNKNOWN )
+						If record<>Null SetErr( _toker.Line ) Else SetErr
+						Err "Syntax error - Unexpected token '"+_toke+"'."
 				End Select
 		End Select
 
@@ -882,9 +941,9 @@ Class Parser
 	End
 	
 	Method ParseIfStmt( term$ )
-
+		Local lineStart=_toker.Line, tokeID=BlockTrace.BLK_IF
 		CParse "if"
-
+		
 		Local expr:Expr=ParseExpr()
 		
 		CParse "then"
@@ -898,12 +957,18 @@ Class Parser
 			eatTerm=True
 		Endif
 
+		BlockTrace.Push( tokeID, lineStart )
 		PushBlock thenBlock
 		While _toke<>term
+		
+			' If the EOF is reached, then the last block item is made as the error, giving a trace of all open blocks.
+			If _tokeType=TOKE_EOF AtEOF( tokeID, "Conditional" )
+			
 			Select _toke
 				Case "endif"
 					If term="end" Exit
-					Err "Syntax error - expecting 'End'."
+					SetErr( BlockTrace.TraceLog( tokeID ) )
+					Err "Syntax error - Expecting conditional blocks to terminate with 'End', 'End If' or 'Endif'."
 				Case "else","elseif"
 					Local elif=_toke="elseif"
 					NextToke
@@ -920,10 +985,15 @@ Class Parser
 			End
 		Wend
 		PopBlock
+		Local blkTrace:=BlockTrace.Pop
 
 		If eatTerm
 			NextToke
-			If term="end" CParse "if"
+			If term="end"
+				' If the next token is not an 'If' statement, or one of the known Eos terminators. Then trhow an error.
+				ParseBlockEnd( "if",
+				"Syntax error - Expecting conditional blocks to terminate with 'End', 'Endif' Or 'End If'.", True )
+			Endif
 		Endif
 		
 		Local stmt:IfStmt=New IfStmt( expr,thenBlock,elseBlock )
@@ -932,21 +1002,38 @@ Class Parser
 	End
 	
 	Method ParseWhileStmt()
-	
+		Local lineStart:=_toker.Line, tokeID:=BlockTrace.BLK_WHILE
+		
+		SetErr
+		Local errLine:=_errInfo
 		Parse "while"
 		
 		Local expr:Expr=ParseExpr()
 		Local block:BlockDecl=New BlockDecl( _block )
 		
+		BlockTrace.Push( tokeID,lineStart )
 		PushBlock block
-		While Not CParse( "wend" )
-			If CParse( "end" )
-				CParse "while"
+		
+		While True
+			' Deal with the end of the file before touching the trace data.
+			If _tokeType=TOKE_EOF AtEOF( tokeID,"While/Wend/End While iterator" )
+			
+			' If the block terminator isn't 'Wend', then test for 'End'
+			' If 'end' is found, then test to see if the following is 'While'. If not, then throw an error.  
+			If Not CParse( "wend" )
+				If CParse( "end" )
+					If Not ParseBlockEnd( "while", "Syntax error - Expecting 'while' block to terminate with 'End' or 'End While'." ) Exit
+					Exit
+				Endif
+			Else
+				If Not AtEos2; SetErr; Err "Syntax error - Wend does not except a variable or expression."
 				Exit
 			Endif
 			ParseStmt
 		Wend
 		PopBlock
+		
+		Local blkTrace:=BlockTrace.Pop
 		
 		Local stmt:WhileStmt=New WhileStmt( expr,block )
 		
@@ -954,17 +1041,26 @@ Class Parser
 	End
 	
 	Method ParseRepeatStmt()
-
+		Local lineStart:=_toker.Line, tokeID:=BlockTrace.BLK_REPEAT
 		Parse "repeat"
 		
 		Local block:BlockDecl=New BlockDecl( _block )
 		
+		' Store the trace and declaration blocks before iterate through the following tokens
+		' until one of the iterator's exit tokes are met. 
+		BlockTrace.Push( tokeID,lineStart )
 		PushBlock block
-		While _toke<>"until" And _toke<>"forever"
+		While _toke<>"until" And _toke<>"forever" And _tokeType<>TOKE_EOF
 			ParseStmt
 		Wend
 		PopBlock
 		
+		' Deal with the end of the file before touching the trace data.
+		If _tokeType=TOKE_EOF AtEOF( tokeID, "Repeat/Until/Forever" )
+			
+		Local blkTrace:=BlockTrace.Pop
+		
+		' Depending on the block terminator, either parse the expression, or create a new forever expression.
 		Local expr:Expr
 		If CParse( "until" )
 			PushErr
@@ -978,14 +1074,16 @@ Class Parser
 		Local stmt:RepeatStmt=New RepeatStmt( block,expr )
 		
 		_block.AddStmt stmt
+
 	End
 	
 	Method ParseForStmt()
-	
+		Local lineStart=_toker.Line, tokeID=BlockTrace.BLK_FOR
+		
 		Parse "for"
 		
 		Local varid$,varty:Type,varlocal
-		
+
 		If CParse( "local" )
 			varlocal=True
 			varid=ParseIdent()
@@ -1003,16 +1101,54 @@ Class Parser
 			Local expr:Expr=ParseExpr()
 			Local block:BlockDecl=New BlockDecl( _block )
 			
+			BlockTrace.Push( tokeID, lineStart )
 			PushBlock block
-			While Not CParse( "next" )
-				If CParse( "end" )
-					CParse "for"
+			While True
+			
+				' If the EOF is reached, then the last block item is made as the error, giving a trace of all open blocks.
+				If _tokeType=TOKE_EOF AtEOF( tokeID,"For/Next/End For" )
+				
+				' Check for block ends. As these blocks can have variables as part of their temination code, these are checked for.			
+				If CParse( "next" )
+					If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Syntax error - Next variable name does not match For variable name"
+					
+					' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+					If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+					Exit
+					
+				' Not 'Next', so test for 'End'
+				Else If CParse( "end" )
+					
+					' If the current token isn't 'For', then assume that it's the iteration variable.
+					If _toke<>"for"
+								
+						' Check for the iteration variable, if it's not, then throw an error.
+						If _tokeType=TOKE_IDENT And ParseIdent()<>varid
+							Err "Syntax error - Next variable name does not match For variable name"
+						Endif
+						
+						' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+						If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+						
+					' It is 'For', advance one token and assume that the next token will be the iteration variable
+					Else
+						NextToke
+						
+						' Check for the iteration variable, if it's not, then throw an error.
+						If _tokeType=TOKE_IDENT And ParseIdent()<>varid
+							Err "Syntax error - Next variable name does not match For variable name"
+						Endif
+						
+						' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+						If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+					Endif
 					Exit
 				Endif
+				
 				ParseStmt
-			Wend
-			If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Next variable name does not match For variable name"
+			Wend	
 			PopBlock
+			Local blkTrace:=BlockTrace.Pop()
 			
 			Local stmt:ForEachinStmt=New ForEachinStmt( varid,varty,varlocal,expr,block )
 			
@@ -1055,16 +1191,55 @@ Class Parser
 		
 		Local block:BlockDecl=New BlockDecl( _block )
 		
+		BlockTrace.Push( tokeID, lineStart )
 		PushBlock block
-		While Not CParse( "next" )
-			If CParse( "end" )
-				CParse "for"
+		
+		While True
+			' If the EOF is reached, then the last block item is made as the error, giving a trace of all open blocks.
+			If _tokeType=TOKE_EOF AtEOF( tokeID,"For/Next/End For" )
+			
+			' Check for block ends. As these blocks can have variables as part of their temination code, these are checked for.			
+			If CParse( "next" )
+				If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Syntax error - Next variable name does not match For variable name"
+				
+				' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+				If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+				Exit
+				
+			' Not 'Next', so test for 'End'
+			Else If CParse( "end" )
+				
+				' If the current token isn't 'For', then assume that it's the iteration variable.
+				If _toke<>"for"
+							
+					' Check for the iteration variable, if it's not, then throw an error.
+					If _tokeType=TOKE_IDENT And ParseIdent()<>varid
+						Err "Syntax error - Next variable name does not match For variable name"
+					Endif
+					
+					' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+					If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+					
+				' It is 'For', advance one token and assume that the next token will be the iteration variable
+				Else
+					NextToke
+					
+					' Check for the iteration variable, if it's not, then throw an error.
+					If _tokeType=TOKE_IDENT And ParseIdent()<>varid
+						Err "Syntax error - Next variable name does not match For variable name"
+					Endif
+					
+					' If the token is not and end of line character, then throw an error on which 'For' iterators are allowed.
+					If Not AtEos2() BlockTrace.TraceLog( tokeID ); Err "Syntax error - Expecting 'For' iterator to terminate with 'Next', 'End' or 'End For'."
+				Endif
 				Exit
 			Endif
+			
 			ParseStmt
 		Wend
-		If _tokeType=TOKE_IDENT And ParseIdent()<>varid Err "Next variable name does not match For variable name"
+		
 		PopBlock
+		Local blkTrace:=BlockTrace.Pop()
 
 		Local stmt:ForStmt=New ForStmt( init,expr,incr,block )
 		
@@ -1089,13 +1264,20 @@ Class Parser
 	End
 	
 	Method ParseTryStmt()
+		 Local lineStart=_toker.Line, tokeID=BlockTrace.BLK_TRY
 		Parse "try"
 		
 		Local block:=New BlockDecl( _block )
 		Local catches:=New Stack<CatchStmt>
 		
+		BlockTrace.Push( tokeID,lineStart )
 		PushBlock block
 		While _toke<>"end"
+		
+			' If the EOF is reached, then the last block item is made as the error, giving a trace of all open blocks.
+			If _tokeType=TOKE_EOF AtEOF( tokeID,"Try/End Try" )
+			
+			' Process the catch block if found.
 			If CParse( "catch" )
 				Local id:=ParseIdent()
 				Parse ":"
@@ -1105,15 +1287,19 @@ Class Parser
 				catches.Push New CatchStmt( init,block )
 				PopBlock
 				PushBlock block
-			Else
+				
+			Else		
 				ParseStmt
 			Endif
 		Wend
+		
 		If Not catches.Length Err "Try block must have at least one catch block"
 		PopBlock
+		Local record:=BlockTrace.Pop	
+			
 		NextToke
-		CParse "try"
-
+		ParseBlockEnd( "try","Expecting 'Try' block must terminate with 'End' or 'End Try'." )
+		
 		_block.AddStmt New TryStmt( block,catches.ToArray() )
 	End
 	
@@ -1125,11 +1311,13 @@ Class Parser
 	
 	Method ParseSelectStmt()
 		Parse "select"
-		
+		Local lineStart=_toker.Line, tokeID=BlockTrace.BLK_SELECT
 		Local expr:=ParseExpr()
 		
 		Local block:BlockDecl=_block
-
+		
+		BlockTrace.Push( tokeID,lineStart )
+		
 		_selTmpId+=1
 		Local tmpId:=String( _selTmpId )	'1,2,3...
 		block.AddStmt New DeclStmt( tmpId,Null,expr )
@@ -1141,6 +1329,8 @@ Class Parser
 		
 		While _toke<>"end" And _toke<>"default"
 			SetErr
+			If _tokeType=TOKE_EOF Exit
+			
 			Select _toke
 				Case "~n"
 					NextToke
@@ -1176,7 +1366,7 @@ Class Parser
 				
 					block=elseBlock
 				Default
-					Err "Syntax error - expecting 'Case', 'Default' or 'End'."
+					Err "Syntax error - Expecting 'Case', 'Default' or 'End'."
 			End Select
 		Wend
 		
@@ -1184,6 +1374,8 @@ Class Parser
 			NextToke
 			PushBlock block
 			While _toke<>"end"
+				If _tokeType=TOKE_EOF Exit
+				
 				SetErr
 				Select _toke
 					Case "case"
@@ -1196,9 +1388,14 @@ Class Parser
 			PopBlock
 		Endif
 		
+		' If the EOF is reached, then the last block item is made as the error, giving a trace of all open blocks.
+		If _tokeType=TOKE_EOF AtEOF( tokeID, "Selec/Case" )
+		
 		SetErr
 		Parse "end"
-		CParse "select"
+		ParseBlockEnd( "select", "Syntax error -"+
+			"Expecting 'Select' block to terminate with 'End' or 'End Select'." )
+		BlockTrace.Pop
 	End
 	
 	Method ParseStmt()
@@ -1254,7 +1451,7 @@ Class Parser
 					expr=New FuncCallExpr( expr,ParseArgs( True ) )
 				
 				Else If FuncCallExpr( expr) Or InvokeSuperExpr( expr ) Or NewObjectExpr( expr )
-
+					
 				Else
 					Err "Expression cannot be used as a statement."
 				Endif
@@ -1266,27 +1463,34 @@ Class Parser
 	
 	Method ParseDecl:Decl( toke$,attrs )
 		SetErr
-		Local id$=ParseIdent()
-		Local ty:Type
-		Local init:Expr
+		
+		Local id$=ParseIdent()	' If the token is of the TOKE_IDENT, then this will return the string identifier and advance to the next token.
+		Local ty:Type			' Holds any type evaluated.
+		Local init:Expr			' Holds any expression evaluated.
+		
 		If attrs & DECL_EXTERN
 			ty=ParseDeclType()
+			
 		Else If CParse( ":=" )
 			init=ParseExpr()
+			
 		Else
 			ty=ParseDeclType()
 			If CParse( "=" )
 				init=ParseExpr()
+				
 			Else If CParse( "[" )
 				Local len:=ParseExpr()
 				Parse "]"
-				While CParse( "[]" )
+				While CParse( "[]" )	' This is a token that the method Parser.NextToke applies for empty arrays.
 					ty=ty.ArrayOf()
 				Wend
 				init=New NewArrayExpr( ty,len )
 				ty=ty.ArrayOf()
+				
 			Else If toke<>"const"
 				init=New ConstExpr( ty,"" )
+				
 			Else
 				Err "Constants must be initialized."
 			Endif
@@ -1344,7 +1548,7 @@ Class Parser
 					init=New ConstExpr(Type.intType, i)
 				Else
 					init=New BinaryMathExpr( "+",lastInit.Copy(),New ConstExpr(Type.intType, i) )
-				End
+				Endif
 				decl=New ConstDecl( id,attrs,Type.intType,init )
 			Else
 				Parse "="
@@ -1358,7 +1562,7 @@ Class Parser
 				declList.AddLast(decl)
 			Else
 				_block.AddStmt New DeclStmt( decl )
-			End
+			Endif
 		Until Not CParse(",")
 		Return declList
 	End
@@ -1373,11 +1577,12 @@ Class Parser
 	End
 	
 	Method ParseFuncDecl:FuncDecl( attrs )
-
+		Local lineStart=_toker.Line, tokeID=BlockTrace.BLK_FUNCTION
 		SetErr
 		
 		If CParse( "method" )
 			attrs|=FUNC_METHOD
+			tokeID=BlockTrace.BLK_METHOD
 		Else If Not CParse( "function" )
 			InternalErr
 		Endif
@@ -1451,36 +1656,54 @@ Class Parser
 			Endif
 		Endif
 		
-		If funcDecl.IsExtern() Or funcDecl.IsAbstract() Return funcDecl
+		If funcDecl.IsExtern() Or funcDecl.IsAbstract()
+			Return funcDecl
+		Endif
 		
+		BlockTrace.Push( tokeID, lineStart )
 		PushBlock funcDecl
 		While _toke<>"end"
 			ParseStmt
 		Wend
 		PopBlock
-
-		NextToke
-
-		If attrs & (FUNC_CTOR|FUNC_METHOD)
-			CParse "method"
-		Else
-			CParse "function"
-		Endif
+		Local blkTrace:=BlockTrace.Pop()
 		
+		' If the last token parsed was 'end', then check to see in the next token is one of the
+		' allowed keywords.
+		If _toke="end"
+			NextToke
+			
+			Local blkend:="function"
+			Local msg:="Syntax error - Expecting Function block to terminate with 'End' or 'End Function'."
+			
+			If attrs & (FUNC_CTOR|FUNC_METHOD)
+				blkend="method"
+				msg="Syntax error - Expecting Method block to terminate with 'End' Or 'End Method'."
+			Endif
+			
+			SetErr
+			ParseBlockEnd( blkend, msg )
+		Else
+			NextToke
+		Endif
+	
 		Return funcDecl
 	End
 	
 	Method ParseClassDecl:ClassDecl( attrs )
-	
 		SetErr
-		Local toke:=_toke
+		
+		Local toke:=_toke, lineStart=_toker.Line, tokeID=BlockTrace.BLK_CLASS
 	
 		If CParse( "interface" )
 			If attrs & DECL_EXTERN Err "Interfaces cannot be extern."
 			attrs|=CLASS_INTERFACE|DECL_ABSTRACT
+			tokeID=BlockTrace.BLK_INTERFACE
 		Else If Not CParse( "class" )
 			InternalErr
 		Endif
+		
+		BlockTrace.Push( tokeID,lineStart )
 		
 		Local id$=ParseIdent()
 		Local args:=New StringStack
@@ -1575,11 +1798,29 @@ Class Parser
 					If (attrs & CLASS_INTERFACE) Err "Interfaces can only contain constants and methods."
 					classDecl.InsertDecl ParseFuncDecl( decl_attrs|func_attrs )
 				Default
-					Err "Syntax error - expecting class member declaration."
+					' In the case the parser should reach the end of the file and there is no known
+					' open blocks. Provide a trace log and highlight the last known block that is still
+					' on the record list.
+					If _tokeType=TOKE_EOF AtEOF( BlockTrace.BLK_UNKNOWN, "Code" )
+					Err "Syntax error - Expecting class member declaration."
 			End Select
 		Forever
 		
-		If toke CParse toke
+		If toke
+			' Line end checks for class or interface
+			Local msg:=""
+			If toke="class"
+				msg="Syntax error - Expecting 'Class' to terminate with 'End' or 'End Class'."
+			Else If toke="interface"
+				msg="Syntax error - Expecting 'Interface' to terminate with 'End' or 'End Interface'."
+			Endif
+			
+			If msg<>""
+				SetErr
+				ParseBlockEnd( toke, msg, True )
+			End
+		Endif
+		Local recor:=BlockTrace.Pop
 		
 		Return classDecl
 	End
@@ -1630,9 +1871,12 @@ Class Parser
 			
 		Local attrs
 		
+		BlockTrace.Clear
+		
 		'Parse header - imports etc.
 		While _toke
 			SetErr
+			
 			Select _toke
 				Case "~n"
 					NextToke
@@ -1651,6 +1895,16 @@ Class Parser
 					Else
 						ImportModule ParseModPath(),attrs
 					Endif
+				Case "include"
+					NextToke
+					Local filepath:String = ParseStringLit()
+					Local iOpt:= filepath.Find(" ")
+					If iOpt > 1
+						filepath = RealPath(filepath[..iOpt])+filepath[iOpt..]
+					Else
+						filepath = RealPath(filepath)
+					Endif	
+					_app.fileIncludes.AddLast(filepath )
 				Case "friend"
 					NextToke
 					Local modpath:=ParseModPath()
@@ -1733,7 +1987,7 @@ Class Parser
 				Case "function"
 					_module.InsertDecl ParseFuncDecl( attrs )
 				Default
-					Err "Syntax error - expecting declaration."
+					Err "Syntax error - Expecting declaration."
 			End Select
 			
 		Wend

@@ -1,4 +1,4 @@
 
-#TARGET_NAME="Desktop Game (Glfw3)"
+#TARGET_NAME="Desktop Game"
 #TARGET_SYSTEM="glfw"
 #TARGET_BUILDER="glfw"

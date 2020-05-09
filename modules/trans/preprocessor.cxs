@@ -1,6 +1,15 @@
-
 Import parser
+'###################################################################
+' This file scans the source file for module and preprocessor data.
+'###################################################################
+' NOTE: All comments should be viewed as a work-in-progress and my not be an accurate description of
+'		the internal workings of this file.
 
+' TODO:	Change the block tracking method to use the one in the file 'blktrace.cxs'.
+' TODO: Check comments for accuracy.
+
+' The next three functions are used to evaluate tokens that are expressions.
+' Evaluate the token an expression
 Function EvalExpr:Expr( toker:Toker )
 
 	Local buf:=New StringStack
@@ -8,6 +17,7 @@ Function EvalExpr:Expr( toker:Toker )
 		buf.Push toker.Toke
 		toker.NextToke
 	Wend
+	
 	Local source:=buf.Join( "" )
 	
 	toker=New Toker( "",source )
@@ -17,13 +27,17 @@ Function EvalExpr:Expr( toker:Toker )
 	Return expr
 End
 
+' Evaluate the token as boolean
 Function EvalBool:Bool( toker:Toker )
+	If toker.Remarks() Return False ' If the remark flag is set then return false.
+	
 	Local expr:=EvalExpr( toker )
 	If Not BoolType( expr.exprType ) expr=expr.Cast( Type.boolType,CAST_EXPLICIT )
 	If expr.Eval() Return True
 	Return False
 End
 
+' Evaluate the token an string/text
 Function EvalText:String( toker:Toker )
 
 	Local expr:=EvalExpr( toker )
@@ -41,198 +55,311 @@ Function EvalText:String( toker:Toker )
 	Return val
 End
 
+'############################################################################################################################################
+' Description: The function scans the source file to process and preprocessor directives, modules and other types of configuration variables.
+' FUNCTION PreProcess( path:String, mdecl:ModuleDecl=Null)
+' 		path: The source file on disk to process
+'		mdec: A module declaration (see file modules/trans/decl.cxs)
 Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 
-	Local cnest,ifnest,line,source:=New StringStack
+	' Set up internal variables for the function
+	' The cnest variable has two jobs:
+	'									The first being the total nexting level depth.
+	'									The second is to keep skip blocks within conditionals by setting by 17.
+	'									This means that nesting level depths are only permitted upto 65535. Any thing past this will be unpredictable. 
+	Local cnest,ifnest,line,source:=New StringStack, tracknesting:=New IntStack(), trace:=New IntStack()
 	
-	PushEnv GetConfigScope()
+	PushEnv GetConfigScope()	' Preserver the current configuration scope.
 	
+	' Get the current directory and module path configuration variables.
 	Local p_cd:=GetConfigVar( "CD" )
 	Local p_modpath:=GetConfigVar( "MODPATH" )
 	
-	SetConfigVar "CD",ExtractDir( RealPath( path ) )
-	If mdecl SetConfigVar "MODPATH",mdecl.rmodpath Else SetConfigVar "MODPATH",""
+	SetConfigVar "CD",ExtractDir( RealPath( path ) )	' Set the CD configuration variable will the real file path.
 	
-	Local toker:=New Toker( path,LoadString( path ) )
+	If mdecl SetConfigVar "MODPATH",mdecl.rmodpath Else SetConfigVar "MODPATH",""	' If there is a valid module declaration, then set the module path configuration variable, else start with an empty one. 
+	
+	Local toker:=New Toker( path,LoadString( path ) )	' Load in the source file from disk and point to the first item to tokenize
 	toker.NextToke
 	
-	Local attrs:=0
-'	If mdecl mdecl.ImportModule "monkey",0
+	Local attrs:=0	' The attrs variable will determine if the imported module will be public (value of zero) or private value of DECL_PRIVATE.
 	
+	'##############################################################################################################################
+	' SCANNER/LEXER
+	' Description: Get the tokens from the source file to parse and build another set of tokes for the parser to construct the AST
 	Repeat
-
+		
+		'#######################
+		' SCAN FOR VALID TOKENS
+		' Description: TODO
 		If line
 			source.Push "~n"
 			While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
 				toker.NextToke
 			Wend
+
 			If Not toker.Toke Exit
 			toker.NextToke
 		Endif
 		line+=1
 		
-		_errInfo=toker.Path+"<"+toker.Line+">"
+		_errInfo=toker.Path+"<"+toker.Line+">" ' Store the file path and the current line number for use when there is an error.
 		
 		If toker.TokeType=TOKE_SPACE toker.NextToke
 		
+		'#######################################
+		' READ IN NON PREPROCESS DIRECTIVE CODE
+		' If the token is not the hash symbol, then import any modules and pass through any non preprocessor directives statements.
 		If toker.Toke<>"#"
-			If cnest=ifnest
+
+			' If both cnest and ifnest are equal. Proceed to process any module imports and code that is not a preprocessor directive.
+			If cnest=ifnest	
+					
 				Local line:=""
-				While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
 				
-					Local toke:=toker.Toke
+				' Loop through the tokens as long as the token is not a newline escape, or a line comment.
+				While toker.Toke And toker.Toke<>"~n" And toker.TokeType<>TOKE_LINECOMMENT
+					
+					Local toke:=toker.Toke	' Get the current token string and advance to the next token
 					toker.NextToke
 					
+					' If there is a valid module object, aka a source file etc.
+					' Then set the public/private flag or add a module to import to the list.
 					If mdecl
 						Select toke.ToLower()
-						Case "public"
-							attrs=0
-						Case "private"
-							attrs=DECL_PRIVATE
-						Case "import"
-							While toker.TokeType=TOKE_SPACE
-								toke+=toker.Toke
-								toker.NextToke
-							Wend
-							If toker.TokeType=TOKE_IDENT
-								Local modpath:=toker.Toke
-								While toker.NextToke="."
-									modpath+="."
+							Case "public"
+								attrs=0
+							Case "private"
+								attrs=DECL_PRIVATE
+							Case "import"
+								While toker.TokeType=TOKE_SPACE
+									toke+=toker.Toke
 									toker.NextToke
-									If toker.TokeType<>TOKE_IDENT Exit
-									modpath+=toker.Toke
 								Wend
-								toke+=modpath
-'								Print "Import found: "+toke
-								mdecl.ImportModule modpath,attrs
-							Endif
-						End
+								
+								' If the last token is a IDENT, then this is the start of a module scope
+								If toker.TokeType=TOKE_IDENT
+								
+									Local modpath:=toker.Toke	' Add the initial token as part of the module path.
+									
+									' Loop through untill the token in not an IDENT or the scope operator.
+									While toker.NextToke="."
+										modpath+="."
+										toker.NextToke
+										If toker.TokeType<>TOKE_IDENT Exit
+										modpath+=toker.Toke
+									Wend
+									toke+=modpath
+									
+									mdecl.ImportModule modpath,attrs	' Call the import module with the path and public/private flag.
+								Endif
+							End
 					Endif
 					
-					line+=toke
+					line+=toke	' Add the token to the line that will be pushed onto the internal source data.
 				Wend
+				
 				If line source.Push line
+
 			Endif
 			Continue
 		Endif
 		
+		'#################################
+		' PROCESS PREPROCESSOR DIRECTIVES
+		' Description: 	The last token will be a hash `#`, so the token is advanced by one to get the next one.
+		'				This token is then checked to see if it's one of the following preprocessor directives,
+		'				`rem`, `if`, `else`, `elseif`, `endif`, `end`, `print` and `error`. Any non predefined will be treated as
+		'				an environment variable. An error is throw if any attempt to change any of the following
+		'				predefined environment variables `HOST`, `LANG`, `CONFIG`, `TARGET` and `SAFEMODE`.
+		'				
+		'				Nesting of conditional preprocessor directives and remark blocks are tracked by cnest and ifnest.
+		'				Bit 17 of cnest is used it set cnest to a higher value. When both cnest and ifnest are the same value
+		'				and when a `else` or `elseif` statement is encountered. Bit 17 of cnest is set, this will force the scanner to ignore parsing statements
+		'				until either an `if`, `elseif`, `endif`, `end` is encountered, with `if` and `elseif` re-evaluating the parity of cnest and ifnest based on the outcome if the condition test.
+		'
+		'				Each time a `rem`, `if` is encountered, then the current line is stored to the string stack `tracknesting` and removed when a `end`, or `endif` is encountered.
+		'				This and the string stack `trace`, which holds `else` and `elseif` preprocessors is used to generate an error if the current token is of the type End-Of-File
+		'				and there was no correct termination of a conditional or remark block.
+		'				This makes for a primative preprocess nesting trace to highlight all block rem/if/else/elseif starts.
 		Local toke:=toker.NextToke
+
 		If toker.TokeType=TOKE_SPACE toke=toker.NextToke
 		
 		Local stm:=toke.ToLower()
 		Local ty:=toker.TokeType()
 		
 		toker.NextToke
-		
+
+		' Make adjustments to the current statment if it is an `end` or `else` statment and the following is an `if` statment.
 		If stm="end" Or stm="else"
 			If toker.TokeType=TOKE_SPACE toker.NextToke
-			If toker.Toke.ToLower()="if" 
+				
+			If toker.Toke.ToLower()="if"
 				toker.NextToke
 				stm+="if"
 			Endif
+			
 		Endif
 		
+		' Process the statement
 		Select stm
-		Case "rem"
-		
-			ifnest+=1
-			
-		Case "if"
-		
-			ifnest+=1
-		
-			If cnest=ifnest-1
-				If EvalBool( toker ) cnest=ifnest
-			Endif
-			
-		Case "else"
-		
-			If Not ifnest Err "#Else without #If"
-			
-			If cnest=ifnest
-				cnest|=$10000
-			Else If cnest=ifnest-1
-				cnest=ifnest
-			Endif
-			
-		Case "elseif"
-		
-			If Not ifnest Err "#ElseIf without #If"
-			
-			If cnest=ifnest
-				cnest|=$10000
-			Else If cnest=ifnest-1
-				If EvalBool( toker ) cnest=ifnest
-			Endif
-			
-		Case "end","endif"
-		
-			If Not ifnest Err "#End without #If or #Rem"
-			
-			ifnest-=1
-			
-			If ifnest<(cnest & $ffff) cnest=ifnest
-			
-		Case "print"
-		
-			If cnest=ifnest
-				Print EvalText( toker )
-			Endif
-			
-		Case "error"
-		
-			If cnest=ifnest
-				Err EvalText( toker )
-			Endif
-
-		Default
-		
-			If cnest=ifnest
-				If ty=TOKE_IDENT
+			Case "rem"
 				
-					If toker.TokeType=TOKE_SPACE toker.NextToke
-					Local op:=toker.Toke()
-					
-					Select op
-					Case "=","+="
-					
-						Select toke
-						Case "HOST","LANG","CONFIG","TARGET","SAFEMODE"
-							Err "App config var '"+toke+"' cannot be modified"
-						End
+				If Not Toker.Remarks()
+					Toker.RemarksOn()
+					ifnest+=1
+					tracknesting.Push line ' Keep trace of the error line when a nesting value has been increased
+					trace.Push line ' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
+				Endif
+				
+			Case "if"
+				
+				ifnest+=1
+				
+				If cnest=ifnest-1
+					If EvalBool( toker ) cnest=ifnest
+				Endif
+				
+				tracknesting.Push line	' Keep trace of the error line when a nesting value has been increased
+				trace.Push line	' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
+				
+			Case "else"
+				
+				If Not ifnest Err "#Else without #If"
+				
+				If cnest=ifnest
+					cnest|=$10000
+				Else If cnest=ifnest-1
+					cnest=ifnest
+				Endif
+				
+				trace.Push line	' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
+
+			Case "elseif"
+				
+				If Not ifnest Err "#ElseIf without #If"
+				
+				If cnest=ifnest
+					cnest|=$10000
+				Else If cnest=ifnest-1
+					If EvalBool( toker ) cnest=ifnest
+				Endif
+				
+				trace.Push line	' Keep track of elseif statements for tracing if there is an open nesting block at the end of the file.
+				
+			Case "end","endif"
+				
+				If Not ifnest Err "#End without #If or #Rem"
+				
+				ifnest-=1
+				
+				' Trap the lower 16 bits (0-15) of the cnest value. This removes bit 17 and gives a nesting level range of 0-65535.
+				' If the cnest value is still higher than the ifnest value, then the cnest value is set to the value in ifnest.
+				' Any other preprocessor directve such as #else, #elseif, #endif or #end will throw an error on the next loop.
+				If ifnest<(cnest & $ffff)
+					cnest=ifnest
+				Endif
+				
+				If Not tracknesting.IsEmpty() tracknesting.Pop	' Keep trace of the error line when a nesting value has been decreased.
+				If Toker.Remarks() Toker.RemarksOff()	' Clear the remarks block flag.
+				
+			Case "print"
+				
+				If cnest=ifnest
+					Print EvalText( toker )
+				Endif
+				
+			Case "error"
+				
+				If cnest=ifnest
+					Err EvalText( toker )
+				Endif
+	
+			Default
+				
+				' No predefined processor directives used, so check the token is of type IDENT to assign or adjust a user configuration variable.
+				If cnest=ifnest
+				
+					If ty=TOKE_IDENT
 						
-						toker.NextToke
+						If toker.TokeType=TOKE_SPACE toker.NextToke
+						
+						Local op:=toker.Toke()
 						
 						Select op
-						Case "="
-							Local expr:=EvalExpr( toker )
-							Local val:=expr.Eval()
-							If Not GetConfigVars().Contains( toke )
-								If StringType( expr.exprType ) val=EvalConfigTags( val )
-								SetConfigVar toke,val,expr.exprType
-							Endif
-						Case "+="
-							Local val:=EvalText( toker )
-							Local var:=GetConfigVar( toke )
-							If BoolType( GetConfigVarType( toke ) )
-								If var="1" var="True" Else var="False"
-							Endif
-							If var And Not val.StartsWith( ";" ) val=";"+val
-							SetConfigVar toke,var+val
+							Case "=","+="
+
+								Select toke
+									Case "HOST","LANG","CONFIG","TARGET","SAFEMODE"
+										Err "App config var '"+toke+"' cannot be modified"
+								End
+								
+								toker.NextToke
+								
+								Select op
+
+									Case "="
+										Local expr:=EvalExpr( toker )
+										Local val:=expr.Eval()
+										
+										If Not GetConfigVars().Contains( toke )
+											If StringType( expr.exprType ) val=EvalConfigTags( val )
+											SetConfigVar toke,val,expr.exprType
+										Endif
+									
+									Case "+="
+										Local val:=EvalText( toker )
+										Local var:=GetConfigVar( toke )
+										
+										If BoolType( GetConfigVarType( toke ) )
+											If var="1" var="True" Else var="False"
+										Endif
+										
+										If var And Not val.StartsWith( ";" ) val=";"+val
+										SetConfigVar toke,var+val
+								End
+							
+							Default
+								Err "Expecting assignment operator."
 						End
-						
-					Default
-						Err "Expecting assignment operator."
-					End
-				Else
-					Err "Unrecognized preprocessor directive '"+toke+"'"
-				Endif
-
-			Endif				
+					Else
+						Err "Unrecognized preprocessor directive '"+toke+"'"
+					Endif
+	
+				Endif				
 		End
-
+		
 	Forever
+	
+	' Final check for the end of file
+	If toker.TokeType=TOKE_EOF
 
+		' If the tracknesting string stack is empty, then check to see if there were any rem/elseif/else statement pushed to the second trace stack.
+		' And if there was, list them out.
+		If Not tracknesting.IsEmpty()
+			
+			' List out any trace information
+			If Not trace.IsEmpty()
+				Print "~t~t-------------- Preprocessor Trace Log --------------"
+				Local s:=" : Starts here....."
+				For Local i:=0 Until trace.Length-1
+					If i>0 s=""
+					Print _errInfo[.. _errInfo.FindLast("<")+1]+trace.Get(i)+">"+s
+				End
+				Print ""
+			Endif
+
+			' Safey check, if there is noting in the trace stack, then pop the last item off the tracknesting string stack, else use the trace string stack
+			If trace.IsEmpty() _errInfo=_errInfo[.. _errInfo.FindLast("<")]+"<"+tracknesting.Pop+">" Else _errInfo=_errInfo[.. _errInfo.FindLast("<")]+"<"+trace.Pop+">"		
+			Err "End of file reached. Preprocessor Conditional or Remark block preprocess not closed."
+		Endif
+		
+		trace.Clear
+		tracknesting.Clear
+	Endif
+
+	' Set the configuration variables.
 	SetConfigVar "MODPATH",p_modpath
 	SetConfigVar "CD",p_cd
 

@@ -1,7 +1,7 @@
 
 # Module brl.requesters
 
-The requesters module allows you to use simple modal requesters with the glfw3 target on Mac and Windows only!
+The requesters module allows you to use simple modal requesters with the glfw3 target.
 
 
 # Function Notify:Void( title:String,text:String,serious:Bool )
@@ -53,3 +53,7 @@ End
 # Function RequestDir:String( title:String,dir:String="" )
 
 RequestDir activates a modal directory requester dialog.
+
+# Function RequestColor:Int( )
+
+RequestColor returns the RGB value of a selected color.

@@ -20,7 +20,7 @@ If @data is Null, the data load failed.
 
 Databuffer objects provide storage for arbitrary data.
 
-Data may be written to a databufffer using one of the 'poke' methods, and read from a databuffer using one of the 'peek' methods.
+Data may be written to a databuffer using one of the 'poke' methods, and read from a databuffer using one of the 'peek' methods.
 
 Parameters that specify buffer addresses or array indices for data transfers are not currently range checked. In general, you should always ensure that these are always valid, ie: >=0 And <=length of the buffer/array. Any transfer count parameters should always be >=0, but will always be clipped to make sure no overreads or overwrites occur.
 

@@ -1,0 +1,227 @@
+Strict
+
+Import mojo.app
+Import cerberus.interpolate
+
+Class Tween
+	Public
+	Const LINEAR:=0
+	Const BEZIER:=1
+	Const CUSTOM:=2
+	Const CURVE:=3
+	Const SIN:=4
+	Const FLATS:=5
+	Const ELASTIC:=6
+	Const BOUNCE:=7
+	Const BACK:=8
+
+	Const EASEIN:=0
+	Const EASEOUT:=1
+	Const EASEINOUT:=2
+
+	Private
+	Field range_start:Int
+	Field range_end:Int
+	Field range:Float
+
+	Field interpolation:Int
+	Field easing_mode:Int
+
+	Field duration:Int
+	Field start_time:Int
+	Field old_time:Int
+	Field time:Int
+
+	Field active:Bool
+	Field loop:Bool
+	Field yoyo:Bool
+	Field custom_data:Float[]
+	Field bezier_data:Float[6]
+	Field curve:Float
+	Field x:Float
+	Field value:Float
+
+	Public
+	Method New(interpolation:Int,duration:Int)
+		Init(interpolation,duration)
+	End
+
+	Method RangeValue:Float()
+		Return range_start + range * TweenValue() 
+	End
+
+	Method RangeValueAtX:Float(x:Float)
+		Return range_start + range * TweenValue(x) 
+	End
+
+	Method RangeValueAtTime:Float(time:Float)
+		Return range_start + range * TweenValue(time) 
+	End
+
+	Method SetRange:Void(startValue:Int,endValue:Int)
+		range_start = startValue
+		range_end = endValue
+		
+		range = endValue - startValue
+	End
+
+	Method SetEasing:Void(easing:Int)
+		#If CONFIG="debug"
+			If interpolation<6 Then Print "No Easing mode for this interpolation"
+		#End
+		easing_mode = easing
+	End
+
+	Method Start:Void()
+		start_time = Millisecs()
+		active = True
+	End
+
+	Method Stop:Void()
+		old_time = Millisecs()
+		active = False
+	End
+
+	Method Resume:Void()
+		If old_time = -1
+			Start()
+		Else
+			start_time = Millisecs() - (old_time-start_time)
+			active = True
+		End
+	End
+
+	Method SetLoop:Void(flag:Bool)
+		loop = flag
+	End
+
+	Method GetLoop:Bool()
+		Return loop
+	End
+
+	Method SetYoYo:Void(flag:Bool)
+		yoyo = flag
+	End
+
+	Method GetYoYo:Bool()
+		Return yoyo
+	End
+
+	Method X:Float()
+		x = time/Float(duration)
+		Return x
+	End
+
+	Method TweenValue:Float()
+		Update()
+		Return value
+	End
+
+	Method TweenValueAtX:Float(x:Float)
+		Return GetTween(x)
+	End
+
+	Method TweenValueAtTime:Float(time:Float)
+		Return GetTween(time/Float(duration))
+	End
+
+	Method SetCustomData:Void(custom_data:Float[])
+		Self.custom_data = custom_data
+	End
+
+	Method SetBezierPoints:Void(pA:Float, pB:Float, pC:Float, pD:Float, pPrecision:Float = 0.0001)
+		bezier_data = [pA, pB, pC, pD, pPrecision]
+	End
+
+	Method SetCurve:Void(pYA:Float)
+		curve = pYA
+	End
+
+	Method SetDuration:Void(duration:Int)
+		Self.duration = duration
+	End
+
+	Private
+	Method Init:Void(interpolation:Int,duration:Int)
+		Self.duration = duration
+		Self.interpolation = interpolation
+		
+		time = 0
+		active = False
+		SetLoop(False)
+		SetYoYo(False)
+		
+		SetRange(0,1)
+	End
+
+	Method Update:Void()
+		If active = False Then Return
+		time = Millisecs() - start_time
+		
+		If loop=True
+			If yoyo=True
+				time = time Mod (2*duration)
+				If time>duration
+					time = 2*duration - time
+				End
+			Else
+				time = time Mod duration
+			End
+		Else
+			If time>duration Then time=duration
+		End
+
+		x = time/Float(duration)
+		value = GetTween(x)		
+	End
+
+	Method GetTween:Float(t:Float)
+		Select interpolation
+		Case LINEAR
+			Return InterpolateLin(0,1,t)
+		Case BEZIER
+			#If CONFIG="debug"
+				If bezier_data.Length()=0 Then Error("Bezier points not set. Use Tween.SetBezierPoints()")
+			#End
+			Return InterpolateCubicBezier(0,1,bezier_data[0],bezier_data[1],bezier_data[2],bezier_data[3],t,bezier_data[4])
+		Case CUSTOM
+			#If CONFIG="debug"
+				If custom_data.Length()=0 Then Error("Custom data not set. Use Tween.SetCustomData()")
+				If custom_data.Length()=1 Then Error("Not enough custom point data. There must be at least 2 points")
+			#End
+			Return InterpolateCustomLine(custom_data,t)
+		Case CURVE
+			Return InterpolateCurve(0,1,curve,t)
+		Case SIN
+			Return InterpolateSin(0,1,t)
+		Case ELASTIC
+			Select easing_mode
+			Case EASEIN
+				Return InterpolateElasticEaseIn(0,1,t)
+			Case EASEOUT
+				Return InterpolateElasticEaseOut(0,1,t)
+			Case EASEINOUT
+				Return InterpolateElasticEaseInOut(0,1,t)
+			End
+		Case BOUNCE
+			Select easing_mode
+			Case EASEIN
+				Return InterpolateBounceEaseIn(0,1,t)
+			Case EASEOUT
+				Return InterpolateBounceEaseOut(0,1,t)
+			Case EASEINOUT
+				Return InterpolateBounceEaseInOut(0,1,t)
+			End
+		Case BACK
+			Select easing_mode
+			Case EASEIN
+				Return InterpolateBackEaseIn(0,1,t)
+			Case EASEOUT
+				Return InterpolateBackEaseOut(0,1,t)
+			Case EASEINOUT
+				Return InterpolateBackEaseInOut(0,1,t)
+			End
+		End
+		Return 0
+	End
+End

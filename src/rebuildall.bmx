@@ -1,8 +1,8 @@
 
-'RebuildTranscc
+RebuildTranscc
 'RebuildMakedocs
 'RebuildMServer
-RebuildLauncher	'Note: On Windows, kill process Cerberus.exe before rebuilding launcher!
+'RebuildLauncher	'Note: On Windows, kill process Cerberus.exe before rebuilding launcher!
 
 End
 

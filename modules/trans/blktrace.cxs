@@ -1,0 +1,246 @@
+' Module trans.blktrace
+'
+' Placed into the public domain 27/04/2020.
+' No warranty implied; use at your own risk.
+
+'#########################################################################
+' Classes to keep track of code block starts for use in tracing errors
+' FILE VERSION 0.1
+' TODO: Modify the file preprocessor.cxs to make use of these classes
+Import trans
+
+'#########################################################################
+' Class definintion to contain the token and it's associated line number.
+Class TraceRecord
+	Field _toke
+	Field _line
+	
+	Method New( toke,line )
+		_toke=toke
+		_line=line
+	End
+	
+	Method Toke()
+		Return _toke
+	End
+	
+	Method Line()
+		Return _line
+	End
+	
+End
+
+'#############################################################################
+' Self contained class definition to keep track of the stgart of code blocks.
+Class BlockTrace
+	
+	Global _Blocks:=New BlockTrace
+	
+	' Identifier code for each type of code block
+	Const BLK_UNKNOWN:=0
+	Const BLK_FOR:=1
+	Const BLK_FUNCTION:=2
+	Const BLK_METHOD:=3
+	Const BLK_IF:=4
+	Const BLK_REPEAT:=5
+	Const BLK_WHILE:=6
+	Const BLK_TRY:=6
+	Const BLK_CLASS:=7
+	Const BLK_INTERFACE:=8
+	Const BLK_SELECT:=9
+	
+	Field _record:=New List<TraceRecord>		' Work list to keep track of the current blocks.
+	Field _map:=New IntMap<IntList>				' Map to keep a permanent track of all block type entry points.
+	
+	' Internal method for adding a record to both the work list and permanent map.
+	Method AddRecord( record:TraceRecord )
+		
+		Local token:=record.Toke
+		
+		If Not _map.Contains( token )
+			Local newlist:=New IntList
+			newlist.AddLast( record.Line )
+			_map.Add( token, newlist )
+		Else
+			_map.Get( token ).AddLast( record.Line )	
+		Endif
+		
+		_record.AddLast( record )
+	End
+	
+	' Internal method to remove and return the last item on the work list.
+	Method RemoveRecord:TraceRecord()
+		If _record.IsEmpty Return Null	' Safe check. Return a Null if there is no item.
+		Return _record.RemoveLast
+	End
+	
+	' Internal method to return the last item on the work list.
+	Method LastBlockItem:TraceRecord()
+		If _record.IsEmpty Return Null ' Safe check. Return a Null if there is no item.
+		Return _record.Last
+	End
+	
+	' Internal method to build a list of line number for known block starts in the permanent map
+	' to be sent back to the trace log function.
+	Method BlockLineList:IntList( token )
+		Local blklines:=New IntList
+		Local lastblkline:Int
+		
+		' Only add the last item line if there is one.
+		If LastBlockItem()<>Null lastblkline=LastBlockItem.Line()
+		
+		' If the token passed is known, then only build a list for that token block.
+		If token>BLK_UNKNOWN
+			Local tokelines:=_map.Get( token )
+			
+			' Always add the last work list item if it exists.
+			If lastblkline>0 blklines.AddLast( lastblkline )
+			For Local i:=Eachin tokelines
+				If i>lastblkline blklines.AddLast( i )
+			Next
+			
+		' If the token is not known, then construct a full
+		Else
+			' Always add the last work list item if it exists.
+			If lastblkline>0 blklines.AddLast( lastblkline )
+			
+			' Read each key in the permanent map and iterate the list stored
+			' to add to the list that will be used for the trace log.
+			For Local i:=Eachin _map.Keys
+				For Local j:=Eachin _map.Get( i )
+					If j>lastblkline blklines.AddLast( j )
+				Next
+			Next
+			
+			blklines.Sort
+		Endif
+		
+		Return blklines
+	End
+	
+	' Internal method to print out a trace log.
+	Method Unwind( token )
+		'Local rows:=New StringStack
+		
+		Local blklines:=_Blocks.BlockLineList( token ).ToArray
+		Local path:=_errInfo[.. _errInfo.FindLast( "<" )]
+		
+		Print "~n~t------------ BLOCK TRACE ------------"
+		Print "FILE: "+path
+		Local i:=0
+		
+		' All lines should be output as rows of ten to cut down on the length of the console output.
+		While i<blklines.Length
+			Local str$="", col=0
+			While col<10
+				If i>=blklines.Length Exit
+				str+=blklines[i]+", "
+				i+=1
+				col+=1
+			Wend
+			Print "Statement Blocks at lines: "+str[..str.Length()-2]
+		Wend
+		
+		Print ""
+		
+		' Return either the first line if there is one or zero.
+		If blklines.Length>0 Return blklines[0] Else Return 0
+	End
+	
+	' External function to get the last item stored on the work list.
+	Function LastRecordItem:TraceRecord()
+		Return _Blocks.LastBlockItem()
+	End
+	
+	' External function to output a trace log by passing the block identifier code
+	' that is of interest.
+	Function TraceLog( token=BLK_UNKNOWN )
+		Return _Blocks.Unwind( token )
+	End
+	
+	' External function to output a trace log by passing the block identifier string
+	' that is of interest.
+	Function TraceLog( token$="" )
+		Return _Blocks.Unwind( Str2Code( token ) )
+	End
+	
+	' External function to return a block string identifier from a block code identifier.
+	Function Code2Str$( code )
+		Select code
+			Case BLK_FOR
+				Return "For"
+			Case BLK_FUNCTION
+				Return "Function"
+			Case BLK_METHOD
+				Return "Method"
+			Case BLK_IF
+				Return "If"
+			Case BLK_REPEAT
+				Return "Repeat"
+			Case BLK_WHILE
+				Return "While"
+			Case BLK_TRY
+				Return "Try"
+			Case BLK_CLASS
+				Return "Class"
+			Case BLK_INTERFACE
+				Return "Try"
+			Case BLK_SELECT
+				Return "Select"
+			Default
+				Return ""
+		End
+	End
+	
+	' External function to return a block code identifier from a block string identifier.
+	Function Str2Code( toke$ )
+		Select toke.ToLower()
+			Case "for"
+				Return BLK_FOR
+			Case "function"
+				Return BLK_FUNCTION
+			Case "method"
+				Return BLK_METHOD
+			Case "if"
+				Return BLK_IF
+			Case "repeat"
+				Return BLK_REPEAT
+			Case "while"
+				Return BLK_WHILE
+			Case "try"
+				Return BLK_TRY
+			Case "class"
+				Return BLK_CLASS
+			Case "interface"
+				Return BLK_INTERFACE
+			Case "select"
+				Return BLK_SELECT
+			Default
+				Return BLK_UNKNOWN
+		End
+	End
+	
+	' Reset both the work list and permanent map
+	Function Clear()
+		_Blocks._map.Clear
+		_Blocks._record.Clear
+	End
+	
+	' External function to store both a block start token and it's line number by passing
+	' the token's identifier code.
+	Function Push( toke, line )
+		_Blocks.AddRecord( New TraceRecord( toke,line ) )
+	End
+	
+	' External function to store both a block start token and it's line number by passing
+	' the token's identifier string.
+	Function Push( toke$, line )
+		_Blocks.AddRecord( New TraceRecord( Str2Code( toke ),line ) )
+	End
+	
+	' External function to remove and return the last item on the work list.
+	Function Pop:TraceRecord()
+		Return _Blocks.RemoveRecord
+	End
+	
+End

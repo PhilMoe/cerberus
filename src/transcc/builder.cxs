@@ -2,6 +2,12 @@
 Import transcc
 Import reflection.reflector
 
+Import "native/stb_image.cpp"
+Import "native/stb_image.h"
+Import "native/stb_image_write.h"
+Import "native/stb_image_resize.h"
+Import "native/image.cpp"
+
 Class Builder
 
 	Method New( tcc:TransCC )
@@ -165,20 +171,46 @@ Class Builder
 			CopyFile src,dst
 		Endif
 	End
+
+	Method MakeIcons:Void(srcFilename:String,icons:String[],round:Int=False)
+		Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
+		Local iconFile:String = RealPath(iconPath+"\"+srcFilename)
+		
+		If Not FileType( iconFile )=FILETYPE_FILE Then iconFile = RealPath(srcFilename)
+				
+		If FileType( iconFile )=FILETYPE_FILE
+'			If FileSize(iconFile) = FileSize(CurrentDir()+"\icon.cache") Then Return
+			
+			For Local i:Int = 0 Until icons.Length() Step 3
+'				Print "building "+CurrentDir()+"/"+icons[i]
+				_CreateIcon(iconFile,CurrentDir()+"/"+icons[i],Int(icons[i+1]),Int(icons[i+2]),round)
+			Next
+			
+			' cache icon file
+'			CopyFile (iconFile,CurrentDir()+"\icon.cache")
+		Endif
+	End
 	
-	Method CopyIcon:Void()
+	Method CopyIcon:Void(iFile:String,targetIcon:String)		
 		If HostOS() = "winnt"
-			Local targetIcon:= CurrentDir()+"\cerberus.ico"
 			Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
-			Local iconFile:String = RealPath(iconPath+"\"+GetConfigVar( "GLFW_APP_ICON"))
+			local iconFile:String = RealPath(iconPath+"\"+iFile)
 			If FileType( iconFile )=FILETYPE_FILE
 				'Print "Icon1== "+iconFile
-				CopyFile (iconFile,targetIcon)
+				If ExtractExt( iconFile).ToLower() = "ico"
+					CopyFile (iconFile,targetIcon)
+				Else
+					_ConvertToIco (iconFile,targetIcon)
+				End
 			Else
-				iconFile = RealPath(GetConfigVar( "GLFW_APP_ICON"))
+				iconFile = iFile
 				If FileType( iconFile )=FILETYPE_FILE
 					'Print "Icon2== "+iconFile
-					CopyFile (iconFile,targetIcon)		
+					If ExtractExt( iconFile).ToLower() = "ico"
+						CopyFile (iconFile,targetIcon)
+					Else
+						_ConvertToIco (iconFile,targetIcon)
+					End
 				Endif
 			Endif
 		Endif
@@ -218,7 +250,7 @@ Class Builder
 					
 					Select FileType( p )
 					Case FILETYPE_FILE
-						If MatchPath( r,DATA_FILES )
+						If MatchPath( r.ToLower(),DATA_FILES.ToLower() )
 							CCopyFile p,t
 							udata.Insert t
 							dataFiles.Set p,r
@@ -237,7 +269,7 @@ Class Builder
 		For Local p:=Eachin app.fileImports
 			Local r:=StripDir( p )
 			Local t:=dir+"/"+r
-			If MatchPath( r,DATA_FILES )
+			If MatchPath( r.ToLower(),DATA_FILES.ToLower() )
 				CCopyFile p,t
 				udata.Insert t
 				dataFiles.Set p,r
@@ -280,4 +312,73 @@ Class Builder
 		
 	End
 	
+	Method CopySourceFiles:Void( dir:String )
+		dir=RealPath( dir )	
+		'Local srcDir:= ExtractDir(tcc.opt_srcpath)
+				
+		For Local p:=Eachin app.fileIncludes
+			Local oSub:Bool = False
+			Local oExt:String = "*"
+			Local oOut:String = ""
+			Local src:String = ""
+
+			Local p2:= p.Split(" ")
+			
+			For Local p3 := Eachin p2
+				Select p3[..4]
+					Case "-sub"
+						oSub=True
+					Case "-ext"
+						oExt = p3[5..]
+					Case "-out"
+						oOut = p3[5..]
+						If (oOut[..1]="\" Or oOut[..1]="/") oOut = oOut[1..]
+						Local ol:= oOut.Length()
+						If (oOut[ol-1..]="\" Or oOut[ol-1..]="/") oOut = oOut[..ol-1]
+					Default
+						src = p3
+				End
+			Next
+			
+			Local targetDir:= dir
+			If oOut.Length() > 0
+				' Create sub directories
+				targetDir += "/"+oOut
+				Local outs:= oOut.Split("/")
+				oOut = ""
+				For Local out := Eachin outs
+					oOut += "/"+out
+					If (FileType(dir+oOut) <> FILETYPE_DIR) 	CreateDir(dir+oOut)
+				Next
+			Endif
+			
+			Local exts := oExt.Split(";")
+
+			If FileType(src)=FILETYPE_FILE
+				Local filename:=StripDir( src )
+				CCopyFile src,targetDir+"/"+filename
+			Else
+				Local exts:=oExt.Split(";")
+				Local files:= LoadDir(src, oSub, False)
+				For Local file:= Eachin files
+					Local subDir:= ExtractDir(file)
+
+					If (FileType(targetDir+"/"+subDir) <> FILETYPE_DIR) 	CreateDir(targetDir+"/"+subDir)
+					If FileType(src+"/"+file)=FILETYPE_FILE
+						For Local ext := Eachin exts
+							If ext = ExtractExt(file) Or ext = "*" 
+								CCopyFile src+"/"+file,targetDir+"/"+file
+							Endif
+						Next
+					Endif
+				Next
+			Endif
+		Next
+	End
+	
 End
+
+
+Extern
+Function _CreateIcon:Void(srcFile:String,destFile:String,w:Int,h:Int,round:Int)
+Function _ConvertToIco:Void(srcFile:String,destFile:String)

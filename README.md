@@ -1,12 +1,9 @@
 ## Cerberus X
 
-[![GitHub release](https://img.shields.io/github/release/KrautApps/cerberus.svg)]() 
-[![Github Releases](https://img.shields.io/github/downloads/KrautApps/cerberus/latest/total.svg)]() 
-[![Github All Releases](https://img.shields.io/github/downloads/KrautApps/cerberus/total.svg)]() 
 [![Twitter Follow](https://img.shields.io/twitter/follow/cerberus_x17.svg?style=social)]() 
 [![GitHub stars](https://img.shields.io/github/stars/KrautApps/cerberus.svg?style=social&label=Star)]()
 
-![Cerberus X Logo](https://www.cerberus-x.com/community/styles/xenfracture/xenfracture/CBX_Logo_small.png)
+![Cerberus X Logo](https://www.cerberus-x.com/downloads/cx_logo_small.png)
 
 ### Cerberus X is a game development language, made for hobbyists, indies and professionals.
 
@@ -29,7 +26,7 @@ Cerberus X is based on Monkey X programming language created by [Mark Sibly](htt
 	* https://www.cerberus-x.com/cxDocs/Home.html
 
 * Download pre-built **Cerberus X** for **Windows/Linux/Mac OS**:
-	* https://krautapps.itch.io/cerberus-x
+	* https://www.cerberus-x.com/community/resources/categories/cerberus-x.6/
 
 
 ### License

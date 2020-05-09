@@ -1,0 +1,46 @@
+> Directive Include
+
+Module include directive.
+
+>> Syntax
+
+Include "filename"
+
+>> Description
+
+A Cerberus X program can add files into the build folder for further addition during the compile process.
+Contrary to the Import directive, these files are not injected into the translated code and the main.* file.
+Currently only the C++ and Desktop target are supporting this directive.
+
+>> See also
+[[Strict]] | [[Import]]~n
+[Language reference](Language reference#modules)
+
+
+>> Optional parameters (inside the string)
+
+*-out=* 
+
+A target directory. Otherwise the content will be copied into the build folder.
+
+*-ext=*
+
+A list of separated file extensions. These will filter the file extensions, that are copied.
+
+*-sub*       
+
+If including a directory, this parameter allows to include sub directories.
+
+>> Example
+
+*Add a single file:*
+
+<pre>
+Include "native/sokol_app.h -out=targetDir"
+</pre>
+
+*Add the content of a directory:*
+
+<pre>
+Include "native/ -ext=c;h -out=targetDir -sub"
+</pre>

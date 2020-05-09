@@ -1,10 +1,12 @@
-﻿# Windows Powershell build script
-# TO DO: The cserver needs to be rewritten so it doesn't need BlitzMax
+# Windows Powershell build script
+
+# NOTES: VISUAL STUDIO 2017/2019
+# See: https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019
+
 param(
-    [string]$mingw = "D:\Applications\Compilers\TDM-GCC-64", #"C:\Mingw",
-    [string]$qtsdk = "D:\dev\sdk\qt\windows\Qt5\5.5\msvc2013_64", #"C:\Qt\5.5\msvc2013_64",
-    [string]$visualstudio = "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC",
-    [string]$qtspec = "win32-msvc2013",
+    [string]$mingw = "C:\TDM-GCC-64", #"C:\Mingw",
+    [string]$qtsdk = "C:\Qt\5.9.2\msvc2017_64",
+    [string]$visualstudio = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build",
     [bool]$qtdbg = 0,
     [bool]$buildtrans = 1,
     [bool]$buildLauncher = 1,
@@ -123,11 +125,13 @@ if(Test-Path ..\bin\transcc_winnt.exe){
         #Make cserver
         if(Test-Path ..\bin\cserver_winnt.exe) {
             remove-item ..\bin\cserver_winnt.exe -force
+            
         }
 
         write-host "building cserver"
-        ../bin/transcc_winnt -target="Desktop_Game_(Glfw3)" -builddir="cserver.build" -clean -config="release" +CPP_GC_MODE=1 "cserver\cserver.cxs"
+        ../bin/transcc_winnt -target="Desktop_Game" -builddir="cserver.build" -clean -config="release" +CPP_GC_MODE=1 "cserver\cserver.cxs"
         Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\CerberusGame.exe ..\bin\cserver_winnt.exe
+        Move-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\data ..\bin\data
 
         # Move the openal dll and licence text
         if(-Not (Test-Path ..\bin\openal.dll)) {
@@ -147,7 +151,7 @@ if(Test-Path ..\bin\transcc_winnt.exe){
                     Remove-Item cserver\cserver.build\glfw3\gcc_winnt\Release"$arch"\Openal32_COPYING ..\bin\OPENAL32_COPYING
                 }
             }
-            ErrorMsg "ERROR: Failed to build cserver!"
+            #ErrorMsg "ERROR: Failed to build cserver!"
         }
     }
     
@@ -172,7 +176,7 @@ if($buildted) {
     New-Item build-ted-Desktop-Release -type directory
     cd build-ted-Desktop-Release
 
-    qmake -spec $qtspec ../ted/ted.pro
+    qmake ../ted/ted.pro
 
     if($qtdbg) {
          cmd /c nmake -f Makefile.Debug
@@ -189,7 +193,7 @@ if($buildted) {
     windeployqt $deplpoy --no-svg --no-angle --no-compiler-runtime --no-system-d3d-compiler --no-quick-import --no-translations --core ..\bin\Ted.exe
     $folders = "audio","bearer","imageformats","mediaservice","playlistformats","position","printsupport","sensors","sensorgestures","sqldrivers","opengl32sw.dll"
     foreach($folder in $folders){
-        Remove-Item ..\bin\$folder -Force -Recurse
+        Remove-Item ..\bin\$folder -Force -Recurse -ErrorAction Ignore
     }
 }
 

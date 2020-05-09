@@ -31,7 +31,17 @@ Global INTERPFUNCS:InterpFunc[] = [	InterpFunc(New InterpFuncLin),
 									InterpFunc(New InterpFuncSin),
 									InterpFunc(New InterpFuncFit),
 									InterpFunc(New InterpFuncFlats),
-									InterpFunc(New InterpFuncCubicBezier)]
+									InterpFunc(New InterpFuncCubicBezier),
+									InterpFunc(New InterpFuncCustomLine),
+									InterpFunc(New InterpFuncBackEaseIn),
+									InterpFunc(New InterpFuncBackEaseOut),
+									InterpFunc(New InterpFuncBackEaseInOut),
+									InterpFunc(New InterpFuncBounceEaseIn),
+									InterpFunc(New InterpFuncBounceEaseOut),
+									InterpFunc(New InterpFuncBounceEaseInOut),
+									InterpFunc(New InterpFuncElasticEaseIn),
+									InterpFunc(New InterpFuncElasticEaseOut),
+									InterpFunc(New InterpFuncElasticEaseInOut)]
 Global curfuncidx:Int = 0
 Global curfunc:InterpFunc
 
@@ -46,10 +56,14 @@ Global pointS1 := New ControlPoint()
 ' cubic bezier points
 Global pointAB := New ControlPoint()
 Global pointCD := New ControlPoint()
+' custom data
+Global custom_data:Float[] = [0,0.6,1,1,0,0.5,0.9,1]
+Global custom_points:ControlPoint[6]
 
 Global cvMain:Canvas
 ' track if any of the points moved
 Global anypointmoved:Int = True
+	
 
 
 ' main function
@@ -71,7 +85,7 @@ Class MyApp Extends App
 	Global demot:Float[3]
 	Global DEMO_DURATIONS:Int[] = [500, 1000, 2000]
 	Global DEMO_DURATION_MAX:Int
-	
+
 	Method OnCreate:Int()
 		cvMain = New Canvas
 		SetUpdateRate(60)
@@ -113,10 +127,17 @@ Class MyApp Extends App
 		pointCD.XBounds(0,1)
 		pointCD.YBounds(-0.5,1.5)
 		pointCD.Hide()
+		' init custom data
+		For Local i:Int = 0 Until 6
+			custom_points[i] = New ControlPoint()
+			custom_points[i].Position((1/7.0)*(i+1),custom_data[i+1])
+			custom_points[i].XBounds((1/7.0)*(i+1),(1/7.0)*(i+1))
+			custom_points[i].YBounds(-0.5,1.5)
+			custom_points[i].Hide()
+		Next		
 		'--- init tweening function attachments ---
 		curfunc = INTERPFUNCS[ curfuncidx ]
 		curfunc.Activate()
-		
 		Layout()
 		Return 0
 	End
@@ -146,6 +167,9 @@ Class MyApp Extends App
 		pointS1.SetScale( framesize )
 		pointAB.SetScale( framesize )
 		pointCD.SetScale( framesize )
+		For Local i:Int = 0 Until 6
+			custom_points[i].SetScale( framesize )
+		Next
 		' demo stuff
 		demox0 = width / 2 + framex0
 		demoy0 = graphy0 + framey0
@@ -169,6 +193,9 @@ Class MyApp Extends App
 		pointYA.Update()
 		pointY0.Update()
 		pointY1.Update()
+		For Local i:Int = 0 Until 6
+			custom_points[i].Update()
+		Next
 		' update function to use
 		If KeyHit( KEY_SPACE ) Then
 			curfuncidx = (curfuncidx + 1) Mod INTERPFUNCS.Length
@@ -178,6 +205,9 @@ Class MyApp Extends App
 			pointS0.Hide()
 			pointS1.Hide()
 			pointYA.Hide()
+			For Local i:Int = 0 Until 6
+				custom_points[i].Hide()
+			Next
 			curfunc.Activate()
 			anypointmoved = True
 		End
@@ -245,6 +275,9 @@ Class MyApp Extends App
 		pointYA.Draw(cvMain)
 		pointS0.Draw(cvMain)
 		pointS1.Draw(cvMain)
+		For Local i:Int = 0 Until 6
+			custom_points[i].Draw(cvMain)
+		Next
 		' draw demo
 		Local x:Float
 		Local scl:Float
@@ -320,6 +353,38 @@ Class InterpFuncLin Extends InterpFunc
 	Method Activate:Void()
 	End
 End
+' InterpolateLin
+Class InterpFuncCustomLine Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		For Local i:Int = 1 Until 7
+			custom_data[i] = custom_points[i-1].y
+		Next
+		custom_data[0] = pointY0.y
+		custom_data[7] = pointY1.y
+		
+		Return InterpolateCustomLine( custom_data, pX  )
+	End
+	Method Label:String()
+		Return "InterpolateCustomLine( ["+CustomDataString()+"], t )"
+	End
+	Method Activate:Void()
+		For Local i:Int = 0 Until 6
+			custom_points[i].Show()
+		Next
+	End
+	Method CustomDataString:String()
+		Local data:String
+		
+		Local i:Int=0
+		While i<custom_data.Length()
+			Local n:String=custom_data[i]
+			data+=n[0..4]+","
+			i+=1
+		Wend
+		
+		Return data[0..(data.Length()-1)]
+	End
+End
 ' InterpolateCurve
 Class InterpFuncCurve Extends InterpFunc
 	Method Interpolate:Float(pX:Float)
@@ -339,6 +404,105 @@ Class InterpFuncSin Extends InterpFunc
 	End
 	Method Label:String()
 		Return "InterpolateSin( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBackEaseIn
+Class InterpFuncBackEaseIn Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBackEaseIn( pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBackEaseIn( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBackEaseOut
+Class InterpFuncBackEaseOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBackEaseOut( pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBackEaseOut( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBackEaseInOut
+Class InterpFuncBackEaseInOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBackEaseInOut( pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBackEaseInOut( "+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateElasticEaseIn
+Class InterpFuncElasticEaseIn Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateElasticEaseIn(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateElasticEaseIn("+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateElasticEaseIn
+Class InterpFuncElasticEaseOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateElasticEaseOut(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateElasticEaseOut("+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateElasticEaseIn
+Class InterpFuncElasticEaseInOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateElasticEaseInOut(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateElasticEaseInOut("+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBounceEaseIn
+Class InterpFuncBounceEaseIn Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBounceEaseIn(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBounceEaseIn("+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBounceEaseIn
+Class InterpFuncBounceEaseOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBounceEaseOut(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBounceEaseOut("+pointY0.y+", "+pointY1.y+", t )"
+	End
+	Method Activate:Void()
+	End
+End
+' InterpolateBounceEaseIn
+Class InterpFuncBounceEaseInOut Extends InterpFunc
+	Method Interpolate:Float(pX:Float)
+		Return InterpolateBounceEaseInOut(pointY0.y, pointY1.y, pX )
+	End
+	Method Label:String()
+		Return "InterpolateBounceEaseInOut("+pointY0.y+", "+pointY1.y+", t )"
 	End
 	Method Activate:Void()
 	End

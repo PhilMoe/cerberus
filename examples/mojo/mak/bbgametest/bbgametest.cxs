@@ -30,8 +30,8 @@ Class GameDelegate Extends BBGameDelegate
 		Print "KeyEvent: event="+event+", data="+data
 	End
 	
-	Method MouseEvent:Void( event:Int,data:Int,x:Float,y:Float )
-		Print "MouseEvent: event="+event+", data="+data+", x="+x+", y="+y
+	Method MouseEvent:Void( event:Int,data:Int,x:Float,y:Float, z:Float )
+		Print "MouseEvent: event="+event+", data="+data+", x="+x+", y="+y+", z="+z 
 	End
 	
 	Method TouchEvent:Void( event:Int,data:Int,x:Float,y:Float )

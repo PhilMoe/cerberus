@@ -38,6 +38,8 @@ Class StdcppBuilder Extends Builder
 		Case "profile" SetConfigVar "PROFILE","1"
 		End
 		
+		CopySourceFiles(".")
+		
 		Local main:=LoadString( "main.cpp" )
 
 		main=ReplaceBlock( main,"TRANSCODE",transCode )

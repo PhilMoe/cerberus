@@ -1471,6 +1471,7 @@ Class AppDecl Extends ScopeDecl
 	Field allSemantedDecls:=New List<Decl>				'top-level decls including externs
 	
 	Field fileImports:=New StringList
+	Field fileIncludes:=New StringList
 	
 	Method InsertModule( mdecl:ModuleDecl )
 		mdecl.scope=Self

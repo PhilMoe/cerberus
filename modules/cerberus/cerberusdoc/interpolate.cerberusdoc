@@ -126,3 +126,155 @@ Parameters:
 Returns: Interpolated @y value at @x
 
 Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateCustomLine:Float(dataY:Float[], x:Float)
+
+Interpolates on a sawtooth line through all the points in dataY[] spread evenly from `(0,@dataY[0])` to `(1,@dataY[n])` at @x. dataY must contain 2 or more points. 
+
+![InterpolateCustomLine diagram](data/cerberus/interpolate/InterpolateCustomLine.png)
+
+Parameters:
+* @dataY[] - an array of @y points
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateElasticEaseIn:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on an elastic bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in the bouncing.
+
+![InterpolateElasticEaseIn diagram](data/cerberus/interpolate/InterpolateElasticEaseIn.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateElasticEaseOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on an elastic bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases out the bouncing.
+
+![InterpolateElasticEaseOut diagram](data/cerberus/interpolate/InterpolateElasticEaseOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateElasticEaseInOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on an elastic bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in and out the bouncing.
+
+![InterpolateElasticEaseInOut diagram](data/cerberus/interpolate/InterpolateElasticEaseInOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateBackEaseIn:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a pull back curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in the pull back mechanism.
+
+![InterpolateBackEaseIn diagram](data/cerberus/interpolate/InterpolateBackEaseIn.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+# Function InterpolateBackEaseOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a pull back curve from `(0,@y0)` to `(1,@y1)` at @x. This eases out the pull back mechanism.
+
+![InterpolateBackEaseOut diagram](data/cerberus/interpolate/InterpolateBackEaseOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateBackEaseInOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a pull back curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in and out the pull back mechanism.
+
+![InterpolateBackEaseInOut diagram](data/cerberus/interpolate/InterpolateBackEaseInOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+# Function InterpolateBounceEaseIn:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in the bouncing.
+
+![InterpolateBounceEaseIn diagram](data/cerberus/interpolate/InterpolateBounceEaseIn.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+# Function InterpolateBounceEaseOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases out the bouncing.
+
+![InterpolateBounceEaseOut diagram](data/cerberus/interpolate/InterpolateBounceEaseOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
+
+
+# Function InterpolateBounceEaseInOut:Float(y0:Float, y1:Float, x:Float)
+
+Interpolates on a bouncing curve from `(0,@y0)` to `(1,@y1)` at @x. This eases in and out the bouncing.
+
+![InterpolateBounceEaseIn diagram](data/cerberus/interpolate/InterpolateBounceEaseInOut.png)
+
+Parameters:
+* @y0 - value at x=0.0
+* @y1 - value at x=1.0
+* @x - point to interpolate, ranging from 0 to 1
+
+Returns: Interpolated @y value at @x
+
+Links: [Live demo](./data/cerberus/interpolate/interpolate_applet.build/html5/CerberusGame.html)
