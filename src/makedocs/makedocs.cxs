@@ -24,8 +24,6 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
-2020-04-26 - MikeHart
-	- Added the IncludeDir keyword to toker.cxs
 2019-01-20 - Holzchopf
 	- FIXED bug in brl.markdown - required rebuild of Makedocs
 2019-01-15 - Holzchopf
