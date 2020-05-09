@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST winnt
+#define CFG_HOST macos
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -20878,6 +20878,7 @@ void c_GlfwBuilder::p_MakeMsvc(){
 }
 void c_GlfwBuilder::p_MakeXcode(){
 	p_CreateDataDir(String(L"xcode/data",10));
+	p_CopySourceFiles(String(L"xcode",5));
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));

@@ -162,6 +162,8 @@ Class GlfwBuilder Extends Builder
 	Method MakeXcode:Void()
 
 		CreateDataDir "xcode/data"
+		
+		CopySourceFiles("xcode")
 
 		Local main:=LoadString( "main.cpp" )
 		

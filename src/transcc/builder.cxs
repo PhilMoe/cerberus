@@ -313,7 +313,7 @@ Class Builder
 	End
 	
 	Method CopySourceFiles:Void( dir:String )
-		dir=RealPath( dir )
+		dir=RealPath( dir )	
 		'Local srcDir:= ExtractDir(tcc.opt_srcpath)
 				
 		For Local p:=Eachin app.fileIncludes
