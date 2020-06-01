@@ -73,10 +73,11 @@ private:
 	static void OnKey( GLFWwindow *window,int key,int scancode,int action,int mods );
 	static void OnChar( GLFWwindow *window,unsigned int chr );
 	static void OnMouseButton( GLFWwindow *window,int button,int action,int mods );
-  static void OnMouseWheel( GLFWwindow *window, double x, double y );
+    static void OnMouseWheel( GLFWwindow *window, double x, double y );
 	static void OnCursorPos( GLFWwindow *window,double x,double y );
 	static void OnWindowClose( GLFWwindow *window );
 	static void OnWindowSize( GLFWwindow *window,int width,int height );
+	static void OnFileDrop(GLFWwindow *window, int count, const char** paths);
 };
 
 //***** glfwgame.cpp *****
@@ -544,6 +545,13 @@ void BBGlfwGame::OnMouseButton( GLFWwindow *window,int button,int action,int mod
 	}
 }
 
+void BBGlfwGame::OnFileDrop(GLFWwindow *window, int count, const char** paths)
+{
+    int i;
+    for (i = 0;  i < count;  i++)
+        _glfwGame->FileDropEvent(String(paths[i]));
+}
+
 void BBGlfwGame::OnMouseWheel( GLFWwindow *window, double x, double z )
 {
 	double y=0;
@@ -691,10 +699,11 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwSetKeyCallback( _window,OnKey );
 	glfwSetCharCallback( _window,OnChar );
 	glfwSetMouseButtonCallback( _window,OnMouseButton );
-  glfwSetScrollCallback( _window, OnMouseWheel ); 
+    glfwSetScrollCallback( _window, OnMouseWheel ); 
 	glfwSetCursorPosCallback( _window,OnCursorPos );
 	glfwSetWindowCloseCallback(	_window,OnWindowClose );
 	glfwSetWindowSizeCallback(_window,OnWindowSize );
+	glfwSetDropCallback(_window,OnFileDrop);
 }
 
 void BBGlfwGame::SetSwapInterval( int interval ){

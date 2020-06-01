@@ -141,7 +141,10 @@ Class GameDelegate Extends BBGameDelegate
 	Method DiscardGraphics:Void()
 		_graphics.DiscardGraphics
 	End
-
+	
+	Method FileDropEvent:Void(filename:String)
+		_app.OnFileDrop(filename)
+	End
 End
 
 Public
@@ -182,6 +185,9 @@ Class App
 	End
 	
 	Method OnResize:Int()
+	End
+	
+	Method OnFileDrop:Int(filename:String)
 	End
 	
 End

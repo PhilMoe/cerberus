@@ -1,0 +1,48 @@
+Strict
+
+#GLFW_WINDOW_TITLE="FileDrop - Cerberus X"
+#MOJO_AUTO_SUSPEND_ENABLED=False
+
+Import mojo
+
+#If TARGET="glfw" 
+	Import brl.process
+#Else
+	#Error ("Please run this example with the Desktop target.")
+#Endif
+
+'-----------------------------------------------------------------
+Class myClass Extends App
+	Field fname:String = "Drop file on the screen...~n"
+	'-----------------------------------------------------------------
+	Method OnCreate:Int()
+		SetUpdateRate 60
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnUpdate:Int()
+	
+	#If TARGET="glfw"	
+		If KeyHit(KEY_ESCAPE) ExitApp(0)
+	#Endif
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnRender:Int()
+		Cls 0,0,128
+		SetColor 128,128,128
+		DrawText fname.Split("~n"), 10, 10, 0, 0
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnFileDrop:Int(fnam:String)
+		fname += "~n"+fnam
+		Return 0
+	End
+End
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	New myClass
+	Return 0
+End

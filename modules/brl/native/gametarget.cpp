@@ -23,6 +23,7 @@ public:
 	virtual void TouchEvent( int event,int data,Float x,Float y ){}
 	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
+	virtual void FileDropEvent(String filename){}
 };
 
 struct BBDisplayMode : public Object{
@@ -99,6 +100,7 @@ public:
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
+	virtual void FileDropEvent(String filename);
 	
 protected:
 
@@ -365,6 +367,18 @@ void BBGame::RenderGame(){
 	
 	try{
 		_delegate->RenderGame();
+	}catch( ThrowableObject *ex ){
+		Die( ex );
+	}
+	gc_collect();
+}
+
+void BBGame::FileDropEvent( String filename ){
+
+	if( !_started ) return;
+	
+	try{
+		_delegate->FileDropEvent( filename );
 	}catch( ThrowableObject *ex ){
 		Die( ex );
 	}
