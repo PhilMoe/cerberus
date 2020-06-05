@@ -24,6 +24,8 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
+2020-06-05 - Holzchopf
+	- ADDED export of decls.json
 2019-01-20 - Holzchopf
 	- FIXED bug in brl.markdown - required rebuild of Makedocs
 2019-01-15 - Holzchopf
@@ -100,7 +102,7 @@ Import apidoccer
 Import docdoccer
 
 '===============================================================================
-Const VERSION:String		= "2020-04-26"
+Const VERSION:String		= "2020-06-05"
 '===============================================================================
 
 ' path settings
@@ -242,6 +244,11 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		#End
 		Print "writing decl files..."
 		WriteDeclFiles()
+		#If LOG_TIMESTAMPS
+			Log("... done @ "+GetTimestamp(), True)
+		#End
+		Print "writing decl json..."
+		WriteDeclsJson()
 		#If LOG_TIMESTAMPS
 			Log("... done @ "+GetTimestamp(), True)
 		#End
@@ -1022,6 +1029,12 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 			End
 		Next
 		SaveString( txt, PATH_HTML_BASE + "/decls.txt" )
+	End
+	' write decls.json
+	Method WriteDeclsJson:Void()
+		' take stringification of tree and transform
+		Local txt:String = rootdecl.ToJson()
+		SaveString( txt, PATH_HTML_BASE + "/decls.json" )
 	End
 	' fill template and write documents
 	Method WriteDocs:Void()

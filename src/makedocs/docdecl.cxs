@@ -158,6 +158,131 @@ Class DocDecl
 		End
 		Return "Unspecified"
 	End
+	
+	' returns kind identifier (unprefixed)
+	Method GetKindIdent:String()
+		Select kind
+		Case DECL_ROOT
+			Return "root"
+		Case DECL_ROOT_MODULES
+			Return "root_modules"
+		Case DECL_ROOT_DOCS
+			Return "root_docs"
+		Case DECL_MODULE_SCOPE
+			Return "module_scope"
+		Case DECL_MODULE
+			Return "module"
+		Case DECL_DOC
+			Return "doc"
+		Case DECL_INDEX
+			Return "index"
+		Case DECL_MODHEADER
+			Return "modheader"
+		Case DECL_UIDENT_SCOPE
+			Return "uident_scope"
+		Case DECL_UIDENT_PARAMS
+			Return "uident_params"
+		Case DECL_3RDPARTYDOC
+			Return "3rdpartydoc"
+		Case DECL_3RDPARTY_ICON
+			Return "3rdparty_icon"
+		Case DECL_EXAMPLE_IDENT
+			Return "exmple_ident"
+		Case DECL_EXAMPLE_SOURCE
+			Return "example_source"
+		Case DECL_EXAMPLE_URL
+			Return "example_url"
+		Case DECL_IMPORT
+			Return "import"
+		Case DECL_CLASS
+			Return "class"
+		Case DECL_INTERFACE
+			Return "interface"
+		Case DECL_FUNCTION
+			Return "function"
+		Case DECL_CONST
+			Return "const"
+		Case DECL_GLOBAL
+			Return "global"
+		Case DECL_ENUM
+			Return "enum"
+		Case DECL_GENTYPE_PARAM
+			Return "gentype_param"
+		Case DECL_EXTENDS
+			Return "extends"
+		Case DECL_IMPLEMENTS
+			Return "implements"
+		Case DECL_METHOD
+			Return "method"
+		Case DECL_PROPERTY
+			Return "property"
+		Case DECL_CTOR
+			Return "ctor"
+		Case DECL_CLASSFUNCTION
+			Return "classfunction"
+		Case DECL_CLASSCONST
+			Return "classconst"
+		Case DECL_CLASSGLOBAL
+			Return "classglobal"
+		Case DECL_CLASSENUM
+			Return "classenum"
+		Case DECL_FIELD
+			Return "field"
+		Case DECL_INH_METHOD
+			Return "inh_method"
+		Case DECL_INH_PROPERTY
+			Return "inh_property"
+		Case DECL_INH_CTOR
+			Return "inh_ctor"
+		Case DECL_INH_CLASSFUNCTION
+			Return "inh_classfunction"
+		Case DECL_INH_CLASSCONST
+			Return "inh_classconst"
+		Case DECL_INH_CLASSGLOBAL
+			Return "inh_classglobal"
+		Case DECL_INH_CLASSENUM
+			Return "inh_classenum"
+		Case DECL_INH_FIELD
+			Return "inh_field"
+		Case DECL_INHERITED
+			Return "inherited"
+		Case DECL_TYPE
+			Return "type"
+		Case DECL_IMPLICIT_TYPE
+			Return "implicit_type"
+		Case DECL_INITIAL_VALUE
+			Return "initial_value"
+		Case DECL_ARRAY
+			Return "array"
+		Case DECL_GENTYPE_ARGUMENT
+			Return "gentype_argument"
+		Case DECL_PARAMETER
+			Return "parameter"
+		Case DECL_ENUM_ELEMENT
+			Return "enum_element"
+		Case DECL_IMPORTEDBY
+			Return "importedby"
+		Case DECL_EXTENDEDBY
+			Return "extendedby"
+		Case DECL_IMPLEMENTEDBY
+			Return "implementedby"
+		Case DECL_DESCRIPTION
+			Return "description"
+		Case DECL_EXAMPLE
+			Return "example"
+		Case DECL_LINKS
+			Return "links"
+		Case DECL_PARAMS
+			Return "params"
+		Case DECL_RETURNS
+			Return "returns"
+		Case DECL_CONTENTS
+			Return "contents"
+		Case DECL_SUMMARY
+			Return "summary"
+		End
+		Return "unknown"
+	End
 
 	' returns identifier
 	Method GetIdent:String()
@@ -771,7 +896,7 @@ Class DocDecl
 	End
 	
 	' turns the decl tree into a nice string
-	Method ToString:String(pIndent:Int=0)
+	Method ToString:String( pIndent:Int=0 )
 		Local indstr:String = ""
 		For Local i:Int = 0 Until pIndent
 			indstr += "  "
@@ -792,6 +917,59 @@ Class DocDecl
 			Next
 		End
 		Return indstr
+	End
+	
+	' turns the decl tree into a pretty json string
+	Method ToJson:String( pIndent:Int=0 )
+		Local json:String = ""
+		' every decl is an object
+		json += _JsonIndent(pIndent) + "{~n"
+		pIndent += 1
+		Local value:String
+		' put identifier
+		value = ident.Replace("~n","~~n").Replace("~r","")
+		json += _JsonIndent(pIndent) + "~qident~q: ~q" + _JsonEscape(value) + "~q"
+		json += ",~n"
+		' ... kind
+		json += _JsonIndent(pIndent) + "~qkind~q: ~q" + GetKindIdent() + "~q"
+		json += ",~n"
+		' ... uid
+		json += _JsonIndent(pIndent) + "~quid~q: ~q" + ("00000" + uid)[-6..] + "~q"
+		' ... target
+		If target Then
+			json += ",~n"
+			json += _JsonIndent(pIndent) + "~qtarget~q: ~q" + ("00000" + target.uid)[-6..] + "~q"
+		End
+		' ... childs
+		If childs Then
+			json += ",~n"
+			json += _JsonIndent(pIndent) + "~qchilds~q: ["
+			Local isfirst:Bool = True
+			For Local d := Eachin childs
+				If Not isfirst Then
+					json += ","
+				End
+				json += "~n"
+				json += d.ToJson(pIndent + 1)
+				isfirst = False
+			Next
+			json += "~n"
+			json += _JsonIndent(pIndent) + "]"
+		End
+		json += "~n"
+		pIndent -= 1
+		json += _JsonIndent(pIndent) + "}"
+		Return json
+	End
+	Function _JsonIndent:String( pIndent:Int )
+		Local indstr:String = ""
+		For Local i:Int = 0 Until pIndent
+			indstr += "~t"
+		Next
+		Return indstr
+	End
+	Function _JsonEscape:String( pString:String )
+		Return pString.Replace("\", "\\").Replace("~q","\~q").Replace("~t","\t")
 	End
 End
 
