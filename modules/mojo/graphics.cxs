@@ -123,8 +123,18 @@ Class Font
 		Return w
 	End
 
-	Method TextHeight:Float( text:String )
-		Return _height
+	Method TextHeight:Float( text:String = "" )
+		If text = ""
+			Return _height
+		Else
+			Local h:=0.0
+			For Local char:=Eachin text
+				Local glyph:=GetGlyph( char )
+				If Not glyph Continue
+				If h < glyph.height Then h = glyph.height
+			Next	
+			Return h
+		Endif
 	End
 	
 	Function Load:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )

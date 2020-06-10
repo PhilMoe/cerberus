@@ -284,9 +284,9 @@ See also:
 Get width of @text drawn in this font.
 
 
-# Method TextHeight:Int( text:String )
+# Method TextHeight:Int( text:String = "" )
 
-Get height of @text drawn in this font.
+Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
 
 
 # Function Load:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
