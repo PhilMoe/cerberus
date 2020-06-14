@@ -361,9 +361,19 @@ Class Builder
 				Local exts:=oExt.Split(";")
 				Local files:= LoadDir(src, oSub, False)
 				For Local file:= Eachin files
+				
 					Local subDir:= ExtractDir(file)
+'Print file +" >>   (" +subDir+")"
+					If (FileType(targetDir+"/"+subDir) <> FILETYPE_DIR And subDir.Length() > 0)
+						Local subDirs:= subDir.Split("/")
+						oOut = ""
+						For Local sub := Eachin subDirs
+							oOut += "/"+sub
+'Print "CreateDir >> "+(targetDir+"/"+oOut)
+							If (FileType(targetDir+oOut) <> FILETYPE_DIR) 	CreateDir(targetDir+oOut)
+						Next
 
-					If (FileType(targetDir+"/"+subDir) <> FILETYPE_DIR) 	CreateDir(targetDir+"/"+subDir)
+					Endif
 					If FileType(src+"/"+file)=FILETYPE_FILE
 						For Local ext := Eachin exts
 							If ext = ExtractExt(file) Or ext = "*" 

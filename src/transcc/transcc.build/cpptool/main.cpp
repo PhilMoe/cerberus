@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST macos
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -1776,6 +1776,7 @@ public:
 	virtual void TouchEvent( int event,int data,Float x,Float y ){}
 	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
+	virtual void FileDropEvent(String filename){}
 };
 
 struct BBDisplayMode : public Object{
@@ -1852,6 +1853,7 @@ public:
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
+	virtual void FileDropEvent(String filename);
 	
 protected:
 
@@ -2118,6 +2120,18 @@ void BBGame::RenderGame(){
 	
 	try{
 		_delegate->RenderGame();
+	}catch( ThrowableObject *ex ){
+		Die( ex );
+	}
+	gc_collect();
+}
+
+void BBGame::FileDropEvent( String filename ){
+
+	if( !_started ) return;
+	
+	try{
+		_delegate->FileDropEvent( filename );
 	}catch( ThrowableObject *ex ){
 		Die( ex );
 	}
@@ -15096,6 +15110,7 @@ class c_WinrtBuilder;
 class c_XnaBuilder;
 class c_AGKBuilder;
 class c_AGKBuilder_ios;
+class c_AGKBuilder_android;
 class c_NodeEnumerator;
 class c_List;
 class c_StringList;
@@ -15259,6 +15274,7 @@ class c_TransCC : public Object{
 	public:
 	Array<String > m_args;
 	String m_cerberusdir;
+	String m__libs;
 	String m_opt_srcpath;
 	bool m_opt_safe;
 	bool m_opt_clean;
@@ -15283,7 +15299,6 @@ class c_TransCC : public Object{
 	String m_AGK_PATH;
 	String m_HTML_PLAYER;
 	String m_FLASH_PLAYER;
-	String m__libs;
 	c_StringMap3* m__builders;
 	c_StringMap6* m__targets;
 	c_Target* m_target;
@@ -15791,6 +15806,19 @@ class c_AGKBuilder_ios : public c_Builder{
 	String p_Config();
 	void p_CreateMediaDir(String);
 	void p_MakeXcode();
+	void p_MakeTarget();
+	void mark();
+};
+class c_AGKBuilder_android : public c_Builder{
+	public:
+	c_AGKBuilder_android();
+	c_AGKBuilder_android* m_new(c_TransCC*);
+	c_AGKBuilder_android* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_Config();
+	void p_CreateMediaDir(String);
+	void p_MakeAndroid();
 	void p_MakeTarget();
 	void mark();
 };
@@ -18028,6 +18056,7 @@ class c_Enumerator8 : public Object{
 c_TransCC::c_TransCC(){
 	m_args=Array<String >();
 	m_cerberusdir=String();
+	m__libs=String();
 	m_opt_srcpath=String();
 	m_opt_safe=false;
 	m_opt_clean=false;
@@ -18052,7 +18081,6 @@ c_TransCC::c_TransCC(){
 	m_AGK_PATH=String();
 	m_HTML_PLAYER=String();
 	m_FLASH_PLAYER=String();
-	m__libs=String();
 	m__builders=(new c_StringMap3)->m_new();
 	m__targets=(new c_StringMap6)->m_new();
 	m_target=0;
@@ -18270,8 +18298,6 @@ void c_TransCC::p_LoadConfig(){
 		if((m_JDK_PATH).Length()!=0){
 			SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 		}
-		m__libs=AppPath();
-		m__libs=m__libs.Slice(0,m__libs.Find(String(L"bin/transcc_winnt.exe",21),0))+String(L"libs/",5);
 	}else{
 		if(t_4==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
@@ -18362,8 +18388,9 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-05-09",35));
-	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
+	bbPrint(String(L"TRANS cerberus compiler V2020-06-14",35));
+	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
+	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
 	SetEnv(String(L"TRANSDIR",8),m_cerberusdir+String(L"/bin",4));
@@ -20069,15 +20096,26 @@ void c_Builder::p_CopySourceFiles(String t_dir){
 				String t_file=t_7[t_8];
 				t_8=t_8+1;
 				String t_subDir=bb_os_ExtractDir(t_file);
-				if(FileType(t_targetDir+String(L"/",1)+t_subDir)!=2){
-					CreateDir(t_targetDir+String(L"/",1)+t_subDir);
-				}
-				if(FileType(t_src+String(L"/",1)+t_file)==1){
-					Array<String > t_9=t_exts2;
+				if(FileType(t_targetDir+String(L"/",1)+t_subDir)!=2 && t_subDir.Length()>0){
+					Array<String > t_subDirs=t_subDir.Split(String(L"/",1));
+					t_oOut=String();
+					Array<String > t_9=t_subDirs;
 					int t_10=0;
 					while(t_10<t_9.Length()){
-						String t_ext=t_9[t_10];
+						String t_sub=t_9[t_10];
 						t_10=t_10+1;
+						t_oOut=t_oOut+(String(L"/",1)+t_sub);
+						if(FileType(t_targetDir+t_oOut)!=2){
+							CreateDir(t_targetDir+t_oOut);
+						}
+					}
+				}
+				if(FileType(t_src+String(L"/",1)+t_file)==1){
+					Array<String > t_11=t_exts2;
+					int t_12=0;
+					while(t_12<t_11.Length()){
+						String t_ext=t_11[t_12];
+						t_12=t_12+1;
 						if(t_ext==bb_os_ExtractExt(t_file) || t_ext==String(L"*",1)){
 							p_CCopyFile(t_src+String(L"/",1)+t_file,t_targetDir+String(L"/",1)+t_file);
 						}
@@ -20742,7 +20780,13 @@ String c_GlfwBuilder::p_Config(){
 	return t_config->p_Join(String(L"\n",1));
 }
 int c_GlfwBuilder::p_ProcessExternalLibs(String t_config,String t_arch,String t_link){
-	String t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
+	String t_libStr=String();
+	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
+	if(t_msize==String(L"64",2)){
+		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
+	}else{
+		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS_32",17)).ToLower();
+	}
 	if(t_libStr==String()){
 		return 0;
 	}
@@ -20789,6 +20833,18 @@ void c_GlfwBuilder::p_MakeGcc(){
 	CreateDir(t_dst+String(L"/",1)+t_tconfig);
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
+	if(t_msize==String(L"32",2)){
+		if(FileType(t_dst+String(L"/Makefile32",11))==1){
+			CopyFile(t_dst+String(L"/Makefile32",11),t_dst+String(L"/Makefile",9));
+		}
+	}else{
+		if(FileType(t_dst+String(L"/Makefile64",11))==1){
+			CopyFile(t_dst+String(L"/Makefile64",11),t_dst+String(L"/Makefile",9));
+		}
+	}
+	if(FileType(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11))==1){
+		DeleteFile(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11));
+	}
 	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
 	p_CopySourceFiles(String(L".",1));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/cerberus.ico",13));
@@ -21847,7 +21903,9 @@ String c_AGKBuilder::p_Config(){
 	return t_config->p_Join(String(L"\n",1));
 }
 void c_AGKBuilder::p_CreateMediaDir(String t_dir){
+	bbPrint(t_dir);
 	t_dir=RealPath(t_dir);
+	bbPrint(t_dir);
 	if(!m_syncData){
 		bb_os_DeleteDir(t_dir,true);
 	}
@@ -22153,6 +22211,232 @@ void c_AGKBuilder_ios::p_MakeTarget(){
 void c_AGKBuilder_ios::mark(){
 	c_Builder::mark();
 }
+c_AGKBuilder_android::c_AGKBuilder_android(){
+}
+c_AGKBuilder_android* c_AGKBuilder_android::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_AGKBuilder_android* c_AGKBuilder_android::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_AGKBuilder_android::p_IsValid(){
+	String t_1=HostOS();
+	if(t_1==String(L"winnt",5)){
+		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
+			return true;
+		}
+	}else{
+		if(t_1==String(L"macos",5)){
+			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	return false;
+}
+void c_AGKBuilder_android::p_Begin(){
+	bb_config_ENV_LANG=String(L"cpp",3);
+	bb_translator__trans=((new c_CppTranslator)->m_new());
+}
+String c_AGKBuilder_android::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	int t_l=0;
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+void c_AGKBuilder_android::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_AGKBuilder_android::p_MakeAndroid(){
+	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
+	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
+	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_google",41);
+	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
+	if(m_tcc->m_opt_build){
+		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
+		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
+		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
+		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
+		ChangeDir(t_buildpath);
+		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
+		if(m_tcc->m_opt_config==String(L"release",7)){
+			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
+		}
+		String t_gradle=String();
+		if(HostOS()==String(L"winnt",5)){
+			t_gradle=String(L"gradlew",7);
+		}else{
+			t_gradle=String(L"./gradlew",9);
+		}
+		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
+			bb_transcc_Die(String(L"Android build failed.",21));
+		}else{
+			if(m_tcc->m_opt_config==String(L"release",7)){
+				String t_adb=String(L"adb",3);
+				String t_jarsigner=String(L"jarsigner",9);
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+				}
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
+				}
+				String t__file=CurrentDir();
+				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
+				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
+				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
+				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
+				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
+				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
+			}else{
+				if(m_tcc->m_opt_config==String(L"debug",5)){
+					String t_adb2=String(L"adb",3);
+					if((m_tcc->m_ANDROID_PATH).Length()!=0){
+						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+					}
+					String t__file2=CurrentDir();
+					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
+					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
+					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
+				}
+			}
+		}
+		if(m_tcc->m_opt_run){
+			String t_adb3=String(L"adb",3);
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			t_app_package=String(L"com.mycompany.mytemplate",24);
+			p_Execute(t_adb3+String(L" logcat -c",10),false);
+			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
+			if(m_tcc->m_opt_config==String(L"debug",5)){
+				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
+			}
+		}
+	}
+}
+void c_AGKBuilder_android::p_MakeTarget(){
+	String t_2=HostOS();
+	if(t_2==String(L"winnt",5)){
+		p_MakeAndroid();
+	}
+}
+void c_AGKBuilder_android::mark(){
+	c_Builder::mark();
+}
 c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	c_StringMap3* t_builders=(new c_StringMap3)->m_new();
 	t_builders->p_Set3(String(L"android",7),((new c_AndroidBuilder)->m_new(t_tcc)));
@@ -22167,6 +22451,7 @@ c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	t_builders->p_Set3(String(L"xna",3),((new c_XnaBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"agk_android",11),((new c_AGKBuilder_android)->m_new(t_tcc)));
 	return t_builders;
 }
 c_NodeEnumerator::c_NodeEnumerator(){
@@ -31684,6 +31969,7 @@ int bb_os_CopyDir(String t_srcpath,String t_dstpath,bool t_recursive,bool t_hidd
 }
 int bbMain(){
 	c_TransCC* t_tcc=(new c_TransCC)->m_new();
+	SetEnv(String(L"CERBERUS_DIR",12),RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3)));
 	t_tcc->p_Run(AppArgs());
 	return 0;
 }
