@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2020-06-14 (DEBUG)"
+    Const VERSION:="2020-06-15 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2020-06-14"
+    Const VERSION:="2020-06-15"
 #Endif
 
 Function Main()
@@ -178,6 +178,7 @@ Class TransCC
     Field opt_casedcfg:String
     Field opt_target:String
     Field opt_modpath:String
+    Field opt_targetpath:String
     Field opt_builddir:String
   
     'config file
@@ -222,14 +223,21 @@ Class TransCC
       
         EnumBuilders
       
-        EnumTargets "targets"
+		If opt_targetpath.Length <= 1 Then opt_targetpath = "targets"
+'Print "targetspath="+opt_targetpath
+		Local tpaths:= opt_targetpath.Split(";")
+		For Local tpath := Eachin tpaths
+        	'EnumTargets "targets"
+'Print "targetpath="+tpath
+        	EnumTargets tpath
+        Next
       
         If args.Length<2
             Local valid:=""
             For Local it:=Eachin _targets
                 valid+=" "+it.Key.Replace( " ","_" )
             Next
-            Print "TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_cerberus_source_file>"
+            Print "TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>"
             Print "Valid targets:"+valid
             Print "Valid configs: debug release"
             ExitApp 0
@@ -259,7 +267,7 @@ Class TransCC
     Method EnumTargets:Void( dir:String )
   
         Local p:=cerberusdir+"/"+dir
-      
+        If FileType(p) <> FILETYPE_DIR Then p = dir
         For Local f:=Eachin LoadDir( p )
             Local t:=p+"/"+f+"/target.cxs"
             If FileType(t)<>FILETYPE_FILE
@@ -338,6 +346,8 @@ Class TransCC
                     opt_target=rhs
                 Case "-modpath"
                     opt_modpath=rhs
+                Case "-targetpath"
+                    opt_targetpath=rhs
                 Case "-builddir"
                     opt_builddir=rhs
                 Default
@@ -387,6 +397,10 @@ Class TransCC
             Case "MODPATH"
                 If Not opt_modpath
                     opt_modpath=path
+                Endif
+            Case "TARGETPATH"
+                If Not opt_targetpath
+                    opt_targetpath=path
                 Endif
             Case "ANDROID_PATH"
                 If Not ANDROID_PATH And FileType( path )=FILETYPE_DIR

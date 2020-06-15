@@ -15287,6 +15287,7 @@ class c_TransCC : public Object{
 	String m_opt_config;
 	String m_opt_target;
 	String m_opt_modpath;
+	String m_opt_targetpath;
 	String m_opt_builddir;
 	String m_ANDROID_PATH;
 	String m_ANDROID_NDK_PATH;
@@ -18069,6 +18070,7 @@ c_TransCC::c_TransCC(){
 	m_opt_config=String();
 	m_opt_target=String();
 	m_opt_modpath=String();
+	m_opt_targetpath=String();
 	m_opt_builddir=String();
 	m_ANDROID_PATH=String();
 	m_ANDROID_NDK_PATH=String();
@@ -18151,10 +18153,14 @@ void c_TransCC::p_ParseArgs(){
 								if(t_2==String(L"-modpath",8)){
 									m_opt_modpath=t_rhs;
 								}else{
-									if(t_2==String(L"-builddir",9)){
-										m_opt_builddir=t_rhs;
+									if(t_2==String(L"-targetpath",11)){
+										m_opt_targetpath=t_rhs;
 									}else{
-										bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
+										if(t_2==String(L"-builddir",9)){
+											m_opt_builddir=t_rhs;
+										}else{
+											bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
+										}
 									}
 								}
 							}
@@ -18208,58 +18214,64 @@ void c_TransCC::p_LoadConfig(){
 				m_opt_modpath=t_path;
 			}
 		}else{
-			if(t_3==String(L"ANDROID_PATH",12)){
-				if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
-					m_ANDROID_PATH=t_path;
+			if(t_3==String(L"TARGETPATH",10)){
+				if(!((m_opt_targetpath).Length()!=0)){
+					m_opt_targetpath=t_path;
 				}
 			}else{
-				if(t_3==String(L"ANDROID_NDK_PATH",16)){
-					if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
-						m_ANDROID_NDK_PATH=t_path;
+				if(t_3==String(L"ANDROID_PATH",12)){
+					if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
+						m_ANDROID_PATH=t_path;
 					}
 				}else{
-					if(t_3==String(L"JDK_PATH",8)){
-						if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
-							m_JDK_PATH=t_path;
+					if(t_3==String(L"ANDROID_NDK_PATH",16)){
+						if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
+							m_ANDROID_NDK_PATH=t_path;
 						}
 					}else{
-						if(t_3==String(L"ANT_PATH",8)){
-							if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
-								m_ANT_PATH=t_path;
+						if(t_3==String(L"JDK_PATH",8)){
+							if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
+								m_JDK_PATH=t_path;
 							}
 						}else{
-							if(t_3==String(L"FLEX_PATH",9)){
-								if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
-									m_FLEX_PATH=t_path;
+							if(t_3==String(L"ANT_PATH",8)){
+								if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
+									m_ANT_PATH=t_path;
 								}
 							}else{
-								if(t_3==String(L"MINGW_PATH",10)){
-									if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
-										m_MINGW_PATH=t_path;
+								if(t_3==String(L"FLEX_PATH",9)){
+									if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
+										m_FLEX_PATH=t_path;
 									}
 								}else{
-									if(t_3==String(L"PSM_PATH",8)){
-										if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
-											m_PSM_PATH=t_path;
+									if(t_3==String(L"MINGW_PATH",10)){
+										if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
+											m_MINGW_PATH=t_path;
 										}
 									}else{
-										if(t_3==String(L"MSBUILD_PATH",12)){
-											if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
-												m_MSBUILD_PATH=t_path;
+										if(t_3==String(L"PSM_PATH",8)){
+											if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
+												m_PSM_PATH=t_path;
 											}
 										}else{
-											if(t_3==String(L"AGK_PATH",8)){
-												if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
-													m_AGK_PATH=t_path;
+											if(t_3==String(L"MSBUILD_PATH",12)){
+												if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
+													m_MSBUILD_PATH=t_path;
 												}
 											}else{
-												if(t_3==String(L"HTML_PLAYER",11)){
-													m_HTML_PLAYER=t_rhs;
+												if(t_3==String(L"AGK_PATH",8)){
+													if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
+														m_AGK_PATH=t_path;
+													}
 												}else{
-													if(t_3==String(L"FLASH_PLAYER",12)){
-														m_FLASH_PLAYER=t_rhs;
+													if(t_3==String(L"HTML_PLAYER",11)){
+														m_HTML_PLAYER=t_rhs;
 													}else{
-														bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+														if(t_3==String(L"FLASH_PLAYER",12)){
+															m_FLASH_PLAYER=t_rhs;
+														}else{
+															bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+														}
 													}
 												}
 											}
@@ -18342,6 +18354,9 @@ void c_TransCC::p_EnumBuilders(){
 }
 void c_TransCC::p_EnumTargets(String t_dir){
 	String t_p=m_cerberusdir+String(L"/",1)+t_dir;
+	if(FileType(t_p)!=2){
+		t_p=t_dir;
+	}
 	Array<String > t_=LoadDir(t_p);
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -18388,7 +18403,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-06-14",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-06-15",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18397,15 +18412,25 @@ void c_TransCC::p_Run(Array<String > t_args){
 	p_ParseArgs();
 	p_LoadConfig();
 	p_EnumBuilders();
-	p_EnumTargets(String(L"targets",7));
+	if(m_opt_targetpath.Length()<=1){
+		m_opt_targetpath=String(L"targets",7);
+	}
+	Array<String > t_tpaths=m_opt_targetpath.Split(String(L";",1));
+	Array<String > t_=t_tpaths;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		String t_tpath=t_[t_2];
+		t_2=t_2+1;
+		p_EnumTargets(t_tpath);
+	}
 	if(t_args.Length()<2){
 		String t_valid=String();
-		c_NodeEnumerator2* t_=m__targets->p_ObjectEnumerator();
-		while(t_->p_HasNext()){
-			c_Node17* t_it=t_->p_NextObject();
+		c_NodeEnumerator2* t_3=m__targets->p_ObjectEnumerator();
+		while(t_3->p_HasNext()){
+			c_Node17* t_it=t_3->p_NextObject();
 			t_valid=t_valid+(String(L" ",1)+t_it->p_Key().Replace(String(L" ",1),String(L"_",1)));
 		}
-		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_cerberus_source_file>",141));
+		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>",160));
 		bbPrint(String(L"Valid targets:",14)+t_valid);
 		bbPrint(String(L"Valid configs: debug release",28));
 		ExitApp(0);
