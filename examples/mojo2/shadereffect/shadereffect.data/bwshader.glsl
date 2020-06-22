@@ -12,13 +12,20 @@ void shader(){
 	
 	//read source color
 	vec3 color=texture2D( ColorTexture,texcoords ).rgb;
-	
+	vec4 colorA=texture2D( ColorTexture,texcoords ).rgba;
+	if (colorA.a <.25)
+	{
+		discard;
+	}
+	else
+	{
 	//calculate b/w color
 	vec3 result=vec3( (color.r+color.g+color.b)/3.0 );
 	
 	//mix based on effect level
 	color=mix( color,result,EffectLevel );
-	
+
 	//write output
-	b3d_FragColor=vec4( color,1.0 );
+	b3d_FragColor=vec4( color, colorA.a);
+	}
 }
