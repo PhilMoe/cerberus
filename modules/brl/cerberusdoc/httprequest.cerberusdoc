@@ -26,6 +26,7 @@ The httprequest module allows you to perform http requests such as GET and POST.
 
 Example:
 
+<pre>
 Import mojo
 
 Import brl.httprequest
@@ -80,6 +81,7 @@ Function Main()
 	New MyApp
 
 End
+</pre>
 
 
 # Method New()
