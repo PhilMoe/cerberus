@@ -1,6 +1,22 @@
+***** v2020-06-22 *****
+
+FIX: [TRANSCC] With the GLFW target and MingW, you can build 32bit again!    (Authors: dawlane/MikeHart)
+FIX: [TRANSCC] Fixed copying sub directories with the INCLUDE statement.   (Author: MikeHart)
+MOD: [TRANSCC] With the GLFW target, resource files are now compiled everytime, so a change will be always taken in.   (Author: MikeHart)
+MOD: [MOJO/MOJO2] Font.TextHeight will return the actual height of the string now if one is given.   (Author: MikeHart)
+MOD: [brl.filesystem] CreateDir now creates paths automatically, that includes more than one sub directory.   (Author: MikeHart)
+NEW: [TRANSCC] New config setting #GLFW_COPY_LIBS_32 to copy 32bit DLLs into the build.   (Author: MikeHart)
+NEW: [TRANSCC] Added TARGETPATH option to specify more target directories.   (Author: MikeHart)
+NEW: [TRANSCC] Added custom targets with cxbuild.txt script.   (Author: MikeHart)
+NEW: [TARGETS] AGK Android (Google).    (Author: MikeHart)
+NEW: [examples] mojo/n3d from Skid.    (Author: Skid)
+NEW: [examples] mojo2/asyncimageloading.    (Author: MikeHart)
+
+KNOWN ISSUES: Window dragging in 32 bit Release mode still crashes, need to update GLFW for a fix.
+
 ***** v2020-05-09 *****
 
-FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
+FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, filepath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
 FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
 FIX: [DOCS/cerberus] Fixed missing entry for the deque module.    (Author: MikeHart)
 FIX: [DOCS/cerberus.stack] Fixed some typos.    (Author: MikeHart)

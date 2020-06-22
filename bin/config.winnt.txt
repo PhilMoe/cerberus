@@ -4,7 +4,15 @@
 '
 'Can be overriden via transcc cmd line
 '
-MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext;D:\CerberusX\CerberusModulesx"
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext;D:\CerberusX\CerberusModules"
+'--------------------
+
+'--------------------
+'Cerberus targets path
+'
+'Can be overriden via transcc cmd line
+'
+TARGETPATH="${CERBERUSDIR}/targets;${CERBERUSDIR}/targets_ext;D:\CerberusX\CerberusTargets"
 '--------------------
 
 '--------------------
@@ -28,6 +36,9 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 
 '***** 64 bit mingw *****
 MINGW_PATH="D:\TDM-GCC-64"
+'MINGW_PATH="D:\TDM-GCC-64_92"
+'MINGW_PATH="D:\BlitzMax\MinGW32x64"
+'MINGW_PATH="${CERBERUSDIR}/3rdparty/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/mingw64"
 '--------------------
 
 '--------------------
@@ -53,7 +64,7 @@ ANDROID_PATH="D:\Program Files\Android\Android Studio"
 '
 'Must be set to a valid dir for ANDROID NDK target support
 '
-'ANDROID_NDK_PATH="D:\Program Files\Android\Android Studio\ndk-bundle"
+ANDROID_NDK_PATH="C:\Users\mike\AppData\Local\Android\Sdk\ndk\21.1.6352462"
 '--------------------
 
 '--------------------

@@ -1,0 +1,289 @@
+
+Import builder
+
+
+Class CustomBuilder Extends Builder
+
+	Method New( tcc:TransCC )
+		Super.New( tcc )
+	End
+
+	Method Config:String()
+		Local config:=New StringStack
+		For Local kv:=Eachin GetConfigVars()
+			Select ENV_LANG
+				Case "cpp"
+					config.Push "#define CFG_"+kv.Key+" "+kv.Value
+			    Case "cs"
+					config.Push "public const String "+kv.Key+"="+Enquote( kv.Value,"cs" )+";"
+				Case "js"
+					config.Push "CFG_"+kv.Key+"="+Enquote( kv.Value,"js" )+";"
+				Case "as"
+					config.Push "internal static var "+kv.Key+":String="+Enquote( kv.Value,"as" )
+				Case "java"
+					config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
+			End
+		Next
+		Return config.Join( "~n" )
+	End
+	
+	Method MetaData:String()
+		Local meta:=New StringStack
+		For Local kv:=Eachin dataFiles
+			Local src:=kv.Key
+			Local ext:=ExtractExt( src ).ToLower()
+			Select ext
+			Case "png","jpg","gif"
+				_html5_Info_Width=0
+				_html5_Info_Height=0
+				Select ext
+				Case "png" GetInfo_PNG( src )
+				Case "jpg" GetInfo_JPG( src )
+				Case "gif" GetInfo_GIF( src )
+				End
+				If _html5_Info_Width=0 Or _html5_Info_Height=0 Die "Unable to load image file '"+src+"'."
+				meta.Push "["+kv.Value+"];type=image/"+ext+";"
+				meta.Push "width="+_html5_Info_Width+";"
+				meta.Push "height="+_html5_Info_Height+";"
+				meta.Push "\n"
+			End
+		Next
+		Return meta.Join("")
+	End
+	
+	Method IsValid:Bool()
+		Return True
+	End
+
+	Method Begin:Void()
+		Select ENV_LANG
+			Case "cpp"
+				_trans=New CppTranslator
+		    Case "cs"
+				_trans=New CsTranslator
+			Case "js"
+				_trans=New JsTranslator
+			Case "as"
+				_trans=New AsTranslator
+			Case "java"
+				_trans=New JavaTranslator
+		End
+	End
+	
+	Method MakeTarget:Void()
+	
+		Select ENV_CONFIG
+			Case "debug" 
+				SetConfigVar "DEBUG","1"
+			Case "release" 
+				SetConfigVar "RELEASE","1"
+			Case "profile" 
+				SetConfigVar "PROFILE","1"
+		End
+		
+		CopySourceFiles(".")
+		
+		If ENV_LANG="js"
+			Local meta:="var META_DATA=~q"+MetaData()+"~q;~n"
+			SaveString meta,"__meta__.txt"
+		Endif
+		
+		SaveString transCode,"__main__.txt"
+		SaveString Config(),"__config__.txt"
+		
+		If tcc.opt_build
+		
+			Local buildPath:String
+			
+			If tcc.opt_builddir
+				buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+			Else
+				buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
+			Endif
+		
+		
+			ParseBuildScript(ENV_CUSTOMBUILDSCRIPT)
+
+		Endif
+	End
+	
+	Method ReplaceParams:String(params:String)
+		Local r:String
+		r = params
+
+		r = r.Replace("%ANDROID_PATH%",tcc.ANDROID_PATH)
+		r = r.Replace("%ANDROID_NDK_PATH%",tcc.ANDROID_NDK_PATH)
+		r = r.Replace("%ANT_PATH%",tcc.ANT_PATH)
+		r = r.Replace("%JDK_PATH%",tcc.JDK_PATH)
+		r = r.Replace("%FLEX_PATH%",tcc.FLEX_PATH)
+		r = r.Replace("%MINGW_PATH%",tcc.MINGW_PATH)
+		r = r.Replace("%MSBUILD_PATH%",tcc.MSBUILD_PATH)
+		r = r.Replace("%PSS_PATH%",tcc.PSS_PATH)
+		r = r.Replace("%PSM_PATH%",tcc.PSM_PATH)
+		r = r.Replace("%AGK_PATH%",tcc.AGK_PATH)
+		r = r.Replace("%HTML_PLAYER%",tcc.HTML_PLAYER)
+		r = r.Replace("%FLASH_PLAYER%",tcc.FLASH_PLAYER)
+
+		r = r.Replace("%cxDir%",tcc.cerberusdir)
+		r = r.Replace("%srcDir%",ExtractDir(tcc.opt_srcpath))
+
+		Local buildPath:String
+		If tcc.opt_builddir
+			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+		Else
+			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
+		Endif
+		r = r.Replace("%buildDir%",buildPath)
+
+		Local targetPath := ExtractDir(ENV_CUSTOMBUILDSCRIPT)
+		r = r.Replace("%targetDir%",targetPath)
+
+		r = r.Replace("%config%",tcc.opt_config)
+		
+		r = r.Replace("%srcName%",StripExt(StripDir(tcc.opt_srcpath)))
+
+		r = r.Replace("%targetName%",StripDir(targetPath))
+
+		Local f1:= r.Find("##",0)
+		Local f2:= r.Find("##",f1+1)
+		Local s := r[f1..f2+2]
+		If f2 > 0
+			Local cfv:= GetConfigVar(  r[f1+2..f2] ).Replace( ";"," " )
+			r = r.Replace(s,cfv)
+		Endif
+		
+		Return r
+	End
+
+	Method ScriptError:Void(lineNum:Int, line:String, Error:String)
+		Print "Error in script line "+line+": "+line+"  >>  "+Error
+	End
+
+	Method ParseBuildScript:Void(scriptFile:String)
+		Local lineNum:Int = 0
+		Local script:=LoadString(scriptFile)
+		Local config:String=tcc.opt_config
+
+		For Local line := Eachin script.Split("~n")
+			lineNum += 1
+			Local lt := line.Trim()
+			If lt.Length < 1 Continue
+			If lt.StartsWith("'") Continue
+			Local token := lt.Split("::")
+			Local command := token[0].Trim().ToLower()
+
+			If config <> tcc.opt_config And config <> "all" And command <> "config" Continue
+			
+			Local params := ReplaceParams(token[1].Trim())
+			Local parToken := params.Split(" ")
+			Select command
+				Case "print"
+					'print::text
+					Print (params)
+
+				Case "config"
+					'config::release/debug/all
+					Local cfg:= parToken[0].ToLower()
+					If cfg <> "release" And cfg<>"debug" And cfg<>"all"
+						ScriptError(lineNum, line, "Unrecognized configuration!")
+						Exit
+					Endif
+					config = cfg
+
+				Case "build"
+					'build::params
+					If Execute (params) <> 0
+						ScriptError(lineNum, line, "Build failed!")
+						Exit
+					Endif
+				Case "execute"
+					'execute::params
+					If tcc.opt_run
+						If Execute (params) <> 0
+							ScriptError(lineNum, line, "Execution failed!")
+							Exit
+						Endif
+					Endif
+
+				Case "replace"
+					'replace::file srcStr replaceStr
+					If FileType(parToken[0])<> FILETYPE_FILE
+						ScriptError(lineNum, line, "File not found!")
+						Exit
+					Endif
+					Local file:= LoadString(parToken[0])
+					file = file.Replace(parToken[1], parToken[2])
+					If SaveString(file,parToken[0]) = False
+						ScriptError(lineNum, line, "Could not save to file "+parToken[0]+"!")
+						Exit
+					Endif
+
+				Case "copyfile"
+					'copyfile::srcFile dstFile
+					If CopyFile (parToken[0], parToken[1]) = False
+						ScriptError(lineNum, line, "Could not copy file!")
+						Exit
+					Endif
+
+				Case "deletefile"
+					'deletefile::file
+					If DeleteFile(parToken[0]) = False
+						ScriptError(lineNum, line, "Could not delete file!")
+						Exit
+					Endif
+					
+				Case "copydir"
+					'copydir::srcDir dstDir
+					If CopyDir( parToken[0], parToken[1], True, True ) = False
+						ScriptError(lineNum, line, "Could not copy directory!")
+						Exit
+					Endif
+					
+				Case "deletedir"
+					'deletedir::directory
+					If DeleteDir( parToken[0], True ) = False
+						ScriptError(lineNum, line, "Could not delete directory!")
+						Exit
+					Endif
+					
+				Case "createdir"
+					'createdir::directory
+					If CreateDir (parToken[0]) = False
+						ScriptError(lineNum, line, "Could not create directory!")
+						Exit
+					Endif
+					
+				Case "renamefile"
+					'renamefile::srcFile dstFile
+					If CopyFile (parToken[0], parToken[1]) = False
+						ScriptError(lineNum, line, "Could not rename file!")
+						Exit
+					Endif
+					DeleteFile(parToken[0])
+
+				Case "inject"
+					'inject::inputfile outputfile section(CONFIG/TRANSCODE/METADATA)
+					If FileType(parToken[0])<> FILETYPE_FILE
+						ScriptError(lineNum, line, "Input file not found!")
+						Exit
+					Endif
+					Local input:= LoadString(parToken[0])
+					If FileType(parToken[1])<> FILETYPE_FILE
+						ScriptError(lineNum, line, "Output file not found!")
+						Exit
+					Endif
+					Local output:= LoadString(parToken[1])
+					output=ReplaceBlock( output,parToken[2],input )
+					If SaveString(output,parToken[1]) = False
+						ScriptError(lineNum, line, "Could not save to file "+parToken[1]+"!")
+						Exit
+					Endif
+				Default 
+					Print "ERROR: Unrecognized build script command: "+command	
+					Exit
+			End
+		Next
+	End
+	
+End
+

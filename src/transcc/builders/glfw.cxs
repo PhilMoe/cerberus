@@ -28,6 +28,19 @@ Class GlfwBuilder Extends Builder
 		CreateDir dst+"/"+tconfig+"/internal"
 		CreateDir dst+"/"+tconfig+"/external"
 		
+'		If msize=32
+'			If FileType(dst+"/Makefile32")=FILETYPE_FILE
+'				CopyFile(dst+"/Makefile32",dst+"/Makefile")
+'			Endif
+'		Else
+'			If FileType(dst+"/Makefile64")=FILETYPE_FILE
+'				CopyFile(dst+"/Makefile64",dst+"/Makefile")
+'			Endif
+'		Endif
+		If FileType(dst+"/build/"+tconfig+"/resource.o")=FILETYPE_FILE
+			DeleteFile(dst+"/build/"+tconfig+"/resource.o")
+		Endif
+		
 		CreateDataDir dst+"/"+tconfig+"/data"
 
 		CopySourceFiles(".")
@@ -75,7 +88,8 @@ Class GlfwBuilder Extends Builder
 			Local cmd:="make"
 			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
 
-			Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
+			'Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
+			Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
 
 			If tcc.opt_run
 
@@ -226,7 +240,13 @@ Class GlfwBuilder Extends Builder
 
 	' Process external shared libraries	to copy
 	Method ProcessExternalLibs( config:String, arch:String, link:String )
-		Local libStr:String = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		Local libStr:String
+		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
+		If msize = 64
+			libStr = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		Else
+			libStr = GetConfigVar( "GLFW_COPY_LIBS_32" ).ToLower()
+		Endif
 		If libStr = "" Then Return
 
 		Local libcopy:String[] = libStr.Split( ";" )

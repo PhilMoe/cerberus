@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2020-06-15 (DEBUG)"
+    Const VERSION:="2020-06-22 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2020-06-15"
+    Const VERSION:="2020-06-22"
 #Endif
 
 Function Main()
@@ -152,12 +152,14 @@ Class Target
     Field name:String
     Field system:String
     Field builder:Builder
+    Field path:String
   
-    Method New( dir:String,name:String,system:String,builder:Builder )
+    Method New( dir:String,name:String,system:String,builder:Builder, path:String )
         Self.dir=dir
         Self.name=name
         Self.system=system
         Self.builder=builder
+        Self.path=path
     End
 End
 
@@ -209,7 +211,6 @@ Class TransCC
       
         Print "TRANS cerberus compiler V"+VERSION
       
-        'cerberusdir=RealPath( ExtractDir( AppPath )+"/.." )
         cerberusdir=GetEnv( "CERBERUS_DIR" )
         _libs=cerberusdir+"/libs/"
 
@@ -224,11 +225,9 @@ Class TransCC
         EnumBuilders
       
 		If opt_targetpath.Length <= 1 Then opt_targetpath = "targets"
-'Print "targetspath="+opt_targetpath
+
 		Local tpaths:= opt_targetpath.Split(";")
 		For Local tpath := Eachin tpaths
-        	'EnumTargets "targets"
-'Print "targetpath="+tpath
         	EnumTargets tpath
         Next
       
@@ -278,7 +277,7 @@ Class TransCC
             PushConfigScope
           
             PreProcess t
-          
+
             Local name:=GetConfigVar( "TARGET_NAME" )
             If name
                 Local system:=GetConfigVar( "TARGET_SYSTEM" )
@@ -286,9 +285,11 @@ Class TransCC
                     Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
                     If builder
                         Local host:=GetConfigVar( "TARGET_HOST" )
-                        If Not host Or host=HostOS
-                            _targets.Set name,New Target( f,name,system,builder )
+                        If Not host Or host=HostOS Or host.Find(HostOS,0)>=0
+                            _targets.Set name,New Target( f,name,system,builder, p+"/"+f )
                         Endif
+                        ENV_LANG = GetConfigVar( "TARGET_LANG" )
+                        ENV_CUSTOMBUILDSCRIPT = p+"/"+f+"/cxbuild.txt"
                     Endif
                 Endif
             Endif

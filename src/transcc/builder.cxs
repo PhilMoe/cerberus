@@ -8,6 +8,8 @@ Import "native/stb_image_write.h"
 Import "native/stb_image_resize.h"
 Import "native/image.cpp"
 
+
+
 Class Builder
 
 	Method New( tcc:TransCC )
@@ -37,7 +39,8 @@ Class Builder
 
 		If Not tcc.opt_modpath tcc.opt_modpath=tcc.cerberusdir+"/modules"
 
-		tcc.opt_modpath=".;"+ExtractDir( tcc.opt_srcpath )+";"+tcc.opt_modpath+";"+tcc.cerberusdir+"/targets/"+tcc.target.dir+"/modules"
+		'tcc.opt_modpath=".;"+ExtractDir( tcc.opt_srcpath )+";"+tcc.opt_modpath+";"+tcc.cerberusdir+"/targets/"+tcc.target.dir+"/modules"
+		tcc.opt_modpath=".;"+ExtractDir( tcc.opt_srcpath )+";"+tcc.opt_modpath+";"+tcc.target.path+"/modules"
 		
 		If Not tcc.opt_check
 			tcc.opt_check=True
@@ -63,6 +66,7 @@ Class Builder
 		SetConfigVar "TARGET",ENV_TARGET
 		SetConfigVar "CONFIG",ENV_CONFIG
 		SetConfigVar "SAFEMODE",ENV_SAFEMODE
+		'SetConfigVar "CUSTOMBUILDSCRIPT",ENV_CUSTOMBUILDSCRIPT
 		
 		app=ParseApp( tcc.opt_srcpath )
 
@@ -77,15 +81,12 @@ Class Builder
 		Print "Translating..."
 		Local transbuf:=New StringStack
 		For Local file$=Eachin app.fileImports
-'Print("fileImports="+file)
-'Print("ENV_LANG="+ENV_LANG)
+
 			If ExtractExt( file ).ToLower()=ENV_LANG
-'Print("match")
 				transbuf.Push LoadString( file )
 				transbuf.Push "~n"
 			Endif
 			If ENV_LANG="cpp" And ( ExtractExt( file ).ToLower()="h" Or ExtractExt( file ).ToLower()="c" )
-'Print("match")
 				transbuf.Push LoadString( file )
 				transbuf.Push "~n"
 			Endif
@@ -114,10 +115,14 @@ Class Builder
 			If FileType( targetPath )<>FILETYPE_NONE Die "Failed to clean target dir"
 		Endif
 
+'Print "targetPath= "+targetPath
+'Print "targetdir= "+tcc.cerberusdir+"/targets/"+tcc.target.dir+"/template"
+'Print "targetpath= "+tcc.target.path
 		If FileType( targetPath )=FILETYPE_NONE
 			If FileType( buildPath )=FILETYPE_NONE CreateDir buildPath
 			If FileType( buildPath )<>FILETYPE_DIR Die "Failed to create build dir: "+buildPath
-			If Not CopyDir( tcc.cerberusdir+"/targets/"+tcc.target.dir+"/template",targetPath,True,False ) Die "Failed to copy target dir"
+			'If Not CopyDir( tcc.cerberusdir+"/targets/"+tcc.target.dir+"/template",targetPath,True,False ) Die "Failed to copy target dir"
+			If Not CopyDir( tcc.target.path+"/template",targetPath,True,False ) Die "Failed to copy target dir"
 		Endif
 		
 		If FileType( targetPath )<>FILETYPE_DIR Die "Failed to create target dir: "+targetPath
@@ -363,13 +368,11 @@ Class Builder
 				For Local file:= Eachin files
 				
 					Local subDir:= ExtractDir(file)
-'Print file +" >>   (" +subDir+")"
 					If (FileType(targetDir+"/"+subDir) <> FILETYPE_DIR And subDir.Length() > 0)
 						Local subDirs:= subDir.Split("/")
 						oOut = ""
 						For Local sub := Eachin subDirs
 							oOut += "/"+sub
-'Print "CreateDir >> "+(targetDir+"/"+oOut)
 							If (FileType(targetDir+oOut) <> FILETYPE_DIR) 	CreateDir(targetDir+oOut)
 						Next
 
@@ -388,7 +391,88 @@ Class Builder
 	
 End
 
+Global _html5_Info_Width:Int
+Global _html5_Info_Height:Int
+
+
+Function GetInfo_PNG:Int( path:String )
+	Local f:=FileStream.Open( path,"r" )
+	If f
+		Local data:=New DataBuffer( 32 )
+		Local n:=f.Read( data,0,24 )
+		f.Close
+		If n=24 And data.PeekByte(1)="P"[0] And data.PeekByte(2)="N"[0] And data.PeekByte(3)="G"[0]
+			_html5_Info_Width=(data.PeekByte(16)&255) Shl 24 | (data.PeekByte(17)&255) Shl 16 | (data.PeekByte(18)&255) Shl 8 | (data.PeekByte(19)&255)
+			_html5_Info_Height=(data.PeekByte(20)&255) Shl 24 | (data.PeekByte(21)&255) Shl 16 | (data.PeekByte(22)&255) Shl 8 | (data.PeekByte(23)&255)
+			Return 0
+		Endif
+	Endif
+	Return -1
+End
+
+Function GetInfo_GIF:Int( path:String )
+	Local f:=FileStream.Open( path,"r" )
+	If f
+		Local data:=New DataBuffer( 32 )
+		Local n:=f.Read( data,0,10 )
+		f.Close
+		If n=10 And data.PeekByte(0)="G"[0] And data.PeekByte(1)="I"[0] And data.PeekByte(2)="F"[0]
+			_html5_Info_Width=(data.PeekByte(7)&255) Shl 8 | (data.PeekByte(6)&255)
+			_html5_Info_Height=(data.PeekByte(9)&255) Shl 8 | (data.PeekByte(8)&255)
+			Return 0
+		Endif
+	Endif
+	Return -1
+End
+
+Function GetInfo_JPG:Int( path:String )
+	Local f:=FileStream.Open( path,"r" )
+	If f
+		Local buf:=New DataBuffer( 32 )
+		
+		If f.Read( buf,0,2 )=2 And (buf.PeekByte(0)&255)=$ff And (buf.PeekByte(1)&255)=$d8
+			Repeat
+
+				While f.Read( buf,0,1 )=1  And (buf.PeekByte(0)&255)<>$ff
+				Wend
+				If f.Eof() Exit
+				
+				While f.Read( buf,0,1 )=1  And (buf.PeekByte(0)&255)=$ff
+				Wend
+				If f.Eof() Exit
+
+				Local marker:=buf.PeekByte(0)&255
+				Select marker
+				Case $d0,$d1,$d2,$d3,$d4,$d5,$d6,$d7,$d8,$d9,$00,$ff
+					Continue
+				End
+
+				If f.Read( buf,0,2 )<>2 Exit
+				Local datalen:=((buf.PeekByte(0)&255) Shl 8 | (buf.PeekByte(1)&255))-2
+				
+				Select marker
+				Case $c0,$c1,$c2,$c3
+					If datalen And f.Read( buf,0,5 )=5
+						Local bpp:=buf.PeekByte(0)&255
+						_html5_Info_Width=(buf.PeekByte(3)&255) Shl 8 | (buf.PeekByte(4)&255)
+						_html5_Info_Height=(buf.PeekByte(1)&255) Shl 8 | (buf.PeekByte(2)&255)
+						f.Close
+						Return 0
+					Endif
+				End
+				
+				Local pos:=f.Position+datalen
+				If f.Seek( pos )<>pos Exit
+				
+			Forever
+		Endif
+		f.Close
+	Endif
+	Return -1
+
+End
 
 Extern
 Function _CreateIcon:Void(srcFile:String,destFile:String,w:Int,h:Int,round:Int)
 Function _ConvertToIco:Void(srcFile:String,destFile:String)
+

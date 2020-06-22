@@ -1,11 +1,15 @@
-The agk2 module is a wrapper for [[https://www.appgamekit.com|AppGameKit]] by [[https://www.thegamecreators.com|TheGameCreators]].
+> The AppGameKit Documentation
+The *agk2* module is a wrapper for [[https://www.appgamekit.com|AppGameKit]] Tier 2 by [[https://www.thegamecreators.com|TheGameCreators]].
 
-To use it, you need to own AppGameKit and have the AGK_PATH variable set inside the bin/config file of your platform. 
+To use it, you need to own AppGameKit and have the *AGK_PATH* variable set inside the bin/config file of your platform. 
 Currently the following platforms are supported as a target platforms for AGK:
 
 * Windows
 * OSX
 * iOS
+* Android (Google)
+
+If you want to target Android with AGK, then you need to set the *ANDROID_PATH* and the *ANDROID_NDK_PATH* variable as well.
 
 For more details about the AGK API, please consult its [[https://www.appgamekit.com/documentation/home.html|official documentation]]. This help file is just a quick solution to give you an inbuild quick help.
 
