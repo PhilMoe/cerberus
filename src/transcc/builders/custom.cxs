@@ -163,6 +163,8 @@ Class CustomBuilder Extends Builder
 		Local lineNum:Int = 0
 		Local script:=LoadString(scriptFile)
 		Local config:String=tcc.opt_config
+		Local host:String=HostOS()
+		Local echo:String="on"
 
 		For Local line := Eachin script.Split("~n")
 			lineNum += 1
@@ -172,17 +174,37 @@ Class CustomBuilder Extends Builder
 			Local token := lt.Split("::")
 			Local command := token[0].Trim().ToLower()
 
-			If config <> tcc.opt_config And config <> "all" And command <> "config" Continue
+			If config <> tcc.opt_config And config <> "all" And command <> "config" And command <> "sethost"  And command <> "setecho" Continue
+			If host <> HostOS() And host <> "all" And command <> "config" And command <> "sethost"  And command <> "setecho"  Continue
 			
 			Local params := ReplaceParams(token[1].Trim())
 			Local parToken := params.Split(" ")
+			If echo="on" And command <> "config" And command <> "sethost"  And command <> "setecho" Then Print command + " >> " + params
 			Select command
 				Case "print"
 					'print::text
 					Print (params)
 
+				Case "setecho"
+					'setecho::on|off
+					Local ec:=parToken[0].ToLower()
+					If ec <> "on" And ec<>"off"
+						ScriptError(lineNum, line, "Unrecognized echo mode!")
+						Exit
+					Endif
+					echo = ec
+
+				Case "sethost"
+					'sethost::winnt|macos|linux|all
+					Local hst:=parToken[0].ToLower()
+					If hst <> "winnt" And hst<>"macos"  And hst<>"linux" And hst<>"all"
+						ScriptError(lineNum, line, "Unrecognized host!")
+						Exit
+					Endif
+					host = hst
+
 				Case "config"
-					'config::release/debug/all
+					'config::release|debug|all
 					Local cfg:= parToken[0].ToLower()
 					If cfg <> "release" And cfg<>"debug" And cfg<>"all"
 						ScriptError(lineNum, line, "Unrecognized configuration!")
@@ -192,14 +214,14 @@ Class CustomBuilder Extends Builder
 
 				Case "build"
 					'build::params
-					If Execute (params) <> 0
+					If Execute (params) <> True
 						ScriptError(lineNum, line, "Build failed!")
 						Exit
 					Endif
 				Case "execute"
 					'execute::params
 					If tcc.opt_run
-						If Execute (params) <> 0
+						If Execute (params) <> True
 							ScriptError(lineNum, line, "Execution failed!")
 							Exit
 						Endif
