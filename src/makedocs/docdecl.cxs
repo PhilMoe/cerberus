@@ -927,7 +927,44 @@ Class DocDecl
 		pIndent += 1
 		Local value:String
 		' put identifier
-		value = ident.Replace("~n","~~n").Replace("~r","")
+		value = ident
+		' replace new lines
+		value = value.Replace("~n","~~n").Replace("~r","")
+		' resolve [[ ]] style-links
+		Local start:Int = 0
+		Repeat
+			' find [[ ]]
+			Local i0:Int = value.Find("[[", start)
+			If i0 < 0 Then Exit
+			Local i1:Int = value.Find("]]", i0+3)
+			If i1 < 0 Then Exit
+			' extract link
+			Local link:String = value[i0+2 .. i1]
+			' extract alt text, or fallback to link identifier
+			Local parts:String[] = link.Split("|")
+			Local lident:String = parts[0]
+			Local lalt:String = parts[0]
+			If parts.Length = 2 Then
+				lalt = parts[1]
+			Endif
+			' find link target in current scope and so on...
+			Local tdecl:DocDecl = FindFromHere(lident)
+			'... not found? look in global scope
+			If Not tdecl Then
+				tdecl = _root.FindChild(lident)
+			Endif
+			' make new link text
+			If tdecl Then
+				link = ("00000" + tdecl.uid)[-6..] + "|" + lalt
+			' link not resolved
+			Else
+				link = "|" + lalt
+			Endif
+			' replace link in value
+			value = value[..i0+2] + link + value[i1..]
+			' look for next link
+			start = i0 + link.Length + 2
+		Forever 
 		json += _JsonIndent(pIndent) + "~qident~q: ~q" + _JsonEscape(value) + "~q"
 		json += ",~n"
 		' ... kind

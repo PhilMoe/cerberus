@@ -24,6 +24,8 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
+2020-06-30 - Holzchopf
+	- CHANGED json builder now also resolves links
 2020-06-05 - Holzchopf
 	- ADDED export of decls.json
 2019-01-20 - Holzchopf
@@ -102,7 +104,7 @@ Import apidoccer
 Import docdoccer
 
 '===============================================================================
-Const VERSION:String		= "2020-06-05"
+Const VERSION:String		= "2020-06-30"
 '===============================================================================
 
 ' path settings
