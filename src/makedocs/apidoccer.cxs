@@ -746,7 +746,7 @@ Class ApiDoccer
 	' (mainly used for the summary field that gets put into a <td> and XDECL -
 	' fields that get markdowned, which puts them in a paragraph, but aren't
 	' used as paragraphs)
-	Method StripParagraph:String( pText:String )
+	Function StripParagraph:String( pText:String )
 		' strip p tags
 		If pText.StartsWith("<p>") And pText.EndsWith("</p>") Then
 			pText = pText[3..-4]
