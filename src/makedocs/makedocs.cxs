@@ -24,6 +24,11 @@ makedocs.exe -ignore "brl.admob;reflection"
 
 Changelog (REMEMBER CONST <<VERSION>> WHEN CHANGING)
 --------------------------------------------------------------------------------
+2020-07-02 - Holzchopf
+	- CHANGED json builder moved from DocDecl to Makedocs
+	- CHANGED json builder now transforms markdown
+	- ADDED kind DECL_INDEX_ENTRY
+	- CHANGED indexes now hold an DECL_INDEX_ENTRY for every indexed entry
 2020-06-30 - Holzchopf
 	- CHANGED json builder now also resolves links
 2020-06-05 - Holzchopf
@@ -104,7 +109,7 @@ Import apidoccer
 Import docdoccer
 
 '===============================================================================
-Const VERSION:String		= "2020-06-30"
+Const VERSION:String		= "2020-07-02"
 '===============================================================================
 
 ' path settings
@@ -180,6 +185,11 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 	Field marker:Markdown
 	Field iconlinks_url:String[]
 	Field iconlinks_icon:String[]
+	
+	' for link resolving
+	Const RESOLVEDOCLINKS_HREF:Int = 0
+	Const RESOLVEDOCLINKS_UID_SCHEME:Int = 1
+	Field resolvetype:Int = RESOLVEDOCLINKS_HREF
 
 	'---------------------------------------------------------------------------
 	' "Main"
@@ -927,6 +937,12 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		Local txt := pSummary
 		If Not txt Then txt = pIndex
 		decl.Add( New DocDecl( DECL_SUMMARY, txt ) )
+		' add an index entry decl for every entry in this index
+		For Local d := Eachin pStack
+			Local e := New DocDecl( DECL_INDEX_ENTRY, d.ident )
+			e.target = d
+			decl.Add( e )
+		Next
 		' store index decl
 		rootdocs.Add( decl )
 		_MoveToIndex( pIndex, pStack )
@@ -1034,9 +1050,82 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 	End
 	' write decls.json
 	Method WriteDeclsJson:Void()
-		' take stringification of tree and transform
-		Local txt:String = rootdecl.ToJson()
+		ClearErrInfo()
+		curdecl = rootdocs
+		' suppress iternal link resolving
+		SetLinkResolveType( RESOLVEDOCLINKS_UID_SCHEME )
+		Local txt:String = _WriteDeclJson( rootdecl, 0 )
 		SaveString( txt, PATH_HTML_BASE + "/decls.json" )
+		' restore link resolving
+		SetLinkResolveType( RESOLVEDOCLINKS_HREF )
+	End
+	' turns the decl tree into a pretty json string
+	Method _WriteDeclJson:String( pDecl:DocDecl, pIndent:Int=0 )
+		' for warnings and links to be bound to the right source
+		SetErrInfoFile( pDecl.ident )
+		curdecl = pDecl
+		Local json:String = ""
+		' every decl is an object
+		json += _JsonIndent(pIndent) + "{~n"
+		pIndent += 1
+		Local value:String
+		' put identifier
+		value = pDecl.ident
+		marker = New Markdown(Self, Self)
+		' transform these:
+		Select pDecl.kind
+		Case DECL_CONTENTS,
+		DECL_DESCRIPTION,
+		DECL_LINKS,
+		DECL_EXAMPLE,
+		DECL_PARAMS,
+		DECL_RETURNS
+			value = marker.ToHtml( value )
+		Case DECL_SUMMARY
+			value = ApiDoccer.StripParagraph( marker.ToHtml( value ) )
+		End
+		json += _JsonIndent(pIndent) + "~qident~q: ~q" + _JsonEscape(value) + "~q"
+		json += ",~n"
+		' ... kind
+		json += _JsonIndent(pIndent) + "~qkind~q: ~q" + pDecl.GetKindIdent() + "~q"
+		json += ",~n"
+		' ... uid
+		json += _JsonIndent(pIndent) + "~quid~q: ~q" + ("00000" + pDecl.uid)[-6..] + "~q"
+		' ... target
+		If pDecl.target Then
+			json += ",~n"
+			json += _JsonIndent(pIndent) + "~qtarget~q: ~q" + ("00000" + pDecl.target.uid)[-6..] + "~q"
+		End
+		' ... childs
+		If pDecl.childs Then
+			json += ",~n"
+			json += _JsonIndent(pIndent) + "~qchilds~q: ["
+			Local isfirst:Bool = True
+			For Local d := Eachin pDecl.childs
+				If Not isfirst Then
+					json += ","
+				End
+				json += "~n"
+				json += _WriteDeclJson( d, pIndent + 1 )
+				isfirst = False
+			Next
+			json += "~n"
+			json += _JsonIndent(pIndent) + "]"
+		End
+		json += "~n"
+		pIndent -= 1
+		json += _JsonIndent(pIndent) + "}"
+		Return json
+	End
+	Method _JsonIndent:String( pIndent:Int )
+		Local indstr:String = ""
+		For Local i:Int = 0 Until pIndent
+			indstr += "~t"
+		Next
+		Return indstr
+	End
+	Method _JsonEscape:String( pString:String )
+		Return pString.Replace("\", "\\").Replace("~q","\~q").Replace("~t","\t").Replace("~n","\n")
 	End
 	' fill template and write documents
 	Method WriteDocs:Void()
@@ -1339,6 +1428,11 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		Until p = -1
 	End
 	
+	' set how links in docs should be resolved
+	Method SetLinkResolveType:Void( pType:Int )
+		resolvetype = pType
+	End
+	
 	'===========================================================================
 	' ILinkResolver
 	Method ResolveLink:String( pLink:String, pAltText:String )
@@ -1442,7 +1536,12 @@ Class Makedocs Implements ILinkResolver, IPrettifier
 		' build link path from actual destination (backwards)
 		If dest Then
 			resolvecode = 0
-			link = BuildDocLink( dest, curdecl )
+			' resolve depending on option
+			If resolvetype = RESOLVEDOCLINKS_UID_SCHEME Then
+				link = "uid:" + ("00000" + dest.uid)[-6..]
+			Else
+				link = BuildDocLink( dest, curdecl )
+			End
 		Else
 			resolvecode = -1
 			Warning("link destination not found: " + link)

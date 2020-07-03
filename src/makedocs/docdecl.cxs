@@ -57,6 +57,7 @@ Const DECL_ENUM_ELEMENT:Int			= 601
 Const DECL_IMPORTEDBY:Int			= 700	' late generated decls
 Const DECL_EXTENDEDBY:Int			= 701
 Const DECL_IMPLEMENTEDBY:Int		= 702
+Const DECL_INDEX_ENTRY:Int			= 703
 Const DECL_DESCRIPTION:Int			= 800	' documentation
 Const DECL_EXAMPLE:Int				= 801
 Const DECL_LINKS:Int				= 802
@@ -266,6 +267,8 @@ Class DocDecl
 			Return "extendedby"
 		Case DECL_IMPLEMENTEDBY
 			Return "implementedby"
+		Case DECL_INDEX_ENTRY
+			Return "index_entry"
 		Case DECL_DESCRIPTION
 			Return "description"
 		Case DECL_EXAMPLE
@@ -917,96 +920,6 @@ Class DocDecl
 			Next
 		End
 		Return indstr
-	End
-	
-	' turns the decl tree into a pretty json string
-	Method ToJson:String( pIndent:Int=0 )
-		Local json:String = ""
-		' every decl is an object
-		json += _JsonIndent(pIndent) + "{~n"
-		pIndent += 1
-		Local value:String
-		' put identifier
-		value = ident
-		' replace new lines
-		value = value.Replace("~n","~~n").Replace("~r","")
-		' resolve [[ ]] style-links
-		Local start:Int = 0
-		Repeat
-			' find [[ ]]
-			Local i0:Int = value.Find("[[", start)
-			If i0 < 0 Then Exit
-			Local i1:Int = value.Find("]]", i0+3)
-			If i1 < 0 Then Exit
-			' extract link
-			Local link:String = value[i0+2 .. i1]
-			' extract alt text, or fallback to link identifier
-			Local parts:String[] = link.Split("|")
-			Local lident:String = parts[0]
-			Local lalt:String = parts[0]
-			If parts.Length = 2 Then
-				lalt = parts[1]
-			Endif
-			' find link target in current scope and so on...
-			Local tdecl:DocDecl = FindFromHere(lident)
-			'... not found? look in global scope
-			If Not tdecl Then
-				tdecl = _root.FindChild(lident)
-			Endif
-			' make new link text
-			If tdecl Then
-				link = ("00000" + tdecl.uid)[-6..] + "|" + lalt
-			' link not resolved
-			Else
-				link = "|" + lalt
-			Endif
-			' replace link in value
-			value = value[..i0+2] + link + value[i1..]
-			' look for next link
-			start = i0 + link.Length + 2
-		Forever 
-		json += _JsonIndent(pIndent) + "~qident~q: ~q" + _JsonEscape(value) + "~q"
-		json += ",~n"
-		' ... kind
-		json += _JsonIndent(pIndent) + "~qkind~q: ~q" + GetKindIdent() + "~q"
-		json += ",~n"
-		' ... uid
-		json += _JsonIndent(pIndent) + "~quid~q: ~q" + ("00000" + uid)[-6..] + "~q"
-		' ... target
-		If target Then
-			json += ",~n"
-			json += _JsonIndent(pIndent) + "~qtarget~q: ~q" + ("00000" + target.uid)[-6..] + "~q"
-		End
-		' ... childs
-		If childs Then
-			json += ",~n"
-			json += _JsonIndent(pIndent) + "~qchilds~q: ["
-			Local isfirst:Bool = True
-			For Local d := Eachin childs
-				If Not isfirst Then
-					json += ","
-				End
-				json += "~n"
-				json += d.ToJson(pIndent + 1)
-				isfirst = False
-			Next
-			json += "~n"
-			json += _JsonIndent(pIndent) + "]"
-		End
-		json += "~n"
-		pIndent -= 1
-		json += _JsonIndent(pIndent) + "}"
-		Return json
-	End
-	Function _JsonIndent:String( pIndent:Int )
-		Local indstr:String = ""
-		For Local i:Int = 0 Until pIndent
-			indstr += "~t"
-		Next
-		Return indstr
-	End
-	Function _JsonEscape:String( pString:String )
-		Return pString.Replace("\", "\\").Replace("~q","\~q").Replace("~t","\t")
 	End
 End
 
