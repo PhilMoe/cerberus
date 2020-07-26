@@ -1246,7 +1246,7 @@ Class Image
 		Local i:Int = 0
 		For Local yi:Int = 0 To ty-1
 			For Local xi:Int = 0 To tx-1
-				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight+y,width,cellHeight,xhandle,yhandle )
+				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight+y,width,height,xhandle,yhandle )
 				i += 1
 			Next
 		Next
