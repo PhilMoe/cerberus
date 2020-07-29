@@ -9,6 +9,7 @@
 #endif
 
 #include <string>
+#include <vector>
 
 class BBHttpRequest : public BBThread
 {
@@ -30,9 +31,8 @@ private:
   char *_urlc;
   struct curl_slist *_header;
   CURLcode _res;
-	String _response;
+  std::vector<char> _response;
 	int _status;
-	int _recv;
 
   // fancy callback stuff for curl.
   // as curl needs a static function we have to use kind of a trick to use a member here
@@ -43,7 +43,7 @@ private:
 
 // ***** HttpRequest.cpp *****
 
-BBHttpRequest::BBHttpRequest(): _status( -1 ), _recv( 0 ), _curl( 0 )
+BBHttpRequest::BBHttpRequest(): _status( -1 ), _curl( 0 )
 {
 }
 
@@ -54,9 +54,12 @@ size_t BBHttpRequest::DataCallback( void* buf, size_t size, size_t nmemb, void* 
 
 size_t BBHttpRequest::DataCallbackImpl( void* buf, size_t size, size_t nmemb )
 {
-  _response = String( static_cast<const char*>( buf ) );
-  _recv = size*nmemb;
-	return size*nmemb; //tell curl how many bytes we handled
+	size_t plus = size * nmemb;
+	const char *src = (const char *)buf;
+	for(size_t i=0; i<plus; i++){
+		_response.push_back(src[i]);
+	}
+	return plus;
 }
 
 void BBHttpRequest::Open( String req, String url, int timeout, bool httpsVerifyCertificate, bool httpsVerifyHost )
@@ -82,8 +85,7 @@ void BBHttpRequest::Open( String req, String url, int timeout, bool httpsVerifyC
       curl_easy_setopt( _curl, CURLOPT_SSL_VERIFYHOST, 0L );
   }
 	
-  _response = "";
-  _recv = 0;
+  _response.clear();
 	_status = -1;
 }
 
@@ -128,7 +130,8 @@ void BBHttpRequest::Run__UNSAFE__()
 }
 
 String BBHttpRequest::ResponseText(){
-	return _response;
+	String result(_response.data(), _response.size());
+	return result;
 }
 
 int BBHttpRequest::Status(){
@@ -136,5 +139,5 @@ int BBHttpRequest::Status(){
 }
 
 int BBHttpRequest::BytesReceived(){
-	return _recv;
+	return _response.size();
 }
