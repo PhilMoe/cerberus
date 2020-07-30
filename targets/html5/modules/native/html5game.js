@@ -462,6 +462,17 @@ BBHtml5Game.prototype.Run=function(){
 		eatEvent( e );
 	}
 
+	canvas.onwheel=function( e ){
+		var amount = 0;
+		if(e.deltaY < 0){
+			amount = 1;
+		}else if(e.deltaY > 0){
+			amount = -1;
+		}
+		game.MouseEvent( BBGameEvent.MouseMove, -1, mouseX(e), mouseY(e), amount);
+		eatEvent( e );
+	}
+
 	canvas.onmouseout=function( e ){
 		game.MouseEvent( BBGameEvent.MouseUp,0,mouseX(e),mouseY(e) );
 		game.MouseEvent( BBGameEvent.MouseUp,1,mouseX(e),mouseY(e) );
