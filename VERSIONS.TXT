@@ -1,7 +1,8 @@
-***** v2020-06-27m *****
+***** v2020-09-12 *****
 
 FIX: [TRANSCC] With the GLFW target and MingW, you can build 32bit again!
 FIX: [TRANSCC] Fixed copying sub directories with the INCLUDE statement.
+Fix: [TRANSCC] Fixed TRANSCC to change canvas sizes, title, scale mode and canvas flag every time you build your app.
 MOD: [TRANSCC] With the GLFW target, resource files are now compiled everytime, so a change will be always taken in.
 MOD: [MOJO/MOJO2] Font.TextHeight will return the actual height of the string now if one is given.
 MOD: [brl.filesystem] CreateDir now creates paths automatically, that includes more than one sub directory.

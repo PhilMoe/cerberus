@@ -2,7 +2,9 @@
 
 <html>
 <head>
-<title>%%HTML5_APP_TITLE%%</title>
+<!--${APP_TITLE_BEGIN}//-->
+<title>CerberusGame</title>
+<!--${APP_TITLE_END}//-->
 <style type="text/css">
 body{
 	height: 100%;
@@ -46,11 +48,13 @@ div.splitter{
 </style>
 <script>
 
-var CANVAS_RESIZE_MODE=%%HTML5_CANVAS_RESIZE_MODE%%;	//0=locked, 1=stretch, 2=resize
+<!--${CANVAS_BEGIN}//-->
+var CANVAS_RESIZE_MODE=1;	//0=locked, 1=stretch, 2=resize
+var CANVAS_WIDTH=640;
+var CANVAS_HEIGHT=480;
+var CONSOLE_SHOW=true;
+<!--${CANVAS_END}//-->
 
-var CANVAS_WIDTH=%%HTML5_CANVAS_WIDTH%%;
-var CANVAS_HEIGHT=%%HTML5_CANVAS_HEIGHT%%;
-var CONSOLE_SHOW=%%HTML5_CONSOLE_SHOW%%;
 
 window.onload=function( e ){
 

@@ -15318,6 +15318,7 @@ class c_TransCC : public Object{
 };
 String bb_os_ExtractDir(String);
 String bb_transcc_StripQuotes(String);
+bool bb_transcc_IsValidSourcePath(String);
 int bb_transcc_Die(String);
 class c_Type : public Object{
 	public:
@@ -18114,6 +18115,9 @@ void c_TransCC::p_ParseArgs(){
 	if(m_args.Length()>1){
 		m_opt_srcpath=bb_transcc_StripQuotes(m_args[m_args.Length()-1].Trim());
 	}
+	if(!bb_transcc_IsValidSourcePath(m_opt_srcpath)){
+		bb_transcc_Die(String(L"Path to source file contains space characters: ",47)+m_opt_srcpath);
+	}
 	for(int t_i=1;t_i<m_args.Length()-1;t_i=t_i+1){
 		String t_arg=m_args[t_i].Trim();
 		String t_rhs=String();
@@ -18425,7 +18429,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-06-23",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-09-12",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18491,6 +18495,20 @@ String bb_transcc_StripQuotes(String t_str){
 		return t_str.Slice(1,-1);
 	}
 	return t_str;
+}
+bool bb_transcc_IsValidSourcePath(String t_sourcePath){
+	String t_[]={String(L" ",1)};
+	Array<String > t_forbiddenChars=Array<String >(t_,1);
+	Array<String > t_2=t_forbiddenChars;
+	int t_3=0;
+	while(t_3<t_2.Length()){
+		String t_chr=t_2[t_3];
+		t_3=t_3+1;
+		if(t_sourcePath.Find(t_chr,0)>=0){
+			return false;
+		}
+	}
+	return true;
 }
 int bb_transcc_Die(String t_msg){
 	bbPrint(String(L"TRANS FAILED: ",14)+t_msg);
@@ -21088,11 +21106,13 @@ void c_Html5Builder::p_MakeTarget(){
 	SaveString(t_main,String(L"main.js",7));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"HTML5_APP_ICON",14)),CurrentDir()+String(L"\\favicon.ico",12));
 	String t_game=LoadString(String(L"CerberusGame.html",17));
-	t_game=t_game.Replace(String(L"%%HTML5_CONSOLE_SHOW%%",22),bb_config_GetConfigVar(String(L"HTML5_CONSOLE_SHOW",18)));
-	t_game=t_game.Replace(String(L"%%HTML5_APP_TITLE%%",19),bb_config_GetConfigVar(String(L"HTML5_APP_TITLE",15)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_WIDTH%%",22),bb_config_GetConfigVar(String(L"HTML5_CANVAS_WIDTH",18)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_HEIGHT%%",23),bb_config_GetConfigVar(String(L"HTML5_CANVAS_HEIGHT",19)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_RESIZE_MODE%%",28),bb_config_GetConfigVar(String(L"HTML5_CANVAS_RESIZE_MODE",24)));
+	t_game=bb_transcc_ReplaceBlock(t_game,String(L"APP_TITLE",9),String(L"<title>",7)+bb_config_GetConfigVar(String(L"HTML5_APP_TITLE",15))+String(L"</title>",8),String(L"\n<!--",5));
+	String t_cvrep=String();
+	t_cvrep=String(L"var CANVAS_RESIZE_MODE=",23)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_RESIZE_MODE",24))+String(L";\t//0=locked, 1=stretch, 2=resize",33);
+	t_cvrep=t_cvrep+(String(L"\nvar CANVAS_WIDTH=",18)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_WIDTH",18))+String(L";",1));
+	t_cvrep=t_cvrep+(String(L"\nvar CANVAS_HEIGHT=",19)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_HEIGHT",19))+String(L";",1));
+	t_cvrep=t_cvrep+(String(L"\nvar CONSOLE_SHOW=",18)+bb_config_GetConfigVar(String(L"HTML5_CONSOLE_SHOW",18))+String(L";",1));
+	t_game=bb_transcc_ReplaceBlock(t_game,String(L"CANVAS",6),t_cvrep,String(L"\n<!--",5));
 	SaveString(t_game,bb_config_GetConfigVar(String(L"HTML5_APP_FILENAME",18)));
 	if(m_tcc->m_opt_run){
 		String t_p=RealPath(bb_config_GetConfigVar(String(L"HTML5_APP_FILENAME",18)));

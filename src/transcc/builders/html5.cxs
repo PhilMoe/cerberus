@@ -71,11 +71,21 @@ Class Html5Builder Extends Builder
 				
 
 		Local game:=LoadString( "CerberusGame.html" )
-		game = game.Replace("%%HTML5_CONSOLE_SHOW%%", GetConfigVar("HTML5_CONSOLE_SHOW") )
-		game = game.Replace("%%HTML5_APP_TITLE%%", GetConfigVar("HTML5_APP_TITLE") )
-		game = game.Replace("%%HTML5_CANVAS_WIDTH%%", GetConfigVar("HTML5_CANVAS_WIDTH") )
-		game = game.Replace("%%HTML5_CANVAS_HEIGHT%%", GetConfigVar("HTML5_CANVAS_HEIGHT") )
-		game = game.Replace("%%HTML5_CANVAS_RESIZE_MODE%%", GetConfigVar("HTML5_CANVAS_RESIZE_MODE") )
+		game=ReplaceBlock( game,"APP_TITLE","<title>"+GetConfigVar("HTML5_APP_TITLE")+"</title>","~n<!--" )
+
+		Local cvrep:String
+		cvrep  =        "var CANVAS_RESIZE_MODE=" + GetConfigVar("HTML5_CANVAS_RESIZE_MODE") + ";	//0=locked, 1=stretch, 2=resize"
+		cvrep += "~n" + "var CANVAS_WIDTH="+GetConfigVar("HTML5_CANVAS_WIDTH")+";"
+		cvrep += "~n" + "var CANVAS_HEIGHT="+GetConfigVar("HTML5_CANVAS_HEIGHT")+";"
+		cvrep += "~n" + "var CONSOLE_SHOW="+GetConfigVar("HTML5_CONSOLE_SHOW")+";"
+		game=ReplaceBlock( game,"CANVAS",cvrep,"~n<!--" )
+
+		
+		'game = game.Replace("%%HTML5_CONSOLE_SHOW%%", GetConfigVar("HTML5_CONSOLE_SHOW") )
+		'game = game.Replace("%%HTML5_APP_TITLE%%", GetConfigVar("HTML5_APP_TITLE") )
+		'game = game.Replace("%%HTML5_CANVAS_WIDTH%%", GetConfigVar("HTML5_CANVAS_WIDTH") )
+		'game = game.Replace("%%HTML5_CANVAS_HEIGHT%%", GetConfigVar("HTML5_CANVAS_HEIGHT") )
+		'game = game.Replace("%%HTML5_CANVAS_RESIZE_MODE%%", GetConfigVar("HTML5_CANVAS_RESIZE_MODE") )
 		SaveString game, GetConfigVar("HTML5_APP_FILENAME")
 
 
