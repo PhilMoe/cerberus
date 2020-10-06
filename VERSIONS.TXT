@@ -4,6 +4,7 @@ FIX: [TRANSCC] With the GLFW target and MingW, you can build 32bit again!    (Au
 FIX: [TRANSCC] Fixed copying sub directories with the INCLUDE statement.    (Author: MikeHart)
 FIX: [TRANSCC] Fixed TRANSCC to change canvas sizes, title, scale mode and canvas flag every time you build your app.    (Author: MikeHart)
 FIX: [TRANSCC] Added check for space chars in source path to avoid weird errors regarding global vars.    (Author: Phil7) 
+FIX: [rebuild script] Changed minimum version on OSX for building TRANS via the rebuildall script.    (Author: dawlane) 
 FIX: [HTTPREQUEST] Fixed some flaws in the glfw target.    (Author: Github user NEOJAW)  
 FIX: [MOJO2] fix in image.loadframes.    (Author: Rich) 
 FIX: [DOCS] FIXED example in httprequest.cerberusdoc    (Author: Holzchopf)
