@@ -17,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.14"
+#GLFW_APP_LABEL="AGKBuildTarget V1.15"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -368,6 +368,26 @@ Function Main:Int()
 '			SaveString(td, cerberusPath+"/docs/cerberusdoc/Target SDKs.cerberusdoc")
 '		Endif
 		
+		' copy the target doc file
+		CopyFile(cerberusPath+"/tools/build_agk/helpfiles/agk2_target.txt",cerberusPath+"/docs/cerberusdoc/Target SDKs/The AppGameKit target.cerberusdoc")
+		
+		Local tdocs:String =""
+		Local targetstxt:String
+		Local filet := FileStream.Open(cerberusPath+"/docs/cerberusdoc/Target SDKs.cerberusdoc","r")
+		If filet <> Null
+			targetstxt = filet.ReadString()
+			filet.Close()
+			tdocs = targetstxt
+			If tdocs.Find("* [[The AppGameKit target]]")=-1
+				tdocs += "* [[The AppGameKit target]]"+"~n"
+				filet = FileStream.Open(cerberusPath+"/docs/cerberusdoc/Target SDKs.cerberusdoc","w")
+				filet.WriteString(tdocs)
+				filet.Close()
+			Endif
+		Else
+			Print ("File Target SDKs.cerberusdoc not found!!!")
+		Endif
+		
 		' create main doc file
 		Local sdocs:String ="~n"
 		Local helptxt:String
@@ -375,7 +395,7 @@ Function Main:Int()
 		Local fileh := FileStream.Open(cerberusPath+"/tools/build_agk/helpfiles/agk2_help.txt","r")
 		If fileh <> Null
 			helptxt = fileh.ReadString()
-			filec.Close()
+			fileh.Close()
 			sdocs += helptxt
 			sdocs += "~n"
 			sdocs += "~n"
@@ -455,7 +475,7 @@ Function Main:Int()
 	Endif
 	BuildTemplateAndroid(agk_path, cerberusPath)
 	
-	Notify( "AGKBuildTarget", "The AppGamekit Targets were successfully build!", False )
+	Notify( "AGKBuildTarget", "The AppGamekit Targets were successfully build!~nPlease rebuild the help files.", False )
 	Return 0
 End
 

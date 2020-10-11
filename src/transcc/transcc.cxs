@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2020-09-12 (DEBUG)"
+    Const VERSION:="2020-10-11 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2020-09-12"
+    Const VERSION:="2020-10-11"
 #Endif
 
 Function Main()
@@ -167,12 +167,16 @@ Class Target
     Field system:String
     Field builder:Builder
     Field path:String
-  
-    Method New( dir:String,name:String,system:String,builder:Builder, path:String )
+    Field lang:String
+  	Field buildscript:String
+  	
+    Method New( dir:String,name:String,system:String,builder:Builder, lang:String, buildscript:String, path:String )
         Self.dir=dir
         Self.name=name
         Self.system=system
         Self.builder=builder
+        Self.lang=lang
+        Self.buildscript=buildscript
         Self.path=path
     End
 End
@@ -294,16 +298,21 @@ Class TransCC
 
             Local name:=GetConfigVar( "TARGET_NAME" )
             If name
+'Print "TARGET_NAME="+name
                 Local system:=GetConfigVar( "TARGET_SYSTEM" )
                 If system
+'Print "TARGET_SYSTEM="+system
                     Local builder:=_builders.Get( GetConfigVar( "TARGET_BUILDER" ) )
                     If builder
+'Print "TARGET_BUILDER="+GetConfigVar( "TARGET_BUILDER" )
+                        ENV_LANG = GetConfigVar( "TARGET_LANG" )
+'Print "TARGET_LANG="+ENV_LANG
+                        ENV_CUSTOMBUILDSCRIPT = p+"/"+f+"/cxbuild.txt"
                         Local host:=GetConfigVar( "TARGET_HOST" )
                         If Not host Or host=HostOS Or host.Find(HostOS,0)>=0
-                            _targets.Set name,New Target( f,name,system,builder, p+"/"+f )
+'Print "TARGET_HOST="+host
+                            _targets.Set name,New Target( f,name,system,builder, ENV_LANG, ENV_CUSTOMBUILDSCRIPT, p+"/"+f )
                         Endif
-                        ENV_LANG = GetConfigVar( "TARGET_LANG" )
-                        ENV_CUSTOMBUILDSCRIPT = p+"/"+f+"/cxbuild.txt"
                     Endif
                 Endif
             Endif

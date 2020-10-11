@@ -1,0 +1,117 @@
+> The Custom target
+
+The custom target allows you to add targets without modifying and recompiling *TRANSCC*.
+
+A custom target directory needs at least to files:
+
++ A *target.cxs* file with specific entries
++ A *cxbuild.txt* file which contains the script commands to actually build your project directory.
+
+>> Build process
+With a custom target, TRANCSS will copy the content of your template directory in your build project. Then TRANSCC outputs at least a %__config__.txt% file that contains all the configuration settings and a %__main__.txt% file, which contains the translated source code. With the javascript langugue, it also outputs a __meta__.txt file, which contains all the metadata. After that it will process the cxbuild.txt file.
+
+
+>> TARGET.CXS
+
+The %target.cxs% file sets the basic options so TED and TRANSCC know, what is has to do with a target.
+<pre>
+#TARGET_NAME="Custom Builder"    ' This can be set freely and is the text displayed inside the target selector of TED.
+#TARGET_SYSTEM="customsystem"    ' This is also a custom value that can be accessed inside modules during the build phase.
+#TARGET_BUILDER="custom"         ' The value custom tells TRANSCC that it is a custom target and that TRANSCC needs to look for a cxbuild.txt file and process that.
+#TARGET_LANG="cpp"               ' Can be set to cpp/cs/as/js/java . With this value you control, which target language TRANSCC will generate.
+#TARGET_HOST="winnt|macos|linux" ' With these entries, you can control on which platform your target will be visible.
+</pre>
+
+>> CXBUILD.TXT
+
+This file contains a sequence of script commands which control the build process of your custom target. Here is an example:
+<pre>
+' This is a custom target.
+setecho::off
+print::>>>My custom target.<<<
+sethost::winnt
+
+inject::%buildDir%/fna/__config__.txt %buildDir%/fna/CerberusGame/Class1.cs CONFIG //
+inject::%buildDir%/fna/__main__.txt %buildDir%/fna/CerberusGame/Class1.cs TRANSCODE //
+
+build::"%MSBUILD_PATH%" /t:CerberusGame /p:Configuration=%config% CerberusGame.sln
+createdir::%buildDir%/fna/CerberusGame/bin/%config%/Content
+copydata::%buildDir%/fna/CerberusGame/bin/%config%/Content/cerberus
+changedir::%buildDir%/fna/CerberusGame/bin/%config%
+execute::CerberusGame.exe /gldevice:##FNA_GRAPHIC_DRIVER## /usescancodes:0
+</pre>
+
+>> Syntax
+A script command has the following structure. The command followed by a double colon and then the parameter string.
+<pre>
+command::parameter
+</pre>
+
+The parameter string can contain the following variables which will be processed and replaced during execution:
+>> Buildin Variables
+<pre>
+%cxDir%					' Cerberus X directory.
+%srcDir%				' Source directory.
+%buildDir%				' The default Build directory.
+%targetDir%				' The directory of your custom target.
+%config%				' The configuration during the build process (release|debug).
+%srcName%				' The file name of your main source file.
+%targetName%			' The name of your custom target.
+
+##anyCompilerOption##	' Between the pair of ##, you can access any compiler option set in a module, your source files or your config.cxs file.
+
+%ANDROID_PATH%			' The ANDROID_PATH set inside the config file from your cerberus/bin directory.
+%ANDROID_NDK_PATH%		' The ANDROID_NDK_PATH set inside the config file.
+%ANT_PATH%				' The ANT_PATH set inside the config file.
+%JDK_PATH%				' The JDK_PATH set inside the config file.
+%FLEX_PATH%				' The FLEX_PATH set inside the config file.
+%MINGW_PATH%			' The MINGW_PATH set inside the config file.
+%MSBUILD_PATH%			' The MSBUILD_PATH set inside the config file.
+%PSS_PATH%				' The PSS_PATH set inside the config file.
+%PSM_PATH%				' The PSM_PATH set inside the config file.
+%AGK_PATH%				' The AGK_PATH set inside the config file.
+%HTML_PLAYER%			' The HTML_PLAYER set inside the config file.
+%FLASH_PLAYER%			' The FLASH_PLAYER set inside the config file.
+</pre>
+
+>> Comments
+Similar to Cerberus X, single line comments are writen with a ' in front.
+<pre>
+'This is a comment.
+</pre>
+
+>> Script commands
+The following commands can be used inside the *cxbuild.txt* file:
+>>> *setecho*::on/off
+If set to on, the script commands will be echoed to the console. Default is *on*.
+>>> *sethost*::winnt|macos|linux|all
+Sets the platform on which the following commands are executed. Default is *all*.
+>>> *config*::release/debug/all
+Sets the configuration on which the following commands are executed. Default is *all*.
+>>> *print*::text
+The %text% string will be printed into the console.
+>>> *build*::params
+The %params% string will be executed during the build phase.
+>>> *execute*::params
+The %params% string will be executed during the build phase.
+>>> *replace*::file srcStr replaceStr
+Replaces the %srcStr% with the %replaceStr% inside the %file%.
+>>> *copyfile*::srcFile dstFile
+Copies the %srcFile% to the %dstFile%. If the %dstFile% exists, it will be overwritten.
+>>> *deletefile*::file
+Deletes the %file%.
+>>> *copydir*::srcDir dstDir
+Copies the %srcDir% to the %dstDir%.
+>>> *deletedir*::directory
+Deletes the %directory%.
+>>> *createdir*::directory
+Create the %directory%.
+>>> *changedir*::directory
+Changes the current directory to the %directory%.
+>>> *copydata*::dstDir
+Copies the content of all *data* directories to the %dstDir%.
+>>> *renamefile*::srcFile dstFile
+Renames the %srcFile% to %dstFile%.
+>>> *inject*::inputfile outputfile section(CONFIG/TRANSCODE/METADATA) (preface)
+Injects the content of the %inputfile% to the %outputfile%. You need to specify a section inside outputfile. %preface is optional and be default set to `~n//`.
+

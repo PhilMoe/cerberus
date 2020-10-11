@@ -91,20 +91,18 @@ Class CustomBuilder Extends Builder
 		SaveString transCode,"__main__.txt"
 		SaveString Config(),"__config__.txt"
 		
-		If tcc.opt_build
-		
-			Local buildPath:String
-			
-			If tcc.opt_builddir
-				buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
-			Else
-				buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
-			Endif
-		
-		
-			ParseBuildScript(ENV_CUSTOMBUILDSCRIPT)
 
+		Local buildPath:String
+		
+		If tcc.opt_builddir
+			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+		Else
+			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
 		Endif
+	
+	
+		ParseBuildScript(ENV_CUSTOMBUILDSCRIPT)
+
 	End
 	
 	Method ReplaceParams:String(params:String)
@@ -156,14 +154,14 @@ Class CustomBuilder Extends Builder
 	End
 
 	Method ScriptError:Void(lineNum:Int, line:String, Error:String)
-		Print "Error in script line "+line+": "+line+"  >>  "+Error
+		Print "Error in script line "+lineNum+": "+line+"  >>  "+Error
 	End
 
 	Method ParseBuildScript:Void(scriptFile:String)
 		Local lineNum:Int = 0
 		Local script:=LoadString(scriptFile)
 		Local config:String=tcc.opt_config
-		Local host:String=HostOS()
+		Local hostS:String=HostOS()
 		Local echo:String="on"
 
 		For Local line := Eachin script.Split("~n")
@@ -175,7 +173,7 @@ Class CustomBuilder Extends Builder
 			Local command := token[0].Trim().ToLower()
 
 			If config <> tcc.opt_config And config <> "all" And command <> "config" And command <> "sethost"  And command <> "setecho" Continue
-			If host <> HostOS() And host <> "all" And command <> "config" And command <> "sethost"  And command <> "setecho"  Continue
+			If hostS <> HostOS() And hostS <> "all" And command <> "config" And command <> "sethost"  And command <> "setecho"  Continue
 			
 			Local params := ReplaceParams(token[1].Trim())
 			Local parToken := params.Split(" ")
@@ -201,7 +199,7 @@ Class CustomBuilder Extends Builder
 						ScriptError(lineNum, line, "Unrecognized host!")
 						Exit
 					Endif
-					host = hst
+					hostS = hst
 
 				Case "config"
 					'config::release|debug|all
@@ -214,9 +212,11 @@ Class CustomBuilder Extends Builder
 
 				Case "build"
 					'build::params
-					If Execute (params) <> True
-						ScriptError(lineNum, line, "Build failed!")
-						Exit
+					If tcc.opt_build
+						If Execute (params) <> True
+							ScriptError(lineNum, line, "Build failed!")
+							Exit
+						Endif
 					Endif
 				Case "execute"
 					'execute::params
@@ -254,10 +254,25 @@ Class CustomBuilder Extends Builder
 						Exit
 					Endif
 					
+				Case "copydata"
+					'copydata::dstDir
+					CreateDataDir (parToken[0])
+					If FileType( parToken[0] )<>FILETYPE_DIR
+						ScriptError(lineNum, line, "Could not copy data directory!")
+						Exit
+					Endif
+					
 				Case "copydir"
 					'copydir::srcDir dstDir
 					If CopyDir( parToken[0], parToken[1], True, True ) = False
 						ScriptError(lineNum, line, "Could not copy directory!")
+						Exit
+					Endif
+					
+				Case "changedir"
+					'changedir::dstDir
+					If ChangeDir( parToken[0] ) <> 0
+						ScriptError(lineNum, line, "Could not change directory!")
 						Exit
 					Endif
 					
@@ -295,8 +310,14 @@ Class CustomBuilder Extends Builder
 						Exit
 					Endif
 					Local output:= LoadString(parToken[1])
-					output=ReplaceBlock( output,parToken[2],input )
-					If SaveString(output,parToken[1]) = False
+
+					If parToken.Length = 3
+						output=ReplaceBlock( output,parToken[2],input )
+					Else
+						output=ReplaceBlock( output,parToken[2],input, parToken[3] )
+					Endif				
+
+					If SaveString(output,parToken[1]) <> 0
 						ScriptError(lineNum, line, "Could not save to file "+parToken[1]+"!")
 						Exit
 					Endif

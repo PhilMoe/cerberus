@@ -53,6 +53,8 @@ Class Builder
 		ENV_SAFEMODE=tcc.opt_safe
 		ENV_MODPATH=tcc.opt_modpath
 		ENV_TARGET=tcc.target.system
+		ENV_LANG=tcc.target.lang
+		ENV_CUSTOMBUILDSCRIPT=tcc.target.buildscript
 			
 		Self.Begin
 
