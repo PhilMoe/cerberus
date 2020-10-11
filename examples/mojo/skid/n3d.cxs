@@ -1,0 +1,972 @@
+' n3d a monkey GL environ
+' shout outs to bananas.mak.gles20cube
+
+Import opengl.gles20
+Import mojo
+
+' line shader experiments with texture stretch and caps along t axis
+
+Global LineVertex$[]=[
+	"attribute vec4 Position;",
+	"attribute vec3 Normal;",
+	"attribute vec3 TexCoords;",
+	"attribute vec4 VertColor;",
+	
+	"uniform mat4 View;",
+	"uniform mat4 Projection;",
+	
+	"varying vec3 texCoords;",
+	"varying vec4 vertColor;",
+	
+	"void main(){",
+	" vec4 v=View*Position;",
+	" vec4 n=View*vec4(Normal,0.0);",
+	" vec3 np=normalize(cross(vec3(v),vec3(n)));",
+	" float s=(TexCoords.x-0.5)*.2;",
+	" float t=(TexCoords.y-0.5)*.12;",
+	" v.x+=np.x*s;",
+	" v.y+=np.y*s;",
+	" v.x+=np.y*t;",
+	" v.y-=np.x*t;",
+	" gl_Position=Projection*v;",
+	" texCoords=TexCoords;",
+	" texCoords.y=texCoords.y*(texCoords.z+0.5);",
+	" vertColor=VertColor;",
+	"}"]
+
+Global LineFragment$[]=[
+	"#ifdef GL_ES",
+	"precision mediump float;",
+	"#endif",
+	
+	"uniform vec4 matColor;",
+	"uniform sampler2D matTexture;",
+	
+	"varying vec3 texCoords;",
+	"varying vec4 vertColor;",
+	
+	"void main(){",
+	
+	" float s=texCoords.x;",
+	" float t=texCoords.y;",
+	
+	" if(t>0.5) t=0.5+max(0.0,t-texCoords.z);",
+	" vec2 uv=vec2(s,t);",
+	
+	' " vec4 c=vertColor*texture2D( matTexture,uv );",
+	" vec4 c=matColor*vertColor*texture2D( matTexture,uv );",
+	" if(c.a<0.016) discard;",
+	" gl_FragColor=c;",
+	
+	' " float z=max(abs(s-0.5)*.15,abs(t-0.5)*.15);",
+	' " gl_FragDepth+=z;",
+	"}"]
+
+Function CheckGL()
+	Local err=glGetError()
+	If err Error "GL Error "+err
+End
+
+Class Shader
+
+	Method New( vertexSource$[],fragmentSource$[] )
+		Local vsource$="~n".Join(vertexSource)
+		Local fsource$="~n".Join(fragmentSource)
+		Local p[1]
+		
+		Local vshader:=glCreateShader( GL_VERTEX_SHADER )
+		glShaderSource vshader,vsource
+		glCompileShader vshader
+		glGetShaderiv vshader,GL_COMPILE_STATUS,p
+		If Not p[0] Print "Failed to compile vshader:"+glGetShaderInfoLog( vshader )
+		
+		Local fshader:=glCreateShader( GL_FRAGMENT_SHADER )
+		glShaderSource fshader,fsource
+		glCompileShader fshader
+		glGetShaderiv fshader,GL_COMPILE_STATUS,p
+		If Not p[0] Print "Failed to compile fshader:"+glGetShaderInfoLog( fshader )
+		
+		program=glCreateProgram()
+		glAttachShader program,vshader
+		glAttachShader program,fshader
+		glLinkProgram program
+		glGetProgramiv program,GL_LINK_STATUS,p
+		If Not p[0] Print "Failed to link program:"+glGetProgramInfoLog( program )
+	End
+	
+	Method Bind()
+		glUseProgram program
+		CheckGL
+	End
+	
+	Private
+	
+	Field program
+
+End
+
+Class Material
+	Field color#[4]
+	Field shader:Shader
+	Field textureName
+	Field colorUniform
+	Field textureUniform
+	
+	Method New( shader0:Shader )
+		shader=shader0
+		colorUniform=glGetUniformLocation( shader.program,"matColor" )
+		textureUniform=glGetUniformLocation( shader.program,"matTexture" )
+	End
+	
+	Method SetColor( r#,g#,b#,a# )
+		color[0]=r
+		color[1]=g
+		color[2]=b
+		color[3]=a
+	End
+	
+	Method SetTexture( texturename )
+		textureName=texturename
+	End
+	
+	Method Bind()
+		glActiveTexture GL_TEXTURE0
+		glBindTexture GL_TEXTURE_2D,textureName
+		shader.Bind
+		If colorUniform
+		glUniform4f colorUniform,color[0],color[1],color[2],color[3]
+		' glUniform4fv colorUniform,4,color
+		Endif
+		CheckGL
+	End
+
+End
+
+Class Geometry
+
+	Global Bound:Geometry
+	
+	Field material:Material
+	
+	Field pos_loc
+	Field norm_loc
+	Field texc_loc
+	Field col_loc
+	
+	Field viewUniform
+	Field projectionUniform
+	
+	Field vbo
+	Field ibo
+	
+	Field vertCount
+	Field indexCount
+	Field indexType
+	
+	Field VertSpan
+	
+	Field vertMem#[]
+	Field colorMem[]
+	Field indexMem[]
+	
+	Field vertexBuffer:DataBuffer
+	Field indexBuffer:DataBuffer
+
+	Method New( material:Material, vcount, icount, itype )
+	
+		Self.material=material
+		
+		pos_loc=glGetAttribLocation( material.shader.program,"Position" )
+		norm_loc=glGetAttribLocation( material.shader.program,"Normal" )
+		texc_loc=glGetAttribLocation( material.shader.program,"TexCoords" )
+		col_loc=glGetAttribLocation( material.shader.program,"VertColor" )
+		
+		viewUniform=glGetUniformLocation( material.shader.program,"View" )
+		projectionUniform=glGetUniformLocation( material.shader.program,"Projection" )
+		
+		vertCount=vcount
+		indexCount=icount
+		indexType=itype
+		
+		vertMem=New Float[vertCount*9]
+		colorMem=New Int[vertCount]
+		indexMem=New Int[indexCount]
+		
+		vertexBuffer=New DataBuffer( vertCount*10*4 )
+		indexBuffer=New DataBuffer( indexCount*2 )
+	
+	End
+
+	Method Bind()
+	
+		material.Bind
+		
+		If vbo
+			glBindBuffer GL_ARRAY_BUFFER,vbo
+			glBindBuffer GL_ELEMENT_ARRAY_BUFFER,ibo
+		Else
+			Local p=0
+			For Local i:=0 Until vertCount
+				For Local j:=0 Until 9
+					vertexBuffer.PokeFloat p,vertMem[i*9+j]
+					p+=4
+				Next
+				vertexBuffer.PokeInt p,colorMem[i]
+				p+=4
+			Next
+			
+			vbo=glCreateBuffer()
+			glBindBuffer GL_ARRAY_BUFFER,vbo
+			glBufferData GL_ARRAY_BUFFER,vertexBuffer.Length,vertexBuffer,GL_STATIC_DRAW
+			
+			If indexCount
+				For Local i:=0 Until indexCount
+					indexBuffer.PokeShort i*2,indexMem[i]
+				Next
+				ibo=glCreateBuffer()
+				glBindBuffer GL_ELEMENT_ARRAY_BUFFER,ibo
+				glBufferData GL_ELEMENT_ARRAY_BUFFER,indexBuffer.Length,indexBuffer,GL_STATIC_DRAW
+			Endif
+		
+		Endif
+		
+		glEnableVertexAttribArray pos_loc
+		glVertexAttribPointer pos_loc,3,GL_FLOAT,False,40,0
+		
+		If norm_loc<>-1
+			glEnableVertexAttribArray norm_loc
+			glVertexAttribPointer norm_loc,3,GL_FLOAT,False,40,12
+		Endif
+		
+		If texc_loc<>-1
+			glEnableVertexAttribArray texc_loc
+			glVertexAttribPointer texc_loc,3,GL_FLOAT,True,40,24
+		Endif
+		
+		If col_loc<>-1
+			glEnableVertexAttribArray col_loc
+			glVertexAttribPointer col_loc,4,GL_UNSIGNED_BYTE,True,40,36
+		Endif
+		
+		CheckGL
+	End
+
+	Method SetBillboard( index,x0#,y0#,z0#,x1#,y1#,z1#)
+		Local v=index*4
+		Local dx#=x1-x0
+		Local dy#=y1-y0
+		Local dz#=z1-z0
+		Local d#=Sqrt(dx*dx+dy*dy+dz*dz)
+		Local w#=1.0/d
+		Local nx#=dx*w
+		Local ny#=dy*w
+		Local nz#=dz*w
+		d*=4
+		Local c=$ffffffff
+		SetVertex v+0,x0,y0,z0,nx,ny,nz,0,0,d,c
+		SetVertex v+1,x1,y1,z1,nx,ny,nz,0,1,d,c
+		SetVertex v+2,x1,y1,z1,nx,ny,nz,1,1,d,c
+		SetVertex v+3,x0,y0,z0,nx,ny,nz,1,0,d,c
+		SetQuad index,v+0,v+1,v+2,v+3
+	End
+
+	Method SetVertex( index,x#,y#,z#,nx#,ny#,nz#,s#,t#,u#,c )
+		Local i=index*9
+		vertMem[i+0]=x
+		vertMem[i+1]=y
+		vertMem[i+2]=z
+		vertMem[i+3]=nx
+		vertMem[i+4]=ny
+		vertMem[i+5]=nz
+		vertMem[i+6]=s
+		vertMem[i+7]=t
+		vertMem[i+8]=u
+		colorMem[index]=c
+	End
+
+	Method SetQuad( index, i0,i1,i2,i3 )
+		Local i=index*6
+		indexMem[i+0]=i0
+		indexMem[i+1]=i1
+		indexMem[i+2]=i2
+		indexMem[i+3]=i0
+		indexMem[i+4]=i2
+		indexMem[i+5]=i3
+	End
+
+	Method SetIndices( indices[] )
+		For Local i=0 Until indices.Length
+			indexMem[i]=indices[i]
+		Next
+	End
+	
+	Method SetLines( indices[] )
+		Local n=indices.Length/2
+		For Local i=0 Until n
+			Local a=indices[i*2+0]
+			Local b=indices[i*2+1]
+			indexMem[i*6+0]=a
+			indexMem[i*6+1]=b
+			indexMem[i*6+2]=a
+			indexMem[i*6+3]=b
+			indexMem[i*6+4]=a
+			indexMem[i*6+5]=b
+		Next
+	End
+	
+	Method Render( projection#[],view#[] )
+		If Bound<>Self
+			Bind
+			Bound=Self
+		Endif
+		glUniformMatrix4fv projectionUniform,1,False,projection
+		glUniformMatrix4fv viewUniform,1,False,view
+		If indexType
+			glDrawElements indexType,indexCount,GL_UNSIGNED_SHORT,0
+		Else
+			glDrawArrays GL_LINES,0,vertCount
+		Endif
+		CheckGL
+	End
+
+' build
+
+	Function Tube:TubeMesh(material:Material, vert4#[], pairs[] )
+	
+		Local mesh:=New TubeMesh( material,8,6*6 )
+	
+		Return mesh
+	End
+
+
+	Function Cube:Geometry(material:Material, x0#,y0#,z0#, x1#,y1#,z1#)
+		Local mesh:=New Geometry( material,8,6*6,GL_TRIANGLES )
+		
+		mesh.SetVertex 0, x0,y1,z0, 0,0,0, 0,0
+		mesh.SetVertex 1, x1,y1,z0, 0,0,0, 1,0
+		mesh.SetVertex 2, x1,y1,z1, 0,0,0, 0,0
+		mesh.SetVertex 3, x0,y1,z1, 0,0,0, 1,0
+		
+		mesh.SetVertex 4, x0,y0,z0, 0,0,0, 0,1
+		mesh.SetVertex 5, x1,y0,z0, 0,0,0, 1,1
+		mesh.SetVertex 6, x1,y0,z1, 0,0,0, 0,1
+		mesh.SetVertex 7, x0,y0,z1, 0,0,0, 1,1
+		
+		mesh.SetQuad 0,0,1,2,3
+		mesh.SetQuad 1,0,1,5,4
+		mesh.SetQuad 2,1,2,6,5
+		mesh.SetQuad 3,2,3,7,6
+		mesh.SetQuad 4,3,0,4,7
+		mesh.SetQuad 5,7,6,5,4
+		
+		Return mesh
+	End
+
+	Function WireCube:Geometry(material:Material, x0#,y0#,z0#, x1#,y1#,z1#)
+		Local outline:=[0,1,1,2,2,3,3,0, 4,5,5,6,6,7,7,4, 0,4,1,5,2,6,3,7]
+		
+		Local mesh:=New Geometry( material,8,outline.Length,GL_LINES )
+		
+		Local red=$77ff0000
+		Local blue=$770000ff
+		
+		mesh.SetVertex 0, x0,y1,z0, 0,0,0, 0,0, red
+		mesh.SetVertex 1, x1,y1,z0, 0,0,0, 1,0, red
+		mesh.SetVertex 2, x1,y1,z1, 0,0,0, 0,0, red
+		mesh.SetVertex 3, x0,y1,z1, 0,0,0, 1,0, red
+		
+		mesh.SetVertex 4, x0,y0,z0, 0,0,0, 0,1, blue
+		mesh.SetVertex 5, x1,y0,z0, 0,0,0, 1,1, blue
+		mesh.SetVertex 6, x1,y0,z1, 0,0,0, 0,1, blue
+		mesh.SetVertex 7, x0,y0,z1, 0,0,0, 1,1, blue
+		
+		mesh.SetIndices outline
+		
+		Return mesh
+	End
+
+	Function LineCube:Geometry(material:Material, x0#,y0#,z0#, x1#,y1#,z1#)
+	
+		Local pos:=[x0,y1,z0,x1,y1,z0,x1,y1,z1,x0,y1,z1, x0,y0,z0,x1,y0,z0,x1,y0,z1,x0,y0,z1]
+		Local outline:=[0,1,1,2,2,3,3,0, 4,5,5,6,6,7,7,4, 0,4,1,5,2,6,3,7]
+		Local mesh:=New Geometry( material,outline.Length,0,0 )
+		
+		Local n=outline.Length/2
+		For Local i=0 Until n
+			Local a=outline[i*2+0]
+			Local b=outline[i*2+1]
+			mesh.SetLine i,pos[a*3+0],pos[a*3+1],pos[a*3+2],pos[b*3+0],pos[b*3+1],pos[b*3+2]
+		Next
+		
+		Return mesh
+	End
+
+
+	Function TubeCube:Geometry(material:Material, x0#,y0#,z0#, x1#,y1#,z1#)
+	
+		Local pos:=[x0,y1,z0,x1,y1,z0,x1,y1,z1,x0,y1,z1, x0,y0,z0,x1,y0,z0,x1,y0,z1,x0,y0,z1]
+		Local outline:=[0,1,1,2,2,3,3,0, 4,5,5,6,6,7,7,4, 0,4,1,5,2,6,3,7]
+		
+		Local n=outline.Length/2
+		
+		Local mesh:=New Geometry( material,n*4,n*6,GL_TRIANGLES )
+		
+		For Local i=0 Until n
+			Local a=outline[i*2+0]
+			Local b=outline[i*2+1]
+			mesh.SetBillboard i,pos[a*3+0],pos[a*3+1],pos[a*3+2],pos[b*3+0],pos[b*3+1],pos[b*3+2]
+		Next
+		
+		Return mesh
+	End
+
+	Function TubeCity:Geometry(scene:Node,material:Material, x0#,y0#,z0#, x1#,y1#,z1#)
+		Local pos:=[x0,y1,z0,x1,y1,z0,x1,y1,z1,x0,y1,z1, x0,y0,z0,x1,y0,z0,x1,y0,z1,x0,y0,z1]
+		Local outline:=[0,1,1,2,2,3,3,0, 4,5,5,6,6,7,7,4, 0,4,1,5,2,6,3,7]
+		Local n=outline.Length/2
+		Local nn=n*5*5
+		Local mesh:=New Geometry( material,nn*4,nn*6,GL_TRIANGLES )
+		Local index
+		For Local x#=-2 To 2
+			For Local y#=0 To 4
+				For Local i=0 Until n
+					Local a=outline[i*2+0]
+					Local b=outline[i*2+1]
+					Local px0#=pos[a*3+0]+x*3
+					Local py0#=pos[a*3+1]+y*3
+					Local pz0#=pos[a*3+2]
+					Local px1#=pos[b*3+0]+x*3
+					Local py1#=pos[b*3+1]+y*3
+					Local pz1#=pos[b*3+2]
+					mesh.SetBillboard index,px0,py0,pz0,px1,py1,pz1
+					index+=1
+				Next
+			Next
+		Next
+		Return mesh
+	End
+
+End
+
+Class Camera
+	Field handle:Node
+	Field near#
+	Field far#
+	Method SetRange(near0#,far0#)
+		near=near0
+		far=far0
+	End
+	Method SetHandle(handle0:Node)
+		handle=handle0
+	End
+End
+
+Class HeadNode Extends Node
+
+	Field turn#
+	Field heading#
+	Field vx#,vy#,vz#
+	
+	Method Update()
+		Local t#
+		Local th#
+		Local lift#
+		
+		' For Local i:=0 Until 255
+		' If JoyHit(i) Print "KeyHit:"+i
+		' Next
+		' Print JoyZ(0)+","+JoyZ(1)
+		
+		t=4*JoyX(0)
+		th=0.01*(JoyZ(1)-JoyZ(0))
+		lift=0.02*JoyY(1)
+		
+		If KeyDown(KEY_LMB) th=0.01
+		
+		If KeyDown(KEY_LEFT) t=-4
+		If KeyDown(KEY_RIGHT) t=4
+		If KeyDown(KEY_UP) th=0.01
+		If KeyDown(KEY_DOWN) th=-0.01
+		
+		If KeyDown(KEY_A) lift=.02
+		If KeyDown(KEY_Z) lift=-.02
+		
+		turn=turn*0.8+t
+		heading+=turn*0.1
+		
+		SetRotation 0,heading,turn
+		
+		Local dx#=Sin(heading)
+		Local dy#=lift
+		Local dz#=Cos(heading)
+		
+		vx=vx*0.92+th*dx
+		vy=vy*0.92+dy
+		vz=vz*0.92+th*dz
+		
+		Translate vx,vy,vz
+		
+		Super.Update
+	End
+End
+
+
+Class Node
+	Field parent:Node
+	Field children:List<Node>
+	
+	Field localMatrix#[16]
+	Field worldMatrix#[16]
+	Field viewMatrix#[16]
+	Field projectionMatrix#[16]
+	
+	Field localDirty?
+	
+	Field mesh:Geometry
+
+	Method New()
+		Matrix.Identity localMatrix
+		localDirty=True
+	End
+	
+	Method SetPosition(x#,y#,z#)
+		Matrix.Position localMatrix,x,y,z
+		localDirty=True
+	End
+	
+	Method Translate(x#,y#,z#)
+		Matrix.Translate localMatrix,x,y,z
+		localDirty=True
+	End
+	
+	Method SetRotation(rx#,ry#,rz#)
+		Matrix.Rotate localMatrix,rx,ry,rz
+		localDirty=True
+	End
+
+	Method AddNode(child:Node)
+		If child.parent=Self Return
+		If child.parent
+			child.parent.children.Remove child
+		Endif
+		child.parent=Self
+		If Not children
+			children=New List<Node>
+		Endif
+		children.AddLast child
+		child.localDirty=True
+	End
+	
+	Method Update()
+		If parent And parent.localDirty
+			localDirty=True
+		Endif
+	
+		If localDirty
+			If parent
+				Matrix.Multiply worldMatrix,parent.worldMatrix,localMatrix
+			Else
+				Matrix.Copy worldMatrix,localMatrix
+			Endif
+		Endif
+	
+		If children
+			For Local kid:=Eachin children
+				kid.Update
+			Next
+		Endif
+		
+		localDirty=False
+	End
+
+	Method Render(projection#[],view#[])
+		If children
+			For Local kid:=Eachin children
+				kid.Render projection,view
+			Next
+		Endif
+		If mesh
+			Matrix.Multiply viewMatrix,view,worldMatrix
+	
+			mesh.Render projection,viewMatrix
+	
+			' Matrix.Multiply projectionMatrix,projection,viewMatrix
+			' mesh.Render projectionMatrix,viewMatrix
+		Endif
+	End
+End
+
+
+Class Matrix
+
+	Function ToString$(m#[])
+		Return ""+m[0]+","+m[1]+","+m[2]+"~n"+m[4]+","+m[5]+","+m[6]+"~n"+m[8]+","+m[9]+","+m[10]
+	End
+
+	Function Identity(m#[])
+		m[0]=1
+		m[1]=0
+		m[2]=0
+		m[3]=0
+		m[4]=0
+		m[5]=1
+		m[6]=0
+		m[7]=0
+		m[8]=0
+		m[9]=0
+		m[10]=1
+		m[11]=0
+		m[12]=0
+		m[13]=0
+		m[14]=0
+		m[15]=1
+	End
+
+	Function Position(m#[],tx#,ty#,tz#)
+		m[12]=tx
+		m[13]=ty
+		m[14]=tz
+	End
+	
+	Function Translate(m#[],tx#,ty#,tz#)
+		m[12]+=tx
+		m[13]+=ty
+		m[14]+=tz
+	End
+
+	Function Rotate(m#[],c#,b#,a#)
+		Local t1# = Cos(b)
+		Local t2# = Cos(a)
+		Local t4# = Sin(c)
+		Local t5# = Sin(b)
+		Local t6# = (t4*t5)
+		Local t8# = Cos(c)
+		Local t9# = Sin(a)
+		Local t12# =(t8*t5)
+		
+		m[0] = (t1*t2)
+		m[1] = (-t6*t2-t8*t9)
+		m[2] = (-t12*t2+t4*t9)
+		m[4] = (t1*t9)
+		m[5] = (-t6*t9+t8*t2)
+		m[6] = (-t12*t9-t4*t2)
+		m[8] = t5
+		m[9] = (t4*t1)
+		m[10] = (t8*t1)
+	End
+
+	Function Multiply(m#[],x#[],y#[])
+		For Local i=0 Until 4
+			For Local j=0 Until 4
+				Local jy=j*4
+				m[jy+i]=x[i]*y[jy] + x[i+4]*y[jy+1] + x[i+8]*y[jy+2] + x[i+12]*y[jy+3]
+			Next
+		Next
+	End
+
+	Function Copy(m#[],s#[])
+		For Local i=0 Until 16
+			m[i]=s[i]
+		Next
+	End
+	
+	Function InvertEuclidian(m#[],s#[])
+		m[0]= s[0]
+		m[1]= s[4]
+		m[2]= s[8]
+		m[3]=0
+		
+		m[4]= s[1]
+		m[5]= s[5]
+		m[6]= s[9]
+		m[7]=0
+		
+		m[8]= s[2]
+		m[9]= s[6]
+		m[10]= s[10]
+		m[11]=0
+		
+		Local x#=-s[12]
+		Local y#=-s[13]
+		Local z#=-s[14]
+		
+		m[12]=x*s[0]+y*s[1]+z*s[2]
+		m[13]=x*s[4]+y*s[5]+z*s[6]
+		m[14]=x*s[8]+y*s[9]+z*s[10]
+		m[15]=1
+	End
+
+	Function Frustum(m#[],left#,right#,bottom#,top#,near#,far#)
+		Local near2:=near*2
+		Local w:=right-left
+		Local h:=top-bottom
+		Local d:=far-near
+		
+		m[0]=near2/w
+		m[1]=0
+		m[2]=0
+		m[3]=0
+		
+		m[4]=0
+		m[5]=near2/h
+		m[6]=0
+		m[7]=0
+		
+		m[8]=(right+left)/w
+		m[9]=(top+bottom)/h
+		m[10]=(far+near)/d
+		m[11]=1
+		
+		m[12]=0
+		m[13]=0
+		m[14]=-(far*near2)/d
+		m[15]=0
+	End
+End
+
+Class n3dDemo Extends App
+
+	Field rot#
+	Field obj_z:=5.0
+	
+	Field lineTexture
+	
+	Field white:Material
+	Field red:Material
+	Field blue:Material
+
+	Function LoadMaterial:Material(path$)
+	End
+
+	Method CreateBox:Node(x0#,y0#,z0#,x1#,y1#,z1#,material:Material)
+		Local node:=New Node
+		Local cube:=Geometry.TubeCube(material,x0,y0,z0,x1,y1,z1)
+		node.mesh=cube
+		Return node
+	End
+
+	Method CreateCity:Node(material:Material)
+		Local node:=New Node
+		Local city:=Geometry.TubeCity(node,material,-1,-1,-1,1,1,1)
+		node.mesh=city
+		Return node
+	End
+
+	Function CreatePivot:Node(parent:Node)
+		Local node:=New Node
+		If parent
+			parent.AddNode node
+		Endif
+		Return node
+	End
+
+	Function DumpExtensions()
+		Print "Extension: "+glGetString(GL_EXTENSIONS)
+	End
+
+	Method CreateTexture()
+		Local tex:=glCreateTexture()
+		
+		glBindTexture GL_TEXTURE_2D,tex
+		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR
+		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR
+		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT
+		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT
+		glTexImage2D GL_TEXTURE_2D,0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,"monkey://data/ring.png"
+		glGenerateMipmap GL_TEXTURE_2D
+		CheckGL
+		
+		Return tex
+	End
+
+	Method ResetRender()
+		' DumpExtensions
+		Local shader:=New Shader( LineVertex, LineFragment )
+		
+		white=New Material( shader )
+		white.SetColor 1,1,1,1
+		white.SetTexture lineTexture
+		
+		red=New Material( shader )
+		red.SetColor 1,0,0,1
+		red.SetTexture lineTexture
+		
+		blue=New Material( shader )
+		blue.SetColor 0,0,1,1
+		blue.SetTexture lineTexture
+	End
+
+	Method RenderNull()
+		glViewport 0,0,DeviceWidth,DeviceHeight
+		glClearColor 0,.1,.2,1
+		glClear GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT
+	End
+
+	Method BeginRender()
+		Geometry.Bound=Null
+		glViewport 0,0,DeviceWidth,DeviceHeight
+		glClearColor .6,.6,.6,1
+		glClear GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT
+		' glEnable GL_DEPTH_TEST
+		glDepthFunc GL_LESS
+		glEnable GL_BLEND
+		' glBlendFunc GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+		' premultiplied stuff
+		glBlendFuncSeparate GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA
+	End
+
+	Method OnSuspend()
+		Error "" 'budget way to handle loss of context!
+	End
+
+	Field DisplayWidth
+	Field DisplayHeight
+	
+	Field scene:Node
+	Field box:Node
+	Field box3:Node
+	
+	Field camera:Camera
+	Field camerahandle:Node
+	Field head:Node
+
+	Field stats:=New StringMap<String>
+	
+	Method Stat(stat$,value$)
+	End
+	
+	Method Connected?()
+		Return False
+	End
+	
+	Method Post(message$)
+	End
+
+' state is form id:csv~r
+
+	Const EOL$="~r"
+
+	Method OnCreate()
+		DisplayWidth=DeviceWidth
+		DisplayHeight=DeviceHeight
+		lineTexture=CreateTexture()
+		
+		Print "n3d:"+DisplayWidth+","+DisplayHeight
+		
+		ResetRender
+		' ResetView DisplayWidth,DisplayHeight
+		
+		scene=New Node()
+		
+		box=CreateBox(-1,-1,-1,1,1,1,red)
+		scene.AddNode box
+		box.SetPosition 0,0,2
+		
+		box3=CreateBox(-1,-1,-1,1,1,10,white)
+		scene.AddNode box3
+		box3.SetPosition 0,0,12
+		
+		For Local c=0 To 10
+			Local city:=CreateCity(white)
+			scene.AddNode city
+			city.SetPosition 0,0,-c*5
+		Next
+		
+		head=New HeadNode()
+		head.SetPosition 0,0.75,-20
+		scene.AddNode head
+		
+		camerahandle=New Node()
+		head.AddNode camerahandle
+		
+		camera=New Camera()
+		camera.SetRange 1,1000
+		camera.SetHandle camerahandle
+		
+		Local o#=1
+		
+		Local rot#=0
+		
+		' Local state$=LoadState()
+		' If state.Length RestoreState(state)
+		
+		SetUpdateRate 60
+	End
+
+	Method OnResize()
+		DisplayWidth=DeviceWidth
+		DisplayHeight=DeviceHeight
+		' ResetView DisplayWidth,DisplayHeight
+	End
+
+	Field frameCount
+
+	Method OnUpdate()
+		frameCount+=1
+		
+		If KeyHit( KEY_ESCAPE )
+			OnClose
+			EndApp
+		Endif
+		
+		If scene
+			box.SetRotation frameCount*.2,frameCount*.1,0
+			Local x#=0.1*(MouseX-DeviceWidth*0.5)
+			Local y#=0.1'*(MouseY-DeviceHeight*0.5)
+			scene.Update
+		Endif
+	End
+
+	Method OnClose()
+		' SaveState GetState()
+		Print "Close!"
+	End
+
+	Field framecount
+
+	Method OnRender()
+	
+		If framecount<6
+			RenderNull
+		Else
+			BeginRender
+			RenderScene
+		Endif
+		
+		framecount+=1
+	End
+	
+	Method RenderScene()
+		Local projectionMatrix#[16]
+		Local viewMatrix#[16]
+		Matrix.Frustum( projectionMatrix,-1,1,-1,1,camera.near,camera.far )
+		' Matrix.Invert viewMatrix,camerahandle.worldMatrix
+		Matrix.InvertEuclidian viewMatrix,head.worldMatrix
+		scene.Render projectionMatrix,viewMatrix
+	End
+
+
+End
+
+
+Function Main()
+	New n3dDemo
+End
+
+#ANDROID_GAMEPAD_ENABLED=True
+
+#MOJO_AUTO_SUSPEND_ENABLED=False
+
+#GLFW_WINDOW_TITLE = "n3D"
+#GLFW_SWAP_INTERVAL = -1
+#GLFW_USE_MINGW = 1
+
+'#GLFW_WINDOW_SAMPLES=16
+
+'#GLFW_WINDOW_FULLSCREEN = 1
+'#GLFW_WINDOW_WIDTH = 1920
+'#GLFW_WINDOW_HEIGHT = 1200
+
+#GLFW_WINDOW_WIDTH = 1200
+#GLFW_WINDOW_HEIGHT = 720
+#GLFW_WINDOW_RESIZABLE = 1
