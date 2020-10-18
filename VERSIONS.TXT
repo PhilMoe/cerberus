@@ -14,7 +14,8 @@ MOD: [brl.filesystem] CreateDir now creates paths automatically, that includes m
 MOD: [MOJO/MOJO2] Removed an extra call to retrieve the window size on GLFW BeginRender. Only the size of the framebuffer is relevant now.    (Author: MikeHart)
 MOD: [MAKEDOCS] CHANGED makedocs now resolves links for json output    (Author: Holzchopf)
 MOD: [IOS] Changed using a launch image to a launch screen storyboard so you get the full resolution on all IOS devices.   (Author: Phil7)
-MOD: [IOS] Changed minimum IOS version to 9.0  (Author: Phil7)
+MOD: [IOS] Changed minimum IOS version to 9.0.  (Author: Phil7)
+MOD: [DESKTOP] Updated GLFW to version 3.3.1  (Author: MikeHart)
 NEW: [TRANSCC] New config setting #GLFW_COPY_LIBS_32 to copy 32bit DLLs into the build.    (Author: MikeHart)
 NEW: [TRANSCC] Added TARGETPATH option to specify more target directories.    (Author: MikeHart)
 NEW: [TRANSCC] Added custom targets with cxbuild.txt script.    (Author: MikeHart)
@@ -28,9 +29,8 @@ NEW: [MOJO] Added DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Flo
 NEW: [MOJO2] Added DrawList.DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )    (Author: MikeHart)
 
 KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to update GLFW for a fix.
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
 - GLFW_APP_ICON doesn't work with OSX and Linux.
-- Documentation for cxbuild.txt script commands have to created.
 
 
 ***** v2020-05-09 *****
