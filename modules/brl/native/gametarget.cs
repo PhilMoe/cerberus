@@ -24,6 +24,7 @@ public class BBGameDelegate{
 	public virtual void TouchEvent( int ev,int data,float x,float y ){}
 	public virtual void MotionEvent( int ev,int data,float x,float y,float z ){}
 	public virtual void DiscardGraphics(){}
+	public virtual void FileDropEvent(String filename){}
 }
 
 public class BBDisplayMode{

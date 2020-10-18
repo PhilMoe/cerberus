@@ -1,4 +1,4 @@
-***** v2020-09-12 *****
+***** v2020-10-18 *****
 
 FIX: [TRANSCC] With the GLFW target and MingW, you can build 32bit again!    (Author: MikeHart) 
 FIX: [TRANSCC] Fixed copying sub directories with the INCLUDE statement.    (Author: MikeHart)
@@ -23,7 +23,9 @@ NEW: [examples] mojo/2Din3D.    (Author: MikeHart)
 NEW: [examples] mojo2/asyncimageloading.    (Author: MikeHart)
 NEW: [HTML5] Added mousewheel event on the html5 target - MouseZ() works now.    (Author: Github user NEOJAW)  
 NEW: [MAKEDOCS] Added export of decls.json to makedocs.    (Author: Holzchopf)
-NEW: [MAKEDOCS] ADDED index entry decls CHANGED json builder now transforms markdown    (Author: Holzchopf)
+NEW: [MAKEDOCS] Added index entry decls CHANGED json builder now transforms markdown    (Author: Holzchopf)
+NEW: [MOJO] Added DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )    (Author: MikeHart)
+NEW: [MOJO2] Added DrawList.DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )    (Author: MikeHart)
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to update GLFW for a fix.
