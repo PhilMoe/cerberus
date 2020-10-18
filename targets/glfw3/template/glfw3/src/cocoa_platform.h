@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW 3.3 macOS - www.glfw.org
 //------------------------------------------------------------------------
-// Copyright (c) 2009-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2009-2019 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,16 +27,41 @@
 #include <stdint.h>
 #include <dlfcn.h>
 
+#include <Carbon/Carbon.h>
+
+// NOTE: All of NSGL was deprecated in the 10.14 SDK
+//       This disables the pointless warnings for every symbol we use
+#define GL_SILENCE_DEPRECATION
+
 #if defined(__OBJC__)
-#import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 #else
-#include <Carbon/Carbon.h>
-#include <ApplicationServices/ApplicationServices.h>
 typedef void* id;
 #endif
 
+// NOTE: Many Cocoa enum values have been renamed and we need to build across
+//       SDK versions where one is unavailable or the other deprecated
+//       We use the newer names in code and these macros to handle compatibility
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 101200
+ #define NSBitmapFormatAlphaNonpremultiplied NSAlphaNonpremultipliedBitmapFormat
+ #define NSEventMaskAny NSAnyEventMask
+ #define NSEventMaskKeyUp NSKeyUpMask
+ #define NSEventModifierFlagCapsLock NSAlphaShiftKeyMask
+ #define NSEventModifierFlagCommand NSCommandKeyMask
+ #define NSEventModifierFlagControl NSControlKeyMask
+ #define NSEventModifierFlagDeviceIndependentFlagsMask NSDeviceIndependentModifierFlagsMask
+ #define NSEventModifierFlagOption NSAlternateKeyMask
+ #define NSEventModifierFlagShift NSShiftKeyMask
+ #define NSEventTypeApplicationDefined NSApplicationDefined
+ #define NSWindowStyleMaskBorderless NSBorderlessWindowMask
+ #define NSWindowStyleMaskClosable NSClosableWindowMask
+ #define NSWindowStyleMaskMiniaturizable NSMiniaturizableWindowMask
+ #define NSWindowStyleMaskResizable NSResizableWindowMask
+ #define NSWindowStyleMaskTitled NSTitledWindowMask
+#endif
+
 typedef VkFlags VkMacOSSurfaceCreateFlagsMVK;
+typedef VkFlags VkMetalSurfaceCreateFlagsEXT;
 
 typedef struct VkMacOSSurfaceCreateInfoMVK
 {
@@ -46,7 +71,16 @@ typedef struct VkMacOSSurfaceCreateInfoMVK
     const void*                     pView;
 } VkMacOSSurfaceCreateInfoMVK;
 
+typedef struct VkMetalSurfaceCreateInfoEXT
+{
+    VkStructureType                 sType;
+    const void*                     pNext;
+    VkMetalSurfaceCreateFlagsEXT    flags;
+    const void*                     pLayer;
+} VkMetalSurfaceCreateInfoEXT;
+
 typedef VkResult (APIENTRY *PFN_vkCreateMacOSSurfaceMVK)(VkInstance,const VkMacOSSurfaceCreateInfoMVK*,const VkAllocationCallbacks*,VkSurfaceKHR*);
+typedef VkResult (APIENTRY *PFN_vkCreateMetalSurfaceEXT)(VkInstance,const VkMetalSurfaceCreateInfoEXT*,const VkAllocationCallbacks*,VkSurfaceKHR*);
 
 #include "posix_thread.h"
 #include "cocoa_joystick.h"
@@ -87,6 +121,12 @@ typedef struct _GLFWwindowNS
     id              layer;
 
     GLFWbool        maximized;
+    GLFWbool        retina;
+
+    // Cached window properties to filter out duplicate events
+    int             width, height;
+    int             fbWidth, fbHeight;
+    float           xscale, yscale;
 
     // The total sum of the distances the cursor has been warped
     // since the last cursor motion event was processed
@@ -101,14 +141,16 @@ typedef struct _GLFWlibraryNS
 {
     CGEventSourceRef    eventSource;
     id                  delegate;
-    id                  autoreleasePool;
-    id                  cursor;
+    GLFWbool            finishedLaunching;
+    GLFWbool            cursorHidden;
     TISInputSourceRef   inputSource;
     IOHIDManagerRef     hidManager;
     id                  unicodeData;
-    id                  listener;
+    id                  helper;
+    id                  keyUpMonitor;
+    id                  nibObjects;
 
-    char                keyName[64];
+    char                keynames[GLFW_KEY_LAST + 1][17];
     short int           keycodes[256];
     short int           scancodes[GLFW_KEY_LAST + 1];
     char*               clipboardString;
@@ -135,6 +177,8 @@ typedef struct _GLFWmonitorNS
     CGDirectDisplayID   displayID;
     CGDisplayModeRef    previousMode;
     uint32_t            unitNumber;
+    id                  screen;
+    double              fallbackRefreshRate;
 
 } _GLFWmonitorNS;
 
@@ -158,6 +202,10 @@ typedef struct _GLFWtimerNS
 void _glfwInitTimerNS(void);
 
 void _glfwPollMonitorsNS(void);
-GLFWbool _glfwSetVideoModeNS(_GLFWmonitor* monitor, const GLFWvidmode* desired);
+void _glfwSetVideoModeNS(_GLFWmonitor* monitor, const GLFWvidmode* desired);
 void _glfwRestoreVideoModeNS(_GLFWmonitor* monitor);
+
+float _glfwTransformYNS(float y);
+
+void* _glfwLoadLocalVulkanLoaderNS(void);
 

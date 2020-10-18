@@ -1,6 +1,6 @@
 
 CC=gcc
-CFLAGS=
+CFLAGS=-D_GLFW_X11
 
 CXX=g++
 CXXFLAGS=
