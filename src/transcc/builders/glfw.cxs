@@ -186,6 +186,8 @@ Class GlfwBuilder Extends Builder
 		
 		SaveString main,"main.cpp"
 		
+		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"/xcode/cerberus.icns")
+
 		If tcc.opt_build
 		
 			ChangeDir "xcode"
