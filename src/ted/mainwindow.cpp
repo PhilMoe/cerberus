@@ -2344,8 +2344,8 @@ void MainWindow::onHelpAbout(){
             "QT V" +_STRINGIZE(QT_VERSION)+ "<br><br>"
             "A simple editor/IDE for the Cerberus programming language.<br><br>"
             "Copyright Blitz Research Ltd for Monkey X.<br><br>"
-            "Cerberus X is maintained by Michael Hartlef, Martin Leidel & Olivier Stucker.<br<br>"
-            "Further additions done by serveral member of the Cerberus X community.<br>"
+            "Cerberus X is maintained by Michael Hartlef, Philipp Moeller & Olivier Stucker.<br<br>"
+            "Further additions done by several member of the Cerberus X community.<br>"
             "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus X."
             "</body></html>";   
 #else
@@ -2356,8 +2356,8 @@ void MainWindow::onHelpAbout(){
             "QT V" +(QT_VERSION_STR)+"<br><br>"
             "A simple editor/IDE for the Cerberus programming language.<br><br>"
             "Copyright Blitz Research Ltd for Monkey X.<br><br>"
-            "Cerberus X is maintained by Michael Hartlef, Martin Leidel & Olivier Stucker.<br<br>"
-            "Further additions done by serveral member of the Cerberus X community.<br>"
+            "Cerberus X is maintained by Michael Hartlef, Philipp Moeller & Olivier Stucker.<br<br>"
+            "Further additions done by several member of the Cerberus X community.<br>"
             "Please visit <a href=\""+webSite+"\">www.cerberus-x.com</a> for more information on Cerberus X."
             "</body></html>";
 #endif
