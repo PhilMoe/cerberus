@@ -337,7 +337,10 @@
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				OTHER_CFLAGS = "-Wno-logical-op-parentheses";
+				OTHER_CFLAGS = (
+					"-Wno-logical-op-parentheses",
+					"-D_GLFW_COCOA",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = CerberusGame;
 				SDKROOT = macosx;
@@ -364,7 +367,10 @@
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				OTHER_CFLAGS = "-Wno-logical-op-parentheses";
+				OTHER_CFLAGS = (
+					"-Wno-logical-op-parentheses",
+					"-D_GLFW_COCOA",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = CerberusGame;
 				SDKROOT = macosx;
