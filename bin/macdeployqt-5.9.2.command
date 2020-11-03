@@ -5,7 +5,7 @@
 cd `dirname $0`
 #cd ../../bin
 #macdeployqt-4.8 Ted.app
-/Users/michaelhartlef/Qt/5.9.2/clang_64/bin/macdeployqt Ted.app -verbose=2 -always-overwrite
+~/Qt/5.9.2/clang_64/bin/macdeployqt Ted.app -verbose=2 -always-overwrite
 cd Ted.app/Contents/PlugIns
 rm -r -f audio
 rm -r -f bearer
