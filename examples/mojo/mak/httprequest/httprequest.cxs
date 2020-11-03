@@ -1,55 +1,95 @@
+' Test version by community member WICK
 
+Strict
 Import mojo
-
 Import brl.httprequest
 
-Class MyApp Extends App Implements IOnHttpRequestComplete
-
-	Field get_req:HttpRequest,post_req:HttpRequest
-	
-	Method OnHttpRequestComplete:Void( req:HttpRequest )
-	
-		If req=get_req
-			Print "Http GET complete!"
-		Else
-			Print "Http POST complete!"
-		Endif
-
-		Print "Status="+req.Status()
-		Print "ResponseText="+req.ResponseText()
-		
-	End
-	
-	Method OnCreate()
-	
-		get_req=New HttpRequest( "GET","https://httpbin.org/",Self )
-		get_req.Send
-
-		post_req=New HttpRequest( "POST","https://httpbin.org/post.php",Self )
-		post_req.Send "Hello World!"
-
-		SetUpdateRate 60
-	End
-	
-	Method OnUpdate()
-
-		If KeyHit( KEY_CLOSE ) Error ""
-
-		UpdateAsyncEvents
-	End
-
-	Method OnRender()
-	
-		Cls
-		
-		DrawText "Https GET bytes received="+get_req.BytesReceived(),0,0
-		DrawText "Https POST bytes received="+post_req.BytesReceived(),0,12
-
-	End	
+Function Main:Int()
+	New Game()
+	Return 0
 End
 
-Function Main()
+Class Game Extends App
+	Field server:HttpManager
+	
+	Const HTTPS$ = "https://"
+	Field getAddress$ = "httpbin.org/get"
+	Field postAddress$ = "httpbin.org/post"
+		
+	Method OnCreate:Int()
+		SetUpdateRate(60)
+		server = New HttpManager()
+		Print "Initialized!"
+					
+		Return 0
+	End
+	
+	Method OnUpdate:Int()
+		UpdateAsyncEvents()
+	
+		If KeyHit(KEY_SPACE) Then SendGet()
+		If KeyHit(KEY_ENTER) Then SendPost()
+		If KeyHit(KEY_ESCAPE) Then EndApp()
+		
+		Return 0
+	End
+	
+	Method OnRender:Int()
+		Cls()
 
-	New MyApp
+		DrawText "ENTER - GET request: " + getAddress,0,0
+		DrawText "SPACE - POST request: " + postAddress,0,16
+		DrawText "ESCAPE - exit",0,32
+		
+		If server.lastResponse <> Null
+			DrawText "Http         status="+server.lastResponse.Status(),0,116
+			DrawText "Http bytes received="+server.lastResponse.BytesReceived(),0,132
+			DrawText "Http text received="+server.lastResponse.ResponseText(),0,148
+		Endif
+				
+		Return 0
+	End
+	
+	Method SendGet:Void()		
+		Print ""
+		Print "     >> assembling GET..."
+		
+		Local req:HttpRequest
+		Local address$ = HTTPS + getAddress
+		Print address
+		
+		req = New HttpRequest( "GET", address, server)		
+		req.SetHeader("accept", "application/json")		
+		req.Send()
 
+		Print "     >> sent GET to " + address	
+	End
+
+	Method SendPost:Void()
+		Print ""
+		Print "     >> assembling POST..."			
+	
+		Local req:HttpRequest			
+		Local address$ = HTTPS + postAddress
+		Local data$ = "{name: 'peahen'}"
+			
+		'send the post request
+		req = New HttpRequest( "POST", address, server)
+		req.SetHeader("accept", "application/json")
+		req.Send(data, "application/json")
+				
+		Print "     >> sent POST to " + address + " with data " + data						
+	End
+End
+
+
+Class HttpManager Implements IOnHttpRequestComplete
+	Field lastResponse:HttpRequest
+
+	Method OnHttpRequestComplete:Void( req:HttpRequest )
+		Print "HTTP request complete!   Status="+req.Status()
+		Print "  Text="+req.ResponseText()
+			
+		lastResponse = req
+	End
 End
