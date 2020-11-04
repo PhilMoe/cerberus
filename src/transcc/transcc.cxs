@@ -58,16 +58,18 @@ Function StripQuotes:String( str:String )
 End
 
 
-' Check, if source filename and path are valid (without space characters).
-Function IsValidSourcePath:Bool( sourcePath:String )
+' Checks, if source filename is valid (without space characters).
+Function IsValidSourceFilename:Bool( sourcePath:String )
 	Local forbiddenChars:String[] = [" "] 'There are eventually more to come.
-	
-	For Local chr:String = Eachin forbiddenChars
-		If sourcePath.Find(chr) >= 0 Return False
+    Local sourceFilename:String
+    
+    sourceFilename = StripDir(StripExt(sourcePath))
+
+    For Local chr:String = Eachin forbiddenChars
+		If sourceFilename.Find(chr) >= 0 Return False
 	Next
 	
 	Return True
-	
 End
 
 
@@ -325,8 +327,8 @@ Class TransCC
     Method ParseArgs:Void()
   
         If args.Length>1 opt_srcpath=StripQuotes( args[args.Length-1].Trim() )
-        If Not IsValidSourcePath(opt_srcpath) 
-            Die("Path to source file contains space characters: " + opt_srcpath)		
+        If Not IsValidSourceFilename(opt_srcpath) 
+            Die("Source filename contains space characters: " + opt_srcpath)		
         EndIf
 
         For Local i:=1 Until args.Length-1
