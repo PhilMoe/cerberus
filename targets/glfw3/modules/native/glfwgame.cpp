@@ -24,6 +24,9 @@ public:
 	virtual int GetDeviceHeight(){ return _height * _highDPI_Factor; }
 	virtual int GetDeviceWindowWidth(){ bbPrint(String("GetDeviceWindowWidth: ") + _width); return _width; }
 	virtual int GetDeviceWindowHeight(){ return _height; }
+	virtual int GetFramebufferWidth(){ bbPrint(String("GetFramebufferWidth: ") + float(_frameBufWidth)); return _frameBufWidth; }
+	virtual int GetFramebufferHeight(){ return _frameBufHeight; }
+
 
 	virtual void SetHighDPI_Factor(double newValue);
 	virtual void SetDeviceWindow( int width,int height,int flags );

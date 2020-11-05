@@ -198,16 +198,18 @@ int gxtkGraphics::Height(){
 }
 
 int gxtkGraphics::BeginRender(){
-	//int newWidth = 0;
-	//int newHeight = 0;
+	int fbWidth = 0;
+	int fbHeight = 0;
 	
 	width=height=0;
 #ifdef _glfw3_h_
 	//glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
 	//glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width, &height );
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
-	bbPrint(width);
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
+	bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
+	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
+	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -216,8 +218,7 @@ int gxtkGraphics::BeginRender(){
 	return 0;
 #else
 
-	glViewport( 0,0,width,height );
-	//glViewport( 0,0,newWidth,newHeight );
+	glViewport( 0,0,fbWidth, fbHeight );
 
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
