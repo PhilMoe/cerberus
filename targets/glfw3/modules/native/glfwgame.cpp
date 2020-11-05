@@ -20,11 +20,12 @@ public:
 	virtual void SetClipboard( String _text );
 	virtual String GetClipboard();
 	
-	virtual int GetDeviceWidth(){ bbPrint(String("GetDeviceWidth: ") + _frameBufWidth); return _frameBufWidth; }
-	virtual int GetDeviceHeight(){ return _frameBufHeight; }
+	virtual int GetDeviceWidth(){ bbPrint(String("GetDeviceWidth: ") + float(_width * _highDPI_Factor)); return _width * _highDPI_Factor; }
+	virtual int GetDeviceHeight(){ return _height * _highDPI_Factor; }
 	virtual int GetDeviceWindowWidth(){ bbPrint(String("GetDeviceWindowWidth: ") + _width); return _width; }
 	virtual int GetDeviceWindowHeight(){ return _height; }
 
+	virtual void SetHighDPI_Factor(double newValue);
 	virtual void SetDeviceWindow( int width,int height,int flags );
 	virtual void SetDeviceWindowIcon( String _path );
 	virtual void SetDeviceWindowPosition( int _x, int _y );
@@ -57,6 +58,8 @@ private:
 	// Framebuffer dimensions
 	int _frameBufWidth;
 	int _frameBufHeight;
+
+	double _highDPI_Factor;
 	
 	int _swapInterval;
 	bool _focus;
@@ -546,6 +549,9 @@ void BBGlfwGame::OnMouseButton( GLFWwindow *window,int button,int action,int mod
 	}
 	double x=0,y=0;
 	glfwGetCursorPos( window,&x,&y );
+	x *= _glfwGame->_highDPI_Factor;
+	y *= _glfwGame->_highDPI_Factor;
+
 	switch( action ){
 	case GLFW_PRESS:
 		_glfwGame->MouseEvent( BBGameEvent::MouseDown,button,x,y,0.0 );
@@ -571,8 +577,9 @@ void BBGlfwGame::OnMouseWheel( GLFWwindow *window, double x, double z )
 }
 
 void BBGlfwGame::OnCursorPos( GLFWwindow *window,double x,double y ){
-	x = x /_glfwGame->_width*_glfwGame->_frameBufWidth;
-	y = y /_glfwGame->_height*_glfwGame->_frameBufHeight;
+	x *= _glfwGame->_highDPI_Factor;
+	y *= _glfwGame->_highDPI_Factor;
+	// bbPrint(String("newX: " + float(x));
 	_glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,x,y,0.0 );
 }
 
@@ -597,19 +604,11 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 
 
 void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
-	bbPrint("OnFramebufferSize");
-	bbPrint(width);
+	bbPrint(String("OnFramebufferSize: ") + width);
 	_glfwGame->_frameBufWidth=width;
 	_glfwGame->_frameBufHeight=height;
-	
-/*	
-#if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
-	_glfwGame->RenderGame();
-	glfwSwapBuffers( _glfwGame->_window );
-	_glfwGame->_nextUpdate=0;
-#endif
-*/
-
+	bbPrint(_glfwGame->GetDeviceWidth());
+	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
 }
 
 
@@ -627,6 +626,16 @@ String BBGlfwGame::GetClipboard(){
 		return String("");
 	}
 }
+
+
+void BBGlfwGame::SetHighDPI_Factor(double factor){
+	
+	#if !CFG_GLFW_HIGH_DPI_ENABLED
+		factor = 1.0;
+	#endif
+		_highDPI_Factor = factor;
+}
+
 
 void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     if( _window ) {
@@ -714,7 +723,8 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	_height=height;
 	
 	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
-	
+	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
+
 	++glfwGraphicsSeq;
 
 	if( !fullscreen ){	

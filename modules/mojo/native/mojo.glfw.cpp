@@ -204,7 +204,10 @@ int gxtkGraphics::BeginRender(){
 	width=height=0;
 #ifdef _glfw3_h_
 	//glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
-	glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width, &height );
+	//glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width, &height );
+	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
+	bbPrint(width);
+	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
