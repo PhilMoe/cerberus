@@ -2575,9 +2575,9 @@ Class Canvas Extends DrawList
 	Method SetRenderTarget:Void( target:Object )
 
 		FlushPrims
-		
+		Print("Setrendertarget()")
 		If Not target
-		
+			Print("Setrendertarget(Null)")
 			_image=Null
 			_texture=Null
 			_width=DeviceWidth
@@ -3064,17 +3064,17 @@ Class Canvas Extends DrawList
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_twidth=_width
-				_theight=_height
+				_twidth=_width*2  'Multiplied for test purpose! ********
+				_theight=_height*2  'Multiplied for test purpose! ********
 			Endif
 		
-			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
+			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2]*2;_vph=_viewport[3]*2  'Multiplied for test purpose! ********
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
 			Endif
 			
-			_scx=_scissor[0];_scy=_scissor[1];_scw=_scissor[2];_sch=_scissor[3]
+			_scx=_scissor[0]*2;_scy=_scissor[1]*2;_scw=_scissor[2]*2;_sch=_scissor[3]*2  'Multiplied for test purpose! ********
 			
 			If _scx<0 _scx=0 Else If _scx>_vpw _scx=_vpw
 			If _scw<0 _scw=0 Else If _scx+_scw>_vpw _scw=_vpw-_scx
@@ -3088,7 +3088,7 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			
+			Print("Dirty Viewport validate3091")
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph

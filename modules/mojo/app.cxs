@@ -55,7 +55,7 @@ End
 
 Function ValidateDeviceWindow:Void( notifyApp:Bool )
 	Print("App.cxs:ValidateDeviceWindow")
-'	Local w:=_game.GetDeviceWindowWidth()
+	Local w:=_game.GetDeviceWindowWidth()
 '	Local h:=_game.GetDeviceWindowHeight()
 	Local w:=_game.GetDeviceWidth()
 	Local h:=_game.GetDeviceHeight()
