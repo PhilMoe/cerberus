@@ -2565,7 +2565,7 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,_twidth,_theight
+		SetViewport 0,0,DeviceWidth(),DeviceHeight()
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -3068,7 +3068,7 @@ Class Canvas Extends DrawList
 				scale = Float(_twidth) / Float(_width)
 			Endif
 		
-			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
+			_vpx=_viewport[0]*scale;_vpy=_viewport[1]*scale;_vpw=_viewport[2]*scale;_vph=_viewport[3]*scale
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
@@ -3088,7 +3088,9 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			Print("Dirty Viewport validate3091")
+			Print("validate:Dirty Viewport L3091")
+			Print(scale)
+			Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph
