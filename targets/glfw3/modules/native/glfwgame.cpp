@@ -20,11 +20,11 @@ public:
 	virtual void SetClipboard( String _text );
 	virtual String GetClipboard();
 	
-	virtual int GetDeviceWidth(){ bbPrint(String("GetDeviceWidth: ") + float(_width * _highDPI_Factor)); return _width * _highDPI_Factor; }
+	virtual int GetDeviceWidth(){ return _width * _highDPI_Factor; }
 	virtual int GetDeviceHeight(){ return _height * _highDPI_Factor; }
-	virtual int GetDeviceWindowWidth(){ bbPrint(String("GetDeviceWindowWidth: ") + _width); return _width; }
+	virtual int GetDeviceWindowWidth(){ return _width; }
 	virtual int GetDeviceWindowHeight(){ return _height; }
-	virtual int GetFramebufferWidth(){ bbPrint(String("GetFramebufferWidth: ") + float(_frameBufWidth)); return _frameBufWidth; }
+	virtual int GetFramebufferWidth(){ return _frameBufWidth; }
 	virtual int GetFramebufferHeight(){ return _frameBufHeight; }
 
 
@@ -593,8 +593,8 @@ void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
 }
 
 void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
-	bbPrint("OnWinSize");
-	bbPrint(_glfwGame->_width);
+	// bbPrint("OnWinSize");
+	// bbPrint(_glfwGame->_width);
 	_glfwGame->_width=width;
 	_glfwGame->_height=height;
 	
@@ -607,10 +607,10 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 
 
 void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
-	bbPrint(String("OnFramebufferSize: ") + width);
+	//bbPrint(String("OnFramebufferSize: ") + width);
 	_glfwGame->_frameBufWidth=width;
 	_glfwGame->_frameBufHeight=height;
-	bbPrint(_glfwGame->GetDeviceWidth());
+	//bbPrint(_glfwGame->GetDeviceWidth());
 	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
 }
 
@@ -632,7 +632,6 @@ String BBGlfwGame::GetClipboard(){
 
 
 void BBGlfwGame::SetHighDPI_Factor(double factor){
-	
 	#if !CFG_GLFW_HIGH_DPI_ENABLED
 		factor = 1.0;
 	#endif

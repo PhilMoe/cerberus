@@ -56,9 +56,9 @@ Function EnumDisplayModes:Void()
 End
 
 Function ValidateDeviceWindow:Void( notifyApp:Bool )
-	Print("App.cxs:ValidateDeviceWindow")
+	'Print("App.cxs:ValidateDeviceWindow")
 	Local fbW:=_game.GetFramebufferWidth()
-	Print("fbW = " + fbW)
+	'Print("fbW = " + fbW)
 	Local fbH:=_game.GetFramebufferHeight()
 	Local w:=_game.GetDeviceWidth()
 	Local h:=_game.GetDeviceHeight()

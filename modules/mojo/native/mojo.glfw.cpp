@@ -203,11 +203,9 @@ int gxtkGraphics::BeginRender(){
 	
 	width=height=0;
 #ifdef _glfw3_h_
-	//glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
-	//glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width, &height );
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
-	bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
+	//bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
 	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
 #else

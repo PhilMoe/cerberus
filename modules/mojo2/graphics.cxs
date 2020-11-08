@@ -3088,9 +3088,9 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			Print("validate:Dirty Viewport L3091")
-			Print(scale)
-			Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
+			'Print("validate:Dirty Viewport L3091")
+			'Print(scale)
+			'Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph

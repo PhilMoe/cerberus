@@ -70,8 +70,8 @@ public:
 	
 	virtual int GetDeviceWidth(){ return 0; }
 	virtual int GetDeviceHeight(){ return 0; }
-	virtual int GetFramebufferWidth(){ return 0; }
-	virtual int GetFramebufferHeight(){ return 0; }
+	virtual int GetFramebufferWidth(){ return this->GetDeviceWidth(); }
+	virtual int GetFramebufferHeight(){ return this->GetDeviceHeight(); }
 	virtual void SetDeviceWindow( int width,int height,int flags ){}
 	virtual void SetDeviceWindowIcon( String _path ){}
 	virtual void SetDeviceWindowPosition( int _x, int _y ){}
