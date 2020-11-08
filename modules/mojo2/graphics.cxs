@@ -2565,7 +2565,7 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,_width,_height
+		SetViewport 0,0,_twidth,_theight
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -2575,15 +2575,13 @@ Class Canvas Extends DrawList
 	Method SetRenderTarget:Void( target:Object )
 
 		FlushPrims
-		Print("Setrendertarget()")
 		If Not target
-			Print("Setrendertarget(Null)")
 			_image=Null
 			_texture=Null
 			_width=DeviceWidth
 			_height=DeviceHeight
-			_twidth=_width
-			_theight=_height
+			_twidth=FramebufferWidth
+			_theight=FramebufferHeight
 		
 		Else If Image( target )
 		
@@ -3060,21 +3058,23 @@ Class Canvas Extends DrawList
 		End
 		
 		If _dirty & DIRTY_VIEWPORT
-		
+			
+			Local scale:Float = 1.0
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_twidth=_width*2  'Multiplied for test purpose! ********
-				_theight=_height*2  'Multiplied for test purpose! ********
+				_twidth=FramebufferWidth  
+				_theight=FramebufferHeight  
+				scale = Float(_twidth) / Float(_width)
 			Endif
 		
-			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2]*2;_vph=_viewport[3]*2  'Multiplied for test purpose! ********
+			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
 			Endif
 			
-			_scx=_scissor[0]*2;_scy=_scissor[1]*2;_scw=_scissor[2]*2;_sch=_scissor[3]*2  'Multiplied for test purpose! ********
+			_scx=_scissor[0]*scale;_scy=_scissor[1]*scale;_scw=_scissor[2]*scale;_sch=_scissor[3]*scale 
 			
 			If _scx<0 _scx=0 Else If _scx>_vpw _scx=_vpw
 			If _scw<0 _scw=0 Else If _scx+_scw>_vpw _scw=_vpw-_scx
