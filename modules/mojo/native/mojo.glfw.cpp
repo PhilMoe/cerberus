@@ -18,6 +18,9 @@ public:
 
 	int width;
 	int height;
+	int fbWidth = 0;
+	int fbHeight = 0;
+
 
 	int colorARGB;
 	float r,g,b,alpha;
@@ -73,6 +76,7 @@ public:
 	unsigned char *data;
 	int width;
 	int height;
+
 	int depth;
 	int format;
 	int seq;
@@ -198,9 +202,7 @@ int gxtkGraphics::Height(){
 }
 
 int gxtkGraphics::BeginRender(){
-	int fbWidth = 0;
-	int fbHeight = 0;
-	
+	fbWidth=fbHeight=0;	
 	width=height=0;
 #ifdef _glfw3_h_
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
@@ -304,7 +306,12 @@ int gxtkGraphics::SetScissor( int x,int y,int w,int h ){
 	
 	if( x!=0 || y!=0 || w!=Width() || h!=Height() ){
 		glEnable( GL_SCISSOR_TEST );
-		y=Height()-y-h;
+		x*=2.0;
+		y*=2.0;
+		w*=2.0;
+		h*=2.0;
+		//y=Height()-y-h;
+		y=fbHeight-y-h;
 		glScissor( x,y,w,h );
 	}else{
 		glDisable( GL_SCISSOR_TEST );
