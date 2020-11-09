@@ -18,9 +18,10 @@ public:
 
 	int width;
 	int height;
+	
 	int fbWidth = 0;
 	int fbHeight = 0;
-
+	float highDPI_Factor = 1.0; // Needed to ensure proper scaling if #GLFW_HIGH_DPI_ENABLED is false.
 
 	int colorARGB;
 	float r,g,b,alpha;
@@ -210,6 +211,7 @@ int gxtkGraphics::BeginRender(){
 	//bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
 	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
+	highDPI_Factor = float(fbWidth) / float(width) ;
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -306,10 +308,10 @@ int gxtkGraphics::SetScissor( int x,int y,int w,int h ){
 	
 	if( x!=0 || y!=0 || w!=Width() || h!=Height() ){
 		glEnable( GL_SCISSOR_TEST );
-		x*=2.0;
-		y*=2.0;
-		w*=2.0;
-		h*=2.0;
+		x*=highDPI_Factor;
+		y*=highDPI_Factor;
+		w*=highDPI_Factor;
+		h*=highDPI_Factor;
 		//y=Height()-y-h;
 		y=fbHeight-y-h;
 		glScissor( x,y,w,h );
