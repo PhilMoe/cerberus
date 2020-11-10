@@ -593,10 +593,12 @@ void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
 }
 
 void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
-	// bbPrint("OnWinSize");
-	// bbPrint(_glfwGame->_width);
+	bbPrint(String("OnWinSize") + width);
+	bbPrint(_glfwGame->_width);
 	_glfwGame->_width=width;
 	_glfwGame->_height=height;
+	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
+
 	
 #if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
 	_glfwGame->RenderGame();
@@ -607,7 +609,7 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 
 
 void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
-	//bbPrint(String("OnFramebufferSize: ") + width);
+	bbPrint(String("OnFramebufferSize: ") + width);
 	_glfwGame->_frameBufWidth=width;
 	_glfwGame->_frameBufHeight=height;
 	//bbPrint(_glfwGame->GetDeviceWidth());
