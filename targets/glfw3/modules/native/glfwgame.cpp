@@ -597,9 +597,8 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 	//bbPrint(_glfwGame->_width);
 	_glfwGame->_width=width;
 	_glfwGame->_height=height;
-	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
+	_glfwGame->SetHighDPI_Factor((double)(_glfwGame->_frameBufWidth) / (double)(width));
 
-	
 #if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
 	_glfwGame->RenderGame();
 	glfwSwapBuffers( _glfwGame->_window );
