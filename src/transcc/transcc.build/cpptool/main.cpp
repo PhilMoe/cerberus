@@ -15318,7 +15318,9 @@ class c_TransCC : public Object{
 };
 String bb_os_ExtractDir(String);
 String bb_transcc_StripQuotes(String);
-bool bb_transcc_IsValidSourcePath(String);
+String bb_os_StripExt(String);
+String bb_os_StripDir(String);
+bool bb_transcc_IsValidSourceFilename(String);
 int bb_transcc_Die(String);
 class c_Type : public Object{
 	public:
@@ -16097,8 +16099,6 @@ int bb_config_IsDigit(int);
 int bb_config_IsBinDigit(int);
 int bb_config_IsHexDigit(int);
 extern String bb_config_ENV_MODPATH;
-String bb_os_StripExt(String);
-String bb_os_StripDir(String);
 extern String bb_parser_FILE_EXT;
 extern String bb_parser_FILE_EXT_OLD;
 int bb_config_Err(String);
@@ -17303,15 +17303,19 @@ String bb_preprocessor_EvalText(c_Toker*);
 c_StringMap2* bb_config_GetConfigVars();
 c_Type* bb_config_GetConfigVarType(String);
 String bb_preprocessor_PreProcess(String,c_ModuleDecl*);
+extern String bb_config_ENV_LANG;
+extern String bb_config_ENV_CUSTOMBUILDSCRIPT;
 class c_Target : public Object{
 	public:
 	String m_dir;
 	String m_name;
 	String m_system;
 	c_Builder* m_builder;
+	String m_lang;
+	String m_buildscript;
 	String m_path;
 	c_Target();
-	c_Target* m_new(String,String,String,c_Builder*,String);
+	c_Target* m_new(String,String,String,c_Builder*,String,String,String);
 	c_Target* m_new2();
 	void mark();
 };
@@ -17353,8 +17357,6 @@ class c_Node17 : public Object{
 	String p_Key();
 	void mark();
 };
-extern String bb_config_ENV_LANG;
-extern String bb_config_ENV_CUSTOMBUILDSCRIPT;
 void bb_config_PopConfigScope();
 class c_NodeEnumerator2 : public Object{
 	public:
@@ -18115,8 +18117,8 @@ void c_TransCC::p_ParseArgs(){
 	if(m_args.Length()>1){
 		m_opt_srcpath=bb_transcc_StripQuotes(m_args[m_args.Length()-1].Trim());
 	}
-	if(!bb_transcc_IsValidSourcePath(m_opt_srcpath)){
-		bb_transcc_Die(String(L"Path to source file contains space characters: ",47)+m_opt_srcpath);
+	if(!bb_transcc_IsValidSourceFilename(m_opt_srcpath)){
+		bb_transcc_Die(String(L"Source filename contains space characters: ",43)+m_opt_srcpath);
 	}
 	for(int t_i=1;t_i<m_args.Length()-1;t_i=t_i+1){
 		String t_arg=m_args[t_i].Trim();
@@ -18401,12 +18403,12 @@ void c_TransCC::p_EnumTargets(String t_dir){
 			if((t_system).Length()!=0){
 				c_Builder* t_builder=m__builders->p_Get(bb_config_GetConfigVar(String(L"TARGET_BUILDER",14)));
 				if((t_builder)!=0){
-					String t_host=bb_config_GetConfigVar(String(L"TARGET_HOST",11));
-					if(!((t_host).Length()!=0) || t_host==HostOS() || t_host.Find(HostOS(),0)>=0){
-						m__targets->p_Set6(t_name,(new c_Target)->m_new(t_f,t_name,t_system,t_builder,t_p+String(L"/",1)+t_f));
-					}
 					bb_config_ENV_LANG=bb_config_GetConfigVar(String(L"TARGET_LANG",11));
 					bb_config_ENV_CUSTOMBUILDSCRIPT=t_p+String(L"/",1)+t_f+String(L"/cxbuild.txt",12);
+					String t_host=bb_config_GetConfigVar(String(L"TARGET_HOST",11));
+					if(!((t_host).Length()!=0) || t_host==HostOS() || t_host.Find(HostOS(),0)>=0){
+						m__targets->p_Set6(t_name,(new c_Target)->m_new(t_f,t_name,t_system,t_builder,bb_config_ENV_LANG,bb_config_ENV_CUSTOMBUILDSCRIPT,t_p+String(L"/",1)+t_f));
+					}
 				}
 			}
 		}
@@ -18429,7 +18431,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-09-12",35));
+	bbPrint(String(L"TRANS cerberus compiler V2020-10-11",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18496,15 +18498,34 @@ String bb_transcc_StripQuotes(String t_str){
 	}
 	return t_str;
 }
-bool bb_transcc_IsValidSourcePath(String t_sourcePath){
+String bb_os_StripExt(String t_path){
+	int t_i=t_path.FindLast(String(L".",1));
+	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
+		return t_path.Slice(0,t_i);
+	}
+	return t_path;
+}
+String bb_os_StripDir(String t_path){
+	int t_i=t_path.FindLast(String(L"/",1));
+	if(t_i==-1){
+		t_i=t_path.FindLast(String(L"\\",1));
+	}
+	if(t_i!=-1){
+		return t_path.Slice(t_i+1);
+	}
+	return t_path;
+}
+bool bb_transcc_IsValidSourceFilename(String t_sourcePath){
 	String t_[]={String(L" ",1)};
 	Array<String > t_forbiddenChars=Array<String >(t_,1);
+	String t_sourceFilename=String();
+	t_sourceFilename=bb_os_StripDir(bb_os_StripExt(t_sourcePath));
 	Array<String > t_2=t_forbiddenChars;
 	int t_3=0;
 	while(t_3<t_2.Length()){
 		String t_chr=t_2[t_3];
 		t_3=t_3+1;
-		if(t_sourcePath.Find(t_chr,0)>=0){
+		if(t_sourceFilename.Find(t_chr,0)>=0){
 			return false;
 		}
 	}
@@ -19889,6 +19910,8 @@ void c_Builder::p_Make(){
 	bb_config_ENV_SAFEMODE=((m_tcc->m_opt_safe)?1:0);
 	bb_config_ENV_MODPATH=m_tcc->m_opt_modpath;
 	bb_config_ENV_TARGET=m_tcc->m_target->m_system;
+	bb_config_ENV_LANG=m_tcc->m_target->m_lang;
+	bb_config_ENV_CUSTOMBUILDSCRIPT=m_tcc->m_target->m_buildscript;
 	this->p_Begin();
 	if(!m_tcc->m_opt_check){
 		return;
@@ -20995,6 +21018,7 @@ void c_GlfwBuilder::p_MakeXcode(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"main.cpp",8));
+	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/xcode/cerberus.icns",20));
 	if(m_tcc->m_opt_build){
 		ChangeDir(String(L"xcode",5));
 		p_Execute(String(L"xcodebuild -configuration ",26)+m_casedConfig,true);
@@ -22632,13 +22656,13 @@ String c_CustomBuilder::p_ReplaceParams(String t_params){
 	return t_r;
 }
 void c_CustomBuilder::p_ScriptError(int t_lineNum,String t_line,String t_Error){
-	bbPrint(String(L"Error in script line ",21)+t_line+String(L": ",2)+t_line+String(L"  >>  ",6)+t_Error);
+	bbPrint(String(L"Error in script line ",21)+String(t_lineNum)+String(L": ",2)+t_line+String(L"  >>  ",6)+t_Error);
 }
 void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 	int t_lineNum=0;
 	String t_script=LoadString(t_scriptFile);
 	String t_config=m_tcc->m_opt_config;
-	String t_host=HostOS();
+	String t_hostS=HostOS();
 	String t_echo=String(L"on",2);
 	Array<String > t_=t_script.Split(String(L"\n",1));
 	int t_2=0;
@@ -22658,7 +22682,7 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 		if(t_config!=m_tcc->m_opt_config && t_config!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
 			continue;
 		}
-		if(t_host!=HostOS() && t_host!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
+		if(t_hostS!=HostOS() && t_hostS!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
 			continue;
 		}
 		String t_params=p_ReplaceParams(t_token[1].Trim());
@@ -22684,7 +22708,7 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
 						break;
 					}
-					t_host=t_hst;
+					t_hostS=t_hst;
 				}else{
 					if(t_6==String(L"config",6)){
 						String t_cfg=t_parToken[0].ToLower();
@@ -22695,9 +22719,11 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 						t_config=t_cfg;
 					}else{
 						if(t_6==String(L"build",5)){
-							if(p_Execute(t_params,true)!=true){
-								p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
-								break;
+							if(m_tcc->m_opt_build){
+								if(p_Execute(t_params,true)!=true){
+									p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
+									break;
+								}
 							}
 						}else{
 							if(t_6==String(L"execute",7)){
@@ -22732,50 +22758,69 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 												break;
 											}
 										}else{
-											if(t_6==String(L"copydir",7)){
-												if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
-													p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
+											if(t_6==String(L"copydata",8)){
+												p_CreateDataDir(t_parToken[0]);
+												if(FileType(t_parToken[0])!=2){
+													p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
 													break;
 												}
 											}else{
-												if(t_6==String(L"deletedir",9)){
-													if(bb_os_DeleteDir(t_parToken[0],true)==0){
-														p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
+												if(t_6==String(L"copydir",7)){
+													if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
+														p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
 														break;
 													}
 												}else{
-													if(t_6==String(L"createdir",9)){
-														if(CreateDir(t_parToken[0])==0){
-															p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
+													if(t_6==String(L"changedir",9)){
+														if(ChangeDir(t_parToken[0])!=0){
+															p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
 															break;
 														}
 													}else{
-														if(t_6==String(L"renamefile",10)){
-															if(CopyFile(t_parToken[0],t_parToken[1])==0){
-																p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+														if(t_6==String(L"deletedir",9)){
+															if(bb_os_DeleteDir(t_parToken[0],true)==0){
+																p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
 																break;
 															}
-															DeleteFile(t_parToken[0]);
 														}else{
-															if(t_6==String(L"inject",6)){
-																if(FileType(t_parToken[0])!=1){
-																	p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
-																	break;
-																}
-																String t_input=LoadString(t_parToken[0]);
-																if(FileType(t_parToken[1])!=1){
-																	p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
-																	break;
-																}
-																String t_output=LoadString(t_parToken[1]);
-																t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
-																if(SaveString(t_output,t_parToken[1])==0){
-																	p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+															if(t_6==String(L"createdir",9)){
+																if(CreateDir(t_parToken[0])==0){
+																	p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
 																	break;
 																}
 															}else{
-																bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
-																break;
+																if(t_6==String(L"renamefile",10)){
+																	if(CopyFile(t_parToken[0],t_parToken[1])==0){
+																		p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																		break;
+																	}
+																	DeleteFile(t_parToken[0]);
+																}else{
+																	if(t_6==String(L"inject",6)){
+																		if(FileType(t_parToken[0])!=1){
+																			p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
+																			break;
+																		}
+																		String t_input=LoadString(t_parToken[0]);
+																		if(FileType(t_parToken[1])!=1){
+																			p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
+																			break;
+																		}
+																		String t_output=LoadString(t_parToken[1]);
+																		if(t_parToken.Length()==3){
+																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
+																		}else{
+																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
+																		}
+																		if(SaveString(t_output,t_parToken[1])!=0){
+																			p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																			break;
+																		}
+																	}else{
+																		bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
+																		break;
+																	}
+																}
 															}
 														}
 													}
@@ -22812,15 +22857,13 @@ void c_CustomBuilder::p_MakeTarget(){
 	}
 	SaveString(m_transCode,String(L"__main__.txt",12));
 	SaveString(p_Config(),String(L"__config__.txt",14));
-	if(m_tcc->m_opt_build){
-		String t_buildPath=String();
-		if((m_tcc->m_opt_builddir).Length()!=0){
-			t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
-		}else{
-			t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
-		}
-		p_ParseBuildScript(bb_config_ENV_CUSTOMBUILDSCRIPT);
+	String t_buildPath=String();
+	if((m_tcc->m_opt_builddir).Length()!=0){
+		t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
+	}else{
+		t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
 	}
+	p_ParseBuildScript(bb_config_ENV_CUSTOMBUILDSCRIPT);
 }
 void c_CustomBuilder::mark(){
 	c_Builder::mark();
@@ -24004,23 +24047,6 @@ int bb_config_IsHexDigit(int t_ch){
 	return ((t_ch>=48 && t_ch<=57 || t_ch>=65 && t_ch<=70 || t_ch>=97 && t_ch<=102)?1:0);
 }
 String bb_config_ENV_MODPATH;
-String bb_os_StripExt(String t_path){
-	int t_i=t_path.FindLast(String(L".",1));
-	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
-		return t_path.Slice(0,t_i);
-	}
-	return t_path;
-}
-String bb_os_StripDir(String t_path){
-	int t_i=t_path.FindLast(String(L"/",1));
-	if(t_i==-1){
-		t_i=t_path.FindLast(String(L"\\",1));
-	}
-	if(t_i!=-1){
-		return t_path.Slice(t_i+1);
-	}
-	return t_path;
-}
 String bb_parser_FILE_EXT;
 String bb_parser_FILE_EXT_OLD;
 int bb_config_Err(String t_err){
@@ -30972,18 +30998,24 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	bb_decl_PopEnv();
 	return t_source->p_Join(String());
 }
+String bb_config_ENV_LANG;
+String bb_config_ENV_CUSTOMBUILDSCRIPT;
 c_Target::c_Target(){
 	m_dir=String();
 	m_name=String();
 	m_system=String();
 	m_builder=0;
+	m_lang=String();
+	m_buildscript=String();
 	m_path=String();
 }
-c_Target* c_Target::m_new(String t_dir,String t_name,String t_system,c_Builder* t_builder,String t_path){
+c_Target* c_Target::m_new(String t_dir,String t_name,String t_system,c_Builder* t_builder,String t_lang,String t_buildscript,String t_path){
 	this->m_dir=t_dir;
 	this->m_name=t_name;
 	this->m_system=t_system;
 	this->m_builder=t_builder;
+	this->m_lang=t_lang;
+	this->m_buildscript=t_buildscript;
 	this->m_path=t_path;
 	return this;
 }
@@ -31201,8 +31233,6 @@ String c_Node17::p_Key(){
 void c_Node17::mark(){
 	Object::mark();
 }
-String bb_config_ENV_LANG;
-String bb_config_ENV_CUSTOMBUILDSCRIPT;
 void bb_config_PopConfigScope(){
 	bb_config__cfgScope=bb_config__cfgScopeStack->p_Pop();
 }

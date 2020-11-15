@@ -11,7 +11,10 @@ Strict
 Import mojo2
 Import math3d
 Import opengl.gles20
+
+#If TARGET="glfw"
 Import brl.process
+#End
 
 Class Canvas3D Extends Canvas
 	
@@ -151,8 +154,9 @@ Class myClass Extends App
     		camy = -80.0
 			camz = -140.0
 		Endif
+#If TARGET="glfw"
     	If KeyDown(KEY_ESCAPE) Then ExitApp(0)
-   	
+#End   	
 		canv3D.SetCamLookAt(camx, camy, camz,     camx, 0, camz+140.0, [0.0, 1.0, 0.0])
 		
 		
@@ -166,7 +170,7 @@ Class myClass Extends App
 		glDepthFunc(GL_LEQUAL)
 		glClear(GL_DEPTH_BUFFER_BIT)
 		
-		'glClear(GL_COLOR_BUFFER_BIT)
+'		glClear(GL_COLOR_BUFFER_BIT)
 		
 		canvUI.Clear()
 		drwLstUI.Reset()
@@ -201,19 +205,19 @@ Class myClass Extends App
 				Endif
 	        Next
         Next
-        Local in:Float[2]
-        Local out:Float[3]
-        in[0] = MouseX()
-        in[1] = MouseY()
-        canv3D.TransformCoords([MouseX(),MouseY()],out)
+'        Local in:Float[2]
+'        Local out:Float[3]
+'        in[0] = MouseX()
+'        in[1] = MouseY()
+'        canv3D.TransformCoords([MouseX(),MouseY()],out)
         canv3D.PopMatrix()
 
 		' Draw  UI
         drwLstUI.SetColor(1,1,1)
         drwLstUI.DrawText( "Camera position = "+Int(camx)+":"+Int(camy)+":"+Int(camz), 10,10, 0.0,0.5)
         drwLstUI.DrawText( "FPS = "+FPS+"   ( "+items+" : "+items2+" )", 10,25, 0.0,0.5)
-        drwLstUI.DrawText( "in  = "+in[0]+":"+in[1], 10,40, 0.0,0.5)
-        drwLstUI.DrawText( "out = "+out[0]+":"+out[1]+":"+out[2], 10,55, 0.0,0.5)
+'        drwLstUI.DrawText( "in  = "+in[0]+":"+in[1], 10,40, 0.0,0.5)
+'        drwLstUI.DrawText( "out = "+out[0]+":"+out[1]+":"+out[2], 10,55, 0.0,0.5)
 
         drwLstUI.DrawText( "Press Cursor-Keys and PageUp/-Down to move the camera", 10,_cH-10 , 0.0,0.5)
         drwLstUI.SetAlpha(0.5)
