@@ -123,8 +123,18 @@ Class Font
 		Return w
 	End
 
-	Method TextHeight:Float( text:String )
-		Return _height
+	Method TextHeight:Float( text:String = "" )
+		If text = ""
+			Return _height
+		Else
+			Local h:=0.0
+			For Local char:=Eachin text
+				Local glyph:=GetGlyph( char )
+				If Not glyph Continue
+				If h < glyph.height Then h = glyph.height
+			Next	
+			Return h
+		Endif
 	End
 	
 	Function Load:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )
@@ -997,9 +1007,76 @@ Function DrawText:Void( textLines:String[],x:Int,y:Int,xhandle:Float=0,yhandle:F
 	Next
 End
 
+Function DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )
+	Local char:Int=0
+	Local tmpChar:Glyph
+	Local currX:Float
+	Local text:String
+	
+	Local left:Float = x
+	Local right:Float = x + width
+	Local top:Float = y
+	Local bottom:Float = y + height
 
+	Local xcutr:Int = 0
+	Local xcutl:Int = 0
+	Local ycutt:Int = 0
+	Local ycutb:Int = 0
+	Local maxTextWidth:Float = 0.0
+	Local linesCount:Int = textLines.Length()
+	Local y2:Int = 0
+	Local x2:Int = 0 
+	
+	y -= context.font.TextHeight( "" )*yhandle * linesCount
+	For Local _y:Int = 1 To linesCount
+		text = textLines[_y-1]
+		If context.font.TextWidth(text)> maxTextWidth Then maxTextWidth = context.font.TextWidth(text)
+	Next
+	currX = x - (maxTextWidth*xhandle)
+	x = currX
 
+	For Local _y:Int = 1 To linesCount
+		'If y < top Or y > bottom Then Continue
 
+		text = textLines[_y-1]
+		For char = Eachin text
+			ycutt = 0
+			ycutb = 0 
+			xcutl = 0
+			xcutr = 0 
+			y2 = 0
+			x2 = 0 
+
+			Local tmpChar:=context.font._charMap.Get(char)
+			If Not tmpChar Continue
+			y2 = y + tmpChar.yoff + tmpChar.height
+			x2 = x + tmpChar.xoff + tmpChar.width
+			
+			If x2 <= left Or x >= right
+				x += tmpChar.advance
+				Continue
+			Endif
+			If y2 <= top Or y >= bottom Then Continue
+			
+			If x < right And x2 > right
+				xcutr = x2 - right
+			ElseIf x < left And x2 > left
+				xcutl = left - x + 2
+			Endif
+			If y < bottom And y2 > bottom
+				ycutb = y2 - bottom
+			Elseif y < top And y2 > top
+				ycutt = top - y + 2
+			Endif
+			
+			DrawImageRect( context.font._pages[tmpChar.page], Int(x + tmpChar.xoff + xcutl), Int(y + tmpChar.yoff + ycutt),  tmpChar.x+xcutl, tmpChar.y+ycutt, tmpChar.width-xcutr-xcutl, tmpChar.height-ycutb-ycutt )
+			x += tmpChar.advance
+		Next
+		y += context.font.TextHeight( text )
+		x = currX
+	Next
+End
+	
 Function InvTransform#[]( coords#[] )
 	Local m00#=   context.ix
 	Local m10#=   context.jx

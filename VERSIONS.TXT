@@ -1,6 +1,43 @@
+***** v2020-11-15 *****
+
+FIX: [TRANSCC] With the GLFW target and MingW, you can build 32bit again.    (Author: MikeHart) 
+FIX: [TRANSCC] Fixed copying sub directories with the INCLUDE statement.    (Author: MikeHart)
+FIX: [TRANSCC] Fixed TRANSCC to change canvas sizes, title, scale mode and canvas flag every time you build your app.    (Author: MikeHart)
+FIX: [TRANSCC] Added check for space chars in source filename to avoid weird errors regarding global vars.    (Author: Phil7) 
+FIX: [rebuild script] Changed minimum version on OSX for building TRANS via the rebuildall script.    (Author: dawlane) 
+FIX: [HTTPREQUEST] Fixed some flaws in the glfw target.    (Author: Github user NEOJAW)  
+FIX: [MOJO2] fix in image.loadframes.    (Author: Rich) 
+FIX: [DOCS] FIXED example in httprequest.cerberusdoc    (Author: Holzchopf)
+FIX: [MOJO/MOJO2] Fixed apps don't scale right on retina displays.    (Author: Phil7)
+MOD: [TRANSCC] With the GLFW target, resource files are now compiled everytime, so a change will be always taken in.    (Author: MikeHart)
+MOD: [MOJO/MOJO2] Font.TextHeight will return the actual height of the string now if one is given.    (Author: MikeHart)
+MOD: [brl.filesystem] CreateDir now creates paths automatically, that includes more than one sub directory.    (Author: MikeHart)
+MOD: [MOJO/MOJO2] Removed an extra call to retrieve the window size on GLFW BeginRender. Only the size of the framebuffer is relevant now.    (Author: MikeHart)
+MOD: [MAKEDOCS] CHANGED makedocs now resolves links for json output    (Author: Holzchopf)
+MOD: [IOS] Changed using a launch image to a launch screen storyboard so you get the full resolution on all IOS devices.   (Author: Phil7)
+MOD: [IOS] Changed minimum IOS version to 9.0.  (Author: Phil7)
+MOD: [DESKTOP] Updated GLFW to version 3.3.2  (Author: MikeHart)
+NEW: [TRANSCC] New config setting #GLFW_COPY_LIBS_32 to copy 32bit DLLs into the GCC build.    (Author: MikeHart)
+NEW: [TRANSCC] Added TARGETPATH option to specify more target directories.    (Author: MikeHart)
+NEW: [TRANSCC] Added custom targets with cxbuild.txt script.    (Author: MikeHart)
+NEW: [TARGETS] AGK Android (Google).    (Author: MikeHart)
+NEW: [examples] mojo2/2Din3D.    (Author: MikeHart)  
+NEW: [examples] mojo2/asyncimageloading.    (Author: MikeHart)
+NEW: [HTML5] Added mousewheel event on the html5 target - MouseZ() works now.    (Author: Github user NEOJAW)  
+NEW: [MAKEDOCS] Added export of decls.json to makedocs.    (Author: Holzchopf)
+NEW: [MAKEDOCS] Added index entry decls CHANGED json builder now transforms markdown    (Author: Holzchopf)
+NEW: [MOJO] Added DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )    (Author: MikeHart)
+NEW: [MOJO2] Added DrawList.DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )    (Author: MikeHart)
+NEW: [MOJO/MOJO2] Added #GLFW_HIGH_DPI_ENABLED=1 constant, so GLFW apps can use the full high DPI resolution.    (Author: Phil7)
+NEW: [Modules] Added the new brl.timer module.    (Author: MikeHart)
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+
 ***** v2020-05-09 *****
 
-FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, fielpath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
+FIX: [DOCS/brl] Fixed missing entry for the admob, cerberusstore, gamecenter, filepath, filesystem, url, tween, pool, process and markdown modules.    (Author: MikeHart)
 FIX: [DOCS/brl.databuffer] Fixed some typos.    (Author: MikeHart)
 FIX: [DOCS/cerberus] Fixed missing entry for the deque module.    (Author: MikeHart)
 FIX: [DOCS/cerberus.stack] Fixed some typos.    (Author: MikeHart)
@@ -11,7 +48,7 @@ FIX: [mojo2] Fixed padded parameter in Image.LoadFrames:Image[]( path:String,cel
 FIX: [examples] Fixed mak/bbgametest -> missing z parameter in MouseEvent call.    (Author: MikeHart)
 FIX: [examples] Fixed mak/dynamicimage -> faulty fullscreen switch.    (Author: MikeHart)
 Fix: [TRANSCC] Fixed TRANSCC not being able to install on an Android device when creating a release build on Linux and OSX.    (Author: Phil7) 
-Fix: [TRANSCC] Fixed TRANSCC not reporting the correct line number in certain cases when preprocessor statements were used..    (Author: dawlane) 
+Fix: [TRANSCC] Fixed TRANSCC not reporting the correct line number in certain cases when preprocessor statements were used.    (Author: dawlane) 
 
 MOD: [cerberusstore] updated the underlying code to support the newest Google version.    (Author: Rich) 
 MOD: [DOCS/interpolate] Fixed and added some images.    (Author: Holzchopf) 
@@ -46,68 +83,68 @@ NEW: [HTML5] Added #HTML5_APP_TITLE to be able to set the title of the browser t
 NEW: [HTML5] Added #HTML5_CANVAS_WIDTH and #HTML5_CANVAS_HEIGHT control the size of the html5 canvas.    (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_APP_FILENAME to set the output filename.    (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_CANVAS_RESIZE_MODE to be able to set the CANVAS resize mode.    (Author: MikeHart)
-NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area.    (Author: MikeHart) 
+NEW: [HTML5] Added #HTML5_CONSOLE_SHOW to be able to hide the splitter and console area.    (Author: MikeHart)
 NEW: [rebuildall_macos.sh] New script to build CX on OSX right from the github repository.    (Author: dawlane)
 
 ***** v2019-10-13b *****
 
-MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs    (Author: MikeHart) 
-FIX: [GLFW] Added missing stb_write_image.h file on Linux    (Author: MikeHart) 
-FIX: [TED] Was still using the old PrefsDialog on Linux    (Author: MikeHart) 
+MOD: [REQUESTER] Requester dialogs now work on Linux, thanks to tinyfiledialogs.    (Author: MikeHart)
+FIX: [GLFW] Added missing stb_write_image.h file on Linux.    (Author: MikeHart)
+FIX: [TED] Was still using the old PrefsDialog on Linux.    (Author: MikeHart)
 
 ***** v2019-10-13 *****
 
 FIX: [ANDROID] change file permission of gradlew in template.    (Author: dawlane)
-MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.    (Author: MikeHart) 
+MOD: [ANDROID] added 64bit libs to the target, to support Googles changes in August 2019.    (Author: MikeHart)
 FIX: [TRANS] Fixed CopyFile for Linux to preserve file permissions.    (Author: dawlane)
 FIX: [TED] Fixed symlinks opening a second file when DebugStop is used.    (Author: dawlane)
-MOD: [TED] Another attempt at fixing the capitalization of the API.     (Author: MikeHart) 
-MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu.     (Author: MikeHart) 
+MOD: [TED] Another attempt at fixing the capitalization of the API.    (Author: MikeHart)
+MOD: [TED] Moved Open Project from the BUILD menu to the FILE menu.    (Author: MikeHart)
 MOD: [TED] Replaced Options dialog with a similar one like from dawlane's version of TED.     (Author: dawlane) 
            This dialog is much smaller and so can be displayed on small screens two.
-FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.    (Author: MikeHart) 
-MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.    (Author: MikeHart) 
-FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).    (Author: MikeHart) 
+FIX: [TED] CTRL+PgDown and CTRL+PgUP now works on Linux to switch between open code tabs.    (Author: MikeHart)
+MOD: [TRANS/GLFW] On Windows you can add an app icon (.ico file) now via the new #GLFW_APP_ICON preprocessor setting.    (Author: MikeHart)
+FIX: [OSX] Recompiled the launcher as a 64bit app, so it is compatible with OSX Catalina (10.15.x).    (Author: MikeHart)
 FIX: [MOJO1] Fixed missing usage of frame parameter in DrawImage9P.    (Author: Rich)
-MOD: [WIN8/WINPHONE8] Depreciated these targets. 
+MOD: [WIN8/WINPHONE8] Depreciated these targets.     (Author: MikeHart)
                       If you need them, move them out of the targets/depreciated folder.
-MOD: [TRANS/ANDROID] Reactivated logcat filtering.    (Author: MikeHart) 
-NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once. 
+MOD: [TRANS/ANDROID] Reactivated logcat filtering.    (Author: MikeHart)
+NEW: [Examples/MOJO2] DrawPrimitives2 shows how to use the DrawPrimitives method to draw several images at once.    (Author: MikeHart)
 
 
 ***** v2019-05-05 *****
 
-MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.    (Author: MikeHart) 
+MOD: [ANDROID] Changed MIN_SDK back to 16 like it was before.    (Author: MikeHart)
 MOD: [DOCS] Added A-Z shortcuts on top of indexes.    (Author: Holzchopf)
-MOD: [Trans/ANDROID] Release builds are installed automatically now.    (Author: MikeHart) 
-FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.    (Author: MikeHart) 
+MOD: [Trans/ANDROID] Release builds are installed automatically now.    (Author: MikeHart)
+FIX: [AGK] Fixed docs creation to be compatible with the latest MakeDocs.    (Author: MikeHart)
 FIX: [MAKEDOCS] Fixed brl.markdown bug.    (Author: Holzchopf)
 FIX: [TED] Fixed fixed displaying an iframe element in the docs.    (Author: dawlane)
-FIX: [TED] Fixed scaling issues when displaying images.    (Author: MikeHart) 
-NEW: [TED] Added overwrite mode. Just press the insert key to toggle it.    (Author: MikeHart) 
-NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: MikeHart) 
-NEW: [MOJO.APP] Added SetDeviceWindowIcon( _path:String ).    (Author: MikeHart) 
-NEW: [MOJO.APP] Added SetDeviceWindowTitle( _title:String ).    (Author: MikeHart) 
-NEW: [MOJO.APP] Added SetDeviceWindowSize( _width:Int, _height:Int ).    (Author: MikeHart) 
-NEW: [MOJO.APP] Added SetDeviceWindowPosition( _x:Int, _y:Int ).    (Author: MikeHart) 
-NEW: [MOJO.APP] Added SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int )    (Author: MikeHart) 
-NEW: [MOJO.INPUT] Added SetMousePos:Void( _x:Int, _y:Int ).    (Author: MikeHart) 
-NEW: [MOJO.INPUT] Added SetClipboard:Void( _text:String ).    (Author: MikeHart) 
-NEW: [MOJO.INPUT] Added GetClipboard:String().    (Author: MikeHart) 
+FIX: [TED] Fixed scaling issues when displaying images.    (Author: MikeHart)
+NEW: [TED] Added overwrite mode. Just press the insert key to toggle it.    (Author: MikeHart)
+NEW: [MOJO2] Added Image.LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null ).    (Author: MikeHart)
+NEW: [MOJO.APP] Added SetDeviceWindowIcon( _path:String ).    (Author: MikeHart)
+NEW: [MOJO.APP] Added SetDeviceWindowTitle( _title:String ).     (Author: MikeHart)
+NEW: [MOJO.APP] Added SetDeviceWindowSize( _width:Int, _height:Int ).    (Author: MikeHart)
+NEW: [MOJO.APP] Added SetDeviceWindowPosition( _x:Int, _y:Int ).     (Author: MikeHart)
+NEW: [MOJO.APP] Added SetDeviceWindowSizeLimits:Void( _minWidth:Int, _minHeight:Int, _maxWidth:Int, _maxHeight:Int ).    (Author: MikeHart)
+NEW: [MOJO.INPUT] Added SetMousePos:Void( _x:Int, _y:Int ).    (Author: MikeHart)
+NEW: [MOJO.INPUT] Added SetClipboard:Void( _text:String ).    (Author: MikeHart)
+NEW: [MOJO.INPUT] Added GetClipboard:String().    (Author: MikeHart)
 NEW: [CERBERUS.INTERPOLATE] New module.    (Author: Holzchopf) 
 NEW: [MOJO.COLOR] New module.    (Author: Holzchopf)
 
 ***** v2018-12-30 *****
 
-FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.    (Author: MikeHart) 
-FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.    (Author: MikeHart) 
-FIX: [brl.requesters] Fixed RequestFile not working with a set path.    (Author: MikeHart) 
-FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.    (Author: MikeHart) 
+FIX: [AGK_IOS] Fixed AGK_IOS target showing up on non OSX platforms.    (Author: MikeHart)
+FIX: [ANDROID] Fixed MIN_SDK, TARGET and TOOLS version.    (Author: MikeHart)
+FIX: [brl.requesters] Fixed RequestFile not working with a set path.    (Author: MikeHart)
+FIX: [TED] Fixed selecting a help topic in the toolbar didn't show up the help file directly.    (Author: MikeHart)
 MOD: [example] Various changes to sample scripts     (Author: Paul59)
 FIX: [TED] Fixed "Open on Desktop" on Linux.    (Author: dawlane)
-MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.    (Author: MikeHart) 
+MOD: [TED] If text is selected in the editor, it will be pre set in the Find dialog.    (Author: MikeHart)
 MOD: [DOCS/MAKEDOCS] Numerous changes to the docs and MakeDocs itself.    (Author: Holzchopf) 
-FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.    (Author: MikeHart) 
+FIX: [GLFW/GLFW-ANGLE] Fixed returning MouseZ resets MouseX and MouseY to zero.    (Author: MikeHart)
 MOD: [TED] Bigger changes so TED uses the QT5 webengine now and needs QT5.9.2 to compile.    (Author: dawlane)
 
 ***** v2018-08-10 *****

@@ -24,6 +24,7 @@ public class BBGameDelegate{
 	public virtual void TouchEvent( int ev,int data,float x,float y ){}
 	public virtual void MotionEvent( int ev,int data,float x,float y,float z ){}
 	public virtual void DiscardGraphics(){}
+	public virtual void FileDropEvent(String filename){}
 }
 
 public class BBDisplayMode{
@@ -159,6 +160,14 @@ public class BBGame{
 	
 	public virtual int GetDeviceHeight(){
 		return 0;
+	}
+
+	public virtual int GetFramebufferWidth(){
+		return this.GetDeviceWidth();
+	}
+	
+	public virtual int GetFramebufferHeight(){
+		return this.GetDeviceHeight();
 	}
 	
 	public virtual void SetDeviceWindow( int width,int height,int flags ){

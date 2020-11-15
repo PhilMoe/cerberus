@@ -221,7 +221,7 @@ Links:
 
 Returns 1 or -1 if the mouse wheel was used since last update.
 
-Works only for GLFW target.
+Works only for the GLFW and HTML5 targets.
 
 Links: 
 

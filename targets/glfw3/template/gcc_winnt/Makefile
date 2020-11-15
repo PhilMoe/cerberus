@@ -1,6 +1,5 @@
-CC_RES=windres
 CC=gcc
-CFLAGS=
+CFLAGS=-D_GLFW_WIN32
 
 CXX=g++
 CXXFLAGS=
@@ -18,6 +17,13 @@ CPPFLAGS=$(CCOPTS) \
 LD=g++
 LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
 LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32
+
+RES=windres
+ifeq ($(ARCH),64)
+    RES_ARCH=pe-x86-64
+else
+    RES_ARCH=pe-i386
+endif
 
 vpath %.c ../glfw3/src
 vpath %.c ../stb
@@ -61,4 +67,5 @@ $(TMP)%.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 	
 $(TMP)%.o : %.rc
-	$(CC_RES) $< -o $@
+	$(RES) -O COFF --target $(RES_ARCH) -i $< -o $@
+	

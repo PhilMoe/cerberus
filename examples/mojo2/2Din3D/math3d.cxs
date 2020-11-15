@@ -1,0 +1,569 @@
+' Code taken the math3D module of the Vortex2 3D framework of Javier San Juan Cervera
+
+' LICENSE
+
+'Copyright (c) 2015-16 Javier San Juan Cervera
+'Permission is hereby granted, free of charge, To any person obtaining a copy of this software And associated documentation files (the "Software"), To deal in the Software without restriction, including without limitation the rights To use, copy, modify, merge, publish, distribute, sublicense, And/Or sell copies of the Software, And To permit persons To whom the Software is furnished To do so, subject To the following conditions:
+'The above copyright notice And this permission notice shall be included in all copies Or substantial portions of the Software.
+'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+Strict
+
+Function Vec3Set:Void(x#, y#, z#, out#[])
+	out[0] = x
+	out[1] = y
+	out[2] = z
+End
+
+Function Vec3Add:Void(ax#, ay#, az#, bx#, by#, bz#, out#[])
+	out[0] = ax + bx
+	out[1] = ay + by
+	out[2] = az + bz
+End
+
+Function Vec3Sub:Void(ax#, ay#, az#, bx#, by#, bz#, out#[])
+	out[0] = ax - bx
+	out[1] = ay - by
+	out[2] = az - bz
+End
+
+Function Vec3AddScalar:Void(x#, y#, z#, s#, out#[])
+	out[0] = x + s
+	out[1] = y + s
+	out[2] = z + s
+End
+
+Function Vec3SubScalar:Void(x#, y#, z#, s#, out#[])
+	out[0] = x - s
+	out[1] = y - s
+	out[2] = z - s
+End
+
+Function Vec3MulScalar:Void(x#, y#, z#, s#, out#[])
+	out[0] = x * s
+	out[1] = y * s
+	out[2] = z * s
+End
+
+Function Vec3DivScalar:Void(x#, y#, z#, s#, out#[])
+	If s = 0 Then s = 0.00001
+	Vec3MulScalar(x, y, z, 1/s, out)
+End
+
+Function Vec3Norm:Void(x#, y#, z#, out#[])
+	Vec3DivScalar(x, y, z, Vec3Length(x, y, z), out)
+End
+
+Function Vec3Mix:Void(ax#, ay#, az#, bx#, by#, bz#, t#, out#[])
+	out[0] = ax + (bx - ax) * t
+	out[1] = ay + (by - ay) * t
+	out[2] = az + (bz - az) * t
+End
+
+Function Vec3Cross:Void(ax#, ay#, az#, bx#, by#, bz#, out#[])
+	out[0] = ay*bz - az*by
+	out[1] = az*bx - ax*bz
+	out[2] = ax*by - ay*bx
+End
+
+Function Vec3Dot#(ax#, ay#, az#, bx#, by#, bz#)
+	Return ax*bx + ay*by + az*bz
+End
+
+Function Vec3SqLength#(x#, y#, z#)
+	Return Vec3Dot(x, y, z, x, y, z)
+End
+
+Function Vec3Length#(x#, y#, z#)
+	Return Sqrt(Vec3SqLength(x, y, z))
+End
+
+Function Vec3String$(v#[])
+	Return "(x=" + v[0] + ", y=" + v[1] + ", z=" + v[2] + ")"
+End
+
+
+Function Vec4Set:Void(x#, y#, z#, w#, out#[])
+	out[0] = x
+	out[1] = y
+	out[2] = z
+	out[3] = w
+End
+
+Function Vec4String$(v#[])
+	Return "(x=" + v[0] + ", y=" + v[1] + ", z=" + v[2] + ", w=" + v[3] + ")"
+End
+
+
+
+
+Function QuatSet:Void(w#, x#, y#, z#, out#[])
+	out[0] = w
+	out[1] = x
+	out[2] = y
+	out[3] = z
+End
+
+Function QuatSetAxis:Void(deg#, x#, y#, z#, out#[])
+	deg *= 0.5
+	Local s# = Sin(deg)
+	out[0] = Cos(deg)
+	out[1] = x * s
+	out[2] = y * s
+	out[3] = z * s
+End
+
+Function QuatSetEuler:Void(x#, y#, z#, out#[])
+	Local halfx# = x * 0.5
+	Local halfy# = y * 0.5
+	Local halfz# = z * 0.5
+	Local sinyaw# = Sin(halfy)
+	Local sinpitch# = Sin(halfx)
+	Local sinroll# = Sin(halfz)
+	Local cosyaw# = Cos(halfy)
+	Local cospitch# = Cos(halfx)
+	Local cosroll# = Cos(halfz)
+	out[0] = cospitch * cosyaw * cosroll + sinpitch * sinyaw * sinroll
+	out[1] = sinpitch * cosyaw * cosroll - cospitch * sinyaw * sinroll
+	out[2] = cospitch * sinyaw * cosroll + sinpitch * cosyaw * sinroll
+	out[3] = cospitch * cosyaw * sinroll - sinpitch * sinyaw * cosroll
+End
+
+Function QuatMul:Void(aw#, ax#, ay#, az#, bw#, bx#, by#, bz#, out#[])
+	out[0] = aw*bw - ax*bx - ay*by - az*bz
+	out[1] = aw*bx + ax*bw + ay*bz - az*by
+	out[2] = aw*by + ay*bw + az*bx - ax*bz
+	out[3] = aw*bz + az*bw + ax*by - ay*bx
+End
+
+'out must have at least 4 components, although the relevant info is put on the first 3
+Function QuatMulVec3:Void(w#, x#, y#, z#, vx#, vy#, vz#, out#[])
+	QuatMul(w, x, y, z, 0, vx, vy, vz, out)
+	QuatMul(out[0], out[1], out[2], out[3], w, -x, -y, -z, out)
+	out[0] = out[1]
+	out[1] = out[2]
+	out[2] = out[3]
+End
+
+Function QuatMulScalar:Void(w#, x#, y#, z#, s#, out#[])
+	out[0] = w * s
+	out[1] = x * s
+	out[2] = y * s
+	out[3] = z * s
+End
+
+Function QuatDivScalar:Void(w#, x#, y#, z#, s#, out#[])
+	If s = 0 Then s = 0.00001
+	QuatMulScalar(w, x, y, z, 1/s, out)
+End
+
+Function QuatNorm:Void(w#, x#, y#, z#, out#[])
+	Local mag2# = w*w + x*x + y*y + z*z
+	If mag2 > 0.00001 And Abs(mag2 - 1.0) > 0.00001
+		QuatDivScalar(w, x, y, z, Sqrt(mag2), out)
+	Else
+		QuatSet(w, x, y, z, out)
+	End
+End
+
+Function QuatLerp:Void(aw#, ax#, ay#, az#, bw#, bx#, by#, bz#, t#, out#[])
+	QuatMulScalar(aw, ax, ay, az, 1-t, out)
+	aw = out[0]
+	ax = out[1]
+	ay = out[2]
+	az = out[3]
+	QuatMulScalar(bw, bx, by, bz, t, out)
+	QuatNorm(aw + out[0], ax + out[1], ay + out[2], az + out[3], out)
+End
+
+Function QuatSlerp:Void(aw#, ax#, ay#, az#, bw#, bx#, by#, bz#, t#, out#[])
+	Local dot# = QuatDot(aw, ax, ay, az, bw, bx, by, bz)
+	If dot < 0
+		dot = -dot
+		QuatMulScalar(bw, bx, by, bz, -1, out)
+		bw = out[0]
+		bx = out[1]
+		by = out[2]
+		bz = out[3]
+	End
+	If dot < 0.95
+		Local deg# = ACos(dot)
+		QuatMulScalar(aw, ax, ay, az, Sin(deg*(1-t)), out)
+		aw = out[0]
+		ax = out[1]
+		ay = out[2]
+		az = out[3]
+		QuatMulScalar(bw, bx, by, bz, Sin(deg*t), out)
+		QuatDivScalar(out[0], out[1], out[2], out[3], Sin(deg), out)
+		out[0] += aw
+		out[1] += ax
+		out[2] += ay
+		out[3] += az
+	Else
+		QuatLerp(aw, ax, ay, az, bw, bx, by, bz, t, out)
+	End
+End
+
+Function QuatDot#(aw#, ax#, ay#, az#, bw#, bx#, by#, bz#)
+	Return aw*bw + ax*bx + ay*by + az*bz
+End
+
+Function QuatDegrees#(w#, x#, y#, z#)
+	Return ACos(w) * 2.0
+End
+
+Function QuatAxis:Void(w#, x#, y#, z#, out#[])
+		Vec3DivScalar(x, y, z, Sqrt(x*x + y*y + z*z), out)
+End
+
+Function QuatEuler:Void(w#, x#, y#, z#, out#[])
+	Local ww# = w*w
+	Local wx# = w*x
+	Local wy# = w*y
+	Local wz# = w*z
+	Local xx# = x*x
+	Local xy# = x*y
+	Local xz# = x*z
+	Local yy# = y*y
+	Local zz# = z*z
+	out[0] = ATan2(2 * (xz + wx), ww - xx - yy + zz)
+	out[1] = ASin(-2 * (xz - wy))
+	out[2] = ATan2(2 * (xy + wz), ww + xx - yy - zz)
+End
+
+Function QuatString$(q#[])
+	Return "(w=" + q[0] + ", x=" + q[1] + ", y=" + q[2] + ", z=" + q[3] + ")"
+End
+
+
+
+
+Function Mat4Copy:Void(m#[], out#[])
+	For Local i% = 0 Until 16
+		out[i] = m[i]
+	Next
+End
+
+Function Mat4Identity:Void(out#[])
+	For Local i% = 0 Until 16
+		out[i] = 0
+	Next
+	out[0] = 1
+	out[5] = 1
+	out[10] = 1
+	out[15] = 1
+End
+
+'Do not use if b = out
+Function Mat4Mul:Void(a#[], b#[], out#[])
+	For Local i% = 0 Until 4
+		Local a0# = a[i]
+		Local a1# = a[i+4]
+		Local a2# = a[i+8]
+		Local a3# = a[i+12]
+		out[i] = a0*b[0] + a1*b[1] + a2*b[2] + a3*b[3]
+		out[i+4] = a0*b[4] + a1*b[5] + a2*b[6] + a3*b[7]
+		out[i+8] = a0*b[8] + a1*b[9] + a2*b[10] + a3*b[11]
+		out[i+12] = a0*b[12] + a1*b[13] + a2*b[14] + a3*b[15]
+	Next
+End
+
+'Use when b = out
+Function Mat4MulSafe:Void(a#[], b#[], out#[])
+	Mat4Copy(b, tempMat4)
+	Mat4Mul(a, tempMat4, out)
+End
+
+Function Mat4MulVec4:Void(m#[], x#, y#, z#, w#, out#[])
+	Mat4Identity(tempMat4)
+	tempMat4[12] = x
+	tempMat4[13] = y
+	tempMat4[14] = z
+	tempMat4[15] = w
+	Mat4Mul(m, tempMat4, tempMat4B)
+	out[0] = tempMat4B[12]
+	out[1] = tempMat4B[13]
+	out[2] = tempMat4B[14]
+	If out.Length > 3 Then out[3] = tempMat4B[15]
+End
+
+Function Mat4Translate:Void(m#[], x#, y#, z#, out#[])
+	Mat4Identity(tempMat4)
+	tempMat4[12] = x
+	tempMat4[13] = y
+	tempMat4[14] = z
+	Mat4Mul(m, tempMat4, out)
+End
+
+Function Mat4Rotate:Void(m#[], deg#, x#, y#, z#, out#[])
+	Mat4Identity(tempMat4)
+	Local c# = Cos(deg)
+	Local s# = Sin(deg)
+	Local xx# = x * x
+	Local xy# = x * y
+	Local xz# = x * z
+	Local yy# = y * y
+	Local yz# = y * z
+	Local zz# = z * z
+	tempMat4[0] = xx * (1 - c) + c
+	tempMat4[1] = xy * (1 - c) + z * s
+	tempMat4[2] = xz * (1 - c) - y * s
+	tempMat4[4] = xy * (1 - c) - z * s
+	tempMat4[5] = yy * (1 - c) + c
+	tempMat4[6] = yz * (1 - c) + x * s
+	tempMat4[8] = xz * (1 - c) + y * s
+	tempMat4[9] = yz * (1 - c) - x * s
+	tempMat4[10] = zz * (1 - c) + c
+	Mat4Mul(m, tempMat4, out)
+End
+
+Function Mat4Scale:Void(m#[], x#, y#, z#, out#[])
+	Mat4Identity(tempMat4)
+	tempMat4[0] = x
+	tempMat4[5] = y
+	tempMat4[10] = z
+	Mat4Mul(m, tempMat4, out)
+End
+
+Function Mat4Transpose:Void(m#[], out#[])
+	Mat4Copy(m, tempMat4)
+	For Local c% = 0 Until 4
+		For Local r% = 0 Until 4
+			out[c*4 + r] = tempMat4[r*4 + c]
+		Next
+	Next
+End
+
+Function Mat4Invert:Void(m#[], out#[])
+	Mat4Copy(m, tempMat4)
+	out[ 0] =  tempMat4[5] * tempMat4[10] * tempMat4[15] - tempMat4[5] * tempMat4[11] * tempMat4[14] - tempMat4[9] * tempMat4[6] * tempMat4[15] + tempMat4[9] * tempMat4[7] * tempMat4[14] + tempMat4[13] * tempMat4[6] * tempMat4[11] - tempMat4[13] * tempMat4[7] * tempMat4[10]
+	out[ 4] = -tempMat4[4] * tempMat4[10] * tempMat4[15] + tempMat4[4] * tempMat4[11] * tempMat4[14] + tempMat4[8] * tempMat4[6] * tempMat4[15] - tempMat4[8] * tempMat4[7] * tempMat4[14] - tempMat4[12] * tempMat4[6] * tempMat4[11] + tempMat4[12] * tempMat4[7] * tempMat4[10]
+	out[ 8] =  tempMat4[4] * tempMat4[ 9] * tempMat4[15] - tempMat4[4] * tempMat4[11] * tempMat4[13] - tempMat4[8] * tempMat4[5] * tempMat4[15] + tempMat4[8] * tempMat4[7] * tempMat4[13] + tempMat4[12] * tempMat4[5] * tempMat4[11] - tempMat4[12] * tempMat4[7] * tempMat4[ 9]
+	out[12] = -tempMat4[4] * tempMat4[ 9] * tempMat4[14] + tempMat4[4] * tempMat4[10] * tempMat4[13] + tempMat4[8] * tempMat4[5] * tempMat4[14] - tempMat4[8] * tempMat4[6] * tempMat4[13] - tempMat4[12] * tempMat4[5] * tempMat4[10] + tempMat4[12] * tempMat4[6] * tempMat4[ 9]
+	out[ 1] = -tempMat4[1] * tempMat4[10] * tempMat4[15] + tempMat4[1] * tempMat4[11] * tempMat4[14] + tempMat4[9] * tempMat4[2] * tempMat4[15] - tempMat4[9] * tempMat4[3] * tempMat4[14] - tempMat4[13] * tempMat4[2] * tempMat4[11] + tempMat4[13] * tempMat4[3] * tempMat4[10]
+	out[ 5] =  tempMat4[0] * tempMat4[10] * tempMat4[15] - tempMat4[0] * tempMat4[11] * tempMat4[14] - tempMat4[8] * tempMat4[2] * tempMat4[15] + tempMat4[8] * tempMat4[3] * tempMat4[14] + tempMat4[12] * tempMat4[2] * tempMat4[11] - tempMat4[12] * tempMat4[3] * tempMat4[10]
+	out[ 9] = -tempMat4[0] * tempMat4[ 9] * tempMat4[15] + tempMat4[0] * tempMat4[11] * tempMat4[13] + tempMat4[8] * tempMat4[1] * tempMat4[15] - tempMat4[8] * tempMat4[3] * tempMat4[13] - tempMat4[12] * tempMat4[1] * tempMat4[11] + tempMat4[12] * tempMat4[3] * tempMat4[ 9]
+	out[13] =  tempMat4[0] * tempMat4[ 9] * tempMat4[14] - tempMat4[0] * tempMat4[10] * tempMat4[13] - tempMat4[8] * tempMat4[1] * tempMat4[14] + tempMat4[8] * tempMat4[2] * tempMat4[13] + tempMat4[12] * tempMat4[1] * tempMat4[10] - tempMat4[12] * tempMat4[2] * tempMat4[ 9]
+	out[ 2] =  tempMat4[1] * tempMat4[ 6] * tempMat4[15] - tempMat4[1] * tempMat4[ 7] * tempMat4[14] - tempMat4[5] * tempMat4[2] * tempMat4[15] + tempMat4[5] * tempMat4[3] * tempMat4[14] + tempMat4[13] * tempMat4[2] * tempMat4[ 7] - tempMat4[13] * tempMat4[3] * tempMat4[ 6]
+	out[ 6] = -tempMat4[0] * tempMat4[ 6] * tempMat4[15] + tempMat4[0] * tempMat4[ 7] * tempMat4[14] + tempMat4[4] * tempMat4[2] * tempMat4[15] - tempMat4[4] * tempMat4[3] * tempMat4[14] - tempMat4[12] * tempMat4[2] * tempMat4[ 7] + tempMat4[12] * tempMat4[3] * tempMat4[ 6]
+	out[10] =  tempMat4[0] * tempMat4[ 5] * tempMat4[15] - tempMat4[0] * tempMat4[ 7] * tempMat4[13] - tempMat4[4] * tempMat4[1] * tempMat4[15] + tempMat4[4] * tempMat4[3] * tempMat4[13] + tempMat4[12] * tempMat4[1] * tempMat4[ 7] - tempMat4[12] * tempMat4[3] * tempMat4[ 5]
+	out[14] = -tempMat4[0] * tempMat4[ 5] * tempMat4[14] + tempMat4[0] * tempMat4[ 6] * tempMat4[13] + tempMat4[4] * tempMat4[1] * tempMat4[14] - tempMat4[4] * tempMat4[2] * tempMat4[13] - tempMat4[12] * tempMat4[1] * tempMat4[ 6] + tempMat4[12] * tempMat4[2] * tempMat4[ 5]
+	out[ 3] = -tempMat4[1] * tempMat4[ 6] * tempMat4[11] + tempMat4[1] * tempMat4[ 7] * tempMat4[10] + tempMat4[5] * tempMat4[2] * tempMat4[11] - tempMat4[5] * tempMat4[3] * tempMat4[10] - tempMat4[ 9] * tempMat4[2] * tempMat4[ 7] + tempMat4[ 9] * tempMat4[3] * tempMat4[ 6]
+	out[ 7] =  tempMat4[0] * tempMat4[ 6] * tempMat4[11] - tempMat4[0] * tempMat4[ 7] * tempMat4[10] - tempMat4[4] * tempMat4[2] * tempMat4[11] + tempMat4[4] * tempMat4[3] * tempMat4[10] + tempMat4[ 8] * tempMat4[2] * tempMat4[ 7] - tempMat4[ 8] * tempMat4[3] * tempMat4[ 6]
+	out[11] = -tempMat4[0] * tempMat4[ 5] * tempMat4[11] + tempMat4[0] * tempMat4[ 7] * tempMat4[ 9] + tempMat4[4] * tempMat4[1] * tempMat4[11] - tempMat4[4] * tempMat4[3] * tempMat4[ 9] - tempMat4[ 8] * tempMat4[1] * tempMat4[ 7] + tempMat4[ 8] * tempMat4[3] * tempMat4[ 5]
+	out[15] =  tempMat4[0] * tempMat4[ 5] * tempMat4[10] - tempMat4[0] * tempMat4[ 6] * tempMat4[ 9] - tempMat4[4] * tempMat4[1] * tempMat4[10] + tempMat4[4] * tempMat4[2] * tempMat4[ 9] + tempMat4[ 8] * tempMat4[1] * tempMat4[ 6] - tempMat4[ 8] * tempMat4[2] * tempMat4[ 5]
+	Local det# = tempMat4[0] * out[0] + tempMat4[1] * out[4] + tempMat4[2] * out[8] + tempMat4[3] * out[12]
+	If Abs(det) <= 0.00001 Then Return
+	Local invdet# = 1/det
+	For Local i% = 0 Until 16
+		out[i] *= invdet
+	Next
+End
+
+Function Mat4OrthoLH:Void(left#, right#, bottom#, top#, near#, far#, out#[])
+	Mat4Identity(out)
+	out[0] = 2 / (right-left)
+	out[5] = 2 / (top-bottom)
+	out[10] = 2 / (far-near)
+	out[12] = (left+right) / (left-right)
+	out[13] = (bottom+top) / (bottom-top)
+	out[14] = (near+far) / (near-far)
+End
+
+Function Mat4OrthoRH:Void(left#, right#, bottom#, top#, near#, far#, out#[])
+	Mat4Identity(out)
+	out[0] = 2 / (right-left)
+	out[5] = 2 / (top-bottom)
+	out[10] = 2 / (near-far)
+	out[12] = (left+right) / (left-right)
+	out[13] = (bottom+top) / (bottom-top)
+	out[14] = (near+far) / (near-far)
+End
+
+Function Mat4OrthoHeightLH:Void(height#, aspect#, near#, far#, out#[])
+	Local halfHeight# = height * 0.5
+	Local halfWidth# = halfHeight * aspect
+	Mat4OrthoLH(-halfWidth, halfWidth, -halfHeight, halfHeight, near, far, out)
+End
+	
+Function Mat4OrthoHeightRH:Void(height#, aspect#, near#, far#, out#[])
+	Local halfHeight# = height * 0.5
+	Local halfWidth# = halfHeight * aspect
+	Mat4OrthoRH(-halfWidth, halfWidth, -halfHeight, halfHeight, near, far, out)
+End
+
+Function Mat4FrustumLH:Void(left#, right#, bottom#, top#, near#, far#, out#[])
+	Mat4Identity(out)
+	out[0] = 2 * near / (right - left)
+	out[5] = 2 * near / (top - bottom)
+	out[8] = (left + right) / (left - right)
+	out[9] = (bottom + top) / (bottom - top)
+	out[10] = (far + near) / (far - near)
+	out[11] = 1
+	out[14] = (2 * near * far) / (near - far)
+	out[15] = 0
+End
+
+Function Mat4FrustumRH:Void(left#, right#, bottom#, top#, near#, far#, out#[])
+	Mat4Identity(out)
+	out[0] = 2 * near / (right - left)
+	out[5] = 2 * near / (top - bottom)
+	out[8] = (left + right) / (right - left)
+	out[9] = (bottom + top) / (top - bottom)
+	out[10] = (far + near) / (near - far)
+	out[11] = -1
+	out[14] = (2 * near * far) / (near - far)
+	out[15] = 0
+End
+
+Function Mat4PerspectiveLH:Void(fovy#, aspect#, near#, far#, out#[])
+	Local height# = near * Tan(fovy*0.5)
+	Local width# = height * aspect
+	Mat4FrustumLH(-width, width, -height, height, near, far, out)
+End
+
+Function Mat4PerspectiveRH:Void(fovy#, aspect#, near#, far#, out#[])
+	Local height# = near * Tan(fovy*0.5)
+	Local width# = height * aspect
+	Mat4FrustumRH(-width, width, -height, height, near, far, out)
+End
+
+Function Mat4LookAtLH:Void(eyex#, eyey#, eyez#, centerx#, centery#, centerz#, upx#, upy#, upz#, out#[])
+	Vec3Sub(centerx, centery, centerz, eyex, eyey, eyez, out)
+	Vec3Norm(out[0], out[1], out[2], out)
+	Local zx# = out[0]
+	Local zy# = out[1]
+	Local zz# = out[2]
+	Vec3Cross(upx, upy, upz, zx, zy, zz, out)
+	Vec3Norm(out[0], out[1], out[2], out)
+	Local xx# = out[0]
+	Local xy# = out[1]
+	Local xz# = out[2]
+	Vec3Cross(zx, zy, zz, xx, xy, xz, out)
+	Local yx# = out[0]
+	Local yy# = out[1]
+	Local yz# = out[2]
+	out[0] = xx
+	out[1] = yx
+	out[2] = zx
+	out[3] = 0
+	out[4] = xy
+	out[5] = yy
+	out[6] = zy
+	out[7] = 0
+	out[8] = xz
+	out[9] = yz
+	out[10] = zz
+	out[11] = 0
+	out[12] = 0
+	out[13] = 0
+	out[14] = 0
+	out[15] = 1
+	Mat4Translate(out, -eyex, -eyey, -eyez, out)
+End
+
+Function Mat4LookAtRH:Void(eyex#, eyey#, eyez#, centerx#, centery#, centerz#, upx#, upy#, upz#, out#[])
+	Vec3Sub(eyex, eyey, eyez, centerx, centery, centerz, out)
+	Vec3Norm(out[0], out[1], out[2], out)
+	Local zx# = out[0]
+	Local zy# = out[1]
+	Local zz# = out[2]
+	Vec3Cross(upx, upy, upz, zx, zy, zz, out)
+	Vec3Norm(out[0], out[1], out[2], out)
+	Local xx# = out[0]
+	Local xy# = out[1]
+	Local xz# = out[2]
+	Vec3Cross(zx, zy, zz, xx, xy, xz, out)
+	Local yx# = out[0]
+	Local yy# = out[1]
+	Local yz# = out[2]
+	out[0] = xx
+	out[1] = yx
+	out[2] = zx
+	out[3] = 0
+	out[4] = xy
+	out[5] = yy
+	out[6] = zy
+	out[7] = 0
+	out[8] = xz
+	out[9] = yz
+	out[10] = zz
+	out[11] = 0
+	out[12] = 0
+	out[13] = 0
+	out[14] = 0
+	out[15] = 1
+	Mat4Translate(out, -eyex, -eyey, -eyez, out)
+End
+
+Function Mat4Transform:Void(x#, y#, z#, rw#, rx#, ry#, rz#, sx#, sy#, sz#, out#[])
+	QuatAxis(rw, rx, ry, rz, out)
+	Local ax# = out[0]
+	Local ay# = out[1]
+	Local az# = out[2]
+	Mat4Identity(out)
+	Mat4Translate(out, x, y, z, out)
+	Mat4Rotate(out, QuatDegrees(rw, rx, ry, rz), ax, ay, az, out)
+	Mat4Scale(out, sx, sy, sz, out)
+End
+
+Function Mat4TransformEuler:Void(x#, y#, z#, rx#, ry#, rz#, sx#, sy#, sz#, out#[])
+	QuatSetEuler(rx, ry, rz, out)
+	Mat4Transform(x, y, z, out[0], out[1], out[2], out[3], sx, sy, sz, out)
+End
+
+Function Mat4BillboardLH:Void(view#[], x#, y#, z#, spin#, width#, height#, upfront?, out#[])
+	out[0] = view[0]
+	out[1] = view[4]
+	out[2] = view[8]
+	out[3] = 0
+	If upfront
+		out[4] = 0
+		out[5] = 1
+		out[6] = 0
+	Else
+		out[4] = view[1]
+		out[5] = view[5]
+		out[6] = view[9]
+	End
+	out[7] = 0
+	out[8] = view[2]
+	out[9] = view[6]
+	out[10] = view[10]
+	out[11] = 0
+	out[12] = x
+	out[13] = y
+	out[14] = z
+	out[15] = 1
+	Mat4Rotate(out, spin, 0, 0, 1, out)
+	Mat4Scale(out, width, height, 1, out)
+End
+
+Function Mat4View:Void(x#, y#, z#, rw#, rx#, ry#, rz#, out#[])
+	QuatAxis(rw, rx, ry, rz, out)
+	Local ax# = out[0]
+	Local ay# = out[1]
+	Local az# = out[2]
+	Mat4Identity(out)
+	Mat4Rotate(out, -QuatDegrees(rw, rx, ry, rz), ax, ay, az, out)
+	Mat4Translate(out, -x, -y, -z, out)
+End
+
+Function Mat4ViewEuler:Void(x#, y#, z#, rx#, ry#, rz#, out#[])
+	QuatSetEuler(rx, ry, rz, out)
+	Mat4View(x, y, z, out[0], out[1], out[2], out[3], out)
+End
+
+Function Mat4String$(m#[])
+	Local s$
+	s += "(" + m[0] + ", " + m[4] + ", " + m[8] + ", " + m[12] + ")~n"
+	s += "(" + m[1] + ", " + m[5] + ", " + m[9] + ", " + m[13] + ")~n"
+	s += "(" + m[2] + ", " + m[6] + ", " + m[10] + ", " + m[14] + ")~n"
+	s += "(" + m[3] + ", " + m[7] + ", " + m[11] + ", " + m[15] + ")"
+	Return s
+End
+
+Private
+Global tempMat4#[] = New Float[16]
+Global tempMat4B#[] = New Float[16]

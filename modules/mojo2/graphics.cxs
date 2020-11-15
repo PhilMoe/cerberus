@@ -1246,7 +1246,7 @@ Class Image
 		Local i:Int = 0
 		For Local yi:Int = 0 To ty-1
 			For Local xi:Int = 0 To tx-1
-				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight+y,width,cellHeight,xhandle,yhandle )
+				frames[i]=New Image( material,xi*cellWidth+x,yi*cellHeight+y,width,height,xhandle,yhandle )
 				i += 1
 			Next
 		Next
@@ -1323,8 +1323,18 @@ Class Font
 		Return w
 	End
 
-	Method TextHeight:Float( text:String )
-		Return _height
+	Method TextHeight:Float( text:String = "" )
+		If text = ""
+			Return _height
+		Else
+			Local h:=0.0
+			For Local char:=Eachin text
+				Local glyph:=GetGlyph( char )
+				If Not glyph Continue
+				If h < glyph.height Then h = glyph.height
+			Next	
+			Return h
+		Endif
 	End
 	
 	Function Load:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )
@@ -2114,6 +2124,77 @@ Class DrawList
 		Next
 	End
 
+	Method DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )
+		Local char:Int=0
+		Local tmpChar:Glyph
+		Local currX:Float
+		Local text:String
+		
+
+		Local left:Float = x
+		Local right:Float = x + width
+		Local top:Float = y
+		Local bottom:Float = y + height
+
+		Local xcutr:Int = 0
+		Local xcutl:Int = 0
+		Local ycutt:Int = 0
+		Local ycutb:Int = 0
+		Local maxTextWidth:Float = 0.0
+		Local linesCount:Int = textLines.Length()
+		Local y2:Int = 0
+		Local x2:Int = 0 
+		
+		y-=_font.TextHeight( "" )*yhandle * linesCount
+		For Local _y:Int = 1 To linesCount
+			text = textLines[_y-1]
+			If _font.TextWidth(text)> maxTextWidth Then maxTextWidth = _font.TextWidth(text)
+		Next
+		currX = x - (maxTextWidth*xhandle)
+		x = currX
+
+		For Local _y:Int = 1 To linesCount
+			'If y < top Or y > bottom Then Continue
+
+			text = textLines[_y-1]
+			For char = Eachin text
+				ycutt = 0
+				ycutb = 0 
+				xcutl = 0
+				xcutr = 0 
+				y2 = 0
+				x2 = 0 
+
+				Local tmpChar:=_font._charMap.Get(char)
+				If Not tmpChar Continue
+				y2 = y + tmpChar.yoff + tmpChar.height
+				x2 = x + tmpChar.xoff + tmpChar.width
+				
+				If x2 <= left Or x >= right
+					x += tmpChar.advance
+					Continue
+				Endif
+				If y2 <= top Or y >= bottom Then Continue
+				
+				If x < right And x2 > right
+					xcutr = x2 - right
+				ElseIf x < left And x2 > left
+					xcutl = left - x + 2
+				Endif
+				If y < bottom And y2 > bottom
+					ycutb = y2 - bottom
+				Elseif y < top And y2 > top
+					ycutt = top - y + 2
+				Endif
+				
+				DrawRect( Int(x + tmpChar.xoff + xcutl), Int(y + tmpChar.yoff + ycutt), _font._pages[tmpChar.page], tmpChar.x+xcutl, tmpChar.y+ycutt, tmpChar.width-xcutr-xcutl, tmpChar.height-ycutb-ycutt )
+				x += tmpChar.advance
+			Next
+			y += _font.TextHeight( text )
+			x = currX
+		Next
+	End
+	
 	Method DrawShadow:Bool( lx:Float,ly:Float,x0:Float,y0:Float,x1:Float,y1:Float )
 	
 		Local ext:=1024
@@ -2484,7 +2565,7 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,_width,_height
+		SetViewport 0,0,DeviceWidth(),DeviceHeight()
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -2494,15 +2575,13 @@ Class Canvas Extends DrawList
 	Method SetRenderTarget:Void( target:Object )
 
 		FlushPrims
-		
 		If Not target
-		
 			_image=Null
 			_texture=Null
 			_width=DeviceWidth
 			_height=DeviceHeight
-			_twidth=_width
-			_theight=_height
+			_twidth=FramebufferWidth
+			_theight=FramebufferHeight
 		
 		Else If Image( target )
 		
@@ -2979,21 +3058,23 @@ Class Canvas Extends DrawList
 		End
 		
 		If _dirty & DIRTY_VIEWPORT
-		
+			
+			Local scale:Float = 1.0
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_twidth=_width
-				_theight=_height
+				_twidth=FramebufferWidth  
+				_theight=FramebufferHeight  
+				scale = Float(_twidth) / Float(_width)
 			Endif
 		
-			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
+			_vpx=_viewport[0]*scale;_vpy=_viewport[1]*scale;_vpw=_viewport[2]*scale;_vph=_viewport[3]*scale
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
 			Endif
 			
-			_scx=_scissor[0];_scy=_scissor[1];_scw=_scissor[2];_sch=_scissor[3]
+			_scx=_scissor[0]*scale;_scy=_scissor[1]*scale;_scw=_scissor[2]*scale;_sch=_scissor[3]*scale 
 			
 			If _scx<0 _scx=0 Else If _scx>_vpw _scx=_vpw
 			If _scw<0 _scw=0 Else If _scx+_scw>_vpw _scw=_vpw-_scx
@@ -3007,7 +3088,9 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			
+			'Print("validate:Dirty Viewport L3091")
+			'Print(scale)
+			'Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph

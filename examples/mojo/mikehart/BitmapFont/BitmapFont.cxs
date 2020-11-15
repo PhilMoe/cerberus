@@ -51,7 +51,7 @@ Class myClass Extends App
         DrawLine(0,canvasHeight/2, canvasWidth,canvasHeight/2)	
         DrawLine(canvasWidth/2,0, canvasWidth/2,canvasHeight)	
         ' Now draw the multiple text lines. They need to be split into a strng array.
-        DrawText( String("Hello World~nCerberus X is awesome!").Split("~n")),canvasWidth/2,canvasHeight/2,0.5,0.5	
+        DrawText( String("Hello World~nCerberus X is awesome!").Split("~n"),canvasWidth/2,canvasHeight/2,0.5,0.5	)
         Return 0
     End
 End

@@ -16,9 +16,14 @@
 #GLFW_APP_ICON=""
 
 #GLFW_USE_HTTPS=True
+#GLFW_COPY_LIBS+="libcurl-x64"
 #GLFW_COPY_LIBS+="libcurl"
 #GLFW_COPY_LIBS+="libcrypto-1_1-x64"
 #GLFW_COPY_LIBS+="libssl-1_1-x64"
+
+#GLFW_COPY_LIBS_32+="libcurl"
+#GLFW_COPY_LIBS_32+="libcrypto-1_1"
+#GLFW_COPY_LIBS_32+="libssl-1_1"
 
 #OPENGL_GLES20_ENABLED=False
 #OPENGL_DEPTH_BUFFER_ENABLED=False

@@ -276,7 +276,7 @@ The mojo2 Font class provides support for bitmap fonts.
 
 See also:
 
-[[DrawList.SetFont]], [[DrawList.DrawText]]
+[[DrawList.SetFont]], [[DrawList.DrawText]], [[DrawList.DrawTextBox]]
 
 
 # Method TextWidth:Int( text:String )
@@ -284,9 +284,9 @@ See also:
 Get width of @text drawn in this font.
 
 
-# Method TextHeight:Int( text:String )
+# Method TextHeight:Int( text:String = "" )
 
-Get height of @text drawn in this font.
+Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
 
 
 # Function Load:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
@@ -555,7 +555,7 @@ A drawlist's drawing state consists of:
 | Current color			| [[SetColor]]
 | Current 2d matrix		| [[Translate]], [[Rotate]], [[Scale]], [[PushMatrix]], [[PopMatrix]]
 | Current blend mode		| [[SetBlendMode]]
-| Current font			| [[DrawText]]
+| Current font			| [[DrawText]], [[DrawTextBox]]
 
 
 # Method Reset:Void()
@@ -647,7 +647,7 @@ Get blend mode.
 
 # Method SetFont:Void( font:Font )
 
-Set current font for use with @DrawText.
+Set current font for use with DrawText and DrawTextBox.
 
 If @font is null, a default font is used.
 
@@ -981,7 +981,37 @@ left-width and right-width of the image. These are not scaled. The rest is.
 
 # Method DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 
-Draw @text at @x,@y in the current font.
+Draws a @text at coordinates @x, @y in the current font.
+
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+
+@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+
+
+# Method DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+
+Draws a multiline text beginning at coordinates x, y in the current font.
+
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+
+@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+
+
+# Method DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )
+
+Draws a multiline text beginning at coordinates @x, @y in the current font.
+
+Everything outside of the box dimensions will not be rendered.
+
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+
+@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
 
 # Method DrawShadow:Void( lightX:Float,lightY:Float,x0:Float,y0:Float,x1:Float,y1:Float )

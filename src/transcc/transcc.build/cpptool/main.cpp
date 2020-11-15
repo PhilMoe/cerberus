@@ -11,7 +11,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 0
-#define CFG_HOST macos
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -1776,6 +1776,7 @@ public:
 	virtual void TouchEvent( int event,int data,Float x,Float y ){}
 	virtual void MotionEvent( int event,int data,Float x,Float y,Float z ){}
 	virtual void DiscardGraphics(){}
+	virtual void FileDropEvent(String filename){}
 };
 
 struct BBDisplayMode : public Object{
@@ -1852,6 +1853,7 @@ public:
 	virtual void TouchEvent( int ev,int data,float x,float y );
 	virtual void MotionEvent( int ev,int data,float x,float y,float z );
 	virtual void DiscardGraphics();
+	virtual void FileDropEvent(String filename);
 	
 protected:
 
@@ -2118,6 +2120,18 @@ void BBGame::RenderGame(){
 	
 	try{
 		_delegate->RenderGame();
+	}catch( ThrowableObject *ex ){
+		Die( ex );
+	}
+	gc_collect();
+}
+
+void BBGame::FileDropEvent( String filename ){
+
+	if( !_started ) return;
+	
+	try{
+		_delegate->FileDropEvent( filename );
 	}catch( ThrowableObject *ex ){
 		Die( ex );
 	}
@@ -15096,6 +15110,8 @@ class c_WinrtBuilder;
 class c_XnaBuilder;
 class c_AGKBuilder;
 class c_AGKBuilder_ios;
+class c_AGKBuilder_android;
+class c_CustomBuilder;
 class c_NodeEnumerator;
 class c_List;
 class c_StringList;
@@ -15259,6 +15275,7 @@ class c_TransCC : public Object{
 	public:
 	Array<String > m_args;
 	String m_cerberusdir;
+	String m__libs;
 	String m_opt_srcpath;
 	bool m_opt_safe;
 	bool m_opt_clean;
@@ -15271,6 +15288,7 @@ class c_TransCC : public Object{
 	String m_opt_config;
 	String m_opt_target;
 	String m_opt_modpath;
+	String m_opt_targetpath;
 	String m_opt_builddir;
 	String m_ANDROID_PATH;
 	String m_ANDROID_NDK_PATH;
@@ -15283,10 +15301,10 @@ class c_TransCC : public Object{
 	String m_AGK_PATH;
 	String m_HTML_PLAYER;
 	String m_FLASH_PLAYER;
-	String m__libs;
 	c_StringMap3* m__builders;
 	c_StringMap6* m__targets;
 	c_Target* m_target;
+	String m_PSS_PATH;
 	c_TransCC();
 	c_TransCC* m_new();
 	void p_ParseArgs();
@@ -15300,6 +15318,9 @@ class c_TransCC : public Object{
 };
 String bb_os_ExtractDir(String);
 String bb_transcc_StripQuotes(String);
+String bb_os_StripExt(String);
+String bb_os_StripDir(String);
+bool bb_transcc_IsValidSourceFilename(String);
 int bb_transcc_Die(String);
 class c_Type : public Object{
 	public:
@@ -15794,6 +15815,34 @@ class c_AGKBuilder_ios : public c_Builder{
 	void p_MakeTarget();
 	void mark();
 };
+class c_AGKBuilder_android : public c_Builder{
+	public:
+	c_AGKBuilder_android();
+	c_AGKBuilder_android* m_new(c_TransCC*);
+	c_AGKBuilder_android* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_Config();
+	void p_CreateMediaDir(String);
+	void p_MakeAndroid();
+	void p_MakeTarget();
+	void mark();
+};
+class c_CustomBuilder : public c_Builder{
+	public:
+	c_CustomBuilder();
+	c_CustomBuilder* m_new(c_TransCC*);
+	c_CustomBuilder* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_MetaData();
+	String p_Config();
+	String p_ReplaceParams(String);
+	void p_ScriptError(int,String,String);
+	void p_ParseBuildScript(String);
+	void p_MakeTarget();
+	void mark();
+};
 c_StringMap3* bb_builders_Builders(c_TransCC*);
 class c_NodeEnumerator : public Object{
 	public:
@@ -16050,8 +16099,6 @@ int bb_config_IsDigit(int);
 int bb_config_IsBinDigit(int);
 int bb_config_IsHexDigit(int);
 extern String bb_config_ENV_MODPATH;
-String bb_os_StripExt(String);
-String bb_os_StripDir(String);
 extern String bb_parser_FILE_EXT;
 extern String bb_parser_FILE_EXT_OLD;
 int bb_config_Err(String);
@@ -17256,14 +17303,19 @@ String bb_preprocessor_EvalText(c_Toker*);
 c_StringMap2* bb_config_GetConfigVars();
 c_Type* bb_config_GetConfigVarType(String);
 String bb_preprocessor_PreProcess(String,c_ModuleDecl*);
+extern String bb_config_ENV_LANG;
+extern String bb_config_ENV_CUSTOMBUILDSCRIPT;
 class c_Target : public Object{
 	public:
 	String m_dir;
 	String m_name;
 	String m_system;
 	c_Builder* m_builder;
+	String m_lang;
+	String m_buildscript;
+	String m_path;
 	c_Target();
-	c_Target* m_new(String,String,String,c_Builder*);
+	c_Target* m_new(String,String,String,c_Builder*,String,String,String);
 	c_Target* m_new2();
 	void mark();
 };
@@ -17319,7 +17371,6 @@ class c_NodeEnumerator2 : public Object{
 extern String bb_config_ENV_HOST;
 extern String bb_config_ENV_CONFIG;
 extern String bb_config_ENV_TARGET;
-extern String bb_config_ENV_LANG;
 String bb_os_StripAll(String);
 c_AppDecl* bb_parser_ParseApp(String);
 class c_Reflector : public Object{
@@ -17678,8 +17729,8 @@ class c_JsTranslator : public c_CTranslator{
 	String p_TransIntrinsicExpr(c_Decl*,c_Expr*,Array<c_Expr* >);
 	void mark();
 };
-extern int bb_html5_Info_Width;
-extern int bb_html5_Info_Height;
+extern int bb_builder__html5_Info_Width;
+extern int bb_builder__html5_Info_Height;
 class c_Stream : public Object{
 	public:
 	c_Stream();
@@ -17714,9 +17765,9 @@ class c_DataBuffer : public BBDataBuffer{
 	c_DataBuffer* m_new2();
 	void mark();
 };
-int bb_html5_GetInfo_PNG(String);
-int bb_html5_GetInfo_JPG(String);
-int bb_html5_GetInfo_GIF(String);
+int bb_builder_GetInfo_PNG(String);
+int bb_builder_GetInfo_JPG(String);
+int bb_builder_GetInfo_GIF(String);
 class c_AsTranslator : public c_CTranslator{
 	public:
 	c_AsTranslator();
@@ -18028,6 +18079,7 @@ class c_Enumerator8 : public Object{
 c_TransCC::c_TransCC(){
 	m_args=Array<String >();
 	m_cerberusdir=String();
+	m__libs=String();
 	m_opt_srcpath=String();
 	m_opt_safe=false;
 	m_opt_clean=false;
@@ -18040,6 +18092,7 @@ c_TransCC::c_TransCC(){
 	m_opt_config=String();
 	m_opt_target=String();
 	m_opt_modpath=String();
+	m_opt_targetpath=String();
 	m_opt_builddir=String();
 	m_ANDROID_PATH=String();
 	m_ANDROID_NDK_PATH=String();
@@ -18052,10 +18105,10 @@ c_TransCC::c_TransCC(){
 	m_AGK_PATH=String();
 	m_HTML_PLAYER=String();
 	m_FLASH_PLAYER=String();
-	m__libs=String();
 	m__builders=(new c_StringMap3)->m_new();
 	m__targets=(new c_StringMap6)->m_new();
 	m_target=0;
+	m_PSS_PATH=String();
 }
 c_TransCC* c_TransCC::m_new(){
 	return this;
@@ -18063,6 +18116,9 @@ c_TransCC* c_TransCC::m_new(){
 void c_TransCC::p_ParseArgs(){
 	if(m_args.Length()>1){
 		m_opt_srcpath=bb_transcc_StripQuotes(m_args[m_args.Length()-1].Trim());
+	}
+	if(!bb_transcc_IsValidSourceFilename(m_opt_srcpath)){
+		bb_transcc_Die(String(L"Source filename contains space characters: ",43)+m_opt_srcpath);
 	}
 	for(int t_i=1;t_i<m_args.Length()-1;t_i=t_i+1){
 		String t_arg=m_args[t_i].Trim();
@@ -18123,10 +18179,14 @@ void c_TransCC::p_ParseArgs(){
 								if(t_2==String(L"-modpath",8)){
 									m_opt_modpath=t_rhs;
 								}else{
-									if(t_2==String(L"-builddir",9)){
-										m_opt_builddir=t_rhs;
+									if(t_2==String(L"-targetpath",11)){
+										m_opt_targetpath=t_rhs;
 									}else{
-										bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
+										if(t_2==String(L"-builddir",9)){
+											m_opt_builddir=t_rhs;
+										}else{
+											bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
+										}
 									}
 								}
 							}
@@ -18180,58 +18240,64 @@ void c_TransCC::p_LoadConfig(){
 				m_opt_modpath=t_path;
 			}
 		}else{
-			if(t_3==String(L"ANDROID_PATH",12)){
-				if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
-					m_ANDROID_PATH=t_path;
+			if(t_3==String(L"TARGETPATH",10)){
+				if(!((m_opt_targetpath).Length()!=0)){
+					m_opt_targetpath=t_path;
 				}
 			}else{
-				if(t_3==String(L"ANDROID_NDK_PATH",16)){
-					if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
-						m_ANDROID_NDK_PATH=t_path;
+				if(t_3==String(L"ANDROID_PATH",12)){
+					if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
+						m_ANDROID_PATH=t_path;
 					}
 				}else{
-					if(t_3==String(L"JDK_PATH",8)){
-						if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
-							m_JDK_PATH=t_path;
+					if(t_3==String(L"ANDROID_NDK_PATH",16)){
+						if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
+							m_ANDROID_NDK_PATH=t_path;
 						}
 					}else{
-						if(t_3==String(L"ANT_PATH",8)){
-							if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
-								m_ANT_PATH=t_path;
+						if(t_3==String(L"JDK_PATH",8)){
+							if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
+								m_JDK_PATH=t_path;
 							}
 						}else{
-							if(t_3==String(L"FLEX_PATH",9)){
-								if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
-									m_FLEX_PATH=t_path;
+							if(t_3==String(L"ANT_PATH",8)){
+								if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
+									m_ANT_PATH=t_path;
 								}
 							}else{
-								if(t_3==String(L"MINGW_PATH",10)){
-									if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
-										m_MINGW_PATH=t_path;
+								if(t_3==String(L"FLEX_PATH",9)){
+									if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
+										m_FLEX_PATH=t_path;
 									}
 								}else{
-									if(t_3==String(L"PSM_PATH",8)){
-										if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
-											m_PSM_PATH=t_path;
+									if(t_3==String(L"MINGW_PATH",10)){
+										if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
+											m_MINGW_PATH=t_path;
 										}
 									}else{
-										if(t_3==String(L"MSBUILD_PATH",12)){
-											if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
-												m_MSBUILD_PATH=t_path;
+										if(t_3==String(L"PSM_PATH",8)){
+											if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
+												m_PSM_PATH=t_path;
 											}
 										}else{
-											if(t_3==String(L"AGK_PATH",8)){
-												if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
-													m_AGK_PATH=t_path;
+											if(t_3==String(L"MSBUILD_PATH",12)){
+												if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
+													m_MSBUILD_PATH=t_path;
 												}
 											}else{
-												if(t_3==String(L"HTML_PLAYER",11)){
-													m_HTML_PLAYER=t_rhs;
+												if(t_3==String(L"AGK_PATH",8)){
+													if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
+														m_AGK_PATH=t_path;
+													}
 												}else{
-													if(t_3==String(L"FLASH_PLAYER",12)){
-														m_FLASH_PLAYER=t_rhs;
+													if(t_3==String(L"HTML_PLAYER",11)){
+														m_HTML_PLAYER=t_rhs;
 													}else{
-														bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+														if(t_3==String(L"FLASH_PLAYER",12)){
+															m_FLASH_PLAYER=t_rhs;
+														}else{
+															bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+														}
 													}
 												}
 											}
@@ -18270,8 +18336,6 @@ void c_TransCC::p_LoadConfig(){
 		if((m_JDK_PATH).Length()!=0){
 			SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 		}
-		m__libs=AppPath();
-		m__libs=m__libs.Slice(0,m__libs.Find(String(L"bin/transcc_winnt.exe",21),0))+String(L"libs/",5);
 	}else{
 		if(t_4==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
@@ -18316,6 +18380,9 @@ void c_TransCC::p_EnumBuilders(){
 }
 void c_TransCC::p_EnumTargets(String t_dir){
 	String t_p=m_cerberusdir+String(L"/",1)+t_dir;
+	if(FileType(t_p)!=2){
+		t_p=t_dir;
+	}
 	Array<String > t_=LoadDir(t_p);
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -18336,9 +18403,11 @@ void c_TransCC::p_EnumTargets(String t_dir){
 			if((t_system).Length()!=0){
 				c_Builder* t_builder=m__builders->p_Get(bb_config_GetConfigVar(String(L"TARGET_BUILDER",14)));
 				if((t_builder)!=0){
+					bb_config_ENV_LANG=bb_config_GetConfigVar(String(L"TARGET_LANG",11));
+					bb_config_ENV_CUSTOMBUILDSCRIPT=t_p+String(L"/",1)+t_f+String(L"/cxbuild.txt",12);
 					String t_host=bb_config_GetConfigVar(String(L"TARGET_HOST",11));
-					if(!((t_host).Length()!=0) || t_host==HostOS()){
-						m__targets->p_Set6(t_name,(new c_Target)->m_new(t_f,t_name,t_system,t_builder));
+					if(!((t_host).Length()!=0) || t_host==HostOS() || t_host.Find(HostOS(),0)>=0){
+						m__targets->p_Set6(t_name,(new c_Target)->m_new(t_f,t_name,t_system,t_builder,bb_config_ENV_LANG,bb_config_ENV_CUSTOMBUILDSCRIPT,t_p+String(L"/",1)+t_f));
 					}
 				}
 			}
@@ -18362,23 +18431,34 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-05-09",35));
-	m_cerberusdir=RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3));
+	bbPrint(String(L"TRANS cerberus compiler V2020-10-11",35));
+	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
+	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
 	SetEnv(String(L"MONKEYDIR",9),m_cerberusdir);
 	SetEnv(String(L"TRANSDIR",8),m_cerberusdir+String(L"/bin",4));
 	p_ParseArgs();
 	p_LoadConfig();
 	p_EnumBuilders();
-	p_EnumTargets(String(L"targets",7));
+	if(m_opt_targetpath.Length()<=1){
+		m_opt_targetpath=String(L"targets",7);
+	}
+	Array<String > t_tpaths=m_opt_targetpath.Split(String(L";",1));
+	Array<String > t_=t_tpaths;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		String t_tpath=t_[t_2];
+		t_2=t_2+1;
+		p_EnumTargets(t_tpath);
+	}
 	if(t_args.Length()<2){
 		String t_valid=String();
-		c_NodeEnumerator2* t_=m__targets->p_ObjectEnumerator();
-		while(t_->p_HasNext()){
-			c_Node17* t_it=t_->p_NextObject();
+		c_NodeEnumerator2* t_3=m__targets->p_ObjectEnumerator();
+		while(t_3->p_HasNext()){
+			c_Node17* t_it=t_3->p_NextObject();
 			t_valid=t_valid+(String(L" ",1)+t_it->p_Key().Replace(String(L" ",1),String(L"_",1)));
 		}
-		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_cerberus_source_file>",141));
+		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>",160));
 		bbPrint(String(L"Valid targets:",14)+t_valid);
 		bbPrint(String(L"Valid configs: debug release",28));
 		ExitApp(0);
@@ -18417,6 +18497,39 @@ String bb_transcc_StripQuotes(String t_str){
 		return t_str.Slice(1,-1);
 	}
 	return t_str;
+}
+String bb_os_StripExt(String t_path){
+	int t_i=t_path.FindLast(String(L".",1));
+	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
+		return t_path.Slice(0,t_i);
+	}
+	return t_path;
+}
+String bb_os_StripDir(String t_path){
+	int t_i=t_path.FindLast(String(L"/",1));
+	if(t_i==-1){
+		t_i=t_path.FindLast(String(L"\\",1));
+	}
+	if(t_i!=-1){
+		return t_path.Slice(t_i+1);
+	}
+	return t_path;
+}
+bool bb_transcc_IsValidSourceFilename(String t_sourcePath){
+	String t_[]={String(L" ",1)};
+	Array<String > t_forbiddenChars=Array<String >(t_,1);
+	String t_sourceFilename=String();
+	t_sourceFilename=bb_os_StripDir(bb_os_StripExt(t_sourcePath));
+	Array<String > t_2=t_forbiddenChars;
+	int t_3=0;
+	while(t_3<t_2.Length()){
+		String t_chr=t_2[t_3];
+		t_3=t_3+1;
+		if(t_sourceFilename.Find(t_chr,0)>=0){
+			return false;
+		}
+	}
+	return true;
 }
 int bb_transcc_Die(String t_msg){
 	bbPrint(String(L"TRANS FAILED: ",14)+t_msg);
@@ -19786,7 +19899,7 @@ void c_Builder::p_Make(){
 	if(!((m_tcc->m_opt_modpath).Length()!=0)){
 		m_tcc->m_opt_modpath=m_tcc->m_cerberusdir+String(L"/modules",8);
 	}
-	m_tcc->m_opt_modpath=String(L".;",2)+bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L";",1)+m_tcc->m_opt_modpath+String(L";",1)+m_tcc->m_cerberusdir+String(L"/targets/",9)+m_tcc->m_target->m_dir+String(L"/modules",8);
+	m_tcc->m_opt_modpath=String(L".;",2)+bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L";",1)+m_tcc->m_opt_modpath+String(L";",1)+m_tcc->m_target->m_path+String(L"/modules",8);
 	if(!m_tcc->m_opt_check){
 		m_tcc->m_opt_check=true;
 		m_tcc->m_opt_update=true;
@@ -19797,6 +19910,8 @@ void c_Builder::p_Make(){
 	bb_config_ENV_SAFEMODE=((m_tcc->m_opt_safe)?1:0);
 	bb_config_ENV_MODPATH=m_tcc->m_opt_modpath;
 	bb_config_ENV_TARGET=m_tcc->m_target->m_system;
+	bb_config_ENV_LANG=m_tcc->m_target->m_lang;
+	bb_config_ENV_CUSTOMBUILDSCRIPT=m_tcc->m_target->m_buildscript;
 	this->p_Begin();
 	if(!m_tcc->m_opt_check){
 		return;
@@ -19855,7 +19970,7 @@ void c_Builder::p_Make(){
 		if(FileType(t_buildPath)!=2){
 			bb_transcc_Die(String(L"Failed to create build dir: ",28)+t_buildPath);
 		}
-		if(!((bb_os_CopyDir(m_tcc->m_cerberusdir+String(L"/targets/",9)+m_tcc->m_target->m_dir+String(L"/template",9),t_targetPath,true,false))!=0)){
+		if(!((bb_os_CopyDir(m_tcc->m_target->m_path+String(L"/template",9),t_targetPath,true,false))!=0)){
 			bb_transcc_Die(String(L"Failed to copy target dir",25));
 		}
 	}
@@ -20069,15 +20184,26 @@ void c_Builder::p_CopySourceFiles(String t_dir){
 				String t_file=t_7[t_8];
 				t_8=t_8+1;
 				String t_subDir=bb_os_ExtractDir(t_file);
-				if(FileType(t_targetDir+String(L"/",1)+t_subDir)!=2){
-					CreateDir(t_targetDir+String(L"/",1)+t_subDir);
-				}
-				if(FileType(t_src+String(L"/",1)+t_file)==1){
-					Array<String > t_9=t_exts2;
+				if(FileType(t_targetDir+String(L"/",1)+t_subDir)!=2 && t_subDir.Length()>0){
+					Array<String > t_subDirs=t_subDir.Split(String(L"/",1));
+					t_oOut=String();
+					Array<String > t_9=t_subDirs;
 					int t_10=0;
 					while(t_10<t_9.Length()){
-						String t_ext=t_9[t_10];
+						String t_sub=t_9[t_10];
 						t_10=t_10+1;
+						t_oOut=t_oOut+(String(L"/",1)+t_sub);
+						if(FileType(t_targetDir+t_oOut)!=2){
+							CreateDir(t_targetDir+t_oOut);
+						}
+					}
+				}
+				if(FileType(t_src+String(L"/",1)+t_file)==1){
+					Array<String > t_11=t_exts2;
+					int t_12=0;
+					while(t_12<t_11.Length()){
+						String t_ext=t_11[t_12];
+						t_12=t_12+1;
 						if(t_ext==bb_os_ExtractExt(t_file) || t_ext==String(L"*",1)){
 							p_CCopyFile(t_src+String(L"/",1)+t_file,t_targetDir+String(L"/",1)+t_file);
 						}
@@ -20742,7 +20868,13 @@ String c_GlfwBuilder::p_Config(){
 	return t_config->p_Join(String(L"\n",1));
 }
 int c_GlfwBuilder::p_ProcessExternalLibs(String t_config,String t_arch,String t_link){
-	String t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
+	String t_libStr=String();
+	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
+	if(t_msize==String(L"64",2)){
+		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
+	}else{
+		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS_32",17)).ToLower();
+	}
 	if(t_libStr==String()){
 		return 0;
 	}
@@ -20789,6 +20921,9 @@ void c_GlfwBuilder::p_MakeGcc(){
 	CreateDir(t_dst+String(L"/",1)+t_tconfig);
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
 	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
+	if(FileType(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11))==1){
+		DeleteFile(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11));
+	}
 	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
 	p_CopySourceFiles(String(L".",1));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/cerberus.ico",13));
@@ -20828,7 +20963,7 @@ void c_GlfwBuilder::p_MakeGcc(){
 		if(HostOS()==String(L"winnt",5) && ((FileType(m_tcc->m_MINGW_PATH+String(L"/bin/mingw32-make.exe",21)))!=0)){
 			t_cmd=String(L"mingw32-make",12);
 		}
-		p_Execute(t_cmd+String(L" CCOPTS=\"",9)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" LIBOPTS=\"",11)+t_libopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
+		p_Execute(t_cmd+String(L" ARCH=\"",7)+t_msize+String(L"\" CCOPTS=\"",10)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" LIBOPTS=\"",11)+t_libopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
 		if(m_tcc->m_opt_run){
 			ChangeDir(t_tconfig);
 			if(HostOS()==String(L"winnt",5)){
@@ -20883,6 +21018,7 @@ void c_GlfwBuilder::p_MakeXcode(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"main.cpp",8));
+	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/xcode/cerberus.icns",20));
 	if(m_tcc->m_opt_build){
 		ChangeDir(String(L"xcode",5));
 		p_Execute(String(L"xcodebuild -configuration ",26)+m_casedConfig,true);
@@ -20948,28 +21084,28 @@ String c_Html5Builder::p_MetaData(){
 		c_Node2* t_kv=t_->p_NextObject();
 		String t_src=t_kv->p_Key();
 		String t_ext=bb_os_ExtractExt(t_src).ToLower();
-		String t_3=t_ext;
-		if(t_3==String(L"png",3) || t_3==String(L"jpg",3) || t_3==String(L"gif",3)){
-			bb_html5_Info_Width=0;
-			bb_html5_Info_Height=0;
-			String t_4=t_ext;
-			if(t_4==String(L"png",3)){
-				bb_html5_GetInfo_PNG(t_src);
+		String t_1=t_ext;
+		if(t_1==String(L"png",3) || t_1==String(L"jpg",3) || t_1==String(L"gif",3)){
+			bb_builder__html5_Info_Width=0;
+			bb_builder__html5_Info_Height=0;
+			String t_2=t_ext;
+			if(t_2==String(L"png",3)){
+				bb_builder_GetInfo_PNG(t_src);
 			}else{
-				if(t_4==String(L"jpg",3)){
-					bb_html5_GetInfo_JPG(t_src);
+				if(t_2==String(L"jpg",3)){
+					bb_builder_GetInfo_JPG(t_src);
 				}else{
-					if(t_4==String(L"gif",3)){
-						bb_html5_GetInfo_GIF(t_src);
+					if(t_2==String(L"gif",3)){
+						bb_builder_GetInfo_GIF(t_src);
 					}
 				}
 			}
-			if(bb_html5_Info_Width==0 || bb_html5_Info_Height==0){
+			if(bb_builder__html5_Info_Width==0 || bb_builder__html5_Info_Height==0){
 				bb_transcc_Die(String(L"Unable to load image file '",27)+t_src+String(L"'.",2));
 			}
 			t_meta->p_Push(String(L"[",1)+t_kv->p_Value()+String(L"];type=image/",13)+t_ext+String(L";",1));
-			t_meta->p_Push(String(L"width=",6)+String(bb_html5_Info_Width)+String(L";",1));
-			t_meta->p_Push(String(L"height=",7)+String(bb_html5_Info_Height)+String(L";",1));
+			t_meta->p_Push(String(L"width=",6)+String(bb_builder__html5_Info_Width)+String(L";",1));
+			t_meta->p_Push(String(L"height=",7)+String(bb_builder__html5_Info_Height)+String(L";",1));
 			t_meta->p_Push(String(L"\\n",2));
 		}
 	}
@@ -20994,11 +21130,13 @@ void c_Html5Builder::p_MakeTarget(){
 	SaveString(t_main,String(L"main.js",7));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"HTML5_APP_ICON",14)),CurrentDir()+String(L"\\favicon.ico",12));
 	String t_game=LoadString(String(L"CerberusGame.html",17));
-	t_game=t_game.Replace(String(L"%%HTML5_CONSOLE_SHOW%%",22),bb_config_GetConfigVar(String(L"HTML5_CONSOLE_SHOW",18)));
-	t_game=t_game.Replace(String(L"%%HTML5_APP_TITLE%%",19),bb_config_GetConfigVar(String(L"HTML5_APP_TITLE",15)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_WIDTH%%",22),bb_config_GetConfigVar(String(L"HTML5_CANVAS_WIDTH",18)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_HEIGHT%%",23),bb_config_GetConfigVar(String(L"HTML5_CANVAS_HEIGHT",19)));
-	t_game=t_game.Replace(String(L"%%HTML5_CANVAS_RESIZE_MODE%%",28),bb_config_GetConfigVar(String(L"HTML5_CANVAS_RESIZE_MODE",24)));
+	t_game=bb_transcc_ReplaceBlock(t_game,String(L"APP_TITLE",9),String(L"<title>",7)+bb_config_GetConfigVar(String(L"HTML5_APP_TITLE",15))+String(L"</title>",8),String(L"\n<!--",5));
+	String t_cvrep=String();
+	t_cvrep=String(L"var CANVAS_RESIZE_MODE=",23)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_RESIZE_MODE",24))+String(L";\t//0=locked, 1=stretch, 2=resize",33);
+	t_cvrep=t_cvrep+(String(L"\nvar CANVAS_WIDTH=",18)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_WIDTH",18))+String(L";",1));
+	t_cvrep=t_cvrep+(String(L"\nvar CANVAS_HEIGHT=",19)+bb_config_GetConfigVar(String(L"HTML5_CANVAS_HEIGHT",19))+String(L";",1));
+	t_cvrep=t_cvrep+(String(L"\nvar CONSOLE_SHOW=",18)+bb_config_GetConfigVar(String(L"HTML5_CONSOLE_SHOW",18))+String(L";",1));
+	t_game=bb_transcc_ReplaceBlock(t_game,String(L"CANVAS",6),t_cvrep,String(L"\n<!--",5));
 	SaveString(t_game,bb_config_GetConfigVar(String(L"HTML5_APP_FILENAME",18)));
 	if(m_tcc->m_opt_run){
 		String t_p=RealPath(bb_config_GetConfigVar(String(L"HTML5_APP_FILENAME",18)));
@@ -22153,6 +22291,583 @@ void c_AGKBuilder_ios::p_MakeTarget(){
 void c_AGKBuilder_ios::mark(){
 	c_Builder::mark();
 }
+c_AGKBuilder_android::c_AGKBuilder_android(){
+}
+c_AGKBuilder_android* c_AGKBuilder_android::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_AGKBuilder_android* c_AGKBuilder_android::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_AGKBuilder_android::p_IsValid(){
+	String t_1=HostOS();
+	if(t_1==String(L"winnt",5)){
+		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
+			return true;
+		}
+	}else{
+		if(t_1==String(L"macos",5)){
+			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	return false;
+}
+void c_AGKBuilder_android::p_Begin(){
+	bb_config_ENV_LANG=String(L"cpp",3);
+	bb_translator__trans=((new c_CppTranslator)->m_new());
+}
+String c_AGKBuilder_android::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	int t_l=0;
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+void c_AGKBuilder_android::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_AGKBuilder_android::p_MakeAndroid(){
+	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
+	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
+	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_google",41);
+	String t_lp=String(L"ndk.dir=",8)+m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\n",1);
+	t_lp=t_lp+(String(L"sdk.dir=",8)+m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SaveString(t_lp,t_buildpath+String(L"\\local.properties",17));
+	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
+	if(m_tcc->m_opt_build){
+		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
+		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
+		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
+		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
+		ChangeDir(t_buildpath);
+		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
+		if(m_tcc->m_opt_config==String(L"release",7)){
+			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
+		}
+		String t_gradle=String();
+		if(HostOS()==String(L"winnt",5)){
+			t_gradle=String(L"gradlew",7);
+		}else{
+			t_gradle=String(L"./gradlew",9);
+		}
+		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
+			bb_transcc_Die(String(L"Android build failed.",21));
+		}else{
+			if(m_tcc->m_opt_config==String(L"release",7)){
+				String t_adb=String(L"adb",3);
+				String t_jarsigner=String(L"jarsigner",9);
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+				}
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
+				}
+				String t__file=CurrentDir();
+				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
+				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
+				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
+				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
+				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
+				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
+			}else{
+				if(m_tcc->m_opt_config==String(L"debug",5)){
+					String t_adb2=String(L"adb",3);
+					if((m_tcc->m_ANDROID_PATH).Length()!=0){
+						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+					}
+					String t__file2=CurrentDir();
+					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
+					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
+					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
+				}
+			}
+		}
+		if(m_tcc->m_opt_run){
+			String t_adb3=String(L"adb",3);
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			t_app_package=String(L"com.mycompany.mytemplate",24);
+			p_Execute(t_adb3+String(L" logcat -c",10),false);
+			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
+			if(m_tcc->m_opt_config==String(L"debug",5)){
+				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
+			}
+		}
+	}
+}
+void c_AGKBuilder_android::p_MakeTarget(){
+	String t_2=HostOS();
+	if(t_2==String(L"winnt",5)){
+		p_MakeAndroid();
+	}
+}
+void c_AGKBuilder_android::mark(){
+	c_Builder::mark();
+}
+c_CustomBuilder::c_CustomBuilder(){
+}
+c_CustomBuilder* c_CustomBuilder::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_CustomBuilder* c_CustomBuilder::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_CustomBuilder::p_IsValid(){
+	return true;
+}
+void c_CustomBuilder::p_Begin(){
+	String t_4=bb_config_ENV_LANG;
+	if(t_4==String(L"cpp",3)){
+		bb_translator__trans=((new c_CppTranslator)->m_new());
+	}else{
+		if(t_4==String(L"cs",2)){
+			bb_translator__trans=((new c_CsTranslator)->m_new());
+		}else{
+			if(t_4==String(L"js",2)){
+				bb_translator__trans=((new c_JsTranslator)->m_new());
+			}else{
+				if(t_4==String(L"as",2)){
+					bb_translator__trans=((new c_AsTranslator)->m_new());
+				}else{
+					if(t_4==String(L"java",4)){
+						bb_translator__trans=((new c_JavaTranslator)->m_new());
+					}
+				}
+			}
+		}
+	}
+}
+String c_CustomBuilder::p_MetaData(){
+	c_StringStack* t_meta=(new c_StringStack)->m_new2();
+	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		String t_src=t_kv->p_Key();
+		String t_ext=bb_os_ExtractExt(t_src).ToLower();
+		String t_2=t_ext;
+		if(t_2==String(L"png",3) || t_2==String(L"jpg",3) || t_2==String(L"gif",3)){
+			bb_builder__html5_Info_Width=0;
+			bb_builder__html5_Info_Height=0;
+			String t_3=t_ext;
+			if(t_3==String(L"png",3)){
+				bb_builder_GetInfo_PNG(t_src);
+			}else{
+				if(t_3==String(L"jpg",3)){
+					bb_builder_GetInfo_JPG(t_src);
+				}else{
+					if(t_3==String(L"gif",3)){
+						bb_builder_GetInfo_GIF(t_src);
+					}
+				}
+			}
+			if(bb_builder__html5_Info_Width==0 || bb_builder__html5_Info_Height==0){
+				bb_transcc_Die(String(L"Unable to load image file '",27)+t_src+String(L"'.",2));
+			}
+			t_meta->p_Push(String(L"[",1)+t_kv->p_Value()+String(L"];type=image/",13)+t_ext+String(L";",1));
+			t_meta->p_Push(String(L"width=",6)+String(bb_builder__html5_Info_Width)+String(L";",1));
+			t_meta->p_Push(String(L"height=",7)+String(bb_builder__html5_Info_Height)+String(L";",1));
+			t_meta->p_Push(String(L"\\n",2));
+		}
+	}
+	return t_meta->p_Join(String());
+}
+String c_CustomBuilder::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		String t_1=bb_config_ENV_LANG;
+		if(t_1==String(L"cpp",3)){
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			if(t_1==String(L"cs",2)){
+				t_config->p_Push(String(L"public const String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"cs",2))+String(L";",1));
+			}else{
+				if(t_1==String(L"js",2)){
+					t_config->p_Push(String(L"CFG_",4)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"js",2))+String(L";",1));
+				}else{
+					if(t_1==String(L"as",2)){
+						t_config->p_Push(String(L"internal static var ",20)+t_kv->p_Key()+String(L":String=",8)+bb_config_Enquote(t_kv->p_Value(),String(L"as",2)));
+					}else{
+						if(t_1==String(L"java",4)){
+							t_config->p_Push(String(L"static final String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"java",4))+String(L";",1));
+						}
+					}
+				}
+			}
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+String c_CustomBuilder::p_ReplaceParams(String t_params){
+	String t_r=String();
+	t_r=t_params;
+	t_r=t_r.Replace(String(L"%ANDROID_PATH%",14),m_tcc->m_ANDROID_PATH);
+	t_r=t_r.Replace(String(L"%ANDROID_NDK_PATH%",18),m_tcc->m_ANDROID_NDK_PATH);
+	t_r=t_r.Replace(String(L"%ANT_PATH%",10),m_tcc->m_ANT_PATH);
+	t_r=t_r.Replace(String(L"%JDK_PATH%",10),m_tcc->m_JDK_PATH);
+	t_r=t_r.Replace(String(L"%FLEX_PATH%",11),m_tcc->m_FLEX_PATH);
+	t_r=t_r.Replace(String(L"%MINGW_PATH%",12),m_tcc->m_MINGW_PATH);
+	t_r=t_r.Replace(String(L"%MSBUILD_PATH%",14),m_tcc->m_MSBUILD_PATH);
+	t_r=t_r.Replace(String(L"%PSS_PATH%",10),m_tcc->m_PSS_PATH);
+	t_r=t_r.Replace(String(L"%PSM_PATH%",10),m_tcc->m_PSM_PATH);
+	t_r=t_r.Replace(String(L"%AGK_PATH%",10),m_tcc->m_AGK_PATH);
+	t_r=t_r.Replace(String(L"%HTML_PLAYER%",13),m_tcc->m_HTML_PLAYER);
+	t_r=t_r.Replace(String(L"%FLASH_PLAYER%",14),m_tcc->m_FLASH_PLAYER);
+	t_r=t_r.Replace(String(L"%cxDir%",7),m_tcc->m_cerberusdir);
+	t_r=t_r.Replace(String(L"%srcDir%",8),bb_os_ExtractDir(m_tcc->m_opt_srcpath));
+	String t_buildPath=String();
+	if((m_tcc->m_opt_builddir).Length()!=0){
+		t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
+	}else{
+		t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
+	}
+	t_r=t_r.Replace(String(L"%buildDir%",10),t_buildPath);
+	String t_targetPath=bb_os_ExtractDir(bb_config_ENV_CUSTOMBUILDSCRIPT);
+	t_r=t_r.Replace(String(L"%targetDir%",11),t_targetPath);
+	t_r=t_r.Replace(String(L"%config%",8),m_tcc->m_opt_config);
+	t_r=t_r.Replace(String(L"%srcName%",9),bb_os_StripExt(bb_os_StripDir(m_tcc->m_opt_srcpath)));
+	t_r=t_r.Replace(String(L"%targetName%",12),bb_os_StripDir(t_targetPath));
+	int t_f1=t_r.Find(String(L"##",2),0);
+	int t_f2=t_r.Find(String(L"##",2),t_f1+1);
+	String t_s=t_r.Slice(t_f1,t_f2+2);
+	if(t_f2>0){
+		String t_cfv=bb_config_GetConfigVar(t_r.Slice(t_f1+2,t_f2)).Replace(String(L";",1),String(L" ",1));
+		t_r=t_r.Replace(t_s,t_cfv);
+	}
+	return t_r;
+}
+void c_CustomBuilder::p_ScriptError(int t_lineNum,String t_line,String t_Error){
+	bbPrint(String(L"Error in script line ",21)+String(t_lineNum)+String(L": ",2)+t_line+String(L"  >>  ",6)+t_Error);
+}
+void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
+	int t_lineNum=0;
+	String t_script=LoadString(t_scriptFile);
+	String t_config=m_tcc->m_opt_config;
+	String t_hostS=HostOS();
+	String t_echo=String(L"on",2);
+	Array<String > t_=t_script.Split(String(L"\n",1));
+	int t_2=0;
+	while(t_2<t_.Length()){
+		String t_line=t_[t_2];
+		t_2=t_2+1;
+		t_lineNum+=1;
+		String t_lt=t_line.Trim();
+		if(t_lt.Length()<1){
+			continue;
+		}
+		if(t_lt.StartsWith(String(L"'",1))){
+			continue;
+		}
+		Array<String > t_token=t_lt.Split(String(L"::",2));
+		String t_command=t_token[0].Trim().ToLower();
+		if(t_config!=m_tcc->m_opt_config && t_config!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
+			continue;
+		}
+		if(t_hostS!=HostOS() && t_hostS!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
+			continue;
+		}
+		String t_params=p_ReplaceParams(t_token[1].Trim());
+		Array<String > t_parToken=t_params.Split(String(L" ",1));
+		if(t_echo==String(L"on",2) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
+			bbPrint(t_command+String(L" >> ",4)+t_params);
+		}
+		String t_6=t_command;
+		if(t_6==String(L"print",5)){
+			bbPrint(t_params);
+		}else{
+			if(t_6==String(L"setecho",7)){
+				String t_ec=t_parToken[0].ToLower();
+				if(t_ec!=String(L"on",2) && t_ec!=String(L"off",3)){
+					p_ScriptError(t_lineNum,t_line,String(L"Unrecognized echo mode!",23));
+					break;
+				}
+				t_echo=t_ec;
+			}else{
+				if(t_6==String(L"sethost",7)){
+					String t_hst=t_parToken[0].ToLower();
+					if(t_hst!=String(L"winnt",5) && t_hst!=String(L"macos",5) && t_hst!=String(L"linux",5) && t_hst!=String(L"all",3)){
+						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
+						break;
+					}
+					t_hostS=t_hst;
+				}else{
+					if(t_6==String(L"config",6)){
+						String t_cfg=t_parToken[0].ToLower();
+						if(t_cfg!=String(L"release",7) && t_cfg!=String(L"debug",5) && t_cfg!=String(L"all",3)){
+							p_ScriptError(t_lineNum,t_line,String(L"Unrecognized configuration!",27));
+							break;
+						}
+						t_config=t_cfg;
+					}else{
+						if(t_6==String(L"build",5)){
+							if(m_tcc->m_opt_build){
+								if(p_Execute(t_params,true)!=true){
+									p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
+									break;
+								}
+							}
+						}else{
+							if(t_6==String(L"execute",7)){
+								if(m_tcc->m_opt_run){
+									if(p_Execute(t_params,true)!=true){
+										p_ScriptError(t_lineNum,t_line,String(L"Execution failed!",17));
+										break;
+									}
+								}
+							}else{
+								if(t_6==String(L"replace",7)){
+									if(FileType(t_parToken[0])!=1){
+										p_ScriptError(t_lineNum,t_line,String(L"File not found!",15));
+										break;
+									}
+									String t_file=LoadString(t_parToken[0]);
+									t_file=t_file.Replace(t_parToken[1],t_parToken[2]);
+									if(SaveString(t_file,t_parToken[0])==0){
+										p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[0]+String(L"!",1));
+										break;
+									}
+								}else{
+									if(t_6==String(L"copyfile",8)){
+										if(CopyFile(t_parToken[0],t_parToken[1])==0){
+											p_ScriptError(t_lineNum,t_line,String(L"Could not copy file!",20));
+											break;
+										}
+									}else{
+										if(t_6==String(L"deletefile",10)){
+											if(DeleteFile(t_parToken[0])==0){
+												p_ScriptError(t_lineNum,t_line,String(L"Could not delete file!",22));
+												break;
+											}
+										}else{
+											if(t_6==String(L"copydata",8)){
+												p_CreateDataDir(t_parToken[0]);
+												if(FileType(t_parToken[0])!=2){
+													p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
+													break;
+												}
+											}else{
+												if(t_6==String(L"copydir",7)){
+													if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
+														p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
+														break;
+													}
+												}else{
+													if(t_6==String(L"changedir",9)){
+														if(ChangeDir(t_parToken[0])!=0){
+															p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
+															break;
+														}
+													}else{
+														if(t_6==String(L"deletedir",9)){
+															if(bb_os_DeleteDir(t_parToken[0],true)==0){
+																p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
+																break;
+															}
+														}else{
+															if(t_6==String(L"createdir",9)){
+																if(CreateDir(t_parToken[0])==0){
+																	p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
+																	break;
+																}
+															}else{
+																if(t_6==String(L"renamefile",10)){
+																	if(CopyFile(t_parToken[0],t_parToken[1])==0){
+																		p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																		break;
+																	}
+																	DeleteFile(t_parToken[0]);
+																}else{
+																	if(t_6==String(L"inject",6)){
+																		if(FileType(t_parToken[0])!=1){
+																			p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
+																			break;
+																		}
+																		String t_input=LoadString(t_parToken[0]);
+																		if(FileType(t_parToken[1])!=1){
+																			p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
+																			break;
+																		}
+																		String t_output=LoadString(t_parToken[1]);
+																		if(t_parToken.Length()==3){
+																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
+																		}else{
+																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
+																		}
+																		if(SaveString(t_output,t_parToken[1])!=0){
+																			p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																			break;
+																		}
+																	}else{
+																		bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
+																		break;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_CustomBuilder::p_MakeTarget(){
+	String t_5=bb_config_ENV_CONFIG;
+	if(t_5==String(L"debug",5)){
+		bb_config_SetConfigVar2(String(L"DEBUG",5),String(L"1",1));
+	}else{
+		if(t_5==String(L"release",7)){
+			bb_config_SetConfigVar2(String(L"RELEASE",7),String(L"1",1));
+		}else{
+			if(t_5==String(L"profile",7)){
+				bb_config_SetConfigVar2(String(L"PROFILE",7),String(L"1",1));
+			}
+		}
+	}
+	p_CopySourceFiles(String(L".",1));
+	if(bb_config_ENV_LANG==String(L"js",2)){
+		String t_meta=String(L"var META_DATA=\"",15)+p_MetaData()+String(L"\";\n",3);
+		SaveString(t_meta,String(L"__meta__.txt",12));
+	}
+	SaveString(m_transCode,String(L"__main__.txt",12));
+	SaveString(p_Config(),String(L"__config__.txt",14));
+	String t_buildPath=String();
+	if((m_tcc->m_opt_builddir).Length()!=0){
+		t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
+	}else{
+		t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
+	}
+	p_ParseBuildScript(bb_config_ENV_CUSTOMBUILDSCRIPT);
+}
+void c_CustomBuilder::mark(){
+	c_Builder::mark();
+}
 c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	c_StringMap3* t_builders=(new c_StringMap3)->m_new();
 	t_builders->p_Set3(String(L"android",7),((new c_AndroidBuilder)->m_new(t_tcc)));
@@ -22167,6 +22882,8 @@ c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	t_builders->p_Set3(String(L"xna",3),((new c_XnaBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"agk_android",11),((new c_AGKBuilder_android)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"custom",6),((new c_CustomBuilder)->m_new(t_tcc)));
 	return t_builders;
 }
 c_NodeEnumerator::c_NodeEnumerator(){
@@ -23330,23 +24047,6 @@ int bb_config_IsHexDigit(int t_ch){
 	return ((t_ch>=48 && t_ch<=57 || t_ch>=65 && t_ch<=70 || t_ch>=97 && t_ch<=102)?1:0);
 }
 String bb_config_ENV_MODPATH;
-String bb_os_StripExt(String t_path){
-	int t_i=t_path.FindLast(String(L".",1));
-	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
-		return t_path.Slice(0,t_i);
-	}
-	return t_path;
-}
-String bb_os_StripDir(String t_path){
-	int t_i=t_path.FindLast(String(L"/",1));
-	if(t_i==-1){
-		t_i=t_path.FindLast(String(L"\\",1));
-	}
-	if(t_i!=-1){
-		return t_path.Slice(t_i+1);
-	}
-	return t_path;
-}
 String bb_parser_FILE_EXT;
 String bb_parser_FILE_EXT_OLD;
 int bb_config_Err(String t_err){
@@ -30298,17 +30998,25 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	bb_decl_PopEnv();
 	return t_source->p_Join(String());
 }
+String bb_config_ENV_LANG;
+String bb_config_ENV_CUSTOMBUILDSCRIPT;
 c_Target::c_Target(){
 	m_dir=String();
 	m_name=String();
 	m_system=String();
 	m_builder=0;
+	m_lang=String();
+	m_buildscript=String();
+	m_path=String();
 }
-c_Target* c_Target::m_new(String t_dir,String t_name,String t_system,c_Builder* t_builder){
+c_Target* c_Target::m_new(String t_dir,String t_name,String t_system,c_Builder* t_builder,String t_lang,String t_buildscript,String t_path){
 	this->m_dir=t_dir;
 	this->m_name=t_name;
 	this->m_system=t_system;
 	this->m_builder=t_builder;
+	this->m_lang=t_lang;
+	this->m_buildscript=t_buildscript;
+	this->m_path=t_path;
 	return this;
 }
 c_Target* c_Target::m_new2(){
@@ -30552,7 +31260,6 @@ void c_NodeEnumerator2::mark(){
 String bb_config_ENV_HOST;
 String bb_config_ENV_CONFIG;
 String bb_config_ENV_TARGET;
-String bb_config_ENV_LANG;
 String bb_os_StripAll(String t_path){
 	return bb_os_StripDir(bb_os_StripExt(t_path));
 }
@@ -31684,6 +32391,7 @@ int bb_os_CopyDir(String t_srcpath,String t_dstpath,bool t_recursive,bool t_hidd
 }
 int bbMain(){
 	c_TransCC* t_tcc=(new c_TransCC)->m_new();
+	SetEnv(String(L"CERBERUS_DIR",12),RealPath(bb_os_ExtractDir(AppPath())+String(L"/..",3)));
 	t_tcc->p_Run(AppArgs());
 	return 0;
 }
@@ -34737,8 +35445,8 @@ String c_JsTranslator::p_TransIntrinsicExpr(c_Decl* t_decl,c_Expr* t_expr,Array<
 void c_JsTranslator::mark(){
 	c_CTranslator::mark();
 }
-int bb_html5_Info_Width;
-int bb_html5_Info_Height;
+int bb_builder__html5_Info_Width;
+int bb_builder__html5_Info_Height;
 c_Stream::c_Stream(){
 }
 c_Stream* c_Stream::m_new(){
@@ -34824,21 +35532,21 @@ c_DataBuffer* c_DataBuffer::m_new2(){
 void c_DataBuffer::mark(){
 	BBDataBuffer::mark();
 }
-int bb_html5_GetInfo_PNG(String t_path){
+int bb_builder_GetInfo_PNG(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
 		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32,false);
 		int t_n=t_f->p_Read(t_data,0,24);
 		t_f->p_Close();
 		if(t_n==24 && t_data->PeekByte(1)==80 && t_data->PeekByte(2)==78 && t_data->PeekByte(3)==71){
-			bb_html5_Info_Width=(t_data->PeekByte(16)&255)<<24|(t_data->PeekByte(17)&255)<<16|(t_data->PeekByte(18)&255)<<8|t_data->PeekByte(19)&255;
-			bb_html5_Info_Height=(t_data->PeekByte(20)&255)<<24|(t_data->PeekByte(21)&255)<<16|(t_data->PeekByte(22)&255)<<8|t_data->PeekByte(23)&255;
+			bb_builder__html5_Info_Width=(t_data->PeekByte(16)&255)<<24|(t_data->PeekByte(17)&255)<<16|(t_data->PeekByte(18)&255)<<8|t_data->PeekByte(19)&255;
+			bb_builder__html5_Info_Height=(t_data->PeekByte(20)&255)<<24|(t_data->PeekByte(21)&255)<<16|(t_data->PeekByte(22)&255)<<8|t_data->PeekByte(23)&255;
 			return 0;
 		}
 	}
 	return -1;
 }
-int bb_html5_GetInfo_JPG(String t_path){
+int bb_builder_GetInfo_JPG(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
 		c_DataBuffer* t_buf=(new c_DataBuffer)->m_new(32,false);
@@ -34855,20 +35563,20 @@ int bb_html5_GetInfo_JPG(String t_path){
 					break;
 				}
 				int t_marker=t_buf->PeekByte(0)&255;
-				int t_1=t_marker;
-				if(t_1==208 || t_1==209 || t_1==210 || t_1==211 || t_1==212 || t_1==213 || t_1==214 || t_1==215 || t_1==216 || t_1==217 || t_1==0 || t_1==255){
+				int t_5=t_marker;
+				if(t_5==208 || t_5==209 || t_5==210 || t_5==211 || t_5==212 || t_5==213 || t_5==214 || t_5==215 || t_5==216 || t_5==217 || t_5==0 || t_5==255){
 					continue;
 				}
 				if(t_f->p_Read(t_buf,0,2)!=2){
 					break;
 				}
 				int t_datalen=((t_buf->PeekByte(0)&255)<<8|t_buf->PeekByte(1)&255)-2;
-				int t_2=t_marker;
-				if(t_2==192 || t_2==193 || t_2==194 || t_2==195){
+				int t_6=t_marker;
+				if(t_6==192 || t_6==193 || t_6==194 || t_6==195){
 					if(((t_datalen)!=0) && t_f->p_Read(t_buf,0,5)==5){
 						int t_bpp=t_buf->PeekByte(0)&255;
-						bb_html5_Info_Width=(t_buf->PeekByte(3)&255)<<8|t_buf->PeekByte(4)&255;
-						bb_html5_Info_Height=(t_buf->PeekByte(1)&255)<<8|t_buf->PeekByte(2)&255;
+						bb_builder__html5_Info_Width=(t_buf->PeekByte(3)&255)<<8|t_buf->PeekByte(4)&255;
+						bb_builder__html5_Info_Height=(t_buf->PeekByte(1)&255)<<8|t_buf->PeekByte(2)&255;
 						t_f->p_Close();
 						return 0;
 					}
@@ -34883,15 +35591,15 @@ int bb_html5_GetInfo_JPG(String t_path){
 	}
 	return -1;
 }
-int bb_html5_GetInfo_GIF(String t_path){
+int bb_builder_GetInfo_GIF(String t_path){
 	c_FileStream* t_f=c_FileStream::m_Open(t_path,String(L"r",1));
 	if((t_f)!=0){
 		c_DataBuffer* t_data=(new c_DataBuffer)->m_new(32,false);
 		int t_n=t_f->p_Read(t_data,0,10);
 		t_f->p_Close();
 		if(t_n==10 && t_data->PeekByte(0)==71 && t_data->PeekByte(1)==73 && t_data->PeekByte(2)==70){
-			bb_html5_Info_Width=(t_data->PeekByte(7)&255)<<8|t_data->PeekByte(6)&255;
-			bb_html5_Info_Height=(t_data->PeekByte(9)&255)<<8|t_data->PeekByte(8)&255;
+			bb_builder__html5_Info_Width=(t_data->PeekByte(7)&255)<<8|t_data->PeekByte(6)&255;
+			bb_builder__html5_Info_Height=(t_data->PeekByte(9)&255)<<8|t_data->PeekByte(8)&255;
 			return 0;
 		}
 	}
@@ -37127,16 +37835,17 @@ int bbInit(){
 	c_Stack8::m_NIL=0;
 	bb_config__errStack=(new c_StringList)->m_new2();
 	c_Stack3::m_NIL=0;
+	bb_config_ENV_LANG=String();
+	bb_config_ENV_CUSTOMBUILDSCRIPT=String();
 	c_Stack2::m_NIL=0;
 	bb_config_ENV_HOST=String();
 	bb_config_ENV_CONFIG=String();
 	bb_config_ENV_TARGET=String();
-	bb_config_ENV_LANG=String();
 	c_Stack9::m_NIL=0;
 	c_Stack::m_NIL=String();
 	bb_translator__trans=0;
-	bb_html5_Info_Width=0;
-	bb_html5_Info_Height=0;
+	bb_builder__html5_Info_Width=0;
+	bb_builder__html5_Info_Height=0;
 	c_ClassDecl::m_nullObjectClass=(new c_ClassDecl)->m_new(String(L"{NULL}",6),1280,Array<String >(),0,Array<c_IdentType* >());
 	bb_decl__loopnest=0;
 	c_Stack10::m_NIL=0;

@@ -11,8 +11,8 @@ Please refer to the following installation guides:
 * [[The Desktop target]]
 * [[The Stdcpp target]]
 * [[The HTML5 target]]
-* [[The Flash target]]
+* [[The Flash target]]    (depreciated)
 * [[The Android target]]
 * [[The iOS target]]
-* [[The WinRT target]]
-* [[The AppGameKit target]]
+* [[The WinRT target]]    (depreciated)
+* [[The Custom target]]

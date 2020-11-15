@@ -13,6 +13,8 @@ Import winrt
 Import xna
 Import agk
 Import agk_ios
+Import agk_android
+Import custom
 
 Function Builders:StringMap<Builder>( tcc:TransCC )
 	Local builders:=New StringMap<Builder>
@@ -29,6 +31,8 @@ Function Builders:StringMap<Builder>( tcc:TransCC )
 	builders.Set "xna",New XnaBuilder( tcc )
 	builders.Set "agk",New AGKBuilder( tcc )
 	builders.Set "agk_ios",New AGKBuilder_ios( tcc )
+	builders.Set "agk_android",New AGKBuilder_android( tcc )
+	builders.Set "custom",New CustomBuilder( tcc )
 	
 	Return builders
 End

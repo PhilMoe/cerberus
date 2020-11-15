@@ -18,7 +18,7 @@
 		7CD6ED101294B9D9005678BB /* data in Resources */ = {isa = PBXBuildFile; fileRef = 7CD6ED0E1294B9D9005678BB /* data */; };
 		7CF9539A1311FB37005295F9 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CF953991311FB37005295F9 /* OpenAL.framework */; };
 		7CFC10BD139C4FF8006BABB6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CFC10BC139C4FF8006BABB6 /* AVFoundation.framework */; };
-		D5AB6DFC2465D67200F9D037 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D5AB6DFB2465D67200F9D037 /* Default-568h@2x.png */; };
+		D5BF9CFC250E304B00DD4CE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5BF9CFB250E304B00DD4CE9 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 		7CF953991311FB37005295F9 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		7CFC10BC139C4FF8006BABB6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* CerberusGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CerberusGame-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		D5AB6DFB2465D67200F9D037 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		D5BF9CFB250E304B00DD4CE9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +70,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				D5AB6DFB2465D67200F9D037 /* Default-568h@2x.png */,
+				D5BF9CFB250E304B00DD4CE9 /* LaunchScreen.storyboard */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -176,8 +176,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
+				D5BF9CFC250E304B00DD4CE9 /* LaunchScreen.storyboard in Resources */,
 				7CD6ED101294B9D9005678BB /* data in Resources */,
-				D5AB6DFC2465D67200F9D037 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,7 +211,7 @@
 				GCC_PREFIX_HEADER = CerberusGame_Prefix.pch;
 				HEADER_SEARCH_PATHS = libs;
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = libs;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
@@ -233,7 +233,7 @@
 				GCC_PREFIX_HEADER = CerberusGame_Prefix.pch;
 				HEADER_SEARCH_PATHS = libs;
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = libs;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";

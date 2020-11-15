@@ -380,7 +380,7 @@ Links: [[LoadImage]], [[DrawImage]], [[DrawImage9P]]
 
 # Function SetFont:Void( font:Font )
 
-Sets the font for use with DrawText.
+Sets the font for use with @DrawText and @DrawTextBox.
 
 The font parameter may be Null, in which case an internal 7x11 white-on-black font is used.
 
@@ -428,6 +428,19 @@ xalign and yalign allow you to control the alignment of the text and should be i
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
 
+# Function DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )
+
+Draws a multiline text beginning at coordinates x, y in the current font.
+
+Everything outside of the box dimensions will not be rendered.
+
+The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
+
+@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+
+The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
+
+
 '# Function InvTransform:Float[](coords:Float[])
 
 # Function CreateImage:Image(width:Int,height:Int,frameCount:Int=1,flags:Int=Image.DefaultFlags)
@@ -464,9 +477,9 @@ See also:
 Get width of @text drawn in this font.
 
 
-# Method TextHeight:Int( text:String )
+# Method TextHeight:Int( text:String = "" )
 
-Get height of @text drawn in this font.
+Get height of @text drawn in this font. Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
 
 
 # Function Load:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )

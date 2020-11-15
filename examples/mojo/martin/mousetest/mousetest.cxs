@@ -15,6 +15,7 @@ Class MyApp Extends App
 	End
 	
 	Method OnRender()
+		Cls
 	End
 End
 

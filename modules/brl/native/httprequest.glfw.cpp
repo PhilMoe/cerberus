@@ -9,6 +9,7 @@
 #endif
 
 #include <string>
+#include <vector>
 
 class BBHttpRequest : public BBThread
 {
@@ -30,10 +31,10 @@ private:
   char *_urlc;
   struct curl_slist *_header;
   CURLcode _res;
-	String _response;
-	int _status;
-	int _recv;
+  std::vector<char> _response;
+  long _status;
 
+  char *convertBBString(String string);
   // fancy callback stuff for curl.
   // as curl needs a static function we have to use kind of a trick to use a member here
   static size_t DataCallback( void* buf, size_t size, size_t nmemb, void* userp );
@@ -43,7 +44,7 @@ private:
 
 // ***** HttpRequest.cpp *****
 
-BBHttpRequest::BBHttpRequest(): _status( -1 ), _recv( 0 ), _curl( 0 )
+BBHttpRequest::BBHttpRequest(): _status( -1 ), _curl( 0 )
 {
 }
 
@@ -54,9 +55,12 @@ size_t BBHttpRequest::DataCallback( void* buf, size_t size, size_t nmemb, void* 
 
 size_t BBHttpRequest::DataCallbackImpl( void* buf, size_t size, size_t nmemb )
 {
-  _response = String( static_cast<const char*>( buf ) );
-  _recv = size*nmemb;
-	return size*nmemb; //tell curl how many bytes we handled
+	size_t plus = size * nmemb;
+	const char *src = (const char *)buf;
+	for(size_t i=0; i<plus; i++){
+		_response.push_back(src[i]);
+	}
+	return plus;
 }
 
 void BBHttpRequest::Open( String req, String url, int timeout, bool httpsVerifyCertificate, bool httpsVerifyHost )
@@ -67,8 +71,7 @@ void BBHttpRequest::Open( String req, String url, int timeout, bool httpsVerifyC
   if( _curl )
   {
     //curl_easy_setopt(_curl, CURLOPT_VERBOSE, 1L);
-    _urlc = new char[4096];
-    wcstombs( _urlc, std::wstring( url.Data(), url.Length()).c_str(), url.Length() );
+    _urlc = convertBBString(url);
     curl_easy_setopt( _curl, CURLOPT_WRITEDATA, this );
     curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &BBHttpRequest::DataCallback );
     curl_easy_setopt( _curl, CURLOPT_URL, _urlc );
@@ -80,23 +83,21 @@ void BBHttpRequest::Open( String req, String url, int timeout, bool httpsVerifyC
       curl_easy_setopt( _curl, CURLOPT_SSL_VERIFYPEER, 0L );
     if( !httpsVerifyHost )
       curl_easy_setopt( _curl, CURLOPT_SSL_VERIFYHOST, 0L );
+
+    free(_urlc);
   }
 	
-  _response = "";
-  _recv = 0;
+  _response.clear();
 	_status = -1;
 }
 
 void BBHttpRequest::SetHeader( String name, String value )
 {
   String namevalue = name + ": " + value;
-  char *nvc = new char[4096];
-  wcstombs( nvc, std::wstring( namevalue.Data(), namevalue.Length()).c_str(), namevalue.Length() );
-  _header = 0;
+  char *nvc = convertBBString(namevalue);
   _header = curl_slist_append( _header, nvc );
   curl_easy_setopt( _curl, CURLOPT_HTTPHEADER, _header );
-  curl_easy_perform( _curl );
-  delete[] nvc;
+  free(nvc);
   nvc = 0;
 }
 
@@ -107,12 +108,12 @@ void BBHttpRequest::Send()
 
 void BBHttpRequest::SendText( String text, String encoding )
 {
-  char *textc = new char[4096];
-  wcstombs( textc, std::wstring( text.Data(), text.Length()).c_str(), text.Length() );
+  char *textc = convertBBString(text);
+
   curl_easy_setopt( _curl, CURLOPT_POSTFIELDSIZE, text.Length() );
-  curl_easy_setopt( _curl, CURLOPT_POSTFIELDS, textc );
-  delete[] textc;
-  textc = 0;
+  curl_easy_setopt( _curl, CURLOPT_COPYPOSTFIELDS, textc );
+
+  free(textc);
   Start();
 }
 
@@ -123,12 +124,11 @@ void BBHttpRequest::Run__UNSAFE__()
   if( _header )
     curl_slist_free_all( _header );
   curl_easy_cleanup( _curl );
-  delete[] _urlc;
-  _urlc = 0;
 }
 
 String BBHttpRequest::ResponseText(){
-	return _response;
+	String result(_response.data(), _response.size());
+	return result;
 }
 
 int BBHttpRequest::Status(){
@@ -136,5 +136,14 @@ int BBHttpRequest::Status(){
 }
 
 int BBHttpRequest::BytesReceived(){
-	return _recv;
+	return _response.size();
+}
+
+
+char *BBHttpRequest::convertBBString(String string){
+	int srclength = string.Length();
+	char *result = (char *)malloc(srclength+1);
+	std::wstring string_ws(string.Data(), srclength);
+	wcstombs(result, string_ws.c_str(), srclength+1);
+	return result;
 }

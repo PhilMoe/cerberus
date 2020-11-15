@@ -1,0 +1,60 @@
+' Cerberus X - Image loading test
+'
+' An example script to show how to check if images are done loading in mojo2
+
+Strict
+
+Import mojo2
+
+Const imgCnt:Int = 25
+
+Class myApp Extends App
+
+	Field myCanvas:Canvas
+	Field myImage:Image[imgCnt]
+	
+	Field isLoading:Float = 0.0
+
+	Method OnCreate:Int()
+	
+		myCanvas = New Canvas()			
+		SetUpdateRate(0)
+		
+		'Load your image like you always would		
+		For Local i:= 1 To imgCnt
+			myImage[i-1] = Image.Load("images/landscape.png",0,0)
+		Next
+		Return 0
+	End	
+
+	Method OnUpdate:Int()
+		' As long things still load, check for its state
+		If isLoading <= 100
+			isLoading = 0.0
+			For Local i:= 1 To imgCnt
+				If myImage[i-1].Loading()=False isLoading += 100.0/Float(imgCnt)
+			Next
+'			Print isLoading
+		Endif
+		Return 0
+	End		
+
+	Method OnRender:Int()
+		myCanvas.Clear(0.2, 0.2, 0.2)
+		'Here check if the loading is still going on and draw something accordingly
+		If isLoading < 100
+			myCanvas.DrawText("Loading... "+Int(isLoading)+"%",320,240,0.5,0.5)
+		Else
+			myCanvas.DrawImage(myImage[0],   0,   0, 0,.25, .25)
+
+		Endif
+		myCanvas.Flush()
+		Return 0
+	End
+
+End
+
+Function Main:Int()
+	New myApp()
+	Return 0
+End

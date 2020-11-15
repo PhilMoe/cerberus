@@ -565,3 +565,10 @@ This method is called when the application's device window size changes.
 This can occur on the desktop target when a window is resized, or on portable targets when the device is rotated.
 
 To determine the new window size, use the [[DeviceWidth]] and [[DeviceHeight]] functions.
+
+
+# Method OnFileDrop:Int(filepath:String)
+
+On the desktop targets, this method is called when one or more files/directories are dropped onto the application's window. 
+
+The method will be called for each file-/dirpath individually.

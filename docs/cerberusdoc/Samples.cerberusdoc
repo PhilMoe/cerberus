@@ -53,7 +53,9 @@ Samples for the base game framework.
 >> Michael Hartlef
 * [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
 * [[../../examples/mojo/mikehart/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
+* [[../../examples/mojo/mikehart/FileDrop/FileDrop.cxs|Drag 'n' Drop example]]
 * [[../../examples/mojo/mikehart/PubNub/PubNub.cxs|Using the services of PubNub with their REST api]]
+* [[../../examples/mojo/mikehart/Timer/Timer.cxs|Using the timer module to fire timed events]]
 
 >> James Boyd
 

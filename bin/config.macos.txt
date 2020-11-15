@@ -8,6 +8,14 @@ MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
+'Cerberus targets path
+'
+'Can be overriden via transcc cmd line
+'
+TARGETPATH="${CERBERUSDIR}/targets;${CERBERUSDIR}/targets_ext;D:\CerberusX\CerberusTargets"
+'--------------------
+
+'--------------------
 'HTML player path.
 '
 'Must be set for HTML5 target support.

@@ -18,6 +18,7 @@ Import data
 #If HOST="winnt"
 #GLFW_GCC_LIB_OPTS+="-lopenal32"
 #GLFW_COPY_LIBS+="openal32"
+#GLFW_COPY_LIBS_32+="openal32"
 #Else
 #GLFW_GCC_LIB_OPTS+="-lopenal"
 #Endif

@@ -105,7 +105,7 @@ Class MyApp Extends App
 	
 		effect.SetLevel(level)
 		effect.Render(sourceImage, targetImage)
-		myCanvas.Clear()
+		myCanvas.Clear(0,0,.5)
 		myCanvas.DrawImage(targetImage, MouseX(), MouseY() - targetImage.Height() / 2)
 		myCanvas.DrawImage(sourceImage, DeviceWidth() / 2, DeviceHeight() - 100)
 		myCanvas.DrawText("Source Image", DeviceWidth() / 2, DeviceHeight() - 140, 0.5)

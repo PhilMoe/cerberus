@@ -12,6 +12,7 @@ Global ENV_CONFIG$
 Global ENV_TARGET$
 Global ENV_MODPATH$
 Global ENV_SAFEMODE
+Global ENV_CUSTOMBUILDSCRIPT$
 
 Private
 

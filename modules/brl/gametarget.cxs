@@ -45,6 +45,9 @@ Class BBGame Extends Null
 	
 	Method GetDeviceWidth:Int()
 	Method GetDeviceHeight:Int()
+	Method GetFramebufferWidth:Int() ' At the moment this is only needed for GLFW on HighDPI Displays like Retina.
+	Method GetFramebufferHeight:Int()
+	
 	Method SetDeviceWindow:Void( Width:Int,Height:Int,Flags:Int )
 	Method SetDeviceWindowIcon:Void( _path:String )
 	Method SetDeviceWindowPosition:Void( _x:Int, _y:Int )
@@ -69,6 +72,7 @@ Class BBGameDelegate Abstract
 	Method TouchEvent:Void( event:Int,data:Int,x:Float,y:Float ) Abstract
 	Method MotionEvent:Void( event:Int,data:Int,x:Float,y:Float,z:Float ) Abstract
 	Method DiscardGraphics:Void() Abstract
+	Method FileDropEvent:Void( filename:String ) Abstract
 End
 
 Public

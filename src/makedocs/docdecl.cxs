@@ -57,6 +57,7 @@ Const DECL_ENUM_ELEMENT:Int			= 601
 Const DECL_IMPORTEDBY:Int			= 700	' late generated decls
 Const DECL_EXTENDEDBY:Int			= 701
 Const DECL_IMPLEMENTEDBY:Int		= 702
+Const DECL_INDEX_ENTRY:Int			= 703
 Const DECL_DESCRIPTION:Int			= 800	' documentation
 Const DECL_EXAMPLE:Int				= 801
 Const DECL_LINKS:Int				= 802
@@ -157,6 +158,133 @@ Class DocDecl
 			Return "Inherited_function"
 		End
 		Return "Unspecified"
+	End
+	
+	' returns kind identifier (unprefixed)
+	Method GetKindIdent:String()
+		Select kind
+		Case DECL_ROOT
+			Return "root"
+		Case DECL_ROOT_MODULES
+			Return "root_modules"
+		Case DECL_ROOT_DOCS
+			Return "root_docs"
+		Case DECL_MODULE_SCOPE
+			Return "module_scope"
+		Case DECL_MODULE
+			Return "module"
+		Case DECL_DOC
+			Return "doc"
+		Case DECL_INDEX
+			Return "index"
+		Case DECL_MODHEADER
+			Return "modheader"
+		Case DECL_UIDENT_SCOPE
+			Return "uident_scope"
+		Case DECL_UIDENT_PARAMS
+			Return "uident_params"
+		Case DECL_3RDPARTYDOC
+			Return "3rdpartydoc"
+		Case DECL_3RDPARTY_ICON
+			Return "3rdparty_icon"
+		Case DECL_EXAMPLE_IDENT
+			Return "exmple_ident"
+		Case DECL_EXAMPLE_SOURCE
+			Return "example_source"
+		Case DECL_EXAMPLE_URL
+			Return "example_url"
+		Case DECL_IMPORT
+			Return "import"
+		Case DECL_CLASS
+			Return "class"
+		Case DECL_INTERFACE
+			Return "interface"
+		Case DECL_FUNCTION
+			Return "function"
+		Case DECL_CONST
+			Return "const"
+		Case DECL_GLOBAL
+			Return "global"
+		Case DECL_ENUM
+			Return "enum"
+		Case DECL_GENTYPE_PARAM
+			Return "gentype_param"
+		Case DECL_EXTENDS
+			Return "extends"
+		Case DECL_IMPLEMENTS
+			Return "implements"
+		Case DECL_METHOD
+			Return "method"
+		Case DECL_PROPERTY
+			Return "property"
+		Case DECL_CTOR
+			Return "ctor"
+		Case DECL_CLASSFUNCTION
+			Return "classfunction"
+		Case DECL_CLASSCONST
+			Return "classconst"
+		Case DECL_CLASSGLOBAL
+			Return "classglobal"
+		Case DECL_CLASSENUM
+			Return "classenum"
+		Case DECL_FIELD
+			Return "field"
+		Case DECL_INH_METHOD
+			Return "inh_method"
+		Case DECL_INH_PROPERTY
+			Return "inh_property"
+		Case DECL_INH_CTOR
+			Return "inh_ctor"
+		Case DECL_INH_CLASSFUNCTION
+			Return "inh_classfunction"
+		Case DECL_INH_CLASSCONST
+			Return "inh_classconst"
+		Case DECL_INH_CLASSGLOBAL
+			Return "inh_classglobal"
+		Case DECL_INH_CLASSENUM
+			Return "inh_classenum"
+		Case DECL_INH_FIELD
+			Return "inh_field"
+		Case DECL_INHERITED
+			Return "inherited"
+		Case DECL_TYPE
+			Return "type"
+		Case DECL_IMPLICIT_TYPE
+			Return "implicit_type"
+		Case DECL_INITIAL_VALUE
+			Return "initial_value"
+		Case DECL_ARRAY
+			Return "array"
+		Case DECL_GENTYPE_ARGUMENT
+			Return "gentype_argument"
+		Case DECL_PARAMETER
+			Return "parameter"
+		Case DECL_ENUM_ELEMENT
+			Return "enum_element"
+		Case DECL_IMPORTEDBY
+			Return "importedby"
+		Case DECL_EXTENDEDBY
+			Return "extendedby"
+		Case DECL_IMPLEMENTEDBY
+			Return "implementedby"
+		Case DECL_INDEX_ENTRY
+			Return "index_entry"
+		Case DECL_DESCRIPTION
+			Return "description"
+		Case DECL_EXAMPLE
+			Return "example"
+		Case DECL_LINKS
+			Return "links"
+		Case DECL_PARAMS
+			Return "params"
+		Case DECL_RETURNS
+			Return "returns"
+		Case DECL_CONTENTS
+			Return "contents"
+		Case DECL_SUMMARY
+			Return "summary"
+		End
+		Return "unknown"
 	End
 
 	' returns identifier
@@ -771,7 +899,7 @@ Class DocDecl
 	End
 	
 	' turns the decl tree into a nice string
-	Method ToString:String(pIndent:Int=0)
+	Method ToString:String( pIndent:Int=0 )
 		Local indstr:String = ""
 		For Local i:Int = 0 Until pIndent
 			indstr += "  "
