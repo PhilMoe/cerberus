@@ -20,8 +20,15 @@ public:
 	virtual void SetClipboard( String _text );
 	virtual String GetClipboard();
 	
-	virtual int GetDeviceWidth(){ return _width; }
-	virtual int GetDeviceHeight(){ return _height; }
+	virtual int GetDeviceWidth(){ return _width * _highDPI_Factor; }
+	virtual int GetDeviceHeight(){ return _height * _highDPI_Factor; }
+	virtual int GetDeviceWindowWidth(){ return _width; }
+	virtual int GetDeviceWindowHeight(){ return _height; }
+	virtual int GetFramebufferWidth(){ return _frameBufWidth; }
+	virtual int GetFramebufferHeight(){ return _frameBufHeight; }
+
+
+	virtual void SetHighDPI_Factor(double newValue);
 	virtual void SetDeviceWindow( int width,int height,int flags );
 	virtual void SetDeviceWindowIcon( String _path );
 	virtual void SetDeviceWindowPosition( int _x, int _y );
@@ -45,9 +52,18 @@ private:
 	
 	GLFWvidmode _desktopMode;
 	
-	GLFWwindow *_window;
+	GLFWwindow *_window;	
+
+	// Window dimensions
 	int _width;
 	int _height;
+		
+	// Framebuffer dimensions
+	int _frameBufWidth;
+	int _frameBufHeight;
+
+	double _highDPI_Factor;
+	
 	int _swapInterval;
 	bool _focus;
 
@@ -77,6 +93,7 @@ private:
 	static void OnCursorPos( GLFWwindow *window,double x,double y );
 	static void OnWindowClose( GLFWwindow *window );
 	static void OnWindowSize( GLFWwindow *window,int width,int height );
+	static void OnFramebufferSize( GLFWwindow *window,int width,int height );
 	static void OnFileDrop(GLFWwindow *window, int count, const char** paths);
 };
 
@@ -535,6 +552,9 @@ void BBGlfwGame::OnMouseButton( GLFWwindow *window,int button,int action,int mod
 	}
 	double x=0,y=0;
 	glfwGetCursorPos( window,&x,&y );
+	x *= _glfwGame->_highDPI_Factor;
+	y *= _glfwGame->_highDPI_Factor;
+
 	switch( action ){
 	case GLFW_PRESS:
 		_glfwGame->MouseEvent( BBGameEvent::MouseDown,button,x,y,0.0 );
@@ -560,6 +580,9 @@ void BBGlfwGame::OnMouseWheel( GLFWwindow *window, double x, double z )
 }
 
 void BBGlfwGame::OnCursorPos( GLFWwindow *window,double x,double y ){
+	x *= _glfwGame->_highDPI_Factor;
+	y *= _glfwGame->_highDPI_Factor;
+	// bbPrint(String("newX: " + float(x));
 	_glfwGame->MouseEvent( BBGameEvent::MouseMove,-1,x,y,0.0 );
 }
 
@@ -570,16 +593,28 @@ void BBGlfwGame::OnWindowClose( GLFWwindow *window ){
 }
 
 void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
-
+	//bbPrint(String("OnWinSize") + width);
+	//bbPrint(_glfwGame->_width);
 	_glfwGame->_width=width;
 	_glfwGame->_height=height;
-	
+	_glfwGame->SetHighDPI_Factor((double)(_glfwGame->_frameBufWidth) / (double)(width));
+
 #if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
 	_glfwGame->RenderGame();
 	glfwSwapBuffers( _glfwGame->_window );
 	_glfwGame->_nextUpdate=0;
 #endif
 }
+
+
+void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
+	//bbPrint(String("OnFramebufferSize: ") + width);
+	_glfwGame->_frameBufWidth=width;
+	_glfwGame->_frameBufHeight=height;
+	//bbPrint(_glfwGame->GetDeviceWidth());
+	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
+}
+
 
 void BBGlfwGame::SetClipboard( String _text ){
     if( _window )
@@ -595,6 +630,15 @@ String BBGlfwGame::GetClipboard(){
 		return String("");
 	}
 }
+
+
+void BBGlfwGame::SetHighDPI_Factor(double factor){
+	#if !CFG_GLFW_HIGH_DPI_ENABLED
+		factor = 1.0;
+	#endif
+		_highDPI_Factor = factor;
+}
+
 
 void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     if( _window ) {
@@ -681,6 +725,9 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	_width=width;
 	_height=height;
 	
+	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
+	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
+
 	++glfwGraphicsSeq;
 
 	if( !fullscreen ){	
@@ -703,6 +750,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwSetCursorPosCallback( _window,OnCursorPos );
 	glfwSetWindowCloseCallback(	_window,OnWindowClose );
 	glfwSetWindowSizeCallback(_window,OnWindowSize );
+	glfwSetFramebufferSizeCallback(_window, OnFramebufferSize);
 	glfwSetDropCallback(_window,OnFileDrop);
 }
 
