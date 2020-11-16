@@ -2565,7 +2565,8 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		'SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		SetViewport 0,0,_twidth,_theight
 		SetProjection2d 0,_width,0,_height
 	End
 	
