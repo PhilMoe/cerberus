@@ -125,11 +125,22 @@ static int Pow2Size( int n ){
 gxtkGraphics::gxtkGraphics(){
 
 	width=height=0;
+	fbWidth=fbHeight=0;	
+	highDPI_Factor = 1.0;
 	vertCount=0;
 	
 #ifdef _glfw3_h_
-	GLFWwindow *window=BBGlfwGame::GlfwGame()->GetGLFWwindow();
-	if( window ) glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
+	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
+	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
+	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
+	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
+	highDPI_Factor = float(fbWidth) / float(width);
+
+	// GLFWwindow *window=BBGlfwGame::GlfwGame()->GetGLFWwindow();
+	// if( window ) glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
+	// if( window ) glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&fbWidth,&fbHeight );
+	// highDPI_Factor = float(fbWidth) / float(width);
+	bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -203,15 +214,18 @@ int gxtkGraphics::Height(){
 }
 
 int gxtkGraphics::BeginRender(){
-	fbWidth=fbHeight=0;	
+
 	width=height=0;
+	fbWidth=fbHeight=0;	
+	highDPI_Factor = 1.0;
+
 #ifdef _glfw3_h_
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
 	//bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
 	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
-	highDPI_Factor = float(fbWidth) / float(width) ;
+	highDPI_Factor = float(fbWidth) / float(width);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif

@@ -608,7 +608,7 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 
 
 void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
-	//bbPrint(String("OnFramebufferSize: ") + width);
+	bbPrint(String("OnFramebufferSize: ") + width);
 	_glfwGame->_frameBufWidth=width;
 	_glfwGame->_frameBufHeight=height;
 	//bbPrint(_glfwGame->GetDeviceWidth());
@@ -727,6 +727,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	
 	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
 	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
+	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
 
 	++glfwGraphicsSeq;
 
