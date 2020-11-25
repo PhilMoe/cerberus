@@ -2566,7 +2566,7 @@ Class Canvas Extends DrawList
 		Init
 		SetRenderTarget target
 		'SetViewport 0,0,DeviceWidth(),DeviceHeight()
-		SetViewport 0,0,_twidth,_theight
+		SetViewport 0,0,_width,_height
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -3089,9 +3089,9 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			'Print("validate:Dirty Viewport L3091")
+			Print("validate:Dirty Viewport")
 			'Print(scale)
-			'Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
+			Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph
