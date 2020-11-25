@@ -33,6 +33,8 @@
 
 # Import brl.requesters
 
+# Import brl.timer
+
 # Import brl.tween
 
 # Import brl.pool
