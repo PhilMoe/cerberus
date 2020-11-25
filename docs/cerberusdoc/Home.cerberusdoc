@@ -2,6 +2,21 @@
 
 This is the ultimate guide to Cerberus X.
 
+>> New stuff
+
+* [[../../examples/mojo/mikehart/FileDrop/FileDrop.cxs|Drag 'n' Drop example]]    for Mojo
+* [[../../examples/mojo2/2Din3D/2Din3D.cxs|2D in 3D example]]    for Mojo2
+* [[../html/Modules_mojo.graphics.html#DrawTextBox(String[],Float,Float,Float,Float,[Float],[Float])|DrawTextBox]]    for Mojo
+* [[../html/Modules_mojo2.graphics_DrawList.html#DrawTextBox(String[],Float,Float,Float,Float,[Float],[Float])|DrawList.DrawTextBox]]    for Mojo2
+* [[../html/Modules_mojo.input.html#MouseZ()|MouseZ()]] works now in HTML5
+* [[../html/Modules_brl.timer.html|Timer]] module, to fire and react on timed events.
+* [[The Custom target|Custom targets]]
+* [[../../tools/build_agk/BuildTargets.cxs|Support for AppGameKit Classic - Android platform]]
+* TARGETPATH option to specify more target directories
+* New config setting #GLFW_COPY_LIBS_32 to copy 32bit DLLs into the build
+* New config setting #GLFW_HIGH_DPI_ENABLED so retina apps can use the full high dpi resolution.
+
+
 >> Introduction
 
 * [[Tutorials/Getting started]] - If you're new to Cerberus X, this is what you're looking for

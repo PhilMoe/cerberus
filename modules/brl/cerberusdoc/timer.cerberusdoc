@@ -1,0 +1,81 @@
+
+# Module brl.timer
+
+The timer module provides support timer based event management.
+
+
+# Interface brl.timer.IOnTimerMessage
+
+# Method OnTimer:Int(id:Int)
+
+Called when an timer has reached its end time. The @OnTimer method will be called with the @id value of that specific timer.
+
+
+# Class brl.timer.Timer
+
+The timer module provides support timer based event management.
+
+Each timer will start at its start time at 0 units and with each update you add a custom value to its current time. Once the current time exceeds the end time, the OnTimer method is called. Depending on how many repeats where set at its creation, the timer will repeat. A negative repeat value will cause the timer to fire infinitely.
+
+Example:
+<pre>
+Strict
+
+Import mojo
+Import brl.timer
+
+'-----------------------------------------------------------------
+Class myClass Extends App Implements IOnTimerMessage
+	Field myTimer:Timer
+
+	Method OnCreate:Int()
+		SetUpdateRate 60
+		myTimer = New Timer()
+		myTimer.Add(11, 600, 3)		' This timer fires after 600 units. Let this timer repeat 3 times.
+		myTimer.Add(22, 1000)
+		Return 0
+	End
+
+	Method OnUpdate:Int()
+		myTimer.UpdateAll(16)		' Update each timer with a value of 16 units.
+		Return 0
+	End
+
+	Method OnRender:Int()
+		Cls 0,0,128
+		SetColor 128,128,128
+		Return 0
+	End
+
+	Method OnTimer:Int(id:Int)
+		Print ("Timer #"+id+" fired!")
+		Return 0
+	End
+End
+
+Function Main:Int()
+	New myClass
+	Return 0
+End</pre>
+
+
+# Method Add:Void(id:Int, endTime:Int, repeats:Int=0)
+
+Add another timer. A negative @repeats value will result in a timer that runs infinitely.
+
+# Method ClearAll:Void()
+
+Removes all timer that are currently exist.
+
+# Method Count:Int()
+
+Returns the amount of timer currently running.
+
+# Method New(timerMethod:IOnTimerMessage=Self)
+
+Creates a new Timer object.
+
+# Method UpdateAll:Int(value:Int=1)
+
+Updates all the current timer with the given @value.
+

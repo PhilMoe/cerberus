@@ -1,0 +1,35 @@
+Import mojo2
+Import mojo.asyncloaders
+
+Class MyApp Extends App Implements IOnLoadImageComplete
+
+	Field image:Image
+	Field cv:Canvas
+	
+	Method OnCreate()
+		' Loading images from a web adress only works on the HTML5 target.
+		LoadImageAsync( "https://www.cerberus-x.com/community/images/logo.png",,,Self )
+		SetUpdateRate 60
+		cv = New Canvas
+	End
+	
+	Method OnUpdate()
+		UpdateAsyncEvents
+	End
+	
+	Method OnRender()
+		cv.Clear
+		cv.DrawText "Hello World!",0,0
+		If image cv.DrawImage image,DeviceWidth/2,DeviceHeight/2
+	End
+	
+	Method OnLoadImageComplete:Void( image:Image,path:String,source:IAsyncEventSource )
+		If image Print "OK!" Else Print "ERR"
+		Self.image=image
+	End
+
+End
+
+Function Main()
+	New MyApp
+End

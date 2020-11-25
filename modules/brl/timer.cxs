@@ -1,0 +1,89 @@
+Strict
+
+Private
+
+Class SubTimer
+
+	Method New(_mng:Timer, _id:Int, _endT:Int, _repeat:Int)
+		Self._mng = _mng
+		Self._repeat = _repeat
+		Self._endTime = _endT
+		Self._id = _id
+	End	
+
+	Method Update:Void(_value:Int)
+		Self._currTime += _value
+		If Self._currTime >= Self._endTime
+			Self._mng.OnTimer(Self._id)
+			Self._currTime -= Self._endTime
+			If Self._repeat > 0
+				Self._repeat -= 1
+			Elseif Self._repeat = 0
+				Self._timerNode.Remove()
+				Self._mng = Null
+				Self._timerNode = Null
+			Endif
+		Endif
+	End	
+
+	Method Remove:Void()
+		Self._timerNode.Remove()
+		Self._mng = Null
+		Self._timerNode = Null
+	End	
+
+Private
+	Field _repeat:Int = 0
+	Field _currTime:Int = 0
+	Field _endTime:Int = 0
+	Field _mng:Timer = Null
+	Field _timerNode:list.Node<SubTimer> = Null
+	Field _id:Int = 0
+
+End
+
+Public
+
+Class Timer Implements IOnTimerMessage
+
+	Method Add:Void(_id:Int, _endTime:Int, _repeat:Int=0)
+		Local newSubTimer:= New SubTimer(Self, _id, _endTime, _repeat)
+		newSubTimer._timerNode = Self._timerList.AddLast(newSubTimer)
+	End	
+
+	Method ClearAll:Void()
+		For Local st := Eachin _timerList.Backwards()
+			st.Remove()
+		Next
+	End
+
+	Method Count:Int()
+		Return Self._timerList.Count()
+	End
+
+	Method New(_timerMethod:IOnTimerMessage=Self)
+		Self._onTimer = _timerMethod
+		_timerList = New List<SubTimer>
+	End	
+
+	Method OnTimer:Int(_id:Int)
+		Self._onTimer.OnTimer(_id)
+		Return 0
+	End
+
+	Method UpdateAll:Int(_value:Int=1)
+		For Local st := Eachin _timerList.Backwards()
+			st.Update(_value)
+		Next
+		Return 0
+	End
+
+Private	
+	Field _onTimer:IOnTimerMessage
+	Field _timerList:List<SubTimer>
+End
+'---------------------------
+
+Interface IOnTimerMessage
+	Method OnTimer:Int(_id:Int)
+End
