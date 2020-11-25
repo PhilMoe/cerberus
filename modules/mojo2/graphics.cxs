@@ -2818,7 +2818,8 @@ Class Canvas Extends DrawList
 		Validate
 		If _clsScissor
 			glEnable GL_SCISSOR_TEST
-			glScissor _vpx,_vpy,_vpw,_vph
+			glScissor _vpx*_hiDPI_Scale,_vpy*_hiDPI_Scale,_vpw*_hiDPI_Scale,_vph*_hiDPI_Scale
+			'Print "ClearwithScissor"
 		Endif
 		glClearColor r,g,b,a
 		glClear GL_COLOR_BUFFER_BIT
@@ -2997,6 +2998,7 @@ Class Canvas Extends DrawList
 	Field _height:Int
 	Field _twidth:Int
 	Field _theight:Int
+	Field _hiDPI_Scale:Float
 	Field _shadowMap:Image
 	Field _colorMask:=[True,True,True,True]
 	Field _viewport:=[0,0,640,480]
@@ -3062,11 +3064,11 @@ Class Canvas Extends DrawList
 		
 		If _dirty & DIRTY_VIEWPORT
 			
-			Local scale:Float = 1.0
+			_hiDPI_Scale = 1.0
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				scale = Float(_twidth) / Float(_width)
+				_hiDPI_Scale = Float(FramebufferWidth) / Float(DeviceWidth)
 				_twidth=_width
 				_theight=_height
 			Endif
@@ -3091,16 +3093,19 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
+			
 			Print("validate:Dirty Viewport")
-			'Print(scale)
+			Print(_hiDPI_Scale)
 			Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
-			glViewport _vpx,_vpy,_vpw,_vph
+			glViewport _vpx*_hiDPI_Scale,_vpy*_hiDPI_Scale,_vpw*_hiDPI_Scale,_vph*_hiDPI_Scale
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph
 				glEnable GL_SCISSOR_TEST
-				glScissor _scx,_scy,_scw,_sch
+				glScissor _scx*_hiDPI_Scale,_scy*_hiDPI_Scale,_scw*_hiDPI_Scale,_sch*_hiDPI_Scale
 				_clsScissor=False
+				Print "scissor"
 			Else
+				Print "scissorfalse"
 				glDisable GL_SCISSOR_TEST
 				_clsScissor=(_scx<>0 Or _scy<>0 Or _vpw<>_twidth Or _vph<>_theight)
 			Endif
