@@ -2998,7 +2998,7 @@ Class Canvas Extends DrawList
 	Field _height:Int
 	Field _twidth:Int
 	Field _theight:Int
-	Field _hiDPI_Scale:Float
+	Field _hiDPI_Scale:Float = 1.0
 	Field _shadowMap:Image
 	Field _colorMask:=[True,True,True,True]
 	Field _viewport:=[0,0,640,480]
@@ -3065,12 +3065,13 @@ Class Canvas Extends DrawList
 		If _dirty & DIRTY_VIEWPORT
 			
 			_hiDPI_Scale = 1.0
+			
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_hiDPI_Scale = Float(FramebufferWidth) / Float(DeviceWidth)
 				_twidth=_width
 				_theight=_height
+				_hiDPI_Scale = Float(FramebufferWidth) / Float(DeviceWidth)				
 			Endif
 		
 			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
@@ -3090,6 +3091,7 @@ Class Canvas Extends DrawList
 			_scx+=_vpx;_scy+=_vpy
 		
 			If Not _texture
+				Print "Change _vpy" + _theight
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
