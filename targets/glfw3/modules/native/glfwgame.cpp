@@ -706,6 +706,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwWindowHint( GLFW_DOUBLEBUFFER,doublebuffer );
 	glfwWindowHint( GLFW_SAMPLES,CFG_GLFW_WINDOW_SAMPLES );
 	glfwWindowHint( GLFW_REFRESH_RATE,60 );
+	//glfwWindowHint( GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE );
 	
 	GLFWmonitor *monitor=0;
 	if( fullscreen ){
