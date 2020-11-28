@@ -725,6 +725,8 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	_width=width;
 	_height=height;
 	
+	glfwGetWindowSize(_window, &_width, &_height); // Actual windowsize could be smaller than ordered.
+
 	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
 	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
 	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
