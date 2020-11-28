@@ -706,7 +706,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwWindowHint( GLFW_DOUBLEBUFFER,doublebuffer );
 	glfwWindowHint( GLFW_SAMPLES,CFG_GLFW_WINDOW_SAMPLES );
 	glfwWindowHint( GLFW_REFRESH_RATE,60 );
-	//glfwWindowHint( GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE );
+	glfwWindowHint( GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE );
 	
 	GLFWmonitor *monitor=0;
 	if( fullscreen ){
@@ -726,11 +726,11 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	_width=width;
 	_height=height;
 	
+
+
 	glfwGetWindowSize(_window, &_width, &_height); // Actual windowsize could be smaller than ordered.
 
-	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
-	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
-	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
+	SetDeviceWindowSize(_width, _height); //Ugly hack to trigger OnFramebufferSize().
 
 	++glfwGraphicsSeq;
 
@@ -742,6 +742,13 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwMakeContextCurrent( _window );
 	
 	if( _swapInterval>=0 ) glfwSwapInterval( _swapInterval );
+
+	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
+
+
+	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
+	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
+	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
 
 #if CFG_OPENGL_INIT_EXTENSIONS
 	Init_GL_Exts();
