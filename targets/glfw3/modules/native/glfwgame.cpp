@@ -20,12 +20,12 @@ public:
 	virtual void SetClipboard( String _text );
 	virtual String GetClipboard();
 	
-	virtual int GetDeviceWidth(){ return _width * _highDPI_Factor; }
-	virtual int GetDeviceHeight(){ return _height * _highDPI_Factor; }
+	virtual int GetDeviceWidth(){ return _framebufWidth; }
+	virtual int GetDeviceHeight(){ return _framebufHeight; }
 	virtual int GetDeviceWindowWidth(){ return _width; }
 	virtual int GetDeviceWindowHeight(){ return _height; }
-	virtual int GetFramebufferWidth(){ return _frameBufWidth; }
-	virtual int GetFramebufferHeight(){ return _frameBufHeight; }
+	virtual int GetFramebufferWidth(){ return _framebufWidth; } // This has to be removed on all targets after testing.
+	virtual int GetFramebufferHeight(){ return _framebufHeight; } // So does this.
 
 
 	virtual void SetHighDPI_Factor(double newValue);
@@ -55,14 +55,14 @@ private:
 	GLFWwindow *_window;	
 
 	// Window dimensions
-	int _width;
-	int _height;
+	int _width = 0;
+	int _height = 0;
 		
 	// Framebuffer dimensions
-	int _frameBufWidth;
-	int _frameBufHeight;
+	int _framebufWidth = 0;
+	int _framebufHeight = 0;
 
-	double _highDPI_Factor;
+	double _highDPI_Factor = 1.0;
 	
 	int _swapInterval;
 	bool _focus;
@@ -597,7 +597,7 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 	//bbPrint(_glfwGame->_width);
 	_glfwGame->_width=width;
 	_glfwGame->_height=height;
-	_glfwGame->SetHighDPI_Factor((double)(_glfwGame->_frameBufWidth) / (double)(width));
+	_glfwGame->SetHighDPI_Factor((double)(_glfwGame->_framebufWidth) / (double)(width));
 
 #if CFG_GLFW_WINDOW_RENDER_WHILE_RESIZING && !__linux
 	_glfwGame->RenderGame();
@@ -609,8 +609,8 @@ void BBGlfwGame::OnWindowSize( GLFWwindow *window,int width,int height ){
 
 void BBGlfwGame::OnFramebufferSize( GLFWwindow *window,int width,int height ){
 	bbPrint(String("OnFramebufferSize: ") + width);
-	_glfwGame->_frameBufWidth=width;
-	_glfwGame->_frameBufHeight=height;
+	_glfwGame->_framebufWidth=width;
+	_glfwGame->_framebufHeight=height;
 	//bbPrint(_glfwGame->GetDeviceWidth());
 	_glfwGame->SetHighDPI_Factor((double)(width) / (double)(_glfwGame->_width));
 }
@@ -633,9 +633,9 @@ String BBGlfwGame::GetClipboard(){
 
 
 void BBGlfwGame::SetHighDPI_Factor(double factor){
-	#if !CFG_GLFW_HIGH_DPI_ENABLED
-		factor = 1.0;
-	#endif
+	// #if !CFG_GLFW_HIGH_DPI_ENABLED
+	// 	factor = 1.0;
+	// #endif
 		_highDPI_Factor = factor;
 }
 
@@ -706,8 +706,12 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwWindowHint( GLFW_DOUBLEBUFFER,doublebuffer );
 	glfwWindowHint( GLFW_SAMPLES,CFG_GLFW_WINDOW_SAMPLES );
 	glfwWindowHint( GLFW_REFRESH_RATE,60 );
+
+#if !CFG_GLFW_MACOS_RETINA_ENABLED
 	glfwWindowHint( GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE );
-	
+	bbPrint("*********Retina disabled");
+#endif
+
 	GLFWmonitor *monitor=0;
 	if( fullscreen ){
 		int monitorid=secondmonitor ? 1 : 0;
@@ -723,14 +727,10 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 		abort();
 	}
 	
-	_width=width;
-	_height=height;
+	//_width=width;
+	//_height=height;
 	
-
-
 	glfwGetWindowSize(_window, &_width, &_height); // Actual windowsize could be smaller than ordered.
-
-	SetDeviceWindowSize(_width, _height); //Ugly hack to trigger OnFramebufferSize().
 
 	++glfwGraphicsSeq;
 
@@ -743,12 +743,11 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	
 	if( _swapInterval>=0 ) glfwSwapInterval( _swapInterval );
 
-	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
+	glfwPollEvents(); // This is needed to get the accurate framebuffer size especially on Retina displays.
 
-
-	glfwGetFramebufferSize(_window, &_frameBufWidth, &_frameBufHeight);
-	SetHighDPI_Factor((double)(_frameBufWidth) / (double)(_width));
-	bbPrint(String("Initial FramebufferWidth: ") + _frameBufWidth);
+	glfwGetFramebufferSize(_window, &_framebufWidth, &_framebufHeight);
+	SetHighDPI_Factor((double)(_framebufWidth) / (double)(_width));
+	bbPrint(String("Nach Pollevents() FramebufferWidth: ") + _framebufWidth);
 
 #if CFG_OPENGL_INIT_EXTENSIONS
 	Init_GL_Exts();
