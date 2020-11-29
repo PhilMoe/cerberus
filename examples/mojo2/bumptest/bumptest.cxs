@@ -3,7 +3,7 @@
 ' Demonstrates the technique for simple bump-mapping and light manipulation
 
 Strict
-#GLFW_MAC_RETINA_Enabled=0
+
 Import mojo2
 
 Class MyApp Extends App

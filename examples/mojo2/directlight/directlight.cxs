@@ -4,8 +4,6 @@
 
 Strict
 
-#GLFW_MAC_RETINA_Enabled=1
-
 Import mojo2
 
 
