@@ -27,8 +27,6 @@ Global _devWidth:Int
 Global _devHeight:Int
 Global _devWinWidth:Int
 Global _devWinHeight:Int
-Global _framebufWidth:Int
-Global _framebufHeight:Int
 Global _updateRate:Int
 Global _displayModes:DisplayMode[]
 Global _desktopMode:DisplayMode
@@ -59,20 +57,15 @@ End
 
 Function ValidateDeviceWindow:Void( notifyApp:Bool )
 	'Print("App.cxs:ValidateDeviceWindow")
-	Local fbW:=_game.GetFramebufferWidth()
-	'Print("fbW = " + fbW)
-	Local fbH:=_game.GetFramebufferHeight()
 	Local winW:=_game.GetDeviceWindowWidth()
 	Local winH:=_game.GetDeviceWindowHeight()
 	Local w:=_game.GetDeviceWidth()
 	Local h:=_game.GetDeviceHeight()
-	If w=_devWidth And h=_devHeight And fbW = _framebufWidth And fbH = _framebufHeight And winW = _devWinWidth And winH = _devWinHeight Return
+	If w=_devWidth And h=_devHeight And winW = _devWinWidth And winH = _devWinHeight Return
 	_devWidth=w
 	_devHeight=h
 	_devWinWidth=winW
 	_devWinHeight=winH
-	_framebufWidth = fbW
-	_framebufHeight = fbH
 	If notifyApp _app.OnResize
 End
 	
@@ -283,24 +276,16 @@ Function DeviceWidth:Int()
 	Return _devWidth
 End
 
+Function DeviceHeight:Int()
+	Return _devHeight
+End
+
 Function DeviceWindowHeight:Int()
 	Return _devWinHeight
 End
 
 Function DeviceWindowWidth:Int()
 	Return _devWinWidth
-End
-
-Function DeviceHeight:Int()
-	Return _devHeight
-End
-
-Function FramebufferWidth:Int()
-	Return _framebufWidth
-End
-
-Function FramebufferHeight:Int()
-	Return _framebufHeight
 End
 
 Function SetDeviceWindow:Void( width:Int,height:Int,flags:Int )

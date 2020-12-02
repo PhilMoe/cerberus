@@ -160,14 +160,6 @@ BBGame.prototype.GetDeviceWindowHeight=function(){
 	return this.GetDeviceHeight();
 }
 
-BBGame.prototype.GetFramebufferWidth=function(){
-	return this.GetDeviceWidth();
-}
-
-BBGame.prototype.GetFramebufferHeight=function(){
-	return this.GetDeviceHeight();
-}
-
 BBGame.prototype.SetDeviceWindow=function( width,height,flags ){
 }
 

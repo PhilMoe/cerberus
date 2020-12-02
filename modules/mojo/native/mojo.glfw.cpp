@@ -19,10 +19,6 @@ public:
 	int width;
 	int height;
 	
-	int fbWidth = 0;
-	int fbHeight = 0;
-	float highDPI_Factor = 1.0; // Needed to ensure proper scaling if #GLFW_HIGH_DPI_ENABLED is false.
-
 	int colorARGB;
 	float r,g,b,alpha;
 	float ix,iy,jx,jy,tx,ty;
@@ -125,16 +121,11 @@ static int Pow2Size( int n ){
 gxtkGraphics::gxtkGraphics(){
 
 	width=height=0;
-	fbWidth=fbHeight=0;	
-	highDPI_Factor = 1.0;
 	vertCount=0;
 	
 #ifdef _glfw3_h_
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
-	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
-	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
-	highDPI_Factor = float(fbWidth) / float(width);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -210,17 +201,10 @@ int gxtkGraphics::Height(){
 int gxtkGraphics::BeginRender(){
 
 	width=height=0;
-	fbWidth=fbHeight=0;	
-	highDPI_Factor = 1.0;
 
 #ifdef _glfw3_h_
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
-	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
-	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
-	highDPI_Factor = float(fbWidth) / float(width);
-	bbPrint("hidppi:");
-	bbPrint(highDPI_Factor);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -229,7 +213,7 @@ int gxtkGraphics::BeginRender(){
 	return 0;
 #else
 
-	glViewport( 0,0,fbWidth, fbHeight );
+	glViewport( 0,0,width, height );
 
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
@@ -317,12 +301,7 @@ int gxtkGraphics::SetScissor( int x,int y,int w,int h ){
 	
 	if( x!=0 || y!=0 || w!=Width() || h!=Height() ){
 		glEnable( GL_SCISSOR_TEST );
-		x*=highDPI_Factor;
-		y*=highDPI_Factor;
-		w*=highDPI_Factor;
-		h*=highDPI_Factor;
-		//y=Height()-y-h;
-		y=fbHeight-y-h;
+		y=Height()-y-h;
 		glScissor( x,y,w,h );
 	}else{
 		glDisable( GL_SCISSOR_TEST );

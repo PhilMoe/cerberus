@@ -48,8 +48,6 @@ Class BBGame Extends Null
 	Method GetDeviceHeight:Int()
 	Method GetDeviceWindowWidth:Int()
 	Method GetDeviceWindowHeight:Int()
-	Method GetFramebufferWidth:Int() ' At the moment this is only needed for GLFW on HighDPI Displays like Retina.
-	Method GetFramebufferHeight:Int()
 	
 	Method SetDeviceWindow:Void( Width:Int,Height:Int,Flags:Int )
 	Method SetDeviceWindowIcon:Void( _path:String )

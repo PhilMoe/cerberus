@@ -24,8 +24,8 @@ public:
 	virtual int GetDeviceHeight(){ return _framebufHeight; }
 	virtual int GetDeviceWindowWidth(){ return _width; }
 	virtual int GetDeviceWindowHeight(){ return _height; }
-	virtual int GetFramebufferWidth(){ return _framebufWidth; } // This has to be removed on all targets after testing.
-	virtual int GetFramebufferHeight(){ return _framebufHeight; } // So does this.
+	//virtual int GetFramebufferWidth(){ return _framebufWidth; } // This has to be removed on all targets after testing.
+	//virtual int GetFramebufferHeight(){ return _framebufHeight; } // So does this.
 
 
 	virtual void SetHighDPI_Factor(double newValue);
