@@ -135,12 +135,6 @@ gxtkGraphics::gxtkGraphics(){
 	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
 	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
 	highDPI_Factor = float(fbWidth) / float(width);
-
-	// GLFWwindow *window=BBGlfwGame::GlfwGame()->GetGLFWwindow();
-	// if( window ) glfwGetWindowSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&width,&height );
-	// if( window ) glfwGetFramebufferSize( BBGlfwGame::GlfwGame()->GetGLFWwindow(),&fbWidth,&fbHeight );
-	// highDPI_Factor = float(fbWidth) / float(width);
-	bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif
@@ -222,10 +216,11 @@ int gxtkGraphics::BeginRender(){
 #ifdef _glfw3_h_
 	width = BBGlfwGame::GlfwGame()->GetDeviceWidth();
 	height = BBGlfwGame::GlfwGame()->GetDeviceHeight();
-	//bbPrint(String("mojo.glfw.cpp:GetDeviceWidth()") + width);
 	fbWidth = BBGlfwGame::GlfwGame()->GetFramebufferWidth();
 	fbHeight = BBGlfwGame::GlfwGame()->GetFramebufferHeight();
 	highDPI_Factor = float(fbWidth) / float(width);
+	bbPrint("hidppi:");
+	bbPrint(highDPI_Factor);
 #else
 	glfwGetWindowSize( &width,&height );
 #endif

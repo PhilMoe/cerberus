@@ -709,7 +709,6 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 
 #if !CFG_GLFW_MACOS_RETINA_ENABLED
 	glfwWindowHint( GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE );
-	bbPrint("*********Retina disabled");
 #endif
 
 	GLFWmonitor *monitor=0;
@@ -726,10 +725,7 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 		bbPrint( "glfwCreateWindow FAILED!" );
 		abort();
 	}
-	
-	//_width=width;
-	//_height=height;
-	
+		
 	glfwGetWindowSize(_window, &_width, &_height); // Actual windowsize could be smaller than ordered.
 
 	++glfwGraphicsSeq;
@@ -747,7 +743,6 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 
 	glfwGetFramebufferSize(_window, &_framebufWidth, &_framebufHeight);
 	SetHighDPI_Factor((double)(_framebufWidth) / (double)(_width));
-	bbPrint(String("Nach Pollevents() FramebufferWidth: ") + _framebufWidth);
 
 #if CFG_OPENGL_INIT_EXTENSIONS
 	Init_GL_Exts();

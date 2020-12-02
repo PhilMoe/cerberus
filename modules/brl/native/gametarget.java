@@ -159,6 +159,14 @@ abstract class BBGame{
 		return 0;
 	}
 
+	int GetDeviceWindowWidth(){
+		return this.GetDeviceWidth();
+	}
+	
+	int GetDeviceWindowHeight(){
+		return this.GetDeviceHeight();
+	}
+
 	int GetFramebufferWidth(){
 		return this.GetDeviceWidth();
 	}

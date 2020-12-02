@@ -43,8 +43,11 @@ Class BBGame Extends Null
 	Method SetClipboard:Void( _text:String )
 	Method GetClipboard:String()
 	
+	
 	Method GetDeviceWidth:Int()
 	Method GetDeviceHeight:Int()
+	Method GetDeviceWindowWidth:Int()
+	Method GetDeviceWindowHeight:Int()
 	Method GetFramebufferWidth:Int() ' At the moment this is only needed for GLFW on HighDPI Displays like Retina.
 	Method GetFramebufferHeight:Int()
 	

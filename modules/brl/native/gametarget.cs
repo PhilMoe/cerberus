@@ -162,6 +162,14 @@ public class BBGame{
 		return 0;
 	}
 
+	public virtual int GetDeviceWindowWidth(){
+		return this.GetDeviceWidth();
+	}
+	
+	public virtual int GetDeviceWindowHeight(){
+		return this.GetDeviceHeight();
+	}
+	
 	public virtual int GetFramebufferWidth(){
 		return this.GetDeviceWidth();
 	}
