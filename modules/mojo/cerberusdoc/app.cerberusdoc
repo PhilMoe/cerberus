@@ -394,25 +394,35 @@ On targets other than desktop and xna, this returns an empty array.
 
 Gets the display mode used by the desktop.
 
-On targets other that desktop and xna, this returns a DisplayMode with width and height equal to [[DeviceWidth]] and [[DeviceHeight]].
+On targets other that desktop and xna, this returns a DisplayMode with width and height equal to [[DeviceWindowWidth]] and [[DeviceWindowHeight]].
+
+
+# Function DeviceWindowWidth:Int()
+
+Returns the width of the application's device window in desktop units. These units are pixels unless your app runs on a Retina display.
+
+On the desktop and xna targets, you can use [[SetDeviceWindow]] to alter the size of the device window.
+
+
+# Function DeviceWindowHeight:Int()
+
+Returns the height of the application's device window in desktop units. These units are pixels unless your app runs on a Retina display.
+
+On the desktop and xna targets, you can use [[SetDeviceWindow]] to alter the size of the device window.
 
 
 # Function DeviceWidth:Int()
 
-Returns the width of the application's device window, in pixels.
+Returns the width of the application's device in pixels.
 
-On the desktop and xna targets, you can use [[SetDeviceWindow]] to alter the size of the device window.
-
-On other targets, you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
+You cannot directly control the size of the graphics device via mojo. If possible at all this has to be done by using config settings or by editing the 'native' project code for the target.
 
 
 # Function DeviceHeight:Int()
 
-Returns the height of the application's device window, in pixels.
+Returns the height of the application's device in pixels.
 
-On the desktop and xna targets, you can use [[SetDeviceWindow]] to alter the size of the device window.
-
-On other targets, you cannot directly control the size of the graphics device via mojo. This must be done by editing the 'native' project code for the target.
+You cannot directly control the size of the graphics device via mojo. If possible at all this has to be done by using config settings or by editing the 'native' project code for the target.
 
 
 # Class mojo.app.DisplayMode
