@@ -4,6 +4,7 @@
 // Libcurl for Linux will be from a system repository when installed
 #ifdef __linux__
 #include <curl/curl.h>
+#include "curl/include/curl.h"
 #else
 #include "curl/include/curl.h"
 #endif

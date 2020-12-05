@@ -1,4 +1,3 @@
-
 CC=gcc
 CFLAGS=-D_GLFW_X11
 
@@ -9,6 +8,7 @@ CPPFLAGS=$(CCOPTS) \
 -Wno-int-to-pointer-cast \
 -Wno-free-nonheap-object \
 -Wno-unused-result \
+-I../curl/include \
 -I../glfw3/include \
 -I../openal/include \
 -I../stb \

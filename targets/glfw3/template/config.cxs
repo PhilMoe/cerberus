@@ -1,4 +1,4 @@
-
+#GLFW_GCC_CC_OPTS+=" -fpic "
 #GLFW_USE_MINGW=True
 
 #GLFW_GCC_MSIZE_WINNT="64"
