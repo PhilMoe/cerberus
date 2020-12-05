@@ -979,6 +979,11 @@ The scaling is done via the 9-Patch method. The @patchSize determines the width 
 left-width and right-width of the image. These are not scaled. The rest is.
 
 
+# Method DrawImageRect:Void( image:Image,tx:Float,ty:Float,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,rz:Float=0,sx:Float=1,sy:Float=1 )
+
+Draw an image at @tx,@tx rotated by @rz and scaled by @sy,@sy.
+
+
 # Method DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 
 Draws a @text at coordinates @x, @y in the current font.
