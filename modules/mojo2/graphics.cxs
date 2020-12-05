@@ -119,8 +119,6 @@ Function InitVbos:Void()
 	If vbosSeq=graphicsSeq Return
 	vbosSeq=graphicsSeq
 
-'	Print "InitVbos()"
-
 	rs_vbo=glCreateBuffer()
 	glBindBuffer GL_ARRAY_BUFFER,rs_vbo
 	glBufferData GL_ARRAY_BUFFER,PRIM_VBO_SIZE,Null,VBO_USAGE
@@ -231,11 +229,9 @@ Class Texture Extends RefCounted
 			Next
 			_data=data
 		Endif
-'		Print "Created texture"
 	End
 	
 	Method Destroy:Void()
-'		Print "Destroying texture"
 		If _seq=graphicsSeq 
 			If _glTexture glDeleteTexture _glTexture
 			If _glFramebuffer glDeleteFramebuffer _glFramebuffer
@@ -1338,11 +1334,8 @@ Class Font
 	End
 	
 	Function Load:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )
-'Print("Font load-> "+path)
 		Local image:=Image.Load( path )
-'	If image=Null
-'	Print("Image = NULL")
-'	Endif
+
 		Local _pages:Image[] = New Image[1]
 		_pages[0] = image
 		Local _charMap:IntMap<Glyph> = New IntMap<Glyph> 
@@ -1357,7 +1350,7 @@ Class Font
 
 		Local w:=image.Width/cellWidth
 		Local h:=image.Height/cellHeight
-'Print(w+":"+h+"         "+image.Width+":"+image.Height+"         "+cellWidth+":"+cellHeight)
+
 		For Local i:=0 Until numChars
 			Local y:=i / w
 			Local x:=i Mod w
@@ -1909,7 +1902,6 @@ Class DrawList
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=1 )
-'Print("DrawRect1")
 		Local x1:=x0+width,y1:=y0+height
 		BeginPrim material,4
 		PrimVert x0,y0,s0,t0
@@ -1919,27 +1911,21 @@ Class DrawList
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image )
-'Print("DrawRect2")
 		DrawRect x0,y0,width,height,image._material,image._s0,image._t0,image._s1,image._t1
 	End
 	
 	Method DrawRect:Void( x:Float,y:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
-'Print("DrawRect3       "+sourceWidth+":"+sourceHeight+"         "+sourceX+":"+sourceY+"         "+sourceWidth+":"+sourceHeight)
 		DrawRect( x,y,sourceWidth,sourceHeight,image,sourceX,sourceY,sourceWidth,sourceHeight )
 	End
 	
 	Method DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
-'Print("DrawRect4       "+image._material.Width+":"+image._material.Height+"         "+width+":"+height)
 		Local material:=image._material
-'If material = Null
-'Print("material = null")
-'Endif
+
 		Local s0:=Float(image._x+sourceX)/Float(material.Width)
 		Local t0:=Float(image._y+sourceY)/Float(material.Height)
 		Local s1:=Float(image._x+sourceX+sourceWidth)/Float(material.Width)
 		Local t1:=Float(image._y+sourceY+sourceHeight)/Float(material.Height)
-'DebugStop
-'Print ("DrawRect4       "+s0+":"+t0+":"+s1+":"+t1)		
+
 		DrawRect x0,y0,width,height,material,s0,t0,s1,t1
 	End
 	
@@ -2077,6 +2063,13 @@ Class DrawList
 		PopMatrix
 	End
 	
+	Method DrawImageRect:Void( image:Image,tx:Float,ty:Float,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,rz:Float=0,sx:Float=1,sy:Float=1 )
+	  PushMatrix
+	  TranslateRotateScale tx,ty,rz,sx,sy
+	  DrawRect 0,0,image,sourceX,sourceY,sourceWidth,sourceHeight
+	  PopMatrix
+	End
+
 	Method DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
 		Local char:Int=0
 		Local tmpChar:Glyph
@@ -2087,13 +2080,8 @@ Class DrawList
 		For char = Eachin text
 			Local tmpChar:=_font._charMap.Get(char)
 			If Not tmpChar 
-'Print("no tmpchar")			
 			   Continue
 			Endif
-'			If _font._pages[tmpChar.page]=Null
-'Print("no _font._pages")			
-'Endif			
-'Print ("char="+(char)+"   "+ tmpChar.width+":"+ tmpChar.height+"("+tmpChar.page+")")			
 			DrawRect( x + tmpChar.xoff, y + tmpChar.yoff, _font._pages[tmpChar.page], tmpChar.x, tmpChar.y, tmpChar.width, tmpChar.height )
 			x += tmpChar.advance
 		Next
@@ -2492,7 +2480,6 @@ Class DrawList
 		If Not material material=_defaultMaterial
 		
 		If _next+order*BYTES_PER_VERTEX>_data.Length
-'			Print "Resizing data"
 			Local newsize:=Max( _data.Length+_data.Length/2,_next+order*BYTES_PER_VERTEX )
 			Local data:=New DataBuffer( newsize,True )
 			_data.CopyBytes 0,data,0,_next
@@ -2521,7 +2508,6 @@ Class DrawList
 		count*=order
 		
 		If _next+count*BYTES_PER_VERTEX>_data.Length
-'			Print "Resizing data"
 			Local newsize:=Max( _data.Length+_data.Length/2,_next+count*BYTES_PER_VERTEX )
 			Local data:=New DataBuffer( newsize,True )
 			_data.CopyBytes 0,data,0,_next
@@ -2565,7 +2551,8 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		'SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		SetViewport 0,0,_width,_height
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -2575,13 +2562,15 @@ Class Canvas Extends DrawList
 	Method SetRenderTarget:Void( target:Object )
 
 		FlushPrims
+		
 		If Not target
+		
 			_image=Null
 			_texture=Null
 			_width=DeviceWidth
 			_height=DeviceHeight
-			_twidth=FramebufferWidth
-			_theight=FramebufferHeight
+			_twidth=_width
+			_theight=_height
 		
 		Else If Image( target )
 		
@@ -3063,18 +3052,18 @@ Class Canvas Extends DrawList
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_twidth=FramebufferWidth  
-				_theight=FramebufferHeight  
 				scale = Float(_twidth) / Float(_width)
+				_twidth=_width
+				_theight=_height
 			Endif
 		
-			_vpx=_viewport[0]*scale;_vpy=_viewport[1]*scale;_vpw=_viewport[2]*scale;_vph=_viewport[3]*scale
+			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
 			Endif
 			
-			_scx=_scissor[0]*scale;_scy=_scissor[1]*scale;_scw=_scissor[2]*scale;_sch=_scissor[3]*scale 
+			_scx=_scissor[0];_scy=_scissor[1];_scw=_scissor[2];_sch=_scissor[3]
 			
 			If _scx<0 _scx=0 Else If _scx>_vpw _scx=_vpw
 			If _scw<0 _scw=0 Else If _scx+_scw>_vpw _scw=_vpw-_scx
@@ -3088,9 +3077,7 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			'Print("validate:Dirty Viewport L3091")
-			'Print(scale)
-			'Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
+
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph

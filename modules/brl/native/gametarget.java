@@ -159,11 +159,11 @@ abstract class BBGame{
 		return 0;
 	}
 
-	int GetFramebufferWidth(){
+	int GetDeviceWindowWidth(){
 		return this.GetDeviceWidth();
 	}
 	
-	int GetFramebufferHeight(){
+	int GetDeviceWindowHeight(){
 		return this.GetDeviceHeight();
 	}
 	
