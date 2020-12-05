@@ -2565,7 +2565,8 @@ Class Canvas Extends DrawList
 	Method New( target:Object=Null )
 		Init
 		SetRenderTarget target
-		SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		'SetViewport 0,0,DeviceWidth(),DeviceHeight()
+		SetViewport 0,0,_width,_height
 		SetProjection2d 0,_width,0,_height
 	End
 	
@@ -2575,13 +2576,15 @@ Class Canvas Extends DrawList
 	Method SetRenderTarget:Void( target:Object )
 
 		FlushPrims
+		
 		If Not target
+		
 			_image=Null
 			_texture=Null
 			_width=DeviceWidth
 			_height=DeviceHeight
-			_twidth=FramebufferWidth
-			_theight=FramebufferHeight
+			_twidth=_width
+			_theight=_height
 		
 		Else If Image( target )
 		
@@ -3063,18 +3066,18 @@ Class Canvas Extends DrawList
 			If Not _texture
 				_width=DeviceWidth
 				_height=DeviceHeight
-				_twidth=FramebufferWidth  
-				_theight=FramebufferHeight  
 				scale = Float(_twidth) / Float(_width)
+				_twidth=_width
+				_theight=_height
 			Endif
 		
-			_vpx=_viewport[0]*scale;_vpy=_viewport[1]*scale;_vpw=_viewport[2]*scale;_vph=_viewport[3]*scale
+			_vpx=_viewport[0];_vpy=_viewport[1];_vpw=_viewport[2];_vph=_viewport[3]
 			If _image
 				_vpx+=_image._x
 				_vpy+=_image._y
 			Endif
 			
-			_scx=_scissor[0]*scale;_scy=_scissor[1]*scale;_scw=_scissor[2]*scale;_sch=_scissor[3]*scale 
+			_scx=_scissor[0];_scy=_scissor[1];_scw=_scissor[2];_sch=_scissor[3]
 			
 			If _scx<0 _scx=0 Else If _scx>_vpw _scx=_vpw
 			If _scw<0 _scw=0 Else If _scx+_scw>_vpw _scw=_vpw-_scx
@@ -3088,9 +3091,9 @@ Class Canvas Extends DrawList
 				_vpy=_theight-_vpy-_vph
 				_scy=_theight-_scy-_sch
 			Endif
-			'Print("validate:Dirty Viewport L3091")
+			Print("validate:Dirty Viewport")
 			'Print(scale)
-			'Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
+			Print(_vpx + " " + _vpy + " " + _vpw + " " + _vph)
 			glViewport _vpx,_vpy,_vpw,_vph
 			
 			If _scx<>_vpx Or _scy<>_vpy Or _scw<>_vpw Or _sch<>_vph

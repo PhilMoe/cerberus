@@ -62,6 +62,8 @@ The following app config settings are currently supported:
 #GLFW_WINDOW_SAMPLES=0					'Set to number of samples for multisampling (glfw3 only).
 #GLFW_WINDOW_DECORATED=True				'Set to false to create a broderless window (glfw3 only).
 
+#GLFW_MACOS_RETINA_ENABLED=False		'Set to True to make use of the whole resolution of the Retina display. Only recommended if content is scaled accordingly and no absolute pixel coordinates are used.
+
 #GLFW_APP_ICON=""                       'Set the name of a ico/png file which will be used as th apps icon. If not provided, Trans will use the standard icon file.
                                         'PNG files will be converted to ICO files. Without a filepath, Trans will look in the folder where your .cxs source file is located at.
 
