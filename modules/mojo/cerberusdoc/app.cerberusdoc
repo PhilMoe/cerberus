@@ -439,7 +439,7 @@ Returns the width of the display mode in desktop units. These units are the same
 
 # Method Height:Int() Property
 
-Returns the height of the display modein desktop units. These units are the same as pixels unless your app runs on a Retina display.‚
+Returns the height of the display mode in desktop units. These units are the same as pixels unless your app runs on a Retina display.
 
 
 # Class mojo.app.App
