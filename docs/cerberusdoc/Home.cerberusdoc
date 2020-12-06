@@ -2,7 +2,7 @@
 
 This is the ultimate guide to Cerberus X.
 
->> New stuff
+>> Latest new stuff
 
 * [[../../examples/mojo/mikehart/FileDrop/FileDrop.cxs|Drag 'n' Drop example]]    for Mojo
 * [[../../examples/mojo2/2Din3D/2Din3D.cxs|2D in 3D example]]    for Mojo2
@@ -14,8 +14,9 @@ This is the ultimate guide to Cerberus X.
 * [[../../tools/build_agk/BuildTargets.cxs|Support for AppGameKit Classic - Android platform]]
 * TARGETPATH option to specify more target directories
 * New config setting #GLFW_COPY_LIBS_32 to copy 32bit DLLs into the build
-* New config setting #GLFW_HIGH_DPI_ENABLED so retina apps can use the full high dpi resolution.
-
+* New config setting #GLFW_MACOS_RETINA_ENABLED so retina apps can use the full high dpi resolution.
+* New [[../html/Modules_mojo.app.html#DeviceWindowWidth()|DeviceWindowWidth]] and [[../html/Modules_mojo.app.html#DeviceWindowHeight()|DeviceWindowHeight]] commands to returns the width or height of the application's device window in desktop units.
+* New [[../html/Modules_mojo2.graphics_DrawList.html#DrawImageRect(Image,Float,Float,Int,Int,Int,Int,[Float],[Float],[Float])|DrawImageRect]] which let you scale and rotate your image rect inside mojo2 now. 
 
 >> Introduction
 

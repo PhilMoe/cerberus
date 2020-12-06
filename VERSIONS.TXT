@@ -1,3 +1,13 @@
+***** v2020-12-06 *****
+
+FIX: [docs] Corrected Latest new stuff section on the homepage    (Author: MikeHart)
+
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+
+
 ***** v2020-12-05 *****
 
 FIX: [MOJO/MOJO2] Another try at fixing apps that don't scale right on retina displays.    (Author: Phil7)
@@ -5,12 +15,6 @@ FIX: [HTTPREQUEST] Fixed compiling error on Linux about missing curl include fil
 MOD: [MOJO/MOJO2] Renamed #GLFW_HIGH_DPI_ENABLED constant, to #GLFW_MACOS_RETINA_ENABLED.    (Author: Phil7)
 NEW: [MOJO/MOJO2] Added DeviceWindowWidth:Int() and DeviceWindowHeight:Int() to retrieve to retrieve the size of a windows in desktop unit sizes.    (Author: Phil7)
 NEW: [MOJO/MOJO2] Added DrawImageRect:Void( image:Image,tx:Float,ty:Float,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,rz:Float=0,sx:Float=1,sy:Float=1 )    (Author: Martin)
-
-
-KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
-- GLFW_APP_ICON doesn't work with OSX and Linux.
-
 
 ***** v2020-11-15 *****
 
