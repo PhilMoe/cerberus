@@ -1,9 +1,9 @@
 ***** v2020-12-12 *****
 
-FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths    (Author: MikeHart)
-FIX: [docs] Corrected Latest new stuff section on the homepage    (Author: MikeHart)
-FIX: [docs/mojo.app] Typo correction    (Author: Phil7)
-
+FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
+FIX: [docs] Corrected Latest new stuff section on the homepage.   (Author: MikeHart)
+FIX: [docs/mojo.app] Typo correction.    (Author: Phil7)
+NEW: [MOJO.INPUT] Added KEY_ALT to the usable key codes.   (Author: MikeHart)
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
