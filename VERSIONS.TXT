@@ -1,6 +1,8 @@
-***** v2020-12-06 *****
+***** v2020-12-12 *****
 
+FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths    (Author: MikeHart)
 FIX: [docs] Corrected Latest new stuff section on the homepage    (Author: MikeHart)
+FIX: [docs/mojo.app] Typo correction    (Author: Phil7)
 
 
 KNOWN ISSUES: 

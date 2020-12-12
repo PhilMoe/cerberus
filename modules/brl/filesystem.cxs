@@ -78,7 +78,8 @@ End
 
 Function CreateDir:Bool( path:String )
 	Local _ret:Bool = False
-	path = path.Replace("\","/")
+	'path = path.Replace("\","/")
+	path = FixPath( path )
 	Local _dirs:= path.Split("/")
 	Local _curDir:=""
 	For Local _dir :=Eachin _dirs
