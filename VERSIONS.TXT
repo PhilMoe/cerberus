@@ -1,5 +1,6 @@
-***** v2020-12-30 *****
+***** v2021-02-01 *****
 
+FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
 FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
 FIX: [docs] Corrected Latest new stuff section on the homepage.   (Author: MikeHart)
 FIX: [docs/mojo.app] Typo correction.    (Author: Phil7)
