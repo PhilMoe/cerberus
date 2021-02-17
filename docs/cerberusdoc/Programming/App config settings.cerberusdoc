@@ -39,6 +39,7 @@ The following app config settings are currently supported:
 #HTML5_CANVAS_WIDTH=640                 'Set the width of the canvas.
 #HTML5_CANVAS_HEIGHT=480                'Set the height of the canvas.
 #HTML5_CANVAS_RESIZE_MODE=1             '0=locked, 1=stretch, 2=resize
+#HTML5_CANVAS_ALPHA=False               'Set to true to enable the canvas' background alpha channel, a prerequisite for transparent canvasses.
 #HTML5_CONSOLE_SHOW=True                'Set it to False to hide the splitter and console DIV in your file.
 #HTML5_WEBAUDIO_ENABLED=True			'Set to false to disable webaudio support for mojo audio, and to use older multimedia audio system instead.
 

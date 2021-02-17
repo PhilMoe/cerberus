@@ -23,7 +23,11 @@ function BBHtml5Game( canvas ){
 //			print( "WebGL context restored!" );
 		},false );
 
-		var attrs={ alpha:false };
+		if( CFG_HTML5_CANVAS_ALPHA=="1" ) {
+			var attrs={ alpha:true };
+		} else {
+			var attrs={ alpha:false };
+		}
 	
 		this._gl=this._canvas.getContext( "webgl",attrs );
 
