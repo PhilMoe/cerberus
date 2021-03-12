@@ -2,12 +2,40 @@
 
 <html>
 <head>
-<!--${APP_TITLE_BEGIN}//-->
 <title>CerberusGame</title>
-<!--${APP_TITLE_END}//-->
+<meta charset="UTF-8" />
 <style type="text/css">
-body{
+html, body, .goFull{
 	height: 100%;
+	width: 100%;
+}
+.canvasContainerSettings{
+/*	opacity: .36;*/
+}
+/* Edit below to set canvas placement */
+.canvasSettings{
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.overlay{
+	position: absolute;
+	height: 360px!important;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.splitterOff{
+	display:none!important;
+}
+.hide{
+	display:none;
+}
+.show{
+	display:block;
+}
+body{
+		
 	overflow: hidden; /* keeps scrollbar off IE */
 	font-family: arial,sans-serif;
 	font-size: 13px;
@@ -24,14 +52,18 @@ canvas{
 	display: block;
 	outline: none;
 }
+
 textarea{
-	background-color: #000;
+	background-color: rgb(15, 15, 15);
 	color:rgb(221, 153, 51);
 	border: 0;
-	padding: 0;
+	padding-top: 18px;
+	padding-left: 18px;
 	margin: 0;
 	outline: none;
 	width: 100%;
+	line-height: 18px;
+	border-top: 2px solid #282b33;
 }
 
 div.splitter{
@@ -48,15 +80,44 @@ div.splitter{
 </style>
 <script>
 
-<!--${CANVAS_BEGIN}//-->
-var CANVAS_RESIZE_MODE=1;	//0=locked, 1=stretch, 2=resize
-var CANVAS_WIDTH=640;
-var CANVAS_HEIGHT=480;
-var CONSOLE_SHOW=true;
-<!--${CANVAS_END}//-->
+// Value has no effect as long as you use 2=resize mode
+// but it has to be set here
+// I'm not sure other modes, I'll see them later
+var CANVAS_WIDTH = 0; 
+var CANVAS_HEIGHT = 0;
+
+var CANVAS_WIDTH_MULTIPLIER = 1.0 // Sets canvas width proportionally to current clientWidth
+var CANVAS_HEIGHT_MULTIPLIER = 1.0 // Sets canvas width proportionally to current clientHeight
+var CANVAS_RESIZE_MODE = 2; // 0=locked, 1=stretch, 2=resize
+var CONSOLE_SHOW = 1;
 
 
-window.onload=function( e ){
+
+console.log("PRESS \" TO OPEN / CLOSE CONSOLE")
+
+window.mbController = {
+	keyListener: function(e){		
+//		console.info(e.key);
+		switch(e.key){
+			case "\"": 
+				CONSOLE_SHOW = (CONSOLE_SHOW + 1) % 2
+				const b = document.getElementById("consoleClearButton")
+				const c = document.getElementById("consoleContainer")
+				console.log(b);
+				if (CONSOLE_SHOW == 0){
+					b.classList.remove("show"); c.classList.remove("show");
+					b.classList.add("hide"); c.classList.add("hide");
+				} else {
+					b.classList.remove("hide"); c.classList.remove("hide");
+					b.classList.add("show"); c.classList.add("show");
+				}
+				window.mbController.updateSize();
+		}
+	}
+}
+window.addEventListener("keyup", mbController.keyListener);
+
+window.mbWeb =function( e ){
 
 	var canvas=document.getElementById( "GameCanvas" );
 	var splitter=document.getElementById( "Splitter" );
@@ -114,9 +175,11 @@ window.onload=function( e ){
 			canvas.style.height=canvasH+"px";
 			break;
 		case 2:
-			canvas.width=document.body.clientWidth;
+			canvas.width=document.body.clientWidth * CANVAS_WIDTH_MULTIPLIER;
+			canvasH=document.body.clientHeight * CANVAS_HEIGHT_MULTIPLIER;
 			canvas.height=canvasH;
 			canvas.style.height=canvasH+"px";
+			canvas.style.width=canvas.width+"px";
 			break;
 		}
 		console.style.height=(fscreen ? 0 : window.innerHeight-splitter.clientHeight-canvasH)+"px";
@@ -124,6 +187,8 @@ window.onload=function( e ){
 		//Note! Any resize code that modifies canvas.width/canvas.height/canvas.style.width/canvas.style.height should call this to update canvas...
 		if( canvas.updateSize ) canvas.updateSize();
 	}
+	
+	window.mbController.updateSize = updateSize; 
 	
 	canvas.onfullscreenchange=function( e ){
 		fscreen=(document.fullscreenElement==canvas);
@@ -182,19 +247,29 @@ window.onload=function( e ){
 	
 	BBCerberusGame.Main( canvas );
 }
+window.onload = mbWeb;
 </script>
 </head>
 
 <body>
 
-<div><canvas id="GameCanvas" width="%%HTML5_CANVAS_WIDTH%%" height="%%HTML5_CANVAS_HEIGHT%%" tabindex="1"></canvas></div>
+<div class="canvasContainerSettings canvasSettings"><canvas id="GameCanvas" class="canvasSettings" width="640" height="480" tabindex="1"></canvas></div>
 
-<div id="Splitter" class="splitter"></div>
+<div id="Splitter" class="splitter splitterOff"></div>
 
-<div><textarea id="GameConsole" readonly></textarea></div>
-<div style='position:absolute;bottom:10px;right:30px;'>
+<div class="overlay hide" id="consoleContainer"><textarea id="GameConsole" class="overlay" readonly></textarea></div>
+<div style='position:absolute;bottom:10px;right:30px;' id="consoleClearButton" class="hide">
 	<button onclick="document.getElementById('GameConsole').value=''" style='background: #343436; padding:10px;color:white;border:0px;cursor:pointer;cursor:hand;'>Clear console</button>
 </div>
+
+<script>
+if (CONSOLE_SHOW == 1){
+	const b = document.getElementById("consoleClearButton");
+	const c = document.getElementById("consoleContainer");
+	b.classList.remove("hide"); c.classList.remove("hide");
+	b.classList.add("show"); c.classList.add("show");	
+}
+</script>
 
 <script language="javascript" src="main.js">Javascript not supported!</script>
 
