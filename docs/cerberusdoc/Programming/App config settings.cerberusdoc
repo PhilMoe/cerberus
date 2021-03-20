@@ -52,6 +52,8 @@ The following app config settings are currently supported:
 #GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
 #GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers
 #GLFW_GCC_LIB_OPTS=""				    'Pass additional libraries to link against for GCC type compilers.
+#GLFW_GCC_SRC_OPTS=""				    'Pass additional source files to be build.
+#GLFW_GCC_VPATH_OPTS=""				    'Pass additional virtual paths to look into when building.
 #GLFW_COPY_LIBS=""						'Copy 64bit external libraries to build directory. Windows GCC only for now!
 #GLFW_COPY_LIBS_32=""					'Copy 32bit external libraries to build directory. Windows GCC only for now!
 

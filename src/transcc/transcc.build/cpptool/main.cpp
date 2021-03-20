@@ -18433,7 +18433,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2020-10-11",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-03-14",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20603,7 +20603,7 @@ void c_AndroidBuilder::p_MakeTarget(){
 	if(m_tcc->m_opt_build){
 		String t_gradlecfg=String(L"assembleDebug installDebug",26);
 		if(m_tcc->m_opt_config==String(L"release",7)){
-			t_gradlecfg=String(L"assembleRelease",15);
+			t_gradlecfg=String(L"assembleRelease bundleRelease",29);
 		}
 		String t_gradle=String();
 		if(HostOS()==String(L"winnt",5)){
@@ -20941,6 +20941,8 @@ void c_GlfwBuilder::p_MakeGcc(){
 		String t_ldopts=String();
 		String t_libopts=String();
 		String t_libcopy=String();
+		String t_srcopts=String();
+		String t_vpathopts=String();
 		if((t_msize).Length()!=0){
 			t_ccopts=t_ccopts+(String(L" -m",3)+t_msize);
 			t_ldopts=t_ldopts+(String(L" -m",3)+t_msize);
@@ -20948,6 +20950,8 @@ void c_GlfwBuilder::p_MakeGcc(){
 		t_ccopts=t_ccopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16)).Replace(String(L";",1),String(L" ",1)));
 		t_ldopts=t_ldopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16)).Replace(String(L";",1),String(L" ",1)));
 		t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)).Replace(String(L";",1),String(L" ",1)));
+		t_srcopts=t_srcopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_SRC_OPTS",17)).Replace(String(L";",1),String(L" ",1)));
+		t_vpathopts=t_vpathopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_VPATH_OPTS",19)).Replace(String(L";",1),String(L" ",1)));
 		String t_1=bb_config_ENV_CONFIG;
 		if(t_1==String(L"debug",5)){
 			t_ccopts=t_ccopts+String(L" -O0",4);
@@ -20965,7 +20969,7 @@ void c_GlfwBuilder::p_MakeGcc(){
 		if(HostOS()==String(L"winnt",5) && ((FileType(m_tcc->m_MINGW_PATH+String(L"/bin/mingw32-make.exe",21)))!=0)){
 			t_cmd=String(L"mingw32-make",12);
 		}
-		p_Execute(t_cmd+String(L" ARCH=\"",7)+t_msize+String(L"\" CCOPTS=\"",10)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" LIBOPTS=\"",11)+t_libopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
+		p_Execute(t_cmd+String(L" ARCH=\"",7)+t_msize+String(L"\" CCOPTS=\"",10)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" LIBOPTS=\"",11)+t_libopts+String(L"\" SRCOPTS=\"",11)+t_srcopts+String(L"\" VPATHOPTS=\"",13)+t_vpathopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
 		if(m_tcc->m_opt_run){
 			ChangeDir(t_tconfig);
 			if(HostOS()==String(L"winnt",5)){
@@ -21006,6 +21010,9 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	SaveString(t_main,String(L"main.cpp",8));
 	if(m_tcc->m_opt_build){
 		ChangeDir(String(L"msvc",4));
+		bbPrint(String(L"-----------------------",23));
+		bbPrint(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig);
+		bbPrint(String(L"-----------------------",23));
 		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig,true);
 		if(m_tcc->m_opt_run){
 			ChangeDir(m_casedConfig);

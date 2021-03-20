@@ -25,12 +25,13 @@ else
     RES_ARCH=pe-i386
 endif
 
-vpath %.c ../glfw3/src
-vpath %.c ../stb
-vpath %.cpp ..
-vpath %.rc ..
+VPATH= $(VPATHOPTS) \
+%.c ../glfw3/src \
+%.c ../stb \
+%.cpp .. \
+%.rc ..
 
-OBJS0=\
+OBJS0= $(SRCOPTS) \
 context.o \
 egl_context.o \
 init.o \
