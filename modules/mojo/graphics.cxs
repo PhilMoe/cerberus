@@ -131,7 +131,7 @@ Class Font
 			For Local char:=Eachin text
 				Local glyph:=GetGlyph( char )
 				If Not glyph Continue
-				If h < glyph.height Then h = glyph.height
+				If h < (glyph.height + glyph.yoff) Then h = glyph.height + glyph.yoff
 			Next	
 			Return h
 		Endif
@@ -956,25 +956,31 @@ Function TextHeight#()
 	If context.font Return context.font.TextHeight("")
 End
 
+Function TextHeight#(txt:String)
+	If context.font Return context.font.TextHeight(txt)
+End
+
 Function FontHeight#()
 	If context.font Return context.font.TextHeight("")
 End
 
-Function DrawText:Void( text:String,x:Int,y:Int,xhandle:Float=0,yhandle:Float=0 )
+Function DrawText:Void( text:String, x:Int, y:Int,xhandle:Float=0,yhandle:Float=0 )
 #If CONFIG="debug"
 	DebugRenderDevice
 #End
 	Local char:Int=0
 	Local tmpChar:Glyph
 	If Not context.font Return
-	
-	x-=context.font.TextWidth( text )*xhandle
-	y-=context.font.TextHeight( text )*yhandle
+
+	 x -= context.font.TextWidth( text )*xhandle
+	 y -= context.font.TextHeight( "" )*yhandle
 
 	For char = Eachin text
 		Local tmpChar:=context.font._charMap.Get(char)
 		If Not tmpChar Continue
-		DrawImageRect( context.font._pages[tmpChar.page], x + tmpChar.xoff, y + tmpChar.yoff, tmpChar.x, tmpChar.y, tmpChar.width, tmpChar.height )
+
+		DrawImageRect( context.font._pages[tmpChar.page], x + tmpChar.xoff, y + tmpChar.yoff , tmpChar.x, tmpChar.y, tmpChar.width, tmpChar.height )
+
 		x += tmpChar.advance
 	Next
 End
