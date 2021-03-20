@@ -17,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.15"
+#GLFW_APP_LABEL="AGKBuildTarget V1.16"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -591,7 +591,33 @@ Function BuildTemplateAndroid:Void(_path:String, cerberusPath:String)
 		template = template[0.._start-1]+"~treturn bbMain();~n}~n~n"+template[_end..template.Length()]
 
 		SaveString template,( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/AGK2Template/src/main/jni/template.cpp" )
+
+		Print ("... fixing AGK Android template ...")		
+		Local fix1:String = LoadString(cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/settings.gradle" )
+		If fix1.Find("include ':FacebookSDK'")<0
+			fix1 = "include ':FacebookSDK'~n"+fix1
+			SaveString fix1,( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/settings.gradle" ) 
+		Endif
 		
+		Local fix2:String = LoadString( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/AGK2Template/build.gradle" )
+		If fix2.Find("implementation project(':FacebookSDK')")<0 
+
+			Local fi:Int
+			fi = fix2.Find("dependencies {")
+			fi+=15
+			Local fi2:= fi+1
+			fix2 = fix2[..fi]+"    implementation project(':FacebookSDK')~n"+fix2[fi2..]
+			
+			fi = fix2.Find("android {")
+			fi+=10
+			fi2 = fi+1
+	    	fix2 = fix2[..fi]+"~n    lintOptions {~n"+"        checkReleaseBuilds false~n"+"        abortOnError false~n"+"    }~n"+fix2[fi2..]
+			
+			SaveString fix2,( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/AGK2Template/build.gradle" ) 
+		Endif
+
+
+
 End
 
 Function BuildTemplateOSX:Void(_path:String, cerberusPath:String)
