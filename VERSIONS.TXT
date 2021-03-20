@@ -1,4 +1,4 @@
-***** v2021-03-16 *****
+***** v2021-03-20 *****
 
 FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
 FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
@@ -13,6 +13,8 @@ NEW: [TRANSCC] Added #GLFW_GCC_SRC_OPTS to compile more source files.   (Author:
 NEW: [TRANSCC] Added #GLFW_GCC_VPATH_OPTS to add more paths to source files.   (Author: MikeHart)
 NEW: [TRANSCC/Android] Added bundleRelease to create app bundle.   (Author: MikeHart)
 NEW: [mojo/Android] Added new soundpool constructor to replace the depreciated one.   (Author: MikeHart)
+NEW: [html5] Added #HTML5_CANVAS_ALPHA to enable the canvas' background alpha channel   (Author: Holzchopf)
+
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
