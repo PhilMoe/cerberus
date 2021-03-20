@@ -55,14 +55,14 @@ private:
 	GLFWwindow *_window;	
 
 	// Window dimensions
-	int _width = 0;
-	int _height = 0;
+	int _width;
+	int _height;
 		
 	// Framebuffer dimensions
-	int _framebufWidth = 0;
-	int _framebufHeight = 0;
+	int _framebufWidth;
+	int _framebufHeight;
 
-	double _highDPI_Factor = 1.0;
+	double _highDPI_Factor;
 	
 	int _swapInterval;
 	bool _focus;
@@ -152,6 +152,11 @@ BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_swapInterval(1),_focus
 	memset( &_desktopMode,0,sizeof(_desktopMode) );	
 	const GLFWvidmode *vmode=glfwGetVideoMode( glfwGetPrimaryMonitor() );
 	if( vmode ) _desktopMode=*vmode;
+	_width = 0;
+	_height = 0;
+	_framebufWidth = 0;
+	_framebufHeight = 0;
+	_highDPI_Factor = 1.0;
 }
 
 void BBGlfwGame::SetUpdateRate( int updateRate ){

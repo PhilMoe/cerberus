@@ -1,11 +1,18 @@
-***** v2021-02-01 *****
+***** v2021-03-16 *****
 
 FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
 FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
 FIX: [docs] Corrected Latest new stuff section on the homepage.   (Author: MikeHart)
 FIX: [docs/mojo.app] Typo correction.    (Author: Phil7)
 FIX: [mojo2] Fixed Canvas.ReadPixels only reading the last framebuffer it was rendered to.    (Author: MikeHart)
-NEW: [MOJO.INPUT] Added KEY_ALT to the usable key codes.   (Author: MikeHart)
+FIX: [mojo/mojo2] Fixed Font.TextHeight returning the values without Glyph.yoffset.    (Author: MikeHart)
+MOD: [mojo/mojo2] Changed DrawText to use TextHeight("") when being y-aligned.    (Author: MikeHart)
+MOD: [agk/buildtarget] Added fixes for TGCs Android template.    (Author: MikeHart)
+NEW: [mojo.input] Added KEY_ALT to the usable key codes.   (Author: MikeHart)
+NEW: [TRANSCC] Added #GLFW_GCC_SRC_OPTS to compile more source files.   (Author: MikeHart)
+NEW: [TRANSCC] Added #GLFW_GCC_VPATH_OPTS to add more paths to source files.   (Author: MikeHart)
+NEW: [TRANSCC/Android] Added bundleRelease to create app bundle.   (Author: MikeHart)
+NEW: [mojo/Android] Added new soundpool constructor to replace the depreciated one.   (Author: MikeHart)
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
