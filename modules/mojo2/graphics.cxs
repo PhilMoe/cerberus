@@ -1327,7 +1327,7 @@ Class Font
 			For Local char:=Eachin text
 				Local glyph:=GetGlyph( char )
 				If Not glyph Continue
-				If h < glyph.height Then h = glyph.height
+				If h < (glyph.height + glyph.yoff) Then h = glyph.height + glyph.yoff
 			Next	
 			Return h
 		Endif
@@ -2075,7 +2075,7 @@ Class DrawList
 		Local tmpChar:Glyph
 
 		x-=_font.TextWidth( text )*xhandle
-		y-=_font.TextHeight( text )*yhandle
+		y-=_font.TextHeight( "" )*yhandle
 
 		For char = Eachin text
 			Local tmpChar:=_font._charMap.Get(char)
