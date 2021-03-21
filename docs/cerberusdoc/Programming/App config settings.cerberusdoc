@@ -48,6 +48,7 @@ The following app config settings are currently supported:
 #GLFW_USE_MINGW=True					'Set to false on Windows to use MSVC instead of MinGW to build glfw apps. Needs at least VS 2015 installed.
 #GLFW_GCC_MSIZE_WINNT="64"				'When building glfw apps with mingw/gcc, controls whether 32 or 64 bit apps are generated.
 										'Set to "64" to force 64 bit builds on Windows (needs mingw64), or "" to use compiler default.
+										'Currently that also works for MSVC!!!
 #GLFW_GCC_MSIZE_LINUX=""				'Ditto for Linux.
 #GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
 #GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers

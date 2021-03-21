@@ -18433,7 +18433,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-03-14",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-03-21",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20999,23 +20999,35 @@ void c_GlfwBuilder::p_MakeVc2010(){
 	}
 }
 void c_GlfwBuilder::p_MakeMsvc(){
-	CreateDir(String(L"msvc/",5)+m_casedConfig);
-	CreateDir(String(L"msvc/",5)+m_casedConfig+String(L"/internal",9));
-	CreateDir(String(L"msvc/",5)+m_casedConfig+String(L"/external",9));
-	p_CreateDataDir(String(L"msvc/",5)+m_casedConfig+String(L"/data",5));
+	String t_ccopts=String();
+	String t_ldopts=String();
+	String t_libopts=String();
+	String t_libcopy=String();
+	String t_srcopts=String();
+	String t_vpathopts=String();
+	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
+	t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)).Replace(String(L";",1),String(L" ",1)));
+	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize);
+	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/internal",9));
+	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/external",9));
+	p_CreateDataDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/data",5));
 	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
 	String t_main=LoadString(String(L"main.cpp",8));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"main.cpp",8));
+	p_ProcessExternalLibs(String(L"msvc/",5)+m_casedConfig,t_msize,t_libopts);
 	if(m_tcc->m_opt_build){
 		ChangeDir(String(L"msvc",4));
-		bbPrint(String(L"-----------------------",23));
-		bbPrint(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig);
-		bbPrint(String(L"-----------------------",23));
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig,true);
+		String t_sBuild=String();
+		if(t_msize==String(L"32",2)){
+			t_sBuild=String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=win32",18);
+		}else{
+			t_sBuild=String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=x64",16);
+		}
+		p_Execute(t_sBuild,true);
 		if(m_tcc->m_opt_run){
-			ChangeDir(m_casedConfig);
+			ChangeDir(m_casedConfig+t_msize);
 			p_Execute(String(L"CerberusGame",12),true);
 		}
 	}

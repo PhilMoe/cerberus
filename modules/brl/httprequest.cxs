@@ -9,6 +9,21 @@ Import brl.asyncevent
 #Endif
 
 #If BRL_HTTPREQUEST_IMPLEMENTED
+#If GLFW_USE_MINGW=True
+
+#GLFW_USE_HTTPS=True
+#GLFW_COPY_LIBS+="libcurl-x64"
+#GLFW_COPY_LIBS+="libcurl"
+#GLFW_COPY_LIBS+="libcrypto-1_1-x64"
+#GLFW_COPY_LIBS+="libssl-1_1-x64"
+
+#GLFW_COPY_LIBS_32+="libcurl"
+#GLFW_COPY_LIBS_32+="libcrypto-1_1"
+#GLFW_COPY_LIBS_32+="libssl-1_1"
+
+
+
+
 
 ' Link libraries for curl
 #If HOST="linux"
@@ -17,6 +32,7 @@ Import brl.asyncevent
 
 #If HOST="winnt"
   #GLFW_GCC_LIB_OPTS+="-lcurldll"
+#Endif
 #Endif
 
 Extern Private
