@@ -1,4 +1,4 @@
-***** v2021-03-21 *****
+***** v2021-03-30 *****
 
 FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
 FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
@@ -6,6 +6,7 @@ FIX: [docs] Corrected Latest new stuff section on the homepage.   (Author: MikeH
 FIX: [docs/mojo.app] Typo correction.    (Author: Phil7)
 FIX: [mojo2] Fixed Canvas.ReadPixels only reading the last framebuffer it was rendered to.    (Author: MikeHart)
 FIX: [mojo/mojo2] Fixed Font.TextHeight returning the values without Glyph.yoffset.    (Author: MikeHart)
+FIX: [mojo] Fixed mojo.colornames throwing a "blocks nested to deeply" error on MSVC.    (Author: MikeHart)
 MOD: [mojo/mojo2] Changed DrawText to use TextHeight("") when being y-aligned.    (Author: MikeHart)
 MOD: [GLFW/MSVC] Upgraded the solution to use MSVC 2019 and SDK 10.x.    (Author: MikeHart)
 MOD: [agk/buildtarget] Added fixes for TGCs Android template.    (Author: MikeHart)
@@ -17,8 +18,9 @@ NEW: [TRANSCC] Added #GLFW_GCC_VPATH_OPTS to add more paths to source files.   (
 NEW: [TRANSCC/Android] Added bundleRelease to create app bundle.   (Author: MikeHart)
 NEW: [TRANSCC/GLFW] Copy dlls into the build folder (Takes care of the OpenAl dlls).   (Author: MikeHart)
 NEW: [mojo/Android] Added new soundpool constructor to replace the depreciated one.   (Author: MikeHart)
-NEW: [HTML5] Added #HTML5_CANVAS_ALPHA to enable the canvas' background alpha channel   (Author: Holzchopf)
+NEW: [HTML5] Added #HTML5_CANVAS_ALPHA to enable the canvas' background alpha channel.   (Author: Holzchopf)
 NEW: [GLFW/MSVC] Added the ability to create 32 and 64bit apps via #GLFW_GCC_MSIZE_WINNT. Will create a new app config setting to cover GCC and MSVC later on.   (Author: MikeHart)
+NEW: [brl.ini] Added a new Ini handler module, based on Martin Leidel's inital work.   (Martin, MikeHart)
 
 
 KNOWN ISSUES: 

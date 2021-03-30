@@ -1,0 +1,397 @@
+Strict
+
+' Based on Martin Leidel's inital ini Module
+
+#TEXT_FILES+="*.ini"
+
+Import brl.filestream
+
+Class KeyValuePair
+Public
+	Field _isValid:Bool
+	Field _key:String
+	Field _value:String
+End
+
+Class IniHandler
+Public
+	Method New()
+		_sections = New StringMap<StringMap<String>>()
+		'_modified = New StringMap<StringMap<String>>()
+	End
+
+	Method Load:Void(path:String)
+		Local file:FileStream = FileStream.Open(_FixDataPath(path), "r")
+		If file
+			_iniString = file.ReadString()
+			file.Close()
+		Else
+			Error ("File '" + path + "' not found!")
+		EndIf
+    
+		_Refresh()
+		file.Close()
+	End
+
+	Method LoadFromString:Void(iniString:String)
+		_iniString = iniString
+		_Refresh()
+		file.Close()
+	End
+
+	Method SaveToString:String()
+		Local retVal:String=""
+		For Local sec:=Eachin _sections
+			retVal += "["+sec.Key()+"]~n"
+			For Local secvalue:= Eachin sec.Value()
+				retVal += secvalue.Key() + " = " + secvalue.Value()+"~n"
+			Next
+			retVal += "~n"
+		Next
+		Return retVal
+	End
+
+	Method DoesSectionExist:Bool(sectionName:String)
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower() Then Return True
+		Next
+		Return False
+	End
+
+	Method DoesKeyExist:Bool(sectionName:String, key:String)
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower()
+				For Local secvalue:= Eachin sec.Value()
+					If secvalue.Key().ToLower() = key.ToLower() Then Return True
+				Next
+			Endif
+		Next
+		Return False		
+	End
+
+	Method WriteString:Void(sectionName:String, key:String, value:String)
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower()
+				sec.Value().Set(_GetKey( sec.Key(), key), value)
+				Return
+			Endif
+		Next
+		Local newSection := New StringMap<String>()
+		newSection.Add(key, value)
+		_sections.Set(sectionName, newSection)		
+	End
+
+	Method WriteStringArray:Void(sectionName:String, key:String, values:String[])
+		Local va:String
+		For Local v := Eachin values
+			If va.Length()>0 Then va += ","
+			va += v
+		Next
+		WriteString(sectionName, key, va)	
+	End
+
+	Method WriteIntArray:Void(sectionName:String, key:String, values:Int[])
+		Local va:String
+		For Local v := Eachin values
+			If va.Length()>0 Then va += ","
+			va += String(v)
+		Next
+		WriteString(sectionName, key, va)	
+	End
+
+	Method WriteInt:Void(sectionName:String, key:String, value:Int)
+		WriteString(sectionName, key, String(value))	
+	End
+
+	Method WriteFloatArray:Void(sectionName:String, key:String, values:Float[])
+		Local va:String
+		For Local v := Eachin values
+			If va.Length()>0 Then va += ","
+			va += String(v)
+		Next
+		WriteString(sectionName, key, va)	
+	End
+
+	Method WriteFloat:Void(sectionName:String, key:String, value:Float)
+		Local val:String = String(value)
+		WriteString(sectionName, key, value)	
+	End
+
+	Method WriteBoolArray:Void(sectionName:String, key:String, values:Bool[])
+		Local va:String
+		For Local v := Eachin values
+			If va.Length()>0 Then va += ","
+			If v = True
+				va += "True"
+			Else
+				va += "False"
+			Endif
+		Next
+		WriteString(sectionName, key, va)	
+
+	End
+	
+	Method WriteBool:Void(sectionName:String, key:String, value:Bool)
+		Local val:String = "False"
+		If value Then val = "True"
+		WriteString(sectionName, key, val)	
+	End
+
+	Method ReadString:String(sectionName:String, key:String, defaultValue:String="")
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower()
+				For Local secvalue:= Eachin sec.Value()
+					If secvalue.Key().ToLower() = key.ToLower() Then Return secvalue.Value()
+				Next
+			Endif
+		Next
+		Return defaultValue
+	End
+
+	Method ReadInt:Int(sectionName:String, key:String, defaultValue:Int=0)
+		Local str:String = ReadString(sectionName, key, String(defaultValue))
+		str = _SplitComment(str)
+		Return Int(str)
+	End
+
+	Method ReadFloat:Float(sectionName:String, key:String, defaultValue:Float=0.0)
+		Local str:String = ReadString(sectionName, key, String(defaultValue))
+		str = _SplitComment(str)
+		Return Float(str)
+	End
+
+	Method ReadBool:Bool(sectionName:String, key:String, defaultValue:Bool=False)
+		Local defaultStr:String = "False"
+		If defaultValue Then defaultStr = "True"
+		Local str:String = ReadString(sectionName, key, defaultStr)
+		str = _SplitComment(str)
+		If str.ToLower() = "true"
+			Return True
+		Else
+			Return False
+		EndIf
+	End
+
+	Method ReadStringArray:String[](sectionName:String, key:String, defaultValue:String[])
+		Local defaultStr:String
+		For Local i:Int = 0 Until defaultValue.Length
+			defaultStr += String(defaultValue[i])
+			If i < defaultValue.Length - 1
+				defaultStr += ","
+			EndIf
+		Next
+		Local str:String = ReadString(sectionName, key, defaultStr)
+		str = _SplitComment(str)
+		Local val:String[] = str.Split(",")
+		' convert to int
+		Local valFinal:Int[] = New Int[val.Length]
+		For Local i:Int = 0 Until val.Length
+			valFinal[i] = Int(val[i])
+		Next
+
+		Return valFinal
+	End
+
+
+
+	Method ReadIntArray:Int[](sectionName:String, key:String, defaultValue:Int[])
+		Local defaultStr:String
+		For Local i:Int = 0 Until defaultValue.Length
+			defaultStr += String(defaultValue[i])
+			If i < defaultValue.Length - 1
+				defaultStr += ","
+			EndIf
+		Next
+		Local str:String = ReadString(sectionName, key, defaultStr)
+		str = _SplitComment(str)
+		Local val:String[] = str.Split(",")
+		' convert to int
+		Local valFinal:Int[] = New Int[val.Length]
+		For Local i:Int = 0 Until val.Length
+			valFinal[i] = Int(val[i])
+		Next
+
+		Return valFinal
+	End
+
+	Method ReadFloatArray:Float[](sectionName:String, key:String, defaultValue:Float[])
+		Local defaultStr:String
+		For Local i:Int = 0 Until defaultValue.Length
+			defaultStr += String(defaultValue[i])
+			If i < defaultValue.Length - 1
+				defaultStr += ","
+			EndIf
+		Next
+		Local str:String = ReadString(sectionName, key, defaultStr)
+		str = _SplitComment(str)
+		Local val:String[] = str.Split(",")
+		' convert to float
+		Local valFinal:Float[] = New Float[val.Length]
+		For Local i:Int = 0 Until val.Length
+			valFinal[i] = Float(val[i])
+		Next
+		
+		Return valFinal
+	End
+
+	Method ReadBoolArray:Bool[](sectionName:String, key:String, defaultValue:Bool[])
+		Local defaultStr:String
+		For Local i:Int = 0 Until defaultValue.Length
+			If defaultValue[i]
+				defaultStr += "True"
+			Else
+				defaultStr += "False"
+			EndIf
+			If i < defaultValue.Length - 1
+				defaultStr += ","
+			EndIf
+		Next
+		Local str:String = ReadString(sectionName, key, defaultStr)
+		str = _SplitComment(str)
+		Local val:String[] = str.Split(",")
+		' convert to bool
+		Local valFinal:Bool[] = New Bool[val.Length]
+		For Local i:Int = 0 Until val.Length
+			If val[i].ToLower() = "true"
+				valFinal[i] = True
+			Else
+				valFinal[i] = False
+			EndIf
+		Next
+
+		Return valFinal
+	End
+
+Private
+	Method _Refresh:Void()
+		' clear local cache
+		_sections.Clear()
+		'_modified.Clear()
+   
+		Local currentSection:StringMap<String> = Null
+		Local sectionName:String
+
+		Local lines:String[] = _iniString.Trim().Split("~n")
+		For Local str:String = EachIn lines
+			' remove possible "carriage return"
+			If str.EndsWith("~r")
+	        	str = str[..str.Length-1]
+			EndIf
+	
+			' check for section names
+			sectionName = _ParseSectionName(str)
+			If sectionName.Length > 0
+				' only the first occurrence of a section is loaded
+				If _sections.Contains(sectionName)
+					currentSection = Null
+				Else
+					currentSection = New StringMap<String>()
+					_sections.Add(sectionName, currentSection)
+				EndIf
+			ElseIf currentSection <> Null
+				' check for key+value pair
+				Local keyValuePair:KeyValuePair = _ParseKeyValuePair(str)
+				If keyValuePair._isValid
+					' only the first occurrence of a key is loaded
+					If Not currentSection.Contains(keyValuePair._key)
+						currentSection.Add(keyValuePair._key, keyValuePair._value)
+					EndIf
+				EndIf
+			EndIf
+		Next
+	End
+
+	Method _SplitComment:String(str:String)
+		Local retStr:String[]
+		If str.Contains("//")
+			retStr = str.Split("//")
+		ElseIf str.Contains("#")
+			retStr = str.Split("#")
+		ElseIf str.Contains(";")
+			retStr = str.Split(";")
+		Else
+			retStr = New String[1]
+			retStr[0] = str
+		EndIf
+
+		Return retStr[0].Trim()
+	End
+
+	Method _ParseSectionName:String(s:String)
+		If s.StartsWith("//") Or s.StartsWith("#") Or s.StartsWith(";") ' comment
+			Return ""
+		EndIf
+		If Not s.StartsWith("[")
+			Return ""
+		EndIf
+		If Not s.EndsWith("]")
+			Return ""
+		EndIf
+		If s.Length < 3
+			Return ""
+		EndIf
+
+		Return s[1..s.Length-1]
+	End
+
+	Method _ParseKeyValuePair:KeyValuePair(s:String)
+		Local keyValuePair:KeyValuePair = New KeyValuePair()
+		If s.StartsWith("//") Or s.StartsWith("#") Or s.StartsWith(";") ' comment
+			keyValuePair._isValid = False
+			Return keyValuePair
+		EndIf
+
+		Local i:Int = s.Find("=")
+		If i = 0
+			keyValuePair._isValid = False
+			Return keyValuePair
+		EndIf
+
+		keyValuePair._key = s[0..i].Trim()
+		If keyValuePair._key.Length = 0
+			keyValuePair._isValid = False
+			Return keyValuePair
+		EndIf
+
+		Local j:Int = s.Length - i - 1
+		If j > 0
+			keyValuePair._value = s[i+1..].Trim()
+		Else
+			keyValuePair._value = ""
+		EndIf
+
+		keyValuePair._isValid = True
+		Return keyValuePair
+	End
+	
+	Method _GetSection:String(sectionName:String)
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower() Then Return sec.Key()
+		Next
+		Return sectioName
+	End
+
+	Method _GetKey:String(sectionName:String, key:String)
+		For Local sec:=Eachin _sections
+			If sec.Key().ToLower() = sectionName.ToLower()
+				For Local secvalue:= Eachin sec.Value()
+					If secvalue.Key().ToLower() = key.ToLower() Then Return secvalue.Key()
+				Next
+			Endif
+		Next
+		Return key		
+	End
+
+	Method _FixDataPath:String( path:String )
+		Local i:=path.Find( ":/" )
+		If i<>-1 And path.Find("/")=i+1 Return path
+		If path.StartsWith("./") Or path.StartsWith("/") Return path
+		Return "cerberus://data/"+path
+	End	
+	
+Private
+	Field _sections:StringMap<StringMap<String>>
+	'Field _modified:StringMap<StringMap<String>>
+	Field _iniString:String
+	
+End
