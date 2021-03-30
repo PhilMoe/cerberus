@@ -172,6 +172,8 @@ Function NamedHtmlColor:Int(pColor:String)
 	Case "cornsilk" Return COLOR_CORNSILK
 	Case "crimson" Return COLOR_CRIMSON
 	Case "cyan" Return COLOR_CYAN
+	End
+	Select pColor.ToLower()
 	Case "darkblue" Return COLOR_DARKBLUE
 	Case "darkcyan" Return COLOR_DARKCYAN
 	Case "darkgoldenrod" Return COLOR_DARKGOLDENROD
@@ -200,6 +202,8 @@ Function NamedHtmlColor:Int(pColor:String)
 	Case "floralwhite" Return COLOR_FLORALWHITE
 	Case "forestgreen" Return COLOR_FORESTGREEN
 	Case "fuchsia" Return COLOR_FUCHSIA
+	End
+	Select pColor.ToLower()
 	Case "gainsboro" Return COLOR_GAINSBORO
 	Case "ghostwhite" Return COLOR_GHOSTWHITE
 	Case "gold" Return COLOR_GOLD
@@ -236,6 +240,8 @@ Function NamedHtmlColor:Int(pColor:String)
 	Case "lime" Return COLOR_LIME
 	Case "limegreen" Return COLOR_LIMEGREEN
 	Case "linen" Return COLOR_LINEN
+	End
+	Select pColor.ToLower()
 	Case "magenta" Return COLOR_MAGENTA
 	Case "maroon" Return COLOR_MAROON
 	Case "mediumaquamarine" Return COLOR_MEDIUMAQUAMARINE
@@ -274,6 +280,8 @@ Function NamedHtmlColor:Int(pColor:String)
 	Case "red" Return COLOR_RED
 	Case "rosybrown" Return COLOR_ROSYBROWN
 	Case "royalblue" Return COLOR_ROYALBLUE
+	End
+	Select pColor.ToLower()
 	Case "saddlebrown" Return COLOR_SADDLEBROWN
 	Case "salmon" Return COLOR_SALMON
 	Case "sandybrown" Return COLOR_SANDYBROWN
