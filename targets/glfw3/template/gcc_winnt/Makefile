@@ -11,12 +11,13 @@ CPPFLAGS=$(CCOPTS) \
 -I../glfw3/src \
 -I../openal/include \
 -I../stb \
+-I../tinyfiledialogs \
 -I../zlib-1.2.8 \
 -I../lpng1610
 
 LD=g++
 LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
-LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32
+LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32 -lole32
 
 RES=windres
 ifeq ($(ARCH),64)
@@ -28,6 +29,7 @@ endif
 VPATH= $(VPATHOPTS) \
 %.c ../glfw3/src \
 %.c ../stb \
+%.c ../tinyfiledialogs \
 %.cpp .. \
 %.rc ..
 
@@ -50,6 +52,7 @@ window.o \
 stb_vorbis.o \
 stb_image.o \
 resource.o \
+tinyfiledialogs.o \
 main.o
 
 TMP=build/$(dir $(OUT))

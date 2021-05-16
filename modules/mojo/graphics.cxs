@@ -10,6 +10,7 @@ Import mojox.graphics
 ' 20190117 - Holzchopf
 ' Color class support
 Import color
+Import mojo
 
 Private
 
@@ -402,7 +403,7 @@ Class Image
 			surface=Null
 		Endif
 	End
-	
+
 	Method WritePixels( pixels[],x,y,width,height,offset=0,pitch=0,frame=0 )
 		If Not pitch pitch=width
 
@@ -518,6 +519,7 @@ End
 
 Function LoadImage:Image( path$,frameCount=1,flags=Image.DefaultFlags )
 	Local surf:=device.LoadSurface( FixDataPath(path) )
+
 	If surf 
 		Return (New Image).Init( surf,frameCount,flags )
 	Else
@@ -983,6 +985,7 @@ Function DrawText:Void( text:String, x:Int, y:Int,xhandle:Float=0,yhandle:Float=
 
 		x += tmpChar.advance
 	Next
+
 End
 
 Function DrawText:Void( textLines:String[],x:Int,y:Int,xhandle:Float=0,yhandle:Float=0 )
