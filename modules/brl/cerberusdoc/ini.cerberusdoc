@@ -1,0 +1,110 @@
+
+# Module brl.ini
+
+Ini handler module.
+Read and write INI files to extract or store settings for your game/application.
+
+Example:
+<pre>
+Local ini:IniHandler  = New IniHandler()
+Local file:FileStream = ini.Load("config.ini")
+
+Local sval:String = ini.ReadValue("General", "StringVal", "NOT SET")
+Local ival:Int    = ini.ReadValue("General", "IntVal", 0)
+Local fval:Float  = ini.ReadValue("General", "FloatVal", 0.0)
+Local bval:Bool   = ini.ReadValue("General", "BoolVal", False)
+
+Local iarr:Int[]   = ini.ReadArray("General", "IntArr", [1, 2, 3])
+Local farr:Float[] = ini.ReadArray("General", "FloatArr", [1.0, 2.0, 3.0])
+Local barr:Bool[]  = ini.ReadArray("General", "BoolArr", [True, False, True])
+</pre>
+
+
+# Class IniHandler
+
+# Method New()
+
+# Method Load:Void(path:String)
+
+Load the content of an Ini file from the given resource path.
+
+# Method LoadFromString:Void(iniString:String)
+
+Load the content of an Ini file from the given string.
+
+# Method SaveToString:String()
+
+Returns a String that contains all the sections with their keys seperated by line feeds.
+You can then store the string inside a file or local storage of your choice.
+
+# Method DoesSectionExist:Bool(sectionName:String)
+
+Returns *True*, if a section exists.
+
+# Method DoesKeyExist:Bool(sectionName:String, key:String)
+
+Returns *True*, if a key in the given section exists.
+
+# Method ReadString:String(sectionName:String, key:String, defaultValue:String="")
+
+Returns the String value of a given key inside a section. If it doesn't exist, it returns the given defaut value.
+
+# Method ReadInt:Int(sectionName:String, key:String, defaultValue:Int=0)
+
+Returns the Integer value of a given key inside a section. If it doesn't exist, it returns the given defaut value.
+
+# Method ReadFloat:Float(sectionName:String, key:String, defaultValue:Float=0.0)
+
+Returns the Float value of a given key inside a section. If it doesn't exist, it returns the given defaut value.
+
+# Method ReadBool:Bool(sectionName:String, key:String, defaultValue:Bool=False)
+
+Returns the Boolean value of a given key inside a section. If it doesn't exist, it returns the given defaut value.
+
+# Method ReadIntArray:Int[](sectionName:String, key:String, defaultValue:Int[])
+
+Returns an array of Integer values from a given sectionName and key. If it doesn't exist, it returns the given defaut value. 
+
+# Method ReadStringArray:String[](sectionName:String, key:String, defaultValue:String[])
+
+Returns an array of String values from a given sectionName and key. If it doesn't exist, it returns the given defaut value. 
+
+# Method ReadFloatArray:Float[](sectionName:String, key:String, defaultValue:Float[])
+
+Returns an array of Float values from a given sectionName and key. If it doesn't exist, it returns the given defaut value. 
+
+# Method ReadBoolArray:Bool[](sectionName:String, key:String, defaultValue:Bool[])
+
+Returns an array of Boolean values from a given sectionName and key. If it doesn't exist, it returns the given defaut value. 
+
+# Method WriteString:Void(sectionName:String, key:String, value:String)
+
+Writes the String value of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteStringArray:Void(sectionName:String, key:String, values:String[])
+
+Writes an array of String values of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteInt:Void(sectionName:String, key:String, value:Int)
+
+Writes the Integer value of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteIntArray:Void(sectionName:String, key:String, value:Int[])
+
+Writes an array of Integer values of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteFloat:Void(sectionName:String, key:String, value:Float)
+
+Writes the Float value of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteFloatArray:Void(sectionName:String, key:String, value:Float[])
+
+Writes an array of Float values of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteBool:Void(sectionName:String, key:String, value:Bool)
+
+Writes the Boolean value of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method WriteBoolArray:Void(sectionName:String, key:String, value:Bool[])
+
+Writes an array of Boolean values of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.

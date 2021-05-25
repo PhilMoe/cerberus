@@ -61,13 +61,15 @@ Class GlfwBuilder Extends Builder
 			CreateDir "build"
 			CreateDir "build/"+tconfig
 			
-			Local ccopts:="",ldopts:="", libopts:="", libcopy:=""
+			Local ccopts:="",ldopts:="", libopts:="", libcopy:="", srcopts:= "", vpathopts:=""
 
 			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
 
 			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
 			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
 			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " )
+			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " )
+			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " )
 
 			Select ENV_CONFIG
 			Case "debug"
@@ -89,7 +91,8 @@ Class GlfwBuilder Extends Builder
 			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
 
 			'Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
-			Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
+			'Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
+			Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q SRCOPTS=~q"+srcopts+"~q VPATHOPTS=~q"+vpathopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
 
 			If tcc.opt_run
 
@@ -139,12 +142,25 @@ Class GlfwBuilder Extends Builder
 
 	'***** Msvc *****
 	Method MakeMsvc:Void()
+
+		Local ccopts:="",ldopts:="", libopts:="", libcopy:="", srcopts:= "", vpathopts:=""
+		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
+
+		'If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
+
+		'ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
+		'ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
+		libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " )
+		'srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " )
+		'vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " )
+
+
 	
-		CreateDir "msvc/"+casedConfig
-		CreateDir "msvc/"+casedConfig+"/internal"
-		CreateDir "msvc/"+casedConfig+"/external"
+		CreateDir "msvc/"+casedConfig+msize
+		CreateDir "msvc/"+casedConfig+msize+"/internal"
+		CreateDir "msvc/"+casedConfig+msize+"/external"
 		
-		CreateDataDir "msvc/"+casedConfig+"/data"
+		CreateDataDir "msvc/"+casedConfig+msize+"/data"
 		
 		' need to rewrite resources.rc so that icon is rebuilt
 		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"\cerberus.ico")
@@ -156,15 +172,25 @@ Class GlfwBuilder Extends Builder
 		
 		SaveString main,"main.cpp"
 		
+		' Process external libs to copy over
+		ProcessExternalLibs( "msvc/"+casedConfig, msize, libopts )
+		
 		If tcc.opt_build
 
 			ChangeDir "msvc"
-
-			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig'+" /p:Platform=win32 CerberusGame.sln"
+			Local sBuild:String
+			If msize = 32
+				sBuild = "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=win32"
+			Else
+				sBuild = "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=x64"
+			Endif
+			
+			'Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+msize'+" /p:Platform=win32 CerberusGame.sln"
+			Execute sBuild
 			
 			If tcc.opt_run
 			
-				ChangeDir casedConfig
+				ChangeDir casedConfig+msize
 
 				Execute "CerberusGame"
 				
@@ -253,7 +279,6 @@ Class GlfwBuilder Extends Builder
 
 		Local libcopy:String[] = libStr.Split( ";" )
 		Local dst:String = config+arch
-
 		For Local i:= Eachin libcopy
 			If HostOS="winnt"
 				If i <> ""

@@ -948,9 +948,40 @@ class gxtkAudio{
 	
 	gxtkChannel[] channels=new gxtkChannel[32];
 	
+	
+	
+	void createNewSoundPool(){
+	    AudioAttributes attributes = new AudioAttributes.Builder()
+	        .setUsage(AudioAttributes.USAGE_GAME)
+	        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+	        .build();
+	    pool = new SoundPool.Builder()
+	        .setAudioAttributes(attributes)
+	        .setMaxStreams(32) 
+	        .build();
+	}
+	
+	@SuppressWarnings("deprecation")
+	void createOldSoundPool(){
+	    pool = new SoundPool(32,AudioManager.STREAM_MUSIC,0);
+	}
+		
+	
 	gxtkAudio(){
 		game=BBAndroidGame.AndroidGame();
-		pool=new SoundPool( 32,AudioManager.STREAM_MUSIC,0 );
+		//pool=new SoundPool( 32,AudioManager.STREAM_MUSIC,0 );
+		
+		
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+	        createNewSoundPool();
+    	} else {
+        	createOldSoundPool();
+    	}
+		
+		
+		
+		
+		
 		for( int i=0;i<32;++i ){
 			channels[i]=new gxtkChannel();
 		}

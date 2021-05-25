@@ -55,14 +55,14 @@ private:
 	GLFWwindow *_window;	
 
 	// Window dimensions
-	int _width = 0;
-	int _height = 0;
+	int _width;
+	int _height;
 		
 	// Framebuffer dimensions
-	int _framebufWidth = 0;
-	int _framebufHeight = 0;
+	int _framebufWidth;
+	int _framebufHeight;
 
-	double _highDPI_Factor = 1.0;
+	double _highDPI_Factor;
 	
 	int _swapInterval;
 	bool _focus;
@@ -109,6 +109,7 @@ enum{
 	VKEY_ENTER=13,
 	VKEY_SHIFT=16,
 	VKEY_CONTROL=17,
+	VKEY_ALT=18,
 	VKEY_ESCAPE=27,
 	VKEY_SPACE=32,
 	VKEY_PAGE_UP=33,VKEY_PAGE_DOWN,VKEY_END,VKEY_HOME,
@@ -151,6 +152,11 @@ BBGlfwGame::BBGlfwGame():_window(0),_width(0),_height(0),_swapInterval(1),_focus
 	memset( &_desktopMode,0,sizeof(_desktopMode) );	
 	const GLFWvidmode *vmode=glfwGetVideoMode( glfwGetPrimaryMonitor() );
 	if( vmode ) _desktopMode=*vmode;
+	_width = 0;
+	_height = 0;
+	_framebufWidth = 0;
+	_framebufHeight = 0;
+	_highDPI_Factor = 1.0;
 }
 
 void BBGlfwGame::SetUpdateRate( int updateRate ){
@@ -444,6 +450,9 @@ int BBGlfwGame::TransKey( int key ){
 	case GLFW_KEY_RIGHT_SHIFT:return VKEY_SHIFT;
 	case GLFW_KEY_LEFT_CONTROL:
 	case GLFW_KEY_RIGHT_CONTROL:return VKEY_CONTROL;
+	
+	case GLFW_KEY_LEFT_ALT:
+	case GLFW_KEY_RIGHT_ALT:return VKEY_ALT;
 	
 //	case GLFW_KEY_LEFT_SHIFT:return VKEY_LEFT_SHIFT;
 //	case GLFW_KEY_RIGHT_SHIFT:return VKEY_RIGHT_SHIFT;

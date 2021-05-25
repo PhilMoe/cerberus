@@ -1327,7 +1327,7 @@ Class Font
 			For Local char:=Eachin text
 				Local glyph:=GetGlyph( char )
 				If Not glyph Continue
-				If h < glyph.height Then h = glyph.height
+				If h < (glyph.height + glyph.yoff) Then h = glyph.height + glyph.yoff
 			Next	
 			Return h
 		Endif
@@ -2075,7 +2075,7 @@ Class DrawList
 		Local tmpChar:Glyph
 
 		x-=_font.TextWidth( text )*xhandle
-		y-=_font.TextHeight( text )*yhandle
+		y-=_font.TextHeight( "" )*yhandle
 
 		For char = Eachin text
 			Local tmpChar:=_font._charMap.Get(char)
@@ -2825,7 +2825,12 @@ Class Canvas Extends DrawList
 	Method ReadPixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
 	
 		FlushPrims
-		
+		If _texture
+			glPushFramebuffer( _texture.GLFramebuffer() )
+		Else
+			glPushFramebuffer( defaultFbo )
+		Endif
+					
 		If Not dataPitch Or dataPitch=width*4
 			glReadPixels x,y,width,height,GL_RGBA,GL_UNSIGNED_BYTE,data,dataOffset
 		Else
@@ -2833,6 +2838,7 @@ Class Canvas Extends DrawList
 				glReadPixels x,y+iy,width,1,GL_RGBA,GL_UNSIGNED_BYTE,data,dataOffset+dataPitch*iy
 			Next
 		Endif
+		glPopFramebuffer()
 
 	End
 

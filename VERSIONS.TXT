@@ -1,3 +1,34 @@
+***** v2021-05-16 *****
+
+FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
+FIX: [brl.filesystem] Fixed CreateDir not being able to use cerberus://internal file paths.    (Author: MikeHart)
+FIX: [docs] Corrected Latest new stuff section on the homepage.   (Author: MikeHart)
+FIX: [docs/mojo.app] Typo correction.    (Author: Phil7)
+FIX: [mojo2] Fixed Canvas.ReadPixels only reading the last framebuffer it was rendered to.    (Author: MikeHart)
+FIX: [mojo/mojo2] Fixed Font.TextHeight returning the values without Glyph.yoffset.    (Author: MikeHart)
+FIX: [mojo] Fixed mojo.colornames throwing a "blocks nested to deeply" error on MSVC.    (Author: MikeHart)
+FIX: [html5] "Clear console" Button was still visible when Console was hidden.    (Author: MikeHart)
+MOD: [mojo/mojo2] Changed DrawText to use TextHeight("") when being y-aligned.    (Author: MikeHart)
+MOD: [GLFW/MSVC] Upgraded the solution to use MSVC 2019 and SDK 10.x.    (Author: MikeHart)
+MOD: [agk/buildtarget] Added fixes for TGCs Android template.    (Author: MikeHart)
+MOD: [CURL] Only copy Windows DLLs to the exe, when the brl.httprequest module is imported.    (Author: MikeHart)
+MOD: [CURL] Updated to version 7.75.    (Author: MikeHart)
+NEW: [mojo.input] Added KEY_ALT to the usable key codes.   (Author: MikeHart)
+NEW: [TRANSCC] Added #GLFW_GCC_SRC_OPTS to compile more source files.   (Author: MikeHart)
+NEW: [TRANSCC] Added #GLFW_GCC_VPATH_OPTS to add more paths to source files.   (Author: MikeHart)
+NEW: [TRANSCC/Android] Added bundleRelease to create Android app bundle.   (Author: MikeHart)
+NEW: [TRANSCC/GLFW] Copy dlls into the build folder (Takes care of the OpenAl dlls).   (Author: MikeHart)
+NEW: [mojo/Android] Added new soundpool constructor to replace the depreciated one.   (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_CANVAS_ALPHA to enable the canvas' background alpha channel.   (Author: Holzchopf)
+NEW: [GLFW/MSVC] Added the ability to create 32 and 64bit apps via #GLFW_GCC_MSIZE_WINNT and MSVC. Will create a new app config setting to cover GCC and MSVC later on.   (Author: MikeHart)
+NEW: [brl.ini] Added a new Ini handler module, based on Martin Leidel's initial work.   (Martin, MikeHart)
+
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+
+
 ***** v2020-12-05 *****
 
 FIX: [MOJO/MOJO2] Another try at fixing apps that don't scale right on retina displays.    (Author: Phil7)
@@ -5,12 +36,6 @@ FIX: [HTTPREQUEST] Fixed compiling error on Linux about missing curl include fil
 MOD: [MOJO/MOJO2] Renamed #GLFW_HIGH_DPI_ENABLED constant, to #GLFW_MACOS_RETINA_ENABLED.    (Author: Phil7)
 NEW: [MOJO/MOJO2] Added DeviceWindowWidth:Int() and DeviceWindowHeight:Int() to retrieve to retrieve the size of a windows in desktop unit sizes.    (Author: Phil7)
 NEW: [MOJO/MOJO2] Added DrawImageRect:Void( image:Image,tx:Float,ty:Float,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,rz:Float=0,sx:Float=1,sy:Float=1 )    (Author: Martin)
-
-
-KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
-- GLFW_APP_ICON doesn't work with OSX and Linux.
-
 
 ***** v2020-11-15 *****
 

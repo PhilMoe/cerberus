@@ -22,12 +22,13 @@ LD=g++
 LDFLAGS=$(LDOPTS) -no-pie
 LDLIBS=-lGL -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor $(LIBOPTS) -lpthread -ldl 
 
-vpath %.c ../glfw3/src
-vpath %.c ../stb
-vpath %.c ../tinyfiledialogs
-vpath %.cpp ..
+VPATH= $(VPATHOPTS) \
+%.c ../glfw3/src \
+%.c ../stb \
+%.c ../tinyfiledialogs \
+%.cpp ..
 
-OBJS0=\
+OBJS0= $(SRCOPTS) \
 context.o \
 init.o \
 input.o \

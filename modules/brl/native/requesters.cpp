@@ -382,6 +382,12 @@ String bbRequestDir( String title,String dir ){
 
 #else
 
+typedef char OS_CHAR;
+
+static String::CString<OS_CHAR> OS_STR( const String &t ){
+	return t.ToCString<OS_CHAR>();
+}
+
 #include <tinyfiledialogs.h>
 /*
 String bbRequestFile2( String title,String filter,int save,String path ){

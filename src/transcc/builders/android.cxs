@@ -202,7 +202,7 @@ Class AndroidBuilder Extends Builder
 		
 			Local gradlecfg:="assembleDebug installDebug"
 			
-			If tcc.opt_config = "release" gradlecfg = "assembleRelease"
+			If tcc.opt_config = "release" gradlecfg = "assembleRelease bundleRelease"
 			
 			Local gradle:String
 			If HostOS = "winnt"

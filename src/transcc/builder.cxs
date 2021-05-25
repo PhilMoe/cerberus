@@ -201,9 +201,8 @@ Class Builder
 	Method CopyIcon:Void(iFile:String,targetIcon:String)		
 		If HostOS() = "winnt"
 			Local iconPath:=ExtractDir(StripExt( tcc.opt_srcpath ))
-			local iconFile:String = RealPath(iconPath+"\"+iFile)
+			Local iconFile:String = RealPath(iconPath+"\"+iFile)
 			If FileType( iconFile )=FILETYPE_FILE
-				'Print "Icon1== "+iconFile
 				If ExtractExt( iconFile).ToLower() = "ico"
 					CopyFile (iconFile,targetIcon)
 				Else
@@ -212,7 +211,6 @@ Class Builder
 			Else
 				iconFile = iFile
 				If FileType( iconFile )=FILETYPE_FILE
-					'Print "Icon2== "+iconFile
 					If ExtractExt( iconFile).ToLower() = "ico"
 						CopyFile (iconFile,targetIcon)
 					Else
@@ -472,6 +470,13 @@ Function GetInfo_JPG:Int( path:String )
 	Endif
 	Return -1
 
+End
+
+Function _FixDataPath:String( path:String )
+	Local i:=path.Find( ":/" )
+	If i<>-1 And path.Find("/")=i+1 Return path
+	If path.StartsWith("./") Or path.StartsWith("/") Return path
+	Return "cerberus://data/"+path
 End
 
 Extern

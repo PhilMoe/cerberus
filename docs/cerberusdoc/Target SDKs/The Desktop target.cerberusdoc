@@ -6,7 +6,7 @@ Desktop apps use the OpenGL API for graphics rendering and the OpenAL API for au
 
 >> Windows Requirements
 
-* [MinGW 4.9.2](https://www.cerberus-x.com/downloads/tdm-gcc-64.zip) or [Visual Studio Community 2017 for Windows Desktop](https://visualstudio.microsoft.com/vs/older-downloads/).
+* [MinGW 4.9.2](https://www.cerberus-x.com/downloads/tdm-gcc-64.zip) or [Visual Studio Community 2019 for Windows Desktop](https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16).
 
 * [OpenAL Windows Drivers](https://www.cerberus-x.com/downloads/oalinst.zip).
 

@@ -77,19 +77,21 @@ Function CopyFile:Bool( src:String,dst:String )
 End
 
 Function CreateDir:Bool( path:String )
-	Local _ret:Bool = False
-	path = path.Replace("\","/")
-	Local _dirs:= path.Split("/")
-	Local _curDir:=""
-	For Local _dir :=Eachin _dirs
-		If _dir.Length()= 0 Continue
-		_curDir += _dir
-		If FileType(_curDir)<>FILETYPE_DIR 
-			_ret = BBFileSystem.CreateDir( FixPath( _curDir ) )
-		Endif
-		_curDir += "/"
-	Next
-	Return _ret
+    Local _ret:Bool = False
+    path = FixPath(path).Replace("\","/")
+
+    Local _dirs:= path.Split("/")
+    Local _curDir:=""
+	If path.StartsWith("/") Then _curDir = "/"
+    For Local _dir :=Eachin _dirs
+        If _dir.Length()= 0 Continue
+        _curDir += _dir
+        If FileType(_curDir)<>FILETYPE_DIR
+            _ret = BBFileSystem.CreateDir( FixPath( _curDir ) )
+        Endif
+        _curDir += "/"
+    Next
+    Return _ret
 End
 
 Function DeleteDir:Bool( path:String,recursive:Bool=False )
