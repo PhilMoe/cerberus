@@ -73,7 +73,7 @@ BBHtml5Game.prototype.connectGamepad = function(gamepad) {
 	}
 	
 	//check if this is a standard gamepad
-	if (gamepad.mapping == "standard") {
+//	if (gamepad.mapping == "standard") {
 		//yup so lets add it to an array of valid gamepads
 		//find empty controller slot
 		var slot = -1;
@@ -90,9 +90,9 @@ BBHtml5Game.prototype.connectGamepad = function(gamepad) {
 			
 			//console.log("gamepad at html5 index "+gamepad.index+" mapped to Cerberus gamepad unit "+slot);
 		}
-	} else {
-		console.log('Cerberus has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
-	}
+//	} else {
+//		console.log('Cerberus has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
+//	}
 }
 
 BBHtml5Game.prototype.disconnectGamepad = function(gamepad) {
