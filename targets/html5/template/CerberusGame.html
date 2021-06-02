@@ -43,8 +43,11 @@ div.splitter{
 	background: #343436;
 	border-bottom: 1px solid black;
 	box-shadow: 0 0 1px black;
-
+	display: none;
 }
+#GameConsole, #ConsoleButton {
+	display: none;
+}	
 </style>
 <script>
 
@@ -101,7 +104,7 @@ window.onload=function( e ){
 	        button.style.display = "none";
 	    }
 	  
-		if( fscreen ){
+		if( fscreen || CONSOLE_SHOW === 0){
 			canvasH=window.innerHeight;
 		}else if( canvasH<0 ){
 			canvasH=0;
