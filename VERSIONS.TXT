@@ -3,6 +3,7 @@
 FIX: [HTML5] Fixed still visible CLEAR CONSOLE button when console was hidden.    (Author: Grant)
 MOD: [HTML5] Removed code that ignored non standard mapped joysticks.   (Author: Grant)
 NEW: [HTML5] Added #HTML5_CANVAS_ANTIALIAS to de-/activate canvas antialiasing.   (Author: Grant)
+NEW: [HTML5] Added Hi-DPI support.  (Author: Grant)
 
 
 ***** v2021-05-16 *****

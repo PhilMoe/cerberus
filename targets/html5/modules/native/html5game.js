@@ -1,6 +1,26 @@
 
 var webglGraphicsSeq=1;
 
+//grant Hi-DPI edit start
+var my_dpr = -1;
+
+function tickDPR( canvas ) {
+	var tmp = getDPR();
+	if (tmp != my_dpr) {
+		my_dpr = tmp;
+		if( canvas.updateSize ) canvas.updateSize();
+	}
+}
+
+function getDPR() {
+	var tmp_dpr=1;
+	if ('devicePixelRatio' in window) {
+		tmp_dpr=window.devicePixelRatio;
+	}
+	return tmp_dpr;
+}
+//grant Hi-DPI edit end
+
 function BBHtml5Game( canvas ){
 
 	BBGame.call( this );
@@ -237,7 +257,7 @@ BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 		if( !nextUpdate ) nextUpdate=Date.now();
 		
 		for( var i=0;i<maxUpdates;++i ){
-		
+			tickDPR( game._canvas );//grant Hi-DPI edit
 			game.UpdateGame();
 			if( seq!=game._timerSeq ) return;
 			
@@ -381,7 +401,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	function mouseX( e ){
-		var x=e.clientX+document.body.scrollLeft;
+		var x=e.clientX*my_dpr+document.body.scrollLeft;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			x-=c.offsetLeft;
@@ -391,7 +411,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	function mouseY( e ){
-		var y=e.clientY+document.body.scrollTop;
+		var y=e.clientY*my_dpr+document.body.scrollTop;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			y-=c.offsetTop;
@@ -401,7 +421,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 
 	function touchX( touch ){
-		var x=touch.pageX;
+		var x=touch.pageX*my_dpr;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			x-=c.offsetLeft;
@@ -411,7 +431,7 @@ BBHtml5Game.prototype.Run=function(){
 	}			
 	
 	function touchY( touch ){
-		var y=touch.pageY;
+		var y=touch.pageY*my_dpr;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			y-=c.offsetTop;
@@ -566,11 +586,15 @@ BBHtml5Game.prototype.Run=function(){
 	canvas.updateSize=function(){
 		xscale=canvas.width/canvas.clientWidth;
 		yscale=canvas.height/canvas.clientHeight;
+		canvas.width = canvas.width*my_dpr;//grant Hi-DPI edit
+		canvas.height = canvas.height*my_dpr;//grant Hi-DPI edit
 		game.RenderGame();
 	}
-	
-	canvas.updateSize();
-	
+
+	//canvas.updateSize();//grant Hi-DPI edit
+
+	tickDPR( canvas );//grant Hi-DPI edit
+
 	canvas.focus();
 	
 	game.StartGame();
