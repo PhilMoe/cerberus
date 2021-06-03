@@ -4,7 +4,8 @@ FIX: [HTML5] Fixed still visible CLEAR CONSOLE button when console was hidden.  
 MOD: [HTML5] Removed code that ignored non standard mapped joysticks.   (Author: Grant)
 NEW: [HTML5] Added #HTML5_CANVAS_ANTIALIAS to de-/activate canvas antialiasing.   (Author: Grant)
 NEW: [HTML5] Added Hi-DPI support.  (Author: Grant)
-
+NEW: [HTML5] Added CountJoysticks() support.  (Author: Grant)
+NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.  (Author: Grant)
 
 ***** v2021-05-16 *****
 
