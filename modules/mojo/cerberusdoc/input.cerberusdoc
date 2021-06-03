@@ -146,7 +146,7 @@ End
 
 Sets the clipboard text.
 
-Works only for GLFW target.
+Works only for GLFW and on the Android target.
 
 
 # Function GetClipboard:String()
@@ -155,7 +155,7 @@ Returns the text that is stored inside the clipboard.
 
 Please note that clipboard can be prefilled from other programs. If you want it to be empty, sent an empty string via [[SetClipboard]].
 
-Works only for GLFW target.
+Works only for GLFW and on the Android target.
 
 
 # Function SetMousePos:Void( _x:Int, _y:Int)
@@ -368,7 +368,7 @@ Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
 
 Returns the number of connected joysticks.
 
-This function is only currently supported for the glfw3 target. It will return 0 for all other targets.
+This function is only currently supported for the glfw3 and html5 target. It will return 0 for all other targets.
 
 If @update is true, then the OS is queried to determine the number of joysticks connected. This can be slow, so should be done sparringly.
 

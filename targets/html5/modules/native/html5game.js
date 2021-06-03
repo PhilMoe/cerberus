@@ -57,6 +57,7 @@ function BBHtml5Game( canvas ){
 	// --- start gamepad api by skn3 ---------
 	this._gamepads = null;
 	this._gamepadLookup = [-1,-1,-1,-1];//support 4 gamepads
+	this._gamepadCount = -1;//Grant Edit HTML5 gamepad count
 	var that = this;
 	window.addEventListener("gamepadconnected", function(e) {
 		that.connectGamepad(e.gamepad);
@@ -83,6 +84,22 @@ BBHtml5Game.Html5Game=function(){
 }
 
 // --- start gamepad api by skn3 ---------
+
+//Grant Edit HTML5 gamepad count ---- start
+BBHtml5Game.prototype.CountJoysticks = function( update ) {
+	if (update || this._gamepadCount == -1) {
+		for (var i = this._gamepadLookup.length-1; i >= 0; i --) {
+			if (this._gamepadLookup[i] != -1) {
+				this._gamepadCount = i+1;
+				return this._gamepadCount;
+			}
+		}
+		return 0;
+	}
+	return this._gamepadCount;
+}
+//Grant Edit HTML5 gamepad count ---- end
+
 BBHtml5Game.prototype.getGamepads = function() {
 	return navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 }
@@ -119,15 +136,26 @@ BBHtml5Game.prototype.disconnectGamepad = function(gamepad) {
 	if (!gamepad) {
 		return false;
 	}
-	
+
+	var m_disconnectedIndex = -1;//Grant Edit HTML5 gamepad count
+
 	//scan all gamepads for matching index
 	for(var index = 0;index < this._gamepadLookup.length;index++) {
 		if (this._gamepadLookup[index] == gamepad.index) {
 			//remove this gamepad
+			m_disconnectedIndex = index;//Grant Edit HTML5 gamepad count
 			this._gamepadLookup[index] = -1
 			break;
 		}
 	}
+	//Grant Edit HTML5 gamepad count ---- start
+	if (m_disconnectedIndex >= 0 && m_disconnectedIndex < this._gamepadLookup.length-1) {
+		for (var i = m_disconnectedIndex+1; i < this._gamepadLookup.length; i ++) {
+			this._gamepadLookup[i-1] = this._gamepadLookup[i];
+		}
+		this._gamepadLookup[this._gamepadLookup.length-1] = -1;
+	}
+	//Grant Edit HTML5 gamepad count ---- end
 }
 
 BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
