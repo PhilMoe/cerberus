@@ -1,11 +1,21 @@
-***** v2021-06-02 *****
+***** v2021-06-12 *****
 
+FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
+FIX: [glfw] Fixing Clipboard not dealing with special chars correctly.    (Author: Phil7)
 FIX: [HTML5] Fixed still visible CLEAR CONSOLE button when console was hidden.    (Author: Grant)
+MOD: [android] Removed App Compat Library, hence smaller app sizes.    (Author: Grant)
+MOD: [android] Replace Android JNI with pure Java    (Author: Grant)
+MOD: [android] Permissions for INTERNET and ACCESS_NETWORK_STATE are only added when some modules  are imported that need it.  (Author: MikeHart)
 MOD: [HTML5] Removed code that ignored non standard mapped joysticks.   (Author: Grant)
+NEW: [android] Added #ANDROID_MULTISAMPLING_ENABLED to activate up to 4x Multisampling.   (Author: Grant)
+NEW: [android] Added SetClipboard and GetClipboard.   (Author: Grant)
+NEW: [android] Added #ANDROID_ACCELEROMETER_ENABLED so you can turn off the ACCELEROMETER in Android apps.   (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_CANVAS_ANTIALIAS to de-/activate canvas antialiasing.   (Author: Grant)
 NEW: [HTML5] Added Hi-DPI support.  (Author: Grant)
 NEW: [HTML5] Added CountJoysticks() support.  (Author: Grant)
 NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.  (Author: Grant)
+NEW: [mojo.audio] Added CHANNELSTATE_STOPPED, CHANNELSTATE_PLAYING, CHANNELSTATE_PAUSED and CHANNELSTATE_UNKNOWN constants.  (Author: MikeHart)
+
 
 ***** v2021-05-16 *****
 
