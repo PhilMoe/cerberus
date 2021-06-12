@@ -27,6 +27,11 @@ Global device:AudioDevice
 
 Public
 
+Const CHANNELSTATE_STOPPED:Int =  0
+Const CHANNELSTATE_PLAYING:Int =  1
+Const CHANNELSTATE_PAUSED:Int  =  2
+Const CHANNELSTATE_UNKNOWN:Int = -1
+
 Function SetAudioDevice( dev:AudioDevice )
 	device=dev
 End
