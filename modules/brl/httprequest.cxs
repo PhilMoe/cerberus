@@ -7,6 +7,11 @@ Import brl.asyncevent
     Import "native/httprequest.${TARGET}.${LANG}"
   #Endif
 #Endif
+#If TARGET="android" And Not ANDROID_PERMISSION_INTERNET_IMPLEMENTED
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.INTERNET~q />"
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.ACCESS_NETWORK_STATE~q />"
+#ANDROID_PERMISSION_INTERNET_IMPLEMENTED=True
+#Endif
 
 #If BRL_HTTPREQUEST_IMPLEMENTED
 
