@@ -57,8 +57,11 @@ The parameter string can contain the following variables which will be processed
 %config%				' The configuration during the build process (release|debug).
 %srcName%				' The file name of your main source file.
 %targetName%			' The name of your custom target.
+%host%					' The hostname of the system, the script is running on (winnt|macos|linux).
 
 ##anyCompilerOption##	' Between the pair of ##, you can access any compiler option set in a module, your source files or your config.cxs file.
+
+$$anyCustomVariable$$	' Any custom variable your have added with the set statement.
 
 %ANDROID_PATH%			' The ANDROID_PATH set inside the config file from your cerberus/bin directory.
 %ANDROID_NDK_PATH%		' The ANDROID_NDK_PATH set inside the config file.
@@ -114,4 +117,14 @@ Copies the content of all *data* directories to the %dstDir%.
 Renames the %srcFile% to %dstFile%.
 >>> *inject*::inputfile outputfile section(CONFIG/TRANSCODE/METADATA) (preface)
 Injects the content of the %inputfile% to the %outputfile%. You need to specify a section inside outputfile. %preface is optional and be default set to `~n//`.
+>>> *set*::$$var$$ string/$$var$$/##configOption##/etc.
+Set a custom $$variable$$ with the given content.
+>>> *getenv*::envVar $$var$$
+Store the content of an %enviromental variable% inside a %custom variable%.
+>>> *setenv*::envVar string/$$var$$/##configOption##/etc.
+Temporarily overwrite the content of an %enviromental variable% with given content.
+>>> *if*::param1 EQ/NE/CS/NS param2
+Check if param2 meets the condition of param1. If not, all lines till the next endif statement are not executed.
+>>> *endif*
+Ends and *if* statement.
 
