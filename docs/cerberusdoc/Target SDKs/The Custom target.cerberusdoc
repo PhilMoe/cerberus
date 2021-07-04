@@ -124,7 +124,7 @@ Store the content of an %enviromental variable% inside a %custom variable%.
 >>> *setenv*::envVar string/$$var$$/##configOption##/etc.
 Temporarily overwrite the content of an %enviromental variable% with given content.
 >>> *if*::param1 EQ/NE/CS/NS param2
-Check if param2 meets the condition of param1. If not, all lines till the next endif statement are not executed.
+Check if param2 meets the condition of param1. If not, all lines till the next %endif% statement are not executed.
 >>> *endif*
-Ends and *if* statement.
+Ends an %if% statement.
 
