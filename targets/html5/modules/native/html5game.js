@@ -1,6 +1,26 @@
 
 var webglGraphicsSeq=1;
 
+//grant Hi-DPI edit start
+var my_dpr = -1;
+
+function tickDPR( canvas ) {
+	var tmp = getDPR();
+	if (tmp != my_dpr) {
+		my_dpr = tmp;
+		if( canvas.updateSize ) canvas.updateSize();
+	}
+}
+
+function getDPR() {
+	var tmp_dpr=1;
+	if ('devicePixelRatio' in window) {
+		tmp_dpr=window.devicePixelRatio;
+	}
+	return tmp_dpr;
+}
+//grant Hi-DPI edit end
+
 function BBHtml5Game( canvas ){
 
 	BBGame.call( this );
@@ -23,11 +43,7 @@ function BBHtml5Game( canvas ){
 //			print( "WebGL context restored!" );
 		},false );
 
-		if( CFG_HTML5_CANVAS_ALPHA=="1" ) {
-			var attrs={ alpha:true };
-		} else {
-			var attrs={ alpha:false };
-		}
+		var attrs={ antialias: ( CFG_HTML5_CANVAS_ANTIALIAS=="1" ), alpha:( CFG_HTML5_CANVAS_ALPHA=="1" ) };
 	
 		this._gl=this._canvas.getContext( "webgl",attrs );
 
@@ -41,6 +57,7 @@ function BBHtml5Game( canvas ){
 	// --- start gamepad api by skn3 ---------
 	this._gamepads = null;
 	this._gamepadLookup = [-1,-1,-1,-1];//support 4 gamepads
+	this._gamepadCount = -1;//Grant Edit HTML5 gamepad count
 	var that = this;
 	window.addEventListener("gamepadconnected", function(e) {
 		that.connectGamepad(e.gamepad);
@@ -67,6 +84,22 @@ BBHtml5Game.Html5Game=function(){
 }
 
 // --- start gamepad api by skn3 ---------
+
+//Grant Edit HTML5 gamepad count ---- start
+BBHtml5Game.prototype.CountJoysticks = function( update ) {
+	if (update || this._gamepadCount == -1) {
+		for (var i = this._gamepadLookup.length-1; i >= 0; i --) {
+			if (this._gamepadLookup[i] != -1) {
+				this._gamepadCount = i+1;
+				return this._gamepadCount;
+			}
+		}
+		return 0;
+	}
+	return this._gamepadCount;
+}
+//Grant Edit HTML5 gamepad count ---- end
+
 BBHtml5Game.prototype.getGamepads = function() {
 	return navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 }
@@ -77,7 +110,7 @@ BBHtml5Game.prototype.connectGamepad = function(gamepad) {
 	}
 	
 	//check if this is a standard gamepad
-	if (gamepad.mapping == "standard") {
+//	if (gamepad.mapping == "standard") {
 		//yup so lets add it to an array of valid gamepads
 		//find empty controller slot
 		var slot = -1;
@@ -94,24 +127,35 @@ BBHtml5Game.prototype.connectGamepad = function(gamepad) {
 			
 			//console.log("gamepad at html5 index "+gamepad.index+" mapped to Cerberus gamepad unit "+slot);
 		}
-	} else {
-		console.log('Cerberus has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
-	}
+//	} else {
+//		console.log('Cerberus has ignored gamepad at raw port #'+gamepad.index+' with unrecognised mapping scheme \''+gamepad.mapping+'\'.');
+//	}
 }
 
 BBHtml5Game.prototype.disconnectGamepad = function(gamepad) {
 	if (!gamepad) {
 		return false;
 	}
-	
+
+	var m_disconnectedIndex = -1;//Grant Edit HTML5 gamepad count
+
 	//scan all gamepads for matching index
 	for(var index = 0;index < this._gamepadLookup.length;index++) {
 		if (this._gamepadLookup[index] == gamepad.index) {
 			//remove this gamepad
+			m_disconnectedIndex = index;//Grant Edit HTML5 gamepad count
 			this._gamepadLookup[index] = -1
 			break;
 		}
 	}
+	//Grant Edit HTML5 gamepad count ---- start
+	if (m_disconnectedIndex >= 0 && m_disconnectedIndex < this._gamepadLookup.length-1) {
+		for (var i = m_disconnectedIndex+1; i < this._gamepadLookup.length; i ++) {
+			this._gamepadLookup[i-1] = this._gamepadLookup[i];
+		}
+		this._gamepadLookup[this._gamepadLookup.length-1] = -1;
+	}
+	//Grant Edit HTML5 gamepad count ---- end
 }
 
 BBHtml5Game.prototype.PollJoystick=function(port, joyx, joyy, joyz, buttons){
@@ -241,7 +285,7 @@ BBHtml5Game.prototype.ValidateUpdateTimer=function(){
 		if( !nextUpdate ) nextUpdate=Date.now();
 		
 		for( var i=0;i<maxUpdates;++i ){
-		
+			tickDPR( game._canvas );//grant Hi-DPI edit
 			game.UpdateGame();
 			if( seq!=game._timerSeq ) return;
 			
@@ -385,7 +429,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	function mouseX( e ){
-		var x=e.clientX+document.body.scrollLeft;
+		var x=e.clientX*my_dpr+document.body.scrollLeft;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			x-=c.offsetLeft;
@@ -395,7 +439,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 	
 	function mouseY( e ){
-		var y=e.clientY+document.body.scrollTop;
+		var y=e.clientY*my_dpr+document.body.scrollTop;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			y-=c.offsetTop;
@@ -405,7 +449,7 @@ BBHtml5Game.prototype.Run=function(){
 	}
 
 	function touchX( touch ){
-		var x=touch.pageX;
+		var x=touch.pageX*my_dpr;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			x-=c.offsetLeft;
@@ -415,7 +459,7 @@ BBHtml5Game.prototype.Run=function(){
 	}			
 	
 	function touchY( touch ){
-		var y=touch.pageY;
+		var y=touch.pageY*my_dpr;//grant Hi-DPI edit
 		var c=canvas;
 		while( c ){
 			y-=c.offsetTop;
@@ -570,11 +614,15 @@ BBHtml5Game.prototype.Run=function(){
 	canvas.updateSize=function(){
 		xscale=canvas.width/canvas.clientWidth;
 		yscale=canvas.height/canvas.clientHeight;
+		canvas.width = canvas.width*my_dpr;//grant Hi-DPI edit
+		canvas.height = canvas.height*my_dpr;//grant Hi-DPI edit
 		game.RenderGame();
 	}
-	
-	canvas.updateSize();
-	
+
+	//canvas.updateSize();//grant Hi-DPI edit
+
+	tickDPR( canvas );//grant Hi-DPI edit
+
 	canvas.focus();
 	
 	game.StartGame();

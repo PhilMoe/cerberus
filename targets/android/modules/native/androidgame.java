@@ -63,10 +63,31 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	float[] _joyz=new float[2];
 	boolean[] _buttons=new boolean[32];
 	
+	android.content.ClipboardManager _clipboard;//Grant Edit clipboard for Android
+
+	//Grant Edit clipboard for Android ---- start
+	public void SetClipboard(String string) {
+		if (_clipboard != null) {
+			_clipboard.setPrimaryClip(ClipData.newPlainText(string, string));
+		}
+	}
+
+	public String GetClipboard() {
+		if (_clipboard != null) {
+			ClipData clip = _clipboard.getPrimaryClip();
+			if (clip != null) {
+				return clip.getItemAt(0).getText().toString();
+			}
+		}
+		return "";
+	}
+	//Grant Edit clipboard for Android ---- end
+
 	public BBAndroidGame( Activity activity,GameView view ){
 		_androidGame=this;
 
 		_activity=activity;
+		_clipboard = (android.content.ClipboardManager) _activity.getSystemService(Context.CLIPBOARD_SERVICE);//Grant Edit clipboard for Android
 		_view=view;
 		
 		_display=_activity.getWindowManager().getDefaultDisplay();
@@ -564,12 +585,14 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	public void Run(){
 
 		//touch input handling	
-		SensorManager sensorManager=(SensorManager)_activity.getSystemService( Context.SENSOR_SERVICE );
-		List<Sensor> sensorList=sensorManager.getSensorList( Sensor.TYPE_ACCELEROMETER );
-		Iterator<Sensor> it=sensorList.iterator();
-		if( it.hasNext() ){
-			Sensor sensor=it.next();
-			sensorManager.registerListener( this,sensor,SensorManager.SENSOR_DELAY_GAME );
+		if( CerberusConfig.ANDROID_ACCELEROMETER_ENABLED.equals( "1" ) ){
+			SensorManager sensorManager=(SensorManager)_activity.getSystemService( Context.SENSOR_SERVICE );
+			List<Sensor> sensorList=sensorManager.getSensorList( Sensor.TYPE_ACCELEROMETER );
+			Iterator<Sensor> it=sensorList.iterator();
+			if( it.hasNext() ){
+				Sensor sensor=it.next();
+				sensorManager.registerListener( this,sensor,SensorManager.SENSOR_DELAY_GAME );
+			}
 		}
 		
 		//audio volume control
@@ -590,7 +613,10 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 			}catch( Exception ex ){
 			}
 		}
-
+		
+		if( CerberusConfig.ANDROID_MULTISAMPLING_ENABLED.equals( "1" ) ){
+			_view.setEGLConfigChooser(new MultisampleConfigChooser());
+			}
 		_view.setRenderer( this );
 		_view.setFocusableInTouchMode( true );
 		_view.requestFocus();
@@ -707,12 +733,14 @@ class AndroidGame extends Activity{
 	
 	//***** Activity *****
 	public void onWindowFocusChanged( boolean hasFocus ){
-		if( hasFocus ){
-			_view.onResume();
-			_game.ResumeGame();
-		}else{
-			_game.SuspendGame();
-			_view.onPause();
+		if( CerberusConfig.MOJO_AUTO_SUSPEND_ENABLED.equals( "1" ) ){
+			if( hasFocus ){
+				_view.onResume();
+				_game.ResumeGame();
+			}else{
+				_game.SuspendGame();
+				_view.onPause();
+			}
 		}
 	}
 

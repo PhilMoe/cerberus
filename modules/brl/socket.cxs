@@ -14,6 +14,12 @@ Import "native/socket.cpp"
 #BRL_SOCKET_IMPLEMENTED=True
 Import "native/socket.java"
 
+#If Not ANDROID_PERMISSION_INTERNET_IMPLEMENTED
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.INTERNET~q />"
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.ACCESS_NETWORK_STATE~q />"
+#ANDROID_PERMISSION_INTERNET_IMPLEMENTED=True
+#Endif
+
 #Else If TARGET="winrt"
 
 #BRL_SOCKET_IMPLEMENTED=True

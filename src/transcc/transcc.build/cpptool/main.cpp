@@ -15832,6 +15832,7 @@ class c_AGKBuilder_android : public c_Builder{
 };
 class c_CustomBuilder : public c_Builder{
 	public:
+	c_StringMap2* m_custVars;
 	c_CustomBuilder();
 	c_CustomBuilder* m_new(c_TransCC*);
 	c_CustomBuilder* m_new2();
@@ -18433,7 +18434,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-03-21",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-07-04",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -22542,9 +22543,11 @@ void c_AGKBuilder_android::mark(){
 	c_Builder::mark();
 }
 c_CustomBuilder::c_CustomBuilder(){
+	m_custVars=0;
 }
 c_CustomBuilder* c_CustomBuilder::m_new(c_TransCC* t_tcc){
 	c_Builder::m_new(t_tcc);
+	m_custVars=(new c_StringMap2)->m_new();
 	return this;
 }
 c_CustomBuilder* c_CustomBuilder::m_new2(){
@@ -22667,12 +22670,27 @@ String c_CustomBuilder::p_ReplaceParams(String t_params){
 	t_r=t_r.Replace(String(L"%config%",8),m_tcc->m_opt_config);
 	t_r=t_r.Replace(String(L"%srcName%",9),bb_os_StripExt(bb_os_StripDir(m_tcc->m_opt_srcpath)));
 	t_r=t_r.Replace(String(L"%targetName%",12),bb_os_StripDir(t_targetPath));
+	t_r=t_r.Replace(String(L"%host%",6),HostOS());
 	int t_f1=t_r.Find(String(L"##",2),0);
-	int t_f2=t_r.Find(String(L"##",2),t_f1+1);
-	String t_s=t_r.Slice(t_f1,t_f2+2);
-	if(t_f2>0){
-		String t_cfv=bb_config_GetConfigVar(t_r.Slice(t_f1+2,t_f2)).Replace(String(L";",1),String(L" ",1));
-		t_r=t_r.Replace(t_s,t_cfv);
+	while(t_f1>=0){
+		int t_f2=t_r.Find(String(L"##",2),t_f1+1);
+		String t_s=t_r.Slice(t_f1,t_f2+2);
+		if(t_f2>0){
+			String t_cfv=bb_config_GetConfigVar(t_r.Slice(t_f1+2,t_f2)).Replace(String(L";",1),String(L" ",1));
+			t_r=t_r.Replace(t_s,t_cfv);
+		}
+		t_f1=t_r.Find(String(L"##",2),t_f2+2);
+	}
+	int t_f3=t_r.Find(String(L"$$",2),0);
+	while(t_f3>=0){
+		int t_f4=t_r.Find(String(L"$$",2),t_f1+1);
+		String t_cv=t_r.Slice(t_f3,t_f4+2);
+		if(t_f4>0){
+			if(m_custVars->p_Contains(t_cv)){
+				t_r=t_r.Replace(t_cv,m_custVars->p_Get(t_cv));
+			}
+		}
+		t_f3=t_r.Find(String(L"$$",2),t_f4+2);
 	}
 	return t_r;
 }
@@ -22685,6 +22703,7 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 	String t_config=m_tcc->m_opt_config;
 	String t_hostS=HostOS();
 	String t_echo=String(L"on",2);
+	bool t_falseIf=false;
 	Array<String > t_=t_script.Split(String(L"\n",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -22706,6 +22725,9 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 		if(t_hostS!=HostOS() && t_hostS!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
 			continue;
 		}
+		if(t_command!=String(L"endif",5) && t_falseIf==true){
+			continue;
+		}
 		String t_params=p_ReplaceParams(t_token[1].Trim());
 		Array<String > t_parToken=t_params.Split(String(L" ",1));
 		if(t_echo==String(L"on",2) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
@@ -22715,131 +22737,180 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 		if(t_6==String(L"print",5)){
 			bbPrint(t_params);
 		}else{
-			if(t_6==String(L"setecho",7)){
-				String t_ec=t_parToken[0].ToLower();
-				if(t_ec!=String(L"on",2) && t_ec!=String(L"off",3)){
-					p_ScriptError(t_lineNum,t_line,String(L"Unrecognized echo mode!",23));
-					break;
-				}
-				t_echo=t_ec;
+			if(t_6==String(L"endif",5)){
+				t_falseIf=false;
 			}else{
-				if(t_6==String(L"sethost",7)){
-					String t_hst=t_parToken[0].ToLower();
-					if(t_hst!=String(L"winnt",5) && t_hst!=String(L"macos",5) && t_hst!=String(L"linux",5) && t_hst!=String(L"all",3)){
-						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
+				if(t_6==String(L"if",2)){
+					t_falseIf=false;
+					if(t_parToken[1].ToLower()!=String(L"eq",2) && t_parToken[1].ToLower()!=String(L"ne",2) && t_parToken[1].ToLower()!=String(L"cs",2) && t_parToken[1].ToLower()!=String(L"ns",2)){
+						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized compare mode!",26));
 						break;
 					}
-					t_hostS=t_hst;
-				}else{
-					if(t_6==String(L"config",6)){
-						String t_cfg=t_parToken[0].ToLower();
-						if(t_cfg!=String(L"release",7) && t_cfg!=String(L"debug",5) && t_cfg!=String(L"all",3)){
-							p_ScriptError(t_lineNum,t_line,String(L"Unrecognized configuration!",27));
-							break;
+					String t_7=t_parToken[1].ToLower();
+					if(t_7==String(L"eq",2)){
+						if(t_parToken[0].ToLower()!=t_parToken[2].ToLower()){
+							t_falseIf=true;
 						}
-						t_config=t_cfg;
 					}else{
-						if(t_6==String(L"build",5)){
-							if(m_tcc->m_opt_build){
-								if(p_Execute(t_params,true)!=true){
-									p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
-									break;
-								}
+						if(t_7==String(L"ne",2)){
+							if(t_parToken[0].ToLower()==t_parToken[2].ToLower()){
+								t_falseIf=true;
 							}
 						}else{
-							if(t_6==String(L"execute",7)){
-								if(m_tcc->m_opt_run){
-									if(p_Execute(t_params,true)!=true){
-										p_ScriptError(t_lineNum,t_line,String(L"Execution failed!",17));
-										break;
-									}
+							if(t_7==String(L"cs",2)){
+								if(t_parToken[0].ToLower().Contains(t_parToken[2].ToLower())==false){
+									t_falseIf=true;
 								}
 							}else{
-								if(t_6==String(L"replace",7)){
-									if(FileType(t_parToken[0])!=1){
-										p_ScriptError(t_lineNum,t_line,String(L"File not found!",15));
-										break;
+								if(t_7==String(L"ns",2)){
+									if(t_parToken[0].ToLower().Contains(t_parToken[2].ToLower())==true){
+										t_falseIf=true;
 									}
-									String t_file=LoadString(t_parToken[0]);
-									t_file=t_file.Replace(t_parToken[1],t_parToken[2]);
-									if(SaveString(t_file,t_parToken[0])==0){
-										p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[0]+String(L"!",1));
-										break;
-									}
-								}else{
-									if(t_6==String(L"copyfile",8)){
-										if(CopyFile(t_parToken[0],t_parToken[1])==0){
-											p_ScriptError(t_lineNum,t_line,String(L"Could not copy file!",20));
+								}
+							}
+						}
+					}
+				}else{
+					if(t_6==String(L"setecho",7)){
+						String t_ec=t_parToken[0].ToLower();
+						if(t_ec!=String(L"on",2) && t_ec!=String(L"off",3)){
+							p_ScriptError(t_lineNum,t_line,String(L"Unrecognized echo mode!",23));
+							break;
+						}
+						t_echo=t_ec;
+					}else{
+						if(t_6==String(L"sethost",7)){
+							String t_hst=t_parToken[0].ToLower();
+							if(t_hst!=String(L"winnt",5) && t_hst!=String(L"macos",5) && t_hst!=String(L"linux",5) && t_hst!=String(L"all",3)){
+								p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
+								break;
+							}
+							t_hostS=t_hst;
+						}else{
+							if(t_6==String(L"config",6)){
+								String t_cfg=t_parToken[0].ToLower();
+								if(t_cfg!=String(L"release",7) && t_cfg!=String(L"debug",5) && t_cfg!=String(L"all",3)){
+									p_ScriptError(t_lineNum,t_line,String(L"Unrecognized configuration!",27));
+									break;
+								}
+								t_config=t_cfg;
+							}else{
+								if(t_6==String(L"build",5)){
+									if(m_tcc->m_opt_build){
+										if(p_Execute(t_params,true)!=true){
+											p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
 											break;
 										}
+									}
+								}else{
+									if(t_6==String(L"execute",7)){
+										if(m_tcc->m_opt_run){
+											if(p_Execute(t_params,true)!=true){
+												p_ScriptError(t_lineNum,t_line,String(L"Execution failed!",17));
+												break;
+											}
+										}
 									}else{
-										if(t_6==String(L"deletefile",10)){
-											if(DeleteFile(t_parToken[0])==0){
-												p_ScriptError(t_lineNum,t_line,String(L"Could not delete file!",22));
+										if(t_6==String(L"replace",7)){
+											if(FileType(t_parToken[0])!=1){
+												p_ScriptError(t_lineNum,t_line,String(L"File not found!",15));
+												break;
+											}
+											String t_file=LoadString(t_parToken[0]);
+											t_file=t_file.Replace(t_parToken[1],t_parToken[2]);
+											if(SaveString(t_file,t_parToken[0])==0){
+												p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[0]+String(L"!",1));
 												break;
 											}
 										}else{
-											if(t_6==String(L"copydata",8)){
-												p_CreateDataDir(t_parToken[0]);
-												if(FileType(t_parToken[0])!=2){
-													p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
+											if(t_6==String(L"copyfile",8)){
+												if(CopyFile(t_parToken[0],t_parToken[1])==0){
+													p_ScriptError(t_lineNum,t_line,String(L"Could not copy file!",20));
 													break;
 												}
 											}else{
-												if(t_6==String(L"copydir",7)){
-													if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
-														p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
+												if(t_6==String(L"deletefile",10)){
+													if(DeleteFile(t_parToken[0])==0){
+														p_ScriptError(t_lineNum,t_line,String(L"Could not delete file!",22));
 														break;
 													}
 												}else{
-													if(t_6==String(L"changedir",9)){
-														if(ChangeDir(t_parToken[0])!=0){
-															p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
+													if(t_6==String(L"copydata",8)){
+														p_CreateDataDir(t_parToken[0]);
+														if(FileType(t_parToken[0])!=2){
+															p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
 															break;
 														}
 													}else{
-														if(t_6==String(L"deletedir",9)){
-															if(bb_os_DeleteDir(t_parToken[0],true)==0){
-																p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
+														if(t_6==String(L"copydir",7)){
+															if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
+																p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
 																break;
 															}
 														}else{
-															if(t_6==String(L"createdir",9)){
-																if(CreateDir(t_parToken[0])==0){
-																	p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
+															if(t_6==String(L"changedir",9)){
+																if(ChangeDir(t_parToken[0])!=0){
+																	p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
 																	break;
 																}
 															}else{
-																if(t_6==String(L"renamefile",10)){
-																	if(CopyFile(t_parToken[0],t_parToken[1])==0){
-																		p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																if(t_6==String(L"deletedir",9)){
+																	if(bb_os_DeleteDir(t_parToken[0],true)==0){
+																		p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
 																		break;
 																	}
-																	DeleteFile(t_parToken[0]);
 																}else{
-																	if(t_6==String(L"inject",6)){
-																		if(FileType(t_parToken[0])!=1){
-																			p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
-																			break;
-																		}
-																		String t_input=LoadString(t_parToken[0]);
-																		if(FileType(t_parToken[1])!=1){
-																			p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
-																			break;
-																		}
-																		String t_output=LoadString(t_parToken[1]);
-																		if(t_parToken.Length()==3){
-																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
-																		}else{
-																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
-																		}
-																		if(SaveString(t_output,t_parToken[1])!=0){
-																			p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																	if(t_6==String(L"createdir",9)){
+																		if(CreateDir(t_parToken[0])==0){
+																			p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
 																			break;
 																		}
 																	}else{
-																		bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
-																		break;
+																		if(t_6==String(L"renamefile",10)){
+																			if(CopyFile(t_parToken[0],t_parToken[1])==0){
+																				p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																				break;
+																			}
+																			DeleteFile(t_parToken[0]);
+																		}else{
+																			if(t_6==String(L"getenv",6)){
+																				String t_ev=GetEnv(t_parToken[0]);
+																				m_custVars->p_Set2(t_parToken[1],t_ev);
+																			}else{
+																				if(t_6==String(L"setenv",6)){
+																					SetEnv(t_parToken[0],t_parToken[1]);
+																				}else{
+																					if(t_6==String(L"set",3)){
+																						m_custVars->p_Set2(t_parToken[0],t_parToken[1]);
+																					}else{
+																						if(t_6==String(L"inject",6)){
+																							if(FileType(t_parToken[0])!=1){
+																								p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
+																								break;
+																							}
+																							String t_input=LoadString(t_parToken[0]);
+																							if(FileType(t_parToken[1])!=1){
+																								p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
+																								break;
+																							}
+																							String t_output=LoadString(t_parToken[1]);
+																							if(t_parToken.Length()==3){
+																								t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
+																							}else{
+																								t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
+																							}
+																							if(SaveString(t_output,t_parToken[1])!=0){
+																								p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																								break;
+																							}
+																						}else{
+																							bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
+																							break;
+																						}
+																					}
+																				}
+																			}
+																		}
 																	}
 																}
 															}

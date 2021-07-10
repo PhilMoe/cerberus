@@ -3,10 +3,13 @@
 
 Samples for the advanced 2D rendering API.
 
+* [[../../examples/mojo2/2Din3D/2Din3D.cxs|Display 2D in 3D]]
+* [[../../examples/mojo2/asyncimageloading/asyncimageloading.cxs|Asynchronous loading of images]]
 * [[../../examples/mojo2/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
 * [[../../examples/mojo2/bouncyaliens/bouncyaliens.cxs|Bouncy aliens converted to mojo2]]
 * [[../../examples/mojo2/bumptest/bumptest.cxs|Bumpmapping test]]
-* [[../../examples/mojo2/directlight/directlight.cxs|Simple lighting]]
+* [[../../examples/mojo2/countJoysticksDemo/countJoysticksDemo.cxs|Counting Joysticks Demo]]
+* [[../../examples/mojo2/directlight/directlight.cxs|Simple direct lighting]]
 * [[../../examples/mojo2/drawprimitives/drawprimitives.cxs|Drawing primitives]]
 * [[../../examples/mojo2/drawprimitives2/drawprimitives2.cxs|Drawing several images with one call to DrawPrimitives]]
 * [[../../examples/mojo2/helloworld/helloworld.cxs|Hello world]]
@@ -16,5 +19,6 @@ Samples for the advanced 2D rendering API.
 * [[../../examples/mojo2/rendererdemo/rendererdemo.cxs|Using the renderer class]]
 * [[../../examples/mojo2/rendertoimage/rendertoimage.cxs|Simple render to image]]
 * [[../../examples/mojo2/shadereffect/shadereffect.cxs|Simple shader effect]]
+* [[../../examples/mojo2/tween/tween_example.cxs|Tweening test]]
 * [[../../examples/mojo2/vectormonkey/vectormonkey.cxs|Way cool vector Cerberus X demo!]]
 * [[../../examples/mojo2/writepixels/writepixels.cxs|Create image with writepixels]]

@@ -1,0 +1,50 @@
+Strict
+
+Import mojo2
+
+#ANDROID_APP_LABEL="Joysticks Demo"
+#ANDROID_APP_PACKAGE="com.grantojanen.joysticksdemo"
+
+Function Main:Int()
+    New Application()
+    Return 0
+End
+
+
+Class Application Extends App Final
+
+    Field canvas:Canvas
+  
+    Method OnCreate:Int()
+        canvas = New Canvas()
+        Return 0
+    End
+  
+    Method OnUpdate:Int()
+        Return 0
+    End
+  
+    Method OnRender:Int()
+        canvas.Clear(1,0,1)
+        canvas.DrawText(("CountJoysticks(True): " + CountJoysticks(True) +
+        				"~nJoyDown()~nslot 1: " + JoyDown(JOY_A,0) + JoyDown(JOY_B,0) + JoyDown(JOY_X,0) + JoyDown(JOY_Y,0) + JoyDown(JOY_LB,0) + JoyDown(JOY_RB,0) + JoyDown(JOY_LSB,0) + JoyDown(JOY_RSB,0) + JoyDown(JOY_START,0) + JoyDown(JOY_BACK,0) + JoyDown(JOY_UP,0) + JoyDown(JOY_RIGHT,0) + JoyDown(JOY_DOWN,0) + JoyDown(JOY_LEFT,0)+  
+        				"~nslot 2: " + JoyDown(JOY_A,1) + JoyDown(JOY_B,1) + JoyDown(JOY_X,1) + JoyDown(JOY_Y,1) + JoyDown(JOY_LB,1) + JoyDown(JOY_RB,1) + JoyDown(JOY_LSB,1) + JoyDown(JOY_RSB,1) + JoyDown(JOY_START,1) + JoyDown(JOY_BACK,1) + JoyDown(JOY_UP,1) + JoyDown(JOY_RIGHT,1) + JoyDown(JOY_DOWN,1) + JoyDown(JOY_LEFT,1)+
+        				"~nslot 3: " + JoyDown(JOY_A,2) + JoyDown(JOY_B,2) + JoyDown(JOY_X,2) + JoyDown(JOY_Y,2) + JoyDown(JOY_LB,2) + JoyDown(JOY_RB,2) + JoyDown(JOY_LSB,2) + JoyDown(JOY_RSB,2) + JoyDown(JOY_START,2) + JoyDown(JOY_BACK,2) + JoyDown(JOY_UP,2) + JoyDown(JOY_RIGHT,2) + JoyDown(JOY_DOWN,2) + JoyDown(JOY_LEFT,2)+
+        				"~nslot 4: " + JoyDown(JOY_A,3) + JoyDown(JOY_B,3) + JoyDown(JOY_X,3) + JoyDown(JOY_Y,3) + JoyDown(JOY_LB,3) + JoyDown(JOY_RB,3) + JoyDown(JOY_LSB,3) + JoyDown(JOY_RSB,3) + JoyDown(JOY_START,3) + JoyDown(JOY_BACK,3) + JoyDown(JOY_UP,3) + JoyDown(JOY_RIGHT,3) + JoyDown(JOY_DOWN,3) + JoyDown(JOY_LEFT,3)+
+        				"~nJoyX()~nslot 1: " + JoyX(0,0) + JoyX(1,0)+
+        				"~nslot 2: " + JoyX(0,1) + JoyX(1,1)+
+        				"~nslot 3: " + JoyX(0,2) + JoyX(1,2)+
+        				"~nslot 4: " + JoyX(0,3) + JoyX(1,3)+
+        				"~nJoyY()~nslot 1: " + JoyY(0,0) + JoyY(1,0)+
+        				"~nslot 2: " + JoyY(0,1) + JoyY(1,1)+
+        				"~nslot 3: " + JoyY(0,2) + JoyY(1,2)+
+        				"~nslot 4: " + JoyY(0,3) + JoyY(1,3)+
+        				"~nJoyZ()~nslot 1: " + JoyZ(0,0) + JoyZ(1,0)+
+        				"~nslot 2: " + JoyZ(0,1) + JoyZ(1,1)+
+        				"~nslot 3: " + JoyZ(0,2) + JoyZ(1,2)+
+        				"~nslot 4: " + JoyZ(0,3) + JoyZ(1,3)).Split("~n"),5,5)
+        canvas.Flush
+        Return 0
+    End
+  
+End

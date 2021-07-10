@@ -3,11 +3,12 @@ package com.cerberus;
 
 public class LangUtil{
 
-	static{
-		System.loadLibrary( "langutil" );
-    }	
-
-	public native static int parseInt( String str );
-	
-	public native static float parseFloat( String str );
+    public static int parseInt( String str ) {
+        return Integer.parseInt(str);
+    }
+    
+    public static float parseFloat( String str ) {
+        return Float.parseFloat(str);
+    }
+    
 }

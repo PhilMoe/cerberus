@@ -88,6 +88,15 @@ abstract class BBGame{
 		return _keyboardEnabled;
 	}
 
+	//Grant Edit clipboard for Android ---- start
+	public void SetClipboard(String string) {
+	}
+
+	public String GetClipboard() {
+		return "";
+	}
+	//Grant Edit clipboard for Android ---- end
+	
 	public void SetUpdateRate( int hertz ){
 		_updateRate=hertz;
 	}
