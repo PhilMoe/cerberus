@@ -16,7 +16,6 @@ Class MyApp Extends App
 	Field grabbed:Bool
 	
 	Method OnCreate:Int()
-
 		'randomise
 		Seed = Millisecs()
 		myCanvas = New Canvas()
@@ -61,7 +60,7 @@ Class MyApp Extends App
 		myCanvas.SetColor(0, 0, 0) 
 		myCanvas.DrawText("CLICK TO GRAB CENTRE", DeviceWidth()/2, DeviceHeight() - 16, 0.5)		
 		myCanvas.SetColor(1, 1, 1) 
-		
+
 		' if grabbed by mouse translate the drawing of the list
 		If grabbed
 			myCanvas.PushMatrix()

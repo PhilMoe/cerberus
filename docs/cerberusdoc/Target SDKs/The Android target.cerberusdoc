@@ -4,13 +4,24 @@ Android is Google's hugely popular cellphone and tablet OS.
 
 >> You will need
 
-* The [Android Studio](https://developer.android.com/studio/index.html). You will also need to install the API24 SDK.
+* The [Android Studio](https://developer.android.com/studio). 
 
-* The [Java SE JDK](http://www.oracle.com/technetwork/java/javase/downloads).
+After the installation, please run Android Studio. If you never had installed it before, it will ask for an SDK installation. 
+As you don't have one, press CANCEL. A few dialogs further it will install the latest. If it isn't the latest, you will also need to install the SDK API level 30.
+
+* The [Java SE JDK](https://jdk.java.net/java-se-ri/8-MR3).
+
+This is not mandatory, as you can use the JRE that ships with Android Studio.
 
 >> Getting started
 
 The `ANDROID_PATH` (Windows/MacOS) and `JDK_PATH` (Windows) vars in your [[Trans]] config file must be correctly set to use the android target.
+
+HINT: If you set the `ANDROID_PATH` to the Android location in your user local appdata, you are avoiding the nasty `lisence` problem when you build apps. like this:
+<pre>
+ANDROID_PATH="C:\Users\mike\AppData\Local\Android\Sdk"
+</pre>
+
 
 To run apps on real hardware on MacOS, you should be able to just 'plug and play'. Make sure to enable 'USB debugging' on the device first though.
 
