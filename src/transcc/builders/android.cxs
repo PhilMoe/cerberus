@@ -232,10 +232,11 @@ Class AndroidBuilder Extends Builder
 
 				Local adb:="adb"
 				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
-
 				Execute adb+" logcat -c",False
 				Execute adb+" shell am start -n "+app_package+"/"+app_package+".CerberusGame",False
-				Execute adb+" logcat [Cerberus]:I *:E",False
+				Local optLogcat:String = GetConfigVar( "ANDROID_LOGCAT_OPTION" )
+
+				Execute adb+" logcat "+optLogcat,False
 			
 '				Execute "echo $PATH",False
 '				Execute "adb logcat -c",False

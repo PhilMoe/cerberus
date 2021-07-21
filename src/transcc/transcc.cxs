@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2021-07-04 (DEBUG)"
+    Const VERSION:="2021-07-21 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2021-07-04"
+    Const VERSION:="2021-07-21"
 #Endif
 
 Function Main()

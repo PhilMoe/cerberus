@@ -1,4 +1,4 @@
-***** v2021-07-11 *****
+***** v2021-07-21 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -18,6 +18,7 @@ NEW: [CUSTOM target] Added %host% to return the host the script is running on.  
 NEW: [ANDROID] Added #ANDROID_MULTISAMPLING_ENABLED to activate up to 4x Multisampling.    (Author: Grant)
 NEW: [ANDROID] Added SetClipboard and GetClipboard.    (Author: Grant)
 NEW: [ANDROID] Added #ANDROID_ACCELEROMETER_ENABLED so you can turn off the ACCELEROMETER in Android apps.    (Author: MikeHart)
+NEW: [ANDROID] Added #ANDROID_LOGCAT_OPTION="[Cerberus]:I *:E" so you can customize the LOGCAT output at build&run time.    (Author: MikeHart)
 NEW: [HTML5] Added #HTML5_CANVAS_ANTIALIAS to de-/activate canvas antialiasing.    (Author: Grant)
 NEW: [HTML5] Added CountJoysticks() support.    (Author: Grant)
 NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.    (Author: Grant)

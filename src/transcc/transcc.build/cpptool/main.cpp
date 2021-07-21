@@ -18434,7 +18434,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-07-04",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-07-21",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20633,7 +20633,8 @@ void c_AndroidBuilder::p_MakeTarget(){
 			}
 			p_Execute(t_adb2+String(L" logcat -c",10),false);
 			p_Execute(t_adb2+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+t_app_package+String(L".CerberusGame",13),false);
-			p_Execute(t_adb2+String(L" logcat [Cerberus]:I *:E",24),false);
+			String t_optLogcat=bb_config_GetConfigVar(String(L"ANDROID_LOGCAT_OPTION",21));
+			p_Execute(t_adb2+String(L" logcat ",8)+t_optLogcat,false);
 		}
 	}
 }

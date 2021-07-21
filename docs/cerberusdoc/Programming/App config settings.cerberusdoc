@@ -121,6 +121,7 @@ The following app config settings are currently supported:
 #ANDROID_KEY_STORE_PASSWORD="password"
 #ANDROID_KEY_ALIAS_PASSWORD="password"
 #ANDROID_SIGN_APP=False
+#ANDROID_LOGCAT_OPTION="[Cerberus]:I *:E"			'Setting this differently allows you to control the output during runtime of a connected device
 
 'OpenGL settings. To override, set these in your code BEFORE importing opengl.gles11 or opengl.gles20
 '
