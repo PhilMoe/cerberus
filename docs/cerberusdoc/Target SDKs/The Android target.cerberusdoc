@@ -41,7 +41,7 @@ If you selected the password 'password' when generating the key, then the key ca
 
 If you used a different password, or different key file name/location, you will also need to modify some or all of the following app config settings (default shown):
 
-`#ANDROID_KEY_STORE="../../release-key.keystore"`~n
+`#ANDROID_KEY_STORE="../release-key.keystore"`~n
 `#ANDROID_KEY_ALIAS="release-key-alias"`~n
 `#ANDROID_KEY_STORE_PASSWORD="password"`~n
 `#ANDROID_KEY_ALIAS_PASSWORD="password"`~n

@@ -18434,7 +18434,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-07-21",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-07-25",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20458,8 +20458,14 @@ void c_AndroidBuilder::p_MakeTarget(){
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_MAIN",21)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_ACTIVITY",25),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_ACTIVITY",25)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
+	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));
+	if(t_admob_appid.Length()>0){
+		String t_admob_appid2=String(L"<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" ",68);
+		t_admob_appid2=t_admob_appid2+(String(L"android:value=\"",15)+t_admob_appid+String(L"\" />",4)+String(L"\n",1));
+		t_manifest=t_manifest+t_admob_appid2;
+	}
+	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),t_manifest);
 	String t_jpath=String(L"app/src/main/java",17);
 	bb_os_DeleteDir(t_jpath,true);
 	CreateDir(t_jpath);

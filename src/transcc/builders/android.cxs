@@ -47,13 +47,20 @@ Class AndroidBuilder Extends Builder
 
 		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
-		
 		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
         SetEnv "ANDROID_NDK_DIR",tcc.ANDROID_NDK_PATH.Replace( "\","\\" )
 		
 		SetConfigVar "ANDROID_MANIFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN" ).Replace( ";","~n" )+"~n"
-		SetConfigVar "ANDROID_MANIFEST_APPLICATION",GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
-		SetConfigVar "ANDROID_MANIFEST_ACTIVITY",GetConfigVar( "ANDROID_MANIFEST_ACTIVITY" ).Replace( ";","~n" )+"~n"
+		Local manifest:String = GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ).Replace( ";","~n" )+"~n"
+
+		Local admob_appid:=GetConfigVar( "ADMOB_ANDROID_ADS_APPID" )
+		If admob_appid.Length()>0 Then 
+			Local admob_appid2:String = "<meta-data android:name=~qcom.google.android.gms.ads.APPLICATION_ID~q "
+			admob_appid2 += "android:value=~q"+admob_appid+"~q />"+"~n"
+			manifest += admob_appid2
+		Endif
+
+		SetConfigVar "ANDROID_MANIFEST_APPLICATION",manifest
 		
 		'create package
 		Local jpath:="app/src/main/java"
