@@ -2,22 +2,6 @@
 
 This is the ultimate guide to Cerberus X.
 
->> Latest new stuff
-
-* New config setting *#HTML5_CANVAS_ALPHA* to enable the canvas' background alpha channel.
-* New config setting *#GLFW_GCC_SRC_OPTS* to compile more source files with MingW.
-* New config setting *#GLFW_GCC_VPATH_OPTS* to add more paths to source files with MingW.
-* Added the ability to create 32 and 64bit apps via *#GLFW_GCC_MSIZE_WINNT* and MSVC. Will create a new app config setting to cover GCC and MSVC later on.
-* New *[[../html/Modules_brl.ini.html|Ini]]* module, to handle ini files.
-* Added key code *KEY_ALT*.
-* Added bundleRelease to create Android app bundle.
-
->>>> Previous release (v2020-12-05)
-
-* New [[../html/Modules_mojo.app.html#DeviceWindowWidth()|DeviceWindowWidth]] and [[../html/Modules_mojo.app.html#DeviceWindowHeight()|DeviceWindowHeight]] commands to returns the width or height of the application's device window in desktop units.
-* New [[../html/Modules_mojo2.graphics_DrawList.html#DrawImageRect(Image,Float,Float,Int,Int,Int,Int,[Float],[Float],[Float])|DrawImageRect]] which let you scale and rotate your image rect inside mojo2 now. 
-
-
 >> Introduction
 
 * [[Tutorials/Getting started]] - If you're new to Cerberus X, this is what you're looking for
