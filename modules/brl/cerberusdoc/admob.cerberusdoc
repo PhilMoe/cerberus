@@ -24,13 +24,6 @@ To use Admob advertising in your game:
 
 Example:
 <pre>
-#If TARGET<>"android" And TARGET<>"ios"
-#Error "Admob is only supported on Android and iOS targets"
-#End
-
-#ANDROID_LOGCAT_OPTION="-s [Cerberus]:E"
-
-Import mojo
 Import brl.admob
 
 ' Next you have to add your app id, a must since Admob v20.2.0
@@ -41,50 +34,51 @@ Import brl.admob
 
 Class MyApp Extends App
 
-  Field admob:Admob
-  Field interstitialAdmob:AdmobInterstitial
-  Field layout:=1
-  Field state:=1
-
-  Method OnCreate()
-    admob=Admob.GetAdmob()
-    admob.ShowAdView 1,layout
-    interstitialAdmob=AdmobInterstitial.GetAdmobInterstitial("ca-app-pub-3940256099942544/1033173712")
-    SetUpdateRate 60
-  End
-
-  Method OnUpdate()
-    If MouseHit( 0 )
-      If state = 3
-        admob.HideAdView
-        state+=1
-      Else If state = 1
-        layout+=1
-        If layout=7 layout=1
+    Field admob:Admob
+	Field interstitialAdmob:AdmobInterstitial
+    Field layout:=1
+    Field state:=1
+    
+    Method OnCreate()
+        admob=Admob.GetAdmob()
         admob.ShowAdView 1,layout
-        state+=1
-      Else If state = 2
-        admob.HideAdView
-        interstitialAdmob.ShowAd
-        state+=1
-      End
+		interstitialAdmob=AdmobInterstitial.GetAdmobInterstitial("ca-app-pub-3940256099942544/1033173712")
+        SetUpdateRate 60
     End
-  End
-
-  Method OnRender()
-    Local en:="disabled"
-    If state=2 en="enabled"
-    Cls
-    PushMatrix
-      Scale 2,2
-      DrawText "Click to toggle ads! ads are currently "+en,DeviceWidth/4,DeviceHeight/4,.5,.5
-    PopMatrix
-  End
-
+    
+    Method OnUpdate()
+        If MouseHit( 0 )
+            If state = 3
+                admob.HideAdView
+                state+=1
+            Else If state = 1
+                layout+=1
+                If layout=7 layout=1
+                admob.ShowAdView 1,layout
+                state+=1
+			Else If state = 2
+				admob.HideAdView
+				interstitialAdmob.ShowAdViewInterstitial
+				state+=1
+            Endif
+            If state>=4 state=1
+        End
+    End
+    
+    Method OnRender()
+    	Local en:="disabled"
+    	If state=2 en="enabled"
+        Cls
+        PushMatrix
+        Scale 2,2
+        DrawText "Click to toggle ads! ads are currently "+en+"  ("+state+":"+layout+")",DeviceWidth/4,DeviceHeight/4,.5,.5
+        PopMatrix
+    End
+    
 End
 
 Function Main()
-  New MyApp
+    New MyApp
 End
 </pre>
 
