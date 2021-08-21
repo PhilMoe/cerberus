@@ -1,0 +1,11 @@
+Strict
+Include "ReadXml.data/ -out=data"
+
+Import brl.xml
+Import os
+Function Main:Int()
+	Print ("Cerberus X - ReadXml Test~n")
+	Local xml := New Xml(LoadString("data/data.xml"))
+	Print xml.ToString()
+	Return 0
+End

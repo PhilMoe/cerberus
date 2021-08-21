@@ -1,0 +1,400 @@
+'Xml Module for Cerberus X by Michael Hartlef
+'License: MIT
+'Version: 1.0
+'----------------------------------------------------
+
+Class Xml
+
+	Method New()
+		Self.Version = "1.0"
+		Self.Encoding = "utf8"
+	End
+
+	Method New(content:String)   ' Parses the content of a xml string
+		Self.Version = "1.0"
+		Self.Encoding = "utf8"
+		Self._Parse(content)
+	End
+
+	Method ToString:String()    ' Writes the content of the Xml to a string
+		Local ret:String 
+		If Self._elementList <> Null
+			For Local element := Eachin Self._elementList
+				ret += element.ToString("")
+			Next
+		Endif
+		Return ret
+	End
+
+	Method AddElement:XmlElement(name:String, content:String="")
+		If Self._elementList = Null Then Self._elementList = New List<XmlElement>
+		Local _element := New XmlElement(name, content)
+		_element._parentElement = Self._elementList.AddLast(_element)
+		_element._parentObj = Null
+		Return _element
+	End
+
+	Method Version:Void(vers:String) Property
+		Self._version = vers
+	End
+
+	Method Version:String() Property
+		Return Self._version
+	End
+
+	Method Encoding:Void(enc:String) Property
+		Self._encoding = enc
+	End
+
+	Method Encoding:String() Property
+		Return Self._encoding
+	End
+
+	
+Private
+	Method _Parse:Bool(content:String)
+		If _tokenlist=Null
+			_tokenlist = New List<XmlToken>
+		Else
+			_tokenlist.Clear()
+		Endif
+
+		If _elementStack=Null
+			Self._elementStack = New Stack<XmlElement>
+		Else
+			_elementStack.Clear()
+		Endif
+		_currElement=Null
+		_lastElement=Null
+
+
+		
+		Local lines:=content.Split("~n")
+		For Local line:= Eachin lines
+			If line.Trim().Length()=0 Then Continue
+			_parseLine += line.Trim() + " "
+		Next
+		_parseLen = _parseLine.Length()
+'Print (_parseLen+"="+_parseLine+"~n")
+		Repeat
+			_lastToken = _nextToken
+			_lastTokenType = _nextTokenType
+			_nextToken = _GetToken()
+			_nextTokenType = _GetTokenType(_nextToken)
+			If _nextTokenType = ttEOF Then Exit
+			If _nextTokenType = ttWhiteSpace Then Continue
+		
+			Local _t:= New XmlToken
+			_t.type = _nextTokenType
+			_t.token = _nextToken
+			_tokenlist.AddLast(_t)
+		Until _parseCurrPos>= _parseLen
+
+		Local _tArr:= _tokenlist.ToArray()
+		Local _tlen:Int = _tArr.Length()
+		Local _ti:Int = 0
+		While _ti < _tlen
+			If _ti >= 1
+				If _tArr[_ti].type = ttIdent And ( _tArr[_ti-1].token = "<" Or _tArr[_ti-1].token = "<?" )
+					_tArr[_ti].type = ttElement
+				Endif
+				If _tArr[_ti].type = ttString
+					_tArr[_ti].token = _tArr[_ti].token.Replace("~q"," ").Trim()
+				Endif
+			Endif
+			If _ti < _tlen-1
+				If _tArr[_ti+1].token = "=" 
+					 _tArr[_ti].type = ttAttrib
+				Endif
+			Endif
+			_ti+=1
+		Wend
+		
+		_ti = 0
+		
+		While _ti < _tlen
+			Local t:String=""
+			Select _tArr[_ti].type
+				Case ttBeginElement    ' <   <?
+					Local n:XmlElement
+					If Self._elementStack.IsEmpty()
+						_currElement = Null
+					Else
+						_currElement = Self._elementStack.Top()
+					Endif
+					If Self._currElement=Null
+						n = Self.AddElement(_tArr[_ti+1].token)
+					Else
+						n = Self._currElement.AddElement(_tArr[_ti+1].token)
+					Endif
+					Self._elementStack.Push(n)
+					_ti+=2
+
+					
+				Case ttEndElement   ' </
+					Self._elementStack.Pop()
+					_ti+=2
+					
+				Case ttEndElement2     ' />
+					Self._elementStack.Pop()
+					_ti+=1
+
+				Case ttAttrib 
+					Self._elementStack.Top().SetAttribute( _tArr[_ti].token, _tArr[_ti+2].token)   
+					_ti+=3
+
+				Case ttIdent 
+					Self._elementStack.Top().Content( _tArr[_ti].token)   
+					_ti+=1
+
+				Default
+					_ti+=1
+
+			End	
+		Wend
+		
+		Return True
+	End
+	
+	Method _GetToken:String()
+		Local token:String = ""
+		Local char:String = ""
+		Local _type:Int=0
+		Local currType:Int = 0
+		Local startPos:Int = _parseCurrPos
+		If _parseCurrPos>= _parseLen
+			Return token
+		Endif
+		Repeat
+			char = _parseLine[_parseCurrPos.._parseCurrPos+1]
+			Select char
+				Case " "
+					If currType <> ttString Then currType = ttWhiteSpace
+				Case "~n"
+					currType = ttWhiteSpace
+				Case "<",">","/", "?","=","."
+					If currType <> ttString Then currType = ttSymbol
+				Case "~q"
+					If currType <> ttString
+						currType = ttString
+					Else
+						currType = ttString2
+					Endif
+				Default
+					If currType <> ttString Then currType = ttIdent
+			End
+
+			If _type <> currType And _type <> 0 And currType <> ttString2
+				Exit
+			Else
+				_type = currType
+				token =_parseLine[startPos.._parseCurrPos+1]
+			End		
+			_parseCurrPos += 1
+		Until _parseCurrPos>= _parseLen		
+
+		Return token
+	End
+	
+	Method _GetTokenType:Int(token:String)
+		Local type:Int = 0
+		If _parseCurrPos>= _parseLen
+			Return ttEOF
+		Endif
+		If token.Trim().Length() = 0 Then Return ttWhiteSpace
+		If token.Trim() = "</" Then Return ttEndElement
+		If token.Trim() = "/>" Then Return ttEndElement2
+		If token.Trim() = "<?" Then Return ttBeginElement
+		If token.Trim() = "?>" Then Return ttEndElement2
+		If token.Trim()[0..1] = "~q" Then Return ttString
+		If token.Trim()[0..1] = "=" Then Return ttSymbol
+		If token.Trim()[0..1] = ">" Then Return ttSymbol
+		If token.Trim()[0..1] = "<" Then Return ttBeginElement
+		Return ttIdent
+	End
+	
+	Field _tokenlist:List<XmlToken>
+	Field _parseLine:String = ""
+	Field _parseCurrPos:Int = 0
+	Field _parseLen:Int = 0
+
+	Field _elementStack:Stack<XmlElement> = Null
+	Field _elementList:List<XmlElement> = Null
+	Field _currElement:XmlElement=Null
+	Field _lastElement:XmlElement=Null
+	Field _version:String
+	Field _encoding:String
+	
+	Field _currToken:String=""
+	Field _currTokenType:Int=0
+	Field _lastToken:String=""
+	Field _lastTokenType:Int=0
+	Field _nextToken:String=""
+	Field _nextTokenType:Int=0
+	
+	Const ttSymbol:Int = 50
+	Const ttBeginElement:Int = 100
+	Const ttEndElement:Int = 110
+	Const ttEndElement2:Int = 120
+	Const ttString:Int = 200
+	Const ttString2:Int = 210
+	Const ttIdent:Int = 300
+	Const ttAttrib:Int = 400
+	Const ttElement:Int = 500
+	Const ttContent:Int = 600
+	Const ttWhiteSpace:Int = 800
+	Const ttEOF:Int = 999
+	
+	
+End
+
+'----------------------------------------------------
+Private
+Class XmlToken
+	Field type:Int
+	Field token:String
+End
+
+'----------------------------------------------------
+Public
+Class XmlElement
+
+	Method ToString:String(prefix:String="~t")    ' Writes the content of the Xml to a string
+		Local ret:String = ""
+		Local childElements:= Self.GetElements()
+		Local attribs:= Self.GetAttributes()
+		ret = prefix + "<" + Self.Name
+		' attributes
+		If attribs <> Null
+			For Local attrib := Eachin attribs
+				ret += " " + attrib.Key()+"=~q" + attrib.Value()+"~q" 
+			Next
+		Endif
+		If Self.Name <> "xml"
+			ret += ">"
+		Endif
+		'Content
+		ret += Self.Content
+		' child elements
+		If childElements <> Null
+			ret += "~n"
+			For Local childElement := Eachin childElements
+				ret += childElement.ToString(prefix+"~t")
+			Next
+			ret += prefix + "</" + Self.Name + ">~n"
+		Else
+			If Self.Name <> "xml"
+				ret += "</" + Self.Name + ">~n"
+			Else
+				ret += "?>~n"
+			Endif
+		Endif
+		Return ret
+	End
+
+
+	Method New(nam:String, cont:String)
+		Self.Name = nam
+		Self.Content = cont
+	End
+
+	Method AddElement:XmlElement(name:String, content:String="")
+		If Self._elementList = Null Then Self._elementList = New List<XmlElement>
+		Local _element := New XmlElement(name, content)
+		_element._parentElement = Self._elementList.AddLast(_element)
+		_element._parentObj = Self
+		Return _element
+	End
+	
+	Method SetAttribute:Void(attrib:String, content:String)
+		If Self._attribMap = Null Then Self._attribMap = New StringMap<String>
+		Self._attribMap.Set(attrib, content)
+	End
+
+	Method GetAttribute:String(attrib:String)
+		Local ret:String=""
+		If Self._attribMap <> Null
+			If Self._attribMap.Contains(attrib)
+				ret = Self._attribMap.Get(attrib)
+			Endif
+		Endif
+		Return ret
+	End
+	
+	Method GetAttributes:StringMap<String>()
+		If Self._attribMap <> Null
+			Return Self._attribMap
+		Else
+			Return Null
+		Endif
+	End
+	
+	Method GetElements:List<XmlElement>()
+		If Self._elementList <> Null
+			Return Self._elementList
+		Else
+			Return Null
+		Endif
+	End
+
+	Method RemoveAttributes:Bool()
+		If Self._attribMap <> Null
+			Self._attribMap.Clear()
+			Self._attribMap = Null
+			Return True
+		Else
+			Return False
+		Endif
+	End
+
+	Method RemoveElement:Void(_element:XmlElement)
+		If _element.GetElements() <> Null
+			For Local _child:= Eachin _element.GetElements()
+				Self.RemoveElement(_child)
+			Next
+		Endif
+		If _element.GetAttributes() <> Null Then _element.RemoveAttributes()
+		_element.parentElement.Remove()
+		_element.parentObj = Null
+	End
+
+	Method RemoveAllElements:Bool()
+		If _element.GetElements() <> Null
+			For Local _child:= Eachin _element.GetElements()
+				Self.RemoveElement(_child)
+			Next
+			Return True
+		Else
+			Return False
+		Endif
+	End
+
+
+
+	
+	Method Content:Void(txt:String) Property
+		Self._content = txt
+	End
+
+	Method Content:String() Property
+		Return Self._content
+	End
+
+	Method Name:Void(nam:String) Property
+		Self._name = nam
+	End
+
+	Method Name:String() Property
+		Return Self._name
+	End
+
+Private
+
+	Field _name:String=""
+	Field _content:String=""
+	Field _elementList:List<XmlElement> = Null
+	Field _attribMap:StringMap<String> = Null
+
+	Field _parentObj:XmlElement = Null
+	Field _parentElement:list.Node<XmlElement> = Null
+End

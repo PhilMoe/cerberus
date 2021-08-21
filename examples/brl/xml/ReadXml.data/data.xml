@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<atlas version="1.0">
+  <sheets total="3"> TestContent
+  
+    <sheet index="0" file="regular_0.png">
+    
+	      <items>
+		        <item name="sparrow_0" x="0" y="0" width="512" height="512"/>
+	      </items>
+	      
+    </sheet>
+    
+    <sheet index="1" file="regular_1.png">
+    
+	      <items>
+		        <item name="_0" x="0" y="0" width="512" height="512"/>
+	      </items>
+	      
+    </sheet>
+    
+    <sheet index="2" file="regular_2.png">
+    
+	      <items>
+		        <item name="castle_corner_NE_a_01" x="0" y="0" width="128" height="128"/>
+		        <item name="castle_corner_NW_a_01" x="0" y="128" width="128" height="128"/>
+		        <item name="castle_corner_SE_a_01" x="0" y="256" width="128" height="128"/>
+		        <item name="castle_corner_SW_a_01" x="0" y="384" width="128" height="128"/>
+		        <item name="castle_corridor_wall_east_a_01" x="128" y="0" width="128" height="128"/>
+		        <item name="castle_corridor_wall_north_a_01" x="256" y="0" width="128" height="128"/>
+		        <item name="castle_corridor_wall_south_a_01" x="384" y="0" width="128" height="128"/>
+		        <item name="castle_corridor_wall_west_a_01" x="128" y="128" width="128" height="128"/>
+		        <item name="castle_corridor_wall_west_a_99">TestContent2</item>
+	      </items>
+	      
+    </sheet>
+    
+  </sheets>
+  
+</atlas>
