@@ -1,11 +1,12 @@
 Strict
+Include "ReadIni.data/ -out=data"
 
 Import brl.ini
 
 Function Main:Int()
 	
 	Local ini:IniHandler = New IniHandler
-	ini.Load("setup.ini")
+	ini.Load("./data/setup.ini")
 
 
 	ini.WriteStringArray("zArray","string",["entry#1","entry#2","entry#3"])

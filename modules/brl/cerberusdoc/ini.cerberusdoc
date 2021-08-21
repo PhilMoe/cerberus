@@ -2,21 +2,29 @@
 # Module brl.ini
 
 Ini handler module.
-Read and write INI files to extract or store settings for your game/application.
+Read Ini files and write Ini strings to extract or store settings for your game/application.
 
 Example:
 <pre>
-Local ini:IniHandler  = New IniHandler()
-Local file:FileStream = ini.Load("config.ini")
+Strict
+Include "ReadIni.data/ -out=data"
 
-Local sval:String = ini.ReadValue("General", "StringVal", "NOT SET")
-Local ival:Int    = ini.ReadValue("General", "IntVal", 0)
-Local fval:Float  = ini.ReadValue("General", "FloatVal", 0.0)
-Local bval:Bool   = ini.ReadValue("General", "BoolVal", False)
+Import brl.ini
 
-Local iarr:Int[]   = ini.ReadArray("General", "IntArr", [1, 2, 3])
-Local farr:Float[] = ini.ReadArray("General", "FloatArr", [1.0, 2.0, 3.0])
-Local barr:Bool[]  = ini.ReadArray("General", "BoolArr", [True, False, True])
+Function Main:Int()
+	
+	Local ini:IniHandler = New IniHandler
+	ini.Load("./data/setup.ini")
+
+
+	ini.WriteStringArray("zArray","string",["entry#1","entry#2","entry#3"])
+	ini.WriteIntArray("zArray","int",[1,2,33])
+	ini.WriteFloatArray("zArray","float",[1.0,2.0,33,5.123])
+	ini.WriteBoolArray("zArray","bool",[True,False,False,True])
+
+	Print ini.SaveToString()
+	Return 0
+End
 </pre>
 
 
