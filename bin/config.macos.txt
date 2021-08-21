@@ -57,6 +57,8 @@ ANDROID_PATH="${HOME}/Library/Android/sdk"
 
 'Old sdk..
 ANDROID_PATH="${HOME}/android-sdk-macosx"
+
+JDK_PATH="/Applications/Android Studio.app/Contents/jre/Contents/Home"
 '--------------------
 
 '--------------------
