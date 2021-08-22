@@ -1,4 +1,4 @@
-***** v2021-08-21 *****
+***** v2021-08-22 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -10,8 +10,10 @@ MOD: [ANDROID] Replace Android JNI with pure Java    (Author: Grant)
 MOD: [ANDROID] Permissions for INTERNET and ACCESS_NETWORK_STATE are only added when some modules are imported that need it.   (Author: MikeHart)
 MOD: [HTML5] Removed code that ignored non standard mapped joysticks.    (Author: Grant)
 MOD: [ANDROID] Changed target sdk version to 30 and minimum sdk version to 18 by Googles requirements.    (Author: Phil7)
-MOD: [ANDROID] Moved gradle distribution to 6.5 and gradle version to 4.1.0  to remove the requirement to install a java JDK, but unsing the one that comes with Android Studio instead.    (Author: Phil7)
+MOD: [ANDROID] Moved gradle distribution to 7.0.2 and gradle version to 4.2.0  to remove the requirement to install a java JDK, but unsing the one that comes with Android Studio instead. Also to make it compatible with Macos again.    (Author: Phil7)
 MOD: [ANDROID/admob] Moved to google_play_services 20.2.0.    (Author: Phil7 / MikeHart)
+MOD: [TRANSCC] Set SetEnv JAVA_HOME with the JDK_PATH on Macos.    (Author: Phil7)
+MOD: [TRANSCC] Handle multiple ANDROID_LIBRARY_REFERENCE_n entries on Android.    (Author: MikeHart)
 NEW: [ANDROID/admob] Added #ADMOB_ANDROID_ADS_APPID to set the appid for admob ads.   (Author: MikeHart)
 NEW: [CUSTOM target] Added getenv and setenv to get/set environment variables.    (Author: MikeHart)
 NEW: [CUSTOM target] Added set to set custom variables.    (Author: MikeHart)

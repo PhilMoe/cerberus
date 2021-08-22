@@ -18342,6 +18342,9 @@ void c_TransCC::p_LoadConfig(){
 	}else{
 		if(t_4==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
+			if((m_JDK_PATH).Length()!=0){
+				t_path3=m_JDK_PATH+String(L"/bin:",5)+t_path3;
+			}
 			if((m_ANDROID_PATH).Length()!=0){
 				t_path3=t_path3+(String(L":",1)+m_ANDROID_PATH+String(L"/tools",6));
 			}
@@ -18355,6 +18358,9 @@ void c_TransCC::p_LoadConfig(){
 				t_path3=t_path3+(String(L":",1)+m_FLEX_PATH+String(L"/bin",4));
 			}
 			SetEnv(String(L"PATH",4),t_path3);
+			if((m_JDK_PATH).Length()!=0){
+				SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
+			}
 		}else{
 			if(t_4==String(L"linux",5)){
 				String t_path4=GetEnv(String(L"PATH",4));
@@ -18434,7 +18440,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-07-25",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-08-22",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20457,6 +20463,8 @@ void c_AndroidBuilder::p_MakeTarget(){
 	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_1",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_2",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
 	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_MAIN",21)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
 	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
 	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));

@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2021-08-21 (DEBUG)"
+    Const VERSION:="2021-08-22 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2021-08-21"
+    Const VERSION:="2021-08-22"
 #Endif
 
 Function Main()
@@ -512,7 +512,7 @@ Class TransCC
             'Print GetEnv( "PATH" )
             
             If JDK_PATH SetEnv "JAVA_HOME",JDK_PATH
-            Print "macOS JAVA_HOME: " + JDK_PATH
+            'Print "macOS JAVA_HOME: " + JDK_PATH
 
           
         Case "linux"
