@@ -1,0 +1,283 @@
+Strict
+
+'Vec2D Module for Cerberus X by Michael Hartlef
+'License: MIT
+'Version: 1.0
+'----------------------------------------------------
+
+Class Vec2D
+
+	'------------------------------------------
+	Method Add:Void (vector:Vec2D)
+		x += vector.x
+		y += vector.y
+	End
+	
+	'------------------------------------------
+	Method Add:Void (xy:Float[])
+		x += xy[0]
+		y += xy[1]
+	End
+	
+	'------------------------------------------
+	Method Add:Void (addX:Float, addY:Float)
+		x += addX
+		y += addY
+	End
+	
+	'------------------------------------------
+	Method Angle:Float (vector:Vec2D)
+		Local xdiff:Float
+		Local ydiff:Float 
+		Local ang:Float
+		xdiff = vector.x - x
+		ydiff = vector.y - y
+			
+    	ang = ATan2( ydiff, xdiff )+90.0
+		If ang < 0.0 Then 
+			ang = 360.0 + ang
+		Endif
+		Return ang
+	End
+	
+	'------------------------------------------
+	Method Angle:Float (xy:Float[])
+		Local xdiff:Float
+		Local ydiff:Float 
+		Local ang:Float
+			
+		xdiff = xy[0] - x
+		ydiff = xy[1] - y
+			
+    	ang = ATan2( ydiff, xdiff )+90.0
+		If ang < 0.0 Then 
+			ang = 360.0 + ang
+		Endif
+		Return ang
+	End
+	
+	'------------------------------------------
+	Method Angle:Float (xPos:Float, yPos:Float)
+		Local xdiff:Float
+		Local ydiff:Float 
+		Local ang:Float
+			
+		xdiff = xPos - x
+		ydiff = yPos - y
+			
+    	ang = ATan2( ydiff, xdiff )+90.0
+		If ang < 0.0 Then 
+			ang = 360.0 + ang
+		Endif
+		Return ang
+	End
+	
+	'------------------------------------------
+	Method Angle:Float ()
+		Local ang:Float
+    	ang = ATan2( y, x )+90.0
+		If ang < 0.0 Then 
+			ang = 360.0 + ang
+		Endif
+		Return ang
+	End
+	
+	'------------------------------------------
+	Method Copy:Vec2D()
+		Return New Vec2D (x, y)
+	End
+	
+	'------------------------------------------
+	Method Dot:Float(vector:Vec2D)
+		Return (x * vector.x + y * vector.y)
+	End
+	
+	'------------------------------------------
+	Method Dot:Float(xy:Float[])
+		Return (x * xy[0] + y * xy[1])
+	End
+	
+	'------------------------------------------
+	Method Dot:Float(xPos:Float, yPos:Float)
+		Return (x * xPos + y * yPos)
+	End
+	
+	'------------------------------------------
+	Method Equals:Bool (vector:Vec2D)
+		Return (x = vector.x) And (y = vector.y)
+	End
+
+	'------------------------------------------
+	Method Inverse:Void()
+		x = -x
+		y = -y
+	End
+	
+	'------------------------------------------
+	Method InverseX:Void()
+		x = -x
+	End
+	
+	'------------------------------------------
+	Method InverseY:Void()
+		y = -y
+	End
+	
+	'------------------------------------------
+	Method Length:Float(vector:Vec2D)
+		Local xdiff:Float
+		Local ydiff:Float 
+		xdiff = vector.x - x
+		ydiff = vector.y - y
+		
+		Return Sqrt(xdiff * xdiff + ydiff * ydiff)
+	End
+	
+	'------------------------------------------
+	Method Length:Float(xy:Float[])
+		Local xdiff:Float
+		Local ydiff:Float 
+		xdiff = xy[0] - x
+		ydiff = xy[1] - y
+		
+		Return Sqrt(xdiff * xdiff + ydiff * ydiff)
+	End
+	
+	'------------------------------------------
+	Method Length:Float(xPos:Float, yPos:Float)
+		Local xdiff:Float
+		Local ydiff:Float 
+		xdiff = xPos - x
+		ydiff = yPos - y
+		
+		Return Sqrt(xdiff * xdiff + ydiff * ydiff)
+	End
+	
+	'------------------------------------------
+	Method Length:Float()
+		Return Sqrt (x * x + y * y)
+	End
+	
+	'------------------------------------------
+	Method Lerp:Vec2D(targetVector:Vec2D, timeFaktor:Float)
+		Local xdiff:Float
+		Local ydiff:Float 
+		Local lerpV:Vec2D
+		xdiff = targetVector.x - x
+		ydiff = targetVector.y - y
+		lerpV.x = xdiff * timeFaktor + x
+		lerpV.y = ydiff * timeFaktor + y
+		Return lerpV
+	End
+	'------------------------------------------
+	Method Mul:Void (scalar:Float)
+		x *= scalar
+		y *= scalar
+	End
+	
+	'------------------------------------------
+	Method New()
+		x = 0.0
+		y = 0.0
+	End
+
+	'------------------------------------------
+	Method New(xp:Float, yp:Float)
+		x = xp
+		y = yp
+	End
+
+	'------------------------------------------
+	Method New(xy:Float[])
+		x = xy[0]
+		y = xy[1]
+	End
+
+	'------------------------------------------
+	Method Normalize:Void()
+		Local length:Float = Self.Length()
+		If length = 0
+			Return
+		Endif
+		Set (x/length, y/length)
+	End
+	
+	'------------------------------------------
+	Method Perp:Void()
+		Local xt:Float = Self.x
+		
+		Self.x = Self.y
+		Self.y = -xt
+	End
+	
+	'------------------------------------------
+	Method Set:Void (vector:Vec2D)
+		x = vector.x
+		y = vector.y
+	End
+	
+	'------------------------------------------
+	Method Set:Void (xy:Float[])
+		x = xy[0]
+		y = xy[1]
+	End
+	
+	'------------------------------------------
+	Method Set:Void (setX:Float, setY:Float)
+		x = setX
+		y = setY
+	End
+	
+	'------------------------------------------
+	Method Sub:Void (vector:Vec2D)
+		x -= vector.x
+		y -= vector.y
+	End
+	
+	'------------------------------------------
+	Method Sub:Void (xy:Float[])
+		x -= xy[0]
+		y -= xy[1]
+	End
+	
+	'------------------------------------------
+	Method Sub:Void (subX:Float, subY:Float)
+		x -= subX
+		y -= subY
+	End
+	
+	'------------------------------------------
+	Method ToArray:Float[] ()
+		Return [x,y]
+	End
+	
+	'------------------------------------------
+	Method ToString:String ()
+		Return "X="+x+"  Y="+y)
+	End
+	
+	'------------------------------------------
+	Method X:Void (xval:Float) Property
+		x = xval
+	End
+	
+	'------------------------------------------
+	Method X:Float () Property
+		Return x
+	End
+	
+	'------------------------------------------
+	Method Y:Void (yval:Float) Property
+		y= yval
+	End
+	
+	'------------------------------------------
+	Method Y:Float () Property
+		Return y
+	End
+	
+	'------------------------------------------
+	Field x:Float = 0.0
+	Field y:Float = 0.0
+
+End

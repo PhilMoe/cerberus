@@ -1,4 +1,4 @@
-***** v2021-08-22 *****
+***** v2021-09-04 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -28,6 +28,7 @@ NEW: [HTML5] Added CountJoysticks() support.    (Author: Grant)
 NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.    (Author: Grant)
 NEW: [mojo.audio] Added CHANNELSTATE_STOPPED, CHANNELSTATE_PLAYING, CHANNELSTATE_PAUSED and CHANNELSTATE_UNKNOWN constants.    (Author: MikeHart)
 NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
+NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 

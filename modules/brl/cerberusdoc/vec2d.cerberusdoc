@@ -1,0 +1,158 @@
+
+# Module vec2d
+
+The vec2d module contains the Vec2D class which provides numerous method regarding 2D vector handling.
+
+# Class Vec2D
+
+# Method Add:Void (vector:Vec2D)
+
+Add a vector to its current position.
+
+# Method Add:Void (xy:Float[])
+
+Add a array to its current position.
+
+# Method Add:Void (addX:Float, addY:Float)
+
+Add position values to its current position.
+
+# Method Angle:Float (vector:Vec2D)
+
+Return the angle in degrees to another vector.
+
+# Method Angle:Float (xy:Float[])
+
+Return the angle in degrees to a position.
+
+# Method Angle:Float (xPos:Float, yPos:Float)
+
+Return the angle in degrees to a position.
+
+# Method Angle:Float ()
+
+Return the angle in degrees to the position 0.0, 0.0.
+
+# Method Copy:Vec2D()
+
+Copy this vector to a new one.
+
+# Method Dot:Float(vector:Vec2D)
+
+Return the Dot product to the given value.
+
+# Method Dot:Float(xy:Float[])
+
+Return the Dot product to the given position.
+
+# Method Dot:Float(xPos:Float, yPos:Float)
+
+Return the Dot product to the given position.
+
+# Method Equals:Bool (vector:Vec2D)
+
+Returns true if the given vectors position is equal to the vector.
+
+# Method Inverse:Void()
+
+Inverse the position of the vector.
+
+# Method InverseX:Void()
+
+Inverse the X position of the vector.
+
+# Method InverseY:Void()
+
+Inverse the Y position of the vector.
+
+# Method Length:Float(vector:Vec2D)
+
+Return the length (distance) in pixel to the given vector.
+
+# Method Length:Float(xy:Float[])
+
+Return the length (distance) in pixel to the given postion.
+
+# Method Length:Float(xPos:Float, yPos:Float)
+
+Return the length (distance) in pixel to the given position.
+
+# Method Length:Float()
+
+Return the length (distance) in pixel.
+
+# Method Lerp:Vec2D(targetVector:Vec2D, timeFactor:Float)
+
+Return a new extrapolated vector depending on the targetvector and the timefactor.
+
+# Method Mul:Void (scalar:Float)
+
+Multiply the vector with the scaler value.
+
+# Method New()
+
+Return a new vector with the position 0.0, 0.0 .
+
+# Method New(xp:Float, yp:Float)
+
+Return a new vector with the position of xp and yp.
+
+# Method New(xy:Float[])
+
+Return a new vector.
+
+# Method Normalize:Void()
+
+Normalize the vector to a length of 1.0.
+
+# Method Perp:Void()
+
+Set the vector to its perpendicular vector.
+
+# Method Set:Void (vector:Vec2D)
+
+Set the vectors position to the postion of the given vector.
+
+# Method Set:Void (xy:Float[])
+
+Set the position of the vector to the given position.
+
+# Method Set:Void (setX:Float, setY:Float)
+
+Set the position of the vector to the given position.
+
+# Method Sub:Void (vector:Vec2D)
+
+Substract the position of the given vector from the position of the vector.
+
+# Method Sub:Void (xy:Float[])
+
+Substract the given position from the position of the vector.
+
+# Method Sub:Void (subX:Float, subY:Float)
+
+Substract the given position from the position of the vector.
+
+# Method ToArray:Float[] ()
+
+Return the position of the vector in a Float array with 2 elements.
+
+# Method ToString:String ()
+
+Return the position of the vector in string.
+
+# Method X:Void (xval:Float) Property
+
+Set the X positon of the vector.
+
+# Method X:Float () Property
+
+Return the X position of the vector.
+
+# Method Y:Void (yval:Float) Property
+
+Set the Y positon of the vector.
+
+# Method Y:Float () Property
+
+Return the Y position of the vector.
