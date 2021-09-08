@@ -1,4 +1,4 @@
-***** v2021-09-04 *****
+***** v2021-09-08 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -29,11 +29,13 @@ NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.    (Author: Grant)
 NEW: [mojo.audio] Added CHANNELSTATE_STOPPED, CHANNELSTATE_PLAYING, CHANNELSTATE_PAUSED and CHANNELSTATE_UNKNOWN constants.    (Author: MikeHart)
 NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
 NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
+NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
 - GLFW_APP_ICON doesn't work with OSX and Linux.
+- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
 
 
 ***** v2021-05-16 *****
