@@ -13,9 +13,9 @@
 
     #ANDROID_MANIFEST_APPLICATION+="<meta-data android:name=~qcom.google.android.gms.version~q android:value=~q@integer/google_play_services_version~q />"
     
-    #ANDROID_LIBRARY_REFERENCE_1="implementation fileTree(dir: 'libs', include: ['*.jar'])"
+    #ANDROID_LIBRARY_REFERENCE_1+="implementation fileTree(dir: 'libs', include: ['*.jar']);"
     '#ANDROID_LIBRARY_REFERENCE_2="implementation 'com.google.android.gms:play-services-ads:15.0.1'"
-    #ANDROID_LIBRARY_REFERENCE_2="implementation 'com.google.android.gms:play-services-ads:20.2.0'"
+    #ANDROID_LIBRARY_REFERENCE_2+="implementation 'com.google.android.gms:play-services-ads:20.2.0';"
 
 	#If Not ANDROID_PERMISSION_INTERNET_IMPLEMENTED
 		#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.INTERNET~q />"
