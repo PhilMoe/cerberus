@@ -1,4 +1,4 @@
-***** v2021-09-08 *****
+***** v2021-09-12 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -30,6 +30,7 @@ NEW: [mojo.audio] Added CHANNELSTATE_STOPPED, CHANNELSTATE_PLAYING, CHANNELSTATE
 NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
 NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
 NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
+NEW: [brl.events] Added an event handling module.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
