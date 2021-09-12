@@ -1,0 +1,28 @@
+
+# Module brl.events
+
+The events module contains the Events class which provides numerous method regarding event handling.
+
+# Class brl.Events
+
+# Method New(_onEventMethod:IOnEvent)
+
+Creates a new events object.
+
+# Method Clear:Void()
+
+Clears all fired events before they can be processed.
+
+# Method Process:Void(_backwards:Bool = False)
+
+Process all fired events. if @_backwards is set to true, the cued events will be process backwards. Last in, first out.
+
+# Method Fire:Void(tag:Int, obj:Object=Null)
+
+Fire an event. You have to give at least a tag value. In the object parameter, you can give any object.
+
+# Interface brl.events.IOnEvent
+
+# Method OnEvent:Int(tag:Int, obj:Object)
+
+Called when Events.Process is called. If you return True or 1, all remaining events won't be processed. At the end of the call, the event list is cleared.

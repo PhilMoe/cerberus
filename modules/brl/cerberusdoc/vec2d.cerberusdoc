@@ -1,9 +1,9 @@
 
-# Module vec2d
+# Module brl.vec2d
 
 The vec2d module contains the Vec2D class which provides numerous method regarding 2D vector handling.
 
-# Class Vec2D
+# Class brl.Vec2D
 
 # Method Add:Void (vector:Vec2D)
 

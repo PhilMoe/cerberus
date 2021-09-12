@@ -21,7 +21,7 @@ End
 
 
 
-# Class Xml
+# Class brl.Xml
 
 The XML class contains a XML structure where you can add elements with text and attributes.
 
@@ -58,7 +58,7 @@ Sets the version attribute of the xml structure.
 Returns the version attribute of the xml structure.
 
 
-# Class XmlElement
+# Class brl.XmlElement
 
 The XmlElement represents one element inside a XML structure.
 
