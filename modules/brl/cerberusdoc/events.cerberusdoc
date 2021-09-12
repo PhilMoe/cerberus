@@ -21,6 +21,8 @@ Process all fired events. if @_backwards is set to true, the cued events will be
 
 Fire an event. You have to give at least a tag value. In the object parameter, you can give any object.
 
+Attention: Please define your own tags from the number 10.000 an up to avoid possible conflicts with future CX defined tag constants.
+
 # Interface brl.events.IOnEvent
 
 # Method OnEvent:Int(tag:Int, obj:Object)
