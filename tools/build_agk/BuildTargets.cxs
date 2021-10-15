@@ -17,7 +17,7 @@ Import brl.filestream
 Import brl.requesters
 Import os
 
-#GLFW_APP_LABEL="AGKBuildTarget V1.16"
+#GLFW_APP_LABEL="AGKBuildTarget V1.17"
 #GLFW_APP_PUBLISHER="Michael Hartlef"
 
 Global _i:Int
@@ -301,7 +301,7 @@ Function Main:Int()
 		Next
 
 		Local outs2:String
-		outs2 += "#If TARGET<>~qagk~q And TARGET<>~qagk_ios~q And TARGET<>~qagk_android~q~n"
+		outs2 += "#If TARGET<>~qagk~q And TARGET<>~qagk_ios~q And TARGET<>~qagk_android~q And TARGET<>~qagk_android_ouya~q~n"
 		outs2 += "#Error ~qInvalid target!~q~n"
 		outs2 += "#Endif~n"
 		outs2 += "Import ~qnative/agk2.cpp~q~n"
@@ -474,6 +474,7 @@ Function Main:Int()
 		BuildTemplateIOS(agk_path, cerberusPath)
 	Endif
 	BuildTemplateAndroid(agk_path, cerberusPath)
+	BuildTemplateOuya(agk_path, cerberusPath)
 	
 	Notify( "AGKBuildTarget", "The AppGamekit Targets were successfully build!~nPlease rebuild the help files.", False )
 	Return 0
@@ -530,6 +531,92 @@ Function BuildTemplate:Void(_path:String, cerberusPath:String)
 
 		SaveString template,( cerberusPath+"/targets_ext/appgamekit/template/AGKTemplate/apps/template_windows_vs2017_64/template.cpp" )
 		
+End
+
+Function BuildTemplateOuya:Void(_path:String, cerberusPath:String)
+		Print "... build AGK Android Ouya target ..."		 
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya"))
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya/template"))
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate"))
+
+		CopyDir(_path+"/Tier 2/bullet",(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/bullet"), True)
+		CopyDir(_path+"/Tier 2/common",(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/common"), True)
+		CopyDir(_path+"/Tier 2/FirebaseSDK",(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/FirebaseSDK"), True)
+
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/platform"))
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/platform/android"))
+		CopyDir(_path+"/Tier 2/platform/android",(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/platform/android"), True)
+
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps"))
+		CopyDir(_path+"/Tier 2/apps/template_android_ouya",(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya"), True)
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jniLibs/arm64-v8a"))
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jniLibs/armeabi-v7a"))
+		CreateDir((cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/assets"))
+		
+		CopyFile(cerberusPath+"/tools/build_agk/targetfiles/target_android_ouya.cxs",cerberusPath+"/targets_ext/appgamekit_android_ouya/target.cxs")
+		CopyFile(cerberusPath+"/tools/build_agk/targetfiles/config_android_ouya.cxs",cerberusPath+"/targets_ext/appgamekit_android_ouya/template/config.cxs")
+
+		CopyFile(cerberusPath+"/targets/android/template/release-key.keystore",cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/release-key.keystore")
+		Local tmps:=LoadString(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/gradle.properties")
+		tmps = tmps.Replace("-Xmx4g","-Xmx1g")
+		SaveString(tmps,cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/gradle.properties")
+
+		'CopyFile(cerberusPath+"/targets/android/template/gradletemplate/local.properties",cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/local.properties")
+		
+		' modify the template.h file
+		Local templateh:=LoadString(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jni/template.h" )
+
+		Local _starth:=templateh.Find( "#include ~qagk.h~q" )
+		Local _endh:=templateh.Find( "// Global values for the app" )
+	'Print(_starth+":"+_endh+":"+templateh.Length())
+		templateh = templateh[0.._starth]+"#include ~qagk.h~q~n~n//${CONFIG_BEGIN}~n//${CONFIG_END}~n~n"+templateh[_endh..templateh.Length()]
+		SaveString templateh,( cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jni/template.h" )
+
+		' modify the template.cpp file
+		Local template:=LoadString(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jni/template.cpp" )
+
+		Local _end:=template.Find( "// Namespace" )
+		Local _start:=_end-1
+		
+		template = template[0.._start-1]+"~n//${TRANSCODE_BEGIN}~n//${TRANSCODE_END}~n~n"+template[_end..template.Length()]
+
+		_start=template.Find( "agk::SetVirtualResolution" )
+		_end=template.Find( "int app::Loop" )-5
+		
+		template = template[0.._start-1]+"~tgc_init1();~n~tbbInit();~n~tgc_init2();~n"+template[_end..template.Length()]
+
+		_start=template.Find( "agk::Print( agk::ScreenFPS(" )
+		_end=template.Find( "void app::End" )
+	'Print(_start+":"+_end+":"+template.Length())
+		
+		template = template[0.._start-1]+"~treturn bbMain();~n}~n~n"+template[_end..template.Length()]
+
+		SaveString template,( cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/src/main/jni/template.cpp" )
+#rem
+		Print ("... fixing AGK Android Ouya template ...")		
+		Local fix1:String = LoadString(cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/settings.gradle" )
+		If fix1.Find("include ':FacebookSDK'")<0
+			fix1 = "include ':FacebookSDK'~n"+fix1
+			SaveString fix1,( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_ouya/settings.gradle" ) 
+		Endif
+		
+		Local fix2:String = LoadString( cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/build.gradle" )
+		If fix2.Find("implementation project(':FacebookSDK')")<0 
+
+			Local fi:Int
+			fi = fix2.Find("dependencies {")
+			fi+=15
+			Local fi2:= fi+1
+			fix2 = fix2[..fi]+"    implementation project(':FacebookSDK')~n"+fix2[fi2..]
+			
+			fi = fix2.Find("android {")
+			fi+=10
+			fi2 = fi+1
+	    	fix2 = fix2[..fi]+"~n    lintOptions {~n"+"        checkReleaseBuilds false~n"+"        abortOnError false~n"+"    }~n"+fix2[fi2..]
+			
+			SaveString fix2,( cerberusPath+"/targets_ext/appgamekit_android_ouya/template/AGKTemplate/apps/template_android_ouya/AGK2Template/build.gradle" ) 
+		Endif
+#End		
 End
 
 Function BuildTemplateAndroid:Void(_path:String, cerberusPath:String)
@@ -615,10 +702,8 @@ Function BuildTemplateAndroid:Void(_path:String, cerberusPath:String)
 			
 			SaveString fix2,( cerberusPath+"/targets_ext/appgamekit_android/template/AGKTemplate/apps/template_android_google/AGK2Template/build.gradle" ) 
 		Endif
-
-
-
 End
+
 
 Function BuildTemplateOSX:Void(_path:String, cerberusPath:String)
 	Print "... build AGK OSX Desktop target ..."

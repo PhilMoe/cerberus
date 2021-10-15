@@ -1,0 +1,289 @@
+
+Import builder
+Import os
+
+Class AGKBuilder_android_ouya Extends Builder
+
+	Method New( tcc:TransCC )
+		Super.New( tcc )
+	End
+	
+	Method Config:String()
+		Local config:=New StringStack
+		Local l:Int
+		For Local kv:=Eachin GetConfigVars()
+			If kv.Key.StartsWith("AGK_")
+				'l = kv.Key.Length()
+				'config.Push "#define " + kv.Key[4..l] +" "+kv.Value
+				config.Push "#define " + kv.Key +" "+kv.Value
+			Else
+				config.Push "#define CFG_"+kv.Key+" "+kv.Value
+			Endif
+		Next
+		'config.Push "#define AGK_PORTRAIT"
+		Return config.Join( "~n" )
+	End
+	
+
+	'***** Android *****
+	Method MakeAndroid:Void()
+	
+		Local app_label:=GetConfigVar( "ANDROID_APP_LABEL" )
+		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
+		
+		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
+        SetEnv "ANDROID_NDK_DIR",tcc.ANDROID_NDK_PATH.Replace( "\","\\" )
+	
+		Local buildpath:String  
+		buildpath = os.CurrentDir()+"\AGKTemplate\apps\template_android_ouya"		
+Print buildpath		
+		Local lp:String = "ndk.dir="+tcc.ANDROID_NDK_PATH.Replace( "\","\\" )+"~n"
+		lp+="sdk.dir="+tcc.ANDROID_PATH.Replace( "\","\\" )
+		
+		SaveString(lp,buildpath+"\local.properties")
+		
+		Local template:=LoadString( buildpath+"\AGK2Template\src\main\jni\template.cpp" )
+		Local templateh:=LoadString( buildpath+"\AGK2Template\src\main\jni\template.h" )
+		
+		template=ReplaceBlock( template,"TRANSCODE",transCode )
+		templateh=ReplaceBlock( templateh,"CONFIG",Config() )
+		
+		SaveString template,( buildpath+"\AGK2Template\src\main\jni\template.cpp" )
+		SaveString templateh,( buildpath+"\AGK2Template\src\main\jni\template.h" )
+		CreateMediaDir buildpath+"\AGK2Template\src\main\assets\media"	
+
+		If tcc.opt_build
+		
+			os.ChangeDir(buildpath+"/AGK2Template/src/main")
+			Local ndkbuild:=tcc.ANDROID_NDK_PATH.Replace( "\","\\" )+"\ndk-build"
+			
+			Print ("compiling native code... "+os.CurrentDir())
+
+			Execute(ndkbuild+" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs", False)
+			CopyFile("..\..\..\..\..\platform\android\ARCore\libs\arm64-v8a\libarcore_sdk.so", "jniLibs\arm64-v8a\libarcore_sdk.so")
+			CopyFile("..\..\..\..\..\platform\android\ARCore\libs\armeabi-v7a\libarcore_sdk.so", "jniLibs\armeabi-v7a\libarcore_sdk.so")
+
+			os.ChangeDir(buildpath)
+			
+			Local gradlecfg:=":AGK2Template:assembleDebug"
+			
+			If tcc.opt_config = "release" gradlecfg = ":AGK2Template:assembleRelease"
+			
+			Local gradle:String
+			If HostOS = "winnt"
+				gradle="gradlew"
+			Else
+				gradle="./gradlew"
+			Endif
+
+
+			'If Not( Execute( gradle+" clean " + gradlecfg, False ) )
+			If Not( Execute( gradle+" "+ gradlecfg, False ) )
+
+				Die "Android build failed."
+				
+			Elseif (tcc.opt_config = "release")
+				Local adb:="adb"
+				Local jarsigner:="jarsigner"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+				If tcc.ANDROID_PATH jarsigner="~q"+tcc.ANDROID_PATH+"/jre/bin/jarsigner~q"
+				Local _file:String = CurrentDir()
+				_file += "/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk"
+				_file = _file.Replace("/","\")
+				
+				Print ("signing "+_file+" ...")
+				Execute jarsigner+" -keystore ~q"+CurrentDir()+"/release-key.keystore~q -storepass password -keypass password ~q"+_file+"~q release-key-alias",False
+
+				Print ("installing "+_file+" ...")
+				Execute adb+" install -r "+_file,False
+			Elseif (tcc.opt_config = "debug")
+				Local adb:="adb"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+				Local _file:String = CurrentDir()
+				_file += "/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk"
+				Print ("installing "+_file+" ...")
+				Execute adb+" install -r "+_file,False
+				
+			Endif
+			
+			If tcc.opt_run
+
+				Local adb:="adb"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+				If tcc.ANDROID_PATH adb="~q"+tcc.ANDROID_PATH+"/platform-tools/adb~q"
+app_package="com.mycompany.mytemplate"
+				Execute adb+" logcat -c",False
+				
+				'Execute adb+" shell am start -n "+app_package+"/"+app_package+".CerberusGame",False
+				Execute adb+" shell am start -n "+app_package+"/"+"com.thegamecreators.agk_player.AGKActivity",False
+				If (tcc.opt_config = "debug")
+					Execute adb+" logcat [AGKActivity]:I *:E",False
+				Endif
+			Endif
+		
+		Endif
+	End
+
+
+	'***** Builder *****	
+	Method IsValid:Bool()
+		Select HostOS
+			Case "winnt"
+				If FileType(tcc.AGK_PATH+"/Tier 1/Compiler/AGKBroadcaster.exe") = FILETYPE_FILE And tcc.MSBUILD_PATH Return True
+			Case "macos"
+				If FileType(tcc.AGK_PATH+"/AppGameKit.app") = FILETYPE_DIR Return True
+			Default
+				Return True
+		End
+		Return False
+	End
+	
+	Method Begin:Void()
+		ENV_LANG="cpp"
+		_trans=New CppTranslator
+	End
+	
+	Method MakeTarget:Void()
+		Select HostOS
+			Case "winnt"
+				MakeAndroid()
+		End
+	End
+
+	Method CreateMediaDir:Void( dir:String )
+	
+		dir=RealPath( dir )
+	
+		If Not syncData DeleteDir dir,True
+		CreateDir dir
+		
+		If FileType( dir )<>FILETYPE_DIR Die "Failed to create target project data dir: "+dir
+		
+		Local dataPath:=ExtractDir(StripExt( tcc.opt_srcpath ))+"/media"
+		If FileType( dataPath )<>FILETYPE_DIR dataPath=""
+		
+		'all used data...
+		Local udata:=New StringSet
+		
+		'Copy data from cerberus project to target project
+		If dataPath
+		
+			Local srcs:=New StringStack
+			srcs.Push dataPath
+			
+			While Not srcs.IsEmpty()
+			
+				Local src:=srcs.Pop()
+				
+				For Local f:=Eachin LoadDir( src )
+					If f.StartsWith( "." ) Continue
+
+					Local p:=src+"/"+f
+					Local r:=p[dataPath.Length+1..]
+					Local t:=dir+"/"+r
+					
+					Select FileType( p )
+					Case FILETYPE_FILE
+						If MatchPath( r,DATA_FILES )
+							CCopyFile p,t
+							udata.Insert t
+							dataFiles.Set p,r
+						Endif
+					Case FILETYPE_DIR
+						CreateDir t
+						srcs.Push p
+					End
+				Next
+			
+			Wend
+		
+		Endif
+		
+		'Copy dodgy module data imports...
+		For Local p:=Eachin app.fileImports
+			Local r:=StripDir( p )
+			Local t:=dir+"/"+r
+			If MatchPath( r,DATA_FILES )
+				CCopyFile p,t
+				udata.Insert t
+				dataFiles.Set p,r
+			Endif
+		Next
+		
+		'Clean up...delete data in target project not in cerberus project.
+		If dataPath
+		
+			Local dsts:=New StringStack
+			dsts.Push dir
+			
+			While Not dsts.IsEmpty()
+				
+				Local dst:=dsts.Pop()
+				
+				For Local f:=Eachin LoadDir( dst )
+					If f.StartsWith( "." ) Continue
+	
+					Local p:=dst+"/"+f
+					Local r:=p[dir.Length+1..]
+					Local t:=dataPath+"/"+r
+					
+					Select FileType( p )
+					Case FILETYPE_FILE
+						If Not udata.Contains( p )
+							DeleteFile p
+						Endif
+					Case FILETYPE_DIR
+						If FileType( t )=FILETYPE_DIR
+							dsts.Push p
+						Else
+							DeleteDir p,True
+						Endif
+					End
+				Next
+				
+			Wend
+		End
+		
+	End
+
+	' Process external shared libraries	to copy
+#rem
+	Method ProcessExternalLibs( config:String, arch:String, link:String )
+		Local libStr:String = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
+		If libStr = "" Then Return
+
+		Local libcopy:String[] = libStr.Split( ";" )
+		Local dst:String = config+arch
+
+		For Local i:= Eachin libcopy
+			If HostOS="winnt"
+				If i <> ""
+					If FileType( dst+"/"+i+".dll" ) = FILETYPE_FILE Continue
+
+					If CopyFile( tcc._libs+"Win"+arch+"/"+i+".dll", dst+"/"+i+".dll" ) = 1
+						Print "Copied "+i+".dll to "+dst
+					Else
+						Print "Failed to copy "+i+" to "+dst
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_COPYING" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_COPYING", dst+"/"+i+"_COPYING" ) = 1
+							Print "Copied "+i+"_COPYING to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+
+					If FileType( tcc._libs+"/"+i+"_LICENCE" )<> FILETYPE_NONE
+						If CopyFile( tcc._libs+"/"+i+"_LICENCE", dst+"/"+i+"_LICENCE" ) = 1
+							Print "Copied "+i+"_LICENCE to "+dst
+						Else
+							Print "Failed to copy "+i+"_COPYING To "+dst
+						Endif
+					Endif
+				Endif
+			Endif
+		Next
+	End
+#end
+End

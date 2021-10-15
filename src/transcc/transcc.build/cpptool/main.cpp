@@ -15113,6 +15113,7 @@ class c_XnaBuilder;
 class c_AGKBuilder;
 class c_AGKBuilder_ios;
 class c_AGKBuilder_android;
+class c_AGKBuilder_android_ouya;
 class c_CustomBuilder;
 class c_NodeEnumerator;
 class c_List;
@@ -15822,6 +15823,19 @@ class c_AGKBuilder_android : public c_Builder{
 	c_AGKBuilder_android();
 	c_AGKBuilder_android* m_new(c_TransCC*);
 	c_AGKBuilder_android* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_Config();
+	void p_CreateMediaDir(String);
+	void p_MakeAndroid();
+	void p_MakeTarget();
+	void mark();
+};
+class c_AGKBuilder_android_ouya : public c_Builder{
+	public:
+	c_AGKBuilder_android_ouya();
+	c_AGKBuilder_android_ouya* m_new(c_TransCC*);
+	c_AGKBuilder_android_ouya* m_new2();
 	bool p_IsValid();
 	void p_Begin();
 	String p_Config();
@@ -18440,7 +18454,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-08-22",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-10-15",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -22557,6 +22571,236 @@ void c_AGKBuilder_android::p_MakeTarget(){
 void c_AGKBuilder_android::mark(){
 	c_Builder::mark();
 }
+c_AGKBuilder_android_ouya::c_AGKBuilder_android_ouya(){
+}
+c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_AGKBuilder_android_ouya::p_IsValid(){
+	String t_1=HostOS();
+	if(t_1==String(L"winnt",5)){
+		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
+			return true;
+		}
+	}else{
+		if(t_1==String(L"macos",5)){
+			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	return false;
+}
+void c_AGKBuilder_android_ouya::p_Begin(){
+	bb_config_ENV_LANG=String(L"cpp",3);
+	bb_translator__trans=((new c_CppTranslator)->m_new());
+}
+String c_AGKBuilder_android_ouya::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	int t_l=0;
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+void c_AGKBuilder_android_ouya::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_AGKBuilder_android_ouya::p_MakeAndroid(){
+	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
+	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
+	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_ouya",39);
+	bbPrint(t_buildpath);
+	String t_lp=String(L"ndk.dir=",8)+m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\n",1);
+	t_lp=t_lp+(String(L"sdk.dir=",8)+m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SaveString(t_lp,t_buildpath+String(L"\\local.properties",17));
+	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
+	if(m_tcc->m_opt_build){
+		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
+		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
+		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
+		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
+		ChangeDir(t_buildpath);
+		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
+		if(m_tcc->m_opt_config==String(L"release",7)){
+			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
+		}
+		String t_gradle=String();
+		if(HostOS()==String(L"winnt",5)){
+			t_gradle=String(L"gradlew",7);
+		}else{
+			t_gradle=String(L"./gradlew",9);
+		}
+		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
+			bb_transcc_Die(String(L"Android build failed.",21));
+		}else{
+			if(m_tcc->m_opt_config==String(L"release",7)){
+				String t_adb=String(L"adb",3);
+				String t_jarsigner=String(L"jarsigner",9);
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+				}
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
+				}
+				String t__file=CurrentDir();
+				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
+				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
+				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
+				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
+				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
+				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
+			}else{
+				if(m_tcc->m_opt_config==String(L"debug",5)){
+					String t_adb2=String(L"adb",3);
+					if((m_tcc->m_ANDROID_PATH).Length()!=0){
+						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+					}
+					String t__file2=CurrentDir();
+					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
+					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
+					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
+				}
+			}
+		}
+		if(m_tcc->m_opt_run){
+			String t_adb3=String(L"adb",3);
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			t_app_package=String(L"com.mycompany.mytemplate",24);
+			p_Execute(t_adb3+String(L" logcat -c",10),false);
+			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
+			if(m_tcc->m_opt_config==String(L"debug",5)){
+				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
+			}
+		}
+	}
+}
+void c_AGKBuilder_android_ouya::p_MakeTarget(){
+	String t_2=HostOS();
+	if(t_2==String(L"winnt",5)){
+		p_MakeAndroid();
+	}
+}
+void c_AGKBuilder_android_ouya::mark(){
+	c_Builder::mark();
+}
 c_CustomBuilder::c_CustomBuilder(){
 	m_custVars=0;
 }
@@ -22990,6 +23234,7 @@ c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_android",11),((new c_AGKBuilder_android)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"agk_android_ouya",16),((new c_AGKBuilder_android_ouya)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"custom",6),((new c_CustomBuilder)->m_new(t_tcc)));
 	return t_builders;
 }

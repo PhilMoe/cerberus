@@ -8,7 +8,7 @@ Currently only Windows Desktop, OSX Desktop, Android (Google) and iOS are suppor
 
 For OSX and iOS you only need to install XCode from the Apple Appstore.
 
-To target Android, you need to install Android Studio with the NDK as well.
+To target Android and Ouya, you need to install Android Studio with the NDK as well.
 
 On Windows you need to install Microsoft Visual Studio Community 2017 edition
  

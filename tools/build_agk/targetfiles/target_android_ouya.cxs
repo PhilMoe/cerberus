@@ -1,0 +1,4 @@
+#TARGET_NAME="Android Ouya Game (AppGameKit)"
+#TARGET_SYSTEM="agk_android_ouya"
+#TARGET_BUILDER="agk_android_ouya"
+#TARGET_HOST="winnt|macos"
