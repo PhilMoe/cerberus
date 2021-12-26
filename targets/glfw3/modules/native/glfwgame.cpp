@@ -646,7 +646,7 @@ void BBGlfwGame::SetHighDPI_Factor(double factor){
 
 void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     if( _window ) {
-    	int width,height,depth;
+    	int depth;
 		GLFWimage icons[1];
 		unsigned char* imageData = LoadImageData(_path, &icons[0].width,&icons[0].height,&depth);
 		icons[0].pixels = imageData;   	

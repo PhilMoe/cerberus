@@ -159,7 +159,7 @@ Class Font
 		Endif
 
 		Local w:Int = image.Width/cellWidth
-		Local h:Int = image.Height/cellHeight
+		'Local h:Int = image.Height/cellHeight
 
 		For Local i:=0 Until numChars
 			Local y:Int =i / w
@@ -181,7 +181,7 @@ Class Font
 		If Not image Return Null
 
 		Local w:Int =image.Width/cellWidth
-		Local h:Int =image.Height/cellHeight
+		'Local h:Int =image.Height/cellHeight
 
 		For Local i:=0 Until numChars
 			Local y:Int =i / w
@@ -197,7 +197,7 @@ Class Font
 	Function Load:Font(url:String, flags:Int=Image.DefaultFlags)
 		Local iniText:String
 		Local pageNum:Int = 0
-		Local idnum:Int = 0
+		'Local idnum:Int = 0
 		Local tmpChar:Glyph = Null
 		Local plLen:Int
 		Local lines:String[]
