@@ -1,4 +1,4 @@
-***** v2021-10-15 *****
+***** v2021-12-27 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
 MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
@@ -14,6 +14,7 @@ MOD: [ANDROID] Moved gradle distribution to 7.0.2 and gradle version to 4.2.0  t
 MOD: [ANDROID/admob] Moved to google_play_services 20.2.0.    (Author: Phil7 / MikeHart)
 MOD: [TRANSCC] Set SetEnv JAVA_HOME with the JDK_PATH on Macos.    (Author: Phil7)
 MOD: [TRANSCC] Handle multiple ANDROID_LIBRARY_REFERENCE_n entries on Android.    (Author: MikeHart)
+MOD: [TRANSCC] Handle XCFrameworks on IOS.    (Author: MikeHart)
 NEW: [ANDROID/admob] Added #ADMOB_ANDROID_ADS_APPID to set the appid for admob ads.   (Author: MikeHart)
 NEW: [CUSTOM target] Added getenv and setenv to get/set environment variables.    (Author: MikeHart)
 NEW: [CUSTOM target] Added set to set custom variables.    (Author: MikeHart)

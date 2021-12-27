@@ -10,8 +10,8 @@
 #define CFG_CD 
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
-#define CFG_CPP_GC_MODE 0
-#define CFG_HOST winnt
+#define CFG_CPP_GC_MODE 1
+#define CFG_HOST macos
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -18453,8 +18453,8 @@ String c_TransCC::p_GetReleaseVersion(){
 	return String();
 }
 void c_TransCC::p_Run(Array<String > t_args){
-	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-10-15",35));
+	gc_assign(this->m_args,t_args);
+	bbPrint(String(L"TRANS cerberus compiler V2021-12-27",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18486,7 +18486,7 @@ void c_TransCC::p_Run(Array<String > t_args){
 		bbPrint(String(L"Valid configs: debug release",28));
 		ExitApp(0);
 	}
-	m_target=m__targets->p_Get(m_opt_target.Replace(String(L"_",1),String(L" ",1)));
+	gc_assign(m_target,m__targets->p_Get(m_opt_target.Replace(String(L"_",1),String(L" ",1))));
 	if(!((m_target)!=0)){
 		bb_transcc_Die(String(L"Invalid target",14));
 	}
@@ -18504,6 +18504,10 @@ bool c_TransCC::p_Execute(String t_cmd,bool t_failHard){
 }
 void c_TransCC::mark(){
 	Object::mark();
+	gc_mark_q(m_args);
+	gc_mark_q(m__builders);
+	gc_mark_q(m__targets);
+	gc_mark_q(m_target);
 }
 String bb_os_ExtractDir(String t_path){
 	int t_i=t_path.FindLast(String(L"/",1));
@@ -18574,7 +18578,7 @@ c_IdentType* c_Type::m_objectType;
 c_IdentType* c_Type::m_throwableType;
 c_ArrayType* c_Type::p_ArrayOf(){
 	if(!((m_arrayOf)!=0)){
-		m_arrayOf=(new c_ArrayType)->m_new(this);
+		gc_assign(m_arrayOf,(new c_ArrayType)->m_new(this));
 	}
 	return m_arrayOf;
 }
@@ -18597,6 +18601,7 @@ c_ClassDecl* c_Type::p_GetClass(){
 }
 void c_Type::mark(){
 	Object::mark();
+	gc_mark_q(m_arrayOf);
 }
 c_StringType::c_StringType(){
 }
@@ -18795,6 +18800,7 @@ int c_Decl::p_IsFinal(){
 }
 void c_Decl::mark(){
 	Object::mark();
+	gc_mark_q(m_scope);
 }
 c_ScopeDecl::c_ScopeDecl(){
 	m_decls=(new c_List5)->m_new();
@@ -18813,7 +18819,7 @@ int c_ScopeDecl::p_InsertDecl(c_Decl* t_decl){
 	if(!((t_ident).Length()!=0)){
 		return 0;
 	}
-	t_decl->m_scope=this;
+	gc_assign(t_decl->m_scope,this);
 	m_decls->p_AddLast5(t_decl);
 	c_StringMap4* t_decls=0;
 	Object* t_tdecl=m_declsMap->p_Get(t_ident);
@@ -19103,6 +19109,9 @@ c_ScopeDecl* c_ScopeDecl::p_FindScopeDecl(String t_ident){
 }
 void c_ScopeDecl::mark(){
 	c_Decl::mark();
+	gc_mark_q(m_decls);
+	gc_mark_q(m_declsMap);
+	gc_mark_q(m_semanted);
 }
 c_ConfigScope::c_ConfigScope(){
 	m_cdecls=(new c_StringMap)->m_new();
@@ -19120,6 +19129,8 @@ c_ValDecl* c_ConfigScope::p_FindValDecl(String t_ident){
 }
 void c_ConfigScope::mark(){
 	c_ScopeDecl::mark();
+	gc_mark_q(m_cdecls);
+	gc_mark_q(m_vars);
 }
 String bb_config__errInfo;
 c_ConfigScope* bb_config__cfgScope;
@@ -19140,14 +19151,14 @@ String c_ValDecl::p_ToString(){
 }
 int c_ValDecl::p_OnSemant(){
 	if((m_type)!=0){
-		m_type=m_type->p_Semant();
+		gc_assign(m_type,m_type->p_Semant());
 		if((m_init)!=0){
-			m_init=m_init->p_Semant2(m_type,0);
+			gc_assign(m_init,m_init->p_Semant2(m_type,0));
 		}
 	}else{
 		if((m_init)!=0){
-			m_init=m_init->p_Semant();
-			m_type=m_init->m_exprType;
+			gc_assign(m_init,m_init->p_Semant());
+			gc_assign(m_type,m_init->m_exprType);
 		}else{
 			bb_config_InternalErr(String(L"Internal error",14));
 		}
@@ -19165,6 +19176,8 @@ c_Expr* c_ValDecl::p_CopyInit(){
 }
 void c_ValDecl::mark(){
 	c_Decl::mark();
+	gc_mark_q(m_type);
+	gc_mark_q(m_init);
 }
 c_ConstDecl::c_ConstDecl(){
 	m_value=String();
@@ -19174,8 +19187,8 @@ c_ConstDecl* c_ConstDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr
 	this->m_ident=t_ident;
 	this->m_munged=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_type=t_type;
-	this->m_init=t_init;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
 	return this;
 }
 c_ConstDecl* c_ConstDecl::m_new2(){
@@ -19226,42 +19239,42 @@ c_ConstDecl* c_Map::p_Get(String t_key){
 }
 int c_Map::p_RotateLeft(c_Node* t_node){
 	c_Node* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map::p_RotateRight(c_Node* t_node){
 	c_Node* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map::p_InsertFixup(c_Node* t_node){
@@ -19316,7 +19329,7 @@ bool c_Map::p_Set(String t_key,c_ConstDecl* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -19324,13 +19337,13 @@ bool c_Map::p_Set(String t_key,c_ConstDecl* t_value){
 	t_node=(new c_Node)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -19339,6 +19352,7 @@ bool c_Map::p_Contains(String t_key){
 }
 void c_Map::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap::c_StringMap(){
 }
@@ -19362,9 +19376,9 @@ c_Node::c_Node(){
 }
 c_Node* c_Node::m_new(String t_key,c_ConstDecl* t_value,int t_color,c_Node* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node* c_Node::m_new2(){
@@ -19372,6 +19386,10 @@ c_Node* c_Node::m_new2(){
 }
 void c_Node::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_Expr::c_Expr(){
 	m_exprType=0;
@@ -19391,7 +19409,7 @@ Array<c_Expr* > c_Expr::p_SemantArgs(Array<c_Expr* > t_args){
 	t_args=t_args.Slice(0);
 	for(int t_i=0;t_i<t_args.Length();t_i=t_i+1){
 		if((t_args[t_i])!=0){
-			t_args[t_i]=t_args[t_i]->p_Semant();
+			gc_assign(t_args[t_i],t_args[t_i]->p_Semant());
 		}
 	}
 	return t_args;
@@ -19409,10 +19427,10 @@ Array<c_Expr* > c_Expr::p_CastArgs(Array<c_Expr* > t_args,c_FuncDecl* t_funcDecl
 	t_args=t_args.Resize(t_funcDecl->m_argDecls.Length());
 	for(int t_i=0;t_i<t_args.Length();t_i=t_i+1){
 		if((t_args[t_i])!=0){
-			t_args[t_i]=t_args[t_i]->p_Cast(t_funcDecl->m_argDecls[t_i]->m_type,0);
+			gc_assign(t_args[t_i],t_args[t_i]->p_Cast(t_funcDecl->m_argDecls[t_i]->m_type,0));
 		}else{
 			if((t_funcDecl->m_argDecls[t_i]->m_init)!=0){
-				t_args[t_i]=t_funcDecl->m_argDecls[t_i]->m_init;
+				gc_assign(t_args[t_i],t_funcDecl->m_argDecls[t_i]->m_init);
 			}else{
 				bb_config_Err(String(L"Missing function argument '",27)+t_funcDecl->m_argDecls[t_i]->m_ident+String(L"'.",2));
 			}
@@ -19446,7 +19464,7 @@ c_Expr* c_Expr::p_CopyExpr(c_Expr* t_expr){
 Array<c_Expr* > c_Expr::p_CopyArgs(Array<c_Expr* > t_exprs){
 	t_exprs=t_exprs.Slice(0);
 	for(int t_i=0;t_i<t_exprs.Length();t_i=t_i+1){
-		t_exprs[t_i]=p_CopyExpr(t_exprs[t_i]);
+		gc_assign(t_exprs[t_i],p_CopyExpr(t_exprs[t_i]));
 	}
 	return t_exprs;
 }
@@ -19496,6 +19514,7 @@ String c_Expr::p_TransVar(){
 }
 void c_Expr::mark(){
 	Object::mark();
+	gc_mark_q(m_exprType);
 }
 c_BoolType::c_BoolType(){
 }
@@ -19532,42 +19551,42 @@ c_Map2* c_Map2::m_new(){
 }
 int c_Map2::p_RotateLeft2(c_Node2* t_node){
 	c_Node2* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map2::p_RotateRight2(c_Node2* t_node){
 	c_Node2* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map2::p_InsertFixup2(c_Node2* t_node){
@@ -19630,13 +19649,13 @@ bool c_Map2::p_Set2(String t_key,String t_value){
 	t_node=(new c_Node2)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup2(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -19681,6 +19700,7 @@ c_NodeEnumerator3* c_Map2::p_ObjectEnumerator(){
 }
 void c_Map2::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap2::c_StringMap2(){
 }
@@ -19706,7 +19726,7 @@ c_Node2* c_Node2::m_new(String t_key,String t_value,int t_color,c_Node2* t_paren
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node2* c_Node2::m_new2(){
@@ -19737,11 +19757,14 @@ String c_Node2::p_Value(){
 }
 void c_Node2::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_parent);
 }
 int bb_config_SetConfigVar(String t_key,String t_val,c_Type* t_type){
 	c_ConstDecl* t_decl=bb_config__cfgScope->m_cdecls->p_Get(t_key);
 	if((t_decl)!=0){
-		t_decl->m_type=t_type;
+		gc_assign(t_decl->m_type,t_type);
 	}else{
 		t_decl=(new c_ConstDecl)->m_new(t_key,1048576,t_type,0);
 		bb_config__cfgScope->m_cdecls->p_Set(t_key,t_decl);
@@ -19769,13 +19792,13 @@ c_Stack* c_Stack::m_new(){
 	return this;
 }
 c_Stack* c_Stack::m_new2(Array<String > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack::p_Push(String t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
@@ -19806,7 +19829,7 @@ void c_Stack::p_Length(int t_newlength){
 		}
 	}else{
 		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+			gc_assign(m_data,m_data.Resize(bb_math_Max(m_length*2+10,t_newlength)));
 		}
 	}
 	m_length=t_newlength;
@@ -19831,6 +19854,7 @@ void c_Stack::p_Clear(){
 }
 void c_Stack::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_StringStack::c_StringStack(){
 }
@@ -19897,7 +19921,7 @@ c_Builder::c_Builder(){
 	m_dataFiles=(new c_StringMap2)->m_new();
 }
 c_Builder* c_Builder::m_new(c_TransCC* t_tcc){
-	this->m_tcc=t_tcc;
+	gc_assign(this->m_tcc,t_tcc);
 	return this;
 }
 c_Builder* c_Builder::m_new2(){
@@ -19945,7 +19969,7 @@ void c_Builder::p_Make(){
 	bb_config_SetConfigVar2(String(L"TARGET",6),bb_config_ENV_TARGET);
 	bb_config_SetConfigVar2(String(L"CONFIG",6),bb_config_ENV_CONFIG);
 	bb_config_SetConfigVar2(String(L"SAFEMODE",8),String(bb_config_ENV_SAFEMODE));
-	m_app=bb_parser_ParseApp(m_tcc->m_opt_srcpath);
+	gc_assign(m_app,bb_parser_ParseApp(m_tcc->m_opt_srcpath));
 	bbPrint(String(L"Semanting...",12));
 	if((bb_config_GetConfigVar(String(L"REFLECTION_FILTER",17))).Length()!=0){
 		c_Reflector* t_r=(new c_Reflector)->m_new();
@@ -20260,6 +20284,9 @@ void c_Builder::p_CopyIcon(String t_iFile,String t_targetIcon){
 }
 void c_Builder::mark(){
 	Object::mark();
+	gc_mark_q(m_tcc);
+	gc_mark_q(m_app);
+	gc_mark_q(m_dataFiles);
 }
 c_Map3::c_Map3(){
 	m_root=0;
@@ -20269,42 +20296,42 @@ c_Map3* c_Map3::m_new(){
 }
 int c_Map3::p_RotateLeft3(c_Node3* t_node){
 	c_Node3* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map3::p_RotateRight3(c_Node3* t_node){
 	c_Node3* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map3::p_InsertFixup3(c_Node3* t_node){
@@ -20359,7 +20386,7 @@ bool c_Map3::p_Set3(String t_key,c_Builder* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -20367,13 +20394,13 @@ bool c_Map3::p_Set3(String t_key,c_Builder* t_value){
 	t_node=(new c_Node3)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup3(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -20415,6 +20442,7 @@ c_Builder* c_Map3::p_Get(String t_key){
 }
 void c_Map3::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap3::c_StringMap3(){
 }
@@ -20443,7 +20471,7 @@ bool c_AndroidBuilder::p_IsValid(){
 }
 void c_AndroidBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"java",4);
-	bb_translator__trans=((new c_JavaTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_JavaTranslator)->m_new()));
 }
 bool c_AndroidBuilder::p_CreateDirRecursive(String t_path){
 	int t_i=0;
@@ -20679,9 +20707,9 @@ c_Node3::c_Node3(){
 }
 c_Node3* c_Node3::m_new(String t_key,c_Builder* t_value,int t_color,c_Node3* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node3* c_Node3::m_new2(){
@@ -20712,6 +20740,10 @@ String c_Node3::p_Key(){
 }
 void c_Node3::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_AndroidNdkBuilder::c_AndroidNdkBuilder(){
 }
@@ -20728,7 +20760,7 @@ bool c_AndroidNdkBuilder::p_IsValid(){
 }
 void c_AndroidNdkBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_AndroidNdkBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -20888,7 +20920,7 @@ bool c_GlfwBuilder::p_IsValid(){
 }
 void c_GlfwBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_GlfwBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -21126,7 +21158,7 @@ bool c_Html5Builder::p_IsValid(){
 }
 void c_Html5Builder::p_Begin(){
 	bb_config_ENV_LANG=String(L"js",2);
-	bb_translator__trans=((new c_JsTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_JsTranslator)->m_new()));
 }
 String c_Html5Builder::p_MetaData(){
 	c_StringStack* t_meta=(new c_StringStack)->m_new2();
@@ -21220,7 +21252,7 @@ bool c_IosBuilder::p_IsValid(){
 }
 void c_IosBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_IosBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -21268,7 +21300,7 @@ String c_IosBuilder::p_BuildFiles(){
 		String t_dir=bb_os_ExtractDir(t_path);
 		String t_name=bb_os_StripDir(t_path);
 		String t_2=bb_os_ExtractExt(t_name);
-		if(t_2==String(L"a",1) || t_2==String(L"framework",9)){
+		if(t_2==String(L"a",1) || t_2==String(L"framework",9) || t_2==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXBuildFile; fileRef = ",34)+t_fileRef+String(L"; };",4));
 		}
 	}
@@ -21299,6 +21331,12 @@ String c_IosBuilder::p_FileRefs(){
 					}else{
 						t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ",74)+t_name+String(L"; path = System/Library/Frameworks/",35)+t_name+String(L"; sourceTree = SDKROOT; };",26));
 					}
+				}else{
+					if(t_3==String(L"xcframework",11)){
+						if((t_dir).Length()!=0){
+							t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ",76)+t_name+String(L"; path = libs/",14)+t_name+String(L"; sourceTree = \"<group>\"; };",28));
+						}
+					}
 				}
 			}
 		}
@@ -21316,7 +21354,7 @@ String c_IosBuilder::p_FrameworksBuildPhase(){
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_4=bb_os_ExtractExt(t_path);
-		if(t_4==String(L"a",1) || t_4==String(L"framework",9)){
+		if(t_4==String(L"a",1) || t_4==String(L"framework",9) || t_4==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t\t\t",4)+t_id);
 		}
 	}
@@ -21333,7 +21371,7 @@ String c_IosBuilder::p_FrameworksGroup(){
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_5=bb_os_ExtractExt(t_path);
-		if(t_5==String(L"framework",9)){
+		if(t_5==String(L"framework",9) || t_5==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t\t\t",4)+t_id);
 		}
 	}
@@ -21457,7 +21495,7 @@ void c_IosBuilder::p_MakeTarget(){
 				CopyFile(t_lib,t_path);
 				p_AddBuildFile(t_path);
 			}else{
-				if(t_7==String(L"framework",9)){
+				if(t_7==String(L"framework",9) || t_7==String(L"xcframework",11)){
 					if(FileType(t_lib)==2){
 						String t_path2=String(L"libs/",5)+bb_os_StripDir(t_lib);
 						bb_os_CopyDir(t_lib,t_path2,true,false);
@@ -21488,6 +21526,8 @@ void c_IosBuilder::p_MakeTarget(){
 }
 void c_IosBuilder::mark(){
 	c_Builder::mark();
+	gc_mark_q(m__buildFiles);
+	gc_mark_q(m__fileRefs);
 }
 c_FlashBuilder::c_FlashBuilder(){
 }
@@ -21504,7 +21544,7 @@ bool c_FlashBuilder::p_IsValid(){
 }
 void c_FlashBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"as",2);
-	bb_translator__trans=((new c_AsTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_AsTranslator)->m_new()));
 }
 String c_FlashBuilder::p_Assets(){
 	c_StringStack* t_assets=(new c_StringStack)->m_new2();
@@ -21597,7 +21637,7 @@ bool c_PsmBuilder::p_IsValid(){
 }
 void c_PsmBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cs",2);
-	bb_translator__trans=((new c_CsTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CsTranslator)->m_new()));
 }
 String c_PsmBuilder::p_Content(){
 	c_StringStack* t_cont=(new c_StringStack)->m_new2();
@@ -21706,7 +21746,7 @@ bool c_StdcppBuilder::p_IsValid(){
 }
 void c_StdcppBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_StdcppBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -21805,7 +21845,7 @@ bool c_WinrtBuilder::p_IsValid(){
 }
 void c_WinrtBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_WinrtBuilder::p_Content2(bool t_csharp){
 	c_StringStack* t_cont=(new c_StringStack)->m_new2();
@@ -21878,7 +21918,7 @@ bool c_XnaBuilder::p_IsValid(){
 }
 void c_XnaBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cs",2);
-	bb_translator__trans=((new c_CsTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CsTranslator)->m_new()));
 }
 String c_XnaBuilder::p_Content(){
 	c_StringStack* t_cont=(new c_StringStack)->m_new2();
@@ -22017,7 +22057,7 @@ bool c_AGKBuilder::p_IsValid(){
 }
 void c_AGKBuilder::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_AGKBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -22198,7 +22238,7 @@ bool c_AGKBuilder_ios::p_IsValid(){
 }
 void c_AGKBuilder_ios::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_AGKBuilder_ios::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -22371,7 +22411,7 @@ bool c_AGKBuilder_android::p_IsValid(){
 }
 void c_AGKBuilder_android::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_AGKBuilder_android::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -22600,7 +22640,7 @@ bool c_AGKBuilder_android_ouya::p_IsValid(){
 }
 void c_AGKBuilder_android_ouya::p_Begin(){
 	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
+	gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 }
 String c_AGKBuilder_android_ouya::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
@@ -22806,7 +22846,7 @@ c_CustomBuilder::c_CustomBuilder(){
 }
 c_CustomBuilder* c_CustomBuilder::m_new(c_TransCC* t_tcc){
 	c_Builder::m_new(t_tcc);
-	m_custVars=(new c_StringMap2)->m_new();
+	gc_assign(m_custVars,(new c_StringMap2)->m_new());
 	return this;
 }
 c_CustomBuilder* c_CustomBuilder::m_new2(){
@@ -22819,19 +22859,19 @@ bool c_CustomBuilder::p_IsValid(){
 void c_CustomBuilder::p_Begin(){
 	String t_4=bb_config_ENV_LANG;
 	if(t_4==String(L"cpp",3)){
-		bb_translator__trans=((new c_CppTranslator)->m_new());
+		gc_assign(bb_translator__trans,((new c_CppTranslator)->m_new()));
 	}else{
 		if(t_4==String(L"cs",2)){
-			bb_translator__trans=((new c_CsTranslator)->m_new());
+			gc_assign(bb_translator__trans,((new c_CsTranslator)->m_new()));
 		}else{
 			if(t_4==String(L"js",2)){
-				bb_translator__trans=((new c_JsTranslator)->m_new());
+				gc_assign(bb_translator__trans,((new c_JsTranslator)->m_new()));
 			}else{
 				if(t_4==String(L"as",2)){
-					bb_translator__trans=((new c_AsTranslator)->m_new());
+					gc_assign(bb_translator__trans,((new c_AsTranslator)->m_new()));
 				}else{
 					if(t_4==String(L"java",4)){
-						bb_translator__trans=((new c_JavaTranslator)->m_new());
+						gc_assign(bb_translator__trans,((new c_JavaTranslator)->m_new()));
 					}
 				}
 			}
@@ -23218,6 +23258,7 @@ void c_CustomBuilder::p_MakeTarget(){
 }
 void c_CustomBuilder::mark(){
 	c_Builder::mark();
+	gc_mark_q(m_custVars);
 }
 c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	c_StringMap3* t_builders=(new c_StringMap3)->m_new();
@@ -23242,7 +23283,7 @@ c_NodeEnumerator::c_NodeEnumerator(){
 	m_node=0;
 }
 c_NodeEnumerator* c_NodeEnumerator::m_new(c_Node3* t_node){
-	this->m_node=t_node;
+	gc_assign(this->m_node,t_node);
 	return this;
 }
 c_NodeEnumerator* c_NodeEnumerator::m_new2(){
@@ -23253,11 +23294,12 @@ bool c_NodeEnumerator::p_HasNext(){
 }
 c_Node3* c_NodeEnumerator::p_NextObject(){
 	c_Node3* t_t=m_node;
-	m_node=m_node->p_NextNode();
+	gc_assign(m_node,m_node->p_NextNode());
 	return t_t;
 }
 void c_NodeEnumerator::mark(){
 	Object::mark();
+	gc_mark_q(m_node);
 }
 c_List::c_List(){
 	m__head=((new c_HeadNode)->m_new());
@@ -23355,6 +23397,7 @@ void c_List::p_RemoveLast2(String t_value){
 }
 void c_List::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_StringList::c_StringList(){
 }
@@ -23378,10 +23421,10 @@ c_Node4::c_Node4(){
 	m__data=String();
 }
 c_Node4* c_Node4::m_new(c_Node4* t_succ,c_Node4* t_pred,String t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
 	m__data=t_data;
 	return this;
 }
@@ -23389,19 +23432,21 @@ c_Node4* c_Node4::m_new2(){
 	return this;
 }
 int c_Node4::p_Remove(){
-	m__succ->m__pred=m__pred;
-	m__pred->m__succ=m__succ;
+	gc_assign(m__succ->m__pred,m__pred);
+	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
 void c_Node4::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
 }
 c_HeadNode::c_HeadNode(){
 }
 c_HeadNode* c_HeadNode::m_new(){
 	c_Node4::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode::mark(){
@@ -23412,8 +23457,8 @@ c_Enumerator::c_Enumerator(){
 	m__curr=0;
 }
 c_Enumerator* c_Enumerator::m_new(c_List* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator* c_Enumerator::m_new2(){
@@ -23421,17 +23466,19 @@ c_Enumerator* c_Enumerator::m_new2(){
 }
 bool c_Enumerator::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 String c_Enumerator::p_NextObject(){
 	String t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 Array<String > bb_os_LoadDir(String t_path,bool t_recursive,bool t_hidden){
 	c_StringList* t_dirs=(new c_StringList)->m_new2();
@@ -23474,15 +23521,15 @@ c_Stack2* c_Stack2::m_new(){
 	return this;
 }
 c_Stack2* c_Stack2::m_new2(Array<c_ConfigScope* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack2::p_Push4(c_ConfigScope* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack2::p_Push5(Array<c_ConfigScope* > t_values,int t_offset,int t_count){
@@ -23497,16 +23544,17 @@ c_ConfigScope* c_Stack2::m_NIL;
 c_ConfigScope* c_Stack2::p_Pop(){
 	m_length-=1;
 	c_ConfigScope* t_v=m_data[m_length];
-	m_data[m_length]=m_NIL;
+	gc_assign(m_data[m_length],m_NIL);
 	return t_v;
 }
 void c_Stack2::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_Stack2* bb_config__cfgScopeStack;
 void bb_config_PushConfigScope(){
 	bb_config__cfgScopeStack->p_Push4(bb_config__cfgScope);
-	bb_config__cfgScope=(new c_ConfigScope)->m_new();
+	gc_assign(bb_config__cfgScope,(new c_ConfigScope)->m_new());
 }
 c_ModuleDecl::c_ModuleDecl(){
 	m_rmodpath=String();
@@ -23727,6 +23775,9 @@ int c_ModuleDecl::p_OnSemant(){
 }
 void c_ModuleDecl::mark(){
 	c_ScopeDecl::mark();
+	gc_mark_q(m_imported);
+	gc_mark_q(m_friends);
+	gc_mark_q(m_pubImported);
 }
 c_Stack3::c_Stack3(){
 	m_data=Array<int >();
@@ -23736,13 +23787,13 @@ c_Stack3* c_Stack3::m_new(){
 	return this;
 }
 c_Stack3* c_Stack3::m_new2(Array<int > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack3::p_Push7(int t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
 	m_data[m_length]=t_value;
 	m_length+=1;
@@ -23772,7 +23823,7 @@ void c_Stack3::p_Length(int t_newlength){
 		}
 	}else{
 		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+			gc_assign(m_data,m_data.Resize(bb_math_Max(m_length*2+10,t_newlength)));
 		}
 	}
 	m_length=t_newlength;
@@ -23791,6 +23842,7 @@ void c_Stack3::p_Clear(){
 }
 void c_Stack3::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_IntStack::c_IntStack(){
 }
@@ -23859,6 +23911,7 @@ void c_List2::p_RemoveLast3(c_ScopeDecl* t_value){
 }
 void c_List2::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node5::c_Node5(){
 	m__succ=0;
@@ -23866,30 +23919,33 @@ c_Node5::c_Node5(){
 	m__data=0;
 }
 c_Node5* c_Node5::m_new(c_Node5* t_succ,c_Node5* t_pred,c_ScopeDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node5* c_Node5::m_new2(){
 	return this;
 }
 int c_Node5::p_Remove(){
-	m__succ->m__pred=m__pred;
-	m__pred->m__succ=m__succ;
+	gc_assign(m__succ->m__pred,m__pred);
+	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
 void c_Node5::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode2::c_HeadNode2(){
 }
 c_HeadNode2* c_HeadNode2::m_new(){
 	c_Node5::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode2::mark(){
@@ -23898,7 +23954,7 @@ void c_HeadNode2::mark(){
 c_List2* bb_decl__envStack;
 int bb_decl_PushEnv(c_ScopeDecl* t_env){
 	bb_decl__envStack->p_AddLast2(bb_decl__env);
-	bb_decl__env=t_env;
+	gc_assign(bb_decl__env,t_env);
 	return 0;
 }
 c_Toker::c_Toker(){
@@ -23916,7 +23972,7 @@ int c_Toker::p__init(){
 	if((m__keywords)!=0){
 		return 0;
 	}
-	m__keywords=(new c_StringSet)->m_new();
+	gc_assign(m__keywords,(new c_StringSet)->m_new());
 	Array<String > t_=String(L"void strict public private protected friend property bool int float string array object mod continue exit include import module extern new self super eachin true false null not extends abstract final select case default const local global field method function class and or shl shr end if then else elseif endif while wend repeat until forever for to step next return interface implements inline alias try catch throw throwable enumerate",437).Split(String(L" ",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -23924,7 +23980,7 @@ int c_Toker::p__init(){
 		t_2=t_2+1;
 		m__keywords->p_Insert(t_t);
 	}
-	m__symbols=(new c_StringSet)->m_new();
+	gc_assign(m__symbols,(new c_StringSet)->m_new());
 	m__symbols->p_Insert(String(L"..",2));
 	m__symbols->p_Insert(String(L":=",2));
 	m__symbols->p_Insert(String(L"*=",2));
@@ -24177,7 +24233,7 @@ c_Set::c_Set(){
 	m_map=0;
 }
 c_Set* c_Set::m_new(c_Map4* t_map){
-	this->m_map=t_map;
+	gc_assign(this->m_map,t_map);
 	return this;
 }
 c_Set* c_Set::m_new2(){
@@ -24192,6 +24248,7 @@ bool c_Set::p_Contains(String t_value){
 }
 void c_Set::mark(){
 	Object::mark();
+	gc_mark_q(m_map);
 }
 c_StringSet::c_StringSet(){
 }
@@ -24210,42 +24267,42 @@ c_Map4* c_Map4::m_new(){
 }
 int c_Map4::p_RotateLeft4(c_Node6* t_node){
 	c_Node6* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map4::p_RotateRight4(c_Node6* t_node){
 	c_Node6* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map4::p_InsertFixup4(c_Node6* t_node){
@@ -24300,7 +24357,7 @@ bool c_Map4::p_Set4(String t_key,Object* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -24308,13 +24365,13 @@ bool c_Map4::p_Set4(String t_key,Object* t_value){
 	t_node=(new c_Node6)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup4(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -24349,6 +24406,7 @@ Object* c_Map4::p_Get(String t_key){
 }
 void c_Map4::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap4::c_StringMap4(){
 }
@@ -24372,9 +24430,9 @@ c_Node6::c_Node6(){
 }
 c_Node6* c_Node6::m_new(String t_key,Object* t_value,int t_color,c_Node6* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node6* c_Node6::m_new2(){
@@ -24382,6 +24440,10 @@ c_Node6* c_Node6::m_new2(){
 }
 void c_Node6::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 int bb_config_IsSpace(int t_ch){
 	return ((t_ch<=32)?1:0);
@@ -24424,10 +24486,10 @@ c_AppDecl::c_AppDecl(){
 	m_mainFunc=0;
 }
 int c_AppDecl::p_InsertModule(c_ModuleDecl* t_mdecl){
-	t_mdecl->m_scope=(this);
+	gc_assign(t_mdecl->m_scope,(this));
 	m_imported->p_Insert3(t_mdecl->m_filepath,t_mdecl);
 	if(!((m_mainModule)!=0)){
-		m_mainModule=t_mdecl;
+		gc_assign(m_mainModule,t_mdecl);
 	}
 	return 0;
 }
@@ -24457,7 +24519,7 @@ int c_AppDecl::p_FinalizeClasses(){
 }
 int c_AppDecl::p_OnSemant(){
 	bb_decl__env=0;
-	m_mainFunc=m_mainModule->p_FindFuncDecl(String(L"Main",4),Array<c_Expr* >(),0);
+	gc_assign(m_mainFunc,m_mainModule->p_FindFuncDecl(String(L"Main",4),Array<c_Expr* >(),0));
 	if(!((m_mainFunc)!=0)){
 		bb_config_Err(String(L"Function 'Main' not found.",26));
 	}
@@ -24469,6 +24531,14 @@ int c_AppDecl::p_OnSemant(){
 }
 void c_AppDecl::mark(){
 	c_ScopeDecl::mark();
+	gc_mark_q(m_imported);
+	gc_mark_q(m_mainModule);
+	gc_mark_q(m_fileImports);
+	gc_mark_q(m_fileIncludes);
+	gc_mark_q(m_allSemantedDecls);
+	gc_mark_q(m_semantedGlobals);
+	gc_mark_q(m_semantedClasses);
+	gc_mark_q(m_mainFunc);
 }
 c_Map5::c_Map5(){
 	m_root=0;
@@ -24504,42 +24574,42 @@ bool c_Map5::p_Contains(String t_key){
 }
 int c_Map5::p_RotateLeft5(c_Node7* t_node){
 	c_Node7* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map5::p_RotateRight5(c_Node7* t_node){
 	c_Node7* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map5::p_InsertFixup5(c_Node7* t_node){
@@ -24594,7 +24664,7 @@ bool c_Map5::p_Set5(String t_key,c_ModuleDecl* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -24602,13 +24672,13 @@ bool c_Map5::p_Set5(String t_key,c_ModuleDecl* t_value){
 	t_node=(new c_Node7)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup5(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -24630,6 +24700,7 @@ c_Node7* c_Map5::p_FirstNode(){
 }
 void c_Map5::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap5::c_StringMap5(){
 }
@@ -24653,9 +24724,9 @@ c_Node7::c_Node7(){
 }
 c_Node7* c_Node7::m_new(String t_key,c_ModuleDecl* t_value,int t_color,c_Node7* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node7* c_Node7::m_new2(){
@@ -24680,6 +24751,10 @@ c_Node7* c_Node7::p_NextNode(){
 }
 void c_Node7::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_Parser::c_Parser(){
 	m__toke=String();
@@ -24738,9 +24813,9 @@ String c_Parser::p_NextToke(){
 }
 c_Parser* c_Parser::m_new(c_Toker* t_toker,c_AppDecl* t_app,c_ModuleDecl* t_mdecl,int t_defattrs){
 	m__toke=String(L"\n",1);
-	m__toker=t_toker;
-	m__app=t_app;
-	m__module=t_mdecl;
+	gc_assign(m__toker,t_toker);
+	gc_assign(m__app,t_app);
+	gc_assign(m__module,t_mdecl);
 	m__defattrs=t_defattrs;
 	p_SetErr(-1);
 	p_NextToke();
@@ -24974,7 +25049,7 @@ Array<c_Expr* > c_Parser::p_ParseArgs2(int t_stmt){
 		if(t_args.Length()==t_nargs){
 			t_args=t_args.Resize(t_nargs+10);
 		}
-		t_args[t_nargs]=t_arg;
+		gc_assign(t_args[t_nargs],t_arg);
 		t_nargs+=1;
 	}while(!(!((p_CParse(String(L",",1)))!=0)));
 	t_args=t_args.Slice(0,t_nargs);
@@ -25110,7 +25185,7 @@ c_Expr* c_Parser::p_ParsePrimaryExpr(int t_stmt){
 													if((t_ty3)!=0){
 														t_expr=((new c_IdentTypeExpr)->m_new(t_ty3));
 													}else{
-														m__toker=t_toker;
+														gc_assign(m__toker,t_toker);
 														m__toke=m__toker->p_Toke();
 														m__tokeType=m__toker->p_TokeType();
 														t_expr=((new c_IdentExpr)->m_new(p_ParseIdent(),0));
@@ -25431,7 +25506,7 @@ c_List5* c_Parser::p_ParseEnum(String t_toke,int t_attrs){
 int c_Parser::p_PushBlock(c_BlockDecl* t_block){
 	m__blockStack->p_AddLast9(m__block);
 	m__errStack->p_AddLast(bb_config__errInfo);
-	m__block=t_block;
+	gc_assign(m__block,t_block);
 	return 0;
 }
 int c_Parser::p_ParseDeclStmts(){
@@ -25473,7 +25548,7 @@ int c_Parser::p_AtEOF2(String t_tokeID,String t_msg){
 	return 0;
 }
 int c_Parser::p_PopBlock(){
-	m__block=m__blockStack->p_RemoveLast();
+	gc_assign(m__block,m__blockStack->p_RemoveLast());
 	bb_config__errInfo=m__errStack->p_RemoveLast();
 	return 0;
 }
@@ -26063,7 +26138,7 @@ c_FuncDecl* c_Parser::p_ParseFuncDecl(int t_attrs){
 		if((p_CParse(String(L"=",1)))!=0){
 			t_funcDecl->m_munged=p_ParseStringLit();
 			if(t_funcDecl->m_munged==String(L"$resize",7)){
-				t_funcDecl->m_retType=(c_Type::m_emptyArrayType);
+				gc_assign(t_funcDecl->m_retType,(c_Type::m_emptyArrayType));
 			}
 		}
 	}
@@ -26421,6 +26496,12 @@ int c_Parser::p_ParseMain(){
 }
 void c_Parser::mark(){
 	Object::mark();
+	gc_mark_q(m__toker);
+	gc_mark_q(m__app);
+	gc_mark_q(m__module);
+	gc_mark_q(m__block);
+	gc_mark_q(m__blockStack);
+	gc_mark_q(m__errStack);
 }
 c_BlockTrace::c_BlockTrace(){
 	m__map=(new c_IntMap)->m_new();
@@ -26629,6 +26710,8 @@ int c_BlockTrace::m_Push2(String t_toke,int t_line){
 }
 void c_BlockTrace::mark(){
 	Object::mark();
+	gc_mark_q(m__map);
+	gc_mark_q(m__record);
 }
 c_List3::c_List3(){
 	m__head=((new c_HeadNode7)->m_new());
@@ -26703,14 +26786,14 @@ int c_List3::p_Sort(int t_ascending){
 						}
 					}
 				}
-				t_t->m__pred=t_tail;
-				t_tail->m__succ=t_t;
+				gc_assign(t_t->m__pred,t_tail);
+				gc_assign(t_tail->m__succ,t_t);
 				t_tail=t_t;
 			}while(!(false));
 			t_p=t_q;
 		}
-		t_tail->m__succ=m__head;
-		m__head->m__pred=t_tail;
+		gc_assign(t_tail->m__succ,m__head);
+		gc_assign(m__head->m__pred,t_tail);
 		if(t_merges<=1){
 			return 0;
 		}
@@ -26739,6 +26822,7 @@ Array<int > c_List3::p_ToArray(){
 }
 void c_List3::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_IntList::c_IntList(){
 }
@@ -26807,42 +26891,42 @@ bool c_Map6::p_Contains2(int t_key){
 }
 int c_Map6::p_RotateLeft6(c_Node8* t_node){
 	c_Node8* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map6::p_RotateRight6(c_Node8* t_node){
 	c_Node8* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map6::p_InsertFixup6(c_Node8* t_node){
@@ -26904,18 +26988,19 @@ bool c_Map6::p_Add(int t_key,c_IntList* t_value){
 	t_node=(new c_Node8)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup6(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
 void c_Map6::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_IntMap::c_IntMap(){
 }
@@ -26956,9 +27041,9 @@ c_Node8* c_Node8::p_NextNode(){
 }
 c_Node8* c_Node8::m_new(int t_key,c_IntList* t_value,int t_color,c_Node8* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node8* c_Node8::m_new2(){
@@ -26966,6 +27051,10 @@ c_Node8* c_Node8::m_new2(){
 }
 void c_Node8::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_TraceRecord::c_TraceRecord(){
 	m__line=0;
@@ -27008,8 +27097,8 @@ c_List4* c_List4::m_new2(Array<c_TraceRecord* > t_data){
 	return this;
 }
 int c_List4::p_Clear(){
-	m__head->m__succ=m__head;
-	m__head->m__pred=m__head;
+	gc_assign(m__head->m__succ,m__head);
+	gc_assign(m__head->m__pred,m__head);
 	return 0;
 }
 bool c_List4::p_IsEmpty(){
@@ -27046,6 +27135,7 @@ void c_List4::p_RemoveLast4(c_TraceRecord* t_value){
 }
 void c_List4::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node9::c_Node9(){
 	m__succ=0;
@@ -27053,30 +27143,33 @@ c_Node9::c_Node9(){
 	m__data=0;
 }
 c_Node9* c_Node9::m_new(c_Node9* t_succ,c_Node9* t_pred,c_TraceRecord* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node9* c_Node9::m_new2(){
 	return this;
 }
 int c_Node9::p_Remove(){
-	m__succ->m__pred=m__pred;
-	m__pred->m__succ=m__succ;
+	gc_assign(m__succ->m__pred,m__pred);
+	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
 void c_Node9::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode3::c_HeadNode3(){
 }
 c_HeadNode3* c_HeadNode3::m_new(){
 	c_Node9::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode3::mark(){
@@ -27358,7 +27451,7 @@ c_AliasDecl* c_AliasDecl::m_new(String t_ident,int t_attrs,Object* t_decl){
 	c_Decl::m_new();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_decl=t_decl;
+	gc_assign(this->m_decl,t_decl);
 	return this;
 }
 c_AliasDecl* c_AliasDecl::m_new2(){
@@ -27373,6 +27466,7 @@ int c_AliasDecl::p_OnSemant(){
 }
 void c_AliasDecl::mark(){
 	c_Decl::mark();
+	gc_mark_q(m_decl);
 }
 c_List5::c_List5(){
 	m__head=((new c_HeadNode4)->m_new());
@@ -27407,6 +27501,7 @@ int c_List5::p_Count(){
 }
 void c_List5::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node10::c_Node10(){
 	m__succ=0;
@@ -27414,11 +27509,11 @@ c_Node10::c_Node10(){
 	m__data=0;
 }
 c_Node10* c_Node10::m_new(c_Node10* t_succ,c_Node10* t_pred,c_Decl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node10* c_Node10::m_new2(){
@@ -27426,13 +27521,16 @@ c_Node10* c_Node10::m_new2(){
 }
 void c_Node10::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode4::c_HeadNode4(){
 }
 c_HeadNode4* c_HeadNode4::m_new(){
 	c_Node10::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode4::mark(){
@@ -27447,7 +27545,7 @@ int c_BlockDecl::p_AddStmt(c_Stmt* t_stmt){
 }
 c_BlockDecl* c_BlockDecl::m_new(c_ScopeDecl* t_scope){
 	c_ScopeDecl::m_new();
-	this->m_scope=t_scope;
+	gc_assign(this->m_scope,t_scope);
 	return this;
 }
 c_BlockDecl* c_BlockDecl::m_new2(){
@@ -27475,11 +27573,12 @@ int c_BlockDecl::p_OnSemant(){
 }
 c_BlockDecl* c_BlockDecl::p_CopyBlock(c_ScopeDecl* t_scope){
 	c_BlockDecl* t_t=dynamic_cast<c_BlockDecl*>(p_Copy());
-	t_t->m_scope=t_scope;
+	gc_assign(t_t->m_scope,t_scope);
 	return t_t;
 }
 void c_BlockDecl::mark(){
 	c_ScopeDecl::mark();
+	gc_mark_q(m_stmts);
 }
 c_FuncDecl::c_FuncDecl(){
 	m_retType=0;
@@ -27493,8 +27592,8 @@ c_FuncDecl* c_FuncDecl::m_new(String t_ident,int t_attrs,c_Type* t_retType,Array
 	c_BlockDecl::m_new2();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_retType=t_retType;
-	this->m_argDecls=t_argDecls;
+	gc_assign(this->m_retType,t_retType);
+	gc_assign(this->m_argDecls,t_argDecls);
 	return this;
 }
 c_FuncDecl* c_FuncDecl::m_new2(){
@@ -27547,7 +27646,7 @@ bool c_FuncDecl::p_EqualsFunc(c_FuncDecl* t_decl){
 c_Decl* c_FuncDecl::p_OnCopy(){
 	Array<c_ArgDecl* > t_args=m_argDecls.Slice(0);
 	for(int t_i=0;t_i<t_args.Length();t_i=t_i+1){
-		t_args[t_i]=dynamic_cast<c_ArgDecl*>(t_args[t_i]->p_Copy());
+		gc_assign(t_args[t_i],dynamic_cast<c_ArgDecl*>(t_args[t_i]->p_Copy()));
 	}
 	c_FuncDecl* t_t=(new c_FuncDecl)->m_new(m_ident,m_attrs,m_retType,t_args);
 	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
@@ -27564,9 +27663,9 @@ int c_FuncDecl::p_OnSemant(){
 		t_sclass=t_cdecl->m_superClass;
 	}
 	if(p_IsCtor()){
-		m_retType=(t_cdecl->m_objectType);
+		gc_assign(m_retType,(t_cdecl->m_objectType));
 	}else{
-		m_retType=m_retType->p_Semant();
+		gc_assign(m_retType,m_retType->p_Semant());
 	}
 	Array<c_ArgDecl* > t_=m_argDecls;
 	int t_2=0;
@@ -27598,7 +27697,7 @@ int c_FuncDecl::p_OnSemant(){
 				t_found=1;
 				t_decl2->p_Semant();
 				if(p_EqualsFunc(t_decl2)){
-					m_overrides=t_decl2;
+					gc_assign(m_overrides,t_decl2);
 					t_decl2->m_attrs|=16;
 					break;
 				}
@@ -27636,6 +27735,9 @@ bool c_FuncDecl::p_IsVirtual(){
 }
 void c_FuncDecl::mark(){
 	c_BlockDecl::mark();
+	gc_mark_q(m_retType);
+	gc_mark_q(m_argDecls);
+	gc_mark_q(m_overrides);
 }
 c_List6::c_List6(){
 	m__head=((new c_HeadNode5)->m_new());
@@ -27661,6 +27763,7 @@ c_Enumerator4* c_List6::p_ObjectEnumerator(){
 }
 void c_List6::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_FuncDeclList::c_FuncDeclList(){
 }
@@ -27677,11 +27780,11 @@ c_Node11::c_Node11(){
 	m__data=0;
 }
 c_Node11* c_Node11::m_new(c_Node11* t_succ,c_Node11* t_pred,c_FuncDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node11* c_Node11::m_new2(){
@@ -27689,13 +27792,16 @@ c_Node11* c_Node11::m_new2(){
 }
 void c_Node11::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode5::c_HeadNode5(){
 }
 c_HeadNode5* c_HeadNode5::m_new(){
 	c_Node11::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode5::mark(){
@@ -27717,12 +27823,12 @@ c_ClassDecl* c_ClassDecl::m_new(String t_ident,int t_attrs,Array<String > t_args
 	c_ScopeDecl::m_new();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_args=t_args;
-	this->m_superTy=t_superTy;
-	this->m_impltys=t_impls;
-	this->m_objectType=(new c_ObjectType)->m_new(this);
+	gc_assign(this->m_args,t_args);
+	gc_assign(this->m_superTy,t_superTy);
+	gc_assign(this->m_impltys,t_impls);
+	gc_assign(this->m_objectType,(new c_ObjectType)->m_new(this));
 	if((t_args).Length()!=0){
-		m_instances=(new c_List8)->m_new();
+		gc_assign(m_instances,(new c_List8)->m_new());
 	}
 	return this;
 }
@@ -27844,9 +27950,9 @@ c_ClassDecl* c_ClassDecl::p_GenClassInstance(Array<c_Type* > t_instArgs){
 	t_inst3->m_attrs&=-1048577;
 	t_inst3->m_munged=m_munged;
 	t_inst3->m_errInfo=m_errInfo;
-	t_inst3->m_scope=m_scope;
-	t_inst3->m_instanceof=this;
-	t_inst3->m_instArgs=t_instArgs;
+	gc_assign(t_inst3->m_scope,m_scope);
+	gc_assign(t_inst3->m_instanceof,this);
+	gc_assign(t_inst3->m_instArgs,t_instArgs);
 	m_instances->p_AddLast8(t_inst3);
 	for(int t_i2=0;t_i2<m_args.Length();t_i2=t_i2+1){
 		t_inst3->p_InsertDecl((new c_AliasDecl)->m_new(m_args[t_i2],0,(t_instArgs[t_i2])));
@@ -28083,7 +28189,7 @@ int c_ClassDecl::p_OnSemant(){
 	}
 	bb_decl_PushEnv(this);
 	if((m_superTy)!=0){
-		m_superClass=m_superTy->p_SemantClass();
+		gc_assign(m_superClass,m_superTy->p_SemantClass());
 		if((m_superClass->p_IsFinal())!=0){
 			bb_config_Err(String(L"Cannot extend final class.",26));
 		}
@@ -28113,7 +28219,7 @@ int c_ClassDecl::p_OnSemant(){
 				bb_config_Err(String(L"Duplicate interface ",20)+t_cdecl->p_ToString()+String(L".",1));
 			}
 		}
-		t_impls[t_i]=t_cdecl;
+		gc_assign(t_impls[t_i],t_cdecl);
 		t_implsall->p_Push25(t_cdecl);
 		Array<c_ClassDecl* > t_=t_cdecl->m_implmentsAll;
 		int t_2=0;
@@ -28123,11 +28229,11 @@ int c_ClassDecl::p_OnSemant(){
 			t_implsall->p_Push25(t_tdecl);
 		}
 	}
-	m_implmentsAll=Array<c_ClassDecl* >(t_implsall->p_Length2());
+	gc_assign(m_implmentsAll,Array<c_ClassDecl* >(t_implsall->p_Length2()));
 	for(int t_i2=0;t_i2<t_implsall->p_Length2();t_i2=t_i2+1){
-		m_implmentsAll[t_i2]=t_implsall->p_Get2(t_i2);
+		gc_assign(m_implmentsAll[t_i2],t_implsall->p_Get2(t_i2));
 	}
-	m_implments=t_impls;
+	gc_assign(m_implments,t_impls);
 	bb_decl_PopEnv();
 	if(!((p_IsAbstract())!=0)){
 		c_Enumerator3* t_3=m_decls->p_ObjectEnumerator();
@@ -28199,12 +28305,22 @@ int c_ClassDecl::p_ExtendsClass(c_ClassDecl* t_cdecl){
 }
 void c_ClassDecl::mark(){
 	c_ScopeDecl::mark();
+	gc_mark_q(m_superClass);
+	gc_mark_q(m_args);
+	gc_mark_q(m_superTy);
+	gc_mark_q(m_impltys);
+	gc_mark_q(m_objectType);
+	gc_mark_q(m_instances);
+	gc_mark_q(m_instanceof);
+	gc_mark_q(m_instArgs);
+	gc_mark_q(m_implmentsAll);
+	gc_mark_q(m_implments);
 }
 int bb_decl_PopEnv(){
 	if(bb_decl__envStack->p_IsEmpty()){
 		bb_config_InternalErr(String(L"Internal error",14));
 	}
-	bb_decl__env=bb_decl__envStack->p_RemoveLast();
+	gc_assign(bb_decl__env,bb_decl__envStack->p_RemoveLast());
 	return 0;
 }
 c_VoidType::c_VoidType(){
@@ -28229,7 +28345,7 @@ c_IdentType::c_IdentType(){
 c_IdentType* c_IdentType::m_new(String t_ident,Array<c_Type* > t_args){
 	c_Type::m_new();
 	this->m_ident=t_ident;
-	this->m_args=t_args;
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_IdentType* c_IdentType::m_new2(){
@@ -28242,7 +28358,7 @@ c_Type* c_IdentType::p_Semant(){
 	}
 	Array<c_Type* > t_targs=Array<c_Type* >(m_args.Length());
 	for(int t_i=0;t_i<m_args.Length();t_i=t_i+1){
-		t_targs[t_i]=m_args[t_i]->p_Semant();
+		gc_assign(t_targs[t_i],m_args[t_i]->p_Semant());
 	}
 	String t_tyid=String();
 	c_Type* t_type=0;
@@ -28298,6 +28414,7 @@ String c_IdentType::p_ToString(){
 }
 void c_IdentType::mark(){
 	c_Type::mark();
+	gc_mark_q(m_args);
 }
 c_Stack4::c_Stack4(){
 	m_data=Array<c_Type* >();
@@ -28307,15 +28424,15 @@ c_Stack4* c_Stack4::m_new(){
 	return this;
 }
 c_Stack4* c_Stack4::m_new2(Array<c_Type* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack4::p_Push10(c_Type* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack4::p_Push11(Array<c_Type* > t_values,int t_offset,int t_count){
@@ -28329,19 +28446,20 @@ void c_Stack4::p_Push12(Array<c_Type* > t_values,int t_offset){
 Array<c_Type* > c_Stack4::p_ToArray(){
 	Array<c_Type* > t_t=Array<c_Type* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		t_t[t_i]=m_data[t_i];
+		gc_assign(t_t[t_i],m_data[t_i]);
 	}
 	return t_t;
 }
 void c_Stack4::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_ArrayType::c_ArrayType(){
 	m_elemType=0;
 }
 c_ArrayType* c_ArrayType::m_new(c_Type* t_elemType){
 	c_Type::m_new();
-	this->m_elemType=t_elemType;
+	gc_assign(this->m_elemType,t_elemType);
 	return this;
 }
 c_ArrayType* c_ArrayType::m_new2(){
@@ -28371,6 +28489,7 @@ String c_ArrayType::p_ToString(){
 }
 void c_ArrayType::mark(){
 	c_Type::mark();
+	gc_mark_q(m_elemType);
 }
 c_UnaryExpr::c_UnaryExpr(){
 	m_op=String();
@@ -28379,7 +28498,7 @@ c_UnaryExpr::c_UnaryExpr(){
 c_UnaryExpr* c_UnaryExpr::m_new(String t_op,c_Expr* t_expr){
 	c_Expr::m_new();
 	this->m_op=t_op;
-	this->m_expr=t_expr;
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_UnaryExpr* c_UnaryExpr::m_new2(){
@@ -28395,19 +28514,19 @@ c_Expr* c_UnaryExpr::p_Semant(){
 	}
 	String t_1=m_op;
 	if(t_1==String(L"+",1) || t_1==String(L"-",1)){
-		m_expr=m_expr->p_Semant();
+		gc_assign(m_expr,m_expr->p_Semant());
 		if(!((dynamic_cast<c_NumericType*>(m_expr->m_exprType))!=0)){
 			bb_config_Err(m_expr->p_ToString()+String(L" must be numeric for use with unary operator '",46)+m_op+String(L"'",1));
 		}
-		m_exprType=m_expr->m_exprType;
+		gc_assign(m_exprType,m_expr->m_exprType);
 	}else{
 		if(t_1==String(L"~",1)){
-			m_expr=m_expr->p_Semant2((c_Type::m_intType),0);
-			m_exprType=(c_Type::m_intType);
+			gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_intType),0));
+			gc_assign(m_exprType,(c_Type::m_intType));
 		}else{
 			if(t_1==String(L"not",3)){
-				m_expr=m_expr->p_Semant2((c_Type::m_boolType),1);
-				m_exprType=(c_Type::m_boolType);
+				gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_boolType),1));
+				gc_assign(m_exprType,(c_Type::m_boolType));
 			}else{
 				bb_config_InternalErr(String(L"Internal error",14));
 			}
@@ -28450,13 +28569,14 @@ String c_UnaryExpr::p_Trans(){
 }
 void c_UnaryExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
 }
 c_ArrayExpr::c_ArrayExpr(){
 	m_exprs=Array<c_Expr* >();
 }
 c_ArrayExpr* c_ArrayExpr::m_new(Array<c_Expr* > t_exprs){
 	c_Expr::m_new();
-	this->m_exprs=t_exprs;
+	gc_assign(this->m_exprs,t_exprs);
 	return this;
 }
 c_ArrayExpr* c_ArrayExpr::m_new2(){
@@ -28470,16 +28590,16 @@ c_Expr* c_ArrayExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_exprs[0]=m_exprs[0]->p_Semant();
+	gc_assign(m_exprs[0],m_exprs[0]->p_Semant());
 	c_Type* t_ty=m_exprs[0]->m_exprType;
 	for(int t_i=1;t_i<m_exprs.Length();t_i=t_i+1){
-		m_exprs[t_i]=m_exprs[t_i]->p_Semant();
+		gc_assign(m_exprs[t_i],m_exprs[t_i]->p_Semant());
 		t_ty=p_BalanceTypes(t_ty,m_exprs[t_i]->m_exprType);
 	}
 	for(int t_i2=0;t_i2<m_exprs.Length();t_i2=t_i2+1){
-		m_exprs[t_i2]=m_exprs[t_i2]->p_Cast(t_ty,0);
+		gc_assign(m_exprs[t_i2],m_exprs[t_i2]->p_Cast(t_ty,0));
 	}
-	m_exprType=(t_ty->p_ArrayOf());
+	gc_assign(m_exprType,(t_ty->p_ArrayOf()));
 	return (this);
 }
 String c_ArrayExpr::p_Trans(){
@@ -28487,6 +28607,7 @@ String c_ArrayExpr::p_Trans(){
 }
 void c_ArrayExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_exprs);
 }
 c_Stack5::c_Stack5(){
 	m_data=Array<c_Expr* >();
@@ -28496,15 +28617,15 @@ c_Stack5* c_Stack5::m_new(){
 	return this;
 }
 c_Stack5* c_Stack5::m_new2(Array<c_Expr* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack5::p_Push13(c_Expr* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack5::p_Push14(Array<c_Expr* > t_values,int t_offset,int t_count){
@@ -28518,12 +28639,13 @@ void c_Stack5::p_Push15(Array<c_Expr* > t_values,int t_offset){
 Array<c_Expr* > c_Stack5::p_ToArray(){
 	Array<c_Expr* > t_t=Array<c_Expr* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		t_t[t_i]=m_data[t_i];
+		gc_assign(t_t[t_i],m_data[t_i]);
 	}
 	return t_t;
 }
 void c_Stack5::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_ConstExpr::c_ConstExpr(){
 	m_ty=0;
@@ -28559,7 +28681,7 @@ c_ConstExpr* c_ConstExpr::m_new(c_Type* t_ty,String t_value){
 			}
 		}
 	}
-	this->m_ty=t_ty;
+	gc_assign(this->m_ty,t_ty);
 	this->m_value=t_value;
 	return this;
 }
@@ -28571,7 +28693,7 @@ c_Expr* c_ConstExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_exprType=m_ty->p_Semant();
+	gc_assign(m_exprType,m_ty->p_Semant());
 	return (this);
 }
 c_Expr* c_ConstExpr::p_Copy(){
@@ -28594,13 +28716,14 @@ String c_ConstExpr::p_Trans(){
 }
 void c_ConstExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_ty);
 }
 c_ScopeExpr::c_ScopeExpr(){
 	m_scope=0;
 }
 c_ScopeExpr* c_ScopeExpr::m_new(c_ScopeDecl* t_scope){
 	c_Expr::m_new();
-	this->m_scope=t_scope;
+	gc_assign(this->m_scope,t_scope);
 	return this;
 }
 c_ScopeExpr* c_ScopeExpr::m_new2(){
@@ -28623,6 +28746,7 @@ c_ScopeDecl* c_ScopeExpr::p_SemantScope(){
 }
 void c_ScopeExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_scope);
 }
 c_NewArrayExpr::c_NewArrayExpr(){
 	m_ty=0;
@@ -28630,8 +28754,8 @@ c_NewArrayExpr::c_NewArrayExpr(){
 }
 c_NewArrayExpr* c_NewArrayExpr::m_new(c_Type* t_ty,c_Expr* t_expr){
 	c_Expr::m_new();
-	this->m_ty=t_ty;
-	this->m_expr=t_expr;
+	gc_assign(this->m_ty,t_ty);
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_NewArrayExpr* c_NewArrayExpr::m_new2(){
@@ -28648,9 +28772,9 @@ c_Expr* c_NewArrayExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_ty=m_ty->p_Semant();
-	m_exprType=(m_ty->p_ArrayOf());
-	m_expr=m_expr->p_Semant2((c_Type::m_intType),0);
+	gc_assign(m_ty,m_ty->p_Semant());
+	gc_assign(m_exprType,(m_ty->p_ArrayOf()));
+	gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_intType),0));
 	return (this);
 }
 String c_NewArrayExpr::p_Trans(){
@@ -28658,6 +28782,8 @@ String c_NewArrayExpr::p_Trans(){
 }
 void c_NewArrayExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_ty);
+	gc_mark_q(m_expr);
 }
 c_NewObjectExpr::c_NewObjectExpr(){
 	m_ty=0;
@@ -28667,8 +28793,8 @@ c_NewObjectExpr::c_NewObjectExpr(){
 }
 c_NewObjectExpr* c_NewObjectExpr::m_new(c_Type* t_ty,Array<c_Expr* > t_args){
 	c_Expr::m_new();
-	this->m_ty=t_ty;
-	this->m_args=t_args;
+	gc_assign(this->m_ty,t_ty);
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_NewObjectExpr* c_NewObjectExpr::m_new2(){
@@ -28679,13 +28805,13 @@ c_Expr* c_NewObjectExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_ty=m_ty->p_Semant();
-	m_args=p_SemantArgs(m_args);
+	gc_assign(m_ty,m_ty->p_Semant());
+	gc_assign(m_args,p_SemantArgs(m_args));
 	c_ObjectType* t_objTy=dynamic_cast<c_ObjectType*>(m_ty);
 	if(!((t_objTy)!=0)){
 		bb_config_Err(String(L"Expression is not a class.",26));
 	}
-	m_classDecl=t_objTy->m_classDecl;
+	gc_assign(m_classDecl,t_objTy->m_classDecl);
 	if((m_classDecl->p_IsInterface())!=0){
 		bb_config_Err(String(L"Cannot create instance of an interface.",39));
 	}
@@ -28700,14 +28826,14 @@ c_Expr* c_NewObjectExpr::p_Semant(){
 			bb_config_Err(String(L"No suitable constructor found for class ",40)+m_classDecl->p_ToString()+String(L".",1));
 		}
 	}else{
-		m_ctor=m_classDecl->p_FindFuncDecl(String(L"new",3),m_args,0);
+		gc_assign(m_ctor,m_classDecl->p_FindFuncDecl(String(L"new",3),m_args,0));
 		if(!((m_ctor)!=0)){
 			bb_config_Err(String(L"No suitable constructor found for class ",40)+m_classDecl->p_ToString()+String(L".",1));
 		}
-		m_args=p_CastArgs(m_args,m_ctor);
+		gc_assign(m_args,p_CastArgs(m_args,m_ctor));
 	}
 	m_classDecl->m_attrs|=1;
-	m_exprType=m_ty;
+	gc_assign(m_exprType,m_ty);
 	return (this);
 }
 c_Expr* c_NewObjectExpr::p_Copy(){
@@ -28718,6 +28844,10 @@ String c_NewObjectExpr::p_Trans(){
 }
 void c_NewObjectExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_ty);
+	gc_mark_q(m_args);
+	gc_mark_q(m_classDecl);
+	gc_mark_q(m_ctor);
 }
 c_CastExpr::c_CastExpr(){
 	m_ty=0;
@@ -28726,8 +28856,8 @@ c_CastExpr::c_CastExpr(){
 }
 c_CastExpr* c_CastExpr::m_new(c_Type* t_ty,c_Expr* t_expr,int t_flags){
 	c_Expr::m_new();
-	this->m_ty=t_ty;
-	this->m_expr=t_expr;
+	gc_assign(this->m_ty,t_ty);
+	gc_assign(this->m_expr,t_expr);
 	this->m_flags=t_flags;
 	return this;
 }
@@ -28739,8 +28869,8 @@ c_Expr* c_CastExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_ty=m_ty->p_Semant();
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_ty,m_ty->p_Semant());
+	gc_assign(m_expr,m_expr->p_Semant());
 	c_Type* t_src=m_expr->m_exprType;
 	if((t_src->p_EqualsType(m_ty))!=0){
 		return m_expr;
@@ -28751,7 +28881,7 @@ c_Expr* c_CastExpr::p_Semant(){
 		}
 		if(((dynamic_cast<c_ObjectType*>(m_ty))!=0) && !((dynamic_cast<c_ObjectType*>(t_src))!=0)){
 			c_Expr* t_[]={m_expr};
-			m_expr=((new c_NewObjectExpr)->m_new(m_ty,Array<c_Expr* >(t_,1)))->p_Semant();
+			gc_assign(m_expr,((new c_NewObjectExpr)->m_new(m_ty,Array<c_Expr* >(t_,1)))->p_Semant());
 		}else{
 			if(((dynamic_cast<c_ObjectType*>(t_src))!=0) && !((dynamic_cast<c_ObjectType*>(m_ty))!=0)){
 				String t_op=String();
@@ -28773,30 +28903,30 @@ c_Expr* c_CastExpr::p_Semant(){
 					}
 				}
 				c_FuncDecl* t_fdecl=t_src->p_GetClass()->p_FindFuncDecl(t_op,Array<c_Expr* >(),0);
-				m_expr=((new c_InvokeMemberExpr)->m_new(m_expr,t_fdecl,Array<c_Expr* >()))->p_Semant();
+				gc_assign(m_expr,((new c_InvokeMemberExpr)->m_new(m_expr,t_fdecl,Array<c_Expr* >()))->p_Semant());
 			}
 		}
-		m_exprType=m_ty;
+		gc_assign(m_exprType,m_ty);
 	}else{
 		if((dynamic_cast<c_BoolType*>(m_ty))!=0){
 			if((dynamic_cast<c_VoidType*>(t_src))!=0){
 				bb_config_Err(String(L"Cannot convert from Void to Bool.",33));
 			}
 			if((m_flags&1)!=0){
-				m_exprType=m_ty;
+				gc_assign(m_exprType,m_ty);
 			}
 		}else{
 			if((m_ty->p_ExtendsType(t_src))!=0){
 				if((m_flags&1)!=0){
 					if(dynamic_cast<c_ObjectType*>(m_ty)!=0==(dynamic_cast<c_ObjectType*>(t_src)!=0)){
-						m_exprType=m_ty;
+						gc_assign(m_exprType,m_ty);
 					}
 				}
 			}else{
 				if(((dynamic_cast<c_ObjectType*>(m_ty))!=0) && ((dynamic_cast<c_ObjectType*>(t_src))!=0)){
 					if((m_flags&1)!=0){
 						if(((t_src->p_GetClass()->p_IsInterface())!=0) || ((m_ty->p_GetClass()->p_IsInterface())!=0)){
-							m_exprType=m_ty;
+							gc_assign(m_exprType,m_ty);
 						}
 					}
 				}
@@ -28866,6 +28996,8 @@ String c_CastExpr::p_Trans(){
 }
 void c_CastExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_ty);
+	gc_mark_q(m_expr);
 }
 c_IdentExpr::c_IdentExpr(){
 	m_ident=String();
@@ -28876,7 +29008,7 @@ c_IdentExpr::c_IdentExpr(){
 c_IdentExpr* c_IdentExpr::m_new(String t_ident,c_Expr* t_expr){
 	c_Expr::m_new();
 	this->m_ident=t_ident;
-	this->m_expr=t_expr;
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_IdentExpr* c_IdentExpr::m_new2(){
@@ -28898,18 +29030,18 @@ int c_IdentExpr::p__Semant(){
 		return 0;
 	}
 	if((m_expr)!=0){
-		m_scope=m_expr->p_SemantScope();
+		gc_assign(m_scope,m_expr->p_SemantScope());
 		if((m_scope)!=0){
 			m_static=true;
 		}else{
-			m_expr=m_expr->p_Semant();
-			m_scope=(m_expr->m_exprType->p_GetClass());
+			gc_assign(m_expr,m_expr->p_Semant());
+			gc_assign(m_scope,(m_expr->m_exprType->p_GetClass()));
 			if(!((m_scope)!=0)){
 				bb_config_Err(String(L"Expression has no scope",23));
 			}
 		}
 	}else{
-		m_scope=bb_decl__env;
+		gc_assign(m_scope,bb_decl__env);
 		m_static=bb_decl__env->p_FuncScope()==0 || bb_decl__env->p_FuncScope()->p_IsStatic();
 	}
 	return 0;
@@ -29039,6 +29171,8 @@ c_Expr* c_IdentExpr::p_SemantFunc(Array<c_Expr* > t_args){
 }
 void c_IdentExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_scope);
 }
 c_SelfExpr::c_SelfExpr(){
 }
@@ -29060,7 +29194,7 @@ c_Expr* c_SelfExpr::p_Semant(){
 	}else{
 		bb_config_Err(String(L"Self cannot be used here.",25));
 	}
-	m_exprType=(bb_decl__env->p_ClassScope()->m_objectType);
+	gc_assign(m_exprType,(bb_decl__env->p_ClassScope()->m_objectType));
 	return (this);
 }
 bool c_SelfExpr::p_SideEffects(){
@@ -29123,6 +29257,7 @@ c_Node12* c_List7::p_AddFirst(c_Stmt* t_data){
 }
 void c_List7::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node12::c_Node12(){
 	m__succ=0;
@@ -29130,11 +29265,11 @@ c_Node12::c_Node12(){
 	m__data=0;
 }
 c_Node12* c_Node12::m_new(c_Node12* t_succ,c_Node12* t_pred,c_Stmt* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node12* c_Node12::m_new2(){
@@ -29142,13 +29277,16 @@ c_Node12* c_Node12::m_new2(){
 }
 void c_Node12::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode6::c_HeadNode6(){
 }
 c_HeadNode6* c_HeadNode6::m_new(){
 	c_Node12::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode6::mark(){
@@ -29162,7 +29300,7 @@ c_InvokeSuperExpr::c_InvokeSuperExpr(){
 c_InvokeSuperExpr* c_InvokeSuperExpr::m_new(String t_ident,Array<c_Expr* > t_args){
 	c_Expr::m_new();
 	this->m_ident=t_ident;
-	this->m_args=t_args;
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_InvokeSuperExpr* c_InvokeSuperExpr::m_new2(){
@@ -29184,16 +29322,16 @@ c_Expr* c_InvokeSuperExpr::p_Semant(){
 	if(!((t_superClass)!=0)){
 		bb_config_Err(String(L"Class has no super class.",25));
 	}
-	m_args=p_SemantArgs(m_args);
-	m_funcDecl=t_superClass->p_FindFuncDecl(m_ident,m_args,0);
+	gc_assign(m_args,p_SemantArgs(m_args));
+	gc_assign(m_funcDecl,t_superClass->p_FindFuncDecl(m_ident,m_args,0));
 	if(!((m_funcDecl)!=0)){
 		bb_config_Err(String(L"Can't find superclass method '",30)+m_ident+String(L"'.",2));
 	}
 	if((m_funcDecl->p_IsAbstract())!=0){
 		bb_config_Err(String(L"Can't invoke abstract superclass method '",41)+m_ident+String(L"'.",2));
 	}
-	m_args=p_CastArgs(m_args,m_funcDecl);
-	m_exprType=m_funcDecl->m_retType;
+	gc_assign(m_args,p_CastArgs(m_args,m_funcDecl));
+	gc_assign(m_exprType,m_funcDecl->m_retType);
 	return (this);
 }
 String c_InvokeSuperExpr::p_Trans(){
@@ -29201,13 +29339,15 @@ String c_InvokeSuperExpr::p_Trans(){
 }
 void c_InvokeSuperExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_args);
+	gc_mark_q(m_funcDecl);
 }
 c_IdentTypeExpr::c_IdentTypeExpr(){
 	m_cdecl=0;
 }
 c_IdentTypeExpr* c_IdentTypeExpr::m_new(c_Type* t_type){
 	c_Expr::m_new();
-	this->m_exprType=t_type;
+	gc_assign(this->m_exprType,t_type);
 	return this;
 }
 c_IdentTypeExpr* c_IdentTypeExpr::m_new2(){
@@ -29221,8 +29361,8 @@ int c_IdentTypeExpr::p__Semant(){
 	if((m_cdecl)!=0){
 		return 0;
 	}
-	m_exprType=m_exprType->p_Semant();
-	m_cdecl=m_exprType->p_GetClass();
+	gc_assign(m_exprType,m_exprType->p_Semant());
+	gc_assign(m_cdecl,m_exprType->p_GetClass());
 	if(!((m_cdecl)!=0)){
 		bb_config_InternalErr(String(L"Internal error",14));
 	}
@@ -29247,6 +29387,7 @@ c_Expr* c_IdentTypeExpr::p_SemantFunc(Array<c_Expr* > t_args){
 }
 void c_IdentTypeExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_cdecl);
 }
 c_Node13::c_Node13(){
 	m__succ=0;
@@ -29254,10 +29395,10 @@ c_Node13::c_Node13(){
 	m__data=0;
 }
 c_Node13* c_Node13::m_new(c_Node13* t_succ,c_Node13* t_pred,int t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
 	m__data=t_data;
 	return this;
 }
@@ -29266,13 +29407,15 @@ c_Node13* c_Node13::m_new2(){
 }
 void c_Node13::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
 }
 c_HeadNode7::c_HeadNode7(){
 }
 c_HeadNode7* c_HeadNode7::m_new(){
 	c_Node13::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode7::mark(){
@@ -29283,8 +29426,8 @@ c_Enumerator2::c_Enumerator2(){
 	m__curr=0;
 }
 c_Enumerator2* c_Enumerator2::m_new(c_List3* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator2* c_Enumerator2::m_new2(){
@@ -29292,23 +29435,25 @@ c_Enumerator2* c_Enumerator2::m_new2(){
 }
 bool c_Enumerator2::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 int c_Enumerator2::p_NextObject(){
 	int t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator2::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_MapKeys::c_MapKeys(){
 	m_map=0;
 }
 c_MapKeys* c_MapKeys::m_new(c_Map6* t_map){
-	this->m_map=t_map;
+	gc_assign(this->m_map,t_map);
 	return this;
 }
 c_MapKeys* c_MapKeys::m_new2(){
@@ -29319,12 +29464,13 @@ c_KeyEnumerator* c_MapKeys::p_ObjectEnumerator(){
 }
 void c_MapKeys::mark(){
 	Object::mark();
+	gc_mark_q(m_map);
 }
 c_KeyEnumerator::c_KeyEnumerator(){
 	m_node=0;
 }
 c_KeyEnumerator* c_KeyEnumerator::m_new(c_Node8* t_node){
-	this->m_node=t_node;
+	gc_assign(this->m_node,t_node);
 	return this;
 }
 c_KeyEnumerator* c_KeyEnumerator::m_new2(){
@@ -29335,11 +29481,12 @@ bool c_KeyEnumerator::p_HasNext(){
 }
 int c_KeyEnumerator::p_NextObject(){
 	c_Node8* t_t=m_node;
-	m_node=m_node->p_NextNode();
+	gc_assign(m_node,m_node->p_NextNode());
 	return t_t->m_key;
 }
 void c_KeyEnumerator::mark(){
 	Object::mark();
+	gc_mark_q(m_node);
 }
 c_FuncCallExpr::c_FuncCallExpr(){
 	m_expr=0;
@@ -29347,8 +29494,8 @@ c_FuncCallExpr::c_FuncCallExpr(){
 }
 c_FuncCallExpr* c_FuncCallExpr::m_new(c_Expr* t_expr,Array<c_Expr* > t_args){
 	c_Expr::m_new();
-	this->m_expr=t_expr;
-	this->m_args=t_args;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_FuncCallExpr* c_FuncCallExpr::m_new2(){
@@ -29370,11 +29517,13 @@ String c_FuncCallExpr::p_ToString(){
 	return t_t+String(L")",1);
 }
 c_Expr* c_FuncCallExpr::p_Semant(){
-	m_args=p_SemantArgs(m_args);
+	gc_assign(m_args,p_SemantArgs(m_args));
 	return m_expr->p_SemantFunc(m_args);
 }
 void c_FuncCallExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_args);
 }
 c_SliceExpr::c_SliceExpr(){
 	m_expr=0;
@@ -29383,9 +29532,9 @@ c_SliceExpr::c_SliceExpr(){
 }
 c_SliceExpr* c_SliceExpr::m_new(c_Expr* t_expr,c_Expr* t_from,c_Expr* t_term){
 	c_Expr::m_new();
-	this->m_expr=t_expr;
-	this->m_from=t_from;
-	this->m_term=t_term;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_from,t_from);
+	gc_assign(this->m_term,t_term);
 	return this;
 }
 c_SliceExpr* c_SliceExpr::m_new2(){
@@ -29399,15 +29548,15 @@ c_Expr* c_SliceExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_expr,m_expr->p_Semant());
 	if(((dynamic_cast<c_ArrayType*>(m_expr->m_exprType))!=0) || ((dynamic_cast<c_StringType*>(m_expr->m_exprType))!=0)){
 		if((m_from)!=0){
-			m_from=m_from->p_Semant2((c_Type::m_intType),0);
+			gc_assign(m_from,m_from->p_Semant2((c_Type::m_intType),0));
 		}
 		if((m_term)!=0){
-			m_term=m_term->p_Semant2((c_Type::m_intType),0);
+			gc_assign(m_term,m_term->p_Semant2((c_Type::m_intType),0));
 		}
-		m_exprType=m_expr->m_exprType;
+		gc_assign(m_exprType,m_expr->m_exprType);
 	}else{
 		bb_config_Err(String(L"Slices can only be used on strings or arrays.",45));
 	}
@@ -29430,6 +29579,9 @@ String c_SliceExpr::p_Trans(){
 }
 void c_SliceExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_from);
+	gc_mark_q(m_term);
 }
 c_IndexExpr::c_IndexExpr(){
 	m_expr=0;
@@ -29437,8 +29589,8 @@ c_IndexExpr::c_IndexExpr(){
 }
 c_IndexExpr* c_IndexExpr::m_new(c_Expr* t_expr,c_Expr* t_index){
 	c_Expr::m_new();
-	this->m_expr=t_expr;
-	this->m_index=t_index;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_index,t_index);
 	return this;
 }
 c_IndexExpr* c_IndexExpr::m_new2(){
@@ -29452,13 +29604,13 @@ c_Expr* c_IndexExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_expr=m_expr->p_Semant();
-	m_index=m_index->p_Semant2((c_Type::m_intType),0);
+	gc_assign(m_expr,m_expr->p_Semant());
+	gc_assign(m_index,m_index->p_Semant2((c_Type::m_intType),0));
 	if((dynamic_cast<c_StringType*>(m_expr->m_exprType))!=0){
-		m_exprType=(c_Type::m_intType);
+		gc_assign(m_exprType,(c_Type::m_intType));
 	}else{
 		if((dynamic_cast<c_ArrayType*>(m_expr->m_exprType))!=0){
-			m_exprType=dynamic_cast<c_ArrayType*>(m_expr->m_exprType)->m_elemType;
+			gc_assign(m_exprType,dynamic_cast<c_ArrayType*>(m_expr->m_exprType)->m_elemType);
 		}else{
 			bb_config_Err(String(L"Only strings and arrays may be indexed.",39));
 		}
@@ -29498,6 +29650,8 @@ String c_IndexExpr::p_TransVar(){
 }
 void c_IndexExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_index);
 }
 c_BinaryExpr::c_BinaryExpr(){
 	m_op=String();
@@ -29507,8 +29661,8 @@ c_BinaryExpr::c_BinaryExpr(){
 c_BinaryExpr* c_BinaryExpr::m_new(String t_op,c_Expr* t_lhs,c_Expr* t_rhs){
 	c_Expr::m_new();
 	this->m_op=t_op;
-	this->m_lhs=t_lhs;
-	this->m_rhs=t_rhs;
+	gc_assign(this->m_lhs,t_lhs);
+	gc_assign(this->m_rhs,t_rhs);
 	return this;
 }
 c_BinaryExpr* c_BinaryExpr::m_new2(){
@@ -29520,14 +29674,16 @@ String c_BinaryExpr::p_Trans(){
 }
 void c_BinaryExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_lhs);
+	gc_mark_q(m_rhs);
 }
 c_BinaryMathExpr::c_BinaryMathExpr(){
 }
 c_BinaryMathExpr* c_BinaryMathExpr::m_new(String t_op,c_Expr* t_lhs,c_Expr* t_rhs){
 	c_BinaryExpr::m_new2();
 	this->m_op=t_op;
-	this->m_lhs=t_lhs;
-	this->m_rhs=t_rhs;
+	gc_assign(this->m_lhs,t_lhs);
+	gc_assign(this->m_rhs,t_rhs);
 	return this;
 }
 c_BinaryMathExpr* c_BinaryMathExpr::m_new2(){
@@ -29541,13 +29697,13 @@ c_Expr* c_BinaryMathExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_lhs=m_lhs->p_Semant();
-	m_rhs=m_rhs->p_Semant();
+	gc_assign(m_lhs,m_lhs->p_Semant());
+	gc_assign(m_rhs,m_rhs->p_Semant());
 	String t_3=m_op;
 	if(t_3==String(L"&",1) || t_3==String(L"~",1) || t_3==String(L"|",1) || t_3==String(L"shl",3) || t_3==String(L"shr",3)){
-		m_exprType=(c_Type::m_intType);
+		gc_assign(m_exprType,(c_Type::m_intType));
 	}else{
-		m_exprType=p_BalanceTypes(m_lhs->m_exprType,m_rhs->m_exprType);
+		gc_assign(m_exprType,p_BalanceTypes(m_lhs->m_exprType,m_rhs->m_exprType));
 		if((dynamic_cast<c_StringType*>(m_exprType))!=0){
 			if(m_op!=String(L"+",1)){
 				bb_config_Err(String(L"Illegal string operator.",24));
@@ -29558,8 +29714,8 @@ c_Expr* c_BinaryMathExpr::p_Semant(){
 			}
 		}
 	}
-	m_lhs=m_lhs->p_Cast(m_exprType,0);
-	m_rhs=m_rhs->p_Cast(m_exprType,0);
+	gc_assign(m_lhs,m_lhs->p_Cast(m_exprType,0));
+	gc_assign(m_rhs,m_rhs->p_Cast(m_exprType,0));
 	if(((dynamic_cast<c_ConstExpr*>(m_lhs))!=0) && ((dynamic_cast<c_ConstExpr*>(m_rhs))!=0)){
 		return p_EvalConst();
 	}
@@ -29668,8 +29824,8 @@ c_BinaryCompareExpr::c_BinaryCompareExpr(){
 c_BinaryCompareExpr* c_BinaryCompareExpr::m_new(String t_op,c_Expr* t_lhs,c_Expr* t_rhs){
 	c_BinaryExpr::m_new2();
 	this->m_op=t_op;
-	this->m_lhs=t_lhs;
-	this->m_rhs=t_rhs;
+	gc_assign(this->m_lhs,t_lhs);
+	gc_assign(this->m_rhs,t_rhs);
 	return this;
 }
 c_BinaryCompareExpr* c_BinaryCompareExpr::m_new2(){
@@ -29683,9 +29839,9 @@ c_Expr* c_BinaryCompareExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_lhs=m_lhs->p_Semant();
-	m_rhs=m_rhs->p_Semant();
-	m_ty=p_BalanceTypes(m_lhs->m_exprType,m_rhs->m_exprType);
+	gc_assign(m_lhs,m_lhs->p_Semant());
+	gc_assign(m_rhs,m_rhs->p_Semant());
+	gc_assign(m_ty,p_BalanceTypes(m_lhs->m_exprType,m_rhs->m_exprType));
 	if((dynamic_cast<c_ArrayType*>(m_ty))!=0){
 		bb_config_Err(String(L"Arrays cannot be compared.",26));
 	}
@@ -29695,9 +29851,9 @@ c_Expr* c_BinaryCompareExpr::p_Semant(){
 	if(((dynamic_cast<c_ObjectType*>(m_ty))!=0) && m_op!=String(L"=",1) && m_op!=String(L"<>",2)){
 		bb_config_Err(String(L"Objects can only be compared for equality.",42));
 	}
-	m_lhs=m_lhs->p_Cast(m_ty,0);
-	m_rhs=m_rhs->p_Cast(m_ty,0);
-	m_exprType=(c_Type::m_boolType);
+	gc_assign(m_lhs,m_lhs->p_Cast(m_ty,0));
+	gc_assign(m_rhs,m_rhs->p_Cast(m_ty,0));
+	gc_assign(m_exprType,(c_Type::m_boolType));
 	if(((dynamic_cast<c_ConstExpr*>(m_lhs))!=0) && ((dynamic_cast<c_ConstExpr*>(m_rhs))!=0)){
 		return p_EvalConst();
 	}
@@ -29815,14 +29971,15 @@ String c_BinaryCompareExpr::p_Eval(){
 }
 void c_BinaryCompareExpr::mark(){
 	c_BinaryExpr::mark();
+	gc_mark_q(m_ty);
 }
 c_BinaryLogicExpr::c_BinaryLogicExpr(){
 }
 c_BinaryLogicExpr* c_BinaryLogicExpr::m_new(String t_op,c_Expr* t_lhs,c_Expr* t_rhs){
 	c_BinaryExpr::m_new2();
 	this->m_op=t_op;
-	this->m_lhs=t_lhs;
-	this->m_rhs=t_rhs;
+	gc_assign(this->m_lhs,t_lhs);
+	gc_assign(this->m_rhs,t_rhs);
 	return this;
 }
 c_BinaryLogicExpr* c_BinaryLogicExpr::m_new2(){
@@ -29836,9 +29993,9 @@ c_Expr* c_BinaryLogicExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_lhs=m_lhs->p_Semant2((c_Type::m_boolType),1);
-	m_rhs=m_rhs->p_Semant2((c_Type::m_boolType),1);
-	m_exprType=(c_Type::m_boolType);
+	gc_assign(m_lhs,m_lhs->p_Semant2((c_Type::m_boolType),1));
+	gc_assign(m_rhs,m_rhs->p_Semant2((c_Type::m_boolType),1));
+	gc_assign(m_exprType,(c_Type::m_boolType));
 	if(((dynamic_cast<c_ConstExpr*>(m_lhs))!=0) && ((dynamic_cast<c_ConstExpr*>(m_rhs))!=0)){
 		return p_EvalConst();
 	}
@@ -29882,8 +30039,8 @@ c_GlobalDecl* c_GlobalDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Ex
 	c_VarDecl::m_new();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_type=t_type;
-	this->m_init=t_init;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
 	return this;
 }
 c_GlobalDecl* c_GlobalDecl::m_new2(){
@@ -29905,8 +30062,8 @@ c_FieldDecl* c_FieldDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr
 	c_VarDecl::m_new();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_type=t_type;
-	this->m_init=t_init;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
 	return this;
 }
 c_FieldDecl* c_FieldDecl::m_new2(){
@@ -29928,8 +30085,8 @@ c_LocalDecl* c_LocalDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr
 	c_VarDecl::m_new();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_type=t_type;
-	this->m_init=t_init;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
 	return this;
 }
 c_LocalDecl* c_LocalDecl::m_new2(){
@@ -29950,8 +30107,8 @@ c_Enumerator3::c_Enumerator3(){
 	m__curr=0;
 }
 c_Enumerator3* c_Enumerator3::m_new(c_List5* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator3* c_Enumerator3::m_new2(){
@@ -29959,29 +30116,31 @@ c_Enumerator3* c_Enumerator3::m_new2(){
 }
 bool c_Enumerator3::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 c_Decl* c_Enumerator3::p_NextObject(){
 	c_Decl* t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator3::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_DeclStmt::c_DeclStmt(){
 	m_decl=0;
 }
 c_DeclStmt* c_DeclStmt::m_new(c_Decl* t_decl){
 	c_Stmt::m_new();
-	this->m_decl=t_decl;
+	gc_assign(this->m_decl,t_decl);
 	return this;
 }
 c_DeclStmt* c_DeclStmt::m_new2(String t_id,c_Type* t_ty,c_Expr* t_init){
 	c_Stmt::m_new();
-	this->m_decl=((new c_LocalDecl)->m_new(t_id,0,t_ty,t_init));
+	gc_assign(this->m_decl,((new c_LocalDecl)->m_new(t_id,0,t_ty,t_init)));
 	return this;
 }
 c_DeclStmt* c_DeclStmt::m_new3(){
@@ -30001,6 +30160,7 @@ String c_DeclStmt::p_Trans(){
 }
 void c_DeclStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_decl);
 }
 c_Stack6::c_Stack6(){
 	m_data=Array<c_IdentType* >();
@@ -30010,15 +30170,15 @@ c_Stack6* c_Stack6::m_new(){
 	return this;
 }
 c_Stack6* c_Stack6::m_new2(Array<c_IdentType* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack6::p_Push16(c_IdentType* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack6::p_Push17(Array<c_IdentType* > t_values,int t_offset,int t_count){
@@ -30032,19 +30192,20 @@ void c_Stack6::p_Push18(Array<c_IdentType* > t_values,int t_offset){
 Array<c_IdentType* > c_Stack6::p_ToArray(){
 	Array<c_IdentType* > t_t=Array<c_IdentType* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		t_t[t_i]=m_data[t_i];
+		gc_assign(t_t[t_i],m_data[t_i]);
 	}
 	return t_t;
 }
 void c_Stack6::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_ObjectType::c_ObjectType(){
 	m_classDecl=0;
 }
 c_ObjectType* c_ObjectType::m_new(c_ClassDecl* t_classDecl){
 	c_Type::m_new();
-	this->m_classDecl=t_classDecl;
+	gc_assign(this->m_classDecl,t_classDecl);
 	return this;
 }
 c_ObjectType* c_ObjectType::m_new2(){
@@ -30089,6 +30250,7 @@ String c_ObjectType::p_ToString(){
 }
 void c_ObjectType::mark(){
 	c_Type::mark();
+	gc_mark_q(m_classDecl);
 }
 c_List8::c_List8(){
 	m__head=((new c_HeadNode8)->m_new());
@@ -30114,6 +30276,7 @@ c_Enumerator5* c_List8::p_ObjectEnumerator(){
 }
 void c_List8::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node14::c_Node14(){
 	m__succ=0;
@@ -30121,11 +30284,11 @@ c_Node14::c_Node14(){
 	m__data=0;
 }
 c_Node14* c_Node14::m_new(c_Node14* t_succ,c_Node14* t_pred,c_ClassDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node14* c_Node14::m_new2(){
@@ -30133,13 +30296,16 @@ c_Node14* c_Node14::m_new2(){
 }
 void c_Node14::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode8::c_HeadNode8(){
 }
 c_HeadNode8* c_HeadNode8::m_new(){
 	c_Node14::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode8::mark(){
@@ -30151,8 +30317,8 @@ c_ArgDecl* c_ArgDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr* t_
 	c_LocalDecl::m_new2();
 	this->m_ident=t_ident;
 	this->m_attrs=t_attrs;
-	this->m_type=t_type;
-	this->m_init=t_init;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
 	return this;
 }
 c_ArgDecl* c_ArgDecl::m_new2(){
@@ -30176,15 +30342,15 @@ c_Stack7* c_Stack7::m_new(){
 	return this;
 }
 c_Stack7* c_Stack7::m_new2(Array<c_ArgDecl* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack7::p_Push19(c_ArgDecl* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack7::p_Push20(Array<c_ArgDecl* > t_values,int t_offset,int t_count){
@@ -30198,12 +30364,13 @@ void c_Stack7::p_Push21(Array<c_ArgDecl* > t_values,int t_offset){
 Array<c_ArgDecl* > c_Stack7::p_ToArray(){
 	Array<c_ArgDecl* > t_t=Array<c_ArgDecl* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		t_t[t_i]=m_data[t_i];
+		gc_assign(t_t[t_i],m_data[t_i]);
 	}
 	return t_t;
 }
 void c_Stack7::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_List9::c_List9(){
 	m__head=((new c_HeadNode9)->m_new());
@@ -30252,6 +30419,7 @@ void c_List9::p_RemoveLast5(c_BlockDecl* t_value){
 }
 void c_List9::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node15::c_Node15(){
 	m__succ=0;
@@ -30259,30 +30427,33 @@ c_Node15::c_Node15(){
 	m__data=0;
 }
 c_Node15* c_Node15::m_new(c_Node15* t_succ,c_Node15* t_pred,c_BlockDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node15* c_Node15::m_new2(){
 	return this;
 }
 int c_Node15::p_Remove(){
-	m__succ->m__pred=m__pred;
-	m__pred->m__succ=m__succ;
+	gc_assign(m__succ->m__pred,m__pred);
+	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
 void c_Node15::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode9::c_HeadNode9(){
 }
 c_HeadNode9* c_HeadNode9::m_new(){
 	c_Node15::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode9::mark(){
@@ -30293,7 +30464,7 @@ c_ReturnStmt::c_ReturnStmt(){
 }
 c_ReturnStmt* c_ReturnStmt::m_new(c_Expr* t_expr){
 	c_Stmt::m_new();
-	this->m_expr=t_expr;
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_ReturnStmt* c_ReturnStmt::m_new2(){
@@ -30315,16 +30486,16 @@ int c_ReturnStmt::p_OnSemant(){
 		if((dynamic_cast<c_VoidType*>(t_fdecl->m_retType))!=0){
 			bb_config_Err(String(L"Void functions may not return a value.",38));
 		}
-		m_expr=m_expr->p_Semant2(t_fdecl->m_retType,0);
+		gc_assign(m_expr,m_expr->p_Semant2(t_fdecl->m_retType,0));
 	}else{
 		if(t_fdecl->p_IsCtor()){
-			m_expr=((new c_SelfExpr)->m_new())->p_Semant();
+			gc_assign(m_expr,((new c_SelfExpr)->m_new())->p_Semant());
 		}else{
 			if(!((dynamic_cast<c_VoidType*>(t_fdecl->m_retType))!=0)){
 				if((bb_decl__env->p_ModuleScope()->p_IsStrict())!=0){
 					bb_config_Err(String(L"Missing return expression.",26));
 				}
-				m_expr=((new c_ConstExpr)->m_new(t_fdecl->m_retType,String()))->p_Semant();
+				gc_assign(m_expr,((new c_ConstExpr)->m_new(t_fdecl->m_retType,String()))->p_Semant());
 			}
 		}
 	}
@@ -30335,6 +30506,7 @@ String c_ReturnStmt::p_Trans(){
 }
 void c_ReturnStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_expr);
 }
 c_BreakStmt::c_BreakStmt(){
 }
@@ -30385,9 +30557,9 @@ c_IfStmt::c_IfStmt(){
 }
 c_IfStmt* c_IfStmt::m_new(c_Expr* t_expr,c_BlockDecl* t_thenBlock,c_BlockDecl* t_elseBlock){
 	c_Stmt::m_new();
-	this->m_expr=t_expr;
-	this->m_thenBlock=t_thenBlock;
-	this->m_elseBlock=t_elseBlock;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_thenBlock,t_thenBlock);
+	gc_assign(this->m_elseBlock,t_elseBlock);
 	return this;
 }
 c_IfStmt* c_IfStmt::m_new2(){
@@ -30398,7 +30570,7 @@ c_Stmt* c_IfStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	return ((new c_IfStmt)->m_new(m_expr->p_Copy(),m_thenBlock->p_CopyBlock(t_scope),m_elseBlock->p_CopyBlock(t_scope)));
 }
 int c_IfStmt::p_OnSemant(){
-	m_expr=m_expr->p_Semant2((c_Type::m_boolType),1);
+	gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_boolType),1));
 	m_thenBlock->p_Semant();
 	m_elseBlock->p_Semant();
 	return 0;
@@ -30408,6 +30580,9 @@ String c_IfStmt::p_Trans(){
 }
 void c_IfStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_thenBlock);
+	gc_mark_q(m_elseBlock);
 }
 c_WhileStmt::c_WhileStmt(){
 	m_expr=0;
@@ -30415,8 +30590,8 @@ c_WhileStmt::c_WhileStmt(){
 }
 c_WhileStmt* c_WhileStmt::m_new(c_Expr* t_expr,c_BlockDecl* t_block){
 	c_Stmt::m_new();
-	this->m_expr=t_expr;
-	this->m_block=t_block;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_block,t_block);
 	return this;
 }
 c_WhileStmt* c_WhileStmt::m_new2(){
@@ -30427,7 +30602,7 @@ c_Stmt* c_WhileStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	return ((new c_WhileStmt)->m_new(m_expr->p_Copy(),m_block->p_CopyBlock(t_scope)));
 }
 int c_WhileStmt::p_OnSemant(){
-	m_expr=m_expr->p_Semant2((c_Type::m_boolType),1);
+	gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_boolType),1));
 	bb_decl__loopnest+=1;
 	m_block->p_Semant();
 	bb_decl__loopnest-=1;
@@ -30438,6 +30613,8 @@ String c_WhileStmt::p_Trans(){
 }
 void c_WhileStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_block);
 }
 c_RepeatStmt::c_RepeatStmt(){
 	m_block=0;
@@ -30445,8 +30622,8 @@ c_RepeatStmt::c_RepeatStmt(){
 }
 c_RepeatStmt* c_RepeatStmt::m_new(c_BlockDecl* t_block,c_Expr* t_expr){
 	c_Stmt::m_new();
-	this->m_block=t_block;
-	this->m_expr=t_expr;
+	gc_assign(this->m_block,t_block);
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_RepeatStmt* c_RepeatStmt::m_new2(){
@@ -30460,7 +30637,7 @@ int c_RepeatStmt::p_OnSemant(){
 	bb_decl__loopnest+=1;
 	m_block->p_Semant();
 	bb_decl__loopnest-=1;
-	m_expr=m_expr->p_Semant2((c_Type::m_boolType),1);
+	gc_assign(m_expr,m_expr->p_Semant2((c_Type::m_boolType),1));
 	return 0;
 }
 String c_RepeatStmt::p_Trans(){
@@ -30468,6 +30645,8 @@ String c_RepeatStmt::p_Trans(){
 }
 void c_RepeatStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_block);
+	gc_mark_q(m_expr);
 }
 c_ForEachinStmt::c_ForEachinStmt(){
 	m_varid=String();
@@ -30479,10 +30658,10 @@ c_ForEachinStmt::c_ForEachinStmt(){
 c_ForEachinStmt* c_ForEachinStmt::m_new(String t_varid,c_Type* t_varty,int t_varlocal,c_Expr* t_expr,c_BlockDecl* t_block){
 	c_Stmt::m_new();
 	this->m_varid=t_varid;
-	this->m_varty=t_varty;
+	gc_assign(this->m_varty,t_varty);
 	this->m_varlocal=t_varlocal;
-	this->m_expr=t_expr;
-	this->m_block=t_block;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_block,t_block);
 	return this;
 }
 c_ForEachinStmt* c_ForEachinStmt::m_new2(){
@@ -30493,7 +30672,7 @@ c_Stmt* c_ForEachinStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	return ((new c_ForEachinStmt)->m_new(m_varid,m_varty,m_varlocal,m_expr->p_Copy(),m_block->p_CopyBlock(t_scope)));
 }
 int c_ForEachinStmt::p_OnSemant(){
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_expr,m_expr->p_Semant());
 	if(((dynamic_cast<c_ArrayType*>(m_expr->m_exprType))!=0) || ((dynamic_cast<c_StringType*>(m_expr->m_exprType))!=0)){
 		c_LocalDecl* t_exprTmp=(new c_LocalDecl)->m_new(String(),0,0,m_expr);
 		c_LocalDecl* t_indexTmp=(new c_LocalDecl)->m_new(String(),0,0,((new c_ConstExpr)->m_new((c_Type::m_intType),String(L"0",1))));
@@ -30509,7 +30688,7 @@ int c_ForEachinStmt::p_OnSemant(){
 			m_block->m_stmts->p_AddFirst((new c_AssignStmt)->m_new(String(L"=",1),((new c_IdentExpr)->m_new(m_varid,0)),t_indexExpr));
 		}
 		c_WhileStmt* t_whileStmt=(new c_WhileStmt)->m_new(t_cmpExpr,m_block);
-		m_block=(new c_BlockDecl)->m_new(m_block->m_scope);
+		gc_assign(m_block,(new c_BlockDecl)->m_new(m_block->m_scope));
 		m_block->p_AddStmt((new c_DeclStmt)->m_new(t_exprTmp));
 		m_block->p_AddStmt((new c_DeclStmt)->m_new(t_indexTmp));
 		m_block->p_AddStmt(t_whileStmt);
@@ -30526,7 +30705,7 @@ int c_ForEachinStmt::p_OnSemant(){
 				m_block->m_stmts->p_AddFirst((new c_AssignStmt)->m_new(String(L"=",1),((new c_IdentExpr)->m_new(m_varid,0)),t_nextObjExpr));
 			}
 			c_WhileStmt* t_whileStmt2=(new c_WhileStmt)->m_new(t_hasNextExpr,m_block);
-			m_block=(new c_BlockDecl)->m_new(m_block->m_scope);
+			gc_assign(m_block,(new c_BlockDecl)->m_new(m_block->m_scope));
 			m_block->p_AddStmt((new c_DeclStmt)->m_new(t_enumerTmp));
 			m_block->p_AddStmt(t_whileStmt2);
 		}else{
@@ -30541,6 +30720,9 @@ String c_ForEachinStmt::p_Trans(){
 }
 void c_ForEachinStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_varty);
+	gc_mark_q(m_expr);
+	gc_mark_q(m_block);
 }
 c_AssignStmt::c_AssignStmt(){
 	m_op=String();
@@ -30552,8 +30734,8 @@ c_AssignStmt::c_AssignStmt(){
 c_AssignStmt* c_AssignStmt::m_new(String t_op,c_Expr* t_lhs,c_Expr* t_rhs){
 	c_Stmt::m_new();
 	this->m_op=t_op;
-	this->m_lhs=t_lhs;
-	this->m_rhs=t_rhs;
+	gc_assign(this->m_lhs,t_lhs);
+	gc_assign(this->m_rhs,t_rhs);
 	return this;
 }
 c_AssignStmt* c_AssignStmt::m_new2(){
@@ -30567,9 +30749,9 @@ int c_AssignStmt::p_FixSideEffects(){
 	c_MemberVarExpr* t_e1=dynamic_cast<c_MemberVarExpr*>(m_lhs);
 	if((t_e1)!=0){
 		if(t_e1->m_expr->p_SideEffects()){
-			m_tmp1=(new c_LocalDecl)->m_new(String(),0,t_e1->m_expr->m_exprType,t_e1->m_expr);
+			gc_assign(m_tmp1,(new c_LocalDecl)->m_new(String(),0,t_e1->m_expr->m_exprType,t_e1->m_expr));
 			m_tmp1->p_Semant();
-			m_lhs=((new c_MemberVarExpr)->m_new(((new c_VarExpr)->m_new(m_tmp1)),t_e1->m_decl));
+			gc_assign(m_lhs,((new c_MemberVarExpr)->m_new(((new c_VarExpr)->m_new(m_tmp1)),t_e1->m_decl)));
 		}
 	}
 	c_IndexExpr* t_e2=dynamic_cast<c_IndexExpr*>(m_lhs);
@@ -30578,23 +30760,23 @@ int c_AssignStmt::p_FixSideEffects(){
 		c_Expr* t_index=t_e2->m_index;
 		if(t_expr->p_SideEffects() || t_index->p_SideEffects()){
 			if(t_expr->p_SideEffects()){
-				m_tmp1=(new c_LocalDecl)->m_new(String(),0,t_expr->m_exprType,t_expr);
+				gc_assign(m_tmp1,(new c_LocalDecl)->m_new(String(),0,t_expr->m_exprType,t_expr));
 				m_tmp1->p_Semant();
 				t_expr=((new c_VarExpr)->m_new(m_tmp1));
 			}
 			if(t_index->p_SideEffects()){
-				m_tmp2=(new c_LocalDecl)->m_new(String(),0,t_index->m_exprType,t_index);
+				gc_assign(m_tmp2,(new c_LocalDecl)->m_new(String(),0,t_index->m_exprType,t_index));
 				m_tmp2->p_Semant();
 				t_index=((new c_VarExpr)->m_new(m_tmp2));
 			}
-			m_lhs=((new c_IndexExpr)->m_new(t_expr,t_index))->p_Semant();
+			gc_assign(m_lhs,((new c_IndexExpr)->m_new(t_expr,t_index))->p_Semant());
 		}
 	}
 	return 0;
 }
 int c_AssignStmt::p_OnSemant(){
-	m_rhs=m_rhs->p_Semant();
-	m_lhs=m_lhs->p_SemantSet(m_op,m_rhs);
+	gc_assign(m_rhs,m_rhs->p_Semant());
+	gc_assign(m_lhs,m_lhs->p_SemantSet(m_op,m_rhs));
 	if(((dynamic_cast<c_InvokeExpr*>(m_lhs))!=0) || ((dynamic_cast<c_InvokeMemberExpr*>(m_lhs))!=0)){
 		m_rhs=0;
 		return 0;
@@ -30602,7 +30784,7 @@ int c_AssignStmt::p_OnSemant(){
 	bool t_kludge=true;
 	String t_1=m_op;
 	if(t_1==String(L"=",1)){
-		m_rhs=m_rhs->p_Cast(m_lhs->m_exprType,0);
+		gc_assign(m_rhs,m_rhs->p_Cast(m_lhs->m_exprType,0));
 		t_kludge=false;
 	}else{
 		if(t_1==String(L"*=",2) || t_1==String(L"/=",2) || t_1==String(L"+=",2) || t_1==String(L"-=",2)){
@@ -30629,7 +30811,7 @@ int c_AssignStmt::p_OnSemant(){
 	}
 	if(t_kludge){
 		p_FixSideEffects();
-		m_rhs=((new c_BinaryMathExpr)->m_new(m_op.Slice(0,-1),m_lhs,m_rhs))->p_Semant()->p_Cast(m_lhs->m_exprType,0);
+		gc_assign(m_rhs,((new c_BinaryMathExpr)->m_new(m_op.Slice(0,-1),m_lhs,m_rhs))->p_Semant()->p_Cast(m_lhs->m_exprType,0));
 		m_op=String(L"=",1);
 	}
 	return 0;
@@ -30640,6 +30822,10 @@ String c_AssignStmt::p_Trans(){
 }
 void c_AssignStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_lhs);
+	gc_mark_q(m_rhs);
+	gc_mark_q(m_tmp1);
+	gc_mark_q(m_tmp2);
 }
 c_ForStmt::c_ForStmt(){
 	m_init=0;
@@ -30649,10 +30835,10 @@ c_ForStmt::c_ForStmt(){
 }
 c_ForStmt* c_ForStmt::m_new(c_Stmt* t_init,c_Expr* t_expr,c_Stmt* t_incr,c_BlockDecl* t_block){
 	c_Stmt::m_new();
-	this->m_init=t_init;
-	this->m_expr=t_expr;
-	this->m_incr=t_incr;
-	this->m_block=t_block;
+	gc_assign(this->m_init,t_init);
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_incr,t_incr);
+	gc_assign(this->m_block,t_block);
 	return this;
 }
 c_ForStmt* c_ForStmt::m_new2(){
@@ -30665,7 +30851,7 @@ c_Stmt* c_ForStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 int c_ForStmt::p_OnSemant(){
 	bb_decl_PushEnv(m_block);
 	m_init->p_Semant();
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_expr,m_expr->p_Semant());
 	bb_decl__loopnest+=1;
 	m_block->p_Semant();
 	bb_decl__loopnest-=1;
@@ -30695,6 +30881,10 @@ String c_ForStmt::p_Trans(){
 }
 void c_ForStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_init);
+	gc_mark_q(m_expr);
+	gc_mark_q(m_incr);
+	gc_mark_q(m_block);
 }
 c_CatchStmt::c_CatchStmt(){
 	m_init=0;
@@ -30702,8 +30892,8 @@ c_CatchStmt::c_CatchStmt(){
 }
 c_CatchStmt* c_CatchStmt::m_new(c_LocalDecl* t_init,c_BlockDecl* t_block){
 	c_Stmt::m_new();
-	this->m_init=t_init;
-	this->m_block=t_block;
+	gc_assign(this->m_init,t_init);
+	gc_assign(this->m_block,t_block);
 	return this;
 }
 c_CatchStmt* c_CatchStmt::m_new2(){
@@ -30730,6 +30920,8 @@ String c_CatchStmt::p_Trans(){
 }
 void c_CatchStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_init);
+	gc_mark_q(m_block);
 }
 c_Stack8::c_Stack8(){
 	m_data=Array<c_CatchStmt* >();
@@ -30739,15 +30931,15 @@ c_Stack8* c_Stack8::m_new(){
 	return this;
 }
 c_Stack8* c_Stack8::m_new2(Array<c_CatchStmt* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 void c_Stack8::p_Push22(c_CatchStmt* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack8::p_Push23(Array<c_CatchStmt* > t_values,int t_offset,int t_count){
@@ -30762,11 +30954,11 @@ c_CatchStmt* c_Stack8::m_NIL;
 void c_Stack8::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
-			m_data[t_i]=m_NIL;
+			gc_assign(m_data[t_i],m_NIL);
 		}
 	}else{
 		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+			gc_assign(m_data,m_data.Resize(bb_math_Max(m_length*2+10,t_newlength)));
 		}
 	}
 	m_length=t_newlength;
@@ -30777,12 +30969,13 @@ int c_Stack8::p_Length2(){
 Array<c_CatchStmt* > c_Stack8::p_ToArray(){
 	Array<c_CatchStmt* > t_t=Array<c_CatchStmt* >(m_length);
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		t_t[t_i]=m_data[t_i];
+		gc_assign(t_t[t_i],m_data[t_i]);
 	}
 	return t_t;
 }
 void c_Stack8::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 int bb_math_Max(int t_x,int t_y){
 	if(t_x>t_y){
@@ -30802,8 +30995,8 @@ c_TryStmt::c_TryStmt(){
 }
 c_TryStmt* c_TryStmt::m_new(c_BlockDecl* t_block,Array<c_CatchStmt* > t_catches){
 	c_Stmt::m_new();
-	this->m_block=t_block;
-	this->m_catches=t_catches;
+	gc_assign(this->m_block,t_block);
+	gc_assign(this->m_catches,t_catches);
 	return this;
 }
 c_TryStmt* c_TryStmt::m_new2(){
@@ -30813,7 +31006,7 @@ c_TryStmt* c_TryStmt::m_new2(){
 c_Stmt* c_TryStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	Array<c_CatchStmt* > t_tcatches=this->m_catches.Slice(0);
 	for(int t_i=0;t_i<t_tcatches.Length();t_i=t_i+1){
-		t_tcatches[t_i]=dynamic_cast<c_CatchStmt*>(t_tcatches[t_i]->p_Copy2(t_scope));
+		gc_assign(t_tcatches[t_i],dynamic_cast<c_CatchStmt*>(t_tcatches[t_i]->p_Copy2(t_scope)));
 	}
 	return ((new c_TryStmt)->m_new(m_block->p_CopyBlock(t_scope),t_tcatches));
 }
@@ -30835,13 +31028,15 @@ String c_TryStmt::p_Trans(){
 }
 void c_TryStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_block);
+	gc_mark_q(m_catches);
 }
 c_ThrowStmt::c_ThrowStmt(){
 	m_expr=0;
 }
 c_ThrowStmt* c_ThrowStmt::m_new(c_Expr* t_expr){
 	c_Stmt::m_new();
-	this->m_expr=t_expr;
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_ThrowStmt* c_ThrowStmt::m_new2(){
@@ -30852,7 +31047,7 @@ c_Stmt* c_ThrowStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	return ((new c_ThrowStmt)->m_new(m_expr->p_Copy()));
 }
 int c_ThrowStmt::p_OnSemant(){
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_expr,m_expr->p_Semant());
 	if(!((dynamic_cast<c_ObjectType*>(m_expr->m_exprType))!=0)){
 		bb_config_Err(String(L"Expression type must extend Throwable",37));
 	}
@@ -30866,13 +31061,14 @@ String c_ThrowStmt::p_Trans(){
 }
 void c_ThrowStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_expr);
 }
 c_ExprStmt::c_ExprStmt(){
 	m_expr=0;
 }
 c_ExprStmt* c_ExprStmt::m_new(c_Expr* t_expr){
 	c_Stmt::m_new();
-	this->m_expr=t_expr;
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_ExprStmt* c_ExprStmt::m_new2(){
@@ -30883,7 +31079,7 @@ c_Stmt* c_ExprStmt::p_OnCopy2(c_ScopeDecl* t_scope){
 	return ((new c_ExprStmt)->m_new(m_expr->p_Copy()));
 }
 int c_ExprStmt::p_OnSemant(){
-	m_expr=m_expr->p_Semant();
+	gc_assign(m_expr,m_expr->p_Semant());
 	if(!((m_expr)!=0)){
 		bb_config_InternalErr(String(L"Internal error",14));
 	}
@@ -30894,6 +31090,7 @@ String c_ExprStmt::p_Trans(){
 }
 void c_ExprStmt::mark(){
 	c_Stmt::mark();
+	gc_mark_q(m_expr);
 }
 c_ModuleDecl* bb_parser_ParseModule(String t_modpath,String t_filepath,c_AppDecl* t_app){
 	String t_ident=t_modpath;
@@ -30913,8 +31110,8 @@ c_Enumerator4::c_Enumerator4(){
 	m__curr=0;
 }
 c_Enumerator4* c_Enumerator4::m_new(c_List6* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator4* c_Enumerator4::m_new2(){
@@ -30922,17 +31119,19 @@ c_Enumerator4* c_Enumerator4::m_new2(){
 }
 bool c_Enumerator4::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 c_FuncDecl* c_Enumerator4::p_NextObject(){
 	c_FuncDecl* t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator4::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_StringList* bb_config__errStack;
 int bb_config_PushErr(String t_errInfo){
@@ -30964,6 +31163,7 @@ c_Enumerator7* c_List10::p_ObjectEnumerator(){
 }
 void c_List10::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node16::c_Node16(){
 	m__succ=0;
@@ -30971,11 +31171,11 @@ c_Node16::c_Node16(){
 	m__data=0;
 }
 c_Node16* c_Node16::m_new(c_Node16* t_succ,c_Node16* t_pred,c_GlobalDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node16* c_Node16::m_new2(){
@@ -30983,13 +31183,16 @@ c_Node16* c_Node16::m_new2(){
 }
 void c_Node16::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode10::c_HeadNode10(){
 }
 c_HeadNode10* c_HeadNode10::m_new(){
 	c_Node16::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode10::mark(){
@@ -31007,9 +31210,9 @@ c_InvokeMemberExpr::c_InvokeMemberExpr(){
 }
 c_InvokeMemberExpr* c_InvokeMemberExpr::m_new(c_Expr* t_expr,c_FuncDecl* t_decl,Array<c_Expr* > t_args){
 	c_Expr::m_new();
-	this->m_expr=t_expr;
-	this->m_decl=t_decl;
-	this->m_args=t_args;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_decl,t_decl);
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_InvokeMemberExpr* c_InvokeMemberExpr::m_new2(){
@@ -31020,11 +31223,11 @@ c_Expr* c_InvokeMemberExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_exprType=m_decl->m_retType;
-	m_args=p_CastArgs(m_args,m_decl);
+	gc_assign(m_exprType,m_decl->m_retType);
+	gc_assign(m_args,p_CastArgs(m_args,m_decl));
 	if(((dynamic_cast<c_ArrayType*>(m_exprType))!=0) && ((dynamic_cast<c_VoidType*>(dynamic_cast<c_ArrayType*>(m_exprType)->m_elemType))!=0)){
 		m_isResize=1;
-		m_exprType=m_expr->m_exprType;
+		gc_assign(m_exprType,m_expr->m_exprType);
 	}
 	return (this);
 }
@@ -31050,6 +31253,9 @@ String c_InvokeMemberExpr::p_TransStmt(){
 }
 void c_InvokeMemberExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_decl);
+	gc_mark_q(m_args);
 }
 c_Expr* bb_preprocessor_EvalExpr(c_Toker* t_toker){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
@@ -31365,7 +31571,7 @@ c_Target* c_Target::m_new(String t_dir,String t_name,String t_system,c_Builder* 
 	this->m_dir=t_dir;
 	this->m_name=t_name;
 	this->m_system=t_system;
-	this->m_builder=t_builder;
+	gc_assign(this->m_builder,t_builder);
 	this->m_lang=t_lang;
 	this->m_buildscript=t_buildscript;
 	this->m_path=t_path;
@@ -31376,6 +31582,7 @@ c_Target* c_Target::m_new2(){
 }
 void c_Target::mark(){
 	Object::mark();
+	gc_mark_q(m_builder);
 }
 c_Map7::c_Map7(){
 	m_root=0;
@@ -31385,42 +31592,42 @@ c_Map7* c_Map7::m_new(){
 }
 int c_Map7::p_RotateLeft7(c_Node17* t_node){
 	c_Node17* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map7::p_RotateRight7(c_Node17* t_node){
 	c_Node17* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map7::p_InsertFixup7(c_Node17* t_node){
@@ -31475,7 +31682,7 @@ bool c_Map7::p_Set6(String t_key,c_Target* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -31483,13 +31690,13 @@ bool c_Map7::p_Set6(String t_key,c_Target* t_value){
 	t_node=(new c_Node17)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup7(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
@@ -31531,6 +31738,7 @@ c_Target* c_Map7::p_Get(String t_key){
 }
 void c_Map7::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap6::c_StringMap6(){
 }
@@ -31554,9 +31762,9 @@ c_Node17::c_Node17(){
 }
 c_Node17* c_Node17::m_new(String t_key,c_Target* t_value,int t_color,c_Node17* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node17* c_Node17::m_new2(){
@@ -31584,15 +31792,19 @@ String c_Node17::p_Key(){
 }
 void c_Node17::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 void bb_config_PopConfigScope(){
-	bb_config__cfgScope=bb_config__cfgScopeStack->p_Pop();
+	gc_assign(bb_config__cfgScope,bb_config__cfgScopeStack->p_Pop());
 }
 c_NodeEnumerator2::c_NodeEnumerator2(){
 	m_node=0;
 }
 c_NodeEnumerator2* c_NodeEnumerator2::m_new(c_Node17* t_node){
-	this->m_node=t_node;
+	gc_assign(this->m_node,t_node);
 	return this;
 }
 c_NodeEnumerator2* c_NodeEnumerator2::m_new2(){
@@ -31603,11 +31815,12 @@ bool c_NodeEnumerator2::p_HasNext(){
 }
 c_Node17* c_NodeEnumerator2::p_NextObject(){
 	c_Node17* t_t=m_node;
-	m_node=m_node->p_NextNode();
+	gc_assign(m_node,m_node->p_NextNode());
 	return t_t;
 }
 void c_NodeEnumerator2::mark(){
 	Object::mark();
+	gc_mark_q(m_node);
 }
 String bb_config_ENV_HOST;
 String bb_config_ENV_CONFIG;
@@ -32199,13 +32412,13 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 		c_ModuleDecl* t_mdecl=t_->p_NextObject();
 		String t_path=t_mdecl->m_rmodpath;
 		if(t_path==String(L"reflection",10)){
-			m_refmod=t_mdecl;
+			gc_assign(m_refmod,t_mdecl);
 		}else{
 			if(t_path==String(L"cerberus.lang",13)){
-				m_langmod=t_mdecl;
+				gc_assign(m_langmod,t_mdecl);
 			}else{
 				if(t_path==String(L"cerberus.boxes",14)){
-					m_boxesmod=t_mdecl;
+					gc_assign(m_boxesmod,t_mdecl);
 				}
 			}
 		}
@@ -32362,12 +32575,21 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 }
 void c_Reflector::mark(){
 	Object::mark();
+	gc_mark_q(m_refmod);
+	gc_mark_q(m_langmod);
+	gc_mark_q(m_boxesmod);
+	gc_mark_q(m_munged);
+	gc_mark_q(m_modexprs);
+	gc_mark_q(m_refmods);
+	gc_mark_q(m_classdecls);
+	gc_mark_q(m_classids);
+	gc_mark_q(m_output);
 }
 c_MapValues::c_MapValues(){
 	m_map=0;
 }
 c_MapValues* c_MapValues::m_new(c_Map5* t_map){
-	this->m_map=t_map;
+	gc_assign(this->m_map,t_map);
 	return this;
 }
 c_MapValues* c_MapValues::m_new2(){
@@ -32378,12 +32600,13 @@ c_ValueEnumerator* c_MapValues::p_ObjectEnumerator(){
 }
 void c_MapValues::mark(){
 	Object::mark();
+	gc_mark_q(m_map);
 }
 c_ValueEnumerator::c_ValueEnumerator(){
 	m_node=0;
 }
 c_ValueEnumerator* c_ValueEnumerator::m_new(c_Node7* t_node){
-	this->m_node=t_node;
+	gc_assign(this->m_node,t_node);
 	return this;
 }
 c_ValueEnumerator* c_ValueEnumerator::m_new2(){
@@ -32394,11 +32617,12 @@ bool c_ValueEnumerator::p_HasNext(){
 }
 c_ModuleDecl* c_ValueEnumerator::p_NextObject(){
 	c_Node7* t_t=m_node;
-	m_node=m_node->p_NextNode();
+	gc_assign(m_node,m_node->p_NextNode());
 	return t_t->m_value;
 }
 void c_ValueEnumerator::mark(){
 	Object::mark();
+	gc_mark_q(m_node);
 }
 c_Map8::c_Map8(){
 	m_root=0;
@@ -32434,42 +32658,42 @@ int c_Map8::p_Get(String t_key){
 }
 int c_Map8::p_RotateLeft8(c_Node18* t_node){
 	c_Node18* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map8::p_RotateRight8(c_Node18* t_node){
 	c_Node18* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map8::p_InsertFixup8(c_Node18* t_node){
@@ -32532,18 +32756,19 @@ bool c_Map8::p_Set7(String t_key,int t_value){
 	t_node=(new c_Node18)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup8(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
 void c_Map8::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap7::c_StringMap7(){
 }
@@ -32569,7 +32794,7 @@ c_Node18* c_Node18::m_new(String t_key,int t_value,int t_color,c_Node18* t_paren
 	this->m_key=t_key;
 	this->m_value=t_value;
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node18* c_Node18::m_new2(){
@@ -32577,14 +32802,17 @@ c_Node18* c_Node18::m_new2(){
 }
 void c_Node18::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_parent);
 }
 c_Enumerator5::c_Enumerator5(){
 	m__list=0;
 	m__curr=0;
 }
 c_Enumerator5* c_Enumerator5::m_new(c_List8* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator5* c_Enumerator5::m_new2(){
@@ -32592,17 +32820,19 @@ c_Enumerator5* c_Enumerator5::m_new2(){
 }
 bool c_Enumerator5::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 c_ClassDecl* c_Enumerator5::p_NextObject(){
 	c_ClassDecl* t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator5::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_Stack9::c_Stack9(){
 	m_data=Array<c_ClassDecl* >();
@@ -32612,7 +32842,7 @@ c_Stack9* c_Stack9::m_new(){
 	return this;
 }
 c_Stack9* c_Stack9::m_new2(Array<c_ClassDecl* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
@@ -32620,11 +32850,11 @@ c_ClassDecl* c_Stack9::m_NIL;
 void c_Stack9::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
-			m_data[t_i]=m_NIL;
+			gc_assign(m_data[t_i],m_NIL);
 		}
 	}else{
 		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+			gc_assign(m_data,m_data.Resize(bb_math_Max(m_length*2+10,t_newlength)));
 		}
 	}
 	m_length=t_newlength;
@@ -32634,9 +32864,9 @@ int c_Stack9::p_Length2(){
 }
 void c_Stack9::p_Push25(c_ClassDecl* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack9::p_Push26(Array<c_ClassDecl* > t_values,int t_offset,int t_count){
@@ -32652,6 +32882,7 @@ c_ClassDecl* c_Stack9::p_Get2(int t_index){
 }
 void c_Stack9::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 int bb_parser_ParseSource(String t_source,c_AppDecl* t_app,c_ModuleDecl* t_mdecl,int t_defattrs){
 	c_Toker* t_toker=(new c_Toker)->m_new(String(L"$SOURCE",7),t_source);
@@ -33407,6 +33638,10 @@ String c_CTranslator::p_TransBinaryOp(String t_op,String t_rhs){
 }
 void c_CTranslator::mark(){
 	c_Translator::mark();
+	gc_mark_q(m_funcMungs);
+	gc_mark_q(m_mungedFuncs);
+	gc_mark_q(m_mungedScopes);
+	gc_mark_q(m_lines);
 }
 c_JavaTranslator::c_JavaTranslator(){
 	m_langutil=false;
@@ -34194,7 +34429,7 @@ c_NodeEnumerator3::c_NodeEnumerator3(){
 	m_node=0;
 }
 c_NodeEnumerator3* c_NodeEnumerator3::m_new(c_Node2* t_node){
-	this->m_node=t_node;
+	gc_assign(this->m_node,t_node);
 	return this;
 }
 c_NodeEnumerator3* c_NodeEnumerator3::m_new2(){
@@ -34205,11 +34440,12 @@ bool c_NodeEnumerator3::p_HasNext(){
 }
 c_Node2* c_NodeEnumerator3::p_NextObject(){
 	c_Node2* t_t=m_node;
-	m_node=m_node->p_NextNode();
+	gc_assign(m_node,m_node->p_NextNode());
 	return t_t;
 }
 void c_NodeEnumerator3::mark(){
 	Object::mark();
+	gc_mark_q(m_node);
 }
 String bb_config_Enquote(String t_str,String t_lang){
 	String t_1=t_lang;
@@ -35193,6 +35429,7 @@ String c_CppTranslator::p_TransAssignStmt2(c_AssignStmt* t_stmt){
 }
 void c_CppTranslator::mark(){
 	c_CTranslator::mark();
+	gc_mark_q(m_dbgLocals);
 }
 c_JsTranslator::c_JsTranslator(){
 }
@@ -35826,7 +36063,7 @@ BBFileStream* c_FileStream::m_OpenStream(String t_path,String t_mode){
 }
 c_FileStream* c_FileStream::m_new(String t_path,String t_mode){
 	c_Stream::m_new();
-	m__stream=m_OpenStream(t_path,t_mode);
+	gc_assign(m__stream,m_OpenStream(t_path,t_mode));
 	if(!((m__stream)!=0)){
 		bbError(String(L"Failed to open stream",21));
 	}
@@ -35834,7 +36071,7 @@ c_FileStream* c_FileStream::m_new(String t_path,String t_mode){
 }
 c_FileStream* c_FileStream::m_new2(BBFileStream* t_stream){
 	c_Stream::m_new();
-	m__stream=t_stream;
+	gc_assign(m__stream,t_stream);
 	return this;
 }
 c_FileStream* c_FileStream::m_new3(){
@@ -35869,6 +36106,7 @@ int c_FileStream::p_Seek(int t_position){
 }
 void c_FileStream::mark(){
 	c_Stream::mark();
+	gc_mark_q(m__stream);
 }
 c_DataBuffer::c_DataBuffer(){
 }
@@ -37313,6 +37551,7 @@ void c_List11::p_RemoveLast6(c_ModuleDecl* t_value){
 }
 void c_List11::mark(){
 	Object::mark();
+	gc_mark_q(m__head);
 }
 c_Node19::c_Node19(){
 	m__succ=0;
@@ -37320,30 +37559,33 @@ c_Node19::c_Node19(){
 	m__data=0;
 }
 c_Node19* c_Node19::m_new(c_Node19* t_succ,c_Node19* t_pred,c_ModuleDecl* t_data){
-	m__succ=t_succ;
-	m__pred=t_pred;
-	m__succ->m__pred=this;
-	m__pred->m__succ=this;
-	m__data=t_data;
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
 	return this;
 }
 c_Node19* c_Node19::m_new2(){
 	return this;
 }
 int c_Node19::p_Remove(){
-	m__succ->m__pred=m__pred;
-	m__pred->m__succ=m__succ;
+	gc_assign(m__succ->m__pred,m__pred);
+	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
 void c_Node19::mark(){
 	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
 }
 c_HeadNode11::c_HeadNode11(){
 }
 c_HeadNode11* c_HeadNode11::m_new(){
 	c_Node19::m_new2();
-	m__succ=(this);
-	m__pred=(this);
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
 	return this;
 }
 void c_HeadNode11::mark(){
@@ -37354,8 +37596,8 @@ c_Enumerator6::c_Enumerator6(){
 	m__curr=0;
 }
 c_Enumerator6* c_Enumerator6::m_new(c_List7* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator6* c_Enumerator6::m_new2(){
@@ -37363,17 +37605,19 @@ c_Enumerator6* c_Enumerator6::m_new2(){
 }
 bool c_Enumerator6::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 c_Stmt* c_Enumerator6::p_NextObject(){
 	c_Stmt* t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator6::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_InvokeExpr::c_InvokeExpr(){
 	m_decl=0;
@@ -37381,8 +37625,8 @@ c_InvokeExpr::c_InvokeExpr(){
 }
 c_InvokeExpr* c_InvokeExpr::m_new(c_FuncDecl* t_decl,Array<c_Expr* > t_args){
 	c_Expr::m_new();
-	this->m_decl=t_decl;
-	this->m_args=t_args;
+	gc_assign(this->m_decl,t_decl);
+	gc_assign(this->m_args,t_args);
 	return this;
 }
 c_InvokeExpr* c_InvokeExpr::m_new2(){
@@ -37393,8 +37637,8 @@ c_Expr* c_InvokeExpr::p_Semant(){
 	if((m_exprType)!=0){
 		return (this);
 	}
-	m_exprType=m_decl->m_retType;
-	m_args=p_CastArgs(m_args,m_decl);
+	gc_assign(m_exprType,m_decl->m_retType);
+	gc_assign(m_args,p_CastArgs(m_args,m_decl));
 	return (this);
 }
 String c_InvokeExpr::p_ToString(){
@@ -37416,6 +37660,8 @@ String c_InvokeExpr::p_TransStmt(){
 }
 void c_InvokeExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_decl);
+	gc_mark_q(m_args);
 }
 c_StmtExpr::c_StmtExpr(){
 	m_stmt=0;
@@ -37423,8 +37669,8 @@ c_StmtExpr::c_StmtExpr(){
 }
 c_StmtExpr* c_StmtExpr::m_new(c_Stmt* t_stmt,c_Expr* t_expr){
 	c_Expr::m_new();
-	this->m_stmt=t_stmt;
-	this->m_expr=t_expr;
+	gc_assign(this->m_stmt,t_stmt);
+	gc_assign(this->m_expr,t_expr);
 	return this;
 }
 c_StmtExpr* c_StmtExpr::m_new2(){
@@ -37436,8 +37682,8 @@ c_Expr* c_StmtExpr::p_Semant(){
 		return (this);
 	}
 	m_stmt->p_Semant();
-	m_expr=m_expr->p_Semant();
-	m_exprType=m_expr->m_exprType;
+	gc_assign(m_expr,m_expr->p_Semant());
+	gc_assign(m_exprType,m_expr->m_exprType);
 	return (this);
 }
 c_Expr* c_StmtExpr::p_Copy(){
@@ -37451,6 +37697,8 @@ String c_StmtExpr::p_Trans(){
 }
 void c_StmtExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_stmt);
+	gc_mark_q(m_expr);
 }
 c_MemberVarExpr::c_MemberVarExpr(){
 	m_expr=0;
@@ -37458,8 +37706,8 @@ c_MemberVarExpr::c_MemberVarExpr(){
 }
 c_MemberVarExpr* c_MemberVarExpr::m_new(c_Expr* t_expr,c_VarDecl* t_decl){
 	c_Expr::m_new();
-	this->m_expr=t_expr;
-	this->m_decl=t_decl;
+	gc_assign(this->m_expr,t_expr);
+	gc_assign(this->m_decl,t_decl);
 	return this;
 }
 c_MemberVarExpr* c_MemberVarExpr::m_new2(){
@@ -37473,7 +37721,7 @@ c_Expr* c_MemberVarExpr::p_Semant(){
 	if(!((m_decl->p_IsSemanted())!=0)){
 		bb_config_InternalErr(String(L"Internal error",14));
 	}
-	m_exprType=m_decl->m_type;
+	gc_assign(m_exprType,m_decl->m_type);
 	return (this);
 }
 String c_MemberVarExpr::p_ToString(){
@@ -37493,13 +37741,15 @@ String c_MemberVarExpr::p_TransVar(){
 }
 void c_MemberVarExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_expr);
+	gc_mark_q(m_decl);
 }
 c_VarExpr::c_VarExpr(){
 	m_decl=0;
 }
 c_VarExpr* c_VarExpr::m_new(c_VarDecl* t_decl){
 	c_Expr::m_new();
-	this->m_decl=t_decl;
+	gc_assign(this->m_decl,t_decl);
 	return this;
 }
 c_VarExpr* c_VarExpr::m_new2(){
@@ -37513,7 +37763,7 @@ c_Expr* c_VarExpr::p_Semant(){
 	if(!((m_decl->p_IsSemanted())!=0)){
 		bb_config_InternalErr(String(L"Internal error",14));
 	}
-	m_exprType=m_decl->m_type;
+	gc_assign(m_exprType,m_decl->m_type);
 	return (this);
 }
 String c_VarExpr::p_ToString(){
@@ -37535,6 +37785,7 @@ String c_VarExpr::p_TransVar(){
 }
 void c_VarExpr::mark(){
 	c_Expr::mark();
+	gc_mark_q(m_decl);
 }
 int bb_decl__loopnest;
 c_Map9::c_Map9(){
@@ -37568,42 +37819,42 @@ c_FuncDeclList* c_Map9::p_Get(String t_key){
 }
 int c_Map9::p_RotateLeft9(c_Node20* t_node){
 	c_Node20* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map9::p_RotateRight9(c_Node20* t_node){
 	c_Node20* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map9::p_InsertFixup9(c_Node20* t_node){
@@ -37658,7 +37909,7 @@ bool c_Map9::p_Set8(String t_key,c_FuncDeclList* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -37666,18 +37917,19 @@ bool c_Map9::p_Set8(String t_key,c_FuncDeclList* t_value){
 	t_node=(new c_Node20)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup9(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
 void c_Map9::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap8::c_StringMap8(){
 }
@@ -37701,9 +37953,9 @@ c_Node20::c_Node20(){
 }
 c_Node20* c_Node20::m_new(String t_key,c_FuncDeclList* t_value,int t_color,c_Node20* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node20* c_Node20::m_new2(){
@@ -37711,6 +37963,10 @@ c_Node20* c_Node20::m_new2(){
 }
 void c_Node20::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_Map10::c_Map10(){
 	m_root=0;
@@ -37739,42 +37995,42 @@ bool c_Map10::p_Contains(String t_key){
 }
 int c_Map10::p_RotateLeft10(c_Node21* t_node){
 	c_Node21* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map10::p_RotateRight10(c_Node21* t_node){
 	c_Node21* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map10::p_InsertFixup10(c_Node21* t_node){
@@ -37829,7 +38085,7 @@ bool c_Map10::p_Set9(String t_key,c_FuncDecl* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -37837,18 +38093,19 @@ bool c_Map10::p_Set9(String t_key,c_FuncDecl* t_value){
 	t_node=(new c_Node21)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup10(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
 void c_Map10::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap9::c_StringMap9(){
 }
@@ -37872,9 +38129,9 @@ c_Node21::c_Node21(){
 }
 c_Node21* c_Node21::m_new(String t_key,c_FuncDecl* t_value,int t_color,c_Node21* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node21* c_Node21::m_new2(){
@@ -37882,6 +38139,10 @@ c_Node21* c_Node21::m_new2(){
 }
 void c_Node21::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_Map11::c_Map11(){
 	m_root=0;
@@ -37914,42 +38175,42 @@ c_StringSet* c_Map11::p_Get(String t_key){
 }
 int c_Map11::p_RotateLeft11(c_Node22* t_node){
 	c_Node22* t_child=t_node->m_right;
-	t_node->m_right=t_child->m_left;
+	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
-		t_child->m_left->m_parent=t_node;
+		gc_assign(t_child->m_left->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_left){
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}else{
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_left=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map11::p_RotateRight11(c_Node22* t_node){
 	c_Node22* t_child=t_node->m_left;
-	t_node->m_left=t_child->m_right;
+	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
-		t_child->m_right->m_parent=t_node;
+		gc_assign(t_child->m_right->m_parent,t_node);
 	}
-	t_child->m_parent=t_node->m_parent;
+	gc_assign(t_child->m_parent,t_node->m_parent);
 	if((t_node->m_parent)!=0){
 		if(t_node==t_node->m_parent->m_right){
-			t_node->m_parent->m_right=t_child;
+			gc_assign(t_node->m_parent->m_right,t_child);
 		}else{
-			t_node->m_parent->m_left=t_child;
+			gc_assign(t_node->m_parent->m_left,t_child);
 		}
 	}else{
-		m_root=t_child;
+		gc_assign(m_root,t_child);
 	}
-	t_child->m_right=t_node;
-	t_node->m_parent=t_child;
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
 int c_Map11::p_InsertFixup11(c_Node22* t_node){
@@ -38004,7 +38265,7 @@ bool c_Map11::p_Set10(String t_key,c_StringSet* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				t_node->m_value=t_value;
+				gc_assign(t_node->m_value,t_value);
 				return false;
 			}
 		}
@@ -38012,18 +38273,19 @@ bool c_Map11::p_Set10(String t_key,c_StringSet* t_value){
 	t_node=(new c_Node22)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
-			t_parent->m_right=t_node;
+			gc_assign(t_parent->m_right,t_node);
 		}else{
-			t_parent->m_left=t_node;
+			gc_assign(t_parent->m_left,t_node);
 		}
 		p_InsertFixup11(t_node);
 	}else{
-		m_root=t_node;
+		gc_assign(m_root,t_node);
 	}
 	return true;
 }
 void c_Map11::mark(){
 	Object::mark();
+	gc_mark_q(m_root);
 }
 c_StringMap10::c_StringMap10(){
 }
@@ -38047,9 +38309,9 @@ c_Node22::c_Node22(){
 }
 c_Node22* c_Node22::m_new(String t_key,c_StringSet* t_value,int t_color,c_Node22* t_parent){
 	this->m_key=t_key;
-	this->m_value=t_value;
+	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
-	this->m_parent=t_parent;
+	gc_assign(this->m_parent,t_parent);
 	return this;
 }
 c_Node22* c_Node22::m_new2(){
@@ -38057,14 +38319,18 @@ c_Node22* c_Node22::m_new2(){
 }
 void c_Node22::mark(){
 	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_value);
+	gc_mark_q(m_parent);
 }
 c_Enumerator7::c_Enumerator7(){
 	m__list=0;
 	m__curr=0;
 }
 c_Enumerator7* c_Enumerator7::m_new(c_List10* t_list){
-	m__list=t_list;
-	m__curr=t_list->m__head->m__succ;
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
 c_Enumerator7* c_Enumerator7::m_new2(){
@@ -38072,17 +38338,19 @@ c_Enumerator7* c_Enumerator7::m_new2(){
 }
 bool c_Enumerator7::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
-		m__curr=m__curr->m__succ;
+		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
 c_GlobalDecl* c_Enumerator7::p_NextObject(){
 	c_GlobalDecl* t_data=m__curr->m__data;
-	m__curr=m__curr->m__succ;
+	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
 void c_Enumerator7::mark(){
 	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
 }
 c_Stack10::c_Stack10(){
 	m_data=Array<c_LocalDecl* >();
@@ -38092,14 +38360,14 @@ c_Stack10* c_Stack10::m_new(){
 	return this;
 }
 c_Stack10* c_Stack10::m_new2(Array<c_LocalDecl* > t_data){
-	this->m_data=t_data.Slice(0);
+	gc_assign(this->m_data,t_data.Slice(0));
 	this->m_length=t_data.Length();
 	return this;
 }
 c_LocalDecl* c_Stack10::m_NIL;
 void c_Stack10::p_Clear(){
 	for(int t_i=0;t_i<m_length;t_i=t_i+1){
-		m_data[t_i]=m_NIL;
+		gc_assign(m_data[t_i],m_NIL);
 	}
 	m_length=0;
 }
@@ -38109,11 +38377,11 @@ c_Enumerator8* c_Stack10::p_ObjectEnumerator(){
 void c_Stack10::p_Length(int t_newlength){
 	if(t_newlength<m_length){
 		for(int t_i=t_newlength;t_i<m_length;t_i=t_i+1){
-			m_data[t_i]=m_NIL;
+			gc_assign(m_data[t_i],m_NIL);
 		}
 	}else{
 		if(t_newlength>m_data.Length()){
-			m_data=m_data.Resize(bb_math_Max(m_length*2+10,t_newlength));
+			gc_assign(m_data,m_data.Resize(bb_math_Max(m_length*2+10,t_newlength)));
 		}
 	}
 	m_length=t_newlength;
@@ -38123,9 +38391,9 @@ int c_Stack10::p_Length2(){
 }
 void c_Stack10::p_Push28(c_LocalDecl* t_value){
 	if(m_length==m_data.Length()){
-		m_data=m_data.Resize(m_length*2+10);
+		gc_assign(m_data,m_data.Resize(m_length*2+10));
 	}
-	m_data[m_length]=t_value;
+	gc_assign(m_data[m_length],t_value);
 	m_length+=1;
 }
 void c_Stack10::p_Push29(Array<c_LocalDecl* > t_values,int t_offset,int t_count){
@@ -38138,13 +38406,14 @@ void c_Stack10::p_Push30(Array<c_LocalDecl* > t_values,int t_offset){
 }
 void c_Stack10::mark(){
 	Object::mark();
+	gc_mark_q(m_data);
 }
 c_Enumerator8::c_Enumerator8(){
 	m_stack=0;
 	m_index=0;
 }
 c_Enumerator8* c_Enumerator8::m_new(c_Stack10* t_stack){
-	this->m_stack=t_stack;
+	gc_assign(this->m_stack,t_stack);
 	return this;
 }
 c_Enumerator8* c_Enumerator8::m_new2(){
@@ -38159,6 +38428,7 @@ c_LocalDecl* c_Enumerator8::p_NextObject(){
 }
 void c_Enumerator8::mark(){
 	Object::mark();
+	gc_mark_q(m_stack);
 }
 int bbInit(){
 	GC_CTOR
@@ -38204,6 +38474,29 @@ int bbInit(){
 	return 0;
 }
 void gc_mark(){
+	gc_mark_q(c_Type::m_stringType);
+	gc_mark_q(bb_config__cfgScope);
+	gc_mark_q(bb_config__cfgScopeStack);
+	gc_mark_q(bb_decl__env);
+	gc_mark_q(bb_decl__envStack);
+	gc_mark_q(c_Toker::m__keywords);
+	gc_mark_q(c_Toker::m__symbols);
+	gc_mark_q(c_BlockTrace::m__Blocks);
+	gc_mark_q(c_Type::m_intType);
+	gc_mark_q(c_Type::m_floatType);
+	gc_mark_q(c_Type::m_boolType);
+	gc_mark_q(c_Type::m_voidType);
+	gc_mark_q(c_Type::m_objectType);
+	gc_mark_q(c_Type::m_throwableType);
+	gc_mark_q(c_Type::m_emptyArrayType);
+	gc_mark_q(c_Type::m_nullObjectType);
+	gc_mark_q(c_Stack8::m_NIL);
+	gc_mark_q(bb_config__errStack);
+	gc_mark_q(c_Stack2::m_NIL);
+	gc_mark_q(c_Stack9::m_NIL);
+	gc_mark_q(bb_translator__trans);
+	gc_mark_q(c_ClassDecl::m_nullObjectClass);
+	gc_mark_q(c_Stack10::m_NIL);
 }
 //${TRANSCODE_END}
 
