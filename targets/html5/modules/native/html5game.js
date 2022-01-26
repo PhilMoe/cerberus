@@ -448,18 +448,18 @@ BBHtml5Game.prototype.Run=function(){
 		return y*yscale;
 	}
 	
-	canvas.onkeydown=function( e ){
+	window.onkeydown=function( e ){
 		game.KeyEvent( BBGameEvent.KeyDown,e.keyCode );
 		var chr=keyToChar( e.keyCode );
 		if( chr ) game.KeyEvent( BBGameEvent.KeyChar,chr );
 		if( e.keyCode<48 || (e.keyCode>111 && e.keyCode<122) ) eatEvent( e );
 	}
 
-	canvas.onkeyup=function( e ){
+	window.onkeyup=function( e ){
 		game.KeyEvent( BBGameEvent.KeyUp,e.keyCode );
 	}
 
-	canvas.onkeypress=function( e ){
+	window.onkeypress=function( e ){
 		if( e.charCode ){
 			game.KeyEvent( BBGameEvent.KeyChar,e.charCode );
 		}else if( e.which ){

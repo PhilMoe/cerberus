@@ -1,9 +1,10 @@
-***** v2021-12-27 *****
+***** v2022-01-24 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
-MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
 FIX: [GLFW] Fixing Clipboard not dealing with special chars correctly.    (Author: Phil7)
 FIX: [HTML5] Fixed still visible CLEAR CONSOLE button when console was hidden.    (Author: Grant)
+FIX: [HTML5] Fixed Getchar not reporting keys after canvas lost and regain focus.    (Author: MikeHart)
+MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
 MOD: [CUSTOM target] Fixed using more than 1 variable in a line.    (Author: MikeHart)
 MOD: [ANDROID] Removed App Compat Library, hence smaller app sizes.    (Author: Grant)
 MOD: [ANDROID] Replace Android JNI with pure Java    (Author: Grant)
