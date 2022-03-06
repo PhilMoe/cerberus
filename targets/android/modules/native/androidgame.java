@@ -419,14 +419,22 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	public int SaveState( String state ){
 		SharedPreferences prefs=_activity.getPreferences( 0 );
 		SharedPreferences.Editor editor=prefs.edit();
-		editor.putString( ".cerberusstate",state );
+		if( CerberusConfig.MOJO_USE_MONKEYSTATE.equals( "1" ) ){
+			editor.putString( ".monkeystate",state );
+		}else{
+			editor.putString( ".cerberusstate",state );
+		}
 		editor.commit();
 		return 1;
 	}
 	
 	public String LoadState(){
 		SharedPreferences prefs=_activity.getPreferences( 0 );
-		String state=prefs.getString( ".cerberusstate","" );
+		if( CerberusConfig.MOJO_USE_MONKEYSTATE.equals( "1" ) ){
+			String state=prefs.getString( ".monkeystate","" );
+		}else{
+			String state=prefs.getString( ".cerberusstate","" );
+		}
 		if( state.equals( "" ) ) state=prefs.getString( "gxtkAppState","" );
 		return state;
 	}

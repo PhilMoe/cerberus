@@ -26,6 +26,8 @@ The following app config settings are currently supported:
 
 'Mojo settings, defaults shown
 '
+#MOJO_USE_MONKEYSTATE=False				'Set to True to use monkeystate instead of cerberusstate 
+										'to save app data
 #MOJO_AUTO_SUSPEND_ENABLED=True			'Set to True to cause app to suspend when desktop window loses focus.
 #MOJO_HICOLOR_TEXTURES=True	
 #MOJO_IMAGE_FILTERING_ENABLED=True

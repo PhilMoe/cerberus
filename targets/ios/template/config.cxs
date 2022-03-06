@@ -8,6 +8,7 @@
 #OPENGL_GLES20_ENABLED=False
 
 #MOJO_IMAGE_FILTERING_ENABLED=true
+#MOJO_USE_MONKEYSTATE=False
 
 #TEXT_FILES+="*.txt|*.xml|*.json"
 #IMAGE_FILES+="*.png|*.jpg"

@@ -188,20 +188,37 @@ void BBGame::GetDate( Array<int> date ){
 }
 
 int BBGame::SaveState( String state ){
-	if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
-		bool ok=state.Save( f );
-		fclose( f );
-		return ok ? 0 : -2;
+	if( CFG_MOJO_USE_MONKEYSTATE ){
+		if( FILE *f=OpenFile( "./.monkeystate","wb" ) ){
+			bool ok=state.Save( f );
+			fclose( f );
+			return ok ? 0 : -2;
+		}
+	}else{
+		if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
+			bool ok=state.Save( f );
+			fclose( f );
+			return ok ? 0 : -2;
+		}
 	}
 	return -1;
 }
 
 String BBGame::LoadState(){
-	if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
-		String str=String::Load( f );
-		fclose( f );
-		return str;
+	if( CFG_MOJO_USE_MONKEYSTATE ){
+		if( FILE *f=OpenFile( "./.monkeystate","rb" ) ){
+			String str=String::Load( f );
+			fclose( f );
+			return str;
+		}
+	}else{
+		if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
+			String str=String::Load( f );
+			fclose( f );
+			return str;
+		}
 	}
+
 	return "";
 }
 
