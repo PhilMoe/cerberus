@@ -1,0 +1,31 @@
+Strict
+
+'Simple C++ tool script
+Import brl.xml
+'-----------------------------------------------------------------
+Function Main:Int()
+	Print ("Cerberus X - WriteXml Test~n")
+	
+	Local xml := New Xml
+
+	Local n1:= xml.AddElement("world")
+	n1.SetAttribute("gold",200)
+	n1.SetAttribute("area","desert")
+	Local n2 := n1.AddElement("Player")
+	n2.SetAttribute("class","Hunter")
+	n2.SetAttribute("strength",18)
+	n2.Content = "Michael"
+	Local n3 := n1.AddElement("Player")
+	n3.SetAttribute("class","Mage")
+	n2.SetAttribute("strength",10)
+	n3.Content = "Marc"
+	n1.AddElement("Level",1)
+	n1.AddElement("SizeX",1024)
+	n1.AddElement("Sizey",512)
+	Local n4 := xml.AddElement("xxx")
+	Local n5 := n4.AddElement("Player","Martin")
+	n5.SetAttribute("life",15)
+	Print xml.ToString()
+
+	Return 0
+End

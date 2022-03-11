@@ -15113,6 +15113,7 @@ class c_XnaBuilder;
 class c_AGKBuilder;
 class c_AGKBuilder_ios;
 class c_AGKBuilder_android;
+class c_AGKBuilder_android_ouya;
 class c_CustomBuilder;
 class c_NodeEnumerator;
 class c_List;
@@ -15830,8 +15831,22 @@ class c_AGKBuilder_android : public c_Builder{
 	void p_MakeTarget();
 	void mark();
 };
+class c_AGKBuilder_android_ouya : public c_Builder{
+	public:
+	c_AGKBuilder_android_ouya();
+	c_AGKBuilder_android_ouya* m_new(c_TransCC*);
+	c_AGKBuilder_android_ouya* m_new2();
+	bool p_IsValid();
+	void p_Begin();
+	String p_Config();
+	void p_CreateMediaDir(String);
+	void p_MakeAndroid();
+	void p_MakeTarget();
+	void mark();
+};
 class c_CustomBuilder : public c_Builder{
 	public:
+	c_StringMap2* m_custVars;
 	c_CustomBuilder();
 	c_CustomBuilder* m_new(c_TransCC*);
 	c_CustomBuilder* m_new2();
@@ -18341,6 +18356,9 @@ void c_TransCC::p_LoadConfig(){
 	}else{
 		if(t_4==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
+			if((m_JDK_PATH).Length()!=0){
+				t_path3=m_JDK_PATH+String(L"/bin:",5)+t_path3;
+			}
 			if((m_ANDROID_PATH).Length()!=0){
 				t_path3=t_path3+(String(L":",1)+m_ANDROID_PATH+String(L"/tools",6));
 			}
@@ -18354,6 +18372,9 @@ void c_TransCC::p_LoadConfig(){
 				t_path3=t_path3+(String(L":",1)+m_FLEX_PATH+String(L"/bin",4));
 			}
 			SetEnv(String(L"PATH",4),t_path3);
+			if((m_JDK_PATH).Length()!=0){
+				SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
+			}
 		}else{
 			if(t_4==String(L"linux",5)){
 				String t_path4=GetEnv(String(L"PATH",4));
@@ -18433,7 +18454,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-03-21",35));
+	bbPrint(String(L"TRANS cerberus compiler V2021-12-27",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20456,9 +20477,17 @@ void c_AndroidBuilder::p_MakeTarget(){
 	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_1",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_2",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
 	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_MAIN",21)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_ACTIVITY",25),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_ACTIVITY",25)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
+	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));
+	if(t_admob_appid.Length()>0){
+		String t_admob_appid2=String(L"<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" ",68);
+		t_admob_appid2=t_admob_appid2+(String(L"android:value=\"",15)+t_admob_appid+String(L"\" />",4)+String(L"\n",1));
+		t_manifest=t_manifest+t_admob_appid2;
+	}
+	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),t_manifest);
 	String t_jpath=String(L"app/src/main/java",17);
 	bb_os_DeleteDir(t_jpath,true);
 	CreateDir(t_jpath);
@@ -20632,7 +20661,8 @@ void c_AndroidBuilder::p_MakeTarget(){
 			}
 			p_Execute(t_adb2+String(L" logcat -c",10),false);
 			p_Execute(t_adb2+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+t_app_package+String(L".CerberusGame",13),false);
-			p_Execute(t_adb2+String(L" logcat [Cerberus]:I *:E",24),false);
+			String t_optLogcat=bb_config_GetConfigVar(String(L"ANDROID_LOGCAT_OPTION",21));
+			p_Execute(t_adb2+String(L" logcat ",8)+t_optLogcat,false);
 		}
 	}
 }
@@ -21238,7 +21268,7 @@ String c_IosBuilder::p_BuildFiles(){
 		String t_dir=bb_os_ExtractDir(t_path);
 		String t_name=bb_os_StripDir(t_path);
 		String t_2=bb_os_ExtractExt(t_name);
-		if(t_2==String(L"a",1) || t_2==String(L"framework",9)){
+		if(t_2==String(L"a",1) || t_2==String(L"framework",9) || t_2==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXBuildFile; fileRef = ",34)+t_fileRef+String(L"; };",4));
 		}
 	}
@@ -21269,6 +21299,12 @@ String c_IosBuilder::p_FileRefs(){
 					}else{
 						t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ",74)+t_name+String(L"; path = System/Library/Frameworks/",35)+t_name+String(L"; sourceTree = SDKROOT; };",26));
 					}
+				}else{
+					if(t_3==String(L"xcframework",11)){
+						if((t_dir).Length()!=0){
+							t_buf->p_Push(String(L"\t\t",2)+t_id+String(L" = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ",76)+t_name+String(L"; path = libs/",14)+t_name+String(L"; sourceTree = \"<group>\"; };",28));
+						}
+					}
 				}
 			}
 		}
@@ -21286,7 +21322,7 @@ String c_IosBuilder::p_FrameworksBuildPhase(){
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_4=bb_os_ExtractExt(t_path);
-		if(t_4==String(L"a",1) || t_4==String(L"framework",9)){
+		if(t_4==String(L"a",1) || t_4==String(L"framework",9) || t_4==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t\t\t",4)+t_id);
 		}
 	}
@@ -21303,7 +21339,7 @@ String c_IosBuilder::p_FrameworksGroup(){
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_5=bb_os_ExtractExt(t_path);
-		if(t_5==String(L"framework",9)){
+		if(t_5==String(L"framework",9) || t_5==String(L"xcframework",11)){
 			t_buf->p_Push(String(L"\t\t\t\t",4)+t_id);
 		}
 	}
@@ -21427,7 +21463,7 @@ void c_IosBuilder::p_MakeTarget(){
 				CopyFile(t_lib,t_path);
 				p_AddBuildFile(t_path);
 			}else{
-				if(t_7==String(L"framework",9)){
+				if(t_7==String(L"framework",9) || t_7==String(L"xcframework",11)){
 					if(FileType(t_lib)==2){
 						String t_path2=String(L"libs/",5)+bb_os_StripDir(t_lib);
 						bb_os_CopyDir(t_lib,t_path2,true,false);
@@ -22541,10 +22577,242 @@ void c_AGKBuilder_android::p_MakeTarget(){
 void c_AGKBuilder_android::mark(){
 	c_Builder::mark();
 }
+c_AGKBuilder_android_ouya::c_AGKBuilder_android_ouya(){
+}
+c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new(c_TransCC* t_tcc){
+	c_Builder::m_new(t_tcc);
+	return this;
+}
+c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new2(){
+	c_Builder::m_new2();
+	return this;
+}
+bool c_AGKBuilder_android_ouya::p_IsValid(){
+	String t_1=HostOS();
+	if(t_1==String(L"winnt",5)){
+		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
+			return true;
+		}
+	}else{
+		if(t_1==String(L"macos",5)){
+			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	return false;
+}
+void c_AGKBuilder_android_ouya::p_Begin(){
+	bb_config_ENV_LANG=String(L"cpp",3);
+	bb_translator__trans=((new c_CppTranslator)->m_new());
+}
+String c_AGKBuilder_android_ouya::p_Config(){
+	c_StringStack* t_config=(new c_StringStack)->m_new2();
+	int t_l=0;
+	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_Node2* t_kv=t_->p_NextObject();
+		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}else{
+			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		}
+	}
+	return t_config->p_Join(String(L"\n",1));
+}
+void c_AGKBuilder_android_ouya::p_CreateMediaDir(String t_dir){
+	t_dir=RealPath(t_dir);
+	if(!m_syncData){
+		bb_os_DeleteDir(t_dir,true);
+	}
+	CreateDir(t_dir);
+	if(FileType(t_dir)!=2){
+		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
+	}
+	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
+	if(FileType(t_dataPath)!=2){
+		t_dataPath=String();
+	}
+	c_StringSet* t_udata=(new c_StringSet)->m_new();
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
+		t_srcs->p_Push(t_dataPath);
+		while(!t_srcs->p_IsEmpty()){
+			String t_src=t_srcs->p_Pop();
+			Array<String > t_=LoadDir(t_src);
+			int t_2=0;
+			while(t_2<t_.Length()){
+				String t_f=t_[t_2];
+				t_2=t_2+1;
+				if(t_f.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p=t_src+String(L"/",1)+t_f;
+				String t_r=t_p.Slice(t_dataPath.Length()+1);
+				String t_t=t_dir+String(L"/",1)+t_r;
+				int t_3=FileType(t_p);
+				if(t_3==1){
+					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
+						p_CCopyFile(t_p,t_t);
+						t_udata->p_Insert(t_t);
+						m_dataFiles->p_Set2(t_p,t_r);
+					}
+				}else{
+					if(t_3==2){
+						CreateDir(t_t);
+						t_srcs->p_Push(t_p);
+					}
+				}
+			}
+		}
+	}
+	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		String t_p2=t_4->p_NextObject();
+		String t_r2=bb_os_StripDir(t_p2);
+		String t_t2=t_dir+String(L"/",1)+t_r2;
+		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
+			p_CCopyFile(t_p2,t_t2);
+			t_udata->p_Insert(t_t2);
+			m_dataFiles->p_Set2(t_p2,t_r2);
+		}
+	}
+	if((t_dataPath).Length()!=0){
+		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
+		t_dsts->p_Push(t_dir);
+		while(!t_dsts->p_IsEmpty()){
+			String t_dst=t_dsts->p_Pop();
+			Array<String > t_5=LoadDir(t_dst);
+			int t_6=0;
+			while(t_6<t_5.Length()){
+				String t_f2=t_5[t_6];
+				t_6=t_6+1;
+				if(t_f2.StartsWith(String(L".",1))){
+					continue;
+				}
+				String t_p3=t_dst+String(L"/",1)+t_f2;
+				String t_r3=t_p3.Slice(t_dir.Length()+1);
+				String t_t3=t_dataPath+String(L"/",1)+t_r3;
+				int t_42=FileType(t_p3);
+				if(t_42==1){
+					if(!t_udata->p_Contains(t_p3)){
+						DeleteFile(t_p3);
+					}
+				}else{
+					if(t_42==2){
+						if(FileType(t_t3)==2){
+							t_dsts->p_Push(t_p3);
+						}else{
+							bb_os_DeleteDir(t_p3,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+void c_AGKBuilder_android_ouya::p_MakeAndroid(){
+	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
+	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
+	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	String t_buildpath=String();
+	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_ouya",39);
+	bbPrint(t_buildpath);
+	String t_lp=String(L"ndk.dir=",8)+m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\n",1);
+	t_lp=t_lp+(String(L"sdk.dir=",8)+m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
+	SaveString(t_lp,t_buildpath+String(L"\\local.properties",17));
+	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
+	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
+	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
+	if(m_tcc->m_opt_build){
+		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
+		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
+		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
+		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
+		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
+		ChangeDir(t_buildpath);
+		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
+		if(m_tcc->m_opt_config==String(L"release",7)){
+			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
+		}
+		String t_gradle=String();
+		if(HostOS()==String(L"winnt",5)){
+			t_gradle=String(L"gradlew",7);
+		}else{
+			t_gradle=String(L"./gradlew",9);
+		}
+		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
+			bb_transcc_Die(String(L"Android build failed.",21));
+		}else{
+			if(m_tcc->m_opt_config==String(L"release",7)){
+				String t_adb=String(L"adb",3);
+				String t_jarsigner=String(L"jarsigner",9);
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+				}
+				if((m_tcc->m_ANDROID_PATH).Length()!=0){
+					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
+				}
+				String t__file=CurrentDir();
+				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
+				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
+				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
+				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
+				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
+				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
+			}else{
+				if(m_tcc->m_opt_config==String(L"debug",5)){
+					String t_adb2=String(L"adb",3);
+					if((m_tcc->m_ANDROID_PATH).Length()!=0){
+						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+					}
+					String t__file2=CurrentDir();
+					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
+					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
+					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
+				}
+			}
+		}
+		if(m_tcc->m_opt_run){
+			String t_adb3=String(L"adb",3);
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			if((m_tcc->m_ANDROID_PATH).Length()!=0){
+				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
+			}
+			t_app_package=String(L"com.mycompany.mytemplate",24);
+			p_Execute(t_adb3+String(L" logcat -c",10),false);
+			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
+			if(m_tcc->m_opt_config==String(L"debug",5)){
+				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
+			}
+		}
+	}
+}
+void c_AGKBuilder_android_ouya::p_MakeTarget(){
+	String t_2=HostOS();
+	if(t_2==String(L"winnt",5)){
+		p_MakeAndroid();
+	}
+}
+void c_AGKBuilder_android_ouya::mark(){
+	c_Builder::mark();
+}
 c_CustomBuilder::c_CustomBuilder(){
+	m_custVars=0;
 }
 c_CustomBuilder* c_CustomBuilder::m_new(c_TransCC* t_tcc){
 	c_Builder::m_new(t_tcc);
+	m_custVars=(new c_StringMap2)->m_new();
 	return this;
 }
 c_CustomBuilder* c_CustomBuilder::m_new2(){
@@ -22667,12 +22935,27 @@ String c_CustomBuilder::p_ReplaceParams(String t_params){
 	t_r=t_r.Replace(String(L"%config%",8),m_tcc->m_opt_config);
 	t_r=t_r.Replace(String(L"%srcName%",9),bb_os_StripExt(bb_os_StripDir(m_tcc->m_opt_srcpath)));
 	t_r=t_r.Replace(String(L"%targetName%",12),bb_os_StripDir(t_targetPath));
+	t_r=t_r.Replace(String(L"%host%",6),HostOS());
 	int t_f1=t_r.Find(String(L"##",2),0);
-	int t_f2=t_r.Find(String(L"##",2),t_f1+1);
-	String t_s=t_r.Slice(t_f1,t_f2+2);
-	if(t_f2>0){
-		String t_cfv=bb_config_GetConfigVar(t_r.Slice(t_f1+2,t_f2)).Replace(String(L";",1),String(L" ",1));
-		t_r=t_r.Replace(t_s,t_cfv);
+	while(t_f1>=0){
+		int t_f2=t_r.Find(String(L"##",2),t_f1+1);
+		String t_s=t_r.Slice(t_f1,t_f2+2);
+		if(t_f2>0){
+			String t_cfv=bb_config_GetConfigVar(t_r.Slice(t_f1+2,t_f2)).Replace(String(L";",1),String(L" ",1));
+			t_r=t_r.Replace(t_s,t_cfv);
+		}
+		t_f1=t_r.Find(String(L"##",2),t_f2+2);
+	}
+	int t_f3=t_r.Find(String(L"$$",2),0);
+	while(t_f3>=0){
+		int t_f4=t_r.Find(String(L"$$",2),t_f1+1);
+		String t_cv=t_r.Slice(t_f3,t_f4+2);
+		if(t_f4>0){
+			if(m_custVars->p_Contains(t_cv)){
+				t_r=t_r.Replace(t_cv,m_custVars->p_Get(t_cv));
+			}
+		}
+		t_f3=t_r.Find(String(L"$$",2),t_f4+2);
 	}
 	return t_r;
 }
@@ -22685,6 +22968,7 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 	String t_config=m_tcc->m_opt_config;
 	String t_hostS=HostOS();
 	String t_echo=String(L"on",2);
+	bool t_falseIf=false;
 	Array<String > t_=t_script.Split(String(L"\n",1));
 	int t_2=0;
 	while(t_2<t_.Length()){
@@ -22706,6 +22990,9 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 		if(t_hostS!=HostOS() && t_hostS!=String(L"all",3) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
 			continue;
 		}
+		if(t_command!=String(L"endif",5) && t_falseIf==true){
+			continue;
+		}
 		String t_params=p_ReplaceParams(t_token[1].Trim());
 		Array<String > t_parToken=t_params.Split(String(L" ",1));
 		if(t_echo==String(L"on",2) && t_command!=String(L"config",6) && t_command!=String(L"sethost",7) && t_command!=String(L"setecho",7)){
@@ -22715,131 +23002,180 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 		if(t_6==String(L"print",5)){
 			bbPrint(t_params);
 		}else{
-			if(t_6==String(L"setecho",7)){
-				String t_ec=t_parToken[0].ToLower();
-				if(t_ec!=String(L"on",2) && t_ec!=String(L"off",3)){
-					p_ScriptError(t_lineNum,t_line,String(L"Unrecognized echo mode!",23));
-					break;
-				}
-				t_echo=t_ec;
+			if(t_6==String(L"endif",5)){
+				t_falseIf=false;
 			}else{
-				if(t_6==String(L"sethost",7)){
-					String t_hst=t_parToken[0].ToLower();
-					if(t_hst!=String(L"winnt",5) && t_hst!=String(L"macos",5) && t_hst!=String(L"linux",5) && t_hst!=String(L"all",3)){
-						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
+				if(t_6==String(L"if",2)){
+					t_falseIf=false;
+					if(t_parToken[1].ToLower()!=String(L"eq",2) && t_parToken[1].ToLower()!=String(L"ne",2) && t_parToken[1].ToLower()!=String(L"cs",2) && t_parToken[1].ToLower()!=String(L"ns",2)){
+						p_ScriptError(t_lineNum,t_line,String(L"Unrecognized compare mode!",26));
 						break;
 					}
-					t_hostS=t_hst;
-				}else{
-					if(t_6==String(L"config",6)){
-						String t_cfg=t_parToken[0].ToLower();
-						if(t_cfg!=String(L"release",7) && t_cfg!=String(L"debug",5) && t_cfg!=String(L"all",3)){
-							p_ScriptError(t_lineNum,t_line,String(L"Unrecognized configuration!",27));
-							break;
+					String t_7=t_parToken[1].ToLower();
+					if(t_7==String(L"eq",2)){
+						if(t_parToken[0].ToLower()!=t_parToken[2].ToLower()){
+							t_falseIf=true;
 						}
-						t_config=t_cfg;
 					}else{
-						if(t_6==String(L"build",5)){
-							if(m_tcc->m_opt_build){
-								if(p_Execute(t_params,true)!=true){
-									p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
-									break;
-								}
+						if(t_7==String(L"ne",2)){
+							if(t_parToken[0].ToLower()==t_parToken[2].ToLower()){
+								t_falseIf=true;
 							}
 						}else{
-							if(t_6==String(L"execute",7)){
-								if(m_tcc->m_opt_run){
-									if(p_Execute(t_params,true)!=true){
-										p_ScriptError(t_lineNum,t_line,String(L"Execution failed!",17));
-										break;
-									}
+							if(t_7==String(L"cs",2)){
+								if(t_parToken[0].ToLower().Contains(t_parToken[2].ToLower())==false){
+									t_falseIf=true;
 								}
 							}else{
-								if(t_6==String(L"replace",7)){
-									if(FileType(t_parToken[0])!=1){
-										p_ScriptError(t_lineNum,t_line,String(L"File not found!",15));
-										break;
+								if(t_7==String(L"ns",2)){
+									if(t_parToken[0].ToLower().Contains(t_parToken[2].ToLower())==true){
+										t_falseIf=true;
 									}
-									String t_file=LoadString(t_parToken[0]);
-									t_file=t_file.Replace(t_parToken[1],t_parToken[2]);
-									if(SaveString(t_file,t_parToken[0])==0){
-										p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[0]+String(L"!",1));
-										break;
-									}
-								}else{
-									if(t_6==String(L"copyfile",8)){
-										if(CopyFile(t_parToken[0],t_parToken[1])==0){
-											p_ScriptError(t_lineNum,t_line,String(L"Could not copy file!",20));
+								}
+							}
+						}
+					}
+				}else{
+					if(t_6==String(L"setecho",7)){
+						String t_ec=t_parToken[0].ToLower();
+						if(t_ec!=String(L"on",2) && t_ec!=String(L"off",3)){
+							p_ScriptError(t_lineNum,t_line,String(L"Unrecognized echo mode!",23));
+							break;
+						}
+						t_echo=t_ec;
+					}else{
+						if(t_6==String(L"sethost",7)){
+							String t_hst=t_parToken[0].ToLower();
+							if(t_hst!=String(L"winnt",5) && t_hst!=String(L"macos",5) && t_hst!=String(L"linux",5) && t_hst!=String(L"all",3)){
+								p_ScriptError(t_lineNum,t_line,String(L"Unrecognized host!",18));
+								break;
+							}
+							t_hostS=t_hst;
+						}else{
+							if(t_6==String(L"config",6)){
+								String t_cfg=t_parToken[0].ToLower();
+								if(t_cfg!=String(L"release",7) && t_cfg!=String(L"debug",5) && t_cfg!=String(L"all",3)){
+									p_ScriptError(t_lineNum,t_line,String(L"Unrecognized configuration!",27));
+									break;
+								}
+								t_config=t_cfg;
+							}else{
+								if(t_6==String(L"build",5)){
+									if(m_tcc->m_opt_build){
+										if(p_Execute(t_params,true)!=true){
+											p_ScriptError(t_lineNum,t_line,String(L"Build failed!",13));
 											break;
 										}
+									}
+								}else{
+									if(t_6==String(L"execute",7)){
+										if(m_tcc->m_opt_run){
+											if(p_Execute(t_params,true)!=true){
+												p_ScriptError(t_lineNum,t_line,String(L"Execution failed!",17));
+												break;
+											}
+										}
 									}else{
-										if(t_6==String(L"deletefile",10)){
-											if(DeleteFile(t_parToken[0])==0){
-												p_ScriptError(t_lineNum,t_line,String(L"Could not delete file!",22));
+										if(t_6==String(L"replace",7)){
+											if(FileType(t_parToken[0])!=1){
+												p_ScriptError(t_lineNum,t_line,String(L"File not found!",15));
+												break;
+											}
+											String t_file=LoadString(t_parToken[0]);
+											t_file=t_file.Replace(t_parToken[1],t_parToken[2]);
+											if(SaveString(t_file,t_parToken[0])==0){
+												p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[0]+String(L"!",1));
 												break;
 											}
 										}else{
-											if(t_6==String(L"copydata",8)){
-												p_CreateDataDir(t_parToken[0]);
-												if(FileType(t_parToken[0])!=2){
-													p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
+											if(t_6==String(L"copyfile",8)){
+												if(CopyFile(t_parToken[0],t_parToken[1])==0){
+													p_ScriptError(t_lineNum,t_line,String(L"Could not copy file!",20));
 													break;
 												}
 											}else{
-												if(t_6==String(L"copydir",7)){
-													if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
-														p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
+												if(t_6==String(L"deletefile",10)){
+													if(DeleteFile(t_parToken[0])==0){
+														p_ScriptError(t_lineNum,t_line,String(L"Could not delete file!",22));
 														break;
 													}
 												}else{
-													if(t_6==String(L"changedir",9)){
-														if(ChangeDir(t_parToken[0])!=0){
-															p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
+													if(t_6==String(L"copydata",8)){
+														p_CreateDataDir(t_parToken[0]);
+														if(FileType(t_parToken[0])!=2){
+															p_ScriptError(t_lineNum,t_line,String(L"Could not copy data directory!",30));
 															break;
 														}
 													}else{
-														if(t_6==String(L"deletedir",9)){
-															if(bb_os_DeleteDir(t_parToken[0],true)==0){
-																p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
+														if(t_6==String(L"copydir",7)){
+															if(bb_os_CopyDir(t_parToken[0],t_parToken[1],true,true)==0){
+																p_ScriptError(t_lineNum,t_line,String(L"Could not copy directory!",25));
 																break;
 															}
 														}else{
-															if(t_6==String(L"createdir",9)){
-																if(CreateDir(t_parToken[0])==0){
-																	p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
+															if(t_6==String(L"changedir",9)){
+																if(ChangeDir(t_parToken[0])!=0){
+																	p_ScriptError(t_lineNum,t_line,String(L"Could not change directory!",27));
 																	break;
 																}
 															}else{
-																if(t_6==String(L"renamefile",10)){
-																	if(CopyFile(t_parToken[0],t_parToken[1])==0){
-																		p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																if(t_6==String(L"deletedir",9)){
+																	if(bb_os_DeleteDir(t_parToken[0],true)==0){
+																		p_ScriptError(t_lineNum,t_line,String(L"Could not delete directory!",27));
 																		break;
 																	}
-																	DeleteFile(t_parToken[0]);
 																}else{
-																	if(t_6==String(L"inject",6)){
-																		if(FileType(t_parToken[0])!=1){
-																			p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
-																			break;
-																		}
-																		String t_input=LoadString(t_parToken[0]);
-																		if(FileType(t_parToken[1])!=1){
-																			p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
-																			break;
-																		}
-																		String t_output=LoadString(t_parToken[1]);
-																		if(t_parToken.Length()==3){
-																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
-																		}else{
-																			t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
-																		}
-																		if(SaveString(t_output,t_parToken[1])!=0){
-																			p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																	if(t_6==String(L"createdir",9)){
+																		if(CreateDir(t_parToken[0])==0){
+																			p_ScriptError(t_lineNum,t_line,String(L"Could not create directory!",27));
 																			break;
 																		}
 																	}else{
-																		bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
-																		break;
+																		if(t_6==String(L"renamefile",10)){
+																			if(CopyFile(t_parToken[0],t_parToken[1])==0){
+																				p_ScriptError(t_lineNum,t_line,String(L"Could not rename file!",22));
+																				break;
+																			}
+																			DeleteFile(t_parToken[0]);
+																		}else{
+																			if(t_6==String(L"getenv",6)){
+																				String t_ev=GetEnv(t_parToken[0]);
+																				m_custVars->p_Set2(t_parToken[1],t_ev);
+																			}else{
+																				if(t_6==String(L"setenv",6)){
+																					SetEnv(t_parToken[0],t_parToken[1]);
+																				}else{
+																					if(t_6==String(L"set",3)){
+																						m_custVars->p_Set2(t_parToken[0],t_parToken[1]);
+																					}else{
+																						if(t_6==String(L"inject",6)){
+																							if(FileType(t_parToken[0])!=1){
+																								p_ScriptError(t_lineNum,t_line,String(L"Input file not found!",21));
+																								break;
+																							}
+																							String t_input=LoadString(t_parToken[0]);
+																							if(FileType(t_parToken[1])!=1){
+																								p_ScriptError(t_lineNum,t_line,String(L"Output file not found!",22));
+																								break;
+																							}
+																							String t_output=LoadString(t_parToken[1]);
+																							if(t_parToken.Length()==3){
+																								t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,String(L"\n//",3));
+																							}else{
+																								t_output=bb_transcc_ReplaceBlock(t_output,t_parToken[2],t_input,t_parToken[3]);
+																							}
+																							if(SaveString(t_output,t_parToken[1])!=0){
+																								p_ScriptError(t_lineNum,t_line,String(L"Could not save to file ",23)+t_parToken[1]+String(L"!",1));
+																								break;
+																							}
+																						}else{
+																							bbPrint(String(L"ERROR: Unrecognized build script command: ",42)+t_command);
+																							break;
+																						}
+																					}
+																				}
+																			}
+																		}
 																	}
 																}
 															}
@@ -22904,6 +23240,7 @@ c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"agk_android",11),((new c_AGKBuilder_android)->m_new(t_tcc)));
+	t_builders->p_Set3(String(L"agk_android_ouya",16),((new c_AGKBuilder_android_ouya)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"custom",6),((new c_CustomBuilder)->m_new(t_tcc)));
 	return t_builders;
 }

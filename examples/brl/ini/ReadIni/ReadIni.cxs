@@ -1,0 +1,19 @@
+Strict
+Include "ReadIni.data/ -out=data"
+
+Import brl.ini
+
+Function Main:Int()
+	
+	Local ini:IniHandler = New IniHandler
+	ini.Load("./data/setup.ini")
+
+
+	ini.WriteStringArray("zArray","string",["entry#1","entry#2","entry#3"])
+	ini.WriteIntArray("zArray","int",[1,2,33])
+	ini.WriteFloatArray("zArray","float",[1.0,2.0,33,5.123])
+	ini.WriteBoolArray("zArray","bool",[True,False,False,True])
+
+	Print ini.SaveToString()
+	Return 0
+End

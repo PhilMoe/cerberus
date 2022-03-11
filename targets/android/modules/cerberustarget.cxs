@@ -9,6 +9,7 @@ Import brl.gametarget
 
 Import "native/androidgame.java"
 Import "native/cerberustarget.java"
+Import "native/MultisampleConfigChooser.java"
 
 Extern
 

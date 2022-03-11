@@ -1,3 +1,47 @@
+***** v2022-03-06 *****
+
+FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
+FIX: [GLFW] Fixing Clipboard not dealing with special chars correctly.    (Author: Phil7)
+FIX: [HTML5] Fixed still visible CLEAR CONSOLE button when console was hidden.    (Author: Grant)
+FIX: [HTML5] Fixed Getchar not reporting keys after canvas lost and regain focus.    (Author: MikeHart)
+MOD: [docs] Modified the Android target page to reflect the new requirements.    (Author: MikeHart)
+MOD: [CUSTOM target] Fixed using more than 1 variable in a line.    (Author: MikeHart)
+MOD: [ANDROID] Removed App Compat Library, hence smaller app sizes.    (Author: Grant)
+MOD: [ANDROID] Replace Android JNI with pure Java    (Author: Grant)
+MOD: [ANDROID] Permissions for INTERNET and ACCESS_NETWORK_STATE are only added when some modules are imported that need it.   (Author: MikeHart)
+MOD: [HTML5] Removed code that ignored non standard mapped joysticks.    (Author: Grant)
+MOD: [ANDROID] Changed target sdk version to 30 and minimum sdk version to 18 by Googles requirements.    (Author: Phil7)
+MOD: [ANDROID] Moved gradle distribution to 7.0.2 and gradle version to 4.2.0  to remove the requirement to install a java JDK, but unsing the one that comes with Android Studio instead. Also to make it compatible with Macos again.    (Author: Phil7)
+MOD: [ANDROID/admob] Moved to google_play_services 20.2.0.    (Author: Phil7 / MikeHart)
+MOD: [TRANSCC] Set SetEnv JAVA_HOME with the JDK_PATH on Macos.    (Author: Phil7)
+MOD: [TRANSCC] Handle multiple ANDROID_LIBRARY_REFERENCE_n entries on Android.    (Author: MikeHart)
+MOD: [TRANSCC] Handle XCFrameworks on IOS.    (Author: MikeHart)
+NEW: [ANDROID/admob] Added #ADMOB_ANDROID_ADS_APPID to set the appid for admob ads.   (Author: MikeHart)
+NEW: [CUSTOM target] Added getenv and setenv to get/set environment variables.    (Author: MikeHart)
+NEW: [CUSTOM target] Added set to set custom variables.    (Author: MikeHart)
+NEW: [CUSTOM target] Added if and endif for conditional script execution (EQ/NE/CS/NS).    (Author: MikeHart)
+NEW: [CUSTOM target] Added %host% to return the host the script is running on.    (Author: MikeHart)
+NEW: [ANDROID] Added #ANDROID_MULTISAMPLING_ENABLED to activate up to 4x Multisampling.    (Author: Grant)
+NEW: [ANDROID] Added SetClipboard and GetClipboard.    (Author: Grant)
+NEW: [ANDROID] Added #ANDROID_ACCELEROMETER_ENABLED so you can turn off the ACCELEROMETER in Android apps.    (Author: MikeHart)
+NEW: [ANDROID] Added #ANDROID_LOGCAT_OPTION="[Cerberus]:I *:E" so you can customize the LOGCAT output at build&run time.    (Author: MikeHart)
+NEW: [HTML5] Added #HTML5_CANVAS_ANTIALIAS to de-/activate canvas antialiasing.    (Author: Grant)
+NEW: [HTML5] Added CountJoysticks() support.    (Author: Grant)
+NEW: [examples/mojo2] Added countJoysticksDemo.cxs example.    (Author: Grant)
+NEW: [mojo.audio] Added CHANNELSTATE_STOPPED, CHANNELSTATE_PLAYING, CHANNELSTATE_PAUSED and CHANNELSTATE_UNKNOWN constants.    (Author: MikeHart)
+NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
+NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
+NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
+NEW: [brl.events] Added an event handling module.    (Author: MikeHart)
+NEW: [mojo] Added #MOJO_USE_MONKEYSTATE=False to be able to switch to use old monkeystate.
+
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
+
+
 ***** v2021-05-16 *****
 
 FIX: [brl.requesters] Fixed compiling error on Linux.    (Author: MikeHart)
@@ -22,12 +66,6 @@ NEW: [mojo/Android] Added new soundpool constructor to replace the depreciated o
 NEW: [HTML5] Added #HTML5_CANVAS_ALPHA to enable the canvas' background alpha channel.   (Author: Holzchopf)
 NEW: [GLFW/MSVC] Added the ability to create 32 and 64bit apps via #GLFW_GCC_MSIZE_WINNT and MSVC. Will create a new app config setting to cover GCC and MSVC later on.   (Author: MikeHart)
 NEW: [brl.ini] Added a new Ini handler module, based on Martin Leidel's initial work.   (Martin, MikeHart)
-
-
-KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
-- GLFW_APP_ICON doesn't work with OSX and Linux.
-
 
 ***** v2020-12-05 *****
 

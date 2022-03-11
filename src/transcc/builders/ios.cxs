@@ -51,7 +51,7 @@ Class IosBuilder Extends Builder
 			Local dir:=ExtractDir( path )
 			Local name:=StripDir( path )
 			Select ExtractExt( name )
-			Case "a","framework"
+			Case "a","framework","xcframework"
 				buf.Push "~t~t"+id+" = {isa = PBXBuildFile; fileRef = "+fileRef+"; };"
 			End
 		Next
@@ -79,6 +79,14 @@ Class IosBuilder Extends Builder
 					'Print "SYS FILEREF: " + name + " " + id
 					buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "+name+"; path = System/Library/Frameworks/"+name+"; sourceTree = SDKROOT; };"
 				Endif
+			Case "xcframework"
+				If dir
+					'Print "FILEREF DIR: " + name + " " + id
+					buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "+name+"; path = libs/"+name+"; sourceTree = ~q<group>~q; };"
+				'Else
+				'	'Print "SYS FILEREF: " + name + " " + id
+				'	buf.Push "~t~t"+id+" = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "+name+"; path = System/Library/Frameworks/"+name+"; sourceTree = SDKROOT; };"
+				Endif
 			End				
 		Next
 		If buf.Length buf.Push ""
@@ -91,8 +99,8 @@ Class IosBuilder Extends Builder
 			Local path:=it.Key
 			Local id:=it.Value
 			Select ExtractExt( path )
-			Case "a","framework"
-				buf.Push "~t~t~t~t"+id
+			Case "a","framework","xcframework"
+			  	buf.Push "~t~t~t~t"+id
 			End
 		Next
 		If buf.Length buf.Push ""
@@ -105,7 +113,7 @@ Class IosBuilder Extends Builder
 			Local path:=it.Key
 			Local id:=it.Value
 			Select ExtractExt( path )
-			Case "framework"
+			Case "framework", "xcframework"
 				buf.Push "~t~t~t~t"+id
 			End
 		Next
@@ -264,7 +272,7 @@ Class IosBuilder Extends Builder
 					Local path:="libs/"+StripDir( lib )
 					CopyFile lib,path
 					AddBuildFile path
-				Case "framework"
+				Case "framework", "xcframework"
 					If FileType( lib ) = FILETYPE_DIR
 						Local path:="libs/"+StripDir( lib )
 						CopyDir lib,path

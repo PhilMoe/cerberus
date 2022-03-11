@@ -42,5 +42,5 @@ android {
 dependencies {
     ${ANDROID_LIBRARY_REFERENCE_1}
     ${ANDROID_LIBRARY_REFERENCE_2}
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    //implementation 'com.android.support:appcompat-v7:28.0.0'
 }

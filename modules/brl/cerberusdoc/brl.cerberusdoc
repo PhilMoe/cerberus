@@ -7,6 +7,8 @@
 
 # Import brl.databuffer
 
+# Import brl.events
+
 # Import brl.gamecenter
 
 # Import brl.stream
@@ -43,9 +45,13 @@
 
 # Import brl.markdown
 
+# Import brl.ini
+
 # Import brl.json
 
+# Import brl.vec2d
 
+# Import brl.xml
 
 
 The brl module is a set of utility classes and functions.

@@ -51,11 +51,16 @@ Samples for the base game framework.
 * [[../../examples/mojo/martin/mousetest/mousetest.cxs|Mousewheel test]]
 
 >> Michael Hartlef
-* [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
+* [[../../examples/mojo/mikehart/AsyncImageLoading/AsyncImageLoading.cxs|Asyncronous Image Loading]]
 * [[../../examples/mojo/mikehart/BitmapFont/BitmapFont.cxs|DrawText with bitmap font test]]
+* [[../../examples/mojo/mikehart/DrawImage9P/DrawImage9Patch.cxs|Drawing 9-Patch image test]]
 * [[../../examples/mojo/mikehart/FileDrop/FileDrop.cxs|Drag 'n' Drop example]]
 * [[../../examples/mojo/mikehart/PubNub/PubNub.cxs|Using the services of PubNub with their REST api]]
 * [[../../examples/mojo/mikehart/Timer/Timer.cxs|Using the timer module to fire timed events]]
+* [[../../examples/brl/events/useEvents.cxs|Using the event module to fire events]]
+* [[../../examples/brl/ini/ReadIni.cxs|Using the Ini module to handle Ini files]]
+* [[../../examples/brl/xml/ReadXml.cxs|Using the Xml module to read Xml structures]]
+* [[../../examples/brl/xml/WriteXml.cxs|Using the Xml module to write Xml structures]]
 
 >> James Boyd
 

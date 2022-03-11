@@ -11,6 +11,13 @@ Import "native/cerberusstore.ios.cpp"
 #SRCS+="${CD}/native/android_iab/src/main/aidl/com/android/vending/billing/IInAppBillingService.aidl;"
 #ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qcom.android.vending.BILLING~q />"
 Import "native/cerberusstore.android.java"
+
+#If Not ANDROID_PERMISSION_INTERNET_IMPLEMENTED
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.INTERNET~q />"
+#ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.ACCESS_NETWORK_STATE~q />"
+#ANDROID_PERMISSION_INTERNET_IMPLEMENTED=True
+#Endif
+
 #Else If TARGET="winrt"
 Import "native/cerberusstore.winrt.cpp"
 #Endif

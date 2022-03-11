@@ -1,0 +1,69 @@
+Strict
+
+' Script showing how to use events.
+
+Import mojo
+Import brl.events
+
+'-----------------------------------------------------------------
+Class myClass Extends App Implements IOnEvent
+	Field angle:Float = 0.0
+	Field evt:Events
+	'-----------------------------------------------------------------
+	Method OnCreate:Int()
+		SetUpdateRate 60
+		evt = New Events(Self)
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnUpdate:Int()
+		angle += 0.5
+		If angle > 360.0 Then angle -= 360.0
+		If KeyHit(KEY_1) Then evt.Fire(111)
+		If KeyHit(KEY_2) Then evt.Fire(222,BoxString("String event here"))
+		If KeyHit(KEY_3) Then evt.Fire(333,ArrayBoxer<Int>.Box([9876,2,456,555]))
+		
+		evt.Process()
+		
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnEvent:Int(tag:Int, vObject:Object=Null)
+
+		Print ("Event Tag="+tag)
+		
+		If tag = 222
+			Print UnboxString (vObject)
+		Endif
+		
+		If tag = 333
+			Local ir:Int[]
+			ir = ArrayBoxer<Int>.Unbox(vObject)
+			Print "array length="+ir.Length()
+			For Local i:= 1 To ir.Length()
+				Print ir[i-1]
+			Next
+		Endif
+		Return 0
+	End
+	'-----------------------------------------------------------------
+	Method OnRender:Int()
+		Cls 0,0,128
+		SetColor 128,128,128
+		PushMatrix
+		Translate DeviceWidth()/2,DeviceHeight()/2
+		Scale 2.0,2.0
+		Rotate 360.0-angle
+		DrawText "Cerberus X - Event example", 0, 0, .5, .5
+		PopMatrix
+		Return 0
+	End
+	
+	
+End
+
+'-----------------------------------------------------------------
+Function Main:Int()
+	New myClass
+	Return 0
+End

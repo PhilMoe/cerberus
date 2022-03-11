@@ -1,0 +1,119 @@
+
+# Module brl.xml
+
+XML handler module.
+Read and write XML strings to extract or store settings for your game/application.
+
+Example:
+<pre>
+Strict
+Include "ReadXml.data/ -out=data"
+
+Import brl.xml
+Import os
+Function Main:Int()
+	Print ("Cerberus X - ReadXml Test~n")
+	Local xml := New Xml(LoadString("data/data.xml"))
+	Print xml.ToString()
+	Return 0
+End
+</pre>
+
+
+
+# Class brl.Xml
+
+The XML class contains a XML structure where you can add elements with text and attributes.
+
+# Method New()
+
+Creates an empty XML structure.
+
+# Method New(content:String)
+
+Parses the content of a xml string and returns a filled XML structure.
+
+# Method ToString:String()
+
+Writes the content of the Xml to a string.
+
+# Method AddElement:XmlElement(name:String, content:String="")
+
+Add a XML element.
+
+# Method Version:Void(vers:String) Property
+
+Sets the version attribute of the xml structure.
+
+# Method Version:String() Property
+
+Returns the version attribute of the xml structure.
+
+# Method Encoding:Void(enc:String) Property
+
+Sets the version attribute of the xml structure.
+
+# Method Encoding:String() Property
+
+Returns the version attribute of the xml structure.
+
+
+# Class brl.XmlElement
+
+The XmlElement represents one element inside a XML structure.
+
+# Method ToString:String(prefix:String="~t")
+
+Writes the content of the Xml element to a string.
+
+# Method New(nam:String, cont:String)
+
+Creates a new single XML element.
+
+# Method AddElement:XmlElement(name:String, content:String="")
+
+Adds a new sub/child element to an existing element.
+
+# Method SetAttribute:Void(attrib:String, content:String)
+
+Sets an attribute of a element.
+
+# Method GetAttribute:String(attrib:String)
+
+Returns an attribute with the given name.
+
+# Method GetAttributes:StringMap<String>()
+
+Returns all attributes of a element.
+
+# Method GetElements:List<XmlElement>()
+
+Returns all sub elements of a element in a List.
+
+# Method RemoveAttributes:Bool()
+
+Removes all attributes of a element.
+
+# Method RemoveElement:Void(_element:XmlElement)
+
+Removes a sub/child element from a element.
+
+# Method RemoveAllElements:Bool()
+
+Removes all sub/child elements from a element.
+
+# Method Content:Void(txt:String) Property
+
+Sets the content/text of a element.
+
+# Method Content:String() Property
+
+Returns the content/text of a element.
+
+# Method Name:Void(nam:String) Property
+
+Sets the name of a element.
+
+# Method Name:String() Property
+
+Returns the name of a element.

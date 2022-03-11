@@ -947,6 +947,13 @@ Draw a rect from @x,@y to @x+@width,@y+@height filled with the given subrect of 
 
 The image's handle is ignored.
 
+# Method DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null)
+
+Draw a rounded rect from @x,@y to @x+@width,@y+@height with corners defined by @radius.
+
+If @material is null, the current default material is used.
+
+See also: [[SetDefaultMaterial]]
 
 # Method DrawImage:Void( image:Image,tx:Float=0,ty:Float=0 )
 

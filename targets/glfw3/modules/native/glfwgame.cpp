@@ -1,8 +1,7 @@
 
 //***** glfwgame.h *****
 
-static String::CString<char> GLFW_C_STR( const String &t ){ return t.ToCString<char>(); };
-
+static String::CString<char> GLFW_C_STR( const String &t ){ return t.ToUtf8(); };
 
 class BBGlfwGame : public BBGame{
 public:
@@ -629,7 +628,7 @@ void BBGlfwGame::SetClipboard( String _text ){
 String BBGlfwGame::GetClipboard(){
 	const char* _text = glfwGetClipboardString( _window );
 	if (_text != NULL) {
-		return String(_text);
+		return String::Load((unsigned char *)_text, t_strlen( _text ));
 	}
 	else {
 		return String("");
@@ -647,7 +646,7 @@ void BBGlfwGame::SetHighDPI_Factor(double factor){
 
 void BBGlfwGame::SetDeviceWindowIcon( String _path ){
     if( _window ) {
-    	int width,height,depth;
+    	int depth;
 		GLFWimage icons[1];
 		unsigned char* imageData = LoadImageData(_path, &icons[0].width,&icons[0].height,&depth);
 		icons[0].pixels = imageData;   	

@@ -1,0 +1,59 @@
+Strict
+
+'Event handling Module for Cerberus X by Michael Hartlef
+'License: MIT
+'Version: 1.0
+
+Import mojo
+
+'----------------------------------------------------
+Class Events
+	Method New(_onEventMethod:IOnEvent)
+		_msg = _onEventMethod
+		_evtList = New List<Event>
+	End
+	
+	Method Clear:Void()
+		_evtList.Clear()
+	End
+	
+	Method Process:Void(_backwards:Bool = False)
+		If _backwards
+			For Local _s:= Eachin _evtList.Backwards()
+				If Self._msg.OnEvent(_s._tag,_s._obj) Then Exit
+			Next
+		Else
+			For Local _s:= Eachin _evtList
+				If Self._msg.OnEvent(_s._tag,_s._obj) Then Exit
+			Next
+		Endif
+		Self.Clear()
+	End
+	
+	Method Fire:Void(tag:Int, obj:Object=Null)
+		Local _s:= New Event
+		_s._tag = tag
+		_s._obj= obj
+		_evtList.AddLast(_s)
+	End
+
+	Method OnEvent:Int(tag:Int, obj:Object)
+		Self._msg.OnEvent(tag, obj)
+		Return 0
+	End
+Private
+	Field _msg:IOnEvent
+	Field _evtList:List<Event>
+End
+
+Private
+Class Event
+	Field _tag:Int
+	Field _obj:Object
+End
+
+Public
+
+Interface IOnEvent
+	Method OnEvent:Int(tag:Int, obj:Object)
+End

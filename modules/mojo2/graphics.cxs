@@ -1929,6 +1929,17 @@ Class DrawList
 		DrawRect x0,y0,width,height,material,s0,t0,s1,t1
 	End
 	
+    Method DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null)
+    	Local r2:Float = radius*2.0
+    	DrawOval x,y,r2,r2,material
+    	DrawOval x+width-r2,y,r2,r2,material
+    	DrawOval x,y+height-r2,r2,r2,material
+    	DrawOval x+width-r2,y+height-r2,r2,r2,material
+    	
+    	DrawRect x,y+radius,width,height-r2,material
+    	DrawRect x+radius,y,width-r2,height,material
+    End
+
 	'gradient rect - kinda hacky, but doesn't slow anything else down
 	Method DrawGradientRect:Void( x0:Float,y0:Float,width:Float,height:Float,r0:Float,g0:Float,b0:Float,a0:Float,r1:Float,g1:Float,b1:Float,a1:Float,axis:Int )
 	
@@ -2182,7 +2193,7 @@ Class DrawList
 			x = currX
 		Next
 	End
-	
+
 	Method DrawShadow:Bool( lx:Float,ly:Float,x0:Float,y0:Float,x1:Float,y1:Float )
 	
 		Local ext:=1024
