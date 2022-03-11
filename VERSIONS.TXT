@@ -33,7 +33,6 @@ NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
 NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
 NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
 NEW: [brl.events] Added an event handling module.    (Author: MikeHart)
-NEW: [AGK-Android-Ouya] Added experimental AGK Android Ouya target.    (Author: MikeHart)
 NEW: [mojo] Added #MOJO_USE_MONKEYSTATE=False to be able to switch to use old monkeystate.
 
 
