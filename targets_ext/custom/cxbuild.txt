@@ -1,0 +1,48 @@
+'setecho::on|off
+'sethost::winnt|macos|linux|all
+'config::release/debug/all
+'print::text
+'build::params
+'execute::params
+'replace::file srcStr replaceStr
+'copyfile::srcFile dstFile
+'deletefile::file
+'copydir::srcDir dstDir
+'deletedir::directory
+'createdir::directory
+'changedir::directory
+'copydata::dstDir
+'renamefile::srcFile dstFile
+'inject::inputfile outputfile section(CONFIG/TRANSCODE/METADATA) (preface)
+'getenv::envVar $$var$$
+'setenv::envVar string/$$var$$/##configOption##/etc.
+'set::$$var$$ string/$$var$$/##configOption##/etc.
+'if::param1 EQ/NE/CS/NS param2
+'endif
+
+print::-----------------------------------------------------------------
+print::Cerberus X directory = %cxDir%
+print::Source directory = %srcDir%
+print::Build directory = %buildDir%
+print::Target directory = %targetDir%
+print::Configuration = %config%
+print::Source name = %srcName%
+print::Target name = %targetName%
+print::Host = %host%
+
+print::-----------------------------------------------------------------
+print::App configuration options = ##GLFW_APP_ICON##
+
+print::-----------------------------------------------------------------
+print::ANDROID_PATH= %ANDROID_PATH%
+print::ANDROID_NDK_PATH= %ANDROID_NDK_PATH%
+print::ANT_PATH=     %ANT_PATH%
+print::JDK_PATH=     %JDK_PATH%
+print::FLEX_PATH=    %FLEX_PATH%
+print::MINGW_PATH=   %MINGW_PATH%
+print::MSBUILD_PATH= %MSBUILD_PATH%
+print::PSS_PATH=     %PSS_PATH%
+print::PSM_PATH=     %PSM_PATH%
+print::AGK_PATH=     %AGK_PATH%
+print::HTML_PLAYER=  %HTML_PLAYER%
+print::FLASH_PLAYER= %FLASH_PLAYER%

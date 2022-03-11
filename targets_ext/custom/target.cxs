@@ -1,0 +1,5 @@
+#TARGET_NAME="Custom Builder"
+#TARGET_SYSTEM="customsystem"
+#TARGET_BUILDER="custom"
+#TARGET_LANG="cpp"
+#TARGET_HOST="win2nt|mac2os|lin2ux"
