@@ -1,3 +1,17 @@
+***** v2022-03-12 *****
+
+FIX: [STDCPP] Added missing #MOJO_USE_MONKEYSTATE=false entry in config.cxs file of the target.    (Author: MikeHart)
+MOD: [TRANSCC] Removed AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
+MOD: [TRANSCC] Removed the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
+
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
+- Because of changes in the Google admob SDK, new apps using brl.admob in iOS can not be submitted atm.
+
+
 ***** v2022-03-06 *****
 
 FIX: [docs] Added missing entries to the examples pages.    (Author: MikeHart)
@@ -34,12 +48,6 @@ NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
 NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
 NEW: [brl.events] Added an event handling module.    (Author: MikeHart)
 NEW: [mojo] Added #MOJO_USE_MONKEYSTATE=False to be able to switch to use old monkeystate.
-
-
-KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
-- GLFW_APP_ICON doesn't work with OSX and Linux.
-- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
 
 
 ***** v2021-05-16 *****

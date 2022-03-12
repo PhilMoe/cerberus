@@ -14,6 +14,7 @@
 #define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
+#define CFG_MOJO_USE_MONKEYSTATE 0
 #define CFG_RELEASE 1
 #define CFG_SAFEMODE 0
 #define CFG_TARGET stdcpp
@@ -1941,20 +1942,37 @@ void BBGame::GetDate( Array<int> date ){
 }
 
 int BBGame::SaveState( String state ){
-	if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
-		bool ok=state.Save( f );
-		fclose( f );
-		return ok ? 0 : -2;
+	if( CFG_MOJO_USE_MONKEYSTATE ){
+		if( FILE *f=OpenFile( "./.monkeystate","wb" ) ){
+			bool ok=state.Save( f );
+			fclose( f );
+			return ok ? 0 : -2;
+		}
+	}else{
+		if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
+			bool ok=state.Save( f );
+			fclose( f );
+			return ok ? 0 : -2;
+		}
 	}
 	return -1;
 }
 
 String BBGame::LoadState(){
-	if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
-		String str=String::Load( f );
-		fclose( f );
-		return str;
+	if( CFG_MOJO_USE_MONKEYSTATE ){
+		if( FILE *f=OpenFile( "./.monkeystate","rb" ) ){
+			String str=String::Load( f );
+			fclose( f );
+			return str;
+		}
+	}else{
+		if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
+			String str=String::Load( f );
+			fclose( f );
+			return str;
+		}
 	}
+
 	return "";
 }
 
@@ -15101,19 +15119,10 @@ class c_Map3;
 class c_StringMap3;
 class c_AndroidBuilder;
 class c_Node3;
-class c_AndroidNdkBuilder;
 class c_GlfwBuilder;
 class c_Html5Builder;
 class c_IosBuilder;
-class c_FlashBuilder;
-class c_PsmBuilder;
 class c_StdcppBuilder;
-class c_WinrtBuilder;
-class c_XnaBuilder;
-class c_AGKBuilder;
-class c_AGKBuilder_ios;
-class c_AGKBuilder_android;
-class c_AGKBuilder_android_ouya;
 class c_CustomBuilder;
 class c_NodeEnumerator;
 class c_List;
@@ -15252,8 +15261,8 @@ class c_JsTranslator;
 class c_Stream;
 class c_FileStream;
 class c_DataBuffer;
-class c_AsTranslator;
 class c_CsTranslator;
+class c_AsTranslator;
 class c_List11;
 class c_Node19;
 class c_HeadNode11;
@@ -15668,18 +15677,6 @@ class c_Node3 : public Object{
 	String p_Key();
 	void mark();
 };
-class c_AndroidNdkBuilder : public c_Builder{
-	public:
-	c_AndroidNdkBuilder();
-	c_AndroidNdkBuilder* m_new(c_TransCC*);
-	c_AndroidNdkBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Config();
-	bool p_CreateDirRecursive(String);
-	void p_MakeTarget();
-	void mark();
-};
 class c_GlfwBuilder : public c_Builder{
 	public:
 	c_GlfwBuilder();
@@ -15732,30 +15729,6 @@ class c_IosBuilder : public c_Builder{
 	void p_MakeTarget();
 	void mark();
 };
-class c_FlashBuilder : public c_Builder{
-	public:
-	c_FlashBuilder();
-	c_FlashBuilder* m_new(c_TransCC*);
-	c_FlashBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Assets();
-	String p_Config();
-	void p_MakeTarget();
-	void mark();
-};
-class c_PsmBuilder : public c_Builder{
-	public:
-	c_PsmBuilder();
-	c_PsmBuilder* m_new(c_TransCC*);
-	c_PsmBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Content();
-	String p_Config();
-	void p_MakeTarget();
-	void mark();
-};
 class c_StdcppBuilder : public c_Builder{
 	public:
 	c_StdcppBuilder();
@@ -15764,83 +15737,6 @@ class c_StdcppBuilder : public c_Builder{
 	bool p_IsValid();
 	void p_Begin();
 	String p_Config();
-	void p_MakeTarget();
-	void mark();
-};
-class c_WinrtBuilder : public c_Builder{
-	public:
-	c_WinrtBuilder();
-	c_WinrtBuilder* m_new(c_TransCC*);
-	c_WinrtBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Content2(bool);
-	String p_Config();
-	void p_MakeTarget();
-	void mark();
-};
-class c_XnaBuilder : public c_Builder{
-	public:
-	c_XnaBuilder();
-	c_XnaBuilder* m_new(c_TransCC*);
-	c_XnaBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Content();
-	String p_Config();
-	void p_MakeTarget();
-	void mark();
-};
-class c_AGKBuilder : public c_Builder{
-	public:
-	c_AGKBuilder();
-	c_AGKBuilder* m_new(c_TransCC*);
-	c_AGKBuilder* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Config();
-	void p_CreateMediaDir(String);
-	void p_MakeVc2017();
-	void p_MakeXcode();
-	void p_MakeTarget();
-	void mark();
-};
-class c_AGKBuilder_ios : public c_Builder{
-	public:
-	c_AGKBuilder_ios();
-	c_AGKBuilder_ios* m_new(c_TransCC*);
-	c_AGKBuilder_ios* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Config();
-	void p_CreateMediaDir(String);
-	void p_MakeXcode();
-	void p_MakeTarget();
-	void mark();
-};
-class c_AGKBuilder_android : public c_Builder{
-	public:
-	c_AGKBuilder_android();
-	c_AGKBuilder_android* m_new(c_TransCC*);
-	c_AGKBuilder_android* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Config();
-	void p_CreateMediaDir(String);
-	void p_MakeAndroid();
-	void p_MakeTarget();
-	void mark();
-};
-class c_AGKBuilder_android_ouya : public c_Builder{
-	public:
-	c_AGKBuilder_android_ouya();
-	c_AGKBuilder_android_ouya* m_new(c_TransCC*);
-	c_AGKBuilder_android_ouya* m_new2();
-	bool p_IsValid();
-	void p_Begin();
-	String p_Config();
-	void p_CreateMediaDir(String);
-	void p_MakeAndroid();
 	void p_MakeTarget();
 	void mark();
 };
@@ -17785,12 +17681,12 @@ class c_DataBuffer : public BBDataBuffer{
 int bb_builder_GetInfo_PNG(String);
 int bb_builder_GetInfo_JPG(String);
 int bb_builder_GetInfo_GIF(String);
-class c_AsTranslator : public c_CTranslator{
+class c_CsTranslator : public c_CTranslator{
 	public:
-	c_AsTranslator();
-	c_AsTranslator* m_new();
-	String p_TransValue(c_Type*,String);
+	c_CsTranslator();
+	c_CsTranslator* m_new();
 	String p_TransType(c_Type*);
+	String p_TransValue(c_Type*,String);
 	String p_TransLocalDecl(String,c_Expr*);
 	int p_EmitEnter(c_FuncDecl*);
 	int p_EmitSetErr(String);
@@ -17798,8 +17694,8 @@ class c_AsTranslator : public c_CTranslator{
 	String p_TransStatic(c_Decl*);
 	String p_TransGlobal(c_GlobalDecl*);
 	String p_TransField(c_FieldDecl*,c_Expr*);
-	String p_TransValDecl(c_ValDecl*);
 	int p_EmitFuncDecl(c_FuncDecl*);
+	String p_TransDecl(c_Decl*);
 	int p_EmitClassDecl(c_ClassDecl*);
 	String p_TransApp(c_AppDecl*);
 	String p_TransArgs(Array<c_Expr* >);
@@ -17819,12 +17715,12 @@ class c_AsTranslator : public c_CTranslator{
 	String p_TransTryStmt(c_TryStmt*);
 	void mark();
 };
-class c_CsTranslator : public c_CTranslator{
+class c_AsTranslator : public c_CTranslator{
 	public:
-	c_CsTranslator();
-	c_CsTranslator* m_new();
-	String p_TransType(c_Type*);
+	c_AsTranslator();
+	c_AsTranslator* m_new();
 	String p_TransValue(c_Type*,String);
+	String p_TransType(c_Type*);
 	String p_TransLocalDecl(String,c_Expr*);
 	int p_EmitEnter(c_FuncDecl*);
 	int p_EmitSetErr(String);
@@ -17832,8 +17728,8 @@ class c_CsTranslator : public c_CTranslator{
 	String p_TransStatic(c_Decl*);
 	String p_TransGlobal(c_GlobalDecl*);
 	String p_TransField(c_FieldDecl*,c_Expr*);
+	String p_TransValDecl(c_ValDecl*);
 	int p_EmitFuncDecl(c_FuncDecl*);
-	String p_TransDecl(c_Decl*);
 	int p_EmitClassDecl(c_ClassDecl*);
 	String p_TransApp(c_AppDecl*);
 	String p_TransArgs(Array<c_Expr* >);
@@ -18454,7 +18350,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2021-12-27",35));
+	bbPrint(String(L"TRANS cerberus compiler V2022-03-12",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20713,158 +20609,6 @@ String c_Node3::p_Key(){
 void c_Node3::mark(){
 	Object::mark();
 }
-c_AndroidNdkBuilder::c_AndroidNdkBuilder(){
-}
-c_AndroidNdkBuilder* c_AndroidNdkBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_AndroidNdkBuilder* c_AndroidNdkBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_AndroidNdkBuilder::p_IsValid(){
-	return m_tcc->m_ANDROID_PATH!=String() && m_tcc->m_ANDROID_NDK_PATH!=String();
-}
-void c_AndroidNdkBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_AndroidNdkBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-bool c_AndroidNdkBuilder::p_CreateDirRecursive(String t_path){
-	int t_i=0;
-	do{
-		t_i=t_path.Find(String(L"/",1),t_i);
-		if(t_i==-1){
-			CreateDir(t_path);
-			return FileType(t_path)==2;
-		}
-		String t_t=t_path.Slice(0,t_i);
-		CreateDir(t_t);
-		if(FileType(t_t)!=2){
-			return false;
-		}
-		t_i+=1;
-	}while(!(false));
-}
-void c_AndroidNdkBuilder::p_MakeTarget(){
-	bb_config_SetConfigVar2(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_MAIN",21)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_ACTIVITY",25),bb_config_GetConfigVar(String(L"ANDROID_MAINFEST_ACTIVITY",25)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	p_CreateDataDir(String(L"assets/cerberus",15));
-	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
-	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
-	String t_main=LoadString(String(L"jni/main.cpp",12));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"jni/main.cpp",12));
-	bb_os_DeleteDir(String(L"src",3),true);
-	String t_jmain=LoadString(String(L"CerberusGame.java",17));
-	t_jmain=bb_transcc_ReplaceBlock(t_jmain,String(L"PACKAGE",7),String(L"package ",8)+t_app_package+String(L";",1),String(L"\n//",3));
-	String t_dir=String(L"src/",4)+t_app_package.Replace(String(L".",1),String(L"/",1));
-	if(!p_CreateDirRecursive(t_dir)){
-		bbError(String(L"Failed to create dir:",21)+t_dir);
-	}
-	SaveString(t_jmain,t_dir+String(L"/CerberusGame.java",18));
-	Array<String > t_=bb_config_GetConfigVar(String(L"LIBS",4)).Split(String(L";",1));
-	int t_2=0;
-	while(t_2<t_.Length()){
-		String t_lib=t_[t_2];
-		t_2=t_2+1;
-		String t_1=bb_os_ExtractExt(t_lib);
-		if(t_1==String(L"jar",3) || t_1==String(L"so",2)){
-			String t_tdir=String();
-			if(t_lib.Contains(String(L"/",1))){
-				t_tdir=bb_os_ExtractDir(t_lib);
-				if(t_tdir.Contains(String(L"/",1))){
-					t_tdir=bb_os_StripDir(t_tdir);
-				}
-				String t_22=t_tdir;
-				if(t_22==String(L"x86",3) || t_22==String(L"mips",4) || t_22==String(L"armeabi",7) || t_22==String(L"armeabi-v7a",11)){
-					CreateDir(String(L"libs/",5)+t_tdir);
-					t_tdir=t_tdir+String(L"/",1);
-				}else{
-					t_tdir=String();
-				}
-			}
-			CopyFile(t_lib,String(L"libs/",5)+t_tdir+bb_os_StripDir(t_lib));
-		}
-	}
-	Array<String > t_3=bb_config_GetConfigVar(String(L"SRCS",4)).Split(String(L";",1));
-	int t_4=0;
-	while(t_4<t_3.Length()){
-		String t_src=t_3[t_4];
-		t_4=t_4+1;
-		String t_32=bb_os_ExtractExt(t_src);
-		if(t_32==String(L"java",4) || t_32==String(L"aidl",4)){
-			int t_i=t_src.FindLast(String(L"/src/",5));
-			if(t_i!=-1){
-				String t_dst=t_src.Slice(t_i+1);
-				if(!p_CreateDirRecursive(bb_os_ExtractDir(t_dst))){
-					bbError(String(L"Failed to create dir:",21)+bb_os_ExtractDir(t_dst));
-				}
-				CopyFile(t_src,t_dst);
-			}
-		}
-	}
-	Array<String > t_5=bb_os_LoadDir(String(L"templates",9),true,false);
-	int t_6=0;
-	while(t_6<t_5.Length()){
-		String t_file=t_5[t_6];
-		t_6=t_6+1;
-		int t_i2=0;
-		do{
-			t_i2=t_file.Find(String(L"/",1),t_i2);
-			if(t_i2==-1){
-				break;
-			}
-			CreateDir(t_file.Slice(0,t_i2));
-			if(FileType(t_file.Slice(0,t_i2))!=2){
-				t_file=String();
-				break;
-			}
-			t_i2+=1;
-		}while(!(false));
-		if(!((t_file).Length()!=0)){
-			continue;
-		}
-		String t_42=bb_os_ExtractExt(t_file).ToLower();
-		if(t_42==String(L"xml",3) || t_42==String(L"properties",10) || t_42==String(L"java",4)){
-			String t_str=LoadString(String(L"templates/",10)+t_file);
-			t_str=bb_transcc_ReplaceEnv(t_str);
-			SaveString(t_str,t_file);
-		}else{
-			CopyFile(String(L"templates/",10)+t_file,t_file);
-		}
-	}
-	if(m_tcc->m_opt_build){
-		if(!p_Execute(m_tcc->m_ANDROID_NDK_PATH+String(L"/ndk-build",10),true)){
-			bb_transcc_Die(String(L"Failed to build native code",27));
-		}
-		bool t_r=p_Execute(String(L"ant clean",9),false) && p_Execute(String(L"ant debug install",17),false);
-		if(!t_r){
-			bb_transcc_Die(String(L"Android build failed.",21));
-		}else{
-			if(m_tcc->m_opt_run){
-				p_Execute(String(L"adb logcat -c",13),false);
-				p_Execute(String(L"adb shell am start -n ",22)+t_app_package+String(L"/",1)+t_app_package+String(L".CerberusGame",13),false);
-				p_Execute(String(L"adb logcat [Cerberus]:I *:E",27),false);
-			}
-		}
-	}
-}
-void c_AndroidNdkBuilder::mark(){
-	c_Builder::mark();
-}
 c_GlfwBuilder::c_GlfwBuilder(){
 }
 c_GlfwBuilder* c_GlfwBuilder::m_new(c_TransCC* t_tcc){
@@ -21495,200 +21239,6 @@ void c_IosBuilder::p_MakeTarget(){
 void c_IosBuilder::mark(){
 	c_Builder::mark();
 }
-c_FlashBuilder::c_FlashBuilder(){
-}
-c_FlashBuilder* c_FlashBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_FlashBuilder* c_FlashBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_FlashBuilder::p_IsValid(){
-	return m_tcc->m_FLEX_PATH!=String();
-}
-void c_FlashBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"as",2);
-	bb_translator__trans=((new c_AsTranslator)->m_new());
-}
-String c_FlashBuilder::p_Assets(){
-	c_StringStack* t_assets=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		String t_ext=bb_os_ExtractExt(t_kv->p_Value());
-		String t_munged=String(L"_",1);
-		Array<String > t_2=bb_os_StripExt(t_kv->p_Value()).Split(String(L"/",1));
-		int t_3=0;
-		while(t_3<t_2.Length()){
-			String t_q=t_2[t_3];
-			t_3=t_3+1;
-			for(int t_i=0;t_i<t_q.Length();t_i=t_i+1){
-				if(((bb_config_IsAlpha((int)t_q[t_i]))!=0) || ((bb_config_IsDigit((int)t_q[t_i]))!=0) || (int)t_q[t_i]==95){
-					continue;
-				}
-				bb_transcc_Die(String(L"Invalid character in flash filename: ",37)+t_kv->p_Value()+String(L".",1));
-			}
-			t_munged=t_munged+(String(t_q.Length())+t_q);
-		}
-		t_munged=t_munged+(String(t_ext.Length())+t_ext);
-		String t_1=t_ext.ToLower();
-		if(t_1==String(L"png",3) || t_1==String(L"jpg",3) || t_1==String(L"mp3",3)){
-			t_assets->p_Push(String(L"[Embed(source=\"data/",20)+t_kv->p_Value()+String(L"\")]",3));
-			t_assets->p_Push(String(L"public static var ",18)+t_munged+String(L":Class;",7));
-		}else{
-			t_assets->p_Push(String(L"[Embed(source=\"data/",20)+t_kv->p_Value()+String(L"\",mimeType=\"application/octet-stream\")]",39));
-			t_assets->p_Push(String(L"public static var ",18)+t_munged+String(L":Class;",7));
-		}
-	}
-	return t_assets->p_Join(String(L"\n",1));
-}
-String c_FlashBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"internal static var ",20)+t_kv->p_Key()+String(L":String=",8)+bb_config_Enquote(t_kv->p_Value(),String(L"as",2)));
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_FlashBuilder::p_MakeTarget(){
-	p_CreateDataDir(String(L"data",4));
-	String t_main=LoadString(String(L"CerberusGame.as",15));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"ASSETS",6),p_Assets(),String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"CerberusGame.as",15));
-	if(m_tcc->m_opt_build){
-		String t_cc_opts=String(L" -static-link-runtime-shared-libraries=true",43);
-		if(bb_config_ENV_CONFIG==String(L"debug",5)){
-			t_cc_opts=t_cc_opts+String(L" -debug=true",12);
-		}
-		DeleteFile(String(L"main.swf",8));
-		p_CopyIcon(bb_config_GetConfigVar(String(L"FLASH_APP_ICON",14)),CurrentDir()+String(L"\\favicon.ico",12));
-		p_Execute(String(L"mxmlc",5)+t_cc_opts+String(L" CerberusGame.as",16),true);
-		if(m_tcc->m_opt_run){
-			if((m_tcc->m_FLASH_PLAYER).Length()!=0){
-				p_Execute(m_tcc->m_FLASH_PLAYER+String(L" \"",2)+RealPath(String(L"CerberusGame.swf",16))+String(L"\"",1),false);
-			}else{
-				if((m_tcc->m_HTML_PLAYER).Length()!=0){
-					p_Execute(m_tcc->m_HTML_PLAYER+String(L" \"",2)+RealPath(String(L"CerberusGame.html",17))+String(L"\"",1),false);
-				}
-			}
-		}
-	}
-}
-void c_FlashBuilder::mark(){
-	c_Builder::mark();
-}
-c_PsmBuilder::c_PsmBuilder(){
-}
-c_PsmBuilder* c_PsmBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_PsmBuilder* c_PsmBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_PsmBuilder::p_IsValid(){
-	String t_4=HostOS();
-	if(t_4==String(L"winnt",5)){
-		if(((m_tcc->m_PSM_PATH).Length()!=0) && FileType(m_tcc->m_PSM_PATH+String(L"/tools/PsmStudio/bin/mdtool.exe",31))==1){
-			return true;
-		}
-	}
-	return false;
-}
-void c_PsmBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"cs",2);
-	bb_translator__trans=((new c_CsTranslator)->m_new());
-}
-String c_PsmBuilder::p_Content(){
-	c_StringStack* t_cont=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		String t_p=t_kv->p_Key();
-		String t_r=t_kv->p_Value();
-		String t_f=bb_os_StripDir(t_r);
-		String t_t=(String(L"data/",5)+t_r).Replace(String(L"/",1),String(L"\\",1));
-		String t_ext=bb_os_ExtractExt(t_r).ToLower();
-		if(bb_transcc_MatchPath(t_r,m_TEXT_FILES)){
-			t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-			t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-			t_cont->p_Push(String(L"    </Content>",14));
-		}else{
-			if(bb_transcc_MatchPath(t_r,m_IMAGE_FILES)){
-				String t_1=t_ext;
-				if(t_1==String(L"png",3) || t_1==String(L"jpg",3) || t_1==String(L"bmp",3) || t_1==String(L"gif",3)){
-					t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-					t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-					t_cont->p_Push(String(L"    </Content>",14));
-				}else{
-					bb_transcc_Die(String(L"Invalid image file type",23));
-				}
-			}else{
-				if(bb_transcc_MatchPath(t_r,m_SOUND_FILES)){
-					String t_2=t_ext;
-					if(t_2==String(L"wav",3)){
-						t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-						t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-						t_cont->p_Push(String(L"    </Content>",14));
-					}else{
-						bb_transcc_Die(String(L"Invalid sound file type",23));
-					}
-				}else{
-					if(bb_transcc_MatchPath(t_r,m_MUSIC_FILES)){
-						String t_3=t_ext;
-						if(t_3==String(L"mp3",3)){
-							t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-							t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-							t_cont->p_Push(String(L"    </Content>",14));
-						}else{
-							bb_transcc_Die(String(L"Invalid music file type",23));
-						}
-					}else{
-						if(bb_transcc_MatchPath(t_r,m_BINARY_FILES)){
-							t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-							t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-							t_cont->p_Push(String(L"    </Content>",14));
-						}
-					}
-				}
-			}
-		}
-	}
-	return t_cont->p_Join(String(L"\n",1));
-}
-String c_PsmBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"public const String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"cs",2))+String(L";",1));
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_PsmBuilder::p_MakeTarget(){
-	p_CreateDataDir(String(L"data",4));
-	String t_proj=LoadString(String(L"CerberusGame.csproj",19));
-	t_proj=bb_transcc_ReplaceBlock(t_proj,String(L"CONTENT",7),p_Content(),String(L"\n<!-- ",6));
-	SaveString(t_proj,String(L"CerberusGame.csproj",19));
-	String t_main=LoadString(String(L"CerberusGame.cs",15));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"CerberusGame.cs",15));
-	if(m_tcc->m_opt_build){
-		if(m_tcc->m_opt_run){
-			p_Execute(String(L"\"",1)+m_tcc->m_PSM_PATH+String(L"/tools/PsmStudio/bin/mdtool\" psm windows run-project CerberusGame.sln",69),true);
-		}
-	}
-}
-void c_PsmBuilder::mark(){
-	c_Builder::mark();
-}
 c_StdcppBuilder::c_StdcppBuilder(){
 }
 c_StdcppBuilder* c_StdcppBuilder::m_new(c_TransCC* t_tcc){
@@ -21788,1023 +21338,6 @@ void c_StdcppBuilder::p_MakeTarget(){
 	}
 }
 void c_StdcppBuilder::mark(){
-	c_Builder::mark();
-}
-c_WinrtBuilder::c_WinrtBuilder(){
-}
-c_WinrtBuilder* c_WinrtBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_WinrtBuilder* c_WinrtBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_WinrtBuilder::p_IsValid(){
-	String t_1=HostOS();
-	if(t_1==String(L"winnt",5)){
-		if((m_tcc->m_MSBUILD_PATH).Length()!=0){
-			return true;
-		}
-	}
-	return false;
-}
-void c_WinrtBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_WinrtBuilder::p_Content2(bool t_csharp){
-	c_StringStack* t_cont=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_csharp){
-			t_cont->p_Push(String(L"    <Content Include=\"Assets\\cerberus\\",38)+t_kv->p_Value().Replace(String(L"/",1),String(L"\\",1))+String(L"\">",2));
-			t_cont->p_Push(String(L"      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>",67));
-			t_cont->p_Push(String(L"    </Content>",14));
-		}else{
-			t_cont->p_Push(String(L"    <None Include=\"Assets\\cerberus\\",35)+t_kv->p_Value().Replace(String(L"/",1),String(L"\\",1))+String(L"\">",2));
-			t_cont->p_Push(String(L"      <DeploymentContent>true</DeploymentContent>",49));
-			t_cont->p_Push(String(L"    </None>",11));
-		}
-	}
-	return t_cont->p_Join(String(L"\n",1));
-}
-String c_WinrtBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_WinrtBuilder::p_MakeTarget(){
-	p_CreateDataDir(String(L"Assets/cerberus",15));
-	String t_proj=LoadString(String(L"CerberusGame.vcxproj",20));
-	if((t_proj).Length()!=0){
-		t_proj=bb_transcc_ReplaceBlock(t_proj,String(L"CONTENT",7),p_Content2(false),String(L"\n    <!-- ",10));
-		SaveString(t_proj,String(L"CerberusGame.vcxproj",20));
-	}else{
-		String t_proj2=LoadString(String(L"CerberusGame.csproj",19));
-		t_proj2=bb_transcc_ReplaceBlock(t_proj2,String(L"CONTENT",7),p_Content2(true),String(L"\n    <!-- ",10));
-		SaveString(t_proj2,String(L"CerberusGame.csproj",19));
-	}
-	String t_main=LoadString(String(L"CerberusGame.cpp",16));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"CerberusGame.cpp",16));
-	if(m_tcc->m_opt_build){
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=Win32 CerberusGame.sln",35),true);
-		if(m_tcc->m_opt_run){
-		}
-	}
-}
-void c_WinrtBuilder::mark(){
-	c_Builder::mark();
-}
-c_XnaBuilder::c_XnaBuilder(){
-}
-c_XnaBuilder* c_XnaBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_XnaBuilder* c_XnaBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_XnaBuilder::p_IsValid(){
-	String t_4=HostOS();
-	if(t_4==String(L"winnt",5)){
-		if((m_tcc->m_MSBUILD_PATH).Length()!=0){
-			return true;
-		}
-	}
-	return false;
-}
-void c_XnaBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"cs",2);
-	bb_translator__trans=((new c_CsTranslator)->m_new());
-}
-String c_XnaBuilder::p_Content(){
-	c_StringStack* t_cont=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		String t_p=t_kv->p_Key();
-		String t_r=t_kv->p_Value();
-		String t_f=bb_os_StripDir(t_r);
-		String t_t=(String(L"cerberus/",9)+t_r).Replace(String(L"/",1),String(L"\\",1));
-		String t_ext=bb_os_ExtractExt(t_r).ToLower();
-		if(bb_transcc_MatchPath(t_r,m_TEXT_FILES)){
-			t_cont->p_Push(String(L"  <ItemGroup>",13));
-			t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-			t_cont->p_Push(String(L"      <Name>",12)+t_f+String(L"</Name>",7));
-			t_cont->p_Push(String(L"      <CopyToOutputDirectory>Always</CopyToOutputDirectory>",59));
-			t_cont->p_Push(String(L"    </Content>",14));
-			t_cont->p_Push(String(L"  </ItemGroup>",14));
-		}else{
-			if(bb_transcc_MatchPath(t_r,m_IMAGE_FILES)){
-				String t_1=t_ext;
-				if(t_1==String(L"bmp",3) || t_1==String(L"dds",3) || t_1==String(L"dib",3) || t_1==String(L"hdr",3) || t_1==String(L"jpg",3) || t_1==String(L"pfm",3) || t_1==String(L"png",3) || t_1==String(L"ppm",3) || t_1==String(L"tga",3)){
-					t_cont->p_Push(String(L"  <ItemGroup>",13));
-					t_cont->p_Push(String(L"    <Compile Include=\"",22)+t_t+String(L"\">",2));
-					t_cont->p_Push(String(L"      <Name>",12)+t_f+String(L"</Name>",7));
-					t_cont->p_Push(String(L"      <Importer>TextureImporter</Importer>",42));
-					t_cont->p_Push(String(L"      <Processor>TextureProcessor</Processor>",45));
-					t_cont->p_Push(String(L"      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>",86));
-					t_cont->p_Push(String(L"      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>",88));
-					t_cont->p_Push(String(L"\t   </Compile>",14));
-					t_cont->p_Push(String(L"  </ItemGroup>",14));
-				}else{
-					bb_transcc_Die(String(L"Invalid image file type",23));
-				}
-			}else{
-				if(bb_transcc_MatchPath(t_r,m_SOUND_FILES)){
-					String t_2=t_ext;
-					if(t_2==String(L"wav",3) || t_2==String(L"mp3",3) || t_2==String(L"wma",3)){
-						String t_imp=t_ext.Slice(0,1).ToUpper()+t_ext.Slice(1)+String(L"Importer",8);
-						t_cont->p_Push(String(L"  <ItemGroup>",13));
-						t_cont->p_Push(String(L"    <Compile Include=\"",22)+t_t+String(L"\">",2));
-						t_cont->p_Push(String(L"      <Name>",12)+t_f+String(L"</Name>",7));
-						t_cont->p_Push(String(L"      <Importer>",16)+t_imp+String(L"</Importer>",11));
-						t_cont->p_Push(String(L"      <Processor>SoundEffectProcessor</Processor>",49));
-						t_cont->p_Push(String(L"\t   </Compile>",14));
-						t_cont->p_Push(String(L"  </ItemGroup>",14));
-					}else{
-						bb_transcc_Die(String(L"Invalid sound file type",23));
-					}
-				}else{
-					if(bb_transcc_MatchPath(t_r,m_MUSIC_FILES)){
-						String t_3=t_ext;
-						if(t_3==String(L"wav",3) || t_3==String(L"mp3",3) || t_3==String(L"wma",3)){
-							String t_imp2=t_ext.Slice(0,1).ToUpper()+t_ext.Slice(1)+String(L"Importer",8);
-							t_cont->p_Push(String(L"  <ItemGroup>",13));
-							t_cont->p_Push(String(L"    <Compile Include=\"",22)+t_t+String(L"\">",2));
-							t_cont->p_Push(String(L"      <Name>",12)+t_f+String(L"</Name>",7));
-							t_cont->p_Push(String(L"      <Importer>",16)+t_imp2+String(L"</Importer>",11));
-							t_cont->p_Push(String(L"      <Processor>SongProcessor</Processor>",42));
-							t_cont->p_Push(String(L"\t   </Compile>",14));
-							t_cont->p_Push(String(L"  </ItemGroup>",14));
-						}else{
-							bb_transcc_Die(String(L"Invalid music file type",23));
-						}
-					}else{
-						if(bb_transcc_MatchPath(t_r,m_BINARY_FILES)){
-							t_cont->p_Push(String(L"  <ItemGroup>",13));
-							t_cont->p_Push(String(L"    <Content Include=\"",22)+t_t+String(L"\">",2));
-							t_cont->p_Push(String(L"      <Name>",12)+t_f+String(L"</Name>",7));
-							t_cont->p_Push(String(L"      <CopyToOutputDirectory>Always</CopyToOutputDirectory>",59));
-							t_cont->p_Push(String(L"    </Content>",14));
-							t_cont->p_Push(String(L"  </ItemGroup>",14));
-						}
-					}
-				}
-			}
-		}
-	}
-	return t_cont->p_Join(String(L"\n",1));
-}
-String c_XnaBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"public const String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"cs",2))+String(L";",1));
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_XnaBuilder::p_MakeTarget(){
-	p_CreateDataDir(String(L"CerberusGame/CerberusGameContent/cerberus",41));
-	String t_contproj=LoadString(String(L"CerberusGame/CerberusGameContent/CerberusGameContent.contentproj",64));
-	t_contproj=bb_transcc_ReplaceBlock(t_contproj,String(L"CONTENT",7),p_Content(),String(L"\n<!-- ",6));
-	SaveString(t_contproj,String(L"CerberusGame/CerberusGameContent/CerberusGameContent.contentproj",64));
-	String t_main=LoadString(String(L"CerberusGame/CerberusGame/Program.cs",36));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"CerberusGame/CerberusGame/Program.cs",36));
-	if(m_tcc->m_opt_build){
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /t:CerberusGame /p:Configuration=",35)+m_casedConfig+String(L" CerberusGame.sln",17),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(String(L"CerberusGame/CerberusGame/bin/x86/",34)+m_casedConfig);
-			p_Execute(String(L"CerberusGame",12),false);
-		}
-	}
-}
-void c_XnaBuilder::mark(){
-	c_Builder::mark();
-}
-c_AGKBuilder::c_AGKBuilder(){
-}
-c_AGKBuilder* c_AGKBuilder::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_AGKBuilder* c_AGKBuilder::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_AGKBuilder::p_IsValid(){
-	String t_1=HostOS();
-	if(t_1==String(L"winnt",5)){
-		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
-			return true;
-		}
-	}else{
-		if(t_1==String(L"macos",5)){
-			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
-				return true;
-			}
-		}else{
-			return true;
-		}
-	}
-	return false;
-}
-void c_AGKBuilder::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_AGKBuilder::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_l=t_kv->p_Key().Length();
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key().Slice(4,t_l)+String(L" ",1)+t_kv->p_Value());
-		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}
-	}
-	t_config->p_Push(String(L"#define WINDOW_TITLE \"CerberusGame\"",35));
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_AGKBuilder::p_CreateMediaDir(String t_dir){
-	t_dir=RealPath(t_dir);
-	if(!m_syncData){
-		bb_os_DeleteDir(t_dir,true);
-	}
-	CreateDir(t_dir);
-	if(FileType(t_dir)!=2){
-		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
-	}
-	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
-	if(FileType(t_dataPath)!=2){
-		t_dataPath=String();
-	}
-	c_StringSet* t_udata=(new c_StringSet)->m_new();
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
-		t_srcs->p_Push(t_dataPath);
-		while(!t_srcs->p_IsEmpty()){
-			String t_src=t_srcs->p_Pop();
-			Array<String > t_=LoadDir(t_src);
-			int t_2=0;
-			while(t_2<t_.Length()){
-				String t_f=t_[t_2];
-				t_2=t_2+1;
-				if(t_f.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p=t_src+String(L"/",1)+t_f;
-				String t_r=t_p.Slice(t_dataPath.Length()+1);
-				String t_t=t_dir+String(L"/",1)+t_r;
-				int t_3=FileType(t_p);
-				if(t_3==1){
-					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
-						p_CCopyFile(t_p,t_t);
-						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
-					}
-				}else{
-					if(t_3==2){
-						CreateDir(t_t);
-						t_srcs->p_Push(t_p);
-					}
-				}
-			}
-		}
-	}
-	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		String t_p2=t_4->p_NextObject();
-		String t_r2=bb_os_StripDir(t_p2);
-		String t_t2=t_dir+String(L"/",1)+t_r2;
-		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
-			p_CCopyFile(t_p2,t_t2);
-			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
-		}
-	}
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
-		t_dsts->p_Push(t_dir);
-		while(!t_dsts->p_IsEmpty()){
-			String t_dst=t_dsts->p_Pop();
-			Array<String > t_5=LoadDir(t_dst);
-			int t_6=0;
-			while(t_6<t_5.Length()){
-				String t_f2=t_5[t_6];
-				t_6=t_6+1;
-				if(t_f2.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p3=t_dst+String(L"/",1)+t_f2;
-				String t_r3=t_p3.Slice(t_dir.Length()+1);
-				String t_t3=t_dataPath+String(L"/",1)+t_r3;
-				int t_42=FileType(t_p3);
-				if(t_42==1){
-					if(!t_udata->p_Contains(t_p3)){
-						DeleteFile(t_p3);
-					}
-				}else{
-					if(t_42==2){
-						if(FileType(t_t3)==2){
-							t_dsts->p_Push(t_p3);
-						}else{
-							bb_os_DeleteDir(t_p3,true);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-void c_AGKBuilder::p_MakeVc2017(){
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_windows_vs2017_64",44);
-	String t_template=LoadString(t_buildpath+String(L"\\template.cpp",13));
-	String t_templateh=LoadString(t_buildpath+String(L"\\template.h",11));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"\\template.cpp",13));
-	SaveString(t_templateh,t_buildpath+String(L"\\template.h",11));
-	p_CreateMediaDir(t_buildpath+String(L"\\Final\\media",12));
-	if(m_tcc->m_opt_build){
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" ",1)+t_buildpath+String(L"\\Template.sln",13),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(t_buildpath+String(L"\\Final",6));
-			p_Execute(String(L"Template64",10),true);
-		}
-	}
-}
-void c_AGKBuilder::p_MakeXcode(){
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"/AGKTemplate/apps/template_mac",30);
-	String t_template=LoadString(t_buildpath+String(L"/template.cpp",13));
-	String t_templateh=LoadString(t_buildpath+String(L"/template.h",11));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"/template.cpp",13));
-	SaveString(t_templateh,t_buildpath+String(L"/template.h",11));
-	p_CreateMediaDir(t_buildpath+String(L"/media",6));
-	if(m_tcc->m_opt_build){
-		ChangeDir(t_buildpath);
-		p_Execute(String(L"xcodebuild -configuration ",26)+m_casedConfig+String(L" PRODUCT_NAME=CerberusGame",26),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(t_buildpath+String(L"/build/",7)+m_casedConfig);
-			ChangeDir(String(L"CerberusGame.app/Contents/MacOS",31));
-			p_Execute(String(L"./CerberusGame",14),true);
-		}
-	}
-}
-void c_AGKBuilder::p_MakeTarget(){
-	String t_2=HostOS();
-	if(t_2==String(L"winnt",5)){
-		p_MakeVc2017();
-	}else{
-		if(t_2==String(L"macos",5)){
-			p_MakeXcode();
-		}
-	}
-}
-void c_AGKBuilder::mark(){
-	c_Builder::mark();
-}
-c_AGKBuilder_ios::c_AGKBuilder_ios(){
-}
-c_AGKBuilder_ios* c_AGKBuilder_ios::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_AGKBuilder_ios* c_AGKBuilder_ios::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_AGKBuilder_ios::p_IsValid(){
-	String t_1=HostOS();
-	if(t_1==String(L"macos",5)){
-		if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
-			return true;
-		}
-	}
-	return false;
-}
-void c_AGKBuilder_ios::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_AGKBuilder_ios::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_AGKBuilder_ios::p_CreateMediaDir(String t_dir){
-	t_dir=RealPath(t_dir);
-	if(!m_syncData){
-		bb_os_DeleteDir(t_dir,true);
-	}
-	CreateDir(t_dir);
-	if(FileType(t_dir)!=2){
-		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
-	}
-	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
-	if(FileType(t_dataPath)!=2){
-		t_dataPath=String();
-	}
-	c_StringSet* t_udata=(new c_StringSet)->m_new();
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
-		t_srcs->p_Push(t_dataPath);
-		while(!t_srcs->p_IsEmpty()){
-			String t_src=t_srcs->p_Pop();
-			Array<String > t_=LoadDir(t_src);
-			int t_2=0;
-			while(t_2<t_.Length()){
-				String t_f=t_[t_2];
-				t_2=t_2+1;
-				if(t_f.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p=t_src+String(L"/",1)+t_f;
-				String t_r=t_p.Slice(t_dataPath.Length()+1);
-				String t_t=t_dir+String(L"/",1)+t_r;
-				int t_3=FileType(t_p);
-				if(t_3==1){
-					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
-						p_CCopyFile(t_p,t_t);
-						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
-					}
-				}else{
-					if(t_3==2){
-						CreateDir(t_t);
-						t_srcs->p_Push(t_p);
-					}
-				}
-			}
-		}
-	}
-	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		String t_p2=t_4->p_NextObject();
-		String t_r2=bb_os_StripDir(t_p2);
-		String t_t2=t_dir+String(L"/",1)+t_r2;
-		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
-			p_CCopyFile(t_p2,t_t2);
-			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
-		}
-	}
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
-		t_dsts->p_Push(t_dir);
-		while(!t_dsts->p_IsEmpty()){
-			String t_dst=t_dsts->p_Pop();
-			Array<String > t_5=LoadDir(t_dst);
-			int t_6=0;
-			while(t_6<t_5.Length()){
-				String t_f2=t_5[t_6];
-				t_6=t_6+1;
-				if(t_f2.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p3=t_dst+String(L"/",1)+t_f2;
-				String t_r3=t_p3.Slice(t_dir.Length()+1);
-				String t_t3=t_dataPath+String(L"/",1)+t_r3;
-				int t_42=FileType(t_p3);
-				if(t_42==1){
-					if(!t_udata->p_Contains(t_p3)){
-						DeleteFile(t_p3);
-					}
-				}else{
-					if(t_42==2){
-						if(FileType(t_t3)==2){
-							t_dsts->p_Push(t_p3);
-						}else{
-							bb_os_DeleteDir(t_p3,true);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-void c_AGKBuilder_ios::p_MakeXcode(){
-	String t_sim_path=String(L"/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app",69);
-	if(m_tcc->m_opt_run==true){
-		bbPrint(String(L"Starting iOS simulator...",25));
-		p_Execute(String(L"open \"",6)+t_sim_path+String(L"\"",1),true);
-	}
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"/AGKTemplate/apps/template_ios",30);
-	bbPrint(String(L"buildpath= ",11)+t_buildpath);
-	String t_template=LoadString(t_buildpath+String(L"/Classes/template.cpp",21));
-	String t_templateh=LoadString(t_buildpath+String(L"/Classes/template.h",19));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"/Classes/template.cpp",21));
-	SaveString(t_templateh,t_buildpath+String(L"/Classes/template.h",19));
-	p_CreateMediaDir(t_buildpath+String(L"/media",6));
-	if(m_tcc->m_opt_build){
-		String t_src=t_buildpath+String(L"/build/",7)+m_casedConfig+String(L"/CerberusGame.app",17);
-		ChangeDir(t_buildpath);
-		p_Execute(String(L"xcodebuild -scheme agk_interpreter -configuration ",50)+m_casedConfig+String(L" -sdk iphonesimulator",21)+String(L" PRODUCT_NAME=CerberusGame",26)+String(L" BUILD_DIR=",11)+t_buildpath+String(L"/build",6),true);
-		if(m_tcc->m_opt_run){
-			bbPrint(String(L"Installing GerberusGame.app",27));
-			p_Execute(String(L"xcrun simctl install booted \"",29)+t_src+String(L"\"",1),true);
-			bbPrint(String(L"Running CerberusGame.app",24));
-			p_Execute(String(L"xcrun simctl launch booted com.thegamecreators.AGKTemplate",58),true);
-		}
-	}
-}
-void c_AGKBuilder_ios::p_MakeTarget(){
-	String t_2=HostOS();
-	if(t_2==String(L"macos",5)){
-		p_MakeXcode();
-	}
-}
-void c_AGKBuilder_ios::mark(){
-	c_Builder::mark();
-}
-c_AGKBuilder_android::c_AGKBuilder_android(){
-}
-c_AGKBuilder_android* c_AGKBuilder_android::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_AGKBuilder_android* c_AGKBuilder_android::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_AGKBuilder_android::p_IsValid(){
-	String t_1=HostOS();
-	if(t_1==String(L"winnt",5)){
-		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
-			return true;
-		}
-	}else{
-		if(t_1==String(L"macos",5)){
-			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
-				return true;
-			}
-		}else{
-			return true;
-		}
-	}
-	return false;
-}
-void c_AGKBuilder_android::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_AGKBuilder_android::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_AGKBuilder_android::p_CreateMediaDir(String t_dir){
-	t_dir=RealPath(t_dir);
-	if(!m_syncData){
-		bb_os_DeleteDir(t_dir,true);
-	}
-	CreateDir(t_dir);
-	if(FileType(t_dir)!=2){
-		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
-	}
-	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
-	if(FileType(t_dataPath)!=2){
-		t_dataPath=String();
-	}
-	c_StringSet* t_udata=(new c_StringSet)->m_new();
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
-		t_srcs->p_Push(t_dataPath);
-		while(!t_srcs->p_IsEmpty()){
-			String t_src=t_srcs->p_Pop();
-			Array<String > t_=LoadDir(t_src);
-			int t_2=0;
-			while(t_2<t_.Length()){
-				String t_f=t_[t_2];
-				t_2=t_2+1;
-				if(t_f.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p=t_src+String(L"/",1)+t_f;
-				String t_r=t_p.Slice(t_dataPath.Length()+1);
-				String t_t=t_dir+String(L"/",1)+t_r;
-				int t_3=FileType(t_p);
-				if(t_3==1){
-					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
-						p_CCopyFile(t_p,t_t);
-						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
-					}
-				}else{
-					if(t_3==2){
-						CreateDir(t_t);
-						t_srcs->p_Push(t_p);
-					}
-				}
-			}
-		}
-	}
-	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		String t_p2=t_4->p_NextObject();
-		String t_r2=bb_os_StripDir(t_p2);
-		String t_t2=t_dir+String(L"/",1)+t_r2;
-		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
-			p_CCopyFile(t_p2,t_t2);
-			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
-		}
-	}
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
-		t_dsts->p_Push(t_dir);
-		while(!t_dsts->p_IsEmpty()){
-			String t_dst=t_dsts->p_Pop();
-			Array<String > t_5=LoadDir(t_dst);
-			int t_6=0;
-			while(t_6<t_5.Length()){
-				String t_f2=t_5[t_6];
-				t_6=t_6+1;
-				if(t_f2.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p3=t_dst+String(L"/",1)+t_f2;
-				String t_r3=t_p3.Slice(t_dir.Length()+1);
-				String t_t3=t_dataPath+String(L"/",1)+t_r3;
-				int t_42=FileType(t_p3);
-				if(t_42==1){
-					if(!t_udata->p_Contains(t_p3)){
-						DeleteFile(t_p3);
-					}
-				}else{
-					if(t_42==2){
-						if(FileType(t_t3)==2){
-							t_dsts->p_Push(t_p3);
-						}else{
-							bb_os_DeleteDir(t_p3,true);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-void c_AGKBuilder_android::p_MakeAndroid(){
-	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
-	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
-	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_google",41);
-	String t_lp=String(L"ndk.dir=",8)+m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\n",1);
-	t_lp=t_lp+(String(L"sdk.dir=",8)+m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	SaveString(t_lp,t_buildpath+String(L"\\local.properties",17));
-	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
-	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
-	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
-	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
-	if(m_tcc->m_opt_build){
-		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
-		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
-		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
-		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
-		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
-		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
-		ChangeDir(t_buildpath);
-		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
-		if(m_tcc->m_opt_config==String(L"release",7)){
-			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
-		}
-		String t_gradle=String();
-		if(HostOS()==String(L"winnt",5)){
-			t_gradle=String(L"gradlew",7);
-		}else{
-			t_gradle=String(L"./gradlew",9);
-		}
-		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
-			bb_transcc_Die(String(L"Android build failed.",21));
-		}else{
-			if(m_tcc->m_opt_config==String(L"release",7)){
-				String t_adb=String(L"adb",3);
-				String t_jarsigner=String(L"jarsigner",9);
-				if((m_tcc->m_ANDROID_PATH).Length()!=0){
-					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-				}
-				if((m_tcc->m_ANDROID_PATH).Length()!=0){
-					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
-				}
-				String t__file=CurrentDir();
-				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
-				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
-				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
-				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
-				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
-				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
-			}else{
-				if(m_tcc->m_opt_config==String(L"debug",5)){
-					String t_adb2=String(L"adb",3);
-					if((m_tcc->m_ANDROID_PATH).Length()!=0){
-						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-					}
-					String t__file2=CurrentDir();
-					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
-					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
-					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
-				}
-			}
-		}
-		if(m_tcc->m_opt_run){
-			String t_adb3=String(L"adb",3);
-			if((m_tcc->m_ANDROID_PATH).Length()!=0){
-				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-			}
-			if((m_tcc->m_ANDROID_PATH).Length()!=0){
-				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-			}
-			t_app_package=String(L"com.mycompany.mytemplate",24);
-			p_Execute(t_adb3+String(L" logcat -c",10),false);
-			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
-			if(m_tcc->m_opt_config==String(L"debug",5)){
-				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
-			}
-		}
-	}
-}
-void c_AGKBuilder_android::p_MakeTarget(){
-	String t_2=HostOS();
-	if(t_2==String(L"winnt",5)){
-		p_MakeAndroid();
-	}
-}
-void c_AGKBuilder_android::mark(){
-	c_Builder::mark();
-}
-c_AGKBuilder_android_ouya::c_AGKBuilder_android_ouya(){
-}
-c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new(c_TransCC* t_tcc){
-	c_Builder::m_new(t_tcc);
-	return this;
-}
-c_AGKBuilder_android_ouya* c_AGKBuilder_android_ouya::m_new2(){
-	c_Builder::m_new2();
-	return this;
-}
-bool c_AGKBuilder_android_ouya::p_IsValid(){
-	String t_1=HostOS();
-	if(t_1==String(L"winnt",5)){
-		if(FileType(m_tcc->m_AGK_PATH+String(L"/Tier 1/Compiler/AGKBroadcaster.exe",35))==1 && ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
-			return true;
-		}
-	}else{
-		if(t_1==String(L"macos",5)){
-			if(FileType(m_tcc->m_AGK_PATH+String(L"/AppGameKit.app",15))==2){
-				return true;
-			}
-		}else{
-			return true;
-		}
-	}
-	return false;
-}
-void c_AGKBuilder_android_ouya::p_Begin(){
-	bb_config_ENV_LANG=String(L"cpp",3);
-	bb_translator__trans=((new c_CppTranslator)->m_new());
-}
-String c_AGKBuilder_android_ouya::p_Config(){
-	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
-		}
-	}
-	return t_config->p_Join(String(L"\n",1));
-}
-void c_AGKBuilder_android_ouya::p_CreateMediaDir(String t_dir){
-	t_dir=RealPath(t_dir);
-	if(!m_syncData){
-		bb_os_DeleteDir(t_dir,true);
-	}
-	CreateDir(t_dir);
-	if(FileType(t_dir)!=2){
-		bb_transcc_Die(String(L"Failed to create target project data dir: ",42)+t_dir);
-	}
-	String t_dataPath=bb_os_ExtractDir(bb_os_StripExt(m_tcc->m_opt_srcpath))+String(L"/media",6);
-	if(FileType(t_dataPath)!=2){
-		t_dataPath=String();
-	}
-	c_StringSet* t_udata=(new c_StringSet)->m_new();
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_srcs=(new c_StringStack)->m_new2();
-		t_srcs->p_Push(t_dataPath);
-		while(!t_srcs->p_IsEmpty()){
-			String t_src=t_srcs->p_Pop();
-			Array<String > t_=LoadDir(t_src);
-			int t_2=0;
-			while(t_2<t_.Length()){
-				String t_f=t_[t_2];
-				t_2=t_2+1;
-				if(t_f.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p=t_src+String(L"/",1)+t_f;
-				String t_r=t_p.Slice(t_dataPath.Length()+1);
-				String t_t=t_dir+String(L"/",1)+t_r;
-				int t_3=FileType(t_p);
-				if(t_3==1){
-					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
-						p_CCopyFile(t_p,t_t);
-						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
-					}
-				}else{
-					if(t_3==2){
-						CreateDir(t_t);
-						t_srcs->p_Push(t_p);
-					}
-				}
-			}
-		}
-	}
-	c_Enumerator* t_4=m_app->m_fileImports->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		String t_p2=t_4->p_NextObject();
-		String t_r2=bb_os_StripDir(t_p2);
-		String t_t2=t_dir+String(L"/",1)+t_r2;
-		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
-			p_CCopyFile(t_p2,t_t2);
-			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
-		}
-	}
-	if((t_dataPath).Length()!=0){
-		c_StringStack* t_dsts=(new c_StringStack)->m_new2();
-		t_dsts->p_Push(t_dir);
-		while(!t_dsts->p_IsEmpty()){
-			String t_dst=t_dsts->p_Pop();
-			Array<String > t_5=LoadDir(t_dst);
-			int t_6=0;
-			while(t_6<t_5.Length()){
-				String t_f2=t_5[t_6];
-				t_6=t_6+1;
-				if(t_f2.StartsWith(String(L".",1))){
-					continue;
-				}
-				String t_p3=t_dst+String(L"/",1)+t_f2;
-				String t_r3=t_p3.Slice(t_dir.Length()+1);
-				String t_t3=t_dataPath+String(L"/",1)+t_r3;
-				int t_42=FileType(t_p3);
-				if(t_42==1){
-					if(!t_udata->p_Contains(t_p3)){
-						DeleteFile(t_p3);
-					}
-				}else{
-					if(t_42==2){
-						if(FileType(t_t3)==2){
-							t_dsts->p_Push(t_p3);
-						}else{
-							bb_os_DeleteDir(t_p3,true);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-void c_AGKBuilder_android_ouya::p_MakeAndroid(){
-	String t_app_label=bb_config_GetConfigVar(String(L"ANDROID_APP_LABEL",17));
-	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
-	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	String t_buildpath=String();
-	t_buildpath=CurrentDir()+String(L"\\AGKTemplate\\apps\\template_android_ouya",39);
-	bbPrint(t_buildpath);
-	String t_lp=String(L"ndk.dir=",8)+m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\n",1);
-	t_lp=t_lp+(String(L"sdk.dir=",8)+m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	SaveString(t_lp,t_buildpath+String(L"\\local.properties",17));
-	String t_template=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
-	String t_templateh=LoadString(t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
-	t_template=bb_transcc_ReplaceBlock(t_template,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_templateh=bb_transcc_ReplaceBlock(t_templateh,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_template,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.cpp",39));
-	SaveString(t_templateh,t_buildpath+String(L"\\AGK2Template\\src\\main\\jni\\template.h",37));
-	p_CreateMediaDir(t_buildpath+String(L"\\AGK2Template\\src\\main\\assets\\media",35));
-	if(m_tcc->m_opt_build){
-		ChangeDir(t_buildpath+String(L"/AGK2Template/src/main",22));
-		String t_ndkbuild=m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2))+String(L"\\ndk-build",10);
-		bbPrint(String(L"compiling native code... ",25)+CurrentDir());
-		p_Execute(t_ndkbuild+String(L" NDK_OUT=../../build/jniObjs NDK_LIBS_OUT=./jniLibs",51),false);
-		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\arm64-v8a\\libarcore_sdk.so",70),String(L"jniLibs\\arm64-v8a\\libarcore_sdk.so",34));
-		CopyFile(String(L"..\\..\\..\\..\\..\\platform\\android\\ARCore\\libs\\armeabi-v7a\\libarcore_sdk.so",72),String(L"jniLibs\\armeabi-v7a\\libarcore_sdk.so",36));
-		ChangeDir(t_buildpath);
-		String t_gradlecfg=String(L":AGK2Template:assembleDebug",27);
-		if(m_tcc->m_opt_config==String(L"release",7)){
-			t_gradlecfg=String(L":AGK2Template:assembleRelease",29);
-		}
-		String t_gradle=String();
-		if(HostOS()==String(L"winnt",5)){
-			t_gradle=String(L"gradlew",7);
-		}else{
-			t_gradle=String(L"./gradlew",9);
-		}
-		if(!p_Execute(t_gradle+String(L" ",1)+t_gradlecfg,false)){
-			bb_transcc_Die(String(L"Android build failed.",21));
-		}else{
-			if(m_tcc->m_opt_config==String(L"release",7)){
-				String t_adb=String(L"adb",3);
-				String t_jarsigner=String(L"jarsigner",9);
-				if((m_tcc->m_ANDROID_PATH).Length()!=0){
-					t_adb=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-				}
-				if((m_tcc->m_ANDROID_PATH).Length()!=0){
-					t_jarsigner=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/jre/bin/jarsigner\"",19);
-				}
-				String t__file=CurrentDir();
-				t__file=t__file+String(L"/AGK2Template/build/outputs/apk/release/AGK2Template-release-unsigned.apk",73);
-				t__file=t__file.Replace(String(L"/",1),String(L"\\",1));
-				bbPrint(String(L"signing ",8)+t__file+String(L" ...",4));
-				p_Execute(t_jarsigner+String(L" -keystore \"",12)+CurrentDir()+String(L"/release-key.keystore\" -storepass password -keypass password \"",62)+t__file+String(L"\" release-key-alias",19),false);
-				bbPrint(String(L"installing ",11)+t__file+String(L" ...",4));
-				p_Execute(t_adb+String(L" install -r ",12)+t__file,false);
-			}else{
-				if(m_tcc->m_opt_config==String(L"debug",5)){
-					String t_adb2=String(L"adb",3);
-					if((m_tcc->m_ANDROID_PATH).Length()!=0){
-						t_adb2=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-					}
-					String t__file2=CurrentDir();
-					t__file2=t__file2+String(L"/AGK2Template/build/outputs/apk/debug/AGK2Template-debug.apk",60);
-					bbPrint(String(L"installing ",11)+t__file2+String(L" ...",4));
-					p_Execute(t_adb2+String(L" install -r ",12)+t__file2,false);
-				}
-			}
-		}
-		if(m_tcc->m_opt_run){
-			String t_adb3=String(L"adb",3);
-			if((m_tcc->m_ANDROID_PATH).Length()!=0){
-				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-			}
-			if((m_tcc->m_ANDROID_PATH).Length()!=0){
-				t_adb3=String(L"\"",1)+m_tcc->m_ANDROID_PATH+String(L"/platform-tools/adb\"",20);
-			}
-			t_app_package=String(L"com.mycompany.mytemplate",24);
-			p_Execute(t_adb3+String(L" logcat -c",10),false);
-			p_Execute(t_adb3+String(L" shell am start -n ",19)+t_app_package+String(L"/",1)+String(L"com.thegamecreators.agk_player.AGKActivity",42),false);
-			if(m_tcc->m_opt_config==String(L"debug",5)){
-				p_Execute(t_adb3+String(L" logcat [AGKActivity]:I *:E",27),false);
-			}
-		}
-	}
-}
-void c_AGKBuilder_android_ouya::p_MakeTarget(){
-	String t_2=HostOS();
-	if(t_2==String(L"winnt",5)){
-		p_MakeAndroid();
-	}
-}
-void c_AGKBuilder_android_ouya::mark(){
 	c_Builder::mark();
 }
 c_CustomBuilder::c_CustomBuilder(){
@@ -23228,19 +21761,10 @@ void c_CustomBuilder::mark(){
 c_StringMap3* bb_builders_Builders(c_TransCC* t_tcc){
 	c_StringMap3* t_builders=(new c_StringMap3)->m_new();
 	t_builders->p_Set3(String(L"android",7),((new c_AndroidBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"android_ndk",11),((new c_AndroidNdkBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"glfw",4),((new c_GlfwBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"html5",5),((new c_Html5Builder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"ios",3),((new c_IosBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"flash",5),((new c_FlashBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"psm",3),((new c_PsmBuilder)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"stdcpp",6),((new c_StdcppBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"winrt",5),((new c_WinrtBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"xna",3),((new c_XnaBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"agk",3),((new c_AGKBuilder)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"agk_ios",7),((new c_AGKBuilder_ios)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"agk_android",11),((new c_AGKBuilder_android)->m_new(t_tcc)));
-	t_builders->p_Set3(String(L"agk_android_ouya",16),((new c_AGKBuilder_android_ouya)->m_new(t_tcc)));
 	t_builders->p_Set3(String(L"custom",6),((new c_CustomBuilder)->m_new(t_tcc)));
 	return t_builders;
 }
@@ -35963,647 +34487,6 @@ int bb_builder_GetInfo_GIF(String t_path){
 	}
 	return -1;
 }
-c_AsTranslator::c_AsTranslator(){
-}
-c_AsTranslator* c_AsTranslator::m_new(){
-	c_CTranslator::m_new();
-	return this;
-}
-String c_AsTranslator::p_TransValue(c_Type* t_ty,String t_value){
-	if((t_value).Length()!=0){
-		if(((dynamic_cast<c_IntType*>(t_ty))!=0) && t_value.StartsWith(String(L"$",1))){
-			return String(L"0x",2)+t_value.Slice(1);
-		}
-		if((dynamic_cast<c_BoolType*>(t_ty))!=0){
-			return String(L"true",4);
-		}
-		if((dynamic_cast<c_NumericType*>(t_ty))!=0){
-			return t_value;
-		}
-		if((dynamic_cast<c_StringType*>(t_ty))!=0){
-			return p_Enquote(t_value);
-		}
-	}else{
-		if((dynamic_cast<c_BoolType*>(t_ty))!=0){
-			return String(L"false",5);
-		}
-		if((dynamic_cast<c_NumericType*>(t_ty))!=0){
-			return String(L"0",1);
-		}
-		if((dynamic_cast<c_StringType*>(t_ty))!=0){
-			return String(L"\"\"",2);
-		}
-		if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
-			return String(L"[]",2);
-		}
-		if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-			return String(L"null",4);
-		}
-	}
-	bb_config_InternalErr(String(L"Internal error",14));
-	return String();
-}
-String c_AsTranslator::p_TransType(c_Type* t_ty){
-	if((dynamic_cast<c_VoidType*>(t_ty))!=0){
-		return String(L"void",4);
-	}
-	if((dynamic_cast<c_BoolType*>(t_ty))!=0){
-		return String(L"Boolean",7);
-	}
-	if((dynamic_cast<c_IntType*>(t_ty))!=0){
-		return String(L"int",3);
-	}
-	if((dynamic_cast<c_FloatType*>(t_ty))!=0){
-		return String(L"Number",6);
-	}
-	if((dynamic_cast<c_StringType*>(t_ty))!=0){
-		return String(L"String",6);
-	}
-	if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
-		return String(L"Array",5);
-	}
-	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-		return dynamic_cast<c_ObjectType*>(t_ty)->m_classDecl->m_munged;
-	}
-	bb_config_InternalErr(String(L"Internal error",14));
-	return String();
-}
-String c_AsTranslator::p_TransLocalDecl(String t_munged,c_Expr* t_init){
-	return String(L"var ",4)+t_munged+String(L":",1)+p_TransType(t_init->m_exprType)+String(L"=",1)+t_init->p_Trans();
-}
-int c_AsTranslator::p_EmitEnter(c_FuncDecl* t_func){
-	p_Emit(String(L"pushErr();",10));
-	return 0;
-}
-int c_AsTranslator::p_EmitSetErr(String t_info){
-	p_Emit(String(L"_errInfo=\"",10)+t_info.Replace(String(L"\\",1),String(L"/",1))+String(L"\";",2));
-	return 0;
-}
-int c_AsTranslator::p_EmitLeave(){
-	p_Emit(String(L"popErr();",9));
-	return 0;
-}
-String c_AsTranslator::p_TransStatic(c_Decl* t_decl){
-	if(((t_decl->p_IsExtern())!=0) && ((dynamic_cast<c_ModuleDecl*>(t_decl->m_scope))!=0)){
-		return t_decl->m_munged;
-	}else{
-		if(((bb_decl__env)!=0) && ((t_decl->m_scope)!=0) && t_decl->m_scope==(bb_decl__env->p_ClassScope())){
-			return t_decl->m_munged;
-		}else{
-			if((dynamic_cast<c_ClassDecl*>(t_decl->m_scope))!=0){
-				return t_decl->m_scope->m_munged+String(L".",1)+t_decl->m_munged;
-			}else{
-				if((dynamic_cast<c_ModuleDecl*>(t_decl->m_scope))!=0){
-					return t_decl->m_munged;
-				}
-			}
-		}
-	}
-	bb_config_InternalErr(String(L"Internal error",14));
-	return String();
-}
-String c_AsTranslator::p_TransGlobal(c_GlobalDecl* t_decl){
-	return p_TransStatic(t_decl);
-}
-String c_AsTranslator::p_TransField(c_FieldDecl* t_decl,c_Expr* t_lhs){
-	if((t_lhs)!=0){
-		String t_t_lhs=p_TransSubExpr(t_lhs,2);
-		if(bb_config_ENV_CONFIG==String(L"debug",5)){
-			t_t_lhs=String(L"dbg_object",10)+p_Bra(t_t_lhs);
-		}
-		return t_t_lhs+String(L".",1)+t_decl->m_munged;
-	}
-	return t_decl->m_munged;
-}
-String c_AsTranslator::p_TransValDecl(c_ValDecl* t_decl){
-	return t_decl->m_munged+String(L":",1)+p_TransType(t_decl->m_type);
-}
-int c_AsTranslator::p_EmitFuncDecl(c_FuncDecl* t_decl){
-	p_BeginLocalScope();
-	String t_args=String();
-	Array<c_ArgDecl* > t_=t_decl->m_argDecls;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		c_ArgDecl* t_arg=t_[t_2];
-		t_2=t_2+1;
-		p_MungDecl(t_arg);
-		if((t_args).Length()!=0){
-			t_args=t_args+String(L",",1);
-		}
-		t_args=t_args+p_TransValDecl(t_arg);
-	}
-	String t_t=String(L"function ",9)+t_decl->m_munged+p_Bra(t_args)+String(L":",1)+p_TransType(t_decl->m_retType);
-	c_ClassDecl* t_cdecl=t_decl->p_ClassScope();
-	if(((t_cdecl)!=0) && ((t_cdecl->p_IsInterface())!=0)){
-		p_Emit(t_t+String(L";",1));
-	}else{
-		String t_q=String(L"internal ",9);
-		if((t_cdecl)!=0){
-			t_q=String(L"public ",7);
-			if(t_decl->p_IsStatic()){
-				t_q=t_q+String(L"static ",7);
-			}
-			if((t_decl->m_overrides)!=0){
-				t_q=t_q+String(L"override ",9);
-			}
-		}
-		p_Emit(t_q+t_t+String(L"{",1));
-		if((t_decl->p_IsAbstract())!=0){
-			if((dynamic_cast<c_VoidType*>(t_decl->m_retType))!=0){
-				p_Emit(String(L"return;",7));
-			}else{
-				p_Emit(String(L"return ",7)+p_TransValue(t_decl->m_retType,String())+String(L";",1));
-			}
-		}else{
-			p_EmitBlock((t_decl),true);
-		}
-		p_Emit(String(L"}",1));
-	}
-	p_EndLocalScope();
-	return 0;
-}
-int c_AsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
-	String t_classid=t_classDecl->m_munged;
-	String t_superid=t_classDecl->m_superClass->m_munged;
-	if((t_classDecl->p_IsInterface())!=0){
-		String t_bases=String();
-		Array<c_ClassDecl* > t_=t_classDecl->m_implments;
-		int t_2=0;
-		while(t_2<t_.Length()){
-			c_ClassDecl* t_iface=t_[t_2];
-			t_2=t_2+1;
-			if((t_bases).Length()!=0){
-				t_bases=t_bases+String(L",",1);
-			}else{
-				t_bases=String(L" extends ",9);
-			}
-			t_bases=t_bases+t_iface->m_munged;
-		}
-		p_Emit(String(L"interface ",10)+t_classid+t_bases+String(L"{",1));
-		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
-		while(t_3->p_HasNext()){
-			c_Decl* t_decl=t_3->p_NextObject();
-			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
-			if(!((t_fdecl)!=0)){
-				continue;
-			}
-			p_EmitFuncDecl(t_fdecl);
-		}
-		p_Emit(String(L"}",1));
-		return 0;
-	}
-	String t_bases2=String();
-	Array<c_ClassDecl* > t_4=t_classDecl->m_implments;
-	int t_5=0;
-	while(t_5<t_4.Length()){
-		c_ClassDecl* t_iface2=t_4[t_5];
-		t_5=t_5+1;
-		if((t_bases2).Length()!=0){
-			t_bases2=t_bases2+String(L",",1);
-		}else{
-			t_bases2=String(L" implements ",12);
-		}
-		t_bases2=t_bases2+t_iface2->m_munged;
-	}
-	p_Emit(String(L"class ",6)+t_classid+String(L" extends ",9)+t_superid+t_bases2+String(L"{",1));
-	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
-	while(t_6->p_HasNext()){
-		c_Decl* t_decl2=t_6->p_NextObject();
-		c_FieldDecl* t_tdecl=dynamic_cast<c_FieldDecl*>(t_decl2);
-		if((t_tdecl)!=0){
-			p_Emit(String(L"internal var ",13)+p_TransValDecl(t_tdecl)+String(L"=",1)+t_tdecl->m_init->p_Trans()+String(L";",1));
-			continue;
-		}
-		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl2);
-		if((t_gdecl)!=0){
-			p_Emit(String(L"internal static var ",20)+p_TransValDecl(t_gdecl)+String(L";",1));
-			continue;
-		}
-		c_FuncDecl* t_fdecl2=dynamic_cast<c_FuncDecl*>(t_decl2);
-		if((t_fdecl2)!=0){
-			p_EmitFuncDecl(t_fdecl2);
-			continue;
-		}
-	}
-	p_Emit(String(L"}",1));
-	return 0;
-}
-String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
-	t_app->m_mainFunc->m_munged=String(L"bbMain",6);
-	c_ValueEnumerator* t_=t_app->m_imported->p_Values()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_ModuleDecl* t_decl=t_->p_NextObject();
-		p_MungDecl(t_decl);
-	}
-	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
-	while(t_2->p_HasNext()){
-		c_Decl* t_decl2=t_2->p_NextObject();
-		p_MungDecl(t_decl2);
-		c_ClassDecl* t_cdecl=dynamic_cast<c_ClassDecl*>(t_decl2);
-		if(!((t_cdecl)!=0)){
-			continue;
-		}
-		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
-		while(t_3->p_HasNext()){
-			c_Decl* t_decl3=t_3->p_NextObject();
-			if(((dynamic_cast<c_FuncDecl*>(t_decl3))!=0) && dynamic_cast<c_FuncDecl*>(t_decl3)->p_IsCtor()){
-				t_decl3->m_ident=t_cdecl->m_ident+String(L"_",1)+t_decl3->m_ident;
-			}
-			p_MungDecl(t_decl3);
-		}
-	}
-	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		c_Decl* t_decl4=t_4->p_NextObject();
-		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
-		if((t_gdecl)!=0){
-			p_Emit(String(L"var ",4)+p_TransValDecl(t_gdecl)+String(L";",1));
-			continue;
-		}
-		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl4);
-		if((t_fdecl)!=0){
-			p_EmitFuncDecl(t_fdecl);
-			continue;
-		}
-		c_ClassDecl* t_cdecl2=dynamic_cast<c_ClassDecl*>(t_decl4);
-		if((t_cdecl2)!=0){
-			p_EmitClassDecl(t_cdecl2);
-			continue;
-		}
-	}
-	p_BeginLocalScope();
-	p_Emit(String(L"function bbInit():void{",23));
-	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
-	while(t_5->p_HasNext()){
-		c_GlobalDecl* t_decl5=t_5->p_NextObject();
-		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
-	}
-	p_Emit(String(L"}",1));
-	p_EndLocalScope();
-	return p_JoinLines();
-}
-String c_AsTranslator::p_TransArgs(Array<c_Expr* > t_args){
-	String t_t=String();
-	Array<c_Expr* > t_=t_args;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		c_Expr* t_arg=t_[t_2];
-		t_2=t_2+1;
-		if((t_t).Length()!=0){
-			t_t=t_t+String(L",",1);
-		}
-		t_t=t_t+t_arg->p_Trans();
-	}
-	return p_Bra(t_t);
-}
-String c_AsTranslator::p_TransFunc(c_FuncDecl* t_decl,Array<c_Expr* > t_args,c_Expr* t_lhs){
-	if(t_decl->p_IsMethod()){
-		String t_t_lhs=String(L"this",4);
-		if((t_lhs)!=0){
-			t_t_lhs=p_TransSubExpr(t_lhs,2);
-		}
-		return t_t_lhs+String(L".",1)+t_decl->m_munged+p_TransArgs(t_args);
-	}
-	return p_TransStatic(t_decl)+p_TransArgs(t_args);
-}
-String c_AsTranslator::p_TransSuperFunc(c_FuncDecl* t_decl,Array<c_Expr* > t_args){
-	return String(L"super.",6)+t_decl->m_munged+p_TransArgs(t_args);
-}
-String c_AsTranslator::p_TransConstExpr(c_ConstExpr* t_expr){
-	return p_TransValue(t_expr->m_exprType,t_expr->m_value);
-}
-String c_AsTranslator::p_TransNewObjectExpr(c_NewObjectExpr* t_expr){
-	String t_t=String(L"(new ",5)+t_expr->m_classDecl->m_munged+String(L")",1);
-	if((t_expr->m_ctor)!=0){
-		t_t=t_t+(String(L".",1)+t_expr->m_ctor->m_munged+p_TransArgs(t_expr->m_args));
-	}
-	return t_t;
-}
-String c_AsTranslator::p_TransNewArrayExpr(c_NewArrayExpr* t_expr){
-	String t_texpr=t_expr->m_expr->p_Trans();
-	c_Type* t_ty=t_expr->m_ty;
-	if((dynamic_cast<c_BoolType*>(t_ty))!=0){
-		return String(L"new_bool_array(",15)+t_texpr+String(L")",1);
-	}
-	if((dynamic_cast<c_NumericType*>(t_ty))!=0){
-		return String(L"new_number_array(",17)+t_texpr+String(L")",1);
-	}
-	if((dynamic_cast<c_StringType*>(t_ty))!=0){
-		return String(L"new_string_array(",17)+t_texpr+String(L")",1);
-	}
-	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-		return String(L"new_object_array(",17)+t_texpr+String(L")",1);
-	}
-	if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
-		return String(L"new_array_array(",16)+t_texpr+String(L")",1);
-	}
-	bb_config_InternalErr(String(L"Internal error",14));
-	return String();
-}
-String c_AsTranslator::p_TransSelfExpr(c_SelfExpr* t_expr){
-	return String(L"this",4);
-}
-String c_AsTranslator::p_TransCastExpr(c_CastExpr* t_expr){
-	c_Type* t_dst=t_expr->m_exprType;
-	c_Type* t_src=t_expr->m_expr->m_exprType;
-	String t_texpr=p_Bra(t_expr->m_expr->p_Trans());
-	if((dynamic_cast<c_BoolType*>(t_dst))!=0){
-		if((dynamic_cast<c_BoolType*>(t_src))!=0){
-			return t_texpr;
-		}
-		if((dynamic_cast<c_IntType*>(t_src))!=0){
-			return p_Bra(t_texpr+String(L"!=0",3));
-		}
-		if((dynamic_cast<c_FloatType*>(t_src))!=0){
-			return p_Bra(t_texpr+String(L"!=0.0",5));
-		}
-		if((dynamic_cast<c_StringType*>(t_src))!=0){
-			return p_Bra(t_texpr+String(L".length!=0",10));
-		}
-		if((dynamic_cast<c_ArrayType*>(t_src))!=0){
-			return p_Bra(t_texpr+String(L".length!=0",10));
-		}
-		if((dynamic_cast<c_ObjectType*>(t_src))!=0){
-			return p_Bra(t_texpr+String(L"!=null",6));
-		}
-	}else{
-		if((dynamic_cast<c_IntType*>(t_dst))!=0){
-			if((dynamic_cast<c_BoolType*>(t_src))!=0){
-				return p_Bra(t_texpr+String(L"?1:0",4));
-			}
-			if((dynamic_cast<c_IntType*>(t_src))!=0){
-				return t_texpr;
-			}
-			if((dynamic_cast<c_FloatType*>(t_src))!=0){
-				return p_Bra(t_texpr+String(L"|0",2));
-			}
-			if((dynamic_cast<c_StringType*>(t_src))!=0){
-				return String(L"parseInt",8)+p_Bra(t_texpr+String(L",10",3));
-			}
-		}else{
-			if((dynamic_cast<c_FloatType*>(t_dst))!=0){
-				if((dynamic_cast<c_NumericType*>(t_src))!=0){
-					return t_texpr;
-				}
-				if((dynamic_cast<c_StringType*>(t_src))!=0){
-					return String(L"parseFloat",10)+t_texpr;
-				}
-			}else{
-				if((dynamic_cast<c_StringType*>(t_dst))!=0){
-					if((dynamic_cast<c_NumericType*>(t_src))!=0){
-						return String(L"String",6)+t_texpr;
-					}
-					if((dynamic_cast<c_StringType*>(t_src))!=0){
-						return t_texpr;
-					}
-				}else{
-					if(((dynamic_cast<c_ObjectType*>(t_dst))!=0) && ((dynamic_cast<c_ObjectType*>(t_src))!=0)){
-						if((t_src->p_GetClass()->p_ExtendsClass(t_dst->p_GetClass()))!=0){
-							return t_texpr;
-						}else{
-							return p_Bra(t_texpr+String(L" as ",4)+p_TransType(t_dst));
-						}
-					}
-				}
-			}
-		}
-	}
-	bb_config_Err(String(L"AS translator can't convert ",28)+t_src->p_ToString()+String(L" to ",4)+t_dst->p_ToString());
-	return String();
-}
-String c_AsTranslator::p_TransUnaryExpr(c_UnaryExpr* t_expr){
-	int t_pri=p_ExprPri(t_expr);
-	String t_t_expr=p_TransSubExpr(t_expr->m_expr,t_pri);
-	return p_TransUnaryOp(t_expr->m_op)+t_t_expr;
-}
-String c_AsTranslator::p_TransBinaryExpr(c_BinaryExpr* t_expr){
-	int t_pri=p_ExprPri(t_expr);
-	String t_t_lhs=p_TransSubExpr(t_expr->m_lhs,t_pri);
-	String t_t_rhs=p_TransSubExpr(t_expr->m_rhs,t_pri-1);
-	String t_t_expr=t_t_lhs+p_TransBinaryOp(t_expr->m_op,t_t_rhs)+t_t_rhs;
-	if(t_expr->m_op==String(L"/",1) && ((dynamic_cast<c_IntType*>(t_expr->m_exprType))!=0)){
-		t_t_expr=p_Bra(p_Bra(t_t_expr)+String(L"|0",2));
-	}
-	return t_t_expr;
-}
-String c_AsTranslator::p_TransIndexExpr(c_IndexExpr* t_expr){
-	String t_t_expr=p_TransSubExpr(t_expr->m_expr,2);
-	if((dynamic_cast<c_StringType*>(t_expr->m_expr->m_exprType))!=0){
-		String t_t_index=t_expr->m_index->p_Trans();
-		if(bb_config_ENV_CONFIG==String(L"debug",5)){
-			return String(L"dbg_charCodeAt(",15)+t_t_expr+String(L",",1)+t_t_index+String(L")",1);
-		}
-		return t_t_expr+String(L".charCodeAt(",12)+t_t_index+String(L")",1);
-	}else{
-		if(bb_config_ENV_CONFIG==String(L"debug",5)){
-			String t_t_index2=t_expr->m_index->p_Trans();
-			return String(L"dbg_array(",10)+t_t_expr+String(L",",1)+t_t_index2+String(L")[dbg_index]",12);
-		}else{
-			String t_t_index3=t_expr->m_index->p_Trans();
-			return t_t_expr+String(L"[",1)+t_t_index3+String(L"]",1);
-		}
-	}
-}
-String c_AsTranslator::p_TransSliceExpr(c_SliceExpr* t_expr){
-	String t_t_expr=p_TransSubExpr(t_expr->m_expr,2);
-	String t_t_args=String(L"0",1);
-	if((t_expr->m_from)!=0){
-		t_t_args=t_expr->m_from->p_Trans();
-	}
-	if((t_expr->m_term)!=0){
-		t_t_args=t_t_args+(String(L",",1)+t_expr->m_term->p_Trans());
-	}
-	return t_t_expr+String(L".slice(",7)+t_t_args+String(L")",1);
-}
-String c_AsTranslator::p_TransArrayExpr(c_ArrayExpr* t_expr){
-	String t_t=String();
-	Array<c_Expr* > t_=t_expr->m_exprs;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		c_Expr* t_elem=t_[t_2];
-		t_2=t_2+1;
-		if((t_t).Length()!=0){
-			t_t=t_t+String(L",",1);
-		}
-		t_t=t_t+t_elem->p_Trans();
-	}
-	return String(L"[",1)+t_t+String(L"]",1);
-}
-String c_AsTranslator::p_TransIntrinsicExpr(c_Decl* t_decl,c_Expr* t_expr,Array<c_Expr* > t_args){
-	String t_texpr=String();
-	String t_arg0=String();
-	String t_arg1=String();
-	String t_arg2=String();
-	if((t_expr)!=0){
-		t_texpr=p_TransSubExpr(t_expr,2);
-	}
-	if(t_args.Length()>0 && ((t_args[0])!=0)){
-		t_arg0=t_args[0]->p_Trans();
-	}
-	if(t_args.Length()>1 && ((t_args[1])!=0)){
-		t_arg1=t_args[1]->p_Trans();
-	}
-	if(t_args.Length()>2 && ((t_args[2])!=0)){
-		t_arg2=t_args[2]->p_Trans();
-	}
-	String t_id=t_decl->m_munged.Slice(1);
-	String t_1=t_id;
-	if(t_1==String(L"print",5)){
-		return String(L"print",5)+p_Bra(t_arg0);
-	}else{
-		if(t_1==String(L"error",5)){
-			return String(L"error",5)+p_Bra(t_arg0);
-		}else{
-			if(t_1==String(L"debuglog",8)){
-				return String(L"debugLog",8)+p_Bra(t_arg0);
-			}else{
-				if(t_1==String(L"debugstop",9)){
-					return String(L"debugStop()",11);
-				}else{
-					if(t_1==String(L"length",6)){
-						return t_texpr+String(L".length",7);
-					}else{
-						if(t_1==String(L"resize",6)){
-							c_Type* t_ty=dynamic_cast<c_ArrayType*>(t_expr->m_exprType)->m_elemType;
-							if((dynamic_cast<c_BoolType*>(t_ty))!=0){
-								return String(L"resize_bool_array",17)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}
-							if((dynamic_cast<c_NumericType*>(t_ty))!=0){
-								return String(L"resize_number_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}
-							if((dynamic_cast<c_StringType*>(t_ty))!=0){
-								return String(L"resize_string_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}
-							if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
-								return String(L"resize_array_array",18)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}
-							if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-								return String(L"resize_object_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}
-							bb_config_InternalErr(String(L"Internal error",14));
-						}else{
-							if(t_1==String(L"compare",7)){
-								return String(L"string_compare",14)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-							}else{
-								if(t_1==String(L"find",4)){
-									return t_texpr+String(L".indexOf",8)+p_Bra(t_arg0+String(L",",1)+t_arg1);
-								}else{
-									if(t_1==String(L"findlast",8)){
-										return t_texpr+String(L".lastIndexOf",12)+p_Bra(t_arg0);
-									}else{
-										if(t_1==String(L"findlast2",9)){
-											return t_texpr+String(L".lastIndexOf",12)+p_Bra(t_arg0+String(L",",1)+t_arg1);
-										}else{
-											if(t_1==String(L"trim",4)){
-												return String(L"string_trim",11)+p_Bra(t_texpr);
-											}else{
-												if(t_1==String(L"join",4)){
-													return t_arg0+String(L".join",5)+p_Bra(t_texpr);
-												}else{
-													if(t_1==String(L"split",5)){
-														return t_texpr+String(L".split",6)+p_Bra(t_arg0);
-													}else{
-														if(t_1==String(L"replace",7)){
-															return String(L"string_replace",14)+p_Bra(t_texpr+String(L",",1)+t_arg0+String(L",",1)+t_arg1);
-														}else{
-															if(t_1==String(L"tolower",7)){
-																return t_texpr+String(L".toLowerCase()",14);
-															}else{
-																if(t_1==String(L"toupper",7)){
-																	return t_texpr+String(L".toUpperCase()",14);
-																}else{
-																	if(t_1==String(L"contains",8)){
-																		return p_Bra(t_texpr+String(L".indexOf",8)+p_Bra(t_arg0)+String(L"!=-1",4));
-																	}else{
-																		if(t_1==String(L"startswith",10)){
-																			return String(L"string_startswith",17)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-																		}else{
-																			if(t_1==String(L"endswith",8)){
-																				return String(L"string_endswith",15)+p_Bra(t_texpr+String(L",",1)+t_arg0);
-																			}else{
-																				if(t_1==String(L"tochars",7)){
-																					return String(L"string_tochars",14)+p_Bra(t_texpr);
-																				}else{
-																					if(t_1==String(L"fromchar",8)){
-																						return String(L"String.fromCharCode",19)+p_Bra(t_arg0);
-																					}else{
-																						if(t_1==String(L"fromchars",9)){
-																							return String(L"string_fromchars",16)+p_Bra(t_arg0);
-																						}else{
-																							if(t_1==String(L"sin",3) || t_1==String(L"cos",3) || t_1==String(L"tan",3)){
-																								return String(L"Math.",5)+t_id+p_Bra(p_Bra(t_arg0)+String(L"*D2R",4));
-																							}else{
-																								if(t_1==String(L"asin",4) || t_1==String(L"acos",4) || t_1==String(L"atan",4)){
-																									return p_Bra(String(L"Math.",5)+t_id+p_Bra(t_arg0)+String(L"*R2D",4));
-																								}else{
-																									if(t_1==String(L"atan2",5)){
-																										return p_Bra(String(L"Math.",5)+t_id+p_Bra(t_arg0+String(L",",1)+t_arg1)+String(L"*R2D",4));
-																									}else{
-																										if(t_1==String(L"sinr",4) || t_1==String(L"cosr",4) || t_1==String(L"tanr",4)){
-																											return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0);
-																										}else{
-																											if(t_1==String(L"asinr",5) || t_1==String(L"acosr",5) || t_1==String(L"atanr",5)){
-																												return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0);
-																											}else{
-																												if(t_1==String(L"atan2r",6)){
-																													return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0+String(L",",1)+t_arg1);
-																												}else{
-																													if(t_1==String(L"sqrt",4) || t_1==String(L"floor",5) || t_1==String(L"ceil",4) || t_1==String(L"log",3) || t_1==String(L"exp",3)){
-																														return String(L"Math.",5)+t_id+p_Bra(t_arg0);
-																													}else{
-																														if(t_1==String(L"pow",3)){
-																															return String(L"Math.",5)+t_id+p_Bra(t_arg0+String(L",",1)+t_arg1);
-																														}
-																													}
-																												}
-																											}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	bb_config_InternalErr(String(L"Internal error",14));
-	return String();
-}
-String c_AsTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
-	p_Emit(String(L"try{",4));
-	int t_unr=p_EmitBlock(t_stmt->m_block,true);
-	Array<c_CatchStmt* > t_=t_stmt->m_catches;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		c_CatchStmt* t_c=t_[t_2];
-		t_2=t_2+1;
-		p_MungDecl(t_c->m_init);
-		p_Emit(String(L"}catch(",7)+t_c->m_init->m_munged+String(L":",1)+p_TransType(t_c->m_init->m_type)+String(L"){",2));
-		int t_unr2=p_EmitBlock(t_c->m_block,true);
-	}
-	p_Emit(String(L"}",1));
-	return String();
-}
-void c_AsTranslator::mark(){
-	c_CTranslator::mark();
-}
 c_CsTranslator::c_CsTranslator(){
 }
 c_CsTranslator* c_CsTranslator::m_new(){
@@ -37267,6 +35150,647 @@ String c_CsTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
 	return String();
 }
 void c_CsTranslator::mark(){
+	c_CTranslator::mark();
+}
+c_AsTranslator::c_AsTranslator(){
+}
+c_AsTranslator* c_AsTranslator::m_new(){
+	c_CTranslator::m_new();
+	return this;
+}
+String c_AsTranslator::p_TransValue(c_Type* t_ty,String t_value){
+	if((t_value).Length()!=0){
+		if(((dynamic_cast<c_IntType*>(t_ty))!=0) && t_value.StartsWith(String(L"$",1))){
+			return String(L"0x",2)+t_value.Slice(1);
+		}
+		if((dynamic_cast<c_BoolType*>(t_ty))!=0){
+			return String(L"true",4);
+		}
+		if((dynamic_cast<c_NumericType*>(t_ty))!=0){
+			return t_value;
+		}
+		if((dynamic_cast<c_StringType*>(t_ty))!=0){
+			return p_Enquote(t_value);
+		}
+	}else{
+		if((dynamic_cast<c_BoolType*>(t_ty))!=0){
+			return String(L"false",5);
+		}
+		if((dynamic_cast<c_NumericType*>(t_ty))!=0){
+			return String(L"0",1);
+		}
+		if((dynamic_cast<c_StringType*>(t_ty))!=0){
+			return String(L"\"\"",2);
+		}
+		if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
+			return String(L"[]",2);
+		}
+		if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+			return String(L"null",4);
+		}
+	}
+	bb_config_InternalErr(String(L"Internal error",14));
+	return String();
+}
+String c_AsTranslator::p_TransType(c_Type* t_ty){
+	if((dynamic_cast<c_VoidType*>(t_ty))!=0){
+		return String(L"void",4);
+	}
+	if((dynamic_cast<c_BoolType*>(t_ty))!=0){
+		return String(L"Boolean",7);
+	}
+	if((dynamic_cast<c_IntType*>(t_ty))!=0){
+		return String(L"int",3);
+	}
+	if((dynamic_cast<c_FloatType*>(t_ty))!=0){
+		return String(L"Number",6);
+	}
+	if((dynamic_cast<c_StringType*>(t_ty))!=0){
+		return String(L"String",6);
+	}
+	if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
+		return String(L"Array",5);
+	}
+	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+		return dynamic_cast<c_ObjectType*>(t_ty)->m_classDecl->m_munged;
+	}
+	bb_config_InternalErr(String(L"Internal error",14));
+	return String();
+}
+String c_AsTranslator::p_TransLocalDecl(String t_munged,c_Expr* t_init){
+	return String(L"var ",4)+t_munged+String(L":",1)+p_TransType(t_init->m_exprType)+String(L"=",1)+t_init->p_Trans();
+}
+int c_AsTranslator::p_EmitEnter(c_FuncDecl* t_func){
+	p_Emit(String(L"pushErr();",10));
+	return 0;
+}
+int c_AsTranslator::p_EmitSetErr(String t_info){
+	p_Emit(String(L"_errInfo=\"",10)+t_info.Replace(String(L"\\",1),String(L"/",1))+String(L"\";",2));
+	return 0;
+}
+int c_AsTranslator::p_EmitLeave(){
+	p_Emit(String(L"popErr();",9));
+	return 0;
+}
+String c_AsTranslator::p_TransStatic(c_Decl* t_decl){
+	if(((t_decl->p_IsExtern())!=0) && ((dynamic_cast<c_ModuleDecl*>(t_decl->m_scope))!=0)){
+		return t_decl->m_munged;
+	}else{
+		if(((bb_decl__env)!=0) && ((t_decl->m_scope)!=0) && t_decl->m_scope==(bb_decl__env->p_ClassScope())){
+			return t_decl->m_munged;
+		}else{
+			if((dynamic_cast<c_ClassDecl*>(t_decl->m_scope))!=0){
+				return t_decl->m_scope->m_munged+String(L".",1)+t_decl->m_munged;
+			}else{
+				if((dynamic_cast<c_ModuleDecl*>(t_decl->m_scope))!=0){
+					return t_decl->m_munged;
+				}
+			}
+		}
+	}
+	bb_config_InternalErr(String(L"Internal error",14));
+	return String();
+}
+String c_AsTranslator::p_TransGlobal(c_GlobalDecl* t_decl){
+	return p_TransStatic(t_decl);
+}
+String c_AsTranslator::p_TransField(c_FieldDecl* t_decl,c_Expr* t_lhs){
+	if((t_lhs)!=0){
+		String t_t_lhs=p_TransSubExpr(t_lhs,2);
+		if(bb_config_ENV_CONFIG==String(L"debug",5)){
+			t_t_lhs=String(L"dbg_object",10)+p_Bra(t_t_lhs);
+		}
+		return t_t_lhs+String(L".",1)+t_decl->m_munged;
+	}
+	return t_decl->m_munged;
+}
+String c_AsTranslator::p_TransValDecl(c_ValDecl* t_decl){
+	return t_decl->m_munged+String(L":",1)+p_TransType(t_decl->m_type);
+}
+int c_AsTranslator::p_EmitFuncDecl(c_FuncDecl* t_decl){
+	p_BeginLocalScope();
+	String t_args=String();
+	Array<c_ArgDecl* > t_=t_decl->m_argDecls;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_ArgDecl* t_arg=t_[t_2];
+		t_2=t_2+1;
+		p_MungDecl(t_arg);
+		if((t_args).Length()!=0){
+			t_args=t_args+String(L",",1);
+		}
+		t_args=t_args+p_TransValDecl(t_arg);
+	}
+	String t_t=String(L"function ",9)+t_decl->m_munged+p_Bra(t_args)+String(L":",1)+p_TransType(t_decl->m_retType);
+	c_ClassDecl* t_cdecl=t_decl->p_ClassScope();
+	if(((t_cdecl)!=0) && ((t_cdecl->p_IsInterface())!=0)){
+		p_Emit(t_t+String(L";",1));
+	}else{
+		String t_q=String(L"internal ",9);
+		if((t_cdecl)!=0){
+			t_q=String(L"public ",7);
+			if(t_decl->p_IsStatic()){
+				t_q=t_q+String(L"static ",7);
+			}
+			if((t_decl->m_overrides)!=0){
+				t_q=t_q+String(L"override ",9);
+			}
+		}
+		p_Emit(t_q+t_t+String(L"{",1));
+		if((t_decl->p_IsAbstract())!=0){
+			if((dynamic_cast<c_VoidType*>(t_decl->m_retType))!=0){
+				p_Emit(String(L"return;",7));
+			}else{
+				p_Emit(String(L"return ",7)+p_TransValue(t_decl->m_retType,String())+String(L";",1));
+			}
+		}else{
+			p_EmitBlock((t_decl),true);
+		}
+		p_Emit(String(L"}",1));
+	}
+	p_EndLocalScope();
+	return 0;
+}
+int c_AsTranslator::p_EmitClassDecl(c_ClassDecl* t_classDecl){
+	String t_classid=t_classDecl->m_munged;
+	String t_superid=t_classDecl->m_superClass->m_munged;
+	if((t_classDecl->p_IsInterface())!=0){
+		String t_bases=String();
+		Array<c_ClassDecl* > t_=t_classDecl->m_implments;
+		int t_2=0;
+		while(t_2<t_.Length()){
+			c_ClassDecl* t_iface=t_[t_2];
+			t_2=t_2+1;
+			if((t_bases).Length()!=0){
+				t_bases=t_bases+String(L",",1);
+			}else{
+				t_bases=String(L" extends ",9);
+			}
+			t_bases=t_bases+t_iface->m_munged;
+		}
+		p_Emit(String(L"interface ",10)+t_classid+t_bases+String(L"{",1));
+		c_Enumerator3* t_3=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+		while(t_3->p_HasNext()){
+			c_Decl* t_decl=t_3->p_NextObject();
+			c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl);
+			if(!((t_fdecl)!=0)){
+				continue;
+			}
+			p_EmitFuncDecl(t_fdecl);
+		}
+		p_Emit(String(L"}",1));
+		return 0;
+	}
+	String t_bases2=String();
+	Array<c_ClassDecl* > t_4=t_classDecl->m_implments;
+	int t_5=0;
+	while(t_5<t_4.Length()){
+		c_ClassDecl* t_iface2=t_4[t_5];
+		t_5=t_5+1;
+		if((t_bases2).Length()!=0){
+			t_bases2=t_bases2+String(L",",1);
+		}else{
+			t_bases2=String(L" implements ",12);
+		}
+		t_bases2=t_bases2+t_iface2->m_munged;
+	}
+	p_Emit(String(L"class ",6)+t_classid+String(L" extends ",9)+t_superid+t_bases2+String(L"{",1));
+	c_Enumerator3* t_6=t_classDecl->p_Semanted()->p_ObjectEnumerator();
+	while(t_6->p_HasNext()){
+		c_Decl* t_decl2=t_6->p_NextObject();
+		c_FieldDecl* t_tdecl=dynamic_cast<c_FieldDecl*>(t_decl2);
+		if((t_tdecl)!=0){
+			p_Emit(String(L"internal var ",13)+p_TransValDecl(t_tdecl)+String(L"=",1)+t_tdecl->m_init->p_Trans()+String(L";",1));
+			continue;
+		}
+		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl2);
+		if((t_gdecl)!=0){
+			p_Emit(String(L"internal static var ",20)+p_TransValDecl(t_gdecl)+String(L";",1));
+			continue;
+		}
+		c_FuncDecl* t_fdecl2=dynamic_cast<c_FuncDecl*>(t_decl2);
+		if((t_fdecl2)!=0){
+			p_EmitFuncDecl(t_fdecl2);
+			continue;
+		}
+	}
+	p_Emit(String(L"}",1));
+	return 0;
+}
+String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
+	t_app->m_mainFunc->m_munged=String(L"bbMain",6);
+	c_ValueEnumerator* t_=t_app->m_imported->p_Values()->p_ObjectEnumerator();
+	while(t_->p_HasNext()){
+		c_ModuleDecl* t_decl=t_->p_NextObject();
+		p_MungDecl(t_decl);
+	}
+	c_Enumerator3* t_2=t_app->p_Semanted()->p_ObjectEnumerator();
+	while(t_2->p_HasNext()){
+		c_Decl* t_decl2=t_2->p_NextObject();
+		p_MungDecl(t_decl2);
+		c_ClassDecl* t_cdecl=dynamic_cast<c_ClassDecl*>(t_decl2);
+		if(!((t_cdecl)!=0)){
+			continue;
+		}
+		c_Enumerator3* t_3=t_cdecl->p_Semanted()->p_ObjectEnumerator();
+		while(t_3->p_HasNext()){
+			c_Decl* t_decl3=t_3->p_NextObject();
+			if(((dynamic_cast<c_FuncDecl*>(t_decl3))!=0) && dynamic_cast<c_FuncDecl*>(t_decl3)->p_IsCtor()){
+				t_decl3->m_ident=t_cdecl->m_ident+String(L"_",1)+t_decl3->m_ident;
+			}
+			p_MungDecl(t_decl3);
+		}
+	}
+	c_Enumerator3* t_4=t_app->p_Semanted()->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		c_Decl* t_decl4=t_4->p_NextObject();
+		c_GlobalDecl* t_gdecl=dynamic_cast<c_GlobalDecl*>(t_decl4);
+		if((t_gdecl)!=0){
+			p_Emit(String(L"var ",4)+p_TransValDecl(t_gdecl)+String(L";",1));
+			continue;
+		}
+		c_FuncDecl* t_fdecl=dynamic_cast<c_FuncDecl*>(t_decl4);
+		if((t_fdecl)!=0){
+			p_EmitFuncDecl(t_fdecl);
+			continue;
+		}
+		c_ClassDecl* t_cdecl2=dynamic_cast<c_ClassDecl*>(t_decl4);
+		if((t_cdecl2)!=0){
+			p_EmitClassDecl(t_cdecl2);
+			continue;
+		}
+	}
+	p_BeginLocalScope();
+	p_Emit(String(L"function bbInit():void{",23));
+	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	while(t_5->p_HasNext()){
+		c_GlobalDecl* t_decl5=t_5->p_NextObject();
+		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
+	}
+	p_Emit(String(L"}",1));
+	p_EndLocalScope();
+	return p_JoinLines();
+}
+String c_AsTranslator::p_TransArgs(Array<c_Expr* > t_args){
+	String t_t=String();
+	Array<c_Expr* > t_=t_args;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_Expr* t_arg=t_[t_2];
+		t_2=t_2+1;
+		if((t_t).Length()!=0){
+			t_t=t_t+String(L",",1);
+		}
+		t_t=t_t+t_arg->p_Trans();
+	}
+	return p_Bra(t_t);
+}
+String c_AsTranslator::p_TransFunc(c_FuncDecl* t_decl,Array<c_Expr* > t_args,c_Expr* t_lhs){
+	if(t_decl->p_IsMethod()){
+		String t_t_lhs=String(L"this",4);
+		if((t_lhs)!=0){
+			t_t_lhs=p_TransSubExpr(t_lhs,2);
+		}
+		return t_t_lhs+String(L".",1)+t_decl->m_munged+p_TransArgs(t_args);
+	}
+	return p_TransStatic(t_decl)+p_TransArgs(t_args);
+}
+String c_AsTranslator::p_TransSuperFunc(c_FuncDecl* t_decl,Array<c_Expr* > t_args){
+	return String(L"super.",6)+t_decl->m_munged+p_TransArgs(t_args);
+}
+String c_AsTranslator::p_TransConstExpr(c_ConstExpr* t_expr){
+	return p_TransValue(t_expr->m_exprType,t_expr->m_value);
+}
+String c_AsTranslator::p_TransNewObjectExpr(c_NewObjectExpr* t_expr){
+	String t_t=String(L"(new ",5)+t_expr->m_classDecl->m_munged+String(L")",1);
+	if((t_expr->m_ctor)!=0){
+		t_t=t_t+(String(L".",1)+t_expr->m_ctor->m_munged+p_TransArgs(t_expr->m_args));
+	}
+	return t_t;
+}
+String c_AsTranslator::p_TransNewArrayExpr(c_NewArrayExpr* t_expr){
+	String t_texpr=t_expr->m_expr->p_Trans();
+	c_Type* t_ty=t_expr->m_ty;
+	if((dynamic_cast<c_BoolType*>(t_ty))!=0){
+		return String(L"new_bool_array(",15)+t_texpr+String(L")",1);
+	}
+	if((dynamic_cast<c_NumericType*>(t_ty))!=0){
+		return String(L"new_number_array(",17)+t_texpr+String(L")",1);
+	}
+	if((dynamic_cast<c_StringType*>(t_ty))!=0){
+		return String(L"new_string_array(",17)+t_texpr+String(L")",1);
+	}
+	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+		return String(L"new_object_array(",17)+t_texpr+String(L")",1);
+	}
+	if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
+		return String(L"new_array_array(",16)+t_texpr+String(L")",1);
+	}
+	bb_config_InternalErr(String(L"Internal error",14));
+	return String();
+}
+String c_AsTranslator::p_TransSelfExpr(c_SelfExpr* t_expr){
+	return String(L"this",4);
+}
+String c_AsTranslator::p_TransCastExpr(c_CastExpr* t_expr){
+	c_Type* t_dst=t_expr->m_exprType;
+	c_Type* t_src=t_expr->m_expr->m_exprType;
+	String t_texpr=p_Bra(t_expr->m_expr->p_Trans());
+	if((dynamic_cast<c_BoolType*>(t_dst))!=0){
+		if((dynamic_cast<c_BoolType*>(t_src))!=0){
+			return t_texpr;
+		}
+		if((dynamic_cast<c_IntType*>(t_src))!=0){
+			return p_Bra(t_texpr+String(L"!=0",3));
+		}
+		if((dynamic_cast<c_FloatType*>(t_src))!=0){
+			return p_Bra(t_texpr+String(L"!=0.0",5));
+		}
+		if((dynamic_cast<c_StringType*>(t_src))!=0){
+			return p_Bra(t_texpr+String(L".length!=0",10));
+		}
+		if((dynamic_cast<c_ArrayType*>(t_src))!=0){
+			return p_Bra(t_texpr+String(L".length!=0",10));
+		}
+		if((dynamic_cast<c_ObjectType*>(t_src))!=0){
+			return p_Bra(t_texpr+String(L"!=null",6));
+		}
+	}else{
+		if((dynamic_cast<c_IntType*>(t_dst))!=0){
+			if((dynamic_cast<c_BoolType*>(t_src))!=0){
+				return p_Bra(t_texpr+String(L"?1:0",4));
+			}
+			if((dynamic_cast<c_IntType*>(t_src))!=0){
+				return t_texpr;
+			}
+			if((dynamic_cast<c_FloatType*>(t_src))!=0){
+				return p_Bra(t_texpr+String(L"|0",2));
+			}
+			if((dynamic_cast<c_StringType*>(t_src))!=0){
+				return String(L"parseInt",8)+p_Bra(t_texpr+String(L",10",3));
+			}
+		}else{
+			if((dynamic_cast<c_FloatType*>(t_dst))!=0){
+				if((dynamic_cast<c_NumericType*>(t_src))!=0){
+					return t_texpr;
+				}
+				if((dynamic_cast<c_StringType*>(t_src))!=0){
+					return String(L"parseFloat",10)+t_texpr;
+				}
+			}else{
+				if((dynamic_cast<c_StringType*>(t_dst))!=0){
+					if((dynamic_cast<c_NumericType*>(t_src))!=0){
+						return String(L"String",6)+t_texpr;
+					}
+					if((dynamic_cast<c_StringType*>(t_src))!=0){
+						return t_texpr;
+					}
+				}else{
+					if(((dynamic_cast<c_ObjectType*>(t_dst))!=0) && ((dynamic_cast<c_ObjectType*>(t_src))!=0)){
+						if((t_src->p_GetClass()->p_ExtendsClass(t_dst->p_GetClass()))!=0){
+							return t_texpr;
+						}else{
+							return p_Bra(t_texpr+String(L" as ",4)+p_TransType(t_dst));
+						}
+					}
+				}
+			}
+		}
+	}
+	bb_config_Err(String(L"AS translator can't convert ",28)+t_src->p_ToString()+String(L" to ",4)+t_dst->p_ToString());
+	return String();
+}
+String c_AsTranslator::p_TransUnaryExpr(c_UnaryExpr* t_expr){
+	int t_pri=p_ExprPri(t_expr);
+	String t_t_expr=p_TransSubExpr(t_expr->m_expr,t_pri);
+	return p_TransUnaryOp(t_expr->m_op)+t_t_expr;
+}
+String c_AsTranslator::p_TransBinaryExpr(c_BinaryExpr* t_expr){
+	int t_pri=p_ExprPri(t_expr);
+	String t_t_lhs=p_TransSubExpr(t_expr->m_lhs,t_pri);
+	String t_t_rhs=p_TransSubExpr(t_expr->m_rhs,t_pri-1);
+	String t_t_expr=t_t_lhs+p_TransBinaryOp(t_expr->m_op,t_t_rhs)+t_t_rhs;
+	if(t_expr->m_op==String(L"/",1) && ((dynamic_cast<c_IntType*>(t_expr->m_exprType))!=0)){
+		t_t_expr=p_Bra(p_Bra(t_t_expr)+String(L"|0",2));
+	}
+	return t_t_expr;
+}
+String c_AsTranslator::p_TransIndexExpr(c_IndexExpr* t_expr){
+	String t_t_expr=p_TransSubExpr(t_expr->m_expr,2);
+	if((dynamic_cast<c_StringType*>(t_expr->m_expr->m_exprType))!=0){
+		String t_t_index=t_expr->m_index->p_Trans();
+		if(bb_config_ENV_CONFIG==String(L"debug",5)){
+			return String(L"dbg_charCodeAt(",15)+t_t_expr+String(L",",1)+t_t_index+String(L")",1);
+		}
+		return t_t_expr+String(L".charCodeAt(",12)+t_t_index+String(L")",1);
+	}else{
+		if(bb_config_ENV_CONFIG==String(L"debug",5)){
+			String t_t_index2=t_expr->m_index->p_Trans();
+			return String(L"dbg_array(",10)+t_t_expr+String(L",",1)+t_t_index2+String(L")[dbg_index]",12);
+		}else{
+			String t_t_index3=t_expr->m_index->p_Trans();
+			return t_t_expr+String(L"[",1)+t_t_index3+String(L"]",1);
+		}
+	}
+}
+String c_AsTranslator::p_TransSliceExpr(c_SliceExpr* t_expr){
+	String t_t_expr=p_TransSubExpr(t_expr->m_expr,2);
+	String t_t_args=String(L"0",1);
+	if((t_expr->m_from)!=0){
+		t_t_args=t_expr->m_from->p_Trans();
+	}
+	if((t_expr->m_term)!=0){
+		t_t_args=t_t_args+(String(L",",1)+t_expr->m_term->p_Trans());
+	}
+	return t_t_expr+String(L".slice(",7)+t_t_args+String(L")",1);
+}
+String c_AsTranslator::p_TransArrayExpr(c_ArrayExpr* t_expr){
+	String t_t=String();
+	Array<c_Expr* > t_=t_expr->m_exprs;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_Expr* t_elem=t_[t_2];
+		t_2=t_2+1;
+		if((t_t).Length()!=0){
+			t_t=t_t+String(L",",1);
+		}
+		t_t=t_t+t_elem->p_Trans();
+	}
+	return String(L"[",1)+t_t+String(L"]",1);
+}
+String c_AsTranslator::p_TransIntrinsicExpr(c_Decl* t_decl,c_Expr* t_expr,Array<c_Expr* > t_args){
+	String t_texpr=String();
+	String t_arg0=String();
+	String t_arg1=String();
+	String t_arg2=String();
+	if((t_expr)!=0){
+		t_texpr=p_TransSubExpr(t_expr,2);
+	}
+	if(t_args.Length()>0 && ((t_args[0])!=0)){
+		t_arg0=t_args[0]->p_Trans();
+	}
+	if(t_args.Length()>1 && ((t_args[1])!=0)){
+		t_arg1=t_args[1]->p_Trans();
+	}
+	if(t_args.Length()>2 && ((t_args[2])!=0)){
+		t_arg2=t_args[2]->p_Trans();
+	}
+	String t_id=t_decl->m_munged.Slice(1);
+	String t_1=t_id;
+	if(t_1==String(L"print",5)){
+		return String(L"print",5)+p_Bra(t_arg0);
+	}else{
+		if(t_1==String(L"error",5)){
+			return String(L"error",5)+p_Bra(t_arg0);
+		}else{
+			if(t_1==String(L"debuglog",8)){
+				return String(L"debugLog",8)+p_Bra(t_arg0);
+			}else{
+				if(t_1==String(L"debugstop",9)){
+					return String(L"debugStop()",11);
+				}else{
+					if(t_1==String(L"length",6)){
+						return t_texpr+String(L".length",7);
+					}else{
+						if(t_1==String(L"resize",6)){
+							c_Type* t_ty=dynamic_cast<c_ArrayType*>(t_expr->m_exprType)->m_elemType;
+							if((dynamic_cast<c_BoolType*>(t_ty))!=0){
+								return String(L"resize_bool_array",17)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}
+							if((dynamic_cast<c_NumericType*>(t_ty))!=0){
+								return String(L"resize_number_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}
+							if((dynamic_cast<c_StringType*>(t_ty))!=0){
+								return String(L"resize_string_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}
+							if((dynamic_cast<c_ArrayType*>(t_ty))!=0){
+								return String(L"resize_array_array",18)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}
+							if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+								return String(L"resize_object_array",19)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}
+							bb_config_InternalErr(String(L"Internal error",14));
+						}else{
+							if(t_1==String(L"compare",7)){
+								return String(L"string_compare",14)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+							}else{
+								if(t_1==String(L"find",4)){
+									return t_texpr+String(L".indexOf",8)+p_Bra(t_arg0+String(L",",1)+t_arg1);
+								}else{
+									if(t_1==String(L"findlast",8)){
+										return t_texpr+String(L".lastIndexOf",12)+p_Bra(t_arg0);
+									}else{
+										if(t_1==String(L"findlast2",9)){
+											return t_texpr+String(L".lastIndexOf",12)+p_Bra(t_arg0+String(L",",1)+t_arg1);
+										}else{
+											if(t_1==String(L"trim",4)){
+												return String(L"string_trim",11)+p_Bra(t_texpr);
+											}else{
+												if(t_1==String(L"join",4)){
+													return t_arg0+String(L".join",5)+p_Bra(t_texpr);
+												}else{
+													if(t_1==String(L"split",5)){
+														return t_texpr+String(L".split",6)+p_Bra(t_arg0);
+													}else{
+														if(t_1==String(L"replace",7)){
+															return String(L"string_replace",14)+p_Bra(t_texpr+String(L",",1)+t_arg0+String(L",",1)+t_arg1);
+														}else{
+															if(t_1==String(L"tolower",7)){
+																return t_texpr+String(L".toLowerCase()",14);
+															}else{
+																if(t_1==String(L"toupper",7)){
+																	return t_texpr+String(L".toUpperCase()",14);
+																}else{
+																	if(t_1==String(L"contains",8)){
+																		return p_Bra(t_texpr+String(L".indexOf",8)+p_Bra(t_arg0)+String(L"!=-1",4));
+																	}else{
+																		if(t_1==String(L"startswith",10)){
+																			return String(L"string_startswith",17)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+																		}else{
+																			if(t_1==String(L"endswith",8)){
+																				return String(L"string_endswith",15)+p_Bra(t_texpr+String(L",",1)+t_arg0);
+																			}else{
+																				if(t_1==String(L"tochars",7)){
+																					return String(L"string_tochars",14)+p_Bra(t_texpr);
+																				}else{
+																					if(t_1==String(L"fromchar",8)){
+																						return String(L"String.fromCharCode",19)+p_Bra(t_arg0);
+																					}else{
+																						if(t_1==String(L"fromchars",9)){
+																							return String(L"string_fromchars",16)+p_Bra(t_arg0);
+																						}else{
+																							if(t_1==String(L"sin",3) || t_1==String(L"cos",3) || t_1==String(L"tan",3)){
+																								return String(L"Math.",5)+t_id+p_Bra(p_Bra(t_arg0)+String(L"*D2R",4));
+																							}else{
+																								if(t_1==String(L"asin",4) || t_1==String(L"acos",4) || t_1==String(L"atan",4)){
+																									return p_Bra(String(L"Math.",5)+t_id+p_Bra(t_arg0)+String(L"*R2D",4));
+																								}else{
+																									if(t_1==String(L"atan2",5)){
+																										return p_Bra(String(L"Math.",5)+t_id+p_Bra(t_arg0+String(L",",1)+t_arg1)+String(L"*R2D",4));
+																									}else{
+																										if(t_1==String(L"sinr",4) || t_1==String(L"cosr",4) || t_1==String(L"tanr",4)){
+																											return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0);
+																										}else{
+																											if(t_1==String(L"asinr",5) || t_1==String(L"acosr",5) || t_1==String(L"atanr",5)){
+																												return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0);
+																											}else{
+																												if(t_1==String(L"atan2r",6)){
+																													return String(L"Math.",5)+t_id.Slice(0,-1)+p_Bra(t_arg0+String(L",",1)+t_arg1);
+																												}else{
+																													if(t_1==String(L"sqrt",4) || t_1==String(L"floor",5) || t_1==String(L"ceil",4) || t_1==String(L"log",3) || t_1==String(L"exp",3)){
+																														return String(L"Math.",5)+t_id+p_Bra(t_arg0);
+																													}else{
+																														if(t_1==String(L"pow",3)){
+																															return String(L"Math.",5)+t_id+p_Bra(t_arg0+String(L",",1)+t_arg1);
+																														}
+																													}
+																												}
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	bb_config_InternalErr(String(L"Internal error",14));
+	return String();
+}
+String c_AsTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
+	p_Emit(String(L"try{",4));
+	int t_unr=p_EmitBlock(t_stmt->m_block,true);
+	Array<c_CatchStmt* > t_=t_stmt->m_catches;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_CatchStmt* t_c=t_[t_2];
+		t_2=t_2+1;
+		p_MungDecl(t_c->m_init);
+		p_Emit(String(L"}catch(",7)+t_c->m_init->m_munged+String(L":",1)+p_TransType(t_c->m_init->m_type)+String(L"){",2));
+		int t_unr2=p_EmitBlock(t_c->m_block,true);
+	}
+	p_Emit(String(L"}",1));
+	return String();
+}
+void c_AsTranslator::mark(){
 	c_CTranslator::mark();
 }
 c_List11::c_List11(){
