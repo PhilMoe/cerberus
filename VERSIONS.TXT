@@ -1,6 +1,9 @@
 ***** v2022-03-12 *****
 
 FIX: [STDCPP] Added missing #MOJO_USE_MONKEYSTATE=false entry in cofog.cxs file of the target.    (Author: MikeHart)
+MOD: [TRANSCC] Removed AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
+MOD: [TRANSCC] Removed the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
+
 
 KNOWN ISSUES: 
 - Window dragging in 32 bit Release mode still crashes, need to figure out why that is.

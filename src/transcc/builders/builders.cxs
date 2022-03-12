@@ -2,38 +2,38 @@
 Import transcc
 
 Import android
-Import android_ndk
-Import flash
+'Import android_ndk
+'Import flash
 Import glfw
 Import html5
 Import ios
-Import psm
+'Import psm
 Import stdcpp
-Import winrt
-Import xna
-Import agk
-Import agk_ios
-Import agk_android
-Import agk_android_ouya
+'Import winrt
+'Import xna
+'Import agk
+'Import agk_ios
+'Import agk_android
+'Import agk_android_ouya
 Import custom
 
 Function Builders:StringMap<Builder>( tcc:TransCC )
 	Local builders:=New StringMap<Builder>
 
 	builders.Set "android",New AndroidBuilder( tcc )
-	builders.Set "android_ndk",New AndroidNdkBuilder( tcc )
+	'builders.Set "android_ndk",New AndroidNdkBuilder( tcc )
 	builders.Set "glfw",New GlfwBuilder( tcc )
 	builders.Set "html5",New Html5Builder( tcc )
 	builders.Set "ios",New IosBuilder( tcc )
-	builders.Set "flash",New FlashBuilder( tcc )
-	builders.Set "psm",New PsmBuilder( tcc )
+	'builders.Set "flash",New FlashBuilder( tcc )
+	'builders.Set "psm",New PsmBuilder( tcc )
 	builders.Set "stdcpp",New StdcppBuilder( tcc )
-	builders.Set "winrt",New WinrtBuilder( tcc )
-	builders.Set "xna",New XnaBuilder( tcc )
-	builders.Set "agk",New AGKBuilder( tcc )
-	builders.Set "agk_ios",New AGKBuilder_ios( tcc )
-	builders.Set "agk_android",New AGKBuilder_android( tcc )
-	builders.Set "agk_android_ouya",New AGKBuilder_android_ouya( tcc )
+	'builders.Set "winrt",New WinrtBuilder( tcc )
+	'builders.Set "xna",New XnaBuilder( tcc )
+	'builders.Set "agk",New AGKBuilder( tcc )
+	'builders.Set "agk_ios",New AGKBuilder_ios( tcc )
+	'builders.Set "agk_android",New AGKBuilder_android( tcc )
+	'builders.Set "agk_android_ouya",New AGKBuilder_android_ouya( tcc )
 	builders.Set "custom",New CustomBuilder( tcc )
 	
 	Return builders
