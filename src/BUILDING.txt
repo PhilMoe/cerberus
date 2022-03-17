@@ -11,7 +11,7 @@ You should find all the developer packages in your distributions online reposito
 
 Unbuntu 18.04/Ubuntu 19.04 (packages should be the same for Linux Mint 18/19)
 Cerberus standard development files for making applications
-sudo apt-get install g++ libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev
+sudo apt-get install g++ libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
 
 Cerberus IDE development files for Ubuntu 18.04/Linux Mint 18 Only (Uses Qt 5.9.5)
 sudo apt-get install qtmultimedia5-dev qt5-default qtwebengine5-dev
