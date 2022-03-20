@@ -50,6 +50,13 @@ Class Xml
 		Return Self._encoding
 	End
 
+	Method GetElements:List<XmlElement>()
+		If Self._elementList <> Null
+			Return Self._elementList
+		Else
+			Return Null
+		Endif
+	End
 	
 Private
 	Method _Parse:Bool(content:String)

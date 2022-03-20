@@ -18350,7 +18350,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2022-03-12",35));
+	bbPrint(String(L"TRANS cerberus compiler V2022-03-20",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -29831,8 +29831,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 																t_var=String(L"False",5);
 															}
 														}
-														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L";",1))){
-															t_val2=String(L";",1)+t_val2;
+														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"|",1))){
+															t_val2=String(L"|",1)+t_val2;
 														}
 														bb_config_SetConfigVar2(t_toke2,t_var+t_val2);
 													}
