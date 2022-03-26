@@ -14,8 +14,37 @@ Import os
 Function Main:Int()
 	Print ("Cerberus X - ReadXml Test~n")
 	Local xml := New Xml(LoadString("data/data.xml"))
-	Print xml.ToString()
+	'Print xml.ToString()
+	
+	Local elements:= xml.GetElements()
+	
+	For Local element := Eachin elements
+		ParseElement (element)
+	Next
+	
 	Return 0
+End
+
+Function ParseElement:Void(element:XmlElement)
+	Print "Element "+element.Name   + "    Content ="+element.Content
+
+	ParseAttributes(element)
+
+	Local childElements := element.GetElements()
+	If childElements
+		For Local childElement := Eachin childElements
+			ParseElement(childElement)
+		Next
+	Endif
+End
+
+Function ParseAttributes:Void(element:XmlElement)
+	Local attributes := element.GetAttributes()
+	If attributes
+		For Local attrib := Eachin attributes
+			Print "    attrib "+attrib.Key+ "="+attrib.Value
+		Next 
+	Endif
 End
 </pre>
 
@@ -56,6 +85,10 @@ Sets the version attribute of the xml structure.
 # Method Encoding:String() Property
 
 Returns the version attribute of the xml structure.
+
+# Method GetElements:List<XmlElement>()
+
+Returns all elements of the xml structure.
 
 
 # Class brl.XmlElement
