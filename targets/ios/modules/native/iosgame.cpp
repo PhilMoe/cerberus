@@ -178,22 +178,14 @@ int BBIosGame::Millisecs(){
 int BBIosGame::SaveState( String state ){
 	NSString *nsstr=state.ToNSString();
 	NSUserDefaults *prefs=[NSUserDefaults standardUserDefaults];
-	if( CFG_MOJO_USE_MONKEYSTATE ){
-		[prefs setObject:nsstr forKey:@".monkeystate"];
-	}else{
-		[prefs setObject:nsstr forKey:@".cerberusstate"];
-	}
+	[prefs setObject:nsstr forKey:@".cerberusstate"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	return 0;
 }
 
 String BBIosGame::LoadState(){
 	NSUserDefaults *prefs=[NSUserDefaults standardUserDefaults];
-	if( CFG_MOJO_USE_MONKEYSTATE ){
-		NSString *nsstr=[prefs stringForKey:@".monkeystate"];
-	}else{
-		NSString *nsstr=[prefs stringForKey:@".cerberusstate"];
-	}
+	NSString *nsstr=[prefs stringForKey:@".cerberusstate"];
 	if( nsstr ) return String( nsstr );
 	return "";
 }

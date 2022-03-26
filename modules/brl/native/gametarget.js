@@ -98,20 +98,12 @@ BBGame.prototype.GetDate=function( date ){
 }
 
 BBGame.prototype.SaveState=function( state ){
-	if( CFG_MOJO_USE_MONKEYSTATE=="1" ){
-		localStorage.setItem( "monkeystate@"+document.URL,state );	//key can't start with dot in Chrome!
-	}else{
-		localStorage.setItem( "cerberusstate@"+document.URL,state );	//key can't start with dot in Chrome!
-	}
+	localStorage.setItem( "cerberusstate@"+document.URL,state );	//key can't start with dot in Chrome!
 	return 1;
 }
 
 BBGame.prototype.LoadState=function(){
-	if( CFG_MOJO_USE_MONKEYSTATE=="1" ){
-		var state=localStorage.getItem( "monkeystate@"+document.URL );
-	}else{
-		var state=localStorage.getItem( "cerberusstate@"+document.URL );
-	}
+	var state=localStorage.getItem( "cerberusstate@"+document.URL );
 	if( state ) return state;
 	return "";
 }

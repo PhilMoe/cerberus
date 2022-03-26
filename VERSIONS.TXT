@@ -1,11 +1,12 @@
-***** v2022-03-14 *****
+***** v2022-03-25 *****
 
-FIX: [STDCPP] Added missing #MOJO_USE_MONKEYSTATE=false entry in config.cxs file of the target.    (Author: MikeHart)
 FIX: [TRANS] Adding content to Preprocessors vars used the wrong delimiter.    (Author: Phil7)
-MOD: [TRANSCC] Removed AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
-MOD: [TRANSCC] Removed the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
+FIX: [CSERVER] Fixed xml mime type.    (Author: MikeHart)
+MOD: [TRANSCC] Depreciated AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
+MOD: [TRANSCC] Depreciated the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
 MOD: [BRL.XML] Added Method GetElements:List<XmlElement>() to retrieve all root elements.    (Author: MikeHart)
 MOD: [example] Modified the brl.ReadXml example to show how to parse a XML struture.    (Author: MikeHart)
+MOD: [CERBERUSX] REMOVED #MOJO_USE_MONKEYSTATE=false Flag due to legal reasons.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
@@ -50,7 +51,7 @@ NEW: [brl.xml] Added a XML module.    (Author: MikeHart)
 NEW: [brl.vec2d] Added a 2d vector module.    (Author: MikeHart)
 NEW: [mojo2] Added DrawList.DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null).    (Author: MikeHart)
 NEW: [brl.events] Added an event handling module.    (Author: MikeHart)
-NEW: [mojo] Added #MOJO_USE_MONKEYSTATE=False to be able to switch to use old monkeystate.
+	NEW: [mojo] Added #MOJO_USE_MONKEYSTATE=False to be able to switch to use old monkeystate.
 
 
 ***** v2021-05-16 *****

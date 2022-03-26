@@ -14,7 +14,6 @@
 #define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
-#define CFG_MOJO_USE_MONKEYSTATE 0
 #define CFG_RELEASE 1
 #define CFG_SAFEMODE 0
 #define CFG_TARGET stdcpp
@@ -1942,37 +1941,20 @@ void BBGame::GetDate( Array<int> date ){
 }
 
 int BBGame::SaveState( String state ){
-	if( CFG_MOJO_USE_MONKEYSTATE ){
-		if( FILE *f=OpenFile( "./.monkeystate","wb" ) ){
-			bool ok=state.Save( f );
-			fclose( f );
-			return ok ? 0 : -2;
-		}
-	}else{
-		if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
-			bool ok=state.Save( f );
-			fclose( f );
-			return ok ? 0 : -2;
-		}
+	if( FILE *f=OpenFile( "./.cerberusstate","wb" ) ){
+		bool ok=state.Save( f );
+		fclose( f );
+		return ok ? 0 : -2;
 	}
 	return -1;
 }
 
 String BBGame::LoadState(){
-	if( CFG_MOJO_USE_MONKEYSTATE ){
-		if( FILE *f=OpenFile( "./.monkeystate","rb" ) ){
-			String str=String::Load( f );
-			fclose( f );
-			return str;
-		}
-	}else{
-		if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
-			String str=String::Load( f );
-			fclose( f );
-			return str;
-		}
+	if( FILE *f=OpenFile( "./.cerberusstate","rb" ) ){
+		String str=String::Load( f );
+		fclose( f );
+		return str;
 	}
-
 	return "";
 }
 
