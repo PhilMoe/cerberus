@@ -1,12 +1,6 @@
-***** v2022-03-26 *****
+***** v2022-03-27 *****
 
-FIX: [TRANS] Adding content to Preprocessors vars used the wrong delimiter.    (Author: Phil7)
-FIX: [CSERVER] Fixed xml mime type.    (Author: MikeHart)
-MOD: [TRANSCC] Depreciated AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
-MOD: [TRANSCC] Depreciated the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
-MOD: [BRL.XML] Added Method GetElements:List<XmlElement>() to retrieve all root elements.    (Author: MikeHart)
-MOD: [example] Modified the brl.ReadXml example to show how to parse a XML struture.    (Author: MikeHart)
-MOD: [CERBERUSX] REMOVED #MOJO_USE_MONKEYSTATE=false Flag due to legal reasons.    (Author: MikeHart)
+FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
@@ -15,6 +9,16 @@ KNOWN ISSUES:
 - Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
 - Because of changes in the Google admob SDK, new apps using brl.admob in iOS can not be submitted atm.
 
+
+***** v2022-03-26 *****
+
+FIX: [TRANS] Adding content to Preprocessors vars used the wrong delimiter.    (Author: Phil7)
+FIX: [CSERVER] Fixed xml mime type.    (Author: MikeHart)
+MOD: [TRANSCC] Depreciated AGK Targets. They will become cutsom targets at one point.    (Author: MikeHart)
+MOD: [TRANSCC] Depreciated the following depreciated builders. PSM, XNA, FLASH, ANDROID_NDK, WINRT.    (Author: MikeHart)
+MOD: [example] Modified the brl.ReadXml example to show how to parse a XML struture.    (Author: MikeHart)
+MOD: [CERBERUSX] REMOVED #MOJO_USE_MONKEYSTATE=false Flag due to legal reasons.    (Author: MikeHart)
+NEW: [BRL.XML] Added Method GetElements:List<XmlElement>() to retrieve all root elements.    (Author: MikeHart)
 
 ***** v2022-03-06 *****
 

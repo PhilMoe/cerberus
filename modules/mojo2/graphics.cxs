@@ -1255,9 +1255,18 @@ Class Image
 	Global _flagsMask:=Filter|Mipmap|Managed
 	
 	Field _material:Material
-	Field _x:Int,_y:Int,_width:Int,_height:Int
-	Field _x0:Float=-1,_y0:Float=-1,_x1:Float=1,_y1:Float=1
-	Field _s0:Float=0 ,_t0:Float=0 ,_s1:Float=1,_t1:Float=1
+	Field _x:Int
+	Field _y:Int
+	Field _width:Int
+	Field _height:Int
+	Field _x0:Float=-1.0
+	Field _y0:Float=-1.0
+	Field _x1:Float=1.0
+	Field _y1:Float=1.0
+	Field _s0:Float=0.0
+	Field _t0:Float=0.0
+	Field _s1:Float=1.0
+	Field _t1:Float=1.0
 
 	Field _caster:ShadowCaster
 	
@@ -1749,12 +1758,12 @@ Class DrawList
 		PrimVert x2,y2,s2,t2
 	End
 	
-	Method DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null,s0:Float=.5,t0:Float=0,s1:Float=1,t1:Float=1,s2:Float=0,t2:Float=1 )
+	Method DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=0,s2:Float=1,t2:Float=1,s3:Float=0,t3:Float=1 )
 		BeginPrim material,4
 		PrimVert x0,y0,s0,t0
 		PrimVert x1,y1,s1,t1
 		PrimVert x2,y2,s2,t2
-		PrimVert x3,y3,s2,t2
+		PrimVert x3,y3,s3,t3
 	End
 	
 	Method DrawOval:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
@@ -2468,9 +2477,12 @@ Class DrawList
 	Field _alpha:=255.0
 	Field _color:=[1.0,1.0,1.0,1.0]
 	Field _pmcolor:Int=$ffffffff
-	Field _ix:Float=1,_iy:Float
-	Field _jx:Float,_jy:Float=1
-	Field _tx:Float,_ty:Float
+	Field _ix:Float=1
+	Field _iy:Float
+	Field _jx:Float
+	Field _jy:Float=1
+	Field _tx:Float
+	Field _ty:Float
 	Field _matStack:Float[64*6]
 	Field _matSp:Int
 	Field _font:Font
