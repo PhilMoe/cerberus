@@ -971,7 +971,7 @@ Function DrawText:Void( text:String, x:Int, y:Int,xhandle:Float=0,yhandle:Float=
 	DebugRenderDevice
 #End
 	Local char:Int=0
-	Local tmpChar:Glyph
+	'Local tmpChar:Glyph
 	If Not context.font Return
 
 	 x -= context.font.TextWidth( text )*xhandle
@@ -993,7 +993,7 @@ Function DrawText:Void( textLines:String[],x:Int,y:Int,xhandle:Float=0,yhandle:F
 	DebugRenderDevice
 #End
 	Local char:Int=0
-	Local tmpChar:Glyph
+	'Local tmpChar:Glyph
 	Local currX:Float
 	Local text:String
 	
