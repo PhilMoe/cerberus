@@ -1,0 +1,72 @@
+' Cerberus X - Draw Primitives example using a tringle fan
+
+Strict
+
+Import mojo
+
+Class MyApp Extends App
+
+	Field myCanvas:Canvas
+	Field grabbed:Bool
+	Field material:Material
+	Field verts:Float[]
+	Field texcs:Float[]
+	Field img:Image
+	
+	Method OnCreate:Int()
+
+		img = Image.Load("graphics.png")
+		
+		' provide 6 vertices from those coordinates as array, 1st one is the center of a tringle fan
+		verts = [   0.0,   0.0,
+		         -150.0,-150.0,
+		          150.0,-150.0,
+		          150.0, 150.0,		          
+				  0.0, 200.0,
+		         -150.0, 150.0,
+		         -150.0,-140.0]
+		         
+		' piece of texture to draw. Coordinates are float, ranging from 0 to 1.
+		Local tx1:Float = -2
+		Local ty1:Float = -2
+		Local tx2:Float = 3
+		Local ty2:Float = 3
+		
+		' provide texture coordinates for vertices
+		texcs = [0.5,0.5, 
+				 tx1,ty1, 
+				 tx2,ty1, 
+				 tx2,ty2,
+				 0.5,ty2*200.0/150.0,
+		         tx1,ty2,
+		         tx1,ty1]
+		Return 0		
+	End
+	
+	Method OnRender:Int()
+	
+		Cls()
+		
+		DrawRect(50,50,20,20)
+		
+		PushMatrix()
+		Translate(MouseX(), MouseY())
+		DrawCircle(100,100,100,img)
+		DrawPoly(verts, img)
+		PopMatrix()
+
+		Return 0
+	End
+	
+	
+	Method OnUpdate:Int()
+	
+		Return 0
+	End
+
+End
+
+Function Main:Int()
+	New MyApp()
+	Return 0
+End

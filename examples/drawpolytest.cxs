@@ -1,0 +1,111 @@
+' Cerberus X - Draw Primitives example using a tringle fan
+
+Strict
+
+Import mojo2
+
+Class MyApp Extends App
+
+	Field myCanvas:Canvas
+	Field grabbed:Bool
+	Field material:Material
+	Field verts:Float[]
+	Field vList:FloatList
+	Field texcs:Float[]
+	Field img:Image
+	
+	Method OnCreate:Int()
+
+		'randomise
+		Seed = Millisecs()
+		myCanvas = New Canvas()
+		
+		'material = Material.Load("graphics.png", Image.Filter,  Shader.DefaultShader())
+		img = Image.Load("graphics.png")
+		material = img.Material
+		
+		' provide 6 vertices from those coordinates as array, 1st one is the center of a tringle fan
+		verts = [   0.0,   0.0,
+		         -150.0,-150.0,
+		          150.0,-150.0,
+		          150.0, 150.0,		          
+				  0.0, 200.0,
+		         -150.0, 150.0,
+		         -150.0,-140.0]
+		
+		vList = New FloatList()
+		' piece of texture to draw. Coordinates are float, ranging from 0 to 1.
+		Local tx1:Float = -2
+		Local ty1:Float = -2
+		Local tx2:Float = 3
+		Local ty2:Float = 3
+		
+		' provide texture coordinates for vertices
+'		texcs = [0.5,0.5, 
+'				 tx1,ty1, 
+'				 tx2,ty1, 
+'				 tx2,ty2,
+'				 0.5,ty2*200.0/150.0,
+'		         tx1,ty2,
+'		         tx1,ty1]
+		
+		         
+		Return 0		
+	End
+	
+	Function DrawPol:Void(myCanvas:Canvas, verts:Float[], image:Image)
+		Local minX:Float = -150.0, maxX:Float = 150.0
+		Local minY:Float = -150.0, maxY:Float = 150.0
+	
+		Local texcs:Float[verts.Length()]
+		
+		For Local i:Int=0 Until verts.Length() Step 2
+			'Print verts[i]
+			texcs[i]=(verts[i]-minX)/(maxX-minX)
+			texcs[i+1]=(verts[i+1]-minY)/(maxY-minY)
+			
+			'Print texcs[i]
+		Next 
+				
+		myCanvas.PushMatrix()
+		'myCanvas.Translate(MouseX(), MouseY())
+		myCanvas.SetColor(1, 1, 1) 
+		myCanvas.DrawPrimitives(verts.Length()*0.5, 1, verts, texcs, image.Material)
+		myCanvas.PopMatrix()
+
+	
+	End
+	
+	
+	Method OnRender:Int()
+	
+		myCanvas.Clear(.1, .1, .1)
+		
+		
+		myCanvas.SetColor(1, 0, 0) 
+		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 26, 0.5)		
+		If verts.Length()>=6
+			DrawPol(myCanvas, verts, img)
+		EndIf
+
+		myCanvas.DrawRect(100,100,100,100,material)
+		myCanvas.Flush()
+		Return 0
+	End
+	
+	
+	Method OnUpdate:Int()
+		If MouseHit(0)
+			vList.AddLast(MouseX())
+			vList.AddLast(MouseY())
+			verts = vList.ToArray()
+		EndIf
+		Return 0
+	End
+
+End
+
+Function Main:Int()
+	New MyApp()
+	Return 0
+End
