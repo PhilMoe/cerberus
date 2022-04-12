@@ -13,6 +13,7 @@ Class MyApp Extends App
 	Field vList:FloatList
 	Field texcs:Float[]
 	Field img:Image
+	Field isVisualisationEnabled:Bool = True
 	
 	Method OnCreate:Int()
 
@@ -21,17 +22,19 @@ Class MyApp Extends App
 		myCanvas = New Canvas()
 		
 		'material = Material.Load("graphics.png", Image.Filter,  Shader.DefaultShader())
-		img = Image.Load("graphics.png")
+		img = Image.Load("graphics.png", 0.5, 0.5, Image.RepeatS)
 		material = img.Material
 		
 		' provide 6 vertices from those coordinates as array, 1st one is the center of a tringle fan
-		verts = [   0.0,   0.0,
+		#Rem
+		verts = [   0.0,   0.0, 
 		         -150.0,-150.0,
 		          150.0,-150.0,
 		          150.0, 150.0,		          
 				  0.0, 200.0,
 		         -150.0, 150.0,
 		         -150.0,-140.0]
+		#End
 		
 		vList = New FloatList()
 		' piece of texture to draw. Coordinates are float, ranging from 0 to 1.
@@ -53,9 +56,11 @@ Class MyApp Extends App
 		Return 0		
 	End
 	
-	Function DrawPol:Void(myCanvas:Canvas, verts:Float[], image:Image)
-		Local minX:Float = -150.0, maxX:Float = 150.0
-		Local minY:Float = -150.0, maxY:Float = 150.0
+	Function DrawTriangleFan:Void(myCanvas:Canvas, verts:Float[], image:Image)
+		Local mx:Float = MouseX()
+		Local my:Float = MouseY()
+		Local minX:Float = -150.0+mx, maxX:Float = 150.0+mx
+		Local minY:Float = -150.0+my, maxY:Float = 150.0+my
 	
 		Local texcs:Float[verts.Length()]
 		
@@ -71,9 +76,26 @@ Class MyApp Extends App
 		'myCanvas.Translate(MouseX(), MouseY())
 		myCanvas.SetColor(1, 1, 1) 
 		myCanvas.DrawPrimitives(verts.Length()*0.5, 1, verts, texcs, image.Material)
+			
 		myCanvas.PopMatrix()
 
 	
+	End
+	
+	
+	Function DrawVertexVisualisation:Void(myCanvas:Canvas, verts:Float[])
+		'myCanvas.SetLineWidth(3.0)
+		
+		For Local i:Int=2 Until verts.Length() Step 2			
+			myCanvas.SetColor(0,0.8,0)
+			myCanvas.DrawLine(verts[i-2], verts[i-1],verts[i], verts[i+1])
+			myCanvas.DrawLine(verts[0], verts[1],verts[i], verts[i+1])
+			myCanvas.DrawCircle(verts[i], verts[i+1], 7.0)
+		Next
+		If verts.Length()>=2
+			myCanvas.SetColor(0.8, 0, 0) 
+			myCanvas.DrawCircle(verts[0], verts[1], 7.0)
+		EndIf
 	End
 	
 	
@@ -82,13 +104,14 @@ Class MyApp Extends App
 		myCanvas.Clear(.1, .1, .1)
 		
 		
-		myCanvas.SetColor(1, 0, 0) 
+		myCanvas.SetColor(0.8, 0, 0) 
 		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 26, 0.5)		
 		If verts.Length()>=6
-			DrawPol(myCanvas, verts, img)
+			DrawTriangleFan(myCanvas, verts, img)
 		EndIf
+		
+		If isVisualisationEnabled DrawVertexVisualisation(myCanvas, verts)
 
-		myCanvas.DrawRect(100,100,100,100,material)
 		myCanvas.Flush()
 		Return 0
 	End
@@ -100,6 +123,16 @@ Class MyApp Extends App
 			vList.AddLast(MouseY())
 			verts = vList.ToArray()
 		EndIf
+		
+		If KeyHit(KEY_SPACE)
+			isVisualisationEnabled = Not isVisualisationEnabled
+		EndIf
+		
+		If KeyHit(KEY_ESCAPE)
+			verts = []
+			vList.Clear()
+		EndIf
+		
 		Return 0
 	End
 
