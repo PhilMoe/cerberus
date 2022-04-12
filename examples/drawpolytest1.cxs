@@ -2,7 +2,7 @@
 
 Strict
 
-Import mojo
+Import mojo2
 
 Class MyApp Extends App
 
