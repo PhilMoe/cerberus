@@ -17,74 +17,19 @@ Class MyApp Extends App
 	
 	Method OnCreate:Int()
 
-		'randomise
-		Seed = Millisecs()
 		myCanvas = New Canvas()
 		
 		'material = Material.Load("graphics.png", Image.Filter,  Shader.DefaultShader())
-		img = Image.Load("graphics.png", 0.5, 0.5, Image.RepeatS)
+		img = Image.Load("graphics.png", 0.5, 0.5, Image.RepeatST|Image.Filter|Image.Mipmap)
 		material = img.Material
-		
-		' provide 6 vertices from those coordinates as array, 1st one is the center of a tringle fan
-		#Rem
-		verts = [   0.0,   0.0, 
-		         -150.0,-150.0,
-		          150.0,-150.0,
-		          150.0, 150.0,		          
-				  0.0, 200.0,
-		         -150.0, 150.0,
-		         -150.0,-140.0]
-		#End
-		
-		vList = New FloatList()
-		' piece of texture to draw. Coordinates are float, ranging from 0 to 1.
-		Local tx1:Float = -2
-		Local ty1:Float = -2
-		Local tx2:Float = 3
-		Local ty2:Float = 3
-		
-		' provide texture coordinates for vertices
-'		texcs = [0.5,0.5, 
-'				 tx1,ty1, 
-'				 tx2,ty1, 
-'				 tx2,ty2,
-'				 0.5,ty2*200.0/150.0,
-'		         tx1,ty2,
-'		         tx1,ty1]
-		
-		         
+				
+		vList = New FloatList()				         
 		Return 0		
 	End
 	
-	Function DrawTriangleFan:Void(myCanvas:Canvas, verts:Float[], image:Image)
-		Local mx:Float = MouseX()
-		Local my:Float = MouseY()
-		Local minX:Float = -150.0+mx, maxX:Float = 150.0+mx
-		Local minY:Float = -150.0+my, maxY:Float = 150.0+my
-	
-		Local texcs:Float[verts.Length()]
 		
-		For Local i:Int=0 Until verts.Length() Step 2
-			'Print verts[i]
-			texcs[i]=(verts[i]-minX)/(maxX-minX)
-			texcs[i+1]=(verts[i+1]-minY)/(maxY-minY)
-			
-			'Print texcs[i]
-		Next 
-				
-		myCanvas.PushMatrix()
-		'myCanvas.Translate(MouseX(), MouseY())
-		myCanvas.SetColor(1, 1, 1) 
-		myCanvas.DrawPrimitives(verts.Length()*0.5, 1, verts, texcs, image.Material)
-			
-		myCanvas.PopMatrix()
-
-	
-	End
-	
-	
 	Function DrawVertexVisualisation:Void(myCanvas:Canvas, verts:Float[])
-		'myCanvas.SetLineWidth(3.0)
+		myCanvas.SetLineWidth(3.0) ' Seems not to work on html5 Target.
 		
 		For Local i:Int=2 Until verts.Length() Step 2			
 			myCanvas.SetColor(0,0.8,0)
@@ -102,14 +47,13 @@ Class MyApp Extends App
 	Method OnRender:Int()
 	
 		myCanvas.Clear(.1, .1, .1)
-		
-		
+				
 		myCanvas.SetColor(0.8, 0, 0) 
-		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 26, 0.5)		
-		If verts.Length()>=6
-			DrawTriangleFan(myCanvas, verts, img)
-		EndIf
-		
+		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 26, 0.5)	
+			
+		myCanvas.SetColor(1.0, 1.0, 1.0)
+		myCanvas.DrawTriangleFan(MouseX()*0.5, MouseY()*0.5, verts, img, MouseX(), MouseY(), 0.1, 0.1)
+
 		If isVisualisationEnabled DrawVertexVisualisation(myCanvas, verts)
 
 		myCanvas.Flush()

@@ -1838,6 +1838,46 @@ Class DrawList
 		Next
 	End
 	
+	Method DrawTriangleFan:Void(vertices:Float[], material:Material=Null, matX:Float=0.0, matY:Float=0.0, matScaleX:Float=1.0, matScaleY:Float=1.0)
+		Local n:=vertices.Length/2
+		If n<3 Or n>MAX_VERTICES Return
+	
+		BeginPrim material,n
+
+		For Local i:=0 Until n
+			PrimVert(vertices[i*2], vertices[i*2+1], (vertices[i*2]-matX)/material.Width(), (vertices[i*2+1]-matY)/material.Height())
+		Next
+	End
+	
+	#Rem
+	Method DrawTriangleFan:Void(vertices:Float[], material:Material=Null, matX:Float=0.0, matY:Float=0.0, matScaleX:Float=1.0, matScaleY:Float=1.0)
+		Local n:=vertices.Length/2
+		If n<3 Or n>MAX_VERTICES Return
+
+		Local minX:Float = matX, maxX:Float = matX + material.Width() * matScaleX
+		Local minY:Float = matY, maxY:Float = matY + material.Height() * matScaleY
+
+		Local texcs:Float[vertices.Length()]		
+		For Local i:Int=0 Until vertices.Length() Step 2
+			texcs[i]=(vertices[i]-minX)/(maxX-minX)
+			texcs[i+1]=(vertices[i+1]-minY)/(maxY-minY)		
+		Next 
+				
+		DrawPrimitives(vertices.Length()*0.5, 1, vertices, texcs, material)
+	End
+	#End
+	
+	Method DrawTriangleFan:Void(vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+	End
+	
+	Method DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		PushMatrix()
+		Translate(x,y)
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+		PopMatrix()
+	End
+	
 	Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],material:Material=Null )
 	
 		BeginPrims material,order,count
