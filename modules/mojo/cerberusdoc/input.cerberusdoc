@@ -280,6 +280,80 @@ The button parameter should be one of:
 
 Links: [[MouseDown]]
 
+# Function MouseUp:Int(button:Int)
+
+Returns true if specified mouse button has been released after a pressed (MouseDown). Only trigger once, after been released.
+
+Note: This is not the opposit of MouseDown. If you want to know the state of mouse button not been press, use Not MouseDown() instead.
+
+The button parameter should be one of:
+
+| Mouse button	| Description
+| MOUSE_LEFT	| Left mouse button
+| MOUSE_RIGHT	| Right mouse button
+| MOUSE_MIDDLE	| Middle mouse button
+
+Links: [[MouseDown]],[[MouseHit]]
+
+Example: 
+
+<pre>
+Import mojo
+Function Main();New MyApp;End
+Class MyApp Extends App
+	Field x=300,y=100,w=200,h=50
+	Field onclick:Bool
+	Field x1=300,y1=300,w1=200,h1=50
+	Field dx1,dy1
+	Method OnCreate()
+
+	End
+	Method OnUpdate()
+		'BUTTON
+		If (Not onclick) And MouseHit() And MouseX()>x-w/2 And MouseX()<x+w/2 And MouseY()>y-h/2 And MouseY()<y+h/2
+			onclick=true
+		endif
+		If onclick And MouseUp() And MouseX()>x-w/2 And MouseX()<x+w/2 And MouseY()>y-h/2 And MouseY()<y+h/2
+			onclick=false
+			Print "Click"
+		endif
+		'DRAG OBJECT
+		If MouseHit() And MouseX()>x1-w1/2 And MouseX()<x1+w1/2 And MouseY()>y1-h1/2 And MouseY()<y1+h1/2
+			dx1=MouseX()-x1
+			dy1=MouseY()-y1
+		endif
+		If MouseDown() And (dx1<>0 Or dy1<>0)
+			x1=MouseX()-dx1
+			y1=MouseY()-dy1
+		endif
+		If MouseUp() And (dx1<>0 Or dy1<>0)
+			dx1=0
+			dy1=0
+		endif
+ 	End
+	Method OnRender()
+		Cls 0,0,255
+		'BUTTON
+		If onclick And MouseDown() And MouseX()>x-w/2 And MouseX()<x+w/2 And MouseY()>y-h/2 And MouseY()<y+h/2
+			SetColor 255,0,0
+		Else
+			SetColor 0,0,0
+		endif
+		DrawRect x-w/2,y-h/2,w,h
+		SetColor 255,255,255
+		DrawText "Click Me",x,y,.5,.5
+		'DRAG OBJECT
+		If MouseDown() And (dx1<>0 Or dy1<>0)
+			SetColor 255,0,0
+		Else
+			SetColor 0,0,0
+		endif
+		DrawRect x1-w1/2,y1-h1/2,w1,h1
+		SetColor 255,255,255
+		DrawText "Drag Me",x1,y1,.5,.5
+	End
+End
+</pre>
 
 # Function TouchX:Float(index:Int)
 
@@ -363,6 +437,17 @@ On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return M
 
 Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseHit]]
 
+# Function TouchUp:Int(index:Int)
+
+Returns true if specified finger has been released after has made contact with the touchscreen. Only trigger once, after been released. Please see [[MouseUp]] example.
+
+Note that index refers to the order touches have been made. The first finger to touch the touchscreen will be assigned index 0. If another finger then also touches the touchscreen, it will be assigned index 1 and so on.
+
+If a finger is touching, you can get its x and y coordinates using the TouchX and TouchY commands.
+
+On devices with a mouse but no touch screen, TouchHit( 0 ) will instead return MouseHit( MOUSE_LEFT ).
+
+Links: [[TouchX]], [[TouchY]], [[TouchDown]], [[MouseUp]]
 
 # Function CountJoysticks:Int( update:Bool=True )
 
