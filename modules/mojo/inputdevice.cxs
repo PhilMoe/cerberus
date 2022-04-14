@@ -32,6 +32,7 @@ Class InputDevice
 		For Local i=0 Until 512
 			_keyDown[i]=False
 			_keyHit[i]=0
+			_keyUp[i]=False
 		Next
 		_keyHitPut=0
 		_charGet=0
@@ -53,6 +54,11 @@ Class InputDevice
 		Return 0
 	End
 	
+	Method KeyUp:Int( key:Int )
+		If key>0 And key<512 Return _keyUp[key]
+		Return False
+	End
+
 	Method GetChar:Int()
 		If _charGet=_charPut Return 0
 		Local chr:=_charQueue[_charGet]
@@ -146,6 +152,14 @@ Class InputDevice
 			Endif
 		Case BBGameEvent.KeyUp
 			If _keyDown[data]
+				If Not _keyUp[data] 
+					_keyUp[data]=True
+					If data=KEY_LMB
+						_keyUp[KEY_TOUCH0]=True
+					Else If data=KEY_TOUCH0
+						_keyUp[KEY_LMB]=True
+					Endif
+				endif
 				_keyDown[data]=False
 				If data=KEY_LMB
 					_keyDown[KEY_TOUCH0]=False
@@ -226,6 +240,9 @@ Class InputDevice
 			Next
 		Next
 	End
+	Method BeginRender:Void() 
+	
+	End
 	
 	Method EndUpdate:Void()
 		For Local i:=0 Until _keyHitPut
@@ -235,12 +252,18 @@ Class InputDevice
 		_charGet=0
 		_charPut=0
 	End
+	Method EndRender:Void() 
+		For Local i:=0 Until 512
+			_keyUp[i]=False
+		Next
+	End
 
 	Const KEY_LMB=1
 	Const KEY_TOUCH0=$180
 
 Private
 
+	Field _keyUp:Bool[512] 
 	Field _keyDown:Bool[512]
 	Field _keyHit:Int[512]
 	Field _keyHitQueue:Int[33]
