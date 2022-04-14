@@ -172,7 +172,11 @@ Class Tween
 		End
 
 		x = time/Float(duration)
-		value = GetTween(x)		
+		if time=duration
+			value = 1.0
+		else
+			value = GetTween(x)	
+		endif		
 	End
 
 	Method GetTween:Float(t:Float)
