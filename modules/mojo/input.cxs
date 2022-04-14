@@ -66,6 +66,10 @@ Function MouseZ#()
 	Return device.MouseZ()
 End
 
+Function MouseUp( button=MOUSE_LEFT )
+	Return device.KeyUp( KEY_LMB+button )
+End
+
 Function MouseDown( button=MOUSE_LEFT )
 	Return device.KeyDown( KEY_LMB+button )
 End
@@ -96,6 +100,10 @@ End
 
 Function TouchY#( index=0 )
 	Return device.TouchY( index )
+End
+
+Function TouchUp( index=0 )
+	Return device.KeyUp( KEY_TOUCH0+index )
 End
 
 Function TouchDown( index=0 )

@@ -115,11 +115,13 @@ Class GameDelegate Extends BBGameDelegate
 
 	Method RenderGame:Void()
 		ValidateDeviceWindow True
+		_input.BeginRender 
 		Local mode:=_graphics.BeginRender()
 		If mode graphics.BeginRender
 		If mode=2 _app.OnLoading Else _app.OnRender
 		If mode graphics.EndRender
 		_graphics.EndRender
+		_input.EndRender 
 	End
 
 	Method KeyEvent:Void( event:Int,data:Int )
