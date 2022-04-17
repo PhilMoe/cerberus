@@ -1,6 +1,7 @@
-***** v2022-03-27 *****
+***** v2022-04-17 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
+FIX: [mojo]  Fixed DrawImage9P spacing and scaling issues .    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
