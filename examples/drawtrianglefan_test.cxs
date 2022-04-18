@@ -62,8 +62,8 @@ Class MyApp Extends App
 		myCanvas.Clear(.1, .1, .1)
 							
 		myCanvas.SetColor(1.0, 1.0, 1.0)
-		myCanvas.DrawTriangleFan(verts, material, MouseX(), MouseY(), 1.1, 1.1)
-		'myCanvas.DrawTriangleFan(0, 0, verts, img, MouseX(), MouseY(), 1.1, 1.1)
+		myCanvas.DrawTriangleFan(verts, material, MouseX(), MouseY(), 1.5, 1.5)
+		'myCanvas.DrawTriangleFan(0, 0, verts, img, MouseX(), MouseY(), 1.5, 1.5)
 
 		If isWireframeEnabled DrawWireframe(myCanvas, verts)
 
