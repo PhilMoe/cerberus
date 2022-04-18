@@ -1845,7 +1845,7 @@ Class DrawList
 		BeginPrim material,n
 
 		For Local i:=0 Until n
-			PrimVert(vertices[i*2], vertices[i*2+1], (vertices[i*2]-matX)/material.Width(), (vertices[i*2+1]-matY)/material.Height())
+			PrimVert(vertices[i*2], vertices[i*2+1], (vertices[i*2]-matX)/(material.Width()*matScaleX), (vertices[i*2+1]-matY)/(material.Height()*matScaleY))
 		Next
 	End
 	
