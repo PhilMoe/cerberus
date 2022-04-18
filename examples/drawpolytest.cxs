@@ -1,8 +1,20 @@
-' Cerberus X - Draw Primitives example using a tringle fan
+' Cerberus X - Drawing Polygon using DrawTriangleFan() with Texture
 
 Strict
 
 Import mojo2
+
+
+Function Main:Int()
+	Print "Press left mousebutton to set triangle-fan vertices."
+	Print "Press space-bar to toggle vertex wireframe."
+	Print "Press Escape to reset vertices."
+	
+	New MyApp()
+	
+	Return 0
+End
+
 
 Class MyApp Extends App
 
@@ -12,49 +24,48 @@ Class MyApp Extends App
 	Field verts:Float[]
 	Field vList:FloatList
 	Field texcs:Float[]
-	Field img:Image
-	Field isVisualisationEnabled:Bool = True
+	'Field img:Image
+	Field isWireframeEnabled:Bool = True
+	
 	
 	Method OnCreate:Int()
-
+		vList = New FloatList()				         
 		myCanvas = New Canvas()
 		
-		'material = Material.Load("graphics.png", Image.Filter,  Shader.DefaultShader())
-		img = Image.Load("graphics.png", 0.5, 0.5, Image.RepeatST|Image.Filter|Image.Mipmap)
-		material = img.Material
-				
-		vList = New FloatList()				         
+		'Flags for Texture wrapping are ClampST, MirroredRepeatST, RepeatST (S and T are horizontal and vertical dimensions)
+		'Image/Texture needs to be sized in power of two for repeating. At least on html5 Target.
+		
+		material = Material.Load("eggs.png", Texture.RepeatST|Texture.Filter|Texture.Mipmap, Null )
+		'img = Image.Load("eggs.png", 0.5, 0.5, Image.RepeatST|Image.Filter|Image.Mipmap) 
 		Return 0		
 	End
 	
 		
-	Function DrawVertexVisualisation:Void(myCanvas:Canvas, verts:Float[])
-		myCanvas.SetLineWidth(3.0) ' Seems not to work on html5 Target.
+	Function DrawWireframe:Void(myCanvas:Canvas, verts:Float[])
+		myCanvas.SetLineWidth(2.0) ' Seems not to work on html5 Target.
+		Local circleSize:Float = 5.0
 		
 		For Local i:Int=2 Until verts.Length() Step 2			
 			myCanvas.SetColor(0,0.8,0)
 			myCanvas.DrawLine(verts[i-2], verts[i-1],verts[i], verts[i+1])
 			myCanvas.DrawLine(verts[0], verts[1],verts[i], verts[i+1])
-			myCanvas.DrawCircle(verts[i], verts[i+1], 7.0)
+			myCanvas.DrawCircle(verts[i], verts[i+1], circleSize)
 		Next
 		If verts.Length()>=2
 			myCanvas.SetColor(0.8, 0, 0) 
-			myCanvas.DrawCircle(verts[0], verts[1], 7.0)
+			myCanvas.DrawCircle(verts[0], verts[1], circleSize)
 		EndIf
 	End
 	
 	
 	Method OnRender:Int()
-	
 		myCanvas.Clear(.1, .1, .1)
-				
-		myCanvas.SetColor(0.8, 0, 0) 
-		myCanvas.DrawText("Move the mouse", DeviceWidth()/2, DeviceHeight() - 26, 0.5)	
-			
+							
 		myCanvas.SetColor(1.0, 1.0, 1.0)
-		myCanvas.DrawTriangleFan(MouseX()*0.5, MouseY()*0.5, verts, img, MouseX(), MouseY(), 0.1, 0.1)
+		myCanvas.DrawTriangleFan(verts, material, MouseX(), MouseY(), 1.1, 1.1)
+		'myCanvas.DrawTriangleFan(0, 0, verts, img, MouseX(), MouseY(), 1.1, 1.1)
 
-		If isVisualisationEnabled DrawVertexVisualisation(myCanvas, verts)
+		If isWireframeEnabled DrawWireframe(myCanvas, verts)
 
 		myCanvas.Flush()
 		Return 0
@@ -69,7 +80,7 @@ Class MyApp Extends App
 		EndIf
 		
 		If KeyHit(KEY_SPACE)
-			isVisualisationEnabled = Not isVisualisationEnabled
+			isWireframeEnabled = Not isWireframeEnabled
 		EndIf
 		
 		If KeyHit(KEY_ESCAPE)
@@ -80,9 +91,4 @@ Class MyApp Extends App
 		Return 0
 	End
 
-End
-
-Function Main:Int()
-	New MyApp()
-	Return 0
 End
