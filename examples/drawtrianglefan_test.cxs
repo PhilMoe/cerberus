@@ -7,7 +7,7 @@ Import mojo2
 
 Function Main:Int()
 	Print "Press left mousebutton to set triangle-fan vertices."
-	Print "Press space-bar to toggle vertex wireframe."
+	Print "Press space-bar to toggle visibility of the vertex wireframe."
 	Print "Press Escape to reset vertices."
 	
 	New MyApp()
