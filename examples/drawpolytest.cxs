@@ -32,7 +32,7 @@ Class MyApp Extends App
 		vList = New FloatList()				         
 		myCanvas = New Canvas()
 		
-		'Flags for Texture wrapping are ClampST, MirroredRepeatST, RepeatST (S and T are horizontal and vertical dimensions)
+		'Flags for Texture wrapping are: ClampST, MirroredRepeatST, RepeatST (S and T are horizontal and vertical dimensions)
 		'Image/Texture needs to be sized in power of two for repeating. At least on html5 Target.
 		
 		material = Material.Load("eggs.png", Texture.RepeatST|Texture.Filter|Texture.Mipmap, Null )
@@ -42,7 +42,7 @@ Class MyApp Extends App
 	
 		
 	Function DrawWireframe:Void(myCanvas:Canvas, verts:Float[])
-		myCanvas.SetLineWidth(2.0) ' Seems not to work on html5 Target.
+		myCanvas.SetLineWidth(2.0)  ' Seems not to work on html5 Target.
 		Local circleSize:Float = 5.0
 		
 		For Local i:Int=2 Until verts.Length() Step 2			
