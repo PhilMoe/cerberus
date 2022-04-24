@@ -170,13 +170,9 @@ Class Tween
 		Else
 			If time>duration Then time=duration
 		End
-
+	
 		x = time/Float(duration)
-		if time=duration
-			value = 1.0
-		else
-			value = GetTween(x)	
-		endif		
+		value = GetTween(x)		
 	End
 
 	Method GetTween:Float(t:Float)
