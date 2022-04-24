@@ -1,7 +1,8 @@
-***** v2022-04-17 *****
+***** v2022-04-25 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo]  Fixed DrawImage9P spacing and scaling issues .    (Author: MikeHart)
+FIX: [interpolate]  Fixed InterpolateCustomLine returning correct end value .    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
