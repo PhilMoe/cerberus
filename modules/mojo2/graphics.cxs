@@ -218,6 +218,14 @@ Class Texture Extends RefCounted
 	Const ClampST:=12
 	Const RenderTarget:=16
 	Const Managed:=256
+	
+	Const RepeatS:=1024
+	Const RepeatT:=2048
+	Const RepeatST:=3072
+	
+	Const MirroredRepeatS:=4096
+	Const MirroredRepeatT:=8192
+	Const MirroredRepeatST:=12288	 	
 
 	Method New( width:Int,height:Int,format:Int,flags:Int )
 		Init width,height,format,flags
@@ -477,10 +485,15 @@ Class Texture Extends RefCounted
 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST
 		Endif
 
-		If _flags & ClampS glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE
-		If _flags & ClampT glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE
+		If _flags & ClampS 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE
+		If _flags & ClampT 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE
+		If _flags & RepeatS 		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT
+		If _flags & RepeatT 		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT
+		If _flags & MirroredRepeatS	glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT
+		If _flags & MirroredRepeatT	glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_MIRRORED_REPEAT
 
 		glTexImage2D GL_TEXTURE_2D,0,GL_RGBA,_width,_height,0,GL_RGBA,GL_UNSIGNED_BYTE,Null
+
 
 		glPopTexture2d
 		
@@ -1069,6 +1082,18 @@ Class Image
 	Const Mipmap:=Texture.Mipmap
 	Const Managed:=Texture.Managed
 	
+	Const ClampS:=Texture.ClampS
+	Const ClampT:=Texture.ClampT
+	Const ClampST:=Texture.ClampST
+	
+	Const RepeatS:=Texture.RepeatS
+	Const RepeatT:=Texture.RepeatT
+	Const RepeatST:=Texture.RepeatST
+	
+	Const MirroredRepeatS:=Texture.MirroredRepeatS
+	Const MirroredRepeatT:=Texture.MirroredRepeatT
+	Const MirroredRepeatST:=Texture.MirroredRepeatST
+
 	Method New( width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter )
 		flags&=_flagsMask
 		Local texture:=New Texture( width,height,4,flags|Texture.ClampST|Texture.RenderTarget )
@@ -1258,7 +1283,7 @@ Class Image
 
 	Private
 	
-	Global _flagsMask:=Filter|Mipmap|Managed
+	Global _flagsMask:=Filter|Mipmap|Managed|ClampST|RepeatST|MirroredRepeatST
 	
 	Field _material:Material
 	Field _x:Int
@@ -1807,7 +1832,7 @@ Class DrawList
 		DrawOval x-r,y-r,r*2,r*2,material
 	End
 	
-	Method DrawPoly:Void( vertices:Float[],material:Material=Null )
+	Method DrawPoly:Void( vertices:Float[],material:Material=Null ) ' Doesn't support textures for now.
 	
 		Local n:=vertices.Length/2
 		If n<3 Or n>MAX_VERTICES Return
@@ -1817,6 +1842,28 @@ Class DrawList
 		For Local i:=0 Until n
 			PrimVert vertices[i*2],vertices[i*2+1],0,0
 		Next
+	End
+	
+	Method DrawTriangleFan:Void(vertices:Float[], material:Material=Null, matX:Float=0.0, matY:Float=0.0, matScaleX:Float=1.0, matScaleY:Float=1.0)
+		Local n:=vertices.Length/2
+		If n<3 Or n>MAX_VERTICES Return
+	
+		BeginPrim material,n
+
+		For Local i:=0 Until n
+			PrimVert(vertices[i*2], vertices[i*2+1], (vertices[i*2]-matX)/(material.Width()*matScaleX), (vertices[i*2+1]-matY)/(material.Height()*matScaleY))
+		Next
+	End
+		
+	Method DrawTriangleFan:Void(vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+	End
+	
+	Method DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		PushMatrix()
+		Translate(x,y)
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+		PopMatrix()
 	End
 	
 	Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],material:Material=Null )
