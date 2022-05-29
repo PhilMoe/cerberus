@@ -341,9 +341,15 @@ Class Texture Extends RefCounted
 			For Local i:=0 Until data.Length Step 4
 				Local t:=data.PeekInt( i )
 				Local a:=(t Shr 24 & 255)
+#If TARGET="glfw"				
 				Local b:=(t Shr 16 & 255)*a/255
 				Local g:=(t Shr 8 & 255)*a/255
 				Local r:=(t & 255)*a/255
+#Else
+				Local b:=(t Shr 16 & 255)
+				Local g:=(t Shr 8 & 255)
+				Local r:=(t & 255)
+#Endif
 				data.PokeInt i,a Shl 24 | b Shl 16 | g Shl 8 | r
 			Next
 		Endif
