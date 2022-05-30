@@ -4,6 +4,8 @@ FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
 FIX: [mojo]  Fixed DrawImage9P spacing and scaling issues .    (Author: MikeHart)
 FIX: [interpolate]  Fixed InterpolateCustomLine returning correct end value .    (Author: MikeHart)
+NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0.    (Author: Phil7)
+NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
 
 
 KNOWN ISSUES: 
