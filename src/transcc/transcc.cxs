@@ -8,7 +8,7 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2022-03-20 (DEBUG)"
+    Const VERSION:="2022-05-31 (DEBUG)"
     Const TEST_PATH:="examples/mojo/charlie"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2022-03-20"
+    Const VERSION:="2022-05-31"
 #Endif
 
 Function Main()
@@ -256,7 +256,7 @@ Class TransCC
             For Local it:=Eachin _targets
                 valid+=" "+it.Key.Replace( " ","_" )
             Next
-            Print "TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>"
+            Print "TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-builddir=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>"
             Print "Valid targets:"+valid
             Print "Valid configs: debug release"
             ExitApp 0

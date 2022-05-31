@@ -18332,7 +18332,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	this->m_args=t_args;
-	bbPrint(String(L"TRANS cerberus compiler V2022-03-20",35));
+	bbPrint(String(L"TRANS cerberus compiler V2022-05-31",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18359,7 +18359,7 @@ void c_TransCC::p_Run(Array<String > t_args){
 			c_Node17* t_it=t_3->p_NextObject();
 			t_valid=t_valid+(String(L" ",1)+t_it->p_Key().Replace(String(L" ",1),String(L"_",1)));
 		}
-		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>",160));
+		bbPrint(String(L"TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-builddir=...] [-modpath=...]  [-targetpath=...] <main_cerberus_source_file>",176));
 		bbPrint(String(L"Valid targets:",14)+t_valid);
 		bbPrint(String(L"Valid configs: debug release",28));
 		ExitApp(0);
