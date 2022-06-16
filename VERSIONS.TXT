@@ -7,6 +7,7 @@ FIX: [interpolate]  Fixed InterpolateCustomLine returning correct end value .   
 FIX: [transcc]  Fixed missing help output of builddir parameter.    (Author: MikeHart)
 NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0.    (Author: Phil7)
 NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
+MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
