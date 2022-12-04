@@ -1,4 +1,4 @@
-***** v2022-07-17 *****
+***** v2022-12-04 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
@@ -9,6 +9,7 @@ FIX: [TRANS] Reverting FIX of adding content to Preprocessors vars used the wron
 NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0.    (Author: Phil7)
 NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
 MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeHart)
+MOD: [HTML5] Modified und more efficient target code for mouseX/Y.    (Author: SLOTMAN)
 
 
 KNOWN ISSUES: 

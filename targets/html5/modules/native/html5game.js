@@ -407,26 +407,30 @@ BBHtml5Game.prototype.Run=function(){
 		}
 		return 0;
 	}
-	
-	function mouseX( e ){
-		var x=e.clientX+document.body.scrollLeft;
-		var c=canvas;
-		while( c ){
-			x-=c.offsetLeft;
-			c=c.offsetParent;
-		}
-		return x*xscale;
-	}
-	
-	function mouseY( e ){
-		var y=e.clientY+document.body.scrollTop;
-		var c=canvas;
-		while( c ){
-			y-=c.offsetTop;
-			c=c.offsetParent;
-		}
-		return y*yscale;
-	}
+	// New mouseX and mouseY versions by user SLOTMAN
+    function mouseX( e ){
+        var x = 0;
+        if (canvas) {
+            var   rect =  canvas.getBoundingClientRect(),
+                    root = document.documentElement;
+
+            // relative mouse position
+            x = e.clientX - rect.left - root.scrollLeft;
+        }
+        return x*xscale;
+    }
+  
+    function mouseY( e ){
+      var y = 0;
+      if (canvas) {
+            var   rect =  canvas.getBoundingClientRect(),
+                    root = document.documentElement;
+            // relative mouse position
+            y = e.clientY - rect.top - root.scrollTop;
+        }
+        return y*yscale;
+    }
+
 
 	function touchX( touch ){
 		var x=touch.pageX;
