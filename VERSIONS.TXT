@@ -10,6 +10,8 @@ NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:
 NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
 MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeHart)
 MOD: [HTML5] Modified und more efficient target code for mouseX/Y.    (Author: SLOTMAN)
+MOD: [GLFW] Updated GLFW to version 3.3.8.    (Author: MikeHart)
+MOD: [GLFW] Updated stb_truetype.h to version 1.2.6.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
