@@ -1,5 +1,7 @@
 Strict
 
+' Example script by Michael Hartlef
+
 Import mojo
 Import brl.timer
 

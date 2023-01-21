@@ -1,5 +1,7 @@
 Strict
 
+' Example script by Michael Hartlef
+
 #GLFW_WINDOW_TITLE="FileDrop - Cerberus X"
 #MOJO_AUTO_SUSPEND_ENABLED=False
 

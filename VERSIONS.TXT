@@ -1,4 +1,4 @@
-***** v2022-12-04 *****
+***** v2023-01-21 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
@@ -12,6 +12,8 @@ MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeH
 MOD: [HTML5] Modified und more efficient target code for mouseX/Y.    (Author: SLOTMAN)
 MOD: [GLFW] Updated GLFW to version 3.3.8.    (Author: MikeHart)
 MOD: [GLFW] Updated stb_truetype.h to version 1.2.6.    (Author: MikeHart)
+MOD: [docs] Added an example and updated the docs for the brl.events module.   (Author: MikeHart)
+MOD: [examples] Moved some examples to the own module related sub folders.   (Author: MikeHart)
 
 
 KNOWN ISSUES: 
