@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FindDialog</class>
+ <widget class="QDialog" name="FindDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>761</width>
+    <height>148</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Find/Replace</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Find</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="findText"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Replace</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="replaceText"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="caseSensitiveLabel">
+       <property name="text">
+        <string>Case sensitive</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="caseSensitive"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="replaceAll">
+       <property name="text">
+        <string>Replace All</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="replace">
+       <property name="text">
+        <string>Replace</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="findNext">
+       <property name="text">
+        <string>Find Next</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>findText</tabstop>
+  <tabstop>replaceText</tabstop>
+  <tabstop>caseSensitive</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>findNext</sender>
+   <signal>clicked()</signal>
+   <receiver>FindDialog</receiver>
+   <slot>onFindNext()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>replace</sender>
+   <signal>clicked()</signal>
+   <receiver>FindDialog</receiver>
+   <slot>onReplace()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>replaceAll</sender>
+   <signal>clicked()</signal>
+   <receiver>FindDialog</receiver>
+   <slot>onReplaceAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>209</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>signal1()</signal>
+  <slot>onFindNext()</slot>
+  <slot>onReplace()</slot>
+  <slot>onReplaceAll()</slot>
+ </slots>
+</ui>
