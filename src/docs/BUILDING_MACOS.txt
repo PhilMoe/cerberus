@@ -1,0 +1,48 @@
+BUILDING INSTRUCTIONS FOR APPLE MAC OS X
+
+PLEASE NOTE:
+Before you begin. You should check out one of the desktop sub forums for any issues and workarounds, or to ask questions.
+https://www.cerberus-x.com/community/categories/desktop-targets.70/
+
+BASIC REQUIREMENTS:
+A Bourne Again SHell command line terminal that supports ASCII colour codes.
+Apple's XCode and the XCode command line tools.
+
+THE IDE TED REQUIREMENTS:
+A Qt SDK installation with a Qt SDK kit from Qt5 onwards.
+
+NOTES:
+The IDE Ted requires Qt WebEngine. And depending on the Qt Kit to be used, it will, or may also require Qt WebEngineChannel and Qt Positioning.
+If using the new Apple ARM architecture, then use the latest version of the Qt SDK that supports it.
+See https://doc.qt.io/qt-5/macos.html and https://doc.qt.io/qt-6.2/macos.html
+
+CURRENT KNOW ISSUES:
+There is a tab ordering issue when building against Qt 6.4.
+There are a known issues when deploying with some versions of the Qt SDK. e.g. Qt 5.11.3.
+
+BUILDING:
+There is a build script supplied in the Cerberus source directory called builder.sh.
+This script has two modes of operation. When run without options, the default is to build all tools providing that the requirement above are met. The second mode is used to display a menu
+where all the tools can be built individually. Selection between modes is determined by the --showmenu/-m option listed further down in these instructions.
+
+To build Cerberus X, or one of the base tools, open a command line console, navigate to the Cerberus source directory (where this text file is) and type:
+./builder.sh
+
+Please note that the transcc tool needs to be built first for any of the main Cerberus X tools.
+
+To build the IDE requires that there are Qt development files are available and installed correctly.
+If not, then the menu entry for building the IDE Ted will not be shown and building all tools will exclude the building of the IDE Ted.
+If there is an official Qt installer, then you can pass arguments to select it's root directory and a specific version.
+
+The optional arguments to pass to the builder.sh script for the official Qt Installer are:
+-q or --qtsdk with the full path to the Qt Installers directory.
+-v or --qtver with the dot version number for a specific Qt SDK.
+-m or --showmenu will run the script in menu mode.
+
+Executing the builder.sh script with just the Qt installers directory passed as a parameter. It will try to get the highest installed version.
+If the Qt SDK cannot be detected with the version parameters passed with both a Qt Install directory and a version, then the script try to use the distributions default Qt SDK development files.
+Running the builder.sh script without any parameters will just try to detect a distributions default Qt development install.
+
+The deployment of Cerberus on non development MasOS devices requires knowledge of the code signing process.
+Information about this can be found on the Apple developers website and documentation.
+https://developer.apple.com/
