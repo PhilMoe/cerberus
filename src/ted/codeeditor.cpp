@@ -728,32 +728,70 @@ void CodeEditor::highlightCurrentLine()
         }
     }
 
+    // Chec of brackets
     if(doHighlightBrackets) {
+
         if(!isReadOnly()) {
-            QTextEdit::ExtraSelection selection3;
+            QTextEdit::ExtraSelection selection3, selection4;
             QColor lineColor3 = Prefs::prefs()->getColor("highlightColor");
             lineColor3 = lineColor3.lighter();
+
+            // Set the colour and how the selection is formatted.
             selection3.format.setBackground(lineColor3);
             selection3.format.setProperty(QTextFormat::BlockFormat, true);
+            selection4.format.setBackground(lineColor3);
+            selection4.format.setProperty(QTextFormat::BlockFormat, true);
 
-            // check for brackets
+            // Get the current text block and cursor position.
             QString text = textCursor().block().text();
             int cPos = textCursor().positionInBlock();
 
             // NOTE: Qt 6 doesn't allow out of bound access like previous versions of
-            // Qt, so have to make sure that the string is not empty and that the
-            // string is larger than the caret cursor position returned.
+            // Qt, so now have to make sure that the string is not empty and that the
+            // string is larger than the cursor position returned.
             if(!text.isEmpty()) {
-                QChar c;
-                if(text.size() > cPos)
-                    c = text[cPos];
 
-                int index = -1;
+                // The curent position of the cursor should keep track of the character it's currently on and the one
+                // behind,
+                QChar c, d;
+                if(text.size() > cPos) {
+                    c = text[cPos];
+                    if(cPos > 0)
+                        d = text[cPos - 1];
+                }
+                if(text.size() == cPos)
+                    if(cPos > 0)
+                        d = text[cPos - 1];
+
+                // Now the index of both the current and previous character needs to be worked out.
+                int index_c = -1, index_d = -1;
+
+                // If two brackets are close together, then work out both indexes.
+                // The bracket not under the cursor is set to a darker colour shade.
+                if((c == '(' || c == '[' || c == '<') && (d == '(' || d == '[' || d == '<')) {
+                    index_c = indexOfClosedBracket(text, c, cPos + 1);
+                    index_d = indexOfClosedBracket(text, d, index_c + 1);
+                    selection4.format.setBackground(lineColor3.darker(120));
+                }
+
+                if((c == ')' || c == ']' || c == '>') && (d == ')' || d == ']' || d == '>')) {
+                    index_c = indexOfOpenedBracket(text, c, cPos - 1);
+                    index_d = indexOfOpenedBracket(text, d, index_c + 1);
+                    selection4.format.setBackground(lineColor3.darker(120));
+                }
+
+                // Work out the indexes of the current al previous character.
                 if(c == '(' || c == '[' || c == '<')
-                    index = indexOfClosedBracket(text, c, cPos + 1);
-                else if(c == ')' || c == ']' || c == '>')
-                    index = indexOfOpenedBracket(text, c, cPos - 1);
-                if(index != -1) {  // found a pair of brackets
+                    index_c = indexOfClosedBracket(text, c, cPos + 1);
+                if(c == ')' || c == ']' || c == '>')
+                    index_c = indexOfOpenedBracket(text, c, cPos - 1);
+                if(d == '(' || d == '[' || d == '<')
+                    index_d = indexOfClosedBracket(text, d, cPos);
+                if(d == ')' || d == ']' || d == '>')
+                    index_d = indexOfOpenedBracket(text, d, cPos - 2);
+
+                // If index c has a non negative value, then process the bracket pair
+                if(index_c != -1) {
                     // add bracket under cursor
                     selection3.cursor = textCursor();
                     int blockPos = textCursor().block().position();
@@ -761,11 +799,31 @@ void CodeEditor::highlightCurrentLine()
                     selection3.cursor.setPosition(blockPos + cPos + 1,
                                                   QTextCursor::KeepAnchor);
                     extraSelections.append(selection3);
+
                     // add its pair
-                    selection3.cursor.setPosition(blockPos + index);
-                    selection3.cursor.setPosition(blockPos + index + 1,
+                    selection3.cursor.setPosition(blockPos + index_c);
+                    selection3.cursor.setPosition(blockPos + index_c + 1,
                                                   QTextCursor::KeepAnchor);
                     extraSelections.append(selection3);
+
+                }
+
+                // If index d has a non negative value, then process the bracket pair
+                if(index_d != -1) {  // found a pair of brackets
+                    // add bracket under cursor
+                    selection4.cursor = textCursor();
+                    int blockPos = textCursor().block().position();
+                    selection4.cursor.setPosition(blockPos + cPos);
+                    selection4.cursor.setPosition(blockPos + cPos - 1,
+                                                  QTextCursor::KeepAnchor);
+                    extraSelections.append(selection4);
+
+                    // add its pair
+                    selection4.cursor.setPosition(blockPos + index_d);
+                    selection4.cursor.setPosition(blockPos + index_d + 1,
+                                                  QTextCursor::KeepAnchor);
+                    extraSelections.append(selection4);
+
                 }
             }
         }
