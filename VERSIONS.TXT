@@ -14,6 +14,7 @@ MOD: [GLFW] Updated GLFW to version 3.3.8.    (Author: MikeHart)
 MOD: [GLFW] Updated stb_truetype.h to version 1.2.6.    (Author: MikeHart)
 MOD: [docs] Added an example and updated the docs for the brl.events module.   (Author: MikeHart)
 MOD: [examples] Moved some examples to the own module related sub folders.   (Author: MikeHart)
+MOD: [transcc] Readded the AGK2 Tier2 builders and the build_target tool.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 

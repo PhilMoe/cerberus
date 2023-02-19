@@ -1,0 +1,4 @@
+#TARGET_NAME="Android Game (AppGameKit)"
+#TARGET_SYSTEM="agk_android"
+#TARGET_BUILDER="agk_android"
+#TARGET_HOST="winnt|macos"
