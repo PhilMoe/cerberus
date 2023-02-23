@@ -1,11 +1,11 @@
-***** v2023-01-21 *****
+***** v2023-02-19 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
 FIX: [mojo]  Fixed DrawImage9P spacing and scaling issues .    (Author: MikeHart)
 FIX: [interpolate]  Fixed InterpolateCustomLine returning correct end value .    (Author: MikeHart)
 FIX: [transcc]  Fixed missing help output of builddir parameter.    (Author: MikeHart)
-FIX: [TRANS] Reverting FIX of adding content to Preprocessors vars used the wrong delimiter as this was breaking most functionality.    (Author: MikeHart)
+FIX: [TRANS] Fixed external libraries not being copied not being copied.    (Author: MikeHart)
 NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0.    (Author: Phil7)
 NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
 MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeHart)
@@ -14,6 +14,7 @@ MOD: [GLFW] Updated GLFW to version 3.3.8.    (Author: MikeHart)
 MOD: [GLFW] Updated stb_truetype.h to version 1.2.6.    (Author: MikeHart)
 MOD: [docs] Added an example and updated the docs for the brl.events module.   (Author: MikeHart)
 MOD: [examples] Moved some examples to the own module related sub folders.   (Author: MikeHart)
+MOD: [transcc] Readded the AGK2 Tier2 builders and the build_target tool.    (Author: MikeHart)
 
 
 KNOWN ISSUES: 
