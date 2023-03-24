@@ -1,14 +1,16 @@
 
 //iosgame.h
 
+#import <MetalANGLE/angle_gl.h>
+#import <MetalANGLE/MGLKit.h>
+
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/EAGLDrawable.h>
+
+// These two lines are needed for old mojo support.
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 #import <AVFoundation/AVAudioPlayer.h>
@@ -39,7 +41,7 @@ class BBIosGame;
 
 @interface BBCerberusView : UIView{
 @public
-	EAGLContext *context;
+	MGLContext *context;
 	
 	GLint backingWidth;
 	GLint backingHeight;
@@ -53,7 +55,7 @@ class BBIosGame;
 -(id)initWithCoder:(NSCoder*)coder;
 -(void)drawView:(id)sender;
 -(void)presentRenderbuffer;
--(BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
+-(BOOL)resizeFromLayer:(MGLLayer *)layer;
 -(void)layoutSubviews;
 -(void)dealloc;
 
