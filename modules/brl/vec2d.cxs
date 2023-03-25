@@ -88,6 +88,27 @@ Class Vec2D
 	End
 	
 	'------------------------------------------
+	Method Cross:Float(vector:Vec2D)
+		Return ((x * vector.y) - (y * vector.x))
+	End
+	
+	'------------------------------------------
+	Method Cross:Float(xy:Float[])
+		Return ((x * xy[1]) - (y * xy[0]))
+	End
+	
+	'------------------------------------------
+	Method Cross:Float(xPos:Float, yPos:Float)
+		Return ((x * yPos) - (y * xPos))
+	End
+	
+	'------------------------------------------
+	Method Div:Void (scalar:Float)
+		x /= scalar
+		y /= scalar
+	End
+	
+	'------------------------------------------
 	Method Dot:Float(vector:Vec2D)
 		Return (x * vector.x + y * vector.y)
 	End
@@ -124,7 +145,7 @@ Class Vec2D
 	End
 	
 	'------------------------------------------
-	Method Length:Float(vector:Vec2D)
+	Method Distance:Float(vector:Vec2D)
 		Local xdiff:Float
 		Local ydiff:Float 
 		xdiff = vector.x - x
@@ -134,7 +155,7 @@ Class Vec2D
 	End
 	
 	'------------------------------------------
-	Method Length:Float(xy:Float[])
+	Method Distance:Float(xy:Float[])
 		Local xdiff:Float
 		Local ydiff:Float 
 		xdiff = xy[0] - x
@@ -144,7 +165,7 @@ Class Vec2D
 	End
 	
 	'------------------------------------------
-	Method Length:Float(xPos:Float, yPos:Float)
+	Method Distance:Float(xPos:Float, yPos:Float)
 		Local xdiff:Float
 		Local ydiff:Float 
 		xdiff = xPos - x
@@ -195,11 +216,11 @@ Class Vec2D
 
 	'------------------------------------------
 	Method Normalize:Void()
-		Local length:Float = Self.Length()
-		If length = 0
+		Local tmpLength:Float = Self.Length()
+		If tmpLength = 0
 			Return
 		Endif
-		Set (x/length, y/length)
+		Set (x/tmpLength, y/tmpLength)
 	End
 	
 	'------------------------------------------
@@ -253,7 +274,7 @@ Class Vec2D
 	
 	'------------------------------------------
 	Method ToString:String ()
-		Return "X="+x+"  Y="+y)
+		Return ("X="+x+"  Y="+y)
 	End
 	
 	'------------------------------------------
