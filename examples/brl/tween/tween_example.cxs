@@ -7,9 +7,9 @@ Import brl.tween
 ' Define the tweenExample that extends the App Class.    
 Class tweenExample Extends App
 	Field cnvs:Canvas
-	Field tw:Tween[6]
+	Field tw:Tween[7]
 	Field selected_tween:Int
-	Field tweens:String[] = ["LINEAR","BEZIER","CUSTOM","CURVE","BOUNCE (EASEOUT)","ELASTIC (EASEINOUT)"]
+	Field tweens:String[] = ["LINEAR","BEZIER","CUSTOM","CURVE","BOUNCE (EASEOUT)","ELASTIC (EASEINOUT)","FIT"]
 	Field loop:Bool,yoyo:Bool
 	
 	Method OnCreate:Int()
@@ -45,6 +45,11 @@ Class tweenExample Extends App
 		tw[5].SetEasing(Tween.EASEINOUT)
 		tw[5].SetRange(100,540)	
 
+		' fit tween
+		tw[6] = New Tween(Tween.FIT,2000)
+		tw[6].SetFitSlope(0.5, 0.5)
+		tw[6].SetRange(100,540)	
+
 		loop = False
 		yoyo = False		
 		selected_tween = 0		
@@ -76,6 +81,8 @@ Class tweenExample Extends App
 				CreateRandomTween()
 			Case 3
 				tw[3].SetCurve(Rnd(1))
+			Case 6
+				tw[6].SetFitSlope(Rnd(-.5,1.5),Rnd(-.5,1.5))
 			End
 			tw[selected_tween].Start()
 			tw[selected_tween].SetLoop(loop)
@@ -128,7 +135,7 @@ Class tweenExample Extends App
 		cnvs.DrawText "SPACE - Restart Tween",330,400
 		
 		Select selected_tween
-		Case 1,2,3
+		Case 1,2,3,6
 			cnvs.DrawText "R - Randomise Tween",330,420
 		End
 		
