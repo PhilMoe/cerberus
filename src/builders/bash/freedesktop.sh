@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# BASH SCRIPT TO SET UP FOR LINUX FREE DESKTOP VERSION 1.0.0
+# BASH SCRIPT TO SET UP FOR LINUX FREE DESKTOP VERSION 1.0.1
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 # THIS SCRIPT REQUIRE THE USE OF TWO SVG FILES FOR THE LAUNCHER ICON AND THE SOURCE FILE MIME ICON.
 
@@ -60,25 +60,29 @@ ICON_SIZES=("16" "22" "24" "32" "48" "64" "128")
 SVG_APP_ICON=
 SVG_MIME_ICON=
 
-do_info() {
+do_freedesktop_info() {
     echo -e "\033[36m$1\033[0m\n"
 }
 
-do_header(){
+do_freedesktop_header(){
     echo -e "\033[33m$1\033[0m"
 }
 
-do_success(){
+do_freedesktop_success(){
     echo -e "\033[32m$1\033[0m"
 }
 
-do_error(){
+do_freedesktop_error(){
     echo -e "\033[31m$1\033[0m"
+}
+
+do_freedesktop_unknown(){
+    echo -e "\033[35m$1\033[0m"
 }
 
 # Make sure that the required directories are ready for the file to be placed into.
 do_xdg_setup(){
-    do_header "Checking XDG locations"
+    do_freedesktop_header "Checking XDG locations"
     mkdir -p $TEMP_DIR
     mkdir -p $USER_APPLICATION_DIR
     mkdir -p $USER_ICON_DIR
@@ -96,7 +100,7 @@ do_xdg_setup(){
 
 # Function to generate the mime type xml package file.
 do_generate_mime_package() {
-    do_header "Creating MIME package data"
+    do_freedesktop_header "Creating MIME package data"
 
     # Generate a new mime package xml data file.
     local MIME_XML=(
@@ -122,14 +126,14 @@ do_generate_mime_package() {
     )
 
     printf "%s\n" "${MIME_XML[@]}" > "$TEMP_DIR/$DESKTOP_NAME.xml"
-    [ $? -eq 0 ] && { do_success "MIME extension created."; } || { do_error "Failed to create MIME extension."; }
+    [ $? -eq 0 ] && { do_freedesktop_success "MIME extension created."; } || { do_freedesktop_error "Failed to create MIME extension."; }
 }
 
 # Generate the .desktop launcher that is to be used as a first run setup.
 # This launcher will be place in the Cerberus X root directory and call this script using the --install options to set up
 # a menu item, icons, mime association and desktop launcher.
 do_generate_setup_launcher(){
-    do_header "Creating Install desktop launcher"
+    do_freedesktop_header "Creating Install desktop launcher"
 
     # kung fu line!
     # bash -c '_PWD=\"\$PWD\"; cd \"\`echo \$0 | sed s/"$DESKTOP_NAME.desktop"//\`\"; chmod +x ./src/builders/bash/freedesktop.sh; ./src/builders/bash/freedesktop.sh --setup; ./Cerberus %F; cd \"\$_PWD\"' %k"
@@ -150,7 +154,7 @@ do_generate_setup_launcher(){
     )
 
     printf "%s\n" "${DESKTOP_FILE[@]}" > "$CERBERUS_ROOT_DIR/$DESKTOP_NAME-install.desktop"
-    [ $? -eq 0 ] && { do_success "Created install desktop launcher $DESKTOP_NAME."; } || { do_error "Failed to create install desktop launcher $DESKTOP_NAME."; };
+    [ $? -eq 0 ] && { do_freedesktop_success "Created install desktop launcher $DESKTOP_NAME."; } || { do_freedesktop_error "Failed to create install desktop launcher $DESKTOP_NAME."; };
 
 }
 
@@ -158,7 +162,7 @@ do_generate_setup_launcher(){
 # This launcher will be place in the Cerberus X root directory and call this script using the --uninstall options to set up
 # a menu item, icons, mime association and desktop launcher.
 do_generate_remove_launcher(){
-    do_header "Creating Uninstall desktop launcher"
+    do_freedesktop_header "Creating Uninstall desktop launcher"
 
     # kung fu line!
     # bash -c '_PWD=\"\$PWD\"; cd \"\`echo \$0 | sed s/"$DESKTOP_NAME.desktop"//\`\"; chmod +x ./src/builders/bash/freedesktop.sh; ./src/builders/bash/freedesktop.sh --uninstall; ./Cerberus %F; cd \"\$_PWD\"' %k"
@@ -179,14 +183,14 @@ do_generate_remove_launcher(){
     )
 
     printf "%s\n" "${DESKTOP_FILE[@]}" > "$CERBERUS_ROOT_DIR/$DESKTOP_NAME-uninstall.desktop"
-    [ $? -eq 0 ] && { do_success "Created uninstall desktop launcher $DESKTOP_NAME."; } || { do_error "Failed to create uninstall desktop launcher $DESKTOP_NAME."; };
+    [ $? -eq 0 ] && { do_freedesktop_success "Created uninstall desktop launcher $DESKTOP_NAME."; } || { do_freedesktop_error "Failed to create uninstall desktop launcher $DESKTOP_NAME."; };
 
 }
 
 # Function to generate the .desktop file to be used in ./loval/shared/applications and the user desktop.
 do_generate_menu_launcher(){
     
-    do_header "Creating Cerberus X memu desktop launcher"
+    do_freedesktop_header "Creating Cerberus X memu desktop launcher"
 
     local DESKTOP_FILE_USER=(
         "#!/usr/bin/env xdg-open"
@@ -207,13 +211,13 @@ do_generate_menu_launcher(){
     )
 
     printf "%s\n" "${DESKTOP_FILE_USER[@]}" > "$TEMP_DIR/$DESKTOP_NAME.desktop"
-    [ $? -eq 0 ] && { do_success "Created Desktop launcher $DESKTOP_NAME."; } || { do_error "Failed to create desktop launcher $DESKTOP_NAME."; };
+    [ $? -eq 0 ] && { do_freedesktop_success "Created Desktop launcher $DESKTOP_NAME."; } || { do_freedesktop_error "Failed to create desktop launcher $DESKTOP_NAME."; };
 }
 
 # Function to call inkscape to convert svg files into png files.
 # $1= size, $2= exorted file, $3= input file
 do_convert_svg(){
-    do_info "Convering $3 to a ${1}x$1 png as $2"
+    do_freedesktop_info "Convering $3 to a ${1}x$1 png as $2"
     inkscape -w $1 -h $1 --export-filename="$2" --export-type="png" "$3"
 }
 
@@ -221,6 +225,22 @@ do_convert_svg(){
 # These are stored in the builder/images directory. Generating the freedesktop launcher copies these files to the
 # users local directory.
 do_generate_icons(){
+
+    # Before cleaning out old icons. Check that inkscape is installed.
+    command -v inkscape >/dev/null 2>&1 || {
+        do_freedesktop_unknown "Inkscape not installed.\nSkipping creation of icons."
+        return;
+    }
+
+    [ ! -f "$SVG_APP_ICON" ] && {
+        do_freedesktop_unknown "SVG FILE: $SVG_APP_ICON is missing\nSkipping icon creation."
+        return;
+    }
+
+    [ ! -f "$SVG_MIME_ICON" ] && {
+        do_freedesktop_unknown "SVG FILE: $SVG_MIME_ICON is missing\nSkipping icon creation."
+        return;
+    }
 
     # Clean out any old icons before generating new ones.
     [ -d "$ICON_STORE_DIR" ] && { rm -rf "$ICON_STORE_DIR"; }
@@ -237,7 +257,7 @@ do_generate_icons(){
 do_uninstall_mime_check(){
     # Uninstall the MIME association
     [ -f "$USER_MIME_PACKAGES/$DESKTOP_NAME.xml" ] && {
-        do_info "Removing: $USER_MIME_PACKAGES/$DESKTOP_NAME.xml"
+        do_freedesktop_info "Removing: $USER_MIME_PACKAGES/$DESKTOP_NAME.xml"
         xdg-mime uninstall "$USER_MIME_PACKAGES/$DESKTOP_NAME.xml"
     }
 }
@@ -245,7 +265,7 @@ do_uninstall_mime_check(){
 #Function to uninstall the menu entry
 do_uninstall_menu_check(){
 [ -f "$USER_APPLICATION_DIR/$DESKTOP_NAME.desktop" ] && {
-        do_info "Removing: $USER_APPLICATION_DIR/$DESKTOP_NAME.desktop"
+        do_freedesktop_info "Removing: $USER_APPLICATION_DIR/$DESKTOP_NAME.desktop"
         xdg-desktop-menu uninstall "$USER_APPLICATION_DIR/$DESKTOP_NAME.desktop";
     }
 }
@@ -255,7 +275,7 @@ do_install_xdg_mime_xml_check(){
     do_uninstall_mime_check
     do_generate_mime_package
     cp -u "$TEMP_DIR/$DESKTOP_NAME.xml" "$USER_MIME_PACKAGES/$DESKTOP_NAME.xml";
-    do_info "xdg-mime install $USER_MIME_PACKAGES/$DESKTOP_NAME.xml"
+    do_freedesktop_info "xdg-mime install $USER_MIME_PACKAGES/$DESKTOP_NAME.xml"
     xdg-mime install "$USER_MIME_PACKAGES/$DESKTOP_NAME.xml";
 }
 
@@ -263,13 +283,13 @@ do_install_xdg_mime_xml_check(){
 do_install_xdg_memu_check(){
     do_uninstall_menu_check
     do_generate_menu_launcher
-    do_info "xdg-desktop-menu install $TEMP_DIR/$DESKTOP_NAME.desktop"
+    do_freedesktop_info "xdg-desktop-menu install $TEMP_DIR/$DESKTOP_NAME.desktop"
     xdg-desktop-menu install "$TEMP_DIR/$DESKTOP_NAME.desktop";
 }
 
 # Install all generates file that are meant for XDG
 do_install_xdg_items(){
-    do_header "Installing Ceberus X XDG items"
+    do_freedesktop_header "Installing Ceberus X XDG items"
     do_xdg_setup                    # Make sure that the directories are correct.
     do_install_xdg_mime_xml_check   # Make sure that there is a mime xml association file.
     do_install_xdg_memu_check       # Make sure that there is a desktop menu file.
@@ -280,14 +300,14 @@ do_install_xdg_items(){
         ICN_2=$ICON_STORE_DIR/${icon_size}x$icon_size/mimetypes/$MIME_ICON_FILE-$icon_size.png
 
         [ -f $ICN_1 ] && {
-            do_info "Installing application icon: ${icon_size}x$icon_size $ICN_1 $APP_ICON_NAME"
+            do_freedesktop_info "Installing application icon: ${icon_size}x$icon_size $ICN_1 $APP_ICON_NAME"
             xdg-icon-resource install --noupdate --size $icon_size $ICN_1 $APP_ICON_NAME;
-        } || { do_error "NO $ICN_1"; }
+        } || { do_freedesktop_error "NO $ICN_1"; }
 
         [ -f $ICN_2 ] && {
-             do_info "Installing mime icon: ${icon_size}x$icon_size $ICN_2 $MIME_ICON_NAME"
+             do_freedesktop_info "Installing mime icon: ${icon_size}x$icon_size $ICN_2 $MIME_ICON_NAME"
              xdg-icon-resource install --noupdate --context mimetypes --size $icon_size $ICN_2 $MIME_ICON_NAME;
-        } || { do_error "NO $MIME_ICON_FILE-$icon_size.png"; }
+        } || { do_freedesktop_error "NO $MIME_ICON_FILE-$icon_size.png"; }
     done
 
     # Refresh the icon resources.
@@ -295,7 +315,7 @@ do_install_xdg_items(){
 }
 
 do_uninstall_xdg_items(){
-    do_header "Unisntalling Ceberus X XDG items"
+    do_freedesktop_header "Unisntalling Ceberus X XDG items"
 
     # Un register the XDG icon associations
     for icon_size in "${ICON_SIZES[@]}"; do
@@ -303,14 +323,14 @@ do_uninstall_xdg_items(){
         ICN_2="$ICON_STORE_DIR/${icon_size}x$icon_size/mimetypes/$MIME_ICON_FILE-$icon_size.png"
 
         [ -f $ICN_1 ] && {
-            do_info "Removing: --noupdate --novendor -size $icon_size $ICN_1 $APP_ICON_NAME"
+            do_freedesktop_info "Removing: --noupdate --novendor -size $icon_size $ICN_1 $APP_ICON_NAME"
             xdg-icon-resource uninstall --noupdate --novendor --size $icon_size $ICN_1 $APP_ICON_NAME;
-        } || { do_error "$APP_ICON_FILE-$icon_size.png"; }
+        } || { do_freedesktop_error "$APP_ICON_FILE-$icon_size.png"; }
 
         [ -f $ICN_2 ] && {
-            do_info "Removing: --noupdate --context mimetypes --size $icon_size $ICN_2 $MIME_ICON_NAME"
+            do_freedesktop_info "Removing: --noupdate --context mimetypes --size $icon_size $ICN_2 $MIME_ICON_NAME"
             xdg-icon-resource uninstall --noupdate --context mimetypes --size $icon_size $ICN_2 $MIME_ICON_NAME;
-        } || { do_error "$MIME_ICON_FILE-$icon_size.png"; }
+        } || { do_freedesktop_error "$MIME_ICON_FILE-$icon_size.png"; }
     done
 
     # Refresh the icon resources.
@@ -323,8 +343,12 @@ do_uninstall_xdg_items(){
 
 do_init_linux_desktop(){
     # If freedesktop.sh is part of the builder.sh process, then the actions
-    [ ! -z $GEN_ICONS ] && {
-        do_generate_icons
+    [ -n "$GEN_ICONS" ] && {
+        do_generate_icons;
+    } || {
+        [ -n "$BULDER_SCRIPT" ] && {
+            do_freedesktop_unknown "WARNING: ICONS WILL NOT BE GENERATED\nRerun builder.sh with option -i default, or -i icon1.svg icon2.svg"
+        }
     }
 
     # The only file that needs to be processed here is the one to generate the Cerberus X setup
@@ -335,8 +359,8 @@ do_init_linux_desktop(){
 # LINUX ONLY
 # This allows for the creation of new icon files and removel of the freedesktop files.
 
-[ $(uname -s) = "Linux" ] && {
-    [ -z $BULDER_SCRIPT ] && {
+if [ "$(uname -s)" = "Linux" ]; then
+    [ -z "$BULDER_SCRIPT" ] && {
 
         # Standalone script will allow for the stored icons to be updated.
         # To generate new icons inkscape must be installed.
@@ -376,7 +400,7 @@ do_init_linux_desktop(){
                     shift
                     ;;
                 -h|--help)
-                do_info "CERBERUS X LINUX LAUNCHER"
+                do_freedesktop_info "CERBERUS X LINUX LAUNCHER"
                     echo "To generate new icons. Pass option {-i|--icon} with full paths to svg files."
                     echo "USAGE: ./freedesktop.sh [options]"
                     echo -e "\t{-s|--setup}\t\tInstall Cerberus XDG items."
@@ -400,9 +424,7 @@ do_init_linux_desktop(){
             esac
         done
         
-    } || {
-        do_init_linux_desktop;
     };
-} || {
-    do_error "THIS SCRIPT IS FOR LINUX USE ONLY";
-}
+else
+    do_freedesktop_error "FREE DESKTOP SCRIPT: THIS SCRIPT IS FOR LINUX USE ONLY";
+fi
