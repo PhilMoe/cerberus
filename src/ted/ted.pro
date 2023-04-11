@@ -4,6 +4,11 @@
 #
 #-------------------------------------------------
 # Change log
+# 2023-04-12 - Dawlane
+#                   Updated macOS to take into account changes to Qt 6.5.0 minimum target.
+#                   Reinstated Linux distribution of Qt dependencies if not built with the Linux repository.
+#                   FIXED an issue with QMAKE_TARGET_BUNDLE_PREFIX not being overridden via command line.
+#                   Updated WINDEPLOYQT to take into account changes to Qt 6.5.0.
 # 2023-02-11 - Dawlane
 #                   Ted Qt Project file rewritten to be better organized.
 # 2023-02-10 - Dawlane
@@ -100,10 +105,11 @@ defineTest(print) {
 }
 
 # NOTE: Currently for Qt Deployment it's best to use the Linux repositories instead of
-#       Trying to distribute Qt Libraries. Ted should work now from versions 5.9+
+#       Trying to distribute Qt Libraries. If a version other than the distributions default is chosen, then
+#       try to set things up for that Qt kit.
 linux{
 
-    # If the GCC compiler it version 6+, then disable Position Independent Code (aka pie)
+    # If the GCC compiler is version 6+, then disable Position Independent Code (aka pie)
     GCC += $$system( expr `gcc -dumpversion | cut -f1 -d.` )
     greaterThan(GCC, 5) {
         QMAKE_LFLAGS+= -no-pie
@@ -113,6 +119,93 @@ linux{
     CONFIG += warn_off silent       # Suppress warnings and silence
     QMAKE_CXXFLAGS_RELEASE *= -O3   # Set code generation to the fastest
 
+    # Check if qmake is a local or installer.
+    # Do this by checking if QMAKE_QMAKE contains /usr/
+    !contains( QMAKE_QMAKE, ^/usr/.*) {
+        QMAKE_STRIP = echo
+
+        # Make a linux application search for libraries here.
+        QMAKE_RPATHDIR = $ORIGIN/lib
+
+        # Copy over all the required libraries
+        # Common
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.56
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.56
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.56
+
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Core.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}DBus.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Gui.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Network.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Positioning.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}PrintSupport.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Qml.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Quick.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}QuickWidgets.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}WebChannel.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}WebEngineCore.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}WebEngineWidgets.so.$${QT_MAJOR_VERSION}
+        QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Widgets.so.$${QT_MAJOR_VERSION}
+
+        # Version Specific
+        equals(QT_MAJOR_VERSION, 5) {
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt5XcbQpa.so.5
+
+            # Plugins
+            platforms.files += $$[QT_INSTALL_PLUGINS]/platforms/libqxcb.so
+            platforms.path += $(DESTDIR)/plugins/platforms
+
+            xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
+            xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
+
+            INSTALLS += plugins xcbglintegrations
+        }
+
+        equals(QT_MAJOR_VERSION, 6) {
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6OpenGL.so.6
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlModels.so.6
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6XcbQpa.so.6
+
+
+            # Plugins
+            platforms.files += $$[QT_INSTALL_PLUGINS]/platforms/libqxcb.so
+            platforms.path += $(DESTDIR)/plugins/platforms
+
+            xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
+            xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
+
+            INSTALLS += platforms xcbglintegrations
+        }
+
+        libs.files += $$QTLIBS
+        libs.path += $(DESTDIR)/lib
+
+        # translations. Don't need the qml stuff
+        translations.files += $$[QT_INSTALL_TRANSLATIONS]/qtwebengine_locales/*.pak
+        translations.path += $(DESTDIR)/translations/qtwebengine_locales
+
+        # resources
+        resources.files += $$[QT_INSTALL_DATA]/resources/*
+        resources.path += $(DESTDIR)/resources
+
+        # WebEngineProcess
+        webengineprocess.files += $$[QT_INSTALL_DATA]/libexec/QtWebEngineProcess
+        webengineprocess.path += $(DESTDIR)/libexec
+
+        config1.files += $(_PRO_FILE_PWD_)/configs/linux/bin/qt.conf
+        config1.path += $(DESTDIR)
+
+        config2.files += $(_PRO_FILE_PWD_)/configs/linux/libexec/qt.conf
+        config2.path += $(DESTDIR)/libexec
+
+        INSTALLS += libs translations resources webengineprocess config1 config2
+        install:   $(INSTALLS)
+
+        QTKIT = "Installer Qt $${QT_VERSION}"
+    } else {
+        QTKIT = "Qt Local Default"
+    }
+
     # Output all values to make sure that they are correct
     print("==== Linux ====")
     print("$$escape_expand(\\t)QT SDK VERSION: $${QT_VERSION}")
@@ -121,6 +214,18 @@ linux{
     print("$$escape_expand(\\t)CXXFLAGS: $${QMAKE_CXXFLAGS}")
     print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
     print("$$escape_expand(\\t)LIBS: $${LIBS}")
+    print("$$escape_expand(\\t)Qt Kit: $${QTKIT}")
+    print("$$escape_expand(\\t)Qt ROOT DIRECTORY: $$[QT_INSTALL_DATA]")
+    print("$$escape_expand(\\t)Qt PLUGINS DIRECTORY: $$[QT_INSTALL_PLUGINS]")
+
+    # Remove deployment files every time a build or clean action is started. Linux commands.
+    system(rm -rf $$shell_quote($${DESTDIR}/plugins))
+    system(rm -rf $$shell_quote($${DESTDIR}/resources))
+    system(rm -rf /S $$shell_quote($${DESTDIR}/translations))
+    system(rm -rf /S $$shell_quote($${DESTDIR}/lib))
+    system(rm -rf /S $$shell_quote($${DESTDIR}/libexec))
+    system(rm -f $$shell_quote($${DESTDIR}/Ted))
+    system(rm -f $$shell_quote($${DESTDIR}/qt.conf))
 }
 
 # Deal with MS Windows settings
@@ -149,16 +254,20 @@ win32{
     # Set up the commandline to use with windeployqt
     WINDEPLOYQT_OPTS = "$${WINDEPLOYQT}"  --no-svg -core -webenginecore -webenginewidgets -webchannel
     WINDEPLOYQT_OPTS += --no-translations --no-system-d3d-compiler --no-compiler-runtime
-    WINDEPLOYQT_OPTS += --no-opengl-sw --no-plugins --no-serialport
+    WINDEPLOYQT_OPTS += --no-opengl-sw --no-plugins
 
     # Append additional options based on the Qt version.
     lessThan(QT_MAJOR_VERSION, 6) {
+        WINDEPLOYQT_OPTS+= --no-serialport
         lessThan(QT_MINOR_VERSION, 14) {
             WINDEPLOYQT_OPTS += --no-angle
         } else {
-            WINDEPLOYQT_OPTS += --no-angle --no-virtualkeyboard
+            WINDEPLOYQT_OPTS += --no-angle --no-virtualkeyboard 
         }
     } else {
+        lessThan(QT_MINOR_VERSION, 5) {
+            WINDEPLOYQT_OPTS += --no-serialport
+        }
         WINDEPLOYQT_OPTS += --no-virtualkeyboard
     }
 
@@ -221,13 +330,14 @@ macx{
         greaterThan(QT_MINOR_VERSION, 13):lessThan(QT_MINOR_VERSION, 16) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13 }
     }
     equals(QT_MAJOR_VERSION, 6) {
-        QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
+        lessThan(QT_MINOR_VERSION, 5) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14 }
+        equals(QT_MINOR_VERSION, 5) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.00 }
     }
 
     QMAKE_BUNDLE = Ted          # Application bundle name.
 
     # If no QMAKE_TARGET_BUNDLE_PREFIX was passed to qmake, then set a default.
-    isEmpty($(QMAKE_TARGET_BUNDLE_PREFIX)){
+    isEmpty(QMAKE_TARGET_BUNDLE_PREFIX){
         QMAKE_TARGET_BUNDLE_PREFIX = com.whiteskygames
     }
 
@@ -276,7 +386,7 @@ macx{
     print("$$escape_expand(\\t)Application destinaton path: $${DESTDIR}")
     print("$$escape_expand(\\t)Qt Platforms path: $${QT_SDK_PLATFORMS_DIR}")
     print("$$escape_expand(\\t)Full application path: $${MACDEPLOYQT_TARGET}")
-    print("$$escape_expand(\\t)windeployqt options: $${MACDEPLOYQT_OPTS}$$escape_expand(\\n\\t)")
+    print("$$escape_expand(\\t)macdeployqt options: $${MACDEPLOYQT_OPTS}$$escape_expand(\\n\\t)")
     print("$$escape_expand(\\t)Post link commands: $${QMAKE_POST_LINK}$$escape_expand(\\n\\t)")
 
     print("$$escape_expand(\\t)Config: $${CONFIG}")
@@ -284,6 +394,7 @@ macx{
     print("$$escape_expand(\\t)CXXFLAGS: $${QMAKE_CXXFLAGS}")
     print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
     print("$$escape_expand(\\t)LIBS: $${LIBS}")
+    print("$$escape_expand(\\t)QMAKE_TARGET_BUNDLE_PREFIX: $${QMAKE_TARGET_BUNDLE_PREFIX}")
 
     # Remove deployment files every time a build or clean action is started.
     system(rm -rf $$shell_quote($$shell_path($${MACDEPLOYQT_TARGET})))
