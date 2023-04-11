@@ -1504,7 +1504,7 @@ void dbg_throw( const char *err ){
 
 void dbg_stop(){
 
-#if TARGET_OS_IPHONE
+#ifdef TARGET_OS_IPHONE
 	dbg_throw( "STOP" );
 #endif
 
@@ -1565,7 +1565,7 @@ void dbg_stop(){
 
 void dbg_error( const char *err ){
 
-#if TARGET_OS_IPHONE
+#ifdef TARGET_OS_IPHONE
 	dbg_throw( err );
 #endif
 
