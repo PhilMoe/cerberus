@@ -14,6 +14,7 @@ Class Tween
 	Const ELASTIC:=6
 	Const BOUNCE:=7
 	Const BACK:=8
+	Const FIT:=9
 
 	Const EASEIN:=0
 	Const EASEOUT:=1
@@ -40,6 +41,8 @@ Class Tween
 	Field curve:Float
 	Field x:Float
 	Field value:Float
+	Field fitS0:Float = 1.0
+	Field fitS1:Float = 0.0
 
 	Public
 	Method New(interpolation:Int,duration:Int)
@@ -137,6 +140,11 @@ Class Tween
 		curve = pYA
 	End
 
+	Method SetFitSlope:Void(s0:Float, s1:Float)
+		fitS0 = s0
+		fitS1 = s1
+	End
+
 	Method SetDuration:Void(duration:Int)
 		Self.duration = duration
 	End
@@ -221,6 +229,10 @@ Class Tween
 			Case EASEINOUT
 				Return InterpolateBackEaseInOut(0,1,t)
 			End
+		Case FIT
+			Local s0:Float = ( fitS0 - 0 ) / 0.25
+			Local s1:Float = ( 1 - fitS1 ) / 0.25
+			Return InterpolateFit( 0, 1, s0, s1, t )
 		End
 		Return 0
 	End
