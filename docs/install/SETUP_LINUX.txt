@@ -5,11 +5,30 @@ https://www.cerberus-x.com/community/categories/desktop-targets.70/
 REQUIREMENTS
 For Desktop Console and Desktop Game targets:
 NOTE: As each Linux distribution has their own package manager and naming system it would be impossible to list them all. 
-So the basic requirements are to install the runtime packages for Qt5 and the development packages for xrandr, xinerama, openal, mesa, xxf86vm, xcursor and a GCC C++ compiler.
+So the basic requirements are to install the development packages for xrandr, xinerama, openal, mesa, xxf86vm, xcursor and a GCC C++ compiler.
+
+For the prebuilt IDE, that depends on if there are additional folders. If there is a folder called lib and libexec in the Cerberus/bin directory.
+Then chances are that it was built against a version of the Qt SDK not available in the Linux distributions repository.
+A quick test to find out which version was used, is to open a command line terminal and use ldd on the IDE.
+e.g. ldd /path_to_cerberus/Cerberus/bin/Ted
+
+It will show the list of libraries required and found for the IDE to run. Missing ones will show something like libqxcb.so => not found.
+
+Note: For Qt 6, it requires that libxcb-cursor0 be installed for it to work. So if the above test or looking in the Cerberus/bin/lib directory show that there are Qt6 shared
+libraries, then libxcb-cursor0 should be added to the Required list of packages to install.
+
+If the IDE should fail to start, then open a command line terminal and change directory to the Cerberus/bin directory.
+Enter: export QT_DEBUG_PLUGINS=1
+Then enter: ./Ted
+
+The plugin loader will give details on any plugin that failed to load. You can then confirm what additions requirements the plugin needs following the same
+example above for Ted.
+e.g. ldd /path_to_cerberus/Cerberus/bin/plugins/platforms/libqxcb.so
 
 Linux Mint 20+
 Required: sudo apt-get install g++ build-essential libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
-Optional: sudo apt-get install libqt5webenginewidgets5 libqt5widgets5 libqt5widgets5 libqt5network5 libqt5core5a libqt5webenginecore5 libqt5quick5 libqt5printsupport5 libqt5quickwidgets5 libqt5webchannel5 libqt5qml5 libqt5positioning5 libqt5qmlmodels5
+Optional: If the IDE was built against a different version than one in the Linux distributions repository, then the following will not be needed.
+    sudo apt-get install libqt5webenginewidgets5 libqt5widgets5 libqt5widgets5 libqt5network5 libqt5core5a libqt5webenginecore5 libqt5quick5 libqt5printsupport5 libqt5quickwidgets5 libqt5webchannel5 libqt5qml5 libqt5positioning5 libqt5qmlmodels5
 
 For a RASPBERRY PI 3. The OpenGL desktop driver needs to be enabled.
 
