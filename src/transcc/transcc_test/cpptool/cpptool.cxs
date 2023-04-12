@@ -1,0 +1,69 @@
+#If HOST="winnt"
+#CC_OUTPUT_NAME="test_winnt"
+#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
+#CC_MSIZE="64"
+#CC_USE_MINGW=True
+#Elseif HOST="macos"
+#CC_OUTPUT_NAME="test_macos"
+#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+#Else
+#CC_OUTPUT_NAME="test_linux"
+#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+#Endif
+Import brl.filesystem
+'Import os
+
+Function Main:Int()
+	Print "Hello World!"
+	Local rect:=New Rect( 50,50,100,100,60 )
+	Print "Rect SuperID:"+rect.SuperID()
+	Print "Rect ID:"+rect.ID()
+	For Local i:=Eachin rect.StackTest()
+		Print "StackTest: "+i
+	Next
+	Return 0
+End
+
+Class TestBase
+	Field id:Int=100
+	
+	Method New( id:Int )
+		Self.id=id
+	End
+	
+	Method ID:Int()
+		Return 100
+	End
+End
+
+Class Rect Extends TestBase
+	Field x:Int
+	Field y:Int
+	Field width:Int
+	Field height:Int
+	
+	Method New( id:Int,x:Int=0,y:Int=0,w:Int=1,h:Int=1 )
+		Self.id=id
+		Self.x=x
+		Self.y=y
+		Self.width=w
+		Self.height=h
+	End
+	
+	Method SuperID:Int()
+		Return Super.ID()
+	End
+	
+	Method ID:Int()
+		Return id
+	End
+	
+	Method StackTest:StringStack()
+		Local stk:=New StringStack()
+		stk.Push( x )
+		stk.Push( y )
+		stk.Push( width )
+		stk.Push( height )
+		Return stk
+	End
+End
