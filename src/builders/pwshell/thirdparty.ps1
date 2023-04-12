@@ -106,6 +106,9 @@ function do_msvc([string]$_vsver, [string]$_vsi) {
         return
     }
 
+    # If this point is reached, then it's safe to say that there is a compiler present.
+    $global:COMPILER_INSTALLED = $true
+
     # Set up the MSVC environment.
     do_msvc_env
 }
@@ -125,6 +128,11 @@ function do_mingw([string]$_mingw) {
     # NOTE: GCC will output version info either in stderr or stdout depending on the version option used
     # As this is a test and not compiling, then the --version option must be used, else an error could be thrown.
     execute "g++" "--version"
+    if ($global:EXITCODE -ne 0) {
+        $global:EXITCODE = -2
+    } else {
+        $global:COMPILER_INSTALLED = $true
+    }
 }
 
 # Scan the passed parameters for valid Qt SDK installations.

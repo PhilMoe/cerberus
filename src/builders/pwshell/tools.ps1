@@ -31,14 +31,31 @@ function do_transcc() {
 
     do_info "BUILDING TransCC"
 
+    # Create a variable to where the project files are located.
+    [string]$cpptool_dir = "$SRC\transcc\transcc.build\cpptool"
+    [string]$build_dir = ""
+
     # Check for an exisiting transcc
     if (Test-Path("$BIN\transcc_winnt.exe")) { Remove-Item "$BIN\transcc_winnt.exe" }
 
-    execute "g++.exe" "-O3 -DNDEBUG -o `"$BIN\transcc_winnt`" `"$SRC\transcc\transcc.build\cpptool\main.cpp`" -lpthread -s"
-    If ($global:EXITCODE -ne 0) {
+    # Call the build tool depending on the toolchain selected.
+    if (($msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
+        $build_dir = "$cpptool_dir\msvc\Release64"
+        execute "msbuild" "/p:OutDir=`"$BIN\`" /p:TargetName=`"transcc_winnt`" /p:Configuration=Release64 /p:Platform=x64 $cpptool_dir\msvc\msvc.sln"
+    } else {
+        $build_dir = "$cpptool_dir\gcc_winnt\build"
+        New-Item "$build_dir" -Type Directory -Force
+        Push-Location
+        Set-Location "$cpptool_dir\gcc_winnt"
+        execute "mingw32-make" "CCOPTS=`"-O3 -DNDEBUG -Wno-free-nonheap-object`" OUT_PATH=`"$BIN`" OUT=`"transcc_winnt`" BUILD_DIR=`"$build_dir`""
+        Pop-Location
+    }
+    if ($global:EXITCODE -ne 0) {
         do_error "$global:MESSAGE`n"
         return
     }
+
+    clean_build "$build_dir" $false
 
     do_success "BUILD SUCCESSFUL`n"
     $global:EXITCODE = 0
@@ -55,15 +72,23 @@ function do_cserver() {
         return
     }
 
+    # Set the relase directory based on the toolchain
+    [string]$release_dir = "$SRC\cserver\cserver.build\glfw3\"
+    if ($msbuild -eq $true) {
+        $release_dir += "msvc\Release64"
+    } else {
+        $release_dir += "gcc_winnt\Release64"
+    }
+
     # Remove the old version before moving the new one into the bin directory.
     if (Test-Path("$BIN\cserver_winnt.exe")) { Remove-Item "$BIN\cserver_winnt.exe" }
-    Move-Item "$SRC\cserver\cserver.build\glfw3\gcc_winnt\Release64\CerberusGame.exe" "$BIN\cserver_winnt.exe"
+    Move-Item "$release_dir\CerberusGame.exe" "$BIN\cserver_winnt.exe"
 
     # Check for the data directory and copy over additional files.
-    if (-not(Test-Path("$BIN\data"))) { Move-Item "$SRC\cserver\cserver.build\glfw3\gcc_winnt\Release64\data" "$BIN\data" }
-    if (-not(Test-Path("$BIN\openal32.dll"))) { Move-Item "$SRC\cserver\cserver.build\glfw3\gcc_winnt\Release64\openal32.dll" "$BIN\OpenAL32.dll" }
-    if (-not(Test-Path("$BIN\openal32_COPYING"))) { Move-Item "$SRC\cserver\cserver.build\glfw3\gcc_winnt\Release64\openal32_COPYING" "$BIN\openal32_COPYING" }
-    if (-not(Test-Path("$BIN\openal32_LICENCE"))) { Move-Item "$SRC\cserver\cserver.build\glfw3\gcc_winnt\Release64\openal32_LICENCE" "$BIN\openal32_LICENCE" }
+    if (-not(Test-Path("$BIN\data"))) { Move-Item "$release_dir\data" "$BIN\data" }
+    if (-not(Test-Path("$BIN\openal32.dll"))) { Move-Item "$release_dir\openal32.dll" "$BIN\OpenAL32.dll" }
+    if (-not(Test-Path("$BIN\openal32_COPYING"))) { Move-Item "$release_dir\openal32_COPYING" "$BIN\openal32_COPYING" }
+    if (-not(Test-Path("$BIN\openal32_LICENCE"))) { Move-Item "$release_dir\openal32_LICENCE" "$BIN\openal32_LICENCE" }
     
     clean_build "cserver"
 
@@ -85,6 +110,7 @@ function do_makedocs() {
 
     clean_build "makedocs"
 
+
     do_success "BUILD SUCCESSFUL`n"
     $global:EXITCODE = 0
 }
@@ -93,19 +119,36 @@ function do_makedocs() {
 function do_launcher() {
     do_info "BUILDING Launcher"
 
+    # Create a variable to where the project files are located.
+    [string]$project_dir = "$SRC\launcher\winnt"
+    [string]$build_dir = "$project_dir\Release64"
+    [string]$icon = "$SRC\launcher\cerberus.ico"
+
     if (Test-Path("$ROOT\Cerberus.exe")) { Remove-Item "$ROOT\Cerberus.exe" }
-    if (Test-Path("$SRC\launcher\res.o")) { Remove-Item "$SRC\launcher\res.o" }
 
-    execute "windres.exe" "`"$SRC\launcher\resource.rc`" -O coff -o `"$SRC\launcher\res.o`""
-    if ($global:EXITCODE -ne 0) {
-        do_error "$global:MESSAGE`n"
-        return
-    }
+    # Call the build tool depending on the toolchain selected.
+    if (($msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
+        execute "msbuild" "/p:OutDir=`"$ROOT\`" /p:ApplicationIcon=`"$icon`" /p:TargetName=`"Cerberus`" /p:Configuration=Release64 /p:Platform=x64 $project_dir\msvc.sln"
+        clean_build "$build_dir" $false
 
-    execute "g++.exe" "-Os -DNDEBUG -o `"$ROOT\Cerberus.exe`" `"$SRC\launcher\codeblocks\launcher.cpp`" `"$SRC\launcher\res.o`" -ladvapi32 -s"
-    if ($global:EXITCODE -ne 0) {
-        do_error "$global:MESSAGE`n"
-        return
+        if ($global:EXITCODE -ne 0) {
+            do_error "$global:MESSAGE`n"
+            return
+        }
+    } else {
+        if (Test-Path("$SRC\launcher\res.o")) { Remove-Item "$SRC\launcher\res.o" }
+
+        execute "windres.exe" "`"$SRC\launcher\resource.rc`" -O coff -o `"$SRC\launcher\res.o`""
+        if ($global:EXITCODE -ne 0) {
+            do_error "$global:MESSAGE`n"
+            return
+        }
+
+        execute "g++.exe" "-Os -DNDEBUG -o `"$ROOT\Cerberus.exe`" `"$project_dir\launcher.cpp`" `"$SRC\launcher\res.o`" -ladvapi32 -s"
+        if ($global:EXITCODE -ne 0) {
+            do_error "$global:MESSAGE`n"
+            return
+        }
     }
 
     do_success "BUILD SUCCESSFUL`n"

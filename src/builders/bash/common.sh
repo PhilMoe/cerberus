@@ -1,8 +1,11 @@
+#!/bin/bash
+
 # COMMON FUNCTIONS VERSION
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Get the root directory of the Cerberus installation and set variable for BIN and SRC directories.
 ROOT="$( cd -- "$(dirname "$SCRIPTPATH")" >/dev/null 2>&1 ; pwd -P )"
+CERBERUS_ROOT_DIR="$ROOT"
 BIN="$ROOT/bin"
 SRC="$ROOT/src"
 
@@ -75,7 +78,16 @@ execute(){
 
 # Function to clean .build directories.
 clean_build(){
-    [ -d "$SRC/$1/$1.build" ] && { rm -rf "$SRC/$1/$1.build"; }
+    [ -z "$2" ] && {
+        _dir="$1";
+    } || {
+        _dir="$SRC/$1/$1.build";
+    }
+
+    [ -d "$_dir" ] && {
+        echo "REMOVING BUILD $_dir";
+        rm -rf "$_dir";
+    }
 }
 
 # General function to call after a build

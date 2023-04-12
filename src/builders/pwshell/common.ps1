@@ -8,6 +8,7 @@
 [string[]]$global:QT_INSTALLS = @()
 [int]$global:QT_SELECTED_IDX = -1
 [int]$global:MSVC_SELECTED_IDX = -1
+[bool]$global:COMPILER_INSTALLED = $false
 
 # Display colourised information
 function do_info([string]$_msg) {
@@ -42,6 +43,7 @@ function execute([String]$_cmd, [string[]]$_argList) {
     $expr = "& `"$_cmd`" $_argList"
     try {
         $global:MESSAGE = Invoke-Expression "$expr 2>&1"  | Out-String
+        if ($stdstream -eq $true) { Write-Host $global:MESSAGE }
         if (-not($LASTEXITCODE -eq 0)) { throw $global:MESSAGE }
     }
     catch {
@@ -51,8 +53,14 @@ function execute([String]$_cmd, [string[]]$_argList) {
 }
 
 # Function to clean up after transcc builds
-function clean_build([string]$_srcfile) {
-    if (Test-Path("$SRC\$_srcfile\$_srcfile.build")) { Remove-Item -Force -Recurse "$SRC\$_srcfile\$_srcfile.build" }
+function clean_build([string]$_srcfile, [bool]$_dotbuild = $true) {
+    [string]$dir = ""
+    if ($_dotbuild -eq $true) {
+        $dir = "$SRC\$_srcfile\$_srcfile.build"
+    } else {
+        $dir = "$_srcfile"
+    }
+    if (Test-Path("$dir")) { Remove-Item -Force -Recurse "$dir" }
 }
 
 # Function to execute a transcc build.
@@ -68,7 +76,18 @@ function transcc([string]$_name, [string]$_target, [string]$_srcfile, [string]$_
     }
 
     do_info "BUILDING $_name"
-    execute "$BIN\transcc_winnt.exe" "-target=$_target -builddir=`"$_srcfile.build`" -clean -config=release +CPP_GC_MODE=$_mode `"$srcpath\$_srcfile.cxs`""
+
+    # Set the toolchain based upon the target and msbuild
+    [string]$toolchain = ""
+    if ($msbuild -eq $true) {
+        if ($_target -eq "C++_Tool") {
+            $toolchain = "+CC_USE_MINGW=0"
+        } else {
+            $toolchain = "+GLFW_USE_MINGW=0"
+        }
+    }
+ 
+    execute "$BIN\transcc_winnt.exe" "-target=$_target -builddir=`"$_srcfile.build`" -clean -config=release +CPP_GC_MODE=$_mode $toolchain `"$srcpath\$_srcfile.cxs`""
     if ($global:EXITCODE -ne 0) {
         $global:EXITCODE = 1
         return

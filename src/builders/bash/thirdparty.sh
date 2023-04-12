@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # THIRD-PARTY FUNCTIONS VERSION
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
@@ -65,7 +67,7 @@ do_qtsdk_check(){
         # If there are any elements stored in the QT_INSTALLS array; then only pre-end
         # the PATH environment variable with either the one passed with option to get the version or help, or get
         # the first element in the QT_INSTALLS array.
-        [ ! -z "$QTDIR" ] && {
+        [ -n "$QTDIR" ] && {
             [ $HOST = "linux" ] && {
                 execute "${QTDIR}/MaintenanceTool" -v;
                 } || {
@@ -121,7 +123,6 @@ do_qtsdk_check(){
                 } || {
                 execute qmake --version
                 [ $EXITCODE -eq 0 ] && {
-                    echo "REACHED"
                     QT_INSTALLS+=("`which qmake`");
                     QT_SELECTED=${QT_INSTALLS[0]}
                 };
@@ -136,27 +137,37 @@ do_qtsdk_check(){
 setcompiler() {
     do_header "CHECKING FOR COMPILER INSTALLATION"
     [ $HOST = "linux" ] && {
-        # NOTE: Cerberus will only work correctly with GCC-10+. So check if the system explicitly has g++-10 installed, else use g++
-        if command -v g++-10 &> /dev/null; then COMPILER="g++-10"; else COMPILER="g++"; fi
+        
+        # Test if the specified compier is present.
+        if command -v g++-$GCC_VER &> /dev/null; then
+            COMPILER="g++-$GCC_VER"
+            C_COMPILER="gcc-$GCC_VER"
+        else
+            COMPILER="g++"
+            C_COMPILER="gcc"
+            GCC_VER=
+        fi
+
+        # General catch all for gcc detections.
         execute $COMPILER -v 2>/dev/null
         [ $EXITCODE -eq 0 ] || {
             do_error "NO GCC COMPILER PRESENT";
         }
+
         return $EXITCODE;
-        } || {
-        COMPILER="clang++"
-        execute $COMPILER -v 2> /dev/null
-        [ $EXITCODE -eq 0 ] || {
-            do_error "NO CLANG++ COMPILER PRESENT.\nINSTALL XCODE AND THE XCODE COMMANDLINE TOOLS."
-            return $EXITCODE;
-        }
-        execute xcodebuild -h 2> /dev/null
+    } || {
+
+        # Check for xcodebuild.
+        COMPILER="xcodebuild"
+        execute $COMPILER -h 2> /dev/null
         [ $EXITCODE -eq 0 ] || {
             do_error "XCODEBUILD NOT PRESENT.\nINSTALL XCODE AND THE XCODE COMMANDLINE TOOLS."
             return $EXITCODE;
         }
+
         return $EXITCODE;
     }
+
     do_error "UNKNOWN HOST $HOST."
     return $EXITCODE
 }

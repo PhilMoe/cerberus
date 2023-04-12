@@ -3,31 +3,52 @@
 
 # Get this script directory
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-TRANSCC_EXE=0
-BULDER_SCRIPT=1
-SCRIPT_VER="1.0.3"
-QT_SELECTED=
+SCRIPT_VER="1.1.0"
+
+TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
+BULDER_SCRIPT=1                         # Flag to indicate
+QT_SELECTED=                            # Variable to hold the chosen qmake
+DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
+ARCHIVER=tar                            # Set the archive tool to use to build the deployment archive.
+CERT=                                   # For macOS: Holds the developer certiciate for use wikt xip or pkg files.
+MACOS_BUNDLE_PREFIX="com.cerberus-x"    # For macOS: Holds the default applcation bundle prefix.
+GCC_VER="10"                            # For Linux: Set the default version of GCC is available.
 
 # Import the dependencies that this script relies on.
-source "$SCRIPTPATH/builders/bash/common.sh"
-source "$SCRIPTPATH/builders/bash/thirdparty.sh"
-[ $HOST = "linux" ] && { source "$SCRIPTPATH/builders/bash/freedesktop.sh"; }
-source "$SCRIPTPATH/builders/bash/tools.sh"
+source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
+source "$SCRIPTPATH/builders/bash/thirdparty.sh"    # Thirdparty functions. Used to get information from compilers and Qt SDKs.
 
-# Check that there is a valid compiler present
-setcompiler
-[ $EXITCODE -eq 1 ] && { exit 1; }
+# For Linux: A stand alone script that can be used to build icons and free sektop launchers.
+[ $HOST = "linux" ] && { source "$SCRIPTPATH/builders/bash/freedesktop.sh"; }
+source "$SCRIPTPATH/builders/bash/deploy.sh"        # Script to create a deployment archive.
+source "$SCRIPTPATH/builders/bash/tools.sh"         # Functions to build Cerberus.
 
 # Process command line arguments.
-# The only options are for the Qt SDK root directory and the version to use.
-# NOTE: Linux distributions can use these, but you are on your own to deploy
-#       Qt dependencies if they are not already part of the run time libraries.
-#       of the target distribution. So for Linux, it's best to use the distributions
-#       default repositories for Qt to build against.
 POSITIONAL_ARGS=()
-
 while [[ $# -gt 0 ]]; do
     case $1 in
+        -p|--prefix)
+            [ $HOST = "macos" ] && {
+                MACOS_BUNDLE_PREFIX="$2"
+                shift; shift
+            } || {
+               shift; 
+            }
+        ;;
+        -a|--archiver)
+            ARCHIVER="$2"
+            shift; shift
+        ;;
+        -c|--cert)
+            [ $HOST = "macos" ] && {
+                CERT="$2"
+            }
+            shift; shift
+        ;;
+        -d|--deploy)
+            DEPLOY="$2"
+            shift; shift
+        ;;
         -q|--qtdir)
             QTDIR="$2"
             shift; shift
@@ -35,6 +56,14 @@ while [[ $# -gt 0 ]]; do
         -v|--qtver)
             QTVER="$2"
             shift; shift
+        ;;
+        -g|--gcc)
+            [ $HOST = "linux" ] && {
+                GCC_VER="$2"
+                shift; shift;
+            } || {
+                shift;
+            }
         ;;
         -m|--showmenu)
             SHOW_MENU=1
@@ -51,14 +80,16 @@ while [[ $# -gt 0 ]]; do
                 else
                     SVG_APP_ICON=$CERBERUS_ROOT_DIR/src/builders/images/svg/Logo.svg
                     SVG_MIME_ICON=$CERBERUS_ROOT_DIR/src/builders/images/svg/AppIcon.svg
+                    shift
                 fi
                 
                 # Only generate the icons if both icon files are passed as parameters.
                 if [ -f "$SVG_APP_ICON" ] && [ -f "$SVG_MIME_ICON" ]; then
                     GEN_ICONS=1
                 fi
+            } || {
+                shift;
             }
-            shift
         ;;
         -h|--help)
             do_info "CERBERUS X TOOLS VERSION $SCRIPT_VER"
@@ -66,17 +97,25 @@ while [[ $# -gt 0 ]]; do
             echo -e "\t{-m|--showmenu}\t\t\t\t\t- run in menu mode."
             echo -e "\t{-q|--qtsdk} \"QT_DIR_PATH\"\t\t\t- Set Qt SDK root directory."
             echo -e "\t{-v|--qtver) \"QT.VERSION.NUM\"\t\t\t- Set Qt SDK version."
+            echo -e "\t{-d|--deploy} \"DEPLOY_DIR\"\t\t\t- Build a deployment archive in the directory passed."
+
+            # Show only those options specific to the host operating system.
             [ $HOST = "linux" ] && {
                 echo -e "\t{-i|--icons} \"APP_ICON.svg\" \"MIME_ICON.svg\"\t- Generate desktop icons.";
+                echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t- Set the version of GCC to use."
+            } || {
+                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use tar."
+                echo -e "\t{-c|--cert}\t\t\t\t\t- Set the certificate for the arcive tools."
             }
+
             echo -e "\t{-h|--help}\t\t\t\t\t- Show usage."
             echo "EXAMPLES:"
-            echo -e "\te.g: ./builder.sh -q $HOME/Qt -v 5.14.0 --showmenu"
+            echo -e "\te.g: ./builder.sh -q $HOME/Qt -v 5.14.0 --showmenu --gcc 11"
             echo -e "\te.g: ./builder.sh --qtsdk ~/Qt --qtver 5.14.0"
             exit 0
         ;;
         -*|--*=) # unsupported flags
-            echo "Error: Unsupported flag $1" >&2
+            do_error "Error: Unsupported flag $1" >&2
             exit 1
         ;;
         *) # preserve positional arguments
@@ -87,6 +126,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 set -- "${POSITIONAL_ARGS[@]}"
+
+# Check that there is a valid compiler present
+setcompiler
+[ $EXITCODE -eq 1 ] && { exit 1; }
 
 # Check for a Qt installation. Ted will only become a build option if Qt is installed.
 do_qtsdk_check
@@ -109,6 +152,10 @@ do_items(){
         DISPLAY_ITEMS+=("IDE Ted")
         MENU_ITEMS+=("do_ted");
     }
+    [ -n "$DEPLOY" ] && {
+        DISPLAY_ITEMS+=("Deploy: $DEPLOY")
+        MENU_ITEMS+=("do_deploy");
+    }
     DISPLAY_ITEMS+=("Quit")
     MENU_ITEMS+=("do_quit")
 }
@@ -116,8 +163,13 @@ do_items(){
 do_show_deps() {
     [ ${#QT_INSTALLS[@]} -gt 0 ] && {
         do_info "QMAKE Location: $QT_SELECTED";
-        } || {
-        do_unknown "Qt SDK is not installed."
+    } || {
+        do_unknown "Qt SDK is not installed.";
+    }
+    [ $HOST = "linux" ] && {
+        [ -n "$GCC_VER" ] && { do_info "GCC Version: $GCC_VER"; } || { do_info "GCC Standard"; };
+    } || {
+        do_info "APPLICATION BUNDLE PREFIX: $MACOS_BUNDLE_PREFIX";
     }
 }
 
@@ -161,7 +213,7 @@ do_title() {
     
     clear
     do_success "Cerberus X Builder script terminated."
-    } || {
+} || {
     do_info "MENU MODE OFF"
     do_show_deps
     do_all

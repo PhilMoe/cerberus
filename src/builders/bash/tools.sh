@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # TOOL BUILDER FUNCTIONS VERSION
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
@@ -9,15 +11,36 @@ do_transcc(){
     # Check for an exisiting transcc
     [ -f "$BIN/transcc_$HOST" ] && { rm -f "$BIN/transcc_$HOST"; }
     
+    PROJECT_DIR="$SRC/transcc/transcc.build/cpptool"
     # Host specific parameters to pass the the C++ compiler
     [ $HOST = "linux" ] && {
-        ARG=("-Os" "-s" "-lpthread");
-        } || {
-        ARG=("-Wno-bitwise-op-parentheses" "-Wno-logical-op-parentheses" "-mmacosx-version-min=10.9" "-std=gnu++0x" "-stdlib=libc++");
+        BUILD_DIR="$PROJECT_DIR/gcc_linux/Release"
+
+        ARG=("make")
+        ARG+=("CXX_COMPILER=$COMPILER" "C_COMPILER=$C_COMPILER" "CCOPTS=-DNDEBUG" "CCOPTS+=-Os")
+        ARG+=("BUILD_DIR=$BUILD_DIR")
+        ARG+=("OUT=transcc_linux" "OUT_PATH=$BIN" "LIBOPTS=-lpthread" "LIBOPTS+=-ldl" "LDOPTS=-no-pie" "LDOPTS+=-s");
+
+        mkdir -p $BUILD_DIR
+        cd $SRC/transcc/transcc.build/cpptool/gcc_linux
+        execute ${ARG[@]}
+        cd $SRC
+
+        clean_build "$BUILD_DIR";
+    } || {
+        BUILD_DIR="$PROJECT_DIR/xcode/build"
+        
+        ARG=("xcodebuild" "-project" "$ROOT/src/transcc/transcc.build/cpptool/xcode/main_macos.xcodeproj")
+    	ARG+=("-configuration" "Release")
+    	ARG+=("CONFIGURATION_BUILD_DIR=$ROOT/bin")
+    	ARG+=("TARGET_NAME=transcc_macos")
+     
+        cd "$SRC/transcc/transcc.build/cpptool/xcode"
+        execute ${ARG[@]}
+        cd "$SRC"
+        clean_build "$BUILD_DIR";
     }
     
-    # Execute the C++ compiler
-    execute $COMPILER -DNDEBUG -o "$ROOT/bin/transcc_$HOST" "$ROOT/src/transcc/transcc.build/cpptool/main.cpp" ${ARG[@]}
     do_build_result
     
     return $EXITCODE
@@ -30,13 +53,15 @@ do_cserver(){
     # Call transcc
     transcc "CServer" "Desktop_Game" "cserver"
     
+    PROJECT_DIR="$SRC/cserver/cserver.build/glfw3/$TARGET"
+
     # If transcc execution was successful; then update cerver.
     [ $EXITCODE -eq 0 ] && {
         # Clean out the olds and move new associated CServer files into the Cerberus bin directory.
         # If the host system is Linux; then add the data directory if one is not present.
         [ $HOST = "linux" ] && {
             [ ! -d "$BIN/data" ] && {
-                mv "$SRC/cserver/cserver.build/glfw3/$TARGET/Release/data" "$BIN/data";
+                mv "$PROJECT_DIR/Release/data" "$BIN/data";
             }
             [ -f "$BIN/cserver_$HOST" ] && { rm -f "$BIN/cserver_$HOST"; };
             } || {
@@ -44,10 +69,10 @@ do_cserver(){
         }
         
         # Move the newly built CServer into the Cerberus bin directory.
-        mv "$SRC/cserver/cserver.build/glfw3/$TARGET/Release/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
+        mv "$PROJECT_DIR/Release/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         
         # Clean up the .build directory.
-        clean_build "cserver"
+        clean_build "cserver" "dotbuild"
         return $EXITCODE;
     }
     
@@ -60,37 +85,30 @@ do_cserver(){
 do_launcher(){
     EXITCODE=0
     
+    PROJECT_DIR="$SRC/launcher/launcher.build"
     # Use transcc to build the launcher on a Linux host
-    [ $HOST = "linux" ] && {
+    if [ "$HOST" = "linux" ]; then
         transcc "Launcher" "C++_Tool" "launcher"
         
         # Only update the launcher if the build was successful.
         [ $EXITCODE -eq 0 ] && {
             [ -f "$ROOT/Cerberus" ] && { rm -f "$ROOT/Cerberus"; }
-            mv "$SRC/launcher/launcher.build/cpptool/main_$HOST" "$ROOT/Cerberus";
-        }
-        
-        # Clean up the .build directory.
-        clean_build "launcher";
-        return $EXITCODE
-        
-        } || {
-        
+            mv "$PROJECT_DIR/cpptool/main_$HOST" "$ROOT/Cerberus";
+        };
+    else 
         # Execute xcodebuild
-        execute xcodebuild "PRODUCT_BUNDLE_IDENTIFIER=com.whiteskygames.launcher" -scheme Cerberus -configuration release -project $SRC/launcher/xcode/Cerberus.xcodeproj -derivedDataPath $SRC/launcher/launcher.build
+        execute xcodebuild "PRODUCT_BUNDLE_IDENTIFIER=$MACOS_BUNDLE_PREFIX.launcher" -scheme Cerberus -configuration release -project $SRC/launcher/xcode/Cerberus.xcodeproj -derivedDataPath $SRC/launcher/launcher.build
         
         # Only update the launcher if the build was successful.
         [ $EXITCODE -eq 0 ] && {
             [ -d "$ROOT/Cerberus$EXTENSION" ] && { rm -rf "$ROOT/Cerberus$EXTENSION"; }
-            mv "$SRC/launcher/launcher.build/Build/Products/Release/Cerberus.app" "$ROOT/Cerberus.app";
-            clean_build "launcher";
-            } || {
-            clean_build "launcher";
+            mv "$PROJECT_DIR/Build/Products/Release/Cerberus.app" "$ROOT/Cerberus.app";
         };
-        
-        do_build_result;
-    }
-    
+    fi
+
+    # Clean up the .build directory.
+    clean_build "launcher" "dotbuild"
+
     return $EXITCODE
 }
 
@@ -108,7 +126,7 @@ do_makedocs(){
     }
     
     # Clean up the .build directory.
-    clean_build "makedocs"
+    clean_build "makedocs" "dotbuild"
     return $EXITCODE
 }
 
@@ -116,30 +134,43 @@ do_makedocs(){
 do_ted(){
     EXITCODE=0
     
+    PROJECT_DIR="$SRC/build-ted-Desktop-Release"
     # As the qmake project expects there to be a directory with the name build-ted-Desktop-Release.
     # It's best to make sure any old version is removed and a new one created before running qmake
-    [ -d "$SRC/build-ted-Desktop-Release" ] && { rm -rf "$SRC/build-ted-Desktop-Release"; }
-    mkdir "$SRC/build-ted-Desktop-Release"
-    cd "$SRC/build-ted-Desktop-Release"
+    [ -d "$PROJECT_DIR" ] && { rm -rf "$PROJECT_DIR"; }
+    mkdir "$PROJECT_DIR"
+    cd "$PROJECT_DIR"
     
-    # Run qmake on the ted project file to create the makefile.
-    execute qmake CONFIG+=release ../ted/ted.pro
-    
-    # If qmake was successfully executed; then the old version of Ted should be removed before building.
-    # If not successful; then remove the build directory.
-    [ $EXITCODE -eq 0 ] && {
-        [ $HOST = "linux" ] && {
-            [ -f "$BIN/Ted" ] && { rm -f "$BIN/Ted"; };
-            } || {
-            [ -d "$BIN/Ted$EXTENSION" ] && { rm -rf "$BIN/Ted$EXTENSION"; };
-        }
-        execute "make"
-        do_build_result
-        rm -rf "$SRC/build-ted-Desktop-Release";
-        } || {
-        rm -rf "$SRC/build-ted-Desktop-Release";
+    [ $HOST = "macos" ] && {
+        MACOS_OPTS="QMAKE_TARGET_BUNDLE_PREFIX=$MACOS_BUNDLE_PREFIX";
     }
     
+    # Run qmake on the ted project file to create the makefile.
+    execute qmake CONFIG+=release ../ted/ted.pro $MACOS_OPTS
+    
+    # If qmake was successfully executed; then proceed to build the IDE.
+    [ $EXITCODE -eq 0 ] && {
+        # Not realy required with qmake cleaning out all Qt related binaries.
+        [ $HOST = "linux" ] && {
+            [ -f "$BIN/Ted" ] && { rm -f "$BIN/Ted"; };
+        } || {
+            [ -d "$BIN/Ted$EXTENSION" ] && { rm -rf "$BIN/Ted$EXTENSION"; };
+        }
+
+        # For Linux. Either 
+        [ $HOST = "linux" ] && {
+            if [[ $QT_SELECTED != *"/usr/"* ]]; then
+                execute "make" "install"
+            else
+                execute "make"
+            fi;
+        } || {
+            execute "make"
+        }
+        do_build_result;
+    }
+    
+    clean_build "$PROJECT_DIR"
     return $EXITCODE
 }
 
@@ -164,15 +195,20 @@ do_all(){
         do_launcher;
     }
     
-    [ $HOST = "linux " ] && {
+    [ $HOST = "linux" ] && {
         do_info "Generating Free Desktop Launcher"
         do_freedesktop;
     }
     
-    [[ ${#QT_INSTALLS[@]} -gt 0 && $EXITCODE -eq 0 ]] && {
+    [[ ${#QT_INSTALLS[@]} -gt 0 && $EXITCODE -eq 0 ]] && { 
         do_info "BUILDING IDE Ted"
         do_ted;
-        } || {
+    } || {
         do_error "NO QT SDK KITS INSTALLED";
-    };
+    }
+
+    [ -n "$DEPLY" ] && {
+        do_deploy;
+        return $EXITCODE
+    }
 }
