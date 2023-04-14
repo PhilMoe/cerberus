@@ -770,9 +770,9 @@ Class Shader
 			Local id:=p.CParseIdent()
 			If id
 				If id.StartsWith( "gl_" )
-					vars.Insert "B3D_"+id.ToUpper()
+					vars.Insert "B3D_"+id.ToUpper().Replace("İ", "I")
 				Else If id.StartsWith( "b3d_" ) 
-					vars.Insert id.ToUpper()
+					vars.Insert id.ToUpper().Replace("İ", "I")
 				Endif
 				Continue
 			Endif
