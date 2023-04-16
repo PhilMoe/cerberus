@@ -8,5 +8,5 @@ For Desktop Game targets, either a MinGW compiler or Visual Studio with Desktop 
 For Android Game targets, an Android Studio installation is recommended, but it is possible to do a manual setup using the command line tools.
 
 If all the above are installed to their default locations, then Cerberus should not need any additional set up.
-But if required, modify the config.winnt.txt file locate in the Cerberus bin directory with the path to those build tools.
+But if required, modify the config.winnt.txt file located in the Cerberus bin directory with the path to those build tools.
 The config.winnt.txt also contains addition information on setting up Cerberus X requirements.

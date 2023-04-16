@@ -40,9 +40,15 @@ To build the IDE requires that there are Qt development files are available, as 
 If not, then the menu entry for building the IDE Ted will not be shown and building all tools will exclude the building of the IDE Ted.
 If there is an official Qt installer, then you can pass arguments to select it's root directory and a specific version.
 
+If the builder.ps1 is ran from the same shell each time, eventually errors will occur when it comes to building Ted. This is a result of the builder script running the MSVC
+command line script each time to set up the MSVC build environment.
+
+Sometimes when using the deploy option. Creating an archive will inform that Ted is being used by another process and the archive may not be built correctly. This could be either
+down to a security software, e.i. Antivirus scanning the file, or the windelployqt application not finishing first.
+
 The optional arguments to pass to the builder.ps1 script are:
 -q or -qtsdk with the full path to the Qt Installers directory. The default is C:\Qt
--v or -qtver with the dot version number for a specific Qt SDK. The default is not set and will use the highest version installed.
+-k or -qtkit with the dot version number for a specific Qt SDK. The default is not set and will use the highest version installed.
 -c or -mingw with the full path to the MinGW root directory. The default is C:\TD-GCC-64
 -y or -vsver with the year version number of a Visual Studio installation. The default is not set and will use the highest version installed.
 -i or -vsinstall with the full path to the MS Visual Studio Installer directory. The default is set the Microsoft Visual Studio Installer commonly found in the program files directory.
