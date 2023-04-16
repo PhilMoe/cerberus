@@ -12,7 +12,7 @@
 #
 Param(
     [Alias("q")][string]$qtsdk = "C:\Qt",
-    [Alias("v")][string]$qtver = "",
+    [Alias("k")][string]$qtkit = "",
     [Alias("c")][string]$mingw = "C:\TDM-GCC-64",
     [Alias("y")][string]$vsver = "",
     [Alias("i")][string]$vsinstall = "$([System.Environment]::GetEnvironmentVariable('ProgramFiles(x86)'))\Microsoft Visual Studio\Installer",
@@ -23,7 +23,7 @@ Param(
     [Alias("d")][string]$deploy = ""
 )
 
-[string]$SCRIPT_VER = "1.1.0"
+[string]$SCRIPT_VER = "1.1.1"
 
 Clear-Host
 
@@ -81,7 +81,7 @@ if ($global:COMPILER_INSTALLED -eq $false) {
 
 # To build Ted requires that both a Qt SDK is installed and that there is a Visual Studio compiler present.
 # Get Qt installs first and store them in an array. Any error here will not stop the build tool. It just means that the IDE Ted will not be an option.
-do_qtsdk_check "$qtver" "$qtsdk"
+do_qtsdk_check "$qtkit" "$qtsdk"
 if ($global:EXITCODE -ne 0) {
     do_error($global:MESSAGE)
     if ($global:EXITCODE -gt -2) { pause }

@@ -58,7 +58,7 @@ do_deploy(){
     # Generate parameters to pass on.
     PARAMS=("$CX_DEPLOY_SRC/builder.sh")
     if [ -n "$QTDIR" ]; then PARAMS+=("-q" "$QTDIR"); fi
-    if [ -n "$QTVER" ]; then PARAMS+=("-v" "$QTVER"); fi
+    if [ -n "$QTVER" ]; then PARAMS+=("-k" "$QTVER"); fi
     if [ -n "$ARCHIVER" ]; then PARAMS+=("-a" "$ARCHIVER"); fi
 
     # Linux or macos specific

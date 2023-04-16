@@ -51,7 +51,7 @@ Function do_deploy() {
     # Generate parameters to pass on.
     [string]$buildtype = "mingw"
     [string]$param = "-q `"$qtsdk`" -c `"$mingw`" -i `"$vsinstall`""
-    if (-not([string]::IsNullOrEmpty($qtver))) { $param += " -v $qtver" }
+    if (-not([string]::IsNullOrEmpty($qtkit))) { $param += " -k $qtkit" }
     if (-not([string]::IsNullOrEmpty($vsver))) { $param += " -y $vsver" }
     if ($msbuild -eq $true) {
         $param += " -b"
@@ -88,6 +88,6 @@ Function do_deploy() {
     [string]$CX_VERSION = $(Get-Content "$cx_deploy_root\VERSIONS.TXT" -First 1) -Replace '[*v ]', ''
     
     # Clear out any old compressed files and recompress.
-    if (Test-Path("$deploy\Cerberus_$CX_VERSION-winnt.zip")) { Remove-Item -Force "$deploy\Cerberus_$CX_VERSION-$buildtype-qt$qtver-winnt.zip" }
-    Compress-Archive -Path "$deploy\Cerberus" -DestinationPath "$deploy\Cerberus_$CX_VERSION-$buildtype-qt$qtver-winnt.zip" -CompressionLevel Optimal
+    if (Test-Path("$deploy\Cerberus_$CX_VERSION-$buildtype-qt$qtkit-winnt.zip")) { Remove-Item -Force "$deploy\Cerberus_$CX_VERSION-$buildtype-qt$qtkit-winnt.zip" }
+    Compress-Archive -Path "$deploy\Cerberus" -DestinationPath "$deploy\Cerberus_$CX_VERSION-$buildtype-qt$qtkit-winnt.zip" -CompressionLevel Optimal
 }
