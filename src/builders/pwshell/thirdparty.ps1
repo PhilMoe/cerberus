@@ -14,7 +14,7 @@ function do_msvc_env() {
     cmd /c "vcvarsall.bat x86_amd64&set" |
     ForEach-Object {
         if ($_ -match "=") {
-            $v = $_.Split("=")
+            $v = $_.Split("=",2)
             Set-Item -Force -Path "ENV:\$($v[0])" -Value "$($v[1])"
         }
     }

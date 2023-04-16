@@ -23,7 +23,8 @@ SHOW_MENU=0
     HOST="linux"
     TARGET="gcc_$HOST"
     QMAKE_TYPE="gcc_64";
-    } || {
+    GCC_VER="10"                            # For Linux: Set the default version of GCC is available.
+} || {
     QTDIR="$HOME/Qt";    # Set the default Qt Installer directory location to the users home directory.
     EXTENSION=".app"
     TARGET="xcode/build"
@@ -31,6 +32,9 @@ SHOW_MENU=0
     
     # From Qt 6.2.4 the directory is no longer clang_64, but macOS. So extra checks will be needed.
     QMAKE_TYPE="clang_64";
+
+    CERT=                                   # For macOS: Holds the developer certiciate for use wikt xip or pkg files.
+    MACOS_BUNDLE_PREFIX="com.cerberus-x"    # For macOS: Holds the default applcation bundle prefix.
 }
 
 # General coloured information output.

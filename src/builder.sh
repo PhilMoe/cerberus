@@ -3,16 +3,13 @@
 
 # Get this script directory
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-SCRIPT_VER="1.1.0"
+SCRIPT_VER="1.1.1"
 
 TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
 BULDER_SCRIPT=1                         # Flag to indicate
 QT_SELECTED=                            # Variable to hold the chosen qmake
 DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
 ARCHIVER=tar                            # Set the archive tool to use to build the deployment archive.
-CERT=                                   # For macOS: Holds the developer certiciate for use wikt xip or pkg files.
-MACOS_BUNDLE_PREFIX="com.cerberus-x"    # For macOS: Holds the default applcation bundle prefix.
-GCC_VER="10"                            # For Linux: Set the default version of GCC is available.
 
 # Import the dependencies that this script relies on.
 source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
@@ -53,7 +50,7 @@ while [[ $# -gt 0 ]]; do
             QTDIR="$2"
             shift; shift
         ;;
-        -v|--qtver)
+        -k|--qtkit)
             QTVER="$2"
             shift; shift
         ;;
@@ -96,13 +93,13 @@ while [[ $# -gt 0 ]]; do
             echo "USAGE: ./builder.sh [options]"
             echo -e "\t{-m|--showmenu}\t\t\t\t\t- run in menu mode."
             echo -e "\t{-q|--qtsdk} \"QT_DIR_PATH\"\t\t\t- Set Qt SDK root directory."
-            echo -e "\t{-v|--qtver) \"QT.VERSION.NUM\"\t\t\t- Set Qt SDK version."
+            echo -e "\t{-k|--qtkit) \"QT.VERSION.NUM\"\t\t\t- Set Qt SDK version."
             echo -e "\t{-d|--deploy} \"DEPLOY_DIR\"\t\t\t- Build a deployment archive in the directory passed."
 
             # Show only those options specific to the host operating system.
             [ $HOST = "linux" ] && {
                 echo -e "\t{-i|--icons} \"APP_ICON.svg\" \"MIME_ICON.svg\"\t- Generate desktop icons.";
-                echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t- Set the version of GCC to use."
+                echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t\t- Set the version of GCC to use."
             } || {
                 echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use tar."
                 echo -e "\t{-c|--cert}\t\t\t\t\t- Set the certificate for the arcive tools."
