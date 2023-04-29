@@ -1,28 +1,32 @@
-/*
-Ted, a simple text editor/IDE.
+//----------------------------------------------------------------------------------------------------------------------
+// Ted, a simple text editor/IDE.
+//
+// Copyright 2012, Blitz Research Ltd.
+//
+// See LICENSE.TXT for licensing terms.
+//
+//  NOTE: This version is not backwards compatible with versions earlier than Qt 5.9.0
+//----------------------------------------------------------------------------------------------------------------------
+// CONTRIBUTORS: See contributors.txt
+#pragma once
 
-Copyright 2012, Blitz Research Ltd.
-
-See LICENSE.TXT for licensing terms.
-*/
-
-#ifndef PREFSDIALOG_H
-#define PREFSDIALOG_H
-
-#include "std.h"
+#include <QDialog>
 
 namespace Ui {
-class PrefsDialog;
+    class PrefsDialog;
 }
 
 class Prefs;
 
+//----------------------------------------------------------------------------------------------------------------------
+//  PrefsDialog: DECLARATION
+//----------------------------------------------------------------------------------------------------------------------
 class PrefsDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
-    explicit PrefsDialog( QWidget *parent=nullptr );
+    explicit PrefsDialog(QWidget *parent = nullptr);
     ~PrefsDialog();
 
     void readSettings();
@@ -31,23 +35,26 @@ public:
     int exec();
 
 public slots:
-
-    void onFontChanged( const QFont &font );
-    void onFontSizeChanged( int size );
-    void onTabSizeChanged( int size );
-    void onSmoothFontsChanged( bool state );
-    void onHighlightCaretRowChanged( bool state );
-    void onHighlightCaretWordChanged( bool state );
-    void onHighlightBracketsChanged( bool state );
-    void onShowLineNumbersChanged( bool state );
-    void onCapitalizeAPIChanged( bool state );
-    void onTabs4SpacesChanged( bool state );
-    void onSortCodeBrowserChanged( bool state );
-    void onColorChanged();
-    void onBrowseForPath();
     void onSaveThemeColor();
     void onLoadThemeColor();
-    void onThemeChanged( QString theme );
+
+    void onFontChanged(const QFont &font);
+    void onFontSizeChanged(int size);
+    void onTabSizeChanged(int size);
+    void onSmoothFontsChanged(bool state);
+
+    void onHighlightCaretRowChanged(bool state);
+    void onHighlightCaretWordChanged(bool state);
+    void onHighlightBracketsChanged(bool state);
+
+    void onShowLineNumbersChanged(bool state);
+    void onCapitalizeAPIChanged(bool state);
+    void onTabs4SpacesChanged(bool state);
+    void onSortCodeBrowserChanged(bool state);
+
+    void onColorChanged();
+    void onBrowseForPath();
+    void onThemeChanged(QString theme);
 
 private:
     Ui::PrefsDialog *_ui;
@@ -55,5 +62,3 @@ private:
     bool _used;
     bool _themeSignal;
 };
-
-#endif // PREFSDIALOG_H
