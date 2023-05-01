@@ -77,7 +77,7 @@ do_cserver(){
     }
     
     # Clean up the .build directory.
-    clean_build "cserver"
+    clean_build "cserver" "dotbuild"
     return $EXITCODE
 }
 
