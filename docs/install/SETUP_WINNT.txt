@@ -1,0 +1,12 @@
+PLEASE NOTE:
+Before you begin. You should check out one of the desktop sub forums for any issues and workarounds, or to ask questions.
+https://www.cerberus-x.com/community/categories/desktop-targets.70/
+
+Requirements:
+For Standard Desktop Console targets, a MinGW compiler is required.
+For Desktop Game targets, either a MinGW compiler or Visual Studio with Desktop C++ workload is required.
+For Android Game targets, an Android Studio installation is recommended, but it is possible to do a manual setup using the command line tools.
+
+If all the above are installed to their default locations, then Cerberus should not need any additional set up.
+But if required, modify the config.winnt.txt file located in the Cerberus bin directory with the path to those build tools.
+The config.winnt.txt also contains addition information on setting up Cerberus X requirements.

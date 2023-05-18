@@ -8,12 +8,12 @@ Import builders
 
 ' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2023-02-19 (DEBUG)"
-    Const TEST_PATH:="examples/mojo/charlie"
+    Const VERSION:="2023-04-06 (DEBUG)"
+    Const TEST_PATH:="/src/transcc/transcc_test/"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
-    Const TEST_FILE:="blobmonster"
-    Const TEST_TARGET:="Desktop_Game"
+    Const TEST_FILE:="cpptool"
+    Const TEST_TARGET:="C++_Tool"
   
     ' Comes in handy when needing to debug the parser.
     ' If DebugIsMainCXS(Toker.Path) DebugStop
@@ -22,7 +22,7 @@ Import builders
         Return False
     End
 #Else
-    Const VERSION:="2023-02-19"
+    Const VERSION:="2023-04-06"
 #Endif
 
 Function Main()
@@ -161,6 +161,69 @@ Function MatchPath:Bool( text:String,pattern:String )
     Next
   
     Return match
+End
+
+Function ExpandEnv:String( text:String )
+	
+	Local resolved:="", char:="", idx1:=0, terminator:=0, idx2:=0
+	While idx1<text.Length
+		char=String.FromChar( text[idx1] )
+		
+		Select char
+		' MS Windows style environment expansion
+		Case "%"
+			terminator=text.Find( "%",idx1+1 )
+			resolved+=GetEnv(text[idx1+1..terminator])
+			If terminator<0 terminator=text.Length
+			idx1+=(terminator+1)-idx1
+		
+		' Unix style environment expansion
+		Case "$"
+			terminator=-1
+			idx2=idx1
+			
+			' Look ahead for one of the known termination characters.
+			While idx2<text.Length And terminator<0
+				If text[idx2]="/"[0] Or text[idx2]=":"[0] Or text[idx2]=";"[0] terminator=idx2
+				idx2+=1
+			Wend
+			If terminator<0 terminator=text.Length
+			resolved+=GetEnv(text[idx1+1..terminator])
+			idx1+=(terminator)-idx1
+			
+		Default
+			resolved+=char
+			idx1+=1
+			
+		End
+	Wend
+	
+	Return resolved
+End
+
+Function CreateDirs( path:String,delim:String="/" )
+	
+	Print "Creating output directory structure:~n"+path
+	Local dirs:=path.Split( delim ), currentDir:=CurrentDir
+	
+	' Special case for Linux and macOS to ensure that the root directory is set.
+	If HostOS<>"winnt"
+		If dirs[0]="" Then dirs[0]="/"
+	Endif
+		
+	For Local i:=Eachin dirs
+
+		Select FileType( i )
+		Case FILETYPE_DIR
+			Print "Directory already exists:~n"+RealPath( i )
+		Case FILETYPE_FILE
+			Die "Directory creation error: Path is a regular file. Cannot continue.~n"+RealPath( i )
+		Default
+			If CreateDir( i.Trim ) Print "Created directory:~n"+RealPath( i )
+		End
+		ChangeDir i.Trim
+	Next
+	ChangeDir currentDir
 End
 
 Class Target

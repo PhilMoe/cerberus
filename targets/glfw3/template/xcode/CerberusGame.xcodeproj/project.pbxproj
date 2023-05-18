@@ -336,7 +336,7 @@
 				);
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = (
 					"-Wno-logical-op-parentheses",
 					"-D_GLFW_COCOA",
@@ -366,7 +366,7 @@
 				);
 				INFOPLIST_FILE = "CerberusGame-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = (
 					"-Wno-logical-op-parentheses",
 					"-D_GLFW_COCOA",
