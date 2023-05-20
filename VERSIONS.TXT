@@ -1,4 +1,4 @@
-***** v2023-05-18 *****
+***** v2023-05-20 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
@@ -13,6 +13,7 @@ NEW: [Vec2D] Added Div and Cross Methods.   (Author: MikeHart)
 NEW: [IOS/Metal] Added new Metalangle for IOS target.    (Author: Phil7)
 MOD: [CSERVER] Changed the mime type for xml back to text/xml.    (Author: MikeHart)
 MOD: [HTML5] Modified und more efficient target code for mouseX/Y.    (Author: SLOTMAN)
+MOD: [HTML5] Add imageSmoothingEnabled for MOJO_IMAGE_FILTERING_ENABLED.    (Author: Phil7)
 MOD: [GLFW] Updated GLFW to version 3.3.8.    (Author: MikeHart)
 MOD: [GLFW] Updated stb_truetype.h to version 1.2.6.    (Author: MikeHart)
 MOD: [docs] Added an example and updated the docs for the brl.events module.   (Author: MikeHart)
