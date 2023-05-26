@@ -1,30 +1,35 @@
-/*
-Ted, a simple text editor/IDE.
+//----------------------------------------------------------------------------------------------------------------------
+// Ted, a simple text editor/IDE.
+//
+// Copyright 2012, Blitz Research Ltd.
+//
+// See LICENSE.TXT for licensing terms.
+//
+//  NOTE: This version is not backwards compatible with versions earlier than Qt 5.9.0
+//----------------------------------------------------------------------------------------------------------------------
+// CONTRIBUTORS: See contributors.txt
+// Changes:
+//          2022-12-26: DAWLANE
+//                      Removed old variable for storing previous window state.
+//          2022-12-23: DAWLANE
+//                      Fixed A MS Windows issue with menus in full screen mode.
+//                      Overrides the main window event to force a one pixel boarder around a full screen window.
+//          2022-10-20: DAWLANE - Overhaul of code to remove Qt4 supported code.
+//                      Updated to work with Qt5.9+ and Qt6.2+.
+//                      Moved the WebEngineView and WebEnginePage into it's own file
+//                      class module.
+//                      All member pointer variables initialised here and not in the
+//                      implementation code.
 
-Copyright 2012, Blitz Research Ltd.
-
-See LICENSE.TXT for licensing terms.
-
-Change Log
---------------------------------------------------------------------------------
-2018-07-31 - dawlane
-        Heavy changes to allow single instance running of Ted. Lets us open multiple files from Explorer.
-        All zero/null pointer updated to the nullptr as per C++11 standard.
-        All QApplication static members now using derived CerberusApplication class.
-        All mainWindow references are now set to the CerberusApplication member mainWindow.
-        Work-around to Mac OS invisible QTabBar close button. Themes need to be set and load on first run.
-2018-07-23 - dawlane
-        Update Ted to use QtWebEngine and QtWebEnginePage and minor fixes.
-        Should now build with later versions of Qt. Qt 5.9.2 tested.
-*/
-
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
+#pragma once
 #include "std.h"
-#ifdef Q_OS_WIN
-#include <QtPlatformHeaders\QWindowsWindowFunctions>
-#endif
+
+#include <QComboBox>
+#include <QLabel>
+#include <QMainWindow>
+#include <QMap>
+#include <QTextEdit>
+#include <QTreeView>
 
 class CodeEditor;
 class ProjectTreeModel;
@@ -32,80 +37,49 @@ class DebugTreeModel;
 class FindDialog;
 class Process;
 class FindInFilesDialog;
-
+class HelpView;
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
-
-// DAWLANE Qt 5.6+ supported
-#if QT_VERSION>0x050501
-class HelpView : public QWebEngineView{
-    Q_OBJECT
-public:
-    HelpView(QWidget *parent=Q_NULLPTR): QWebEngineView( parent ){}
-protected:
-    void keyPressEvent ( QKeyEvent * event );
-};
-
-class WebEnginePage : public QWebEnginePage
-{
-    Q_OBJECT
-public:
-    WebEnginePage(QObject *parent=Q_NULLPTR): QWebEnginePage( parent ){}
-    bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool);
-
-signals:
-    void linkClicked( const QUrl &url);
-};
-#else
-class HelpView : public QWebView{
-    Q_OBJECT
-public:
-protected:
-    void keyPressEvent ( QKeyEvent * event );
-};
-#endif
 
 class Prefs;
 class PrefsDialog;
 
-class MainWindow : public QMainWindow{
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 public:
-
-    MainWindow( QWidget *parent=nullptr );
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void cdebug( const QString &str );
-
+    void cdebug(const QString &str);
     void updateHelp();
-    void onShowHelp();
 
+    int CompleteListCount();
+    QString CompleteListItem(const int item);
+
+    QWidget *openFile(const QString &path, bool addToRecent);
+    void parseAppArgs(QStringList &args);
+
+private:
     void setIcons();
     QIcon getThemeIcon(const QString &theme, const QString &ic, const QString &icd);
-    QStringList _completeList;
-
-// DAWLANE Qt 5.6+ supported. Function openFile moved here so that WebEnginePage can access it.
-    QWidget *openFile( const QString &path,bool addToRecent );
-// DAWLANE Move void parseAppArgs(); to public to pass new arguments if another instance of Ted was started.
-    void parseAppArgs(QStringList &args);
-private:
 
     void loadHelpIndex();
 
-    bool isBuildable( CodeEditor *editor );
-    QString widgetPath( QWidget *widget );
-    CodeEditor *editorWithPath( const QString &path );
+    bool isBuildable(CodeEditor *editor);
+    QString widgetPath(QWidget *widget);
+    CodeEditor *editorWithPath(const QString &path);
 
-    QWidget *newFile( const QString &path );
-    QWidget *newFileTemplate( const QString &path );
+    QWidget *newFile(const QString &path);
+    QWidget *newFileTemplate(const QString &path);
 
-    bool saveFile( QWidget *widget,const QString &path );
-    bool closeFile( QWidget *widget,bool remove=true );
+    bool saveFile(QWidget *widget, const QString &path);
+    bool closeFile(QWidget *widget, bool remove = true);
 
-    bool isValidCerberusPath( const QString &path );
-    bool isValidBlitzmaxPath( const QString &path );
+    bool isValidCerberusPath(const QString &path);
+    bool isValidBlitzmaxPath(const QString &path);
     QString defaultCerberusPath();
     void enumTargets();
 
@@ -114,23 +88,24 @@ private:
     void writeSettings();
 
     void updateWindowTitle();
-    void updateTabLabel( QWidget *widget );
-    void updateTargetsWidget( QString fileType );
+    void updateTabLabel(QWidget *widget);
+    void updateTargetsWidget(QString fileType);
     void updateActions();
 
-    void print( const QString &str );
-    void runCommand( QString cmd,QWidget *fileWidget );
-    void build( QString mode );
+    void print(const QString &str);
+    void runCommand(QString cmd, QWidget *fileWidget);
+    void build(QString mode);
 
     bool confirmQuit();
-    void closeEvent( QCloseEvent *event );
+    void closeEvent(QCloseEvent *event);
     void showImage(const QString &path);
     void playAudio(const QString &path);
     void showDoc(const QString &path);
+    void updateStatusBar();
 
 public slots:
 
-    //File menu
+    // File menu
     void onFileNew();
     void onFileNewTemplate();
     void onFileOpen();
@@ -146,7 +121,7 @@ public slots:
     void onFilePrefs();
     void onFileQuit();
 
-    //Edit menu
+    // Edit menu
     void onEditUndo();
     void onEditRedo();
     void onEditCut();
@@ -157,11 +132,11 @@ public slots:
     void onEditSelectAll();
     void onEditFind();
     void onEditFindNext();
-    void onFindReplace( int how );
+    void onFindReplace(int how);
     void onEditGoto();
     void onEditFindInFiles();
 
-    //View menu
+    // View menu
     void onViewToolBar();
     void onViewWindow();
     void onToggleBookmark();
@@ -169,7 +144,7 @@ public slots:
     void onNextBookmark();
     void onToggleFullscreen();
 
-    //Build/Debug menu
+    // Build/Debug menu
     void onBuildBuild();
     void onBuildRun();
     void onBuildCheck();
@@ -184,7 +159,7 @@ public slots:
     void onBuildUnlockFile();
     void onBuildAddProject();
 
-    //Help menu
+    // Help menu
     void onHelpHome();
     void onHelpBack();
     void onHelpForward();
@@ -192,44 +167,43 @@ public slots:
     void onHelpCerberusHomepage();
     void onHelpAbout();
     void onHelpRebuild();
+    void onShowHelpView();
 
 private slots:
 
-    void onTargetChanged( int index );
+    void onTargetChanged(int index);
+    void onShowHelp(int index);
+    void onShowHelpWithStatusbar(const QString &text);
 
-    void onShowHelp( const QString &text );
-    void onShowHelpWithStatusbar( const QString &text );
+    void onCloseMainTab(int index);
+    void onMainTabChanged(int index);
 
-// DAWLANE Qt 5.6+ supported -  onLinkClick is not required as QtWebEngine works differently.
-    #if QT_VERSION<=0x050501
-    void onLinkClicked( const QUrl &url );
-#endif
+    void onDockVisibilityChanged(bool visible);
 
-    void onCloseMainTab( int index );
-    void onMainTabChanged( int index );
-
-    void onDockVisibilityChanged( bool visible );
-
-    void onProjectMenu( const QPoint &pos );
-    void onFileClicked( const QModelIndex &index );
+    void onProjectMenu(const QPoint &pos);
+    void onFileClicked(const QModelIndex &index);
 
     void onTextChanged();
     void onCursorPositionChanged();
-    void onShowCode( const QString &path,int line );
-    void onShowCode( const QString &path,int pos,int len );
+    void onShowCode(const QString &path, int line);
+    void onShowCode(const QString &path, int pos, int len);
 
     void onProcStdout();
     void onProcStderr();
-    void onProcLineAvailable( int channel );
+    void onProcLineAvailable(int channel);
     void onProcFinished();
     void onEditorMenu(const QPoint &pos);
 
+#ifdef Q_OS_WIN
+protected:
+    bool event(QEvent *e);
+#endif
+
 private:
+    QMap<QString, QString> _helpUrls;
+    // QMap<QString,QString> _helpF1;    // NOTE: See loadHelpIndex in the mainwindow.cpp file.
 
-    QMap<QString,QString> _helpUrls;
-    QMap<QString,QString> _helpF1;
-
-    Ui::MainWindow *_ui;
+    Ui::MainWindow *_ui = nullptr;
 
     QString _defaultDir;
 
@@ -239,44 +213,42 @@ private:
 
     QString _transVersion;
 
-    QTabWidget *_mainTabWidget;
+    QTabWidget *_mainTabWidget = nullptr;
 
-    Qt::WindowStates _windowState;
+    QTextEdit *_consoleTextWidget = nullptr;
+    QDockWidget *_consoleDockWidget = nullptr;
+    Process *_consoleProc = nullptr;
 
-    QTextEdit *_consoleTextWidget;
-    QDockWidget *_consoleDockWidget;
-    Process *_consoleProc;
+    QTabWidget *_browserTabWidget = nullptr;
+    QDockWidget *_browserDockWidget = nullptr;
 
-    QTabWidget *_browserTabWidget;
-    QDockWidget *_browserDockWidget;
+    ProjectTreeModel *_projectTreeModel = nullptr;
+    QTreeView *_projectTreeWidget = nullptr;
 
-    ProjectTreeModel *_projectTreeModel;
-    QTreeView *_projectTreeWidget;
+    QWidget *_emptyCodeWidget = nullptr;
 
-    QWidget *_emptyCodeWidget;
+    DebugTreeModel *_debugTreeModel = nullptr;
+    QTreeView *_debugTreeWidget = nullptr;
 
-    DebugTreeModel *_debugTreeModel;
-    QTreeView *_debugTreeWidget;
+    CodeEditor *_codeEditor = nullptr;
+    CodeEditor *_lockedEditor = nullptr;
+    HelpView *_helpWidget = nullptr;
 
-    CodeEditor *_codeEditor;
-    CodeEditor *_lockedEditor;
-    HelpView *_helpWidget;
+    PrefsDialog *_prefsDialog = nullptr;
+    FindDialog *_findDialog = nullptr;
+    FindInFilesDialog *_findInFilesDialog = nullptr;
 
-    PrefsDialog *_prefsDialog;
-    FindDialog *_findDialog;
-    FindInFilesDialog *_findInFilesDialog;
+    QMenu *_projectPopupMenu = nullptr;
+    QMenu *_dirPopupMenu = nullptr;
+    QMenu *_filePopupMenu = nullptr;
 
-    QMenu *_projectPopupMenu;
-    QMenu *_dirPopupMenu;
-    QMenu *_filePopupMenu;
+    QMenu *_editorPopupMenu = nullptr;
 
-    QMenu *_editorPopupMenu;
+    QLabel *_statusWidget = nullptr;
 
-    QLabel *_statusWidget;
-
-    QComboBox *_targetsWidget;
-    QComboBox *_configsWidget;
-    QComboBox *_indexWidget;
+    QComboBox *_targetsWidget = nullptr;
+    QComboBox *_configsWidget = nullptr;
+    QComboBox *_indexWidget = nullptr;
 
     QString _helpTopic;
     int _helpTopicId;
@@ -290,6 +262,9 @@ private:
 
     QVector<QString> _cerberusTargets;
     QVector<QString> _monkey2Targets;
+    QStringList _completeList;
+
+    QAction *actionToggle_Fullscreen = nullptr;
 };
 
-#endif // MAINWINDOW_H
+extern MainWindow *MAIN_WINDOW;

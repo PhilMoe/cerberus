@@ -36,6 +36,15 @@ gxtkGraphics.prototype.BeginRender=function(){
 	this.width=this.canvas.width;
 	this.height=this.canvas.height;
 	if( !this.gc ) return 0;
+	
+	if(CFG_MOJO_IMAGE_FILTERING_ENABLED!="1" ) {
+		this.gc.mozImageSmoothingEnabled = false;
+		this.gc.webkitImageSmoothingEnabled = false;
+		this.gc.msImageSmoothingEnabled = false;
+		this.gc.imageSmoothingEnabled = false;
+		this.gc.oImageSmoothingEnabled= false;	
+	}
+	
 	this.gc.save();
 	if( this.game.GetLoading() ) return 2;
 	return 1;

@@ -265,7 +265,7 @@ Class IosBuilder Extends Builder
 		'mung xcode project
 		Local libs:=GetConfigVar( "LIBS" )
 		If libs
-			For Local lib:=Eachin libs.Split( ";" )
+			For Local lib:=Eachin libs.Split( "|" )
 				If Not lib Continue
 				Select ExtractExt( lib )
 				Case "a","h"

@@ -133,7 +133,7 @@ Class AndroidBuilder Extends Builder
 		SaveString main,jpath
 
 		'create 'libs' dir		
-		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( ";" )
+		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( "|" )
 			Select ExtractExt( lib )
 			Case "jar","so"
 				Local tdir:=""
@@ -153,7 +153,7 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		'copy src files
-		For Local src:=Eachin GetConfigVar( "SRCS" ).Split( ";" )
+		For Local src:=Eachin GetConfigVar( "SRCS" ).Split( "|" )
 			Select ExtractExt( src )
 			Case "java","aidl"
 				Local i:=src.FindLast( "/src/" )

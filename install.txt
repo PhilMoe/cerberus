@@ -1,0 +1,3 @@
+For setup and install instructions see the files located in docs/install.
+
+For instructions on how to build see the documentation files located in src/docs.

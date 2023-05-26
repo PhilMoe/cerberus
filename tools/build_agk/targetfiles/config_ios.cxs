@@ -1,0 +1,10 @@
+#TEXT_FILES+="*.txt|*.xml|*.json|*.obj|*.dae|*.fbx"
+#IMAGE_FILES+="*.png|*.jpg|*.gif"
+#SOUND_FILES+="*.wav|*.ogg|*.mp3"
+#MUSIC_FILES+="*.wav|*.ogg|*.mp3"
+#BINARY_FILES+="*.bin|*.dat|*.x"
+
+#AGK_PORTRAIT = ""
+'#AGK_LANDSCAPE = ""
+
+#FAST_SYNC_PROJECT_DATA = True

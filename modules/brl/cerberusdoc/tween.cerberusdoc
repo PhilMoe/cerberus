@@ -55,7 +55,7 @@ End</pre>
 
 Setup a new Tween.
 
-* @interpolation can be either @Tween.@LINEAR, @Tween.@CUSTOM, @Tween.@BEZIER, @Tween.@CURVE, @Tween.@ELASTIC, @Tween.@BOUNCE, @Tween.@BACK
+* @interpolation can be either @Tween.@LINEAR, @Tween.@CUSTOM, @Tween.@BEZIER, @Tween.@CURVE, @Tween.@FIT, @Tween.@ELASTIC, @Tween.@BOUNCE, @Tween.@BACK
 * @duration is the length of the tween in Milli-seconds
 
 For interpolation styles see [[cerberus.interpolate]]
@@ -143,6 +143,10 @@ Sets the 2 control points for the Bezier curve.
 
 * Control point 1 = (@pXa, @pYa)
 * Control point 2 = (@pXb, @pYb)
+
+# Method SetFitSlope:Void(s0:Float, s1:Float)
+
+Sets the 2 slope points values for the Fit curve.
 
 # Method SetCustomData:Void(dataY:Float[])
 

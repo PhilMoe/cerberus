@@ -1,0 +1,13 @@
+#TEXT_FILES+="*.txt|*.xml|*.json|*.obj|*.dae|*.fbx"
+#IMAGE_FILES+="*.png|*.jpg|*.gif"
+#SOUND_FILES+="*.wav|*.ogg|*.mp3"
+#MUSIC_FILES+="*.wav|*.ogg|*.mp3"
+#BINARY_FILES+="*.bin|*.dat|*.x"
+
+#AGK_DEVICE_WIDTH = 1024
+#AGK_DEVICE_HEIGHT = 768
+#AGK_DEVICE_POS_X = 32
+#AGK_DEVICE_POS_Y = 32
+#AGK_FULLSCREEN = False
+
+#FAST_SYNC_PROJECT_DATA = True

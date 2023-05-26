@@ -1,0 +1,4 @@
+Here is a list of current and known contributors to TED.
+
+J.Cook (aka dawlane)
+Mike Hart

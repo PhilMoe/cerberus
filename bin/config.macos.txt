@@ -1,71 +1,123 @@
+'--------------------
+' IMPORTANT: DO NOT USE FILE PATHS THAT CONTAIN SPACES!
+' System and Cerberus root environment variables can be passed using the macro : ${THE_VAR_TO_USE}
+' On Mac OS, the only system environment variable of any use is the HOME system environment variable.
+' Others can be added to the end of the hidden files relevant to the default shell that Mac OS uses e.g .profile or .bashrc.
+' See the relevant documentation for shell config files or search forums on this subject.
+'
+' On Mac OS. Applications can be installed either as an application bundle (.app), or as a package (.pkg) and by third-party tools like home-brew and macports.
+' The user has administrator rights to do some setup and know how to set groups and file permissions, and if using an external sources; must
+' knows how how to mount those external sources, be they a local drive or samba if working over a MS Windows network.
+'
+' It can also be useful to use symbolic links to these locations created in the users home directory, to point to the target folders or files if
+' the drive where the users home folder is limited for space.
+' For example, assuming that 'devdrive' is pre-mounted, set with the correct file access mount options, group and file permissions:
+' ln -s /mnt/devdrive/Android/Sdk $HOME/Android/Sdk
+' 
+'--------------------
 
 '--------------------
-'Cerberus modules path
+' Cerberus modules path
 '
-'Can be overriden via transcc cmd line
+' Can be overridden. See the Cerberus X documentation on the transcc command line tool
 '
+
 MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
 'Cerberus targets path
 '
-'Can be overriden via transcc cmd line
+'Can be overriden. See the Cerberus X documentation on the transcc command line tool
 '
 TARGETPATH="${CERBERUSDIR}/targets;${CERBERUSDIR}/targets_ext;D:\CerberusX\CerberusTargets"
 '--------------------
 
 '--------------------
-'HTML player path.
+' HTML player path.
 '
-'Must be set for HTML5 target support.
+' Must be set for HTML5 target support.
 '
+' The cserver is used to provide a mini web server for opening .html files...
+'
+
 HTML_PLAYER=open -n "${CERBERUSDIR}/bin/cserver_macos.app" --args
 '--------------------
 
 '--------------------
-'Ant build tool path
+' Java dev kit path (JDK)
 '
-'Must be set to a valid dir for ANDROID target support on Mavericks ('coz Mavericks no longer includes Ant).
+' Must be set to a valid directory for ANDROID and FLASH target support
 '
-'Ant is currently available here: 
-'	http://ant.apache.org/bindownload.cgi
+' If using Android Studio, It is possible that the install will have a much newer version of a JDK, but
+' it could be incompatible with the current release of Cerberus X. If that's the case, then a different JDK must be installed.
 '
-ANT_PATH="${HOME}/apache-ant-1.9.7"
-'--------------------
-
-'--------------------
-'Flex SDK and flash player path.
+' Alternative to the repository JDK's can be found from:
+' Oracle JDK, found here: https://www.oracle.com/java/technologies/downloads/
+' OpenJDK. You can see which vendors offer this from https://en.wikipedia.org/wiki/OpenJDK
+' NOTE: The wiki only links to the vendors main websites, so a search for OpenJDK on their sites will be needed.
 '
-'Must be set for FLASH target support.
+' NOTE: Some JDK installations use a combined JDK/JRE, so make sure that the path chosen has the Java compiler (javac)
+' within the bin subfolder.
 '
-FLEX_PATH="${HOME}/flex_sdk_4.6"
+' If Android Studio is to be used, then the default location depends on where the Application is to installed.
+' Normally on Mac OS, this would be the Applications folder, so default JDK_PATH should be set to use the embedded JDK found
+' in the Android Studio installation location.
+' /Applications/Android Studio.app/Contents/jre/Contents/Home
 '
-'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
-'FLASH_PLAYER="...?..."
-'--------------------
-
-'--------------------
-'Android SDK and tool paths.
-'
-'Must be set to a valid for for ANDROID target support
-'
-'Android SDK
-
-'This is where new android studio puts sdk on my macos machine...
-ANDROID_PATH="${HOME}/Library/Android/sdk"
-
-'Old sdk..
-ANDROID_PATH="${HOME}/android-sdk-macosx"
 
 JDK_PATH="/Applications/Android Studio.app/Contents/jre/Contents/Home"
 '--------------------
 
 '--------------------
-'Android NDK
+' Android SDK and tool paths.
 '
-'Must be set to a valid dir for ANDROID NDK target support
+' Must be set to a valid directory for ANDROID target support
+' 
+' If using Android Studio, the default location for the installation of the Android SDK is in $HOME/Library/Android/sdk
+' To confirm that this is where the Android Sdk is installed, start Android Studio and locate the SDK Manager. See the Android Studio documentation on how to do this.
+' It will show the location of where the current Android SDK is and if it's different, then the ANDROID_PATH configuration variable should be updated to this path.
+' NOTE: For the Android SDK to work successfully, it must be located in a folder that does not require elevated privileges.
 '
-ANDROID_NDK_PATH="${HOME}/android-ndk-r9"
+
+ANDROID_PATH="${HOME}/Library/Android/sdk"
+'--------------------
+
+'--------------------
+' Android NDK
+'
+' Must be set to a valid dir for ANDROID NDK target support
+'
+' The Android NDK tools are not currently used, but is here if it should be used in the future.
+' Android Studio installs NDK's by version number. The are downloaded via Android SDK tools and
+' are located in a subfolder called ndk located in the Android SDK folder.
+
+ANDROID_NDK_PATH="${HOME}/Library/Android/sdk/ndk/23.0.7599858"
+'--------------------
+
+'--------------------
+' Depreciated Targets
+' These targets are no longer supported and are commented out. They are only here for reference.
+'
+' Apache ANT is the main build system for Flash and at one point for Android.
+'
+' The Flex SDK is the software development kit for Flash enabled web applications.
+' It's still available from https://flex.apache.org/
+' With the advance of HTML5, Flash is seldom used any more and Flash player and it's web browser plugin reached it's
+' End of Life on December 31 2020.
+' You can still download the flash player debugger from https://www.adobe.com/support/flashplayer/debug_downloads.html
+'
+'--------------------
+' Flex SDK and flash player path.
+'
+' FLEX_PATH Must be set for FLASH target support.
+'
+' Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
+' Flex is current supported by the Apache Foundation and is currently here https://flex.apache.org/index.html
+'
+' Set the FLASH_PLAYER to the location of the Flash Player plugin
+' for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
+'FLEX_PATH="c:\flex_sdk_4.6"
+'FLASH_PLAYER="...?..."
 '--------------------
 

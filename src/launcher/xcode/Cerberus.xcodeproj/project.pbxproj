@@ -12,7 +12,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		96693B2D20C2ACD00061DD43 /* Cerberus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cerberus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		96693B2D20C2ACD00061DD43 /* Cerberus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cerberus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96693B3420C2ACD00061DD43 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		96693B3B20C2ACD00061DD43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D5928CEE2465A4D6005D9702 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cerberus.icns; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "cerberus-launcher/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krautapps.cerberus-launcher";
 				PRODUCT_NAME = Cerberus;
 			};
@@ -254,7 +254,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "cerberus-launcher/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krautapps.cerberus-launcher";
 				PRODUCT_NAME = Cerberus;
 			};

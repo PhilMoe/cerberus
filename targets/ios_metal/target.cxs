@@ -1,0 +1,4 @@
+
+#TARGET_NAME="iOS Metal Game"
+#TARGET_SYSTEM="ios"
+#TARGET_BUILDER="ios"

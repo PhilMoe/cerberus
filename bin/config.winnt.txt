@@ -1,118 +1,223 @@
 
 '--------------------
-'Cerberus modules path
+' IMPORTANT: DO NOT USE FILE PATHS THAT CONTAIN SPACES!
+' NOTE: System and Cerberus root environment variables can be passed using the macro : ${THE_VAR_TO_USE}
+' Where possible, these should be used instead of using full qualifying paths to common MS Windows locations.
+' An alternative is to enable developer mode and the create symbolic links in the default locations that
+' point to the true installations of the SDK's and tools.
+' example: MKLINK /D %LOCALAPPDATA%\Android\Sdk D:\devtools\sdks\Android\Sdk
 '
-'Can be overriden via transcc cmd line
+' For more information on symbolic links:
+' https://docs.microsoft.com/en-us/windows/win32/fileio/reparse-points
+' https://docs.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions
+' https://docs.microsoft.com/en-us/windows/win32/fileio/symbolic-links
+' https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/mklink
+' https://en.wikipedia.org/wiki/Hard_link
 '
-MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext;D:\CerberusX\CerberusModules"
+' ***** CAUTION! *****
+' Creating symbolic links on MS Windows does have certain disadvantages when copying files!
+' The system is pretty dumb and will copy the file, or folder and it's contents. 
+'
+' The other method is to set up some system environment variables to point to the development kits via the MS Window
+' environment variables editor.
+'
+' The most common environment variables that can be used here for MS Windows 10/11 and locations are:
+'
+' ${PROGRAMFILES(x86)} or ${PROGRAMFILES}
+' expands to C:\Program Flies (x86) or C:\Program Flies
+' NOTE: On a 64 bit version of the operating system, 32 bit applications will be installed to C:\Program Flies (x86)
+'
+' ${LOCALAPPDATA}
+' expands to C:\User\PcUserLoginName\APPDATA\Local
+'
+' ${APPDATA}
+' expands to C:\User\PcUserLoginName\APPDATA\Local\Roaming
+'
+' ${USERPROFILE}
+' expands to %SystemDrive%\Users\%USERNAME%
+' example C:\Users\PcUserLoginName
+'
+' ${CERBERUSDIR}
+' expands to the location of where the Cerberus root folder is.
+'
+' You can find a full list of environment variables from: https://ss64.com/nt/syntax-variables.html
 '--------------------
 
 '--------------------
-'Cerberus targets path
+' Cerberus modules path
 '
-'Can be overriden via transcc cmd line
+' Can be overridden. See the Cerberus X documentation on the transcc command line tool
 '
-TARGETPATH="${CERBERUSDIR}/targets;${CERBERUSDIR}/targets_ext;D:\CerberusX\CerberusTargets"
+
+MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext;C:\Cerberus_v2022-03-12_Windows\CerberusModules"
 '--------------------
 
 '--------------------
-'HTML player path.
+' Cerberus targets path
 '
-'Must be set for HTML5 target support.
+' Can be overridden. See the Cerberus X documentation on the transcc command line tool
 '
-'for opening .html files...
+
+TARGETPATH="${CERBERUSDIR}/targets;${CERBERUSDIR}/targets_ext;C:\Cerberus_v2022-03-12_Windows\Targets"
+'--------------------
+
+'--------------------
+' HTML player path.
 '
+' Must be set for HTML5 target support.
+'
+' The cserver is used to provide a mini web server for opening .html files...
+'
+
 HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 '--------------------
 
 '--------------------
-'MinGW path.
+' MinGW path.
 '
-'Must be set to a valid dir for desktop/stdcpp target support.
+' Must be set to a valid directory for desktop/stdcpp target support.
 '
-'MinGW is currently here:
+' ***** DO NOT USE *****
+' mingw64-5.1.0 as it has a linker bug
 '
-'***** DO NOT use mingw64-5.1.0 as it has a linker bug *****
+' ***** CAUTION *****
+' 64 bit versions based on mingw64-w64 greater than 8.1.0 have issues creating application with Cerberus X output code *****
+'
+' Recommended version of MinGW is currently here: https://www.cerberus-x.com/downloads/tdm-gcc-64.zip
+' This version should be extracted to the Cerberus X directory and the MINGW_PATH set to MINGW_PATH="${CERBERUSDIR}\TDM-GCC-64"
+'
+' The most common location for a MinGW installation is to place the whole MinGW folder to system drive e.g C:\MinGw.
+' Different MinGW vendors would use their own naming for the root directory of their MinGW distribution.
+' But as some users will not have administrator rights, then a different location should be selected
+' and the MINGW_PATH configuration variable updated to where that MinGW tool chain is installed.
+' NOTE: Some installers give you the option to add MinGW to the systems PATH environment variable.
+' In this case, the MINGW_PATH would only need to be set if there is more than one version of MinGW installed and the first entry
+' in environment PATH is not to be used.
 
-'***** 64 bit mingw *****
-MINGW_PATH="D:\TDM-GCC-64"
-'MINGW_PATH="D:\TDM-GCC-64_92"
-'MINGW_PATH="D:\BlitzMax\MinGW32x64"
-'MINGW_PATH="${CERBERUSDIR}/3rdparty/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/mingw64"
-'--------------------
-
-'--------------------
-'Java dev kit path
-'
-'Must be set to a valid dir for ANDROID and FLASH target support
-'
-'The Java JDK is currently available here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
-'
-JDK_PATH="D:\Program Files (x86)\Java\jdk1.8.0_172"
-'--------------------
-
-'--------------------
-'Android SDK and tool paths.
-'
-'Must be set to a valid dir for ANDROID target support
-'
-ANDROID_PATH="D:\Program Files\Android\Android Studio"
+MINGW_PATH="C:\TDM-GCC-64"
 '--------------------
 
 '--------------------
-'Android NDK
+' Java dev kit path (JDK)
 '
-'Must be set to a valid dir for ANDROID NDK target support
+' Must be set to a valid directory for ANDROID and FLASH target support
 '
-ANDROID_NDK_PATH="C:\Users\mike\AppData\Local\Android\Sdk\ndk\21.1.6352462"
+' It is possible that the Android Studio install will have a much newer version of a JDK, but
+' it could be incompatible with the current release of Cerberus X. If that's the case, then a
+' different JDK must be installed.
+'
+' The Java JDK is current available here: https://www.oracle.com/java/technologies/downloads/
+' The alternative JDK to use is OpenJDK. You can see which vendors offer this from https://en.wikipedia.org/wiki/OpenJDK
+' NOTE: The wiki only links to the vendors main websites, so a search for OpenJDK on their sites will be needed.
+'
+' Normally Windows installers will place a JDK or Android Studio in the C:\Program Files or C:\Program Files(x86) folder.
+' But stand alone archives can be extracted and placed elsewhere.
+'
+' NOTE: Some JDK installers use a combined JDK/JRE, so make sure that the path chosen has the Java compiler (javac)
+' within the bin subfolder.
+' 
+' You should update the JDK_PATH configuration variable to the path of the JDK that is to be used.
+' The default JDK_PATH is set to use the embedded JDK in the Android Studio installation location.
+' C:\Program Files\Android\Android Studio\jre
+'
+
+JDK_PATH="${PROGRAMFILES}\Android\Android Studio\jre"
 '--------------------
 
 '--------------------
-'Ant build tool path
+' Android SDK and tool paths.
 '
-'Must be set to a valid dir for FLASH target support
-'
-'Ant is currently available here: http://ant.apache.org/bindownload.cgi
-'
-'ANT_PATH="D:\Programme\apache-ant-1.9.7"
+' Must be set to a valid directory for ANDROID target support
+' 
+' If using Android Studio, the default location for the installation of the Android SDK is in C:\User\PcUserLoginName\APPDATA\Local\Android\Sdk
+' To confirm that this is where the Android Sdk is installed, start Android Studio and locate the SDK Manager. See the Android Studio documentation on how to do this.
+' It will show the location of where the current Android SDK is and if it's different, then the ANDROID_PATH configuration variable should be updated to this path.
+' NOTE: For the Android SDK to work successfully, it must be located in a folder that does not require elevated privileges.
+
+ANDROID_PATH="${LOCALAPPDATA}\Android\Sdk"
 '--------------------
 
 '--------------------
-'Flex SDK and flash player path.
+' Android NDK
 '
-'FLEX_PATH Must be set for FLASH target support.
+' Must be set to a valid directory for ANDROID NDK target support
 '
-'Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
-'
-'FLEX_PATH="c:\flex_sdk_4.6"
-'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
-'FLASH_PLAYER="...?..."
+' The Android NDK tools are not currently used, but is here if it should be used in the future.
+' Android Studio installs NDK's by version number. The are downloaded via Android SDK tools and
+' are located in a subfolder called ndk located in the Android SDK folder.
+
+ANDROID_NDK_PATH="${LOCALAPPDATA}\Android\Sdk\ndk\23.0.7599858"
 '--------------------
 
 '--------------------
-'Play Station Mobile SDK path.
+' MSBUILD path.
 '
-'PSM_PATH must be set for PSM target support.
+' Must be set for XNA and GLFW target support when not using a MinGW compiler.
 '
-'PSM_PATH="d:\devtools\PSM_SDK"
-'--------------------
+' The tool for building with Visual Studio is MSBuild.exe. This tools can be located in any number of locations.
+' As from Visual Studio 2017, all Visual Studio Editions using the default install locations, use the release year, the edition and the version number of MSBuild:
+' examples:
+' MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+' MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\2019\Community\MSBuild\16.0\Bin\MSBuild.exe"
+' MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 
-'--------------------
-'MSBUILD path.
-'
-'Must be set for XNA and GLFW target support.
-'
-MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
+MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
 '--------------------
 
 '--------------------
 ' AppGameKit path.
 '
-'Must be set for AGK support.
+' Must have the AGK2 installed and be set for AGK support.
 '
-AGK_PATH="D:\Program Files (x86)\The Game Creators\AGK2"
+' You can get hold of AGK from https://www.thegamecreators.com/
+
+AGK_PATH="${PROGRAMFILES(x86)}\The Game Creators\AGK2"
 '
 '--------------------
 
-'--->> BEGIN OF JUNGLE IDE GENERATED CONFIG
-'--->> END OF JUNGLE IDE GENERATED CONFIG
+'--------------------
+' Depreciated Targets
+' These targets are no longer supported and are commented out. They are only here for reference.
+'
+' Apache ANT is the main build system for Flash and at one point for Android.
+'
+' The Flex SDK is the software development kit for Flash enabled web applications.
+' It's still available from https://flex.apache.org/
+' With the advance of HTML5, Flash is seldom used anymore and Flash player and it's web browser plugin reached it's
+' End of Life on December 31 2020.
+' You can still download the flash player debugger from https://www.adobe.com/support/flashplayer/debug_downloads.html
+'
+' Sony no longer supports PlayStation Mobile SDK and the service was shut down in 2015.
+' If wish to get a copy of the SDK, then a search of https://web.archive.org/ may yield results.
+'--------------------
+' Ant build tool path
+'
+' Must be set to a valid dir for FLASH target support
+'
+' Ant is currently available here: http://ant.apache.org/bindownload.cgi
+'
+'ANT_PATH="${PROGRAMFILES(x86)}\apache-ant-1.9.7"
+'--------------------
+
+'--------------------
+' Flex SDK and flash player path.
+'
+' FLEX_PATH Must be set for FLASH target support.
+'
+' Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
+' Flex is current supported by the Apache Foundation and is currently here https://flex.apache.org/index.html
+'
+' Set the FLASH_PLAYER to the location of the Flash Player plugin
+' for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
+'FLEX_PATH="c:\flex_sdk_4.6"
+'FLASH_PLAYER="...?..."
+'--------------------
+
+'--------------------
+' Play Station Mobile SDK path.
+'
+' PSM_PATH must be set for PSM target support.
+'
+' PSM_PATH="${PROGRAMFILES(x86)}\PSM_SDK"
+'--------------------
+

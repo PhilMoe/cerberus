@@ -1,24 +1,37 @@
-/*
-Ted, a simple text editor/IDE.
-
-Copyright 2012, Blitz Research Ltd.
-
-See LICENSE.TXT for licensing terms.
-*/
-
+//----------------------------------------------------------------------------------------------------------------------
+// Ted, a simple text editor/IDE.
+//
+// Copyright 2012, Blitz Research Ltd.
+//
+// See LICENSE.TXT for licensing terms.
+//
+//  NOTE: This version is not backwards compatible with versions earlier than Qt 5.9.0
+//----------------------------------------------------------------------------------------------------------------------
+// CONTRIBUTORS: See contributors.txt
 #include "prefs.h"
 
-Prefs::Prefs(){
-    _settings.beginGroup( "userPrefs" );
+//----------------------------------------------------------------------------------------------------------------------
+//  Prefs: IMPLEMENTATION
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+//  Prefs: PUBLIC MEMEBER FUNCTIONS
+//----------------------------------------------------------------------------------------------------------------------
+Prefs::Prefs()
+{
+    _settings.beginGroup("userPrefs");
 }
 
-void Prefs::setValue( const QString &name,const QVariant &value ){
-    _settings.setValue( name,value );
-    emit prefsChanged( name );
+void Prefs::setValue(const QString &name, const QVariant &value)
+{
+    _settings.setValue(name, value);
+    emit prefsChanged(name);
 }
 
-Prefs *Prefs::prefs(){
+// Note this is a static member function to update preference value directly.
+Prefs *Prefs::prefs()
+{
     static Prefs *_prefs;
-    if( !_prefs ) _prefs=new Prefs;
+    if(!_prefs)
+        _prefs = new Prefs;
     return _prefs;
 }

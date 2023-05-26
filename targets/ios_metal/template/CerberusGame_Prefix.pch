@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'CerberusGame' target in the 'CerberusGame' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+#endif

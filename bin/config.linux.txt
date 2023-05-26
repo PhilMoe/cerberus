@@ -1,55 +1,127 @@
 
 '--------------------
-'Cerberus modules path
+' IMPORTANT: DO NOT USE FILE PATHS THAT CONTAIN SPACES!
+' System and Cerberus root environment variables can be passed using the macro : ${THE_VAR_TO_USE}
+' On Linux, the only system environment variable of any use is the HOME system environment variable.
+' Others can be added to the end of the hidden files .profile or .bashrc. See the Linux distributions documentation or forums on this subject.
 '
-'Can be overriden via transcc cmd line
+' For the average Linux user. All applications not part of the Linux distributions repositories
+' should be placed in the users home directory. Files and folders can be relocated elsewhere, but requires that
+' the user has administrator rights, knows how to set groups and file permissions, and if using an external source;
+' knows how how to mount those external sources, be they a local drive or samba if working over a MS Windows network.
 '
+' It can also be useful to use symbolic links to these locations created in the users home directory to point to the target folders or files if
+' the drive where the users home folder is limited for space.
+' For example, assuming that 'devdrive' is pre-mounted, set with the correct file access mount options, group and file permissions:
+' ln -s /mnt/devdrive/Android/Sdk $HOME/Android/Sdk
+' 
+' Linux distributions will have a number of options on managing different versions of a Java Development Kit and compilers that can live side-by-side.
+' Most distributions may already have these developer tools pre-installed, but many will not and will have to be manually installed and require
+' administrator privileges to do so.
+'
+' Some distributions do have installed graphical package managers. These can be pretty limited, but an alternatives can be installed. Search for details on the distributions
+' forums for more information.
+'--------------------
+
+'--------------------
+' Cerberus modules path
+'
+' Can be overridden. See the Cerberus X documentation on the transcc command line tool
+'
+
 MODPATH="${CERBERUSDIR}/modules;${CERBERUSDIR}/modules_ext"
 '--------------------
 
 '--------------------
-'HTML player path.
+' HTML player path.
 '
-'Must be set for HTML5 target support.
+' Must be set for HTML5 target support.
 '
+' The cserver is used to provide a mini web server for opening .html files...
+'
+
 HTML_PLAYER="${CERBERUSDIR}/bin/cserver_linux"
 '--------------------
 
 '--------------------
-'Java dev kit path
+' Java dev kit path (JDK)
 '
-'Must be set to a valid dir for ANDROID and FLASH target support
+' Must be set to a valid directory for ANDROID and FLASH target support
 '
-'The Java JDK is currently available here:
-'	http://www.oracle.com/technetwork/java/javase/downloads/index.html
+' Normally a JDK would be installed via the Linux distribution's package manager, but a different version can be downloaded and extracted
+' and used. You should update the JDK_PATH configuration variable to the path of the JDK that is to be used.
 '
-JDK_PATH="${HOME}/jdk1.8.0_31"
-JDK_PATH="${HOME}/jdk1.7.0_09"
+' If using Android Studio, It is possible that the install will have a much newer version of a JDK, but
+' it could be incompatible with the current release of Cerberus X. If that's the case, then a different JDK must be installed.
+'
+' Alternative to the repository JDK's can be found from:
+' Oracle JDK, found here: https://www.oracle.com/java/technologies/downloads/
+' OpenJDK. You can see which vendors offer this from https://en.wikipedia.org/wiki/OpenJDK
+' NOTE: The wiki only links to the vendors main websites, so a search for OpenJDK on their sites will be needed.
+'
+' NOTE: Some JDK installations use a combined JDK/JRE, so make sure that the path chosen has the Java compiler (javac)
+' within the bin subfolder.
+'
+' If Android Studio is to be used, then the default location depends on where the Application is to installed.
+' Normally this would be the user's home directory under 'android-studio, so default JDK_PATH should be
+' set to use the embedded JDK found in the Android Studio installation location.
+' $HOME/android-studio/jre
+'
+
+JDK_PATH="${HOME}/android-studio/jre"
 '--------------------
 
 '--------------------
-'Flex SDK and flash player path.
+' Android SDK and tool paths.
 '
-'FLEX_PATH Must be set for FLASH target support.
+' Must be set to a valid directory for ANDROID target support
+' 
+' If using Android Studio, the default location for the installation of the Android SDK is in $HOME/Android/Sdk
+' To confirm that this is where the Android Sdk is installed, start Android Studio and locate the SDK Manager. See the Android Studio documentation on how to do this.
+' It will show the location of where the current Android SDK is and if it's different, then the ANDROID_PATH configuration variable should be updated to this path.
+' NOTE: For the Android SDK to work successfully, it must be located in a folder that does not require elevated privileges.
 '
-FLEX_PATH="${HOME}/flex_sdk_4.6"
+
+ANDROID_PATH="${HOME}/Android/Sdk"
+'--------------------
+
+'--------------------
+' Android NDK
 '
-'for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
+' Must be set to a valid dir for ANDROID NDK target support
+'
+' The Android NDK tools are not currently used, but is here if it should be used in the future.
+' Android Studio installs NDK's by version number. The are downloaded via Android SDK tools and
+' are located in a subfolder called ndk located in the Android SDK folder.
+
+ANDROID_NDK_PATH="${HOME}/Android/Sdk/ndk/23.0.7599858"
+'--------------------
+
+'--------------------
+' Depreciated Targets
+' These targets are no longer supported and are commented out. They are only here for reference.
+'
+' Apache ANT is the main build system for Flash and at one point for Android.
+' On Linux distributions, it's usually installed via the distributions package manager and it's often
+' used by other application.
+'
+' The Flex SDK is the software development kit for Flash enabled web applications.
+' It's still available from https://flex.apache.org/
+' With the advance of HTML5, Flash is seldom used any more and Flash player and it's web browser plugin reached it's
+' End of Life on December 31 2020.
+' You can still download the flash player debugger from https://www.adobe.com/support/flashplayer/debug_downloads.html
+'
+'--------------------
+' Flex SDK and flash player path.
+'
+' FLEX_PATH Must be set for FLASH target support.
+'
+' Either HTML_PLAYER or FLASH_PLAYER must be set for FLASH target support.
+' Flex is current supported by the Apache Foundation and is currently here https://flex.apache.org/index.html
+'
+' Set the FLASH_PLAYER to the location of the Flash Player plugin
+' for opening .swf files...cerberus will use HTML_PLAYER if this is not set.
+'FLEX_PATH="c:\flex_sdk_4.6"
 'FLASH_PLAYER="...?..."
 '--------------------
 
-'--------------------
-'Android SDK and tool paths.
-'
-'Must be set to a valid for for ANDROID target support.
-'
-ANDROID_PATH="${HOME}/android-sdk-linux"
-'--------------------
-
-'--------------------
-'Android NDK
-'
-'Must be set to a valid dir for ANDROID NDK target support
-'
-ANDROID_NDK_PATH="${HOME}/android-ndk-r9"
-'--------------------

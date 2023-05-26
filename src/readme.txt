@@ -1,0 +1,1 @@
+For instruction on how to build. Please read the documentation located in src/docs.

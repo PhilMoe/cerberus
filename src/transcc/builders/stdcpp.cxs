@@ -1,4 +1,12 @@
 
+' Changes:
+'		2023-03-23:	dawlane
+'					Rewrote how the C++ Tool builds for different OS hosts and toolchains.
+'					The C++ Tool will now build using an Xcode project file on macOS to allow
+'					the creation of universal binaries. On MS Windows, there is now the option to use
+'					MSVC as the compiler.
+'					Common tasks, such as updating the main.cpp and running of the built program now
+'					use common methods.
 Import builder
 
 Class StdcppBuilder Extends Builder
@@ -29,66 +37,238 @@ Class StdcppBuilder Extends Builder
 		ENV_LANG="cpp"
 		_trans=New CppTranslator
 	End
-	
+
 	Method MakeTarget:Void()
-	
+		
+		' Set an internal variable for build configuration.
 		Select ENV_CONFIG
 		Case "debug" SetConfigVar "DEBUG","1"
 		Case "release" SetConfigVar "RELEASE","1"
 		Case "profile" SetConfigVar "PROFILE","1"
 		End
 		
-		CopySourceFiles(".")
+		' Get the compiler and linker options if set.
+		' NOTE: These will be overriden if host and compiler version are used.
+		Local cc_opts:=GetConfigVar( "CC_OPTS" )
+		If cc_opts cc_opts.Replace( ";"," " )
 		
-		Local main:=LoadString( "main.cpp" )
-
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-
-		SaveString main,"main.cpp"
+		Local cc_libs:=GetConfigVar( "CC_LIBS" )
+		If cc_libs cc_libs.Replace( ";"," " )
 		
-		If tcc.opt_build
+		Local cc_ldopts:=GetConfigVar( "CC_LDOPTS" )
+		If cc_ldopts cc_ldopts.Replace( ";"," " )
 
-			Local out:="main_"+HostOS
-			DeleteFile out
-			
-			Local OPTS:="",LIBS:=""
-			
-			Select ENV_HOST
+		' Select the build tool to use depending on the host os and the MINGW switch.
+		Select HostOS
+		Case "winnt"
+			If GetConfigVar( "CC_USE_MINGW" )="1" And tcc.MINGW_PATH
+				MakeGcc( cc_opts,cc_libs,cc_ldopts )
+			Else If FileType( "msvc" )=FILETYPE_DIR
+				MakeMsvc( cc_opts,cc_libs,cc_ldopts )
+			Else If tcc.MINGW_PATH
+				MakeGcc( cc_opts,cc_libs,cc_ldopts )
+			Endif
+		Case "macos"
+			MakeXcode( cc_opts,cc_libs,cc_ldopts )
+		Case "linux"
+			MakeGcc( cc_opts,cc_libs,cc_ldopts )
+		End
+	End
+	
+	' MakeGcc is for MinGW and Linux
+	Method MakeGcc:Void( cc_opts:String,cc_libs:String,cc_ldopts:String )
+		
+		UpdateMainSourceFile()	' Call common main.cpp update method
+		
+		' Set up build variables.
+		Local opts:="", libs:="", ldopts:="", maketool:="make", msize:=GetConfigVar( "CC_MSIZE" ), cxx:="g++", cc:="gcc"
+		Local dst:="gcc_"+HostOS, out:=GetConfigVar( "CC_OUTPUT_NAME" ), exec:="", outpath:=GetConfigVar( "CC_OUTPUT_PATH" ), build_dir:="build/"+casedConfig
+
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="main_"+HostOS
+		
+		' Set options for build configuration.
+		If GetConfigVar( "DEBUG" )="1"
+			opts+=" -O0"
+		Elseif GetConfigVar( "RELEASE" )="1"
+			opts+=" -O3 -DNDEBUG"
+			libs+=" -s"
+		Elseif GetConfigVar( "PROFILE" )="1"
+			' NOTE: Read https://ftp.gnu.org/old-gnu/Manuals/gprof-2.9.1/html_mono/gprof.html
+			opts+=" -pg"
+		Endif
+		
+		' Set defaults
+		Select HostOS
 			Case "winnt"
-				OPTS+=" -Wno-free-nonheap-object"
-				LIBS+=" -lwinmm -lws2_32"
-			Case "macos"
-				OPTS+=" -Wno-parentheses -Wno-dangling-else"
-				OPTS+=" -mmacosx-version-min=10.9 -std=gnu++0x -stdlib=libc++"
+				' If used, override the CC_OPTS, CC_LIBS, CC_LDOPTS.
+				If GetConfigVar( "CC_MINGW_OPTS" ) cc_opts=GetConfigVar( "CC_MINGW_OPTS" )
+				If GetConfigVar( "CC_MINGW_LIBS" ) cc_libs=GetConfigVar( "CC_MINGW_LIBS" )
+				If GetConfigVar( "CC_MINGW_LDOPTS" ) cc_ldopts=GetConfigVar( "CC_MINGW_LDOPTS" )
+				If GetConfigVar( "CC_MINGW_MSIZE" ) msize=GetConfigVar( "CC_MINGW_MSIZE" )
+				
+				opts+=" -Wno-free-nonheap-object "+cc_opts
+				libs+=" "+cc_libs
+				ldopts+=" "+cc_ldopts
+				maketool="mingw32-make"
 			Case "linux"
-				OPTS+=" -Wno-unused-result"
-				LIBS+=" -lpthread"
-			End
-			
-			Select ENV_CONFIG
-			Case "debug"
-				OPTS+=" -O0"
-			Case "release"
-				OPTS+=" -O3 -DNDEBUG"
-			End
-			
-			Local cc_opts:=GetConfigVar( "CC_OPTS" )
-			If cc_opts OPTS+=" "+cc_opts.Replace( ";"," " )
-			
-			Local cc_libs:=GetConfigVar( "CC_LIBS" )
-			If cc_libs LIBS+=" "+cc_libs.Replace( ";"," " )
-			
-      If HostOS="macos"
-        Execute "clang++"+OPTS+" -o "+out+" main.cpp"+LIBS
-      Else
-        Execute "g++"+OPTS+" -o "+out+" main.cpp"+LIBS
-      Endif
-			
-			If tcc.opt_run
-				Execute "~q"+RealPath( out )+"~q"
+				' If used, override the CC_OPTS, CC_LIBS, CC_LDOPTS.
+				If GetConfigVar( "CC_GCC_OPTS" ) cc_opts=GetConfigVar( "CC_GCC_OPTS" )
+				If GetConfigVar( "CC_GCC_LIBS" ) cc_libs=GetConfigVar( "CC_GCC_LIBS" )
+				If GetConfigVar( "CC_GCC_LDOPTS" ) cc_ldopts=GetConfigVar( "CC_GCC_LDOPTS" )
+				If GetConfigVar( "CC_GCC_MSIZE" ) msize=GetConfigVar( "CC_GCC_MSIZE" )
+				If GetConfigVar( "CC_GCC_MSIZE" ) msize=GetConfigVar( "CC_GCC_MSIZE" )
+				If GetConfigVar( "CC_LINUX_CC" ) cc=GetConfigVar( "CC_LINUX_CC" )
+				If GetConfigVar( "CC_LINUX_CXX" ) cxx=GetConfigVar( "CC_LINUX_CXX" )
+				
+				
+				opts+=" -Wno-unused-result "+cc_opts
+				libs+=" "+cc_libs+" -lpthread -ldl"
+				ldopts+=" "+cc_ldopts+" -no-pie"
+				exec="./"+out
+		End Select
+		
+		' If the msize has been set; then set the correct switch to use. 
+		If msize<>""
+			If msize="32"
+				msize="-m32"
+			Elseif msize="64"
+				msize="-m64"
+			Else
+				Print "WARNING: Value assigned to CC_MSIZE is "+msize+"~nOnly 32 and 64 are permitted."
 			Endif
 		Endif
+
+		' Start the build
+		If tcc.opt_build
+			ChangeDir dst
+			CreateDir "build"
+			CreateDir build_dir
+			
+			BuildOption( dst,outpath,maketool+
+						" C_COMPILER=~q"+cc+
+						"~q CXX_COMPILER=~q"+cxx+
+						"~q CCOPTS=~q"+opts+
+						"~q LDLIBS=~q"+libs+
+						"~q LDOPTS=~q"+ldopts+
+						"~q BUILD_DIR=~q"+RealPath( build_dir )+
+						"~q OUT_PATH=~q"+outpath+
+						"~q OUT=~q"+out+"~q", out )
+
+		Endif
+	End
+	
+	Method MakeMsvc:Void( cc_opts:String,cc_libs:String,cc_ldopts:String )
+		
+		UpdateMainSourceFile()	' Call common main.cpp update method.
+		Local out:=GetConfigVar( "CC_OUTPUT_NAME" ), outpath:=GetConfigVar( "CC_OUTPUT_PATH" ), msize:=GetConfigVar( "CC_MSIZE" ), platform:=""
+		
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="main_"+HostOS
+		
+		' If used, override the CC_OPTS, CC_LIBS, CC_LDOPTS.
+		If GetConfigVar( "CC_MSVC_OPTS" ) cc_opts=GetConfigVar( "CC_MSVC_OPTS" )
+		If GetConfigVar( "CC_MSVC_LIBS" ) cc_libs=GetConfigVar( "CC_MSVC_LIBS" )
+		If GetConfigVar( "CC_MSVC_LDOPTS" ) cc_ldopts=GetConfigVar( "CC_MSVC_LDOPTS" )
+		If GetConfigVar( "CC_MSVC_MSIZE" ) msize=GetConfigVar( "CC_MSVC_MSIZE" )
+		
+		If msize<>""
+			If msize="32"
+				platform="x86"
+			ElseIf msize="64"
+				platform="x64"
+			Else
+				If Not( msize="32" Or msize="64") Print "WARNING: Value assigned to CC_MSIZE is "+msize+"~nOnly 32 and 64 are permitted.~nDefaulting to Win32."
+				msize="32"
+				platform="x86"
+			Endif
+		Else
+			msize="32"
+			platform="x86"
+		Endif
+		
+		' Start the build
+		If tcc.opt_build
+			BuildOption( "msvc", outpath,
+			"~q"+tcc.MSBUILD_PATH+
+			"~q -p:OutDir=~q"+outpath+
+			"/~q;TargetName="+out+
+			";Configuration=~q"+casedConfig+msize+
+			"~q;platform=~q"+platform+
+			"~q;AdditionalOptions=~q"+cc_opts+" "+cc_ldopts+
+			"~q;AdditionalDependencies=~q"+cc_libs+
+			"~q msvc.sln",
+			out )
+		Endif
+	End
+	
+	' MakeXcode to make universal applications
+	Method MakeXcode:Void( cc_opts:String,cc_libs:String,cc_ldopts:String )
+		
+		UpdateMainSourceFile()	' Call common main.cpp update method.
+		
+		Local opts:="-Wno-parentheses -Wno-dangling-else -Wno-shorten-64-to-32 "+cc_opts, out:=GetConfigVar( "CC_OUTPUT_NAME" ), outpath:=GetConfigVar( "CC_OUTPUT_PATH" )
+		
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="main_"+HostOS
+		
+		' If used, override the CC_OPTS, CC_LIBS, CC_LDOPTS.
+		If GetConfigVar( "CC_XCODE_OPTS" ) cc_opts=GetConfigVar( "CC_XCODE_OPTS" )
+		If GetConfigVar( "CC_XCODE_LIBS" ) cc_libs=GetConfigVar( "CC_XCODE_LIBS" )
+		If GetConfigVar( "CC_XCODE_LDOPTS" ) cc_ldopts=GetConfigVar( "CC_XCODE_LDOPTS" )
+		
+		' Start the build
+		If tcc.opt_build
+		
+			' Start the build
+			BuildOption( "xcode", outpath, "xcodebuild -configuration "+casedConfig+
+						" OTHER_CPLUSPLUSFLAGS=~q"+opts+"~q"+
+						" OTHER_LIBTOOLFLAGS=~q"+cc_libs+"~q"+
+						" OTHER_LDFLAGS=~q"+cc_ldopts+"~q"+
+						" TARGET_NAME=~q"+out+"~q"+
+						" CONFIGURATION_BUILD_DIR=~q"+outpath+"~q", out )
+	
+		Endif
+	End
+	
+	Method BuildOption:Void( buildDir:String,outpath:String,cmd:String,out:String )
+		ChangeDir buildDir
+		If Not FileType( outpath ) CreateDirs( outpath )
+
+		Print "~nOutput Dir:~n"+outpath+"~n~nBuild Dir:~n"+CurrentDir
+		Execute cmd
+		
+		' If the run option has been set; then run.
+		If tcc.opt_run OptionRun( outpath,out )
+	End
+	
+	' Common method to start the built application.
+	Method OptionRun:Void( outpath:String,out:String )
+		ChangeDir RealPath( outpath )
+		Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out
+		If Not(HostOS="winnt") Execute "./"+out Else Execute out
+	End
+	
+	' Common main.cpp update method.
+	Method UpdateMainSourceFile:Void()
+	
+		CopySourceFiles( "." )
+		
+		Local main:=LoadString( "main.cpp" )
+		
+		main=ReplaceBlock( main,"TRANSCODE",transCode )
+		main=ReplaceBlock( main,"CONFIG",Config() )
+		
+		SaveString main,"main.cpp"
 	End
 	
 End

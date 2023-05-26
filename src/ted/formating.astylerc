@@ -1,0 +1,39 @@
+# Artistic Style formatting with additions tweaks.
+
+# Download and install AStyle Formatter
+# Enable the Beautifier plugin Help->About Plugins
+# In the Environemt Preferences Keyboard setting. Add a short cut to the ArtisticStyle->Format current file.
+# In the Preferences Beautifier General tab.
+# Check the "Enable Auto format on file save" check box.
+# Make sure the check box "Restric to current files in the project" is set.
+# Select the Tool to be Artistic Style
+# In the Beautifier Artistic Style tab. Set the path to the astyle execuatable. And check the "Use file *.astylerc defined in the project file."
+
+# See https://astyle.sourceforge.net/astyle.html for information on the options.
+
+--style=kr
+--indent=spaces=4
+--attach-namespaces
+--indent-namespaces
+#--attach-classes
+--attach-inlines
+--attach-closing-while
+--indent-switches
+--indent-labels
+--indent-preproc-block
+--indent-preproc-define
+--indent-col1-comments
+--unpad-paren
+--pad-comma
+#--delete-empty-lines
+--align-pointer=name
+--remove-braces
+--attach-return-type
+#--keep-one-line-blocks
+--keep-one-line-statements
+--close-templates
+--max-code-length=120
+--break-after-logical
+--lineend=linux
+--pad-oper
+--break-one-line-headers

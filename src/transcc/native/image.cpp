@@ -15,6 +15,7 @@ std::string get_file_contents(const char *filename)
 		in.close();
 		return(contents);
 	}
+	return {};
 }
 
 std::ifstream::pos_type getFileSize(const char* filename)
@@ -27,7 +28,13 @@ void _CreateIcon(String srcFilename, String dstFilename, int w, int h,int round)
 	int width,height,n;
 	
 	stbi_uc *input_pixels = stbi_load(C_STR(srcFilename), &width, &height, &n, 4);
+
+// Under MSVC. Use a pointer to stop error C2131: expression did not evaluate to a constant
+#ifdef _MSC_VER
+	stbi_uc *output_pixels = new stbi_uc[4*w*h];
+#else
 	stbi_uc output_pixels[4*w*h];
+#endif
 	
 	stbir_resize_uint8(input_pixels,width,height,0, output_pixels, w,h,0,4);
 	
@@ -45,6 +52,9 @@ void _CreateIcon(String srcFilename, String dstFilename, int w, int h,int round)
 	}
 	
 	stbi_write_png(C_STR(dstFilename), w, h, 4, &output_pixels, 0);
+#ifdef _MSC_VER
+	delete output_pixels;
+#endif
 }
 
 // crudely build the icon file... file format on wiki
@@ -55,7 +65,13 @@ void _ConvertToIco(String srcFilename,String destFilename) {
 	
 	// build indiviual icon files for icon file
 	int num_of_images=sizeof(widths) / sizeof(widths[0]);;
+
+#ifdef _MSC_VER
+	int *size_of_files = new int[num_of_images];
+#else
 	int size_of_files[num_of_images];
+#endif
+
 	int width;
 	int size_of_data=0;
 	int i=0;
@@ -146,7 +162,10 @@ void _ConvertToIco(String srcFilename,String destFilename) {
 		data_pointer = data_pointer + size_of_files[i];
 		i++;
 	}
-	
+
+#ifdef _MSC_VER
+	delete size_of_files;
+#endif
 
 	// write file
 	std::ofstream outfile (C_STR(destFilename),std::ofstream::binary);

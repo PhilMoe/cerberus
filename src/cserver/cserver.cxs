@@ -505,7 +505,7 @@ Function MimeType:String( ext:String )
 	Case "ico","icon","icn"
 						Return "image/vnd.microsoft.icon"
 	Case "js"			Return "application/javascript"
-	Case "xml"			Return "application/xml"
+	Case "xml"			Return "text/xml"
 	Case "pdf"			Return "application/pdf"
 	Case "zip"			Return "application/zip"
 	Case "gzip"			Return "application/gzip"
