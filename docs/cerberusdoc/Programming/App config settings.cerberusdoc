@@ -147,10 +147,35 @@ The following app config settings are currently supported:
 #CPP_GC_TRIGGER=8388608 			'Allocated memory (in bytes) before a GC 'sweep' occurs. Defaults to 8 MiB
 #CPP_GC_MAX_LOCALS=8192 			'This is used with GC_MODE 2 to track local object vars and defaults to 8192
 
-'Misc
+'C++ Tool settings, defaults shown
 '
-#CC_OPTS=""							'additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_OUTPUT_NAME="main_$HOST"		'Set the output name of the final executable.
+#CC_OUTPUT_PATH=".build/cpptool"	'Set the output path for the final executable.
+
+#CC_OPTS=""							'Pass additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 #CC_LIBS=""							'Pass additional libraries to link against for GCC type compilers.
+#CC_LDOPTS=""						'Pass additional linker options for stdcpp target, eg: #CC_OPTS+="-L../FILE_PATH"
+#CC_MSIZE=""						'Common architeture size for MINGW and GCC. If not set, defaults to compiler default.
+
+#CC_USE_MINGW="1"
+#CC_MINGW_OPTS=""					'Pass additional MinGW options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_MINGS_LIBS=""					'Pass additional libraries to link against for MINGW type compilers.
+#CC_MINGW_LDOPTS=""					'Pass additional linker options for stdcpp target, eg: #CC_OPTS+="-L../FILE_PATH"
+#CC_MINGW_MSIZE=""					'Pass architeture size for MINGW. If not set, defaults to compiler default.
+
+#CC_GCC_OPTS=""						'Pass additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_GCC_LIBS=""						'Pass additional libraries to link against for GCC type compilers.
+#CC_GCC_LDOPTS=""					'Pass additional linker options for stdcpp target, eg: #CC_OPTS+="-L../FILE_PATH"
+#CC_GCC_MSIZE=""					'Pass architeture size for GCC. If not set, defaults to compiler default.
+
+#CC_MSVC_OPTS=""					'Pass additional MSVC options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_MSVC_LIBS=""					'Pass additional libraries to link against for MSVC compilers.
+#CC_MSVC_LDOPTS=""					'Pass additional linker options for MSVC compiler.
+#CC_MSVC_MSIZE=""					'Set the CPU architecture to build for. Not setting this defaults to 32 bit.
+
+#CC_XCODE_OPTS=""					'Pass additional Xcode options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
+#CC_XCODE_LIBS=""					'Pass additional libraries to link against for Xcode compilers.
+#CC_XCODE_LDOPTS=""					'Pass additional linker options for Xcode compiler.
 
 </pre>
 

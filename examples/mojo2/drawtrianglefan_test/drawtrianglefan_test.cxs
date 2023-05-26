@@ -1,0 +1,94 @@
+' Cerberus X - Drawing Polygon using DrawTriangleFan() with Texture
+
+Strict
+
+Import mojo2
+
+
+Function Main:Int()
+	Print "Press left mousebutton to set triangle-fan vertices."
+	Print "Press space-bar to toggle visibility of the vertex wireframe."
+	Print "Press Escape to reset vertices."
+	
+	New MyApp()
+	
+	Return 0
+End
+
+
+Class MyApp Extends App
+
+	Field myCanvas:Canvas
+	Field grabbed:Bool
+	Field material:Material
+	Field verts:Float[]
+	Field vList:FloatList
+	Field texcs:Float[]
+	'Field img:Image
+	Field isWireframeEnabled:Bool = True
+	
+	
+	Method OnCreate:Int()
+		vList = New FloatList()				         
+		myCanvas = New Canvas()
+		
+		'Flags for Texture wrapping are: ClampST, MirroredRepeatST, RepeatST (S and T are horizontal and vertical dimensions)
+		'Image/Texture needs to be sized in power of two for repeating. At least on html5 Target.
+		
+		material = Material.Load("eggs.png", Texture.ClampST|Texture.Filter|Texture.Mipmap, Null )
+		'img = Image.Load("eggs.png", 0.5, 0.5, Image.RepeatST|Image.Filter|Image.Mipmap) 
+		Return 0		
+	End
+	
+		
+	Function DrawWireframe:Void(myCanvas:Canvas, verts:Float[])
+		myCanvas.SetLineWidth(2.0)  ' Seems not to work on html5 Target.
+		Local circleSize:Float = 5.0
+		
+		For Local i:Int=2 Until verts.Length() Step 2			
+			myCanvas.SetColor(0,0.8,0)
+			myCanvas.DrawLine(verts[i-2], verts[i-1],verts[i], verts[i+1])
+			myCanvas.DrawLine(verts[0], verts[1],verts[i], verts[i+1])
+			myCanvas.DrawCircle(verts[i], verts[i+1], circleSize)
+		Next
+		If verts.Length()>=2
+			myCanvas.SetColor(0.8, 0, 0) 
+			myCanvas.DrawCircle(verts[0], verts[1], circleSize)
+		EndIf
+	End
+	
+	
+	Method OnRender:Int()
+		myCanvas.Clear(.1, .1, .1)
+							
+		myCanvas.SetColor(1.0, 1.0, 1.0)
+		myCanvas.DrawTriangleFan(verts, material, MouseX(), MouseY(), 1.5, 1.5)
+		'myCanvas.DrawTriangleFan(0, 0, verts, img, MouseX(), MouseY(), 1.5, 1.5)
+
+		If isWireframeEnabled DrawWireframe(myCanvas, verts)
+
+		myCanvas.Flush()
+		Return 0
+	End
+	
+	
+	Method OnUpdate:Int()
+		If MouseHit(0)
+			vList.AddLast(MouseX())
+			vList.AddLast(MouseY())
+			verts = vList.ToArray()
+		EndIf
+		
+		If KeyHit(KEY_SPACE)
+			isWireframeEnabled = Not isWireframeEnabled
+		EndIf
+		
+		If KeyHit(KEY_ESCAPE)
+			verts = []
+			vList.Clear()
+		EndIf
+		
+		Return 0
+	End
+
+End

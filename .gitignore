@@ -7,10 +7,16 @@
 !/bin/internal
 !/bin/external
 !/bin/macdeploy*.command
+/mingw*
+/MinGW*
+/tdm*
+/TDM*
 
 
 .bmx
 .DS_Store
+._.DS_Store
+._*
 *.buildv*
 *.bak
 desktop.ini
@@ -40,3 +46,10 @@ Thumbs.db
 /src/transcc/transcc.build/cpptool/main_winnt.exe
 /src/transcc/transcc.build/cpptool/main_linux
 /src/transcc/transcc.build/cpptool/main_macos
+
+/src/builders/images/svg/*.svg
+/src/builders/bash/temp/*
+
+.vscode
+*.code-workspace
+*.desktop

@@ -1,80 +1,147 @@
-/*
-Ted, a simple text editor/IDE.
-
-Copyright 2012, Blitz Research Ltd.
-
-See LICENSE.TXT for licensing terms.
-*/
-
-#ifndef CODEEDITOR_H
-#define CODEEDITOR_H
+//----------------------------------------------------------------------------------------------------------------------
+// Ted, a simple text editor/IDE.
+//
+// Copyright 2012, Blitz Research Ltd.
+//
+// See LICENSE.TXT for licensing terms.
+//
+//  NOTE: This version is not backwards compatible with versions earlier than
+//  Qt 5.9.0
+//----------------------------------------------------------------------------------------------------------------------
+// CONTRIBUTORS: See contributors.txt
+#pragma once
 
 #include "std.h"
-#include "mainwindow.h"
 
-#include <QSyntaxHighlighter>
-#include <QVector>
+#include <QAbstractListModel>
+#include <QCompleter>
+#include <QPlainTextEdit>
 #include <QScrollBar>
 #include <QShortcut>
-
-#include <QCompleter>
+#include <QStandardItemModel>
+#include <QString>
 #include <QStringListModel>
-#include <QAbstractListModel>
+#include <QSyntaxHighlighter>
+#include <QTextDocument>
+#include <QTreeView>
+#include <QVector>
 
 class CodeDocument;
 class CodeEditor;
 class Highlighter;
 class Prefs;
 class BlockData;
-class QString;
-class QTextDocument;
-class QCompleter;
-class QStringListModel;
-class QAbstractListModel;
-class CompleterListModel;
-//class QStringList;
 
-//***** CompleterListModel *****
+//----------------------------------------------------------------------------------------------------------------------
+//  CodeTreeItem: DECLARATION/IMPLEMENTETION
+//----------------------------------------------------------------------------------------------------------------------
+class CodeTreeItem : public QStandardItem
+{
+public:
+    CodeTreeItem() : _data(nullptr) {
+        setEditable(false);
+    }
+
+    void setData(BlockData *data) {
+        _data = data;
+    }
+
+    BlockData *data() {
+        return _data;
+    }
+
+private:
+    BlockData *_data;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+//  CompleterListModel: DECLARATION
+//----------------------------------------------------------------------------------------------------------------------
 class CompleterListModel : public QAbstractListModel
 {
     Q_OBJECT
 
-public:
-    CompleterListModel( QObject *parent=nullptr ): QAbstractListModel(parent){};
+public: CompleterListModel(QObject *parent = nullptr) : QAbstractListModel(parent) {};
 
-    int	rowCount( const QModelIndex &parent=QModelIndex() )const ;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-    QVariant data( const QModelIndex &index,int role )const ;
+    QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex());
     void setList(QStringList cmdlist);
+
 private:
     QStringList _commandList;
 };
 
-//***** BlockData *****
-class BlockData : public QTextBlockUserData{
+//----------------------------------------------------------------------------------------------------------------------
+//  BlockData: DECLARATION/IMPLEMENTETION
+//----------------------------------------------------------------------------------------------------------------------
+// NOTE: Added additional information to text blocks, such as if the text is an identifier, declaration etc.
+class BlockData : public QTextBlockUserData
+{
 public:
-    BlockData( Highlighter *highlighter,const QTextBlock &block,const QString &decl,const QString &ident,int indent );
+    BlockData(Highlighter *highlighter, const QTextBlock &block,
+              const QString &decl, const QString &ident, int indent)
+        : _highlighter(highlighter), _block(block), _decl(decl), _ident(ident),
+          _indent(indent) {
+        _modified = 0;
+        _marked = false;
+        _code = 0;
+    }
+
     ~BlockData();
 
-    QTextBlock block(){ return _block; }
-    const QString &decl(){ return _decl; }
-    const QString &ident(){ return _ident; }
-    int indent(){ return _indent; }
+    QTextBlock block() {
+        return _block;
+    }
 
-    bool isBookmarked(){ return _marked; }
-    void setBookmark(bool mark) { _marked = mark; }
-    void toggleBookmark() { _marked = !_marked; }
-    void setModified(int mod) { _modified = mod; }
-    void invalidate();
+    const QString &decl() {
+        return _decl;
+    }
 
-    int _modified;
-    bool _marked;
-    int _code;
+    const QString &ident() {
+        return _ident;
+    }
+
+    int indent() {
+        return _indent;
+    }
+
+    bool isBookmarked() {
+        return _marked;
+    }
+
+    void setBookmark(bool mark) {
+        _marked = mark;
+    }
+
+    void toggleBookmark() {
+        _marked = !_marked;
+    }
+
+    int getModified() {
+        return _modified;
+    }
+
+    void setModified(int mod) {
+        _modified = mod;
+    }
+
+    int getCode() {
+        return _code;
+    }
+
+    void setCode(int code) {
+        _code = code;
+    }
+
+    void invalidate() {
+        _highlighter = nullptr;
+    };
 
 private:
     Highlighter *_highlighter;
@@ -83,95 +150,122 @@ private:
     QString _ident;
     int _indent;
 
+    int _modified;
+    bool _marked;
+    int _code;
 };
 
-
-//***** CodeEditor *****
-
-class CodeEditor : public QPlainTextEdit{
+//----------------------------------------------------------------------------------------------------------------------
+//  CodeEditor: DECLARATION
+//----------------------------------------------------------------------------------------------------------------------
+class CodeEditor : public QPlainTextEdit
+{
     Q_OBJECT
 
 public:
-    CodeEditor( QWidget *parent=nullptr, MainWindow *wnd=nullptr );
+    CodeEditor(QWidget *parent = nullptr);
     ~CodeEditor();
 
-    //return true if successful and path updated
-    bool open( const QString &path );
-    bool save( const QString &path );
-    void rename( const QString &path );
-    const QString &path(){ return _path; }
-    int modified(){ return _modified; }
-    bool doHighlightCurrLine;
-    bool doHighlightCurrWord;
-    bool doHighlightBrackets;
-    bool doLineNumbers;
-    bool doSortCodeBrowser;
-    bool _modSignal;
-    bool _tabs4spaces;
-    bool _capitalizeAPI;
-    QString _tabSpaceText;
-    MainWindow *_mainWnd;
+    const QString &path() {
+        return _path;
+    }
 
-    QString fileType(){ return _fileType; }
+    int modified() {
+        return _modified;
+    }
 
-    bool isTxt(){ return _txt; }
-    bool isCode(){ return _code; }
-    bool isCerberus(){ return _cerberus; }
-    bool isMonkey2(){ return _monkey2; }
+    QString fileType() {
+        return _fileType;
+    }
 
-    void gotoLine( int line );
-    void highlightLine( int line );
+    bool isTxt() {
+        return _txt;
+    }
+
+    bool isCode() {
+        return _code;
+    }
+
+    bool isCerberus() {
+        return _cerberus;
+    }
+
+    bool isMonkey2() {
+        return _monkey2;
+    }
+
+    Highlighter *highlighter() {
+        return _highlighter;
+    }
+
+    QTreeView *codeTreeView() {
+        return _codeTreeView;
+    }
+
+    bool isCompleterVisible() {
+        return completer->popup()->isVisible();
+    }
+
+    void closeCompleter() {
+        completer->popup()->close();
+        completer->activated("");
+    }
+
+    int lineNumberAreaWidth();
+    bool open(const QString &path);
+    bool save(const QString &path);
+    void evaluatefiletype(const QString &path);
+    void gotoLine(int line);
+    void highlightLine(int line);
     void commentUncommentBlock();
     void bookmarkToggle();
     void bookmarkNext();
     void bookmarkPrev();
-    void bookmarkFind( int dir, int start=-1 );
+    void bookmarkFind(int dir, int start = -1);
 
-    bool findNext( const QString &findText,bool cased,bool wrap );
-    bool replace( const QString &findText,const QString &replaceText,bool cased );
-    int  replaceAll( const QString &findText,const QString &replaceText,bool cased,bool wrap );
-
+    bool findNext(const QString &findText, bool cased, bool wrap);
+    bool replace(const QString &findText, const QString &replaceText, bool cased);
+    int replaceAll(const QString &findText, const QString &replaceText,
+                   bool cased, bool wrap);
     QString identAtCursor();
-
     void lineNumberAreaPaintEvent(QPaintEvent *event);
-    int lineNumberAreaWidth();
-    Highlighter *highlighter(){ return _highlighter; }
-    QTreeView *codeTreeView(){ return _codeTreeView; }
-
-    QImage imgBookmark;
 
 public slots:
-
     void onTextChanged();
     void onCursorPositionChanged();
-    void onPrefsChanged( const QString &name );
+    void onPrefsChanged(const QString &name);
     void highlightCurrentLine();
-    void onCodeTreeViewClicked( const QModelIndex &index );
+    void onCodeTreeViewClicked(const QModelIndex &index);
 
 signals:
-
-    void showCode( const QString &file,int line );
+    void showCode(const QString &file, int line);
 
 protected:
-
     void resizeEvent(QResizeEvent *event) override;
-    void keyPressEvent( QKeyEvent *e );
+    void keyPressEvent(QKeyEvent *e) override;
     QString identAtCursor(bool fullWord);
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
-    //void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
-    void insertCompletion(const QString &completion,
-                          bool singleWord=false);
+    void insertCompletion(const QString &completion, bool singleWord = false);
     void performCompletion();
+
 private:
     Highlighter *_highlighter;
     QStandardItemModel *_codeTreeModel;
     QTreeView *_codeTreeView;
+    QCompleter *completer;
+    QStringListModel *model;
+    CompleterListModel *model2;
+    QWidget *lineNumberArea;
 
     QString _path;
     QString _fileType;
+    QImage imgBookmark;
+    QString _tabSpaceText;
+
+    bool completedAndSelected;
     bool _txt;
     bool _code;
     bool _cerberus;
@@ -180,84 +274,23 @@ private:
     int _modified;
     bool _capitalize;
 
+    bool doHighlightCurrLine;
+    bool doHighlightCurrWord;
+    bool doHighlightBrackets;
+    bool doLineNumbers;
+    bool doSortCodeBrowser;
+    bool _modSignal;
+    bool _tabs4spaces;
+    bool _capitalizeAPI;
+
     friend class Highlighter;
 
-    QWidget *lineNumberArea;
-    int indexOfClosedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
-    int indexOfOpenedBracket(const QString &text, const QChar &sourceBracket, int findFrom);
+    int indexOfClosedBracket(const QString &text, const QChar &sourceBracket,
+                             int findFrom);
+    int indexOfOpenedBracket(const QString &text, const QChar &sourceBracket,
+                             int findFrom);
 
-    void performCompletion(const QString &completionPrefix);
     bool handledCompletedAndSelected(QKeyEvent *event);
+    void performCompletion(const QString &completionPrefix);
     void populateModel(const QString &completionPrefix);
-    bool completedAndSelected;
-    QCompleter *completer;
-    QStringListModel *model;
-    CompleterListModel *model2;
 };
-
-//***** Highlighter *****
-
-class Highlighter : public QSyntaxHighlighter{
-    Q_OBJECT
-
-public:
-    Highlighter( CodeEditor *editor );
-    ~Highlighter();
-
-    CodeEditor *editor(){ return _editor; }
-
-    bool capitalize( const QTextBlock &block,QTextCursor cursor );
-
-    void validateCodeTreeModel();
-    QIcon identIcon( const QString &ident );
-    QColor _keywordsColor;
-    QColor _keywords2Color;
-    QColor _lineNumberColor;
-
-protected:
-    void highlightBlock( const QString &text );
-
-
-public slots:
-
-    void onPrefsChanged( const QString &name );
-
-
-
-
-private:
-    CodeEditor *_editor;
-    QWidget *lineNumberArea;
-
-    QColor _backgroundColor;
-    QColor _console1Color;
-    QColor _console2Color;
-    QColor _console3Color;
-    QColor _console4Color;
-    QColor _defaultColor;
-    QColor _numbersColor;
-    QColor _stringsColor;
-    QColor _identifiersColor;
-
-    QColor _commentsColor;
-    QColor _highlightColor;
-
-    QSet<BlockData*> _blocks;
-    bool _blocksDirty;
-
-    void insert( BlockData *data );
-    void remove( BlockData *data );
-
-    QString parseToke( QString &text,QColor &color, QString &prevText );
-
-    const QMap<QString,QString>&keyWords(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords; }
-    const QMap<QString,QString>&keyWords3(){ return _editor->isMonkey2() ? _keyWords2 : _keyWords3; }
-
-    static QMap<QString,QString> _keyWords;
-    static QMap<QString,QString> _keyWords2;
-    static QMap<QString,QString> _keyWords3;
-
-    friend class BlockData;
-};
-
-#endif // CODEEDITOR_H

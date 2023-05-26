@@ -218,6 +218,14 @@ Class Texture Extends RefCounted
 	Const ClampST:=12
 	Const RenderTarget:=16
 	Const Managed:=256
+	
+	Const RepeatS:=1024
+	Const RepeatT:=2048
+	Const RepeatST:=3072
+	
+	Const MirroredRepeatS:=4096
+	Const MirroredRepeatT:=8192
+	Const MirroredRepeatST:=12288	 	
 
 	Method New( width:Int,height:Int,format:Int,flags:Int )
 		Init width,height,format,flags
@@ -341,9 +349,15 @@ Class Texture Extends RefCounted
 			For Local i:=0 Until data.Length Step 4
 				Local t:=data.PeekInt( i )
 				Local a:=(t Shr 24 & 255)
+#If TARGET="glfw"				
 				Local b:=(t Shr 16 & 255)*a/255
 				Local g:=(t Shr 8 & 255)*a/255
 				Local r:=(t & 255)*a/255
+#Else
+				Local b:=(t Shr 16 & 255)
+				Local g:=(t Shr 8 & 255)
+				Local r:=(t & 255)
+#Endif
 				data.PokeInt i,a Shl 24 | b Shl 16 | g Shl 8 | r
 			Next
 		Endif
@@ -471,10 +485,15 @@ Class Texture Extends RefCounted
 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST
 		Endif
 
-		If _flags & ClampS glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE
-		If _flags & ClampT glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE
+		If _flags & ClampS 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE
+		If _flags & ClampT 			glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE
+		If _flags & RepeatS 		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT
+		If _flags & RepeatT 		glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT
+		If _flags & MirroredRepeatS	glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT
+		If _flags & MirroredRepeatT	glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_MIRRORED_REPEAT
 
 		glTexImage2D GL_TEXTURE_2D,0,GL_RGBA,_width,_height,0,GL_RGBA,GL_UNSIGNED_BYTE,Null
+
 
 		glPopTexture2d
 		
@@ -751,9 +770,9 @@ Class Shader
 			Local id:=p.CParseIdent()
 			If id
 				If id.StartsWith( "gl_" )
-					vars.Insert "B3D_"+id.ToUpper()
+					vars.Insert "B3D_"+id.ToUpper().Replace("İ", "I")
 				Else If id.StartsWith( "b3d_" ) 
-					vars.Insert id.ToUpper()
+					vars.Insert id.ToUpper().Replace("İ", "I")
 				Endif
 				Continue
 			Endif
@@ -1063,6 +1082,18 @@ Class Image
 	Const Mipmap:=Texture.Mipmap
 	Const Managed:=Texture.Managed
 	
+	Const ClampS:=Texture.ClampS
+	Const ClampT:=Texture.ClampT
+	Const ClampST:=Texture.ClampST
+	
+	Const RepeatS:=Texture.RepeatS
+	Const RepeatT:=Texture.RepeatT
+	Const RepeatST:=Texture.RepeatST
+	
+	Const MirroredRepeatS:=Texture.MirroredRepeatS
+	Const MirroredRepeatT:=Texture.MirroredRepeatT
+	Const MirroredRepeatST:=Texture.MirroredRepeatST
+
 	Method New( width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter )
 		flags&=_flagsMask
 		Local texture:=New Texture( width,height,4,flags|Texture.ClampST|Texture.RenderTarget )
@@ -1252,12 +1283,21 @@ Class Image
 
 	Private
 	
-	Global _flagsMask:=Filter|Mipmap|Managed
+	Global _flagsMask:=Filter|Mipmap|Managed|ClampST|RepeatST|MirroredRepeatST
 	
 	Field _material:Material
-	Field _x:Int,_y:Int,_width:Int,_height:Int
-	Field _x0:Float=-1,_y0:Float=-1,_x1:Float=1,_y1:Float=1
-	Field _s0:Float=0 ,_t0:Float=0 ,_s1:Float=1,_t1:Float=1
+	Field _x:Int
+	Field _y:Int
+	Field _width:Int
+	Field _height:Int
+	Field _x0:Float=-1.0
+	Field _y0:Float=-1.0
+	Field _x1:Float=1.0
+	Field _y1:Float=1.0
+	Field _s0:Float=0.0
+	Field _t0:Float=0.0
+	Field _s1:Float=1.0
+	Field _t1:Float=1.0
 
 	Field _caster:ShadowCaster
 	
@@ -1749,12 +1789,12 @@ Class DrawList
 		PrimVert x2,y2,s2,t2
 	End
 	
-	Method DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null,s0:Float=.5,t0:Float=0,s1:Float=1,t1:Float=1,s2:Float=0,t2:Float=1 )
+	Method DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=0,s2:Float=1,t2:Float=1,s3:Float=0,t3:Float=1 )
 		BeginPrim material,4
 		PrimVert x0,y0,s0,t0
 		PrimVert x1,y1,s1,t1
 		PrimVert x2,y2,s2,t2
-		PrimVert x3,y3,s2,t2
+		PrimVert x3,y3,s3,t3
 	End
 	
 	Method DrawOval:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
@@ -1792,7 +1832,7 @@ Class DrawList
 		DrawOval x-r,y-r,r*2,r*2,material
 	End
 	
-	Method DrawPoly:Void( vertices:Float[],material:Material=Null )
+	Method DrawPoly:Void( vertices:Float[],material:Material=Null ) ' Doesn't support textures for now.
 	
 		Local n:=vertices.Length/2
 		If n<3 Or n>MAX_VERTICES Return
@@ -1802,6 +1842,28 @@ Class DrawList
 		For Local i:=0 Until n
 			PrimVert vertices[i*2],vertices[i*2+1],0,0
 		Next
+	End
+	
+	Method DrawTriangleFan:Void(vertices:Float[], material:Material=Null, matX:Float=0.0, matY:Float=0.0, matScaleX:Float=1.0, matScaleY:Float=1.0)
+		Local n:=vertices.Length/2
+		If n<3 Or n>MAX_VERTICES Return
+	
+		BeginPrim material,n
+
+		For Local i:=0 Until n
+			PrimVert(vertices[i*2], vertices[i*2+1], (vertices[i*2]-matX)/(material.Width()*matScaleX), (vertices[i*2+1]-matY)/(material.Height()*matScaleY))
+		Next
+	End
+		
+	Method DrawTriangleFan:Void(vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+	End
+	
+	Method DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0)	
+		PushMatrix()
+		Translate(x,y)
+		DrawTriangleFan(vertices, img.Material, imgX, imgY, imgScaleX, imgScaleY)	
+		PopMatrix()
 	End
 	
 	Method DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],material:Material=Null )
@@ -2468,9 +2530,12 @@ Class DrawList
 	Field _alpha:=255.0
 	Field _color:=[1.0,1.0,1.0,1.0]
 	Field _pmcolor:Int=$ffffffff
-	Field _ix:Float=1,_iy:Float
-	Field _jx:Float,_jy:Float=1
-	Field _tx:Float,_ty:Float
+	Field _ix:Float=1
+	Field _iy:Float
+	Field _jx:Float
+	Field _jy:Float=1
+	Field _tx:Float
+	Field _ty:Float
 	Field _matStack:Float[64*6]
 	Field _matSp:Int
 	Field _font:Font

@@ -61,7 +61,6 @@ End
 ' 		path: The source file on disk to process
 '		mdec: A module declaration (see file modules/trans/decl.cxs)
 Function PreProcess$( path$,mdecl:ModuleDecl=Null )
-
 	' Set up internal variables for the function
 	' The cnest variable has two jobs:
 	'									The first being the total nexting level depth.
@@ -316,7 +315,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 											If var="1" var="True" Else var="False"
 										Endif
 										
-										'If var And Not val.StartsWith( ";" ) val=";"+val
+										'If var And Not val.StartsWith( ";" ) val=";"+val 
 										If var And Not val.StartsWith( "|" ) val="|"+val
 										SetConfigVar toke,var+val
 								End
@@ -365,6 +364,5 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 	SetConfigVar "CD",p_cd
 
 	PopEnv
-		
 	Return source.Join( "" )
 End

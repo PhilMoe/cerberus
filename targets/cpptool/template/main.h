@@ -32,4 +32,6 @@
 #endif
 
 #define _QUOTE(X) #X
+#ifndef _STRINGIZE
 #define _STRINGIZE( X ) _QUOTE(X)
+#endif

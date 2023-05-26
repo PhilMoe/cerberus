@@ -151,6 +151,7 @@ Function InterpolateCustomLine:Float(dataY:Float[], pX:Float )
 	Local segment:Int = Min(pX*steps,steps-1.0)
 	' between segment and segment+1
 	Local ratio:Float = (pX - 1.0/steps*segment) / (1.0/steps)
+	If pX=1.0 Then ratio = 1.0
 	Return dataY[segment] + (dataY[segment+1]-dataY[segment])*ratio
 End
 

@@ -1,0 +1,57 @@
+PLEASE NOTE:
+Before you begin. You should check out one of the desktop sub forums for any issues and workarounds, or to ask questions.
+https://www.cerberus-x.com/community/categories/desktop-targets.70/
+
+REQUIREMENTS
+For Desktop Console and Desktop Game targets:
+NOTE: As each Linux distribution has their own package manager and naming system it would be impossible to list them all. 
+So the basic requirements are to install the development packages for xrandr, xinerama, openal, mesa, xxf86vm, xcursor and a GCC C++ compiler.
+
+For the prebuilt IDE, that depends on if there are additional folders. If there is a folder called lib and libexec in the Cerberus/bin directory.
+Then chances are that it was built against a version of the Qt SDK not available in the Linux distributions repository.
+A quick test to find out which version was used, is to open a command line terminal and use ldd on the IDE.
+e.g. ldd /path_to_cerberus/Cerberus/bin/Ted
+
+It will show the list of libraries required and found for the IDE to run. Missing ones will show something like libqxcb.so => not found.
+
+Note: For Qt 6, it requires that libxcb-cursor0 be installed for it to work. So if the above test or looking in the Cerberus/bin/lib directory show that there are Qt6 shared
+libraries, then libxcb-cursor0 should be added to the Required list of packages to install.
+
+If the IDE should fail to start, then open a command line terminal and change directory to the Cerberus/bin directory.
+Enter: export QT_DEBUG_PLUGINS=1
+Then enter: ./Ted
+
+The plugin loader will give details on any plugin that failed to load. You can then confirm what additions requirements the plugin needs following the same
+example above for Ted.
+e.g. ldd /path_to_cerberus/Cerberus/bin/plugins/platforms/libqxcb.so
+
+Linux Mint 20+
+Required: sudo apt-get install g++ build-essential libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
+Optional: If the IDE was built against a different version than one in the Linux distributions repository, then the following will not be needed.
+    sudo apt-get install libqt5webenginewidgets5 libqt5widgets5 libqt5widgets5 libqt5network5 libqt5core5a libqt5webenginecore5 libqt5quick5 libqt5printsupport5 libqt5quickwidgets5 libqt5webchannel5 libqt5qml5 libqt5positioning5 libqt5qmlmodels5
+
+For a RASPBERRY PI 3. The OpenGL desktop driver needs to be enabled.
+
+Open Terminal window:
+sudo raspi-config
+
+Navigate to:
+7 - Advanced options >> A7 - GL Driver >> G1 - GL (Full KMS) OpenGL desktop driver with full KMS
+
+For Android Game targets, an Android Studio installation is recommended, but it is possible to do a manual setup using the command line tools.
+
+If all the above are installed to their default locations, then Cerberus should not need any additional set up.
+But if required, modify the config.winnt.txt file located in the Cerberus bin directory with the path to those build tools.
+The config.linux.txt also contains addition information on setting up Cerberus X requirements.
+
+To setup the Desktop menu and file associations. Double click the cerberusxdev-cerberusx-install.desktop and cerberusxdev-cerberusx-uninstall.desktop files.
+NOTE: The file browser may ask if to Trust these files, answer yes. Changes may not be immediate, so the file browser may need to be refreshed.
+
+If the .desktop file fails to work, then installations can be achieved by using the freedesktop.sh script located in src/builders/bash.
+To use, make sure that the execution permission has be set with chmod + ./src/builders/bash/freedesktop.sh
+The use: ./src/builders/bash/freedesktop.sh --setup
+
+NOTE: It may be required to log out and back in for any changes to take affect.
+
+KNOWN ISSUES:
+The Qt GUI library has been know to have issues with Wayland on at least with the test Fedora 37 workstation with GNOME. Qt may yet have issues on other distributions and desktop environments managers.

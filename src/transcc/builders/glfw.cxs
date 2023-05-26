@@ -65,11 +65,11 @@ Class GlfwBuilder Extends Builder
 
 			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
 
-			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
-			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
-			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " )
-			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " )
-			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " )
+			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
+			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
+			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
+			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
+			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
 
 			Select ENV_CONFIG
 			Case "debug"
@@ -277,7 +277,7 @@ Class GlfwBuilder Extends Builder
 		Endif
 		If libStr = "" Then Return
 
-		Local libcopy:String[] = libStr.Split( ";" )
+		Local libcopy:String[] = libStr.Split( "|" )
 		Local dst:String = config+arch
 		For Local i:= Eachin libcopy
 			If HostOS="winnt"
