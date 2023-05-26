@@ -4,10 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Headers/EGL/.clang-format</key>
-		<data>
-		T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-		</data>
 		<key>Headers/EGL/egl.h</key>
 		<data>
 		ErK2VQcIbRW+xdkdNMGy1lQ23Co=
@@ -23,10 +19,6 @@
 		<key>Headers/EGL/eglplatform.h</key>
 		<data>
 		/3rTFUhi1cGXOFi8IBKoiHHhDaM=
-		</data>
-		<key>Headers/GLES/.clang-format</key>
-		<data>
-		T8l+bJjOnpuO0e+9y/bCWDIxCbM=
 		</data>
 		<key>Headers/GLES/README.md</key>
 		<data>
@@ -56,10 +48,6 @@
 		<data>
 		+dyiCucg1NjXiNzbZkaNa5X0IUc=
 		</data>
-		<key>Headers/GLES2/.clang-format</key>
-		<data>
-		T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-		</data>
 		<key>Headers/GLES2/gl2.h</key>
 		<data>
 		qbQBw7lyFX0iw0nFY0OomiSDnH0=
@@ -79,10 +67,6 @@
 		<key>Headers/GLES2/gl2platform.h</key>
 		<data>
 		BjIIIioTbvBWy2U2c37Xw91/Hfw=
-		</data>
-		<key>Headers/GLES3/.clang-format</key>
-		<data>
-		T8l+bJjOnpuO0e+9y/bCWDIxCbM=
 		</data>
 		<key>Headers/GLES3/gl3.h</key>
 		<data>
@@ -107,10 +91,6 @@
 		<key>Headers/GLES3/gl3platform.h</key>
 		<data>
 		3KgDELaejaGnEp4sCEWnzYJWEA0=
-		</data>
-		<key>Headers/KHR/.clang-format</key>
-		<data>
-		T8l+bJjOnpuO0e+9y/bCWDIxCbM=
 		</data>
 		<key>Headers/KHR/khrplatform.h</key>
 		<data>
@@ -155,17 +135,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Headers/EGL/.clang-format</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-			</data>
-			<key>hash2</key>
-			<data>
-			IA8fXrZMB7jUPGSU3Wjj64gxiDsH850YEgGsaqGJPrw=
-			</data>
-		</dict>
 		<key>Headers/EGL/egl.h</key>
 		<dict>
 			<key>hash</key>
@@ -208,17 +177,6 @@
 			<key>hash2</key>
 			<data>
 			wp+7Y2MoxXGMWq3/GG0jQAAouUU2QXRuBJsvIqnUDfU=
-			</data>
-		</dict>
-		<key>Headers/GLES/.clang-format</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-			</data>
-			<key>hash2</key>
-			<data>
-			IA8fXrZMB7jUPGSU3Wjj64gxiDsH850YEgGsaqGJPrw=
 			</data>
 		</dict>
 		<key>Headers/GLES/README.md</key>
@@ -298,17 +256,6 @@
 			ExcK8VrGGWc+mQ/Co8cmuQp4qYI3pZXls+0GUUkW/lE=
 			</data>
 		</dict>
-		<key>Headers/GLES2/.clang-format</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-			</data>
-			<key>hash2</key>
-			<data>
-			IA8fXrZMB7jUPGSU3Wjj64gxiDsH850YEgGsaqGJPrw=
-			</data>
-		</dict>
 		<key>Headers/GLES2/gl2.h</key>
 		<dict>
 			<key>hash</key>
@@ -362,17 +309,6 @@
 			<key>hash2</key>
 			<data>
 			tPn0qXMwaKDZgwpAAQmf59wKhE/GrUxTVRZU1rTy1r8=
-			</data>
-		</dict>
-		<key>Headers/GLES3/.clang-format</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-			</data>
-			<key>hash2</key>
-			<data>
-			IA8fXrZMB7jUPGSU3Wjj64gxiDsH850YEgGsaqGJPrw=
 			</data>
 		</dict>
 		<key>Headers/GLES3/gl3.h</key>
@@ -439,17 +375,6 @@
 			<key>hash2</key>
 			<data>
 			p23goEWPvxbxkT3RRUW5WJtW+t6A29C0biDDqxpWTlQ=
-			</data>
-		</dict>
-		<key>Headers/KHR/.clang-format</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			T8l+bJjOnpuO0e+9y/bCWDIxCbM=
-			</data>
-			<key>hash2</key>
-			<data>
-			IA8fXrZMB7jUPGSU3Wjj64gxiDsH850YEgGsaqGJPrw=
 			</data>
 		</dict>
 		<key>Headers/KHR/khrplatform.h</key>

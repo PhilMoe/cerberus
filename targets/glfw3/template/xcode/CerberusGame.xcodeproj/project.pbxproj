@@ -80,6 +80,7 @@
 		7CE1AA7517E154F600D079FE /* nsgl_context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsgl_context.m; path = ../glfw3/src/nsgl_context.m; sourceTree = "<group>"; };
 		7CE1AA7817E154F600D079FE /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = window.c; path = ../glfw3/src/window.c; sourceTree = "<group>"; };
 		7CE1AA8B17E16F2900D079FE /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../glfw3/include/GLFW/glfw3.h; sourceTree = "<group>"; };
+		8B92728C2A16C2B300376723 /* CerberusGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CerberusGame.entitlements; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* CerberusGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CerberusGame-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* CerberusGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CerberusGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D56BBAB52465D8E50020D5F1 /* cerberus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = cerberus.icns; sourceTree = "<group>"; };
@@ -139,6 +140,7 @@
 		29B97314FDCFA39411CA2CEA /* CerberusGame */ = {
 			isa = PBXGroup;
 			children = (
+				8B92728C2A16C2B300376723 /* CerberusGame.entitlements */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -320,9 +322,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CerberusGame.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -352,9 +356,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = CerberusGame.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CerberusGame_Prefix.pch;
