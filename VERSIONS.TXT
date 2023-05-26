@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-***** v2023-05-20 *****
-=======
-***** v2023-05-19 *****
->>>>>>> Stashed changes
+***** v2023-05-26 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
 FIX: [mojo2] Fixed alpha blending issue on IOS.    (Author: Phil7)
@@ -11,6 +7,7 @@ FIX: [interpolate] Fixed InterpolateCustomLine returning correct end value.    (
 FIX: [transcc] Fixed missing help output of builddir parameter.    (Author: MikeHart)
 FIX: [TRANS] Fixed external libraries not being copied not being copied.    (Author: MikeHart)
 FIX: [Vec2D] Fixed typo in Vec2D.ToString().    (Author: fightlessbirds)
+FIX: [mojo2/Android] Locale problem fix on Android.    (Author: xpazr58)
 NEW: [mojo2] Added DrawTriangleFan:Void(x:Float, y:Float, vertices:Float[], img:Image, imgX:Float=0.0, imgY:Float=0.0, imgScaleX:Float=1.0, imgScaleY:Float=1.0.    (Author: Phil7)
 NEW: [mojo2] Added mojo2/DrawTriangleFan_test example.    (Author: Phil7)
 NEW: [Vec2D] Added Div and Cross Methods.   (Author: MikeHart)
@@ -27,6 +24,7 @@ MOD: [Vec2D] Renamed some Length methods, to Distance.   (Author: MikeHart)
 MOD: [Tween] Added Tween.FIT constant, SetFitSlope:Void(s0:Float, s1:Float) to use InterpolateFit.   (Author: MikeHart)
 MOD: [TED] Restructured and fixed so it can be compiled with QT 6.4.3.   (Author: dawlane)
 MOD: [build] New build scripts and build docs.   (Author: dawlane)
+MOD: [MacOs, XCode] It creates now universal builds supporting Intel and M1/M2 machines.   (Author: dawlane)
 
 
 KNOWN ISSUES: 
@@ -34,6 +32,7 @@ KNOWN ISSUES:
 - GLFW_APP_ICON doesn't work with OSX and Linux.
 - Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
 - Because of changes in the Google admob SDK, new apps using brl.admob in iOS can not be submitted atm.
+- Google/Android needs to be updated to support API 33
 
 
 
