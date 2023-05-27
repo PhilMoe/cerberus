@@ -37,6 +37,7 @@ android {
             debuggable true
         }
     }
+    namespace '${ANDROID_APP_PACKAGE}'
 }
 
 dependencies {
