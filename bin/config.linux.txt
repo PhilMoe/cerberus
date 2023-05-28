@@ -68,7 +68,7 @@ HTML_PLAYER="${CERBERUSDIR}/bin/cserver_linux"
 ' $HOME/android-studio/jre
 '
 
-JDK_PATH="${HOME}/android-studio/jre"
+JDK_PATH="${HOME}/android-studio/jbr"
 '--------------------
 
 '--------------------
