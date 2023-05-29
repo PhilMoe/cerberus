@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="${ANDROID_APP_PACKAGE}"
-  android:installLocation="auto">
+    android:installLocation="auto">
 
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-  ${ANDROID_MANIFEST_MAIN}
+  
+
     
   <application
-    ${ANDROID_APPLICATION_EXTRAS}
+    
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
-    android:label="${ANDROID_APP_LABEL}"
+    android:label="Cerberus Game"
     android:roundIcon="@mipmap/ic_launcher_round">
 
     <activity 
       android:name="CerberusGame"
-      android:label="${ANDROID_APP_LABEL}"
-      android:screenOrientation="${ANDROID_SCREEN_ORIENTATION}"
+      android:label="Cerberus Game"
+      android:screenOrientation="user"
       android:configChanges="keyboardHidden|orientation|screenSize"
       android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-      android:launchMode="singleTop">
+      android:launchMode="singleTop"
+      android:exported="true">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
 
-      ${ANDROID_MANIFEST_ACTIVITY}
+      
 
     </activity>
 
-    ${ANDROID_MANIFEST_APPLICATION}
+    
+
 
   </application>
 </manifest> 

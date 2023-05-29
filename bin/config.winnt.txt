@@ -121,7 +121,7 @@ MINGW_PATH="C:\TDM-GCC-64"
 ' C:\Program Files\Android\Android Studio\jre
 '
 
-JDK_PATH="${PROGRAMFILES}\Android\Android Studio\jre"
+JDK_PATH="${PROGRAMFILES}\Android\Android Studio\jbr"
 '--------------------
 
 '--------------------
