@@ -3,17 +3,18 @@ class BBFileInputStream extends BBStream{
 
 	boolean Open( String path ){
 		if( _stream!=null ) return false;
-				
-		//try{
+						
+		try{
 			_stream=BBGame.Game().OpenInputStream(path);
 			if( _stream!=null ){
-				_position=0; //_stream.getFilePointer();
-				_length=100; //_stream.length();
+				_position=0;
+				_length=_stream.available();
 				return true;
 			}
 		
-		//}catch( IOException ex ){
-		//}
+		}catch( IOException ex ){
+			throw new RuntimeException(ex);
+		}
 		
 		_stream=null;
 		_position=0;
@@ -48,15 +49,7 @@ class BBFileInputStream extends BBStream{
 	}
 	
 	int Seek( int offset ){
-		/*
-		try{
-			_stream.seek( offset );
-			_position=_stream.getFilePointer();
-		}catch( IOException ex ){
-		}
-		return (int)_position;
-		*/
-		return 1;
+		return 0;
 	}
 		
 	int Read( BBDataBuffer buffer,int offset,int count ){
@@ -74,18 +67,6 @@ class BBFileInputStream extends BBStream{
 	}
 	
 	int Write( BBDataBuffer buffer,int offset,int count ){
-		/*
-		if( _stream==null ) return 0;
-		
-		try{
-			_stream.write( buffer._data.array(),offset,count );
-			_position+=count;
-			if( _position>_length ) _length=_position;
-			return count;
-		}catch( IOException ex ){
-		}
-		return 0;
-		*/
 		return 0;
 	}
 

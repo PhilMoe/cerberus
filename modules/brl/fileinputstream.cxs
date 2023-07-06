@@ -2,15 +2,16 @@
 Import brl.stream
 
 #If Not BRL_FILEINPUTSTREAM_IMPLEMENTED
-	#If LANG="cpp" Or LANG="java" Or LANG="cs"
+	#If (LANG="cpp" Or LANG="java") And TARGET<>"ios" ' Or LANG="cs"
 		#BRL_FILEINPUTSTREAM_IMPLEMENTED=True
 		Import "native/fileinputstream.${LANG}"
 	#Endif
 #Endif
 
 #If Not BRL_FILEINPUTSTREAM_IMPLEMENTED
-	#Error "Native FileInputStream class not implemented for the html5 target."
+	#Error "Native FileInputStream class not implemented for the html5 target and the iOS target."
 #Endif
+
 
 Extern
 
@@ -25,6 +26,7 @@ Class BBFileInputStream Extends BBStream
 End
 
 Public
+
 
 Class FileInputStream Extends Stream
 
@@ -52,6 +54,7 @@ Class FileInputStream Extends Stream
 	End
 	
 	Method Seek:Int( position:Int )
+		Error("Seek() is not supported with FileInputStream!")
 		Return _stream.Seek( position )
 	End
 	
@@ -60,6 +63,7 @@ Class FileInputStream Extends Stream
 	End
 	
 	Method Write:Int( buffer:DataBuffer,offset:Int,count:Int )
+		Error("Writing to file is not supported with FileInputStream!")
 		Return _stream.Write( buffer,offset,count )
 	End
 	

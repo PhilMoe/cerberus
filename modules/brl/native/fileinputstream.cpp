@@ -17,6 +17,8 @@ public:
 
 	bool Open( String path,String mode );
 	
+	bool Open( String path );
+	
 private:
 	FILE *_file;
 	int _position;
@@ -32,7 +34,12 @@ BBFileInputStream::~BBFileInputStream(){
 	if( _file ) fclose( _file );
 }
 
-bool BBFileInputStream::Open( String path,String mode="r" ){
+bool BBFileInputStream::Open( String path ){
+	Open( path, "r" );
+	return true;
+}
+
+bool BBFileInputStream::Open( String path,String mode ){
 	if( _file ) return false;
 
 	String fmode;	
