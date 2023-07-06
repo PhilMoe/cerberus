@@ -1,0 +1,26 @@
+
+# Module brl.fileinputstream
+
+# Import brl.stream
+
+A file input stream allows you to read data from a file in a non seekable sequential manner.
+
+Please see the [[FileInputStream]] class for more information on filestreams.
+
+
+# Class brl.fileinputstream.FileInputStream Extends Stream
+
+A FileInputStream allows you to read data from a file in a sequential manner. Seek() is not supported.
+
+This Class is only implemented for Desktop and Android for now. Its purpose is to be able 
+to open files from the data folder as a stream, which is only possible with FileInputStream as 
+those files are compressed in the App package on Android.
+
+
+# Function Open:FileInputStream( path:String )
+
+Opens a new FileInputStream.
+
+Links:
+
+[[Resource paths]]
