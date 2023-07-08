@@ -12,7 +12,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST linux
+#define CFG_HOST macos
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -18812,7 +18812,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-04-06",35));
+	bbPrint(String(L"TRANS cerberus compiler V2023-07-08",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20863,10 +20863,27 @@ void c_AndroidBuilder::p_MakeTarget(){
 	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_1",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_2",27)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_MAIN",21)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1));
-	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28)).Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	String t_ref1=bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_1",27));
+	String t_ref2=bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_2",27));
+	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28));
+	if(t_ref1.Contains(String(L";",1))){
+		t_ref1=t_ref1.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	}else{
+		t_ref1=t_ref1.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
+	}
+	if(t_ref2.Contains(String(L";",1))){
+		t_ref2=t_ref2.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	}else{
+		t_ref2=t_ref2.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
+	}
+	if(t_manifest.Contains(String(L";",1))){
+		t_manifest=t_manifest.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
+	}else{
+		t_manifest=t_manifest.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
+	}
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),t_ref1);
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),t_ref2);
+	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),t_manifest);
 	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));
 	if(t_admob_appid.Length()>0){
 		String t_admob_appid2=String(L"<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" ",68);
