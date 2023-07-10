@@ -1,6 +1,7 @@
 ' 20190117 - Holzchopf
 ' Color class support
 '#COLOR_USE_NORMALISED_COMPONENTS = True - this must be done in mojo2.cxs, don't ask why
+
 Import mojo.color
 Private
 
@@ -1080,11 +1081,9 @@ Function LoadImage:Image( path:String,xhandle:Float=.5,yhandle:Float=.5,flags:In
 	Return Image.Load(path, xhandle, yhandle, flags)
 End
 
-
 Function LoadFrames:Image[]( path:String,numFrames:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
 	Return Image.LoadFrames(path, numFrames, padded, xhandle, yhandle, flags)
 End
-
 
 Function LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
 	Return Image.LoadFrames(path, cellWidth, cellHeight, padded, xhandle, yhandle, flags)
