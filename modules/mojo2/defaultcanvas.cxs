@@ -1,0 +1,617 @@
+Strict
+
+Private
+
+Import mojo2
+Import brl.databuffer
+
+
+Global DefaultCanvas:Canvas
+
+Public
+
+Function CreateDefaultCanvas:Void()
+	DefaultCanvas = New Canvas()
+End
+
+
+Function FlushDefaultCanvas:Void()
+	DefaultCanvas.Flush()
+	#If MOJO2_DEFAULTCANVAS_AUTORESET_DISABLED=False
+		ResetDefaultCanvas()
+		'Print "ResetDefaultCanvas called!"
+	#EndIf
+End
+
+
+' This resets Blendmode, color and alpha just like mojo(1) does before every OnRender() call. 
+Function ResetDefaultCanvas:Void()
+	SetBlendMode(BlendMode.Alpha)
+	SetColor(1.0,1.0,1.0)
+	SetAlpha(1.0)
+
+	Local w:Int = DeviceWidth(), h:Int = DeviceHeight()
+	SetScissor(0, 0, w, h) 
+	SetViewport(0, 0, w, h)
+	SetProjection2d(0, w, 0, h)
+End
+
+
+
+' *********** These are the functions that are analog to the Methods of the Class DrawList. ***********	
+	
+Function SetBlendMode:Void( blend:Int )
+	DefaultCanvas.SetBlendMode(blend)
+End
+
+
+Function GetBlendMode:Int() 'This had to be changed from BlendMode to GetBlendMode to avoid clashing of Class with Function 
+	Return DefaultCanvas.BlendMode()
+End
+
+
+Function SetColor:Void( r:Float,g:Float,b:Float )
+	DefaultCanvas.SetColor(r, g, b)
+End
+
+
+Function SetColor:Void( r:Float,g:Float,b:Float,a:Float )
+	DefaultCanvas.SetColor(r, g, b, a)
+End
+
+
+Function SetColor:Void( hex:Int )
+	DefaultCanvas.SetColor(hex)
+End
+
+
+Function SetColor:Void( col:Color )
+	DefaultCanvas.SetColor(col)
+End
+
+
+Function SetAlpha:Void( a:Float )
+	DefaultCanvas.SetAlpha(a)
+End
+
+
+Function GetColor:Float[]() 'This had to be changed from Color to GetColor to avoid clashing of Class Color with Funcion Color.
+	Return DefaultCanvas.Color()
+End
+
+
+Function GetColor:Void( color:Float[] )
+	DefaultCanvas.GetColor(color)
+End
+
+
+Function GetAlpha:Float()  'This had to be changed from Alpha to GetAlpha to avoid clashing of Class with Function.
+	Return DefaultCanvas.Alpha()
+End
+
+
+Function ResetMatrix:Void()
+	DefaultCanvas.ResetMatrix()
+End
+
+
+Function SetMatrix:Void( ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float )
+	DefaultCanvas.SetMatrix(ix, iy, jx, jy, tx, ty)
+End
+
+
+Function GetMatrix:Void( matrix:Float[] )
+	DefaultCanvas.GetMatrix(matrix)
+End
+
+
+Function Transform:Void( ix:Float,iy:Float,jx:Float,jy:Float,tx:Float,ty:Float )
+	DefaultCanvas.Transform(ix, iy, jx, jy, tx, ty)
+End
+
+
+Function Translate:Void( tx:Float,ty:Float )
+	DefaultCanvas.Translate(tx, ty)
+End
+
+
+Function Rotate:Void( rz:Float )
+	DefaultCanvas.Rotate(rz)
+End
+
+
+Function Scale:Void( sx:Float,sy:Float )
+	DefaultCanvas.Scale(sx, sy)
+End
+
+
+Function TranslateRotate:Void( tx:Float,ty:Float,rz:Float )
+	DefaultCanvas.TranslateRotate(tx, ty, rz)
+End
+
+
+Function RotateScale:Void( rz:Float,sx:Float,sy:Float )
+	DefaultCanvas.RotateScale(rz, sx, sy)
+End
+
+
+Function TranslateScale:Void( tx:Float,ty:Float,sx:Float,sy:Float )
+	DefaultCanvas.TranslateScale(tx, ty, sx, sy)
+End
+
+
+Function TranslateRotateScale:Void( tx:Float,ty:Float,rz:Float,sx:Float,sy:Float )
+	DefaultCanvas.TranslateRotateScale(tx, ty, rz, sx, sy)
+End
+
+
+Function SetMatrixStackCapacity:Void( capacity:Int )
+	DefaultCanvas.SetMatrixStackCapacity(capacity)
+End
+
+
+Function MatrixStackCapacity:Int()
+	Return DefaultCanvas.MatrixStackCapacity()
+End
+
+
+Function PushMatrix:Void()
+	DefaultCanvas.PushMatrix()
+End
+
+
+Function PopMatrix:Void()
+	DefaultCanvas.PopMatrix()
+End
+
+
+Function SetFont:Void( font:Font )
+	DefaultCanvas.SetFont(font)
+End
+
+
+Function GetFont:Font()
+	Return DefaultCanvas.Font()
+End
+
+
+Function SetDefaultMaterial:Void( material:Material )
+	DefaultCanvas.SetDefaultMaterial(material)
+End
+
+
+Function DefaultMaterial:Material()
+Return DefaultCanvas.DefaultMaterial()
+End
+
+
+Function DrawPoint:Void( x0:Float,y0:Float,material:Material=Null,s0:Float=0,t0:Float=0 )
+	DefaultCanvas.DrawPoint(x0, y0, material, s0, t0)
+End
+
+
+Function DrawLine:Void( x0:Float,y0:Float,x1:Float,y1:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=0 )
+	DefaultCanvas.DrawLine(x0, y0, x1, y1, material, s0, t0, s1, t1)
+End
+
+
+Function DrawTriangle:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,material:Material=Null,s0:Float=.5,t0:Float=0,s1:Float=1,t1:Float=1,s2:Float=0,t2:Float=1 )
+	DefaultCanvas.DrawTriangle(x0, y0, x1, y1, x2, y2, material, s0, t0, s1, t1, s2, t2)
+End
+
+
+Function DrawQuad:Void( x0:Float,y0:Float,x1:Float,y1:Float,x2:Float,y2:Float,x3:Float,y3:Float,material:Material=Null,s0:Float=.5,t0:Float=0,s1:Float=1,t1:Float=1,s2:Float=0,t2:Float=1 )
+	DefaultCanvas.DrawQuad(x0, y0, x1, y1, x2, y2, x3, y3, material, s0, t0, s1, t1, s2, t2)
+End
+
+
+Function DrawOval:Void( x:Float,y:Float,width:Float,height:Float,material:Material=Null )
+	DefaultCanvas.DrawOval(x, y, width, height, material)
+End
+
+
+Function DrawEllipse:Void( x:Float,y:Float,xr:Float,yr:Float,material:Material=Null )
+	DefaultCanvas.DrawEllipse(x, y, xr, yr, material)
+End
+
+
+Function DrawCircle:Void( x:Float,y:Float,r:Float,material:Material=Null )
+	DefaultCanvas.DrawCircle(x, y, r, material)
+End
+
+
+Function DrawPoly:Void( vertices:Float[],material:Material=Null )
+	DefaultCanvas.DrawPoly(vertices, material)
+End
+
+
+Function DrawTriangleMesh:Void(verts:Float[], image:Image, drawOrder:Int[], vertColors:Float[])
+	DefaultCanvas.DrawTriangleMesh(verts, image, drawOrder, vertColors)
+End
+
+
+Function DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],material:Material=Null )
+	DefaultCanvas.DrawPrimitives(order, count, vertices, material)
+End
+
+
+Function DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],material:Material=Null )
+	DefaultCanvas.DrawPrimitives(order, count, vertices, texcoords, material)
+End
+
+
+Function DrawPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],material:Material=Null )
+	DefaultCanvas.DrawPrimitives(order, count, vertices, texcoords, vertcols, material)
+End
+
+
+Function DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],indices:Int[],material:Material=Null )
+	DefaultCanvas.DrawIndexedPrimitives(order, count, vertices, indices, material)
+End
+
+
+Function DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],indices:Int[],material:Material=Null )
+	DefaultCanvas.DrawIndexedPrimitives(order, count, vertices, texcoords, indices, material)
+End
+
+
+Function DrawIndexedPrimitives:Void( order:Int,count:Int,vertices:Float[],texcoords:Float[],vertcols:Int[],indices:Int[],material:Material=Null )
+	DefaultCanvas.DrawIndexedPrimitives(order, count, vertices, texcoords, vertcols, indices, material)
+End
+
+
+Function DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,material:Material=Null,s0:Float=0,t0:Float=0,s1:Float=1,t1:Float=1 )
+	DefaultCanvas.DrawRect(x0, y0, width, height, material, s0, t0, s1, t1)
+End
+
+
+Function DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image )
+	DefaultCanvas.DrawRect(x0, y0, width, height, image)
+End
+
+
+Function DrawRect:Void( x:Float,y:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
+	DefaultCanvas.DrawRect(x, y, image, sourceX, sourceY, sourceWidth, sourceHeight)
+End
+
+
+Function DrawRect:Void( x0:Float,y0:Float,width:Float,height:Float,image:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int )
+	DefaultCanvas.DrawRect(x0, y0, width, height, image, sourceX, sourceY, sourceWidth, sourceHeight)
+End
+
+
+Function DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radius:Float=10, material:Material=Null)
+	DefaultCanvas.DrawRoundedRect(x, y, width, height, radius, material)
+End
+     
+     
+Function DrawGradientRect:Void( x0:Float,y0:Float,width:Float,height:Float,r0:Float,g0:Float,b0:Float,a0:Float,r1:Float,g1:Float,b1:Float,a1:Float,axis:Int )
+	DefaultCanvas.DrawGradientRect(x0, y0, width, height, r0, g0, b0, a0, r1, g1, b1, a1, axis)
+End
+
+
+Function DrawImage:Void( image:Image )
+	DefaultCanvas.DrawImage(image)
+End
+
+
+Function DrawImage:Void( image:Image,tx:Float,ty:Float )
+	DefaultCanvas.DrawImage(image, tx, ty)
+End
+
+
+Function DrawImage:Void( image:Image,tx:Float,ty:Float,rz:Float )
+	DefaultCanvas.DrawImage(image, tx, ty, rz)
+End
+
+
+Function DrawImage:Void( image:Image,tx:Float,ty:Float,rz:Float,sx:Float,sy:Float )
+	DefaultCanvas.DrawImage(image, tx, ty, rz, sx, sy)
+End
+
+
+Function DrawImage9P:Void( image:Image,tx:Float,ty:Float, patchSize:Int,rz:Float,scaleX:Float,scaleY:Float )
+	DefaultCanvas.DrawImage9P(image, tx, ty, patchSize, rz, scaleX, scaleY)
+End
+
+
+Function DrawImageRect:Void( image:Image,tx:Float,ty:Float,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,rz:Float=0,sx:Float=1,sy:Float=1 )
+	DefaultCanvas.DrawImageRect(image, tx, ty, sourceX, sourceY, sourceWidth, sourceHeight, rz, sx, sy)
+End
+
+
+Function DrawText:Void( text:String,x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+	DefaultCanvas.DrawText(text, x, y, xhandle, yhandle)
+End
+
+
+Function DrawText:Void( textLines:String[],x:Float,y:Float,xhandle:Float=0,yhandle:Float=0 )
+	DefaultCanvas.DrawText(textLines, x, y, xhandle, yhandle)
+End
+
+
+Function DrawTextBox:Void( textLines:String[],x:Float,y:Float,width:Float,height:Float,xhandle:Float=0.0,yhandle:Float=0.0 )
+	DefaultCanvas.DrawTextBox(textLines, x, y, width, height, xhandle, yhandle)
+End
+
+
+Function DrawShadow:Bool( lx:Float,ly:Float,x0:Float,y0:Float,x1:Float,y1:Float )
+	Return DefaultCanvas.DrawShadow(lx, ly, x0, y0, x1, y1)
+End
+
+
+Function DrawShadows:Void( x0:Float,y0:Float,drawList:DrawList )
+	DefaultCanvas.DrawShadows(x0, y0, drawList)
+End
+
+	
+Function AddShadowCaster:Void( caster:ShadowCaster )
+	DefaultCanvas.AddShadowCaster(caster)
+End
+
+
+Function AddShadowCaster:Void( caster:ShadowCaster,tx:Float,ty:Float )
+	DefaultCanvas.AddShadowCaster(caster, tx, ty)
+End
+
+
+Function AddShadowCaster:Void( caster:ShadowCaster,tx:Float,ty:Float,rz:Float )
+	DefaultCanvas.AddShadowCaster(caster, tx, ty, rz)
+End
+
+
+Function AddShadowCaster:Void( caster:ShadowCaster,tx:Float,ty:Float,rz:Float,sx:Float,sy:Float )
+	DefaultCanvas.AddShadowCaster(caster, tx, ty, rz, sx, sy)
+End
+
+
+Function IsEmpty:Bool()
+	Return DefaultCanvas.IsEmpty()
+End
+
+
+Function Compact:Void()
+	DefaultCanvas.Compact()
+End
+
+
+Function Render:Void( op:DrawOp,index:Int,count:Int )
+	DefaultCanvas.Render(op, index, count)
+End
+
+
+Function Render:Void()
+	DefaultCanvas.Render()
+End
+
+
+Function Reset:Void()
+	DefaultCanvas.Reset()
+End
+
+
+Function Flush:Void()
+	DefaultCanvas.Flush()
+End
+
+
+Function PremultiplyArgb2Abgr:Int(color:Int)
+	Return DefaultCanvas.PremultiplyArgb2Abgr(color)
+End
+
+
+Function PremultiplyArgb2Abgr:Void(colors:Int[])
+	DefaultCanvas.PremultiplyArgb2Abgr(colors)
+End
+
+
+' *********** These are the functions that are analog to the Functions of the Class Canvas that extends the Class Drawlist from above. ***********
+
+Function Discard:Void()
+	DefaultCanvas.Discard()
+End
+
+
+Function SetRenderTarget:Void( target:Object )	
+	DefaultCanvas.SetRenderTarget(target)
+End
+
+
+Function RenderTarget:Object()
+	Return DefaultCanvas.RenderTarget()
+End
+
+
+Function Width:Int()
+	Return DefaultCanvas.Width()
+End
+
+
+Function Height:Int()
+	Return DefaultCanvas.Height()
+End
+
+
+Function SetColorMask:Void( r:Bool,g:Bool,b:Bool,a:Bool )
+	DefaultCanvas.SetColorMask(r, g, b, a)
+End
+
+
+Function ColorMask:Bool[]()
+	Return DefaultCanvas.ColorMask()
+End
+
+
+Function SetViewport:Void( x:Int,y:Int,w:Int,h:Int )
+	DefaultCanvas.SetViewport(x, y, w, h)
+End
+
+
+Function GetViewport:Int[]()
+	Return DefaultCanvas.Viewport()
+End
+
+
+Function SetScissor:Void( x:Int,y:Int,w:Int,h:Int )
+	DefaultCanvas.SetScissor(x, y, w, h)
+End
+
+
+Function GetScissor:Int[]()
+	Return DefaultCanvas.Scissor()
+End
+
+
+Function SetProjectionMatrix:Void( projMatrix:Float[] )
+	DefaultCanvas.SetProjectionMatrix(projMatrix)
+End
+
+
+Function SetProjection2d:Void( left:Float,right:Float,top:Float,bottom:Float,znear:Float=-1,zfar:Float=1 )
+	DefaultCanvas.SetProjection2d(left, right, top, bottom, znear, zfar)		
+End
+
+
+Function GetProjectionMatrix:Float[]()
+	Return DefaultCanvas.ProjectionMatrix()
+End
+
+
+Function SetViewMatrix:Void( viewMatrix:Float[] )
+	DefaultCanvas.SetViewMatrix(viewMatrix)
+End
+
+
+Function GetViewMatrix:Float[]()
+	Return DefaultCanvas.ViewMatrix()
+End
+
+	
+Function SetModelMatrix:Void( modelMatrix:Float[] )
+	DefaultCanvas.SetModelMatrix(modelMatrix)
+End
+
+
+Function GetModelMatrix:Float[]()
+	Return DefaultCanvas.ModelMatrix()
+End
+
+
+Function SetAmbientLight:Void( r:Float,g:Float,b:Float,a:Float=1 )
+	DefaultCanvas.SetAmbientLight(r, g, b, a)
+End
+
+
+Function GetAmbientLight:Float[]()
+	Return DefaultCanvas.AmbientLight()
+End
+
+
+Function SetFogColor:Void( r:Float,g:Float,b:Float,a:Float )
+	DefaultCanvas.SetFogColor(r, g, b, a)
+End
+
+
+Function GetFogColor:Float[]()
+	Return DefaultCanvas.FogColor()
+End
+
+
+Function SetLightType:Void( index:Int,type:Int )
+	DefaultCanvas.SetLightType(index, type)
+End
+
+
+Function GetLightType:Int( index:Int )
+	Return DefaultCanvas.GetLightType(index)
+End
+
+
+Function SetLightColor:Void( index:Int,r:Float,g:Float,b:Float,a:Float=1 )
+	DefaultCanvas.SetLightColor(index, r, g, b, a)
+End
+
+
+Function GetLightColor:Float[]( index:Int )
+	Return DefaultCanvas.GetLightColor(index)
+End
+
+
+Function SetLightPosition:Void( index:Int,x:Float,y:Float,z:Float )
+	DefaultCanvas.SetLightPosition(index, x, y, z)
+End
+
+
+Function GetLightPosition:Float[]( index:Int )
+	Return DefaultCanvas.GetLightPosition(index)
+End
+
+
+Function SetLightRange:Void( index:Int,range:Float )
+	DefaultCanvas.SetLightRange(index, range)
+End
+
+
+Function GetLightRange:Float( index:Int )
+	Return DefaultCanvas.GetLightRange(index)
+End
+
+
+Function SetShadowMap:Void( image:Image )
+	DefaultCanvas.SetShadowMap(image)
+End
+
+
+Function GetShadowMap:Image()
+	Return DefaultCanvas.ShadowMap()
+End
+
+
+Function SetLineWidth:Void( lineWidth:Float )
+	DefaultCanvas.SetLineWidth(lineWidth)
+End
+
+
+Function GetLineWidth:Float()
+	Return DefaultCanvas.LineWidth()
+End
+
+
+Function Clear:Void( r:Float=0,g:Float=0,b:Float=0,a:Float=1 )
+	DefaultCanvas.Clear(r, g, b, a)
+End
+
+
+Function Clear:Void( rgb:Int )
+	DefaultCanvas.Clear(rgb)
+End
+
+
+Function Clear:Void( col:Color )
+	DefaultCanvas.Clear(col)
+End
+
+
+Function ReadPixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
+	DefaultCanvas.ReadPixels(x, y, width, height, data, dataOffset, dataPitch)
+End
+
+
+Function RenderDrawList:Void( drawbuf:DrawList )
+	DefaultCanvas.RenderDrawList(drawbuf)
+End
+
+
+Function RenderDrawList:Void( drawList:DrawList,tx:Float,ty:Float,rz:Float=0,sx:Float=1,sy:Float=1 )
+	DefaultCanvas.RenderDrawList(drawList, tx, ty, rz, sx, sy)
+End
+
+
+Function Flush:Void()
+	DefaultCanvas.Flush()
+End
+
+
+Function TransformCoords:Void( coords_in:Float[],coords_out:Float[],mode:Int=0 )
+	DefaultCanvas.TransformCoords(coords_in, coords_out, mode)
+End
