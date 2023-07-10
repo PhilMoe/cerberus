@@ -65,6 +65,45 @@ Loaded images should not be used as render targets.
 See also: [[Shader.DefaultShader]]
 
 
+# Function LoadTexture:Texture( path:String,format:Int,flags:Int )
+
+Load a texture from a file.
+
+
+# Function LoadMaterial:Material( path:String,texFlags:Int,shader:Shader )
+
+Load a material.
+
+If @shader is null, the [[Shader.DefaultShader]] is used.
+
+
+# Function LoadFont:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
+
+Load a fixed width font from @imagePath.
+
+Glyphs should be laid out horizontally within the source image.
+
+@firstChar represents the ASCII code of the first char.
+
+If @padded is true, then each glyph is assumed to have a transparent one pixel padding border around it.
+
+
+# Function LoadFont:Font( path:String,cellWidth:Int,cellHeight:Int,glyphX:Int,glyphY:Int,glyphWidth:Int,glyphHeight:Int,firstChar:Int,numChars:Int )
+
+Load a fixed width font from @path.
+
+@firstChar represents the ASCII code of the first char.
+
+
+# Function LoadFont:Font(path:String, flags:Int=Image.Filter)
+
+Loads a bitmap font file created in tools like GlyphDesigner and alike. 
+
+@path represents the filename of the texfile that defines the font and its individual glyphs.
+
+@flags represents the Image filter that is applied at loading the image sheet.
+
+
 # Class Shader
 
 Mojo2 provides support for simple shaders that fetch texture/color data and produce values for use by the lighting equations. Shaders must be written in the opengl shading language. Shaders should declare a single void shader(){} function.
