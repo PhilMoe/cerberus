@@ -209,6 +209,10 @@ End
 
 '***** Texture *****
 
+Function LoadTexture:Texture( path:String,format:Int=4,flags:Int=Filter|Mipmap|ClampST )
+	Return Texture.Load( path,format,flags )
+End
+
 Class Texture Extends RefCounted
 
 	'flags
@@ -893,6 +897,10 @@ End
 
 '***** Material *****
 
+Function LoadMaterial:Material( path:String,texFlags:Int,shader:Shader )
+	Return Material.Load( path,texFlags,shader )
+End
+
 Class Material Extends RefCounted
 
 	Method New( shader:Shader=Null )
@@ -1322,6 +1330,17 @@ Class Image
 End
 
 '***** Font *****
+Function LoadFont:Font( path:String,firstChar:Int,numChars:Int,padded:Bool )
+	Return Font.Load( path,firstChar,numChars,padded )
+End
+
+Function LoadFont:Font( path:String,cellWidth:Int,cellHeight:Int,glyphX:Int,glyphY:Int,glyphWidth:Int,glyphHeight:Int,firstChar:Int,numChars:Int )
+	Return Font.Load( path,cellWidth,cellHeight,glyphX,glyphY,glyphWidth,glyphHeight,firstChar,numChars )
+End
+
+Function LoadFont:Font( url:String,flags:Int=Image.Filter )
+	Return Font.Load( url,flags )
+End
 
 Class Glyph
 	Field id:Int
