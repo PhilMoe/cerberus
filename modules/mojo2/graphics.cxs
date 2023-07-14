@@ -1643,7 +1643,12 @@ Class DrawList
 		_blend=blend
 	End
 	
+	Method GetBlendMode:Int()
+		Return _blend
+	End
+	
 	Method BlendMode:Int() Property
+		'Print "BlendMode as Property is deprecated. Please use GetBlendMode() instead!"
 		Return _blend
 	End
 	
@@ -1687,7 +1692,12 @@ Class DrawList
 		_pmcolor=Int(_alpha) Shl 24 | Int(_color[2]*_alpha) Shl 16 | Int(_color[1]*_alpha) Shl 8 | Int(_color[0]*_alpha)
 	End
 	
+	Method GetColor:Float[]()
+		Return [_color[0],_color[1],_color[2],_color[3]]
+	End
+	
 	Method Color:Float[]() Property
+		'Print "Color as Property is deprecated. Please use GetColor() instead!"
 		Return [_color[0],_color[1],_color[2],_color[3]]
 	End
 	
@@ -1698,7 +1708,12 @@ Class DrawList
 		If color.Length>3 color[3]=_color[3]
 	End
 	
+	Method GetAlpha:Float()
+		Return _color[3]
+	End
+	
 	Method Alpha:Float() Property
+		'Print "Alpha as Property is deprecated. Please use GetAlpha() instead!"
 		Return _color[3]
 	End
 	
@@ -1791,7 +1806,12 @@ Class DrawList
 		_font=font
 	End
 	
+	Method GetFont:Font()
+		Return _font
+	End
+	
 	Method Font:Font() Property
+		'Print "Font as Property is deprecated. Please use GetFont() instead!"
 		Return _font
 	End
 	
@@ -1799,7 +1819,12 @@ Class DrawList
 		_defaultMaterial=material
 	End
 	
+	Method GetDefaultMaterial:Material()
+		Return _defaultMaterial
+	End
+	
 	Method DefaultMaterial:Material() Property
+		'Print "DefaultMaterial as Property is deprecated. Please use GetDefaultMaterial() instead!"
 		Return _defaultMaterial
 	End
 	
@@ -2710,15 +2735,30 @@ Class Canvas Extends DrawList
 		
 	End
 
-	Method RenderTarget:Object() Property
+	Method GetRenderTarget:Object()
 		If _image Return _image Else Return _texture
 	End
 	
-	Method Width:Int() Property
+	Method RenderTarget:Object() Property
+		'Print "RenderTarget as Property is deprecated. Please use GetRenderTarget() instead!"
+		If _image Return _image Else Return _texture
+	End
+	
+	Method GetWidth:Int()
 		Return _width
 	End
 	
+	Method Width:Int() Property
+		'Print "Width as Property is deprecated. Please use GetWidth() instead!"
+		Return _width
+	End
+	
+	Method GetHeight:Int()
+		Return _height
+	End
+	
 	Method Height:Int() Property
+		'Print "Height as Property is deprecated. Please use GetHeight() instead!"
 		Return _height
 	End
 	
@@ -2731,7 +2771,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_COLORMASK
 	End
 	
+	Method GetColorMask:Bool[]()
+		Return _colorMask
+	End
+	
 	Method ColorMask:Bool[]() Property
+		'Print "ColorMask as Property is deprecated. Please use GetColorMask instead!"
 		Return _colorMask
 	End
 	
@@ -2744,7 +2789,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_VIEWPORT
 	End
 	
+	Method GetViewport:Int[]()
+		Return _viewport
+	End
+	
 	Method Viewport:Int[]() Property
+		'Print "Viewport as Property is deprecated. Please use GetViewport() instead!"
 		Return _viewport
 	End
 	
@@ -2757,7 +2807,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_VIEWPORT
 	End
 	
+	Method GetScissor:Int[]()
+		Return _scissor
+	End
+	
 	Method Scissor:Int[]() Property
+		'Print "Scissor as Property is deprecated. Please use GetScissor() instead!"
 		Return _scissor
 	End
 	
@@ -2777,7 +2832,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetProjectionMatrix:Float[]()
+		Return _projMatrix
+	End
+	
 	Method ProjectionMatrix:Float[]() Property
+		'Print "ProjectionMatrix as Property is deprecated. Please use GetProjectionMatrix() instead!"
 		Return _projMatrix
 	End
 	
@@ -2791,7 +2851,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetViewMatrix:Float[]()
+		Return _viewMatrix
+	End
+	
 	Method ViewMatrix:Float[]() Property
+		'Print "ViewMatrix as Property is deprecated. Please use GetViewMatrix() instead!"
 		Return _viewMatrix
 	End
 	
@@ -2805,7 +2870,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetModelMatrix:Float[]()
+		Return _modelMatrix
+	End
+
 	Method ModelMatrix:Float[]() Property
+		'Print "ModelMatrix as Property is deprecated. Please use GetModelMatrix() instead!"
 		Return _modelMatrix
 	End
 
@@ -2818,7 +2888,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetAmbientLight:Float[]()
+		Return _ambientLight
+	End
+	
 	Method AmbientLight:Float[]() Property
+		'Print "AmbientLight as Property is deprecated. Please use GetAmbientLight() instead!"
 		Return _ambientLight
 	End
 	
@@ -2831,7 +2906,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetFogColor:Float[]()
+		Return _fogColor
+	End
+	
 	Method FogColor:Float[]() Property
+		'Print "FogColor as Property is deprecated. Please use GetFogColor() instead!"
 		Return _fogColor
 	End
 	
@@ -2893,7 +2973,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_SHADER
 	End
 	
+	Method GetShadowMap:Image()
+		Return _shadowMap
+	End
+	
 	Method ShadowMap:Image() Property
+		'Print "ShadowMap as Property is deprecated. Please use GetShadowMap() instead!"
 		Return _shadowMap
 	End
 	
@@ -2903,7 +2988,12 @@ Class Canvas Extends DrawList
 		_dirty|=DIRTY_LINEWIDTH
 	End
 	
+	Method GetLineWidth:Float()
+		Return _lineWidth
+	End
+	
 	Method LineWidth:Float() Property
+		'Print "LineWidth as Property is deprecated. Please use GetLineWidth() instead!"
 		Return _lineWidth
 	End
 	
