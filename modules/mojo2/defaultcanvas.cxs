@@ -135,7 +135,7 @@ Function RotateScale:Void( rz:Float,sx:Float,sy:Float )
 End
 
 
-Function TranslateScale:Void( tx:Float,ty:Float,sx:Float,sy:Float )
+Function TranslateScale:Void( tx:Float,ty:Float,sx:Float,sy:Float ) 'ToDo: Not in docs but useful for user!
 	DefaultCanvas.TranslateScale(tx, ty, sx, sy)
 End
 
@@ -150,7 +150,7 @@ Function SetMatrixStackCapacity:Void( capacity:Int )
 End
 
 
-Function MatrixStackCapacity:Int()
+Function GetMatrixStackCapacity:Int()
 	Return DefaultCanvas.MatrixStackCapacity()
 End
 
@@ -180,7 +180,7 @@ Function SetDefaultMaterial:Void( material:Material )
 End
 
 
-Function DefaultMaterial:Material()
+Function GetDefaultMaterial:Material()
 Return DefaultCanvas.DefaultMaterial()
 End
 
@@ -220,12 +220,12 @@ Function DrawCircle:Void( x:Float,y:Float,r:Float,material:Material=Null )
 End
 
 
-Function DrawPoly:Void( vertices:Float[],material:Material=Null )
+Function DrawPoly:Void( vertices:Float[],material:Material=Null ) 'ToDo: Not documented but useful for user!
 	DefaultCanvas.DrawPoly(vertices, material)
 End
 
 
-Function DrawTriangleMesh:Void(verts:Float[], image:Image, drawOrder:Int[], vertColors:Float[])
+Function DrawTriangleMesh:Void(verts:Float[], image:Image, drawOrder:Int[], vertColors:Float[]) 'ToDo: Not documented but useful for user!
 	DefaultCanvas.DrawTriangleMesh(verts, image, drawOrder, vertColors)
 End
 
@@ -285,7 +285,7 @@ Function DrawRoundedRect:Void(x:Float, y:Float, width:Float, height:Float, radiu
 End
      
      
-Function DrawGradientRect:Void( x0:Float,y0:Float,width:Float,height:Float,r0:Float,g0:Float,b0:Float,a0:Float,r1:Float,g1:Float,b1:Float,a1:Float,axis:Int )
+Function DrawGradientRect:Void( x0:Float,y0:Float,width:Float,height:Float,r0:Float,g0:Float,b0:Float,a0:Float,r1:Float,g1:Float,b1:Float,a1:Float,axis:Int ) 'ToDo: Not documented but useful for user!
 	DefaultCanvas.DrawGradientRect(x0, y0, width, height, r0, g0, b0, a0, r1, g1, b1, a1, axis)
 End
 
@@ -365,33 +365,8 @@ Function AddShadowCaster:Void( caster:ShadowCaster,tx:Float,ty:Float,rz:Float,sx
 End
 
 
-Function IsEmpty:Bool()
-	Return DefaultCanvas.IsEmpty()
-End
-
-
-Function Compact:Void()
-	DefaultCanvas.Compact()
-End
-
-
-Function Render:Void( op:DrawOp,index:Int,count:Int )
-	DefaultCanvas.Render(op, index, count)
-End
-
-
-Function Render:Void()
-	DefaultCanvas.Render()
-End
-
-
 Function Reset:Void()
 	DefaultCanvas.Reset()
-End
-
-
-Function Flush:Void()
-	DefaultCanvas.Flush()
 End
 
 
@@ -407,11 +382,6 @@ End
 
 ' *********** These are the functions that are analog to the Functions of the Class Canvas that extends the Class Drawlist from above. ***********
 
-Function Discard:Void()
-	DefaultCanvas.Discard()
-End
-
-
 Function SetRenderTarget:Void( target:Object )	
 	DefaultCanvas.SetRenderTarget(target)
 End
@@ -422,12 +392,12 @@ Function RenderTarget:Object()
 End
 
 
-Function Width:Int()
+Function GetWidth:Int()
 	Return DefaultCanvas.Width()
 End
 
 
-Function Height:Int()
+Function GetHeight:Int()
 	Return DefaultCanvas.Height()
 End
 
@@ -437,7 +407,7 @@ Function SetColorMask:Void( r:Bool,g:Bool,b:Bool,a:Bool )
 End
 
 
-Function ColorMask:Bool[]()
+Function GetColorMask:Bool[]()
 	Return DefaultCanvas.ColorMask()
 End
 
@@ -567,14 +537,14 @@ Function GetShadowMap:Image()
 End
 
 
-Function SetLineWidth:Void( lineWidth:Float )
-	DefaultCanvas.SetLineWidth(lineWidth)
-End
+'Function SetLineWidth:Void( lineWidth:Float )
+'	DefaultCanvas.SetLineWidth(lineWidth)
+'End
 
 
-Function GetLineWidth:Float()
-	Return DefaultCanvas.LineWidth()
-End
+'Function GetLineWidth:Float()
+'	Return DefaultCanvas.LineWidth()
+'End
 
 
 Function Clear:Void( r:Float=0,g:Float=0,b:Float=0,a:Float=1 )
