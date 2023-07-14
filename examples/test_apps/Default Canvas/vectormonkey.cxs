@@ -58,7 +58,6 @@ Class MyApp Extends App
 	
 	Method OnRender:Int()
 		Print "OnRender"
-		DrawText("Hey hier bin ich!", 100,100)
 		myCanvas.ResetMatrix()	
 		myCanvas.Clear(0.5, 0.7, 1) 	
 		myCanvas.SetColor(0, 0, 0)
@@ -67,7 +66,8 @@ Class MyApp Extends App
 		myCanvas.DrawText("Press [Space] to reset", DeviceWidth() / 2, DeviceHeight() - 20, 0.5)
 		 
 		rot = 0
-		 	
+		DrawText("Hey hier bin ich!", 100,100)
+		SetScissor(0,0,200,200) 	
 	 	For Local pt:= Eachin drawing
 	 		myCanvas.Rotate(rot)
 	 		pt.Draw(myCanvas)
@@ -75,7 +75,7 @@ Class MyApp Extends App
 	 		rot +=rotstep	
 	 	Next
 	 	
-		'myCanvas.Flush()
+		myCanvas.Flush()
 		rotstep += Cos(Float(Millisecs() Mod 360)) * wiggle
 	 
 		wiggle *= 0.95
