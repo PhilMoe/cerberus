@@ -20,7 +20,7 @@ Class MyApp Extends App
 	Method OnCreate:Int()
 		myCanvas = New Canvas()
 		drawing = MakeVectorDrawing()
-		SetUpdateRate(1)
+		SetUpdateRate(0)
 		Return 0
 	End
 	

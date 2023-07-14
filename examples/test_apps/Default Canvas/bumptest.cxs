@@ -79,8 +79,8 @@ Class MyApp Extends App
 	
 	
 	Method OnRender:Int()
-		DrawText("hellooooo", 100,100)
 		myCanvas.Clear(0, 0, 0)
+		DrawText("hellooooo", 100,100)
 		
 		' position the light and set its range
 		myCanvas.SetLightPosition(0, MouseX(), MouseY(), lightZ)
