@@ -696,14 +696,30 @@ Set color to specified hex color value.
 Set color to specified [[Color]].
 
 
-# Method Color:Float[]() Property
+# Method GetColor:Float[]()
 
 Returns a 4 component float array containing current color and alpha.
 
 Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
 
 
+# Method Color:Float[]() Property
+
+Deprecated: Please use [[GetColor]]() instead!
+
+Returns a 4 component float array containing current color and alpha.
+
+Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
+
+
+# Method GetAlpha:Float()
+
+Return current alpha.
+
+
 # Method Alpha:Float() Property
+
+Deprecated: Please use [[GetAlpha]]() instead!
 
 Return current alpha.
 
@@ -742,7 +758,14 @@ Image1 is rendered opaque, then Image2 and Image3 are rendered on top with indic
 For the *Render to back buffer*, background is first cleared with a brownish color.
 
 
+# Method GetBlendMode:Int()
+
+Get blend mode.
+
+
 # Method BlendMode:Int() Property
+
+Deprecated: Please use [[GetBlendMode]]() instead!
 
 Get blend mode.
 
@@ -754,7 +777,14 @@ Set current font for use with DrawText and DrawTextBox.
 If @font is null, a default font is used.
 
 
+# Method GetFont:Font()
+
+Get font.
+
+
 # Method Font:Font() Property
+
+Deprecated: Please use [[GetFont]]() instead!
 
 Get font.
 
@@ -766,7 +796,16 @@ Set the maximum number of 2d matrices that can be pushed onto the matrix stack u
 See also: [[MatrixStackCapacity]]
 
 
+# Method GetMatrixStackCapacity:Int()
+
+Get the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
+
+See also: [[SetMatrixStackCapacity]]
+
+
 # Method MatrixStackCapacity:Int() Property
+
+Deprecated: Please use [[GetMatrixStackCapacity]]() instead!
 
 Get the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
 
@@ -842,7 +881,16 @@ Set the default material used for drawing operations that use a null material.
 See also: [[DefaultMaterial]]
 
 
+# Method GetDefaultMaterial:Material()
+
+Return the current default material.
+
+See also: [[SetDefaultMaterial]]
+
+
 # Method DefaultMaterial:Material() Property
+
+Deprecated: Please use [[GetDefaultMaterial]]() instead!
 
 Return the current default material.
 
@@ -1321,17 +1369,38 @@ Change canvas render target.
 Note: Changing the render target does not affect the viewport.
 
 
-# Method RenderTarget:Object() Property
+# Method GetRenderTarget:Object()
 
 Get current render target.
 
 
-# Method Width:Int() Property
+# Method RenderTarget:Object() Property
+
+Deprecated: Please use [[GetRenderTarget]]() instead!
+
+Get current render target.
+
+
+# Method GetWidth:Int()
 
 Get canvas width.
 
 
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get canvas width.
+
+
+# Method GetHeight:Int()
+
+Get canvas height.
+
+ 
 # Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
 
 Get canvas height.
 
@@ -1343,7 +1412,14 @@ Set viewport.
 By default, the viewport is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
 
 
+# Method GetViewport:Int[]()
+
+Get viewport.
+
+
 # Method Viewport:Int[]() Property
+
+Deprecated: Please use [[GetViewport]]() instead!
 
 Get viewport.
 
@@ -1357,7 +1433,14 @@ All rendering operations are clipped to the scissor rect and the viewport.
 By default, the scissor rect is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
 
 
+# Method GetScissor:Int[]()
+
+Get scissor rect.
+
+
 # Method Scissor:Int[]() Property
+
+Deprecated: Please use [[GetScissor]]() instead!
 
 Get scissor rect.
 
@@ -1376,7 +1459,14 @@ Set arbitrary projection matrix.
 Defaults to the identity matrix.
 
 
+# Method GetProjectionMatrix:Float[]()
+
+Get projection matrix.
+
+
 # Method ProjectionMatrix:Float[]() Property
+
+Deprecated: Please use [[GetProjectionMatrix]]() instead!
 
 Get projection matrix.
 
@@ -1388,7 +1478,14 @@ Set view matrix, ie: the matrix the transforms points in world space to view spa
 Defaults to the identity matrix.
 
 
+# Method GetViewMatrix:Float[]()
+
+Get view matrix.
+
+
 # Method ViewMatrix:Float[]() Property
+
+Deprecated: Please use [[GetViewMatrix]]() instead!
 
 Get view matrix.
 
@@ -1400,7 +1497,14 @@ Set model matrix, ie: the matrix that transforms points in 2d canvas space into 
 Defaults to the identity matrix.
 
 
+# Method GetModelMatrix:Float[]()
+
+Get model matrix.
+
+
 # Method ModelMatrix:Float[]() Property
+
+Deprecated: Please use [[GetModelMatrix]]() instead!
 
 Get model matrix.
 
@@ -1414,7 +1518,14 @@ The @alpha paramater controls the strength of the fog. If this is 1, all pixels 
 By default, fog color is 0,0,0,0.
 
 
+# Method GetFogColor:Float[]()
+
+Get fog color.
+
+
 # Method FogColor:Float[]() Property
+
+Deprecated: Please use [[GetFogColor]]() instead!
 
 Get fog color.
 
@@ -1426,7 +1537,14 @@ Set ambient light color.
 By default, ambient light is 0,0,0.
 
 
+# Method GetAmbientLight:Float[]()
+
+Get ambient light color.
+
+
 # Method AmbientLight:Float[]() Property
+
+Deprecated: Please use [[GetAmbientLight]]() instead!
 
 Get ambient light color.
 
@@ -1500,7 +1618,14 @@ Get light range.
 Set which color components are writeable.
 
 
+# Method GetColorMask:Bool[]()
+
+Get color mask.
+
+
 # Method ColorMask:Bool[]() Property
+
+Deprecated: Please use [[GetColorMask]]() instead!
 
 Get color mask.
 
@@ -1512,7 +1637,14 @@ Set shadow map to use when lighting.
 If @shadowMap is null (the default), shadow mapping is disabled.
 
 
+# Method GetShadowMap:Image()
+
+Get shadow map.
+
+
 # Method ShadowMap:Image() Property
+
+Deprecated: Please use [[GetShadowMap]]() instead!
 
 Get shadow map.
 
