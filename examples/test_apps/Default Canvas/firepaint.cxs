@@ -3,6 +3,7 @@
 '
 'Really a multitouch test...
 '#MOJO2_DEFAULTCANVAS_AUTORESET_DISABLED = True
+'#MOJO2_DEFAULTCANVAS_DISABLED = True
 Import mojo2
 
 Global BigList:=New List<Spark>
