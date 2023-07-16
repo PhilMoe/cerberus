@@ -1,3 +1,11 @@
+***** v2023-07-16 *****
+
+FIX: [Android] Fix config var separator character not working for AndroidManifest (Author: dawlane)
+NEW: [Android] Added FileInputStream for Android data files. (Author: Phil7)
+NEW: [Android] Added default Cerberus Icon for Android. (Author: Phil7)
+MOD: [Android] Changed Android Target to support API 33. (Author: Phil7)
+
+
 ***** v2023-05-26 *****
 
 FIX: [mojo2] Fixed DrawList.DrawQuad not drawing correctly when using a material.    (Author: MikeHart)
