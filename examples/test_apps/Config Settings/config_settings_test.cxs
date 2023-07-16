@@ -1,0 +1,53 @@
+Strict 
+
+Import mojo
+
+'This CONFIG_LOGGING_ENABLED variable is just a reminder 
+'for an idea to create a logging file to check all 
+'resulting app config vars.
+'#CONFIG_LOGGING_ENABLED = True 
+
+
+#Rem
+#ANDROID_MANIFEST_APPLICATION+="<bla>"
+#ANDROID_MANIFEST_APPLICATION+="<bla>"
+#ANDROID_MANIFEST_APPLICATION+="~n~t <bla>"
+#ANDROID_MANIFEST_APPLICATION+="~n~t <bla>"
+#End
+
+
+Function Main:Int()
+    New ConfigSettingsTest()
+    Return 0
+End
+
+
+Class ConfigSettingsTest Extends App
+	
+	Field rotation:Float
+	
+    Method OnCreate:Int()
+		Print "Here we test again..."
+    	Return 0
+    End
+    
+    
+    Method OnUpdate:Int()
+    	rotation+=2.0
+		Return 0
+    End
+    
+    
+    Method OnRender:Int()
+    
+    	Cls()
+    	
+    	PushMatrix()
+      	Translate(DeviceWidth()*0.5, DeviceHeight()*0.5)
+	  	Rotate(-rotation)
+    	DrawRect(-100,-100, 200, 200)
+    	PopMatrix()
+    	Return 0
+    End
+
+End
