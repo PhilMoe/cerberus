@@ -1,5 +1,5 @@
 ***** v2023-07-16 *****
-
+FIX: [brl.json] Add escaping of tab character to json string parsing. (Author: Phil7)
 FIX: [Android] Fix config var separator character not working for AndroidManifest (Author: dawlane)
 NEW: [Android] Added FileInputStream for Android data files. (Author: Phil7)
 NEW: [Android] Added default Cerberus Icon for Android. (Author: Phil7)
