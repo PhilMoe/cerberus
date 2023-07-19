@@ -597,6 +597,7 @@ Class JsonParser
 				Case 98  esc=String.FromChar( 8 )	'\b
 				Case 102 esc=String.FromChar( 12 )	'\f
 				Case 114 esc=String.FromChar( 13 )	'\r
+				Case 116 esc=String.FromChar( 9 )	'\t
 				Case 110 esc=String.FromChar( 10 )	'\n
 				Case 117							'\uxxxx
 					If i+6>toke.Length ThrowError
