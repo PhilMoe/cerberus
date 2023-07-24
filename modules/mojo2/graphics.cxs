@@ -259,19 +259,39 @@ Class Texture Extends RefCounted
 		If _data LoadData _data
 	End
 	
-	Method Width:Int() Property
+	Method GetWidth:Int()
 		Return _width
 	End
 	
-	Method Height:Int() Property
+	Method Width:Int() Property
+		'Print "Width as Property is deprecated. Please use GetWidth() instead!"
+		Return _width
+	End
+	
+	Method GetHeight:Int()
 		Return _height
 	End
 	
-	Method Format:Int() Property
+	Method Height:Int() Property
+		'Print "Height as Property is deprecated. Please use GetHeight() instead!"
+		Return _height
+	End
+	
+	Method GetFormat:Int()
 		Return _format
 	End
 	
+	Method Format:Int() Property
+		'Print "Format as Property is deprecated. Please use GetFormat() instead!"
+		Return _format
+	End
+	
+	Method GetFlags:Int()
+		Return _flags
+	End
+	
 	Method Flags:Int() Property
+		'Print "Flags as Property is deprecated. Please use GetFlags() instead!"
 		Return _flags
 	End
 	
@@ -324,12 +344,24 @@ Class Texture Extends RefCounted
 		#Endif
 	End
 	
-	Method GLTexture:Int() Property
+	Method GetGLTexture:Int()
 		Validate
 		Return _glTexture
 	End
 	
+	Method GLTexture:Int() Property
+		'Print "GLTexture as Property is deprecated. Please use GetGLTexture() instead!"
+		Validate
+		Return _glTexture
+	End
+	
+	Method GetGLFramebuffer:Int()
+		Validate
+		Return _glFramebuffer
+	End		
+	
 	Method GLFramebuffer:Int() Property
+		'Print "GLFramebuffer as Property is deprecated. Please use GetGLFramebuffer() instead!"
 		Validate
 		Return _glFramebuffer
 	End		
@@ -922,20 +954,42 @@ Class Material Extends RefCounted
 		Next
 	End
 	
-	Method Shader:Shader() Property
+	Method GetShader:Shader()
 		Return _shader
 	End
 	
-	Method ColorTexture:Texture() Property
+	Method Shader:Shader() Property
+		'Print "Shader as Property is deprecated. Please use GetShader() instead!"
+		Return _shader
+	End
+	
+	Method GetColorTexture:Texture()
 		Return _colorTexture
 	End
 	
-	Method Width:Int() Property
+	Method ColorTexture:Texture() Property
+		'Print "ColorTexture as Property is deprecated. Please use GetColorTexture() instead!"
+		Return _colorTexture
+	End
+	
+	Method GetWidth:Int()
 		If _colorTexture Return _colorTexture._width
 		Return 0
 	End
 	
+	Method Width:Int() Property
+		'Print "Width as Property is deprecated. Please use GetWidth() instead!"
+		If _colorTexture Return _colorTexture._width
+		Return 0
+	End
+	
+	Method GetHeight:Int()
+		If _colorTexture Return _colorTexture._height
+		Return 0
+	End
+	
 	Method Height:Int() Property
+		'Print "Height as Property is deprecated. Please use GetHeight() instead!"
 		If _colorTexture Return _colorTexture._height
 		Return 0
 	End
@@ -1064,7 +1118,12 @@ Class ShadowCaster
 		_verts=vertices
 	End
 	
+	Method GetVertices:Float[]()
+		Return _verts
+	End
+	
 	Method Vertices:Float[]() Property
+		'Print "Vertices as Property is deprecated. Please use GetVertices() instead!"
 		Return _verts
 	End
 	
@@ -1072,7 +1131,12 @@ Class ShadowCaster
 		_type=type
 	End
 	
+	Method GetType:Int()
+		Return _type
+	End
+	
 	Method Type:Int() Property
+		'Print "Type as Property is deprecated. Please use GetType() instead!"
 		Return _type
 	End
 	
@@ -1160,39 +1224,84 @@ Class Image
 		_material=Null
 	End
 	
-	Method Material:Material() Property
+	Method GetMaterial:Material()
 		Return _material
 	End
 	
-	Method X0:Float() Property
+	Method Material:Material() Property
+		'Print "Material as Property is deprecated. Please use GetMaterial() instead!"
+		Return _material
+	End
+	
+	Method GetX0:Float()
 		Return _x0
 	End
 	
-	Method Y0:Float() Property
+	Method X0:Float() Property
+		'Print "X0 as Property is deprecated. Please use GetX0() instead!"
+		Return _x0
+	End
+	
+	Method GetY0:Float()
 		Return _y0
 	End
 	
-	Method X1:Float() Property
+	Method Y0:Float() Property
+		'Print "Y0 as Property is deprecated. Please use GetY0() instead!"
+		Return _y0
+	End
+	
+	Method GetX1:Float()
 		Return _x1
 	End
 	
-	Method Y1:Float() Property
+	Method X1:Float() Property
+		'Print "X1 as Property is deprecated. Please use GetX1() instead!"
+		Return _x1
+	End
+	
+	Method GetY1:Float()
 		Return _y1
 	End
 	
-	Method Width:Int() Property
+	Method Y1:Float() Property
+		'Print "Y1 as Property is deprecated. Please use GetY1() instead!"
+		Return _y1
+	End
+	
+	Method GetWidth:Int()
 		Return _width
 	End
 	
-	Method Height:Int() Property
+	Method Width:Int() Property
+		'Print "Width as Property is deprecated. Please use GetWidth() instead!"
+		Return _width
+	End
+	
+	Method GetHeight:Int()
 		Return _height
 	End
 	
-	Method HandleX:Float() Property
+	Method Height:Int() Property
+		'Print "Height as Property is deprecated. Please use GetHeight() instead!"
+		Return _height
+	End
+	
+	Method GetHandleX:Float()
 		Return -_x0/(_x1-_x0)
 	End
 	
+	Method HandleX:Float() Property
+		'Print "HandleX as Property is deprecated. Please use GetHandleX() instead!"
+		Return -_x0/(_x1-_x0)
+	End
+	
+	Method GetHandleY:Float()
+		Return -_y0/(_y1-_y0)
+	End
+	
 	Method HandleY:Float() Property
+		'Print "HandleY as Property is deprecated. Please use GetHandleY() instead!"
 		Return -_y0/(_y1-_y0)
 	End
 	
@@ -1215,7 +1324,12 @@ Class Image
 		_caster=shadowCaster
 	End
 	
+	Method GetShadowCaster:ShadowCaster()
+		Return _caster
+	End
+	
 	Method ShadowCaster:ShadowCaster() Property
+		'Print "ShadowCaster as Property is deprecated. Please use GetShadowCaster() instead!"
 		Return _caster
 	End
 	
@@ -1231,7 +1345,12 @@ Class Image
 		_flagsMask=mask
 	End
 	
+	Function GetFlagsMask:Int()
+		Return _flagsMask
+	End
+	
 	Function FlagsMask:Int()
+		'Print "FlagsMask is deprecated. Please use GetFlagsMask() instead!"
 		Return _flagsMask
 	End
 	

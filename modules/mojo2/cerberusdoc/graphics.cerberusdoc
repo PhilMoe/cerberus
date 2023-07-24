@@ -272,22 +272,50 @@ The @flags parameter can be a bitwise combination of:
 | Texture.Managed		| Texture contents are preserved when graphics are lost
 
 
-# Method Width:Int() Property
+# Method GetWidth:Int()
 
 Get texture width.
 
 
-# Method Height:Int() Property
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get texture width.
+
+
+# Method GetHeight:Int()
 
 Get texture height.
 
 
-# Method Format:Int() Property
+# Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
+
+Get texture height.
+
+
+# Method GetFormat:Int()
 
 Get texture format.
 
 
+# Method Format:Int() Property
+
+Deprecated: Please use [[GetFormat]]() instead!
+
+Get texture format.
+
+
+# Method GetFlags:Int()
+
+Get texture flags.
+
+
 # Method Flags:Int() Property
+
+Deprecated: Please use [[GetFlags]]() instead!
 
 Get texture flags.
 
@@ -329,7 +357,14 @@ Materials contain shader parameters that map to shader uniforms variables when r
 Create a new material.
 
 
+# Method GetShader:Shader()
+
+Get material shader.
+
+
 # Method Shader:Shader() Property
+
+Deprecated: Please use [[GetShader]]() instead!
 
 Get material shader.
 
@@ -380,12 +415,26 @@ See also:
 [[DrawList.SetFont]], [[DrawList.DrawText]], [[DrawList.DrawTextBox]]
 
 
-# Method TextWidth:Int( text:String )
+# Method GetTextWidth:Int( text:String )
 
 Get width of @text drawn in this font.
 
 
+# Method TextWidth:Int( text:String )
+
+Deprecated: Please use [[GetTextWidth]]() instead!
+
+Get width of @text drawn in this font.
+
+
+# Method GetTextHeight:Int( text:String = "" )
+
+Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
+
+
 # Method TextHeight:Int( text:String = "" )
+
+Deprecated: Please use [[GetTextHeight]]() instead!
 
 Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
 
@@ -437,7 +486,14 @@ See also:
 Set shadow caster vertices.
 
 
+# Method GetVertices:Float[]()
+
+Get shadow caster vertices.
+
+
 # Method Vertices:Float[]() Property
+
+Deprecated: Please use [[GetVertices]]() instead!
 
 Get shadow caster vertices.
 
@@ -490,7 +546,18 @@ For example, by setting the flags mask to just Image.Managed, the Image.Filter a
 The default flags mask is Image.Filter|Image.Mipmap|Image.Managed, which effectively disables the filter.
 
 
+# Function GetFlagsMask:Int()
+
+Returns the current flags mask.
+
+See also:
+
+SetFlagsMask
+
+
 # Function FlagsMask:Int()
+
+Deprecated: Please use [[GetFlagsMask]]() instead!
 
 Returns the current flags mask.
 
@@ -504,12 +571,26 @@ SetFlagsMask
 Discard any internal resources such as videomem used by the image.
 
  
-# Method Width:Int() Property
+# Method GetWidth:Int()
 
 Get image width.
 
 
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get image width.
+
+
+# Method GetHeight:Int()
+
+Get image height.
+
+
 # Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
 
 Get image height.
 
@@ -521,15 +602,31 @@ Set image handle.
 
 # Method HandleX:Float() Property
 
+Deprecated: Please use [[GetHandleX]]() instead!
+
 Get image x handle.
 
 
-# Method HandleY:Float() Property
+# Method GetHandleY:Float()
 
 Get image y handle.
 
 
+# Method HandleY:Float() Property
+
+Deprecated: Please use [[GetHandleY]]() instead!
+
+Get image y handle.
+
+
+# Method GetShadowCaster:ShadowCaster()
+
+Get attached shadow caster.
+
+
 # Method ShadowCaster:ShadowCaster() Property
+
+Deprecated: Please use [[GetShadowCaster]]() instead!
 
 Get attached shadow caster.
 
@@ -548,22 +645,50 @@ Returns true if image is currently busy loading.
 On targets other than html5, this will always return false.
 
 
-# Method X0:Float() Property
+# Method GetX0:Float()
 
 Get x coordinate of the left edge of the image rect.
 
 
-# Method Y0:Float() Property
+# Method X0:Float() Property
+
+Deprecated: Please use [[GetX0]]() instead!
+
+Get x coordinate of the left edge of the image rect.
+
+
+# Method GetY0:Float()
 
 Get y coordinate of the top edge of the image rect.
 
 
-# Method X1:Float() Property
+# Method Y0:Float() Property
+
+Deprecated: Please use [[GetY0]]() instead!
+
+Get y coordinate of the top edge of the image rect.
+
+
+# Method GetX1:Float()
 
 Get x coordinate of the right edge of the image rect.
 
 
+# Method X1:Float() Property
+
+Deprecated: Please use [[GetX1]]() instead!
+
+Get x coordinate of the right edge of the image rect.
+
+
+# Method GetY1:Float()
+
+Get y coordinate of the bottom edge of the image rect.
+
+
 # Method Y1:Float() Property
+
+Deprecated: Please use [[GetY1]]() instead!
 
 Get y coordinate of the bottom edge of the image rect.
 
