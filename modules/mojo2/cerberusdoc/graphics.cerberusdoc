@@ -600,6 +600,16 @@ Get image height.
 Set image handle.
 
 
+# Method SetHandle:Void( handle:Float[] )
+
+Set image handle by providing a float array [x, y].
+
+
+# Method GetHandleX:Float()
+
+Get image x handle.
+
+
 # Method HandleX:Float() Property
 
 Deprecated: Please use [[GetHandleX]]() instead!
@@ -617,6 +627,11 @@ Get image y handle.
 Deprecated: Please use [[GetHandleY]]() instead!
 
 Get image y handle.
+
+
+# Method GetHandle:Float[]()
+
+Get image handle as a float array [x, y].
 
 
 # Method GetShadowCaster:ShadowCaster()

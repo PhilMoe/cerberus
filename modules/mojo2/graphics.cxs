@@ -1305,6 +1305,10 @@ Class Image
 		Return -_y0/(_y1-_y0)
 	End
 	
+	Method GetHandle:Float[]()
+		Return [-_x0/(_x1-_x0), -_y0/(_y1-_y0)]
+	End
+	
 	Method WritePixels:Void( x:Int,y:Int,width:Int,height:Int,data:DataBuffer,dataOffset:Int=0,dataPitch:Int=0 )
 		_material.ColorTexture.WritePixels( x+_x,y+_y,width,height,data,dataOffset,dataPitch )
 	End
@@ -1318,6 +1322,10 @@ Class Image
 		_t0=Float(_y)/Float(_material.Height)
 		_s1=Float(_x+_width)/Float(_material.Width)
 		_t1=Float(_y+_height)/Float(_material.Height)
+	End
+	
+	Method SetHandle:Void( handle:Float[] )
+		SetHandle(handle[0], handle[1])
 	End
 	
 	Method SetShadowCaster:Void( shadowCaster:ShadowCaster )
