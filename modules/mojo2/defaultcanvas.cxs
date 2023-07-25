@@ -29,6 +29,7 @@ Function ResetDefaultCanvas:Void()
 	SetBlendMode(BlendMode.Alpha)
 	SetColor(1.0,1.0,1.0)
 	SetAlpha(1.0)
+	ResetMatrix()
 
 	Local w:Int = DeviceWidth(), h:Int = DeviceHeight()
 	SetScissor(0, 0, w, h) 
