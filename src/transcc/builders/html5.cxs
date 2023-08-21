@@ -54,8 +54,10 @@ Class Html5Builder Extends Builder
 		_trans=New JsTranslator
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String="")
 
+		'ChangeDir(productPath)
+		
 		CreateDataDir "data"
 
 		Local meta:="var META_DATA=~q"+MetaData()+"~q;~n"
@@ -87,7 +89,8 @@ Class Html5Builder Extends Builder
 		'game = game.Replace("%%HTML5_CANVAS_HEIGHT%%", GetConfigVar("HTML5_CANVAS_HEIGHT") )
 		'game = game.Replace("%%HTML5_CANVAS_RESIZE_MODE%%", GetConfigVar("HTML5_CANVAS_RESIZE_MODE") )
 		SaveString game, GetConfigVar("HTML5_APP_FILENAME")
-
+		
+		CopyDir(CurrentDir, productPath)
 
 		If tcc.opt_run
 			Local p:=RealPath( GetConfigVar("HTML5_APP_FILENAME") )

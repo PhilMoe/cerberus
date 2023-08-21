@@ -38,7 +38,7 @@ Class StdcppBuilder Extends Builder
 		_trans=New CppTranslator
 	End
 
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 		
 		' Set an internal variable for build configuration.
 		Select ENV_CONFIG

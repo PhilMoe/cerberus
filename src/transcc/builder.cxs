@@ -20,7 +20,7 @@ Class Builder
 	
 	Method Begin:Void() Abstract
 	
-	Method MakeTarget:Void() Abstract
+	Method MakeTarget:Void(productPath:String) Abstract
 	
 	Method Make:Void()
 	
@@ -109,7 +109,7 @@ Class Builder
 		Else
 			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
 		Endif
-		
+		Print "******** SourcePath: "+ tcc.opt_srcpath
 		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
 		
 		If tcc.opt_clean
@@ -150,7 +150,21 @@ Class Builder
 		Local cd:=CurrentDir
 
 		ChangeDir targetPath
-		Self.MakeTarget
+		
+		Local productPath:String = ExtractDir( tcc.opt_srcpath ) + "/" + "Products" + "/"
+		Print productPath
+		If FileType( productPath )=FILETYPE_DIR DeleteDir(productPath, True)
+		
+		CreateDir productPath
+		If FileType( productPath )<>FILETYPE_DIR Die "Failed to create product dir: " + productPath
+		
+		Local productTargetPath:String = ExtractDir( tcc.opt_srcpath ) + "/" + "Products" + "/" + tcc.target.dir
+		Print productTargetPath
+		CreateDir productTargetPath
+		If FileType( productTargetPath )<>FILETYPE_DIR Die "Failed to create product target dir: " + productTargetPath
+		
+		
+		Self.MakeTarget(productTargetPath)
 		ChangeDir cd
 
 	End

@@ -39,7 +39,7 @@ Class AndroidBuilder Extends Builder
 		Forever
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 
 		'create data dir
 		CreateDirRecursive "app/src/main/assets"

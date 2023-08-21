@@ -71,7 +71,7 @@ Class CustomBuilder Extends Builder
 		End
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 	
 		Select ENV_CONFIG
 			Case "debug" 

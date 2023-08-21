@@ -143,7 +143,7 @@ app_package="com.mycompany.mytemplate"
 		_trans=New CppTranslator
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 		Select HostOS
 			Case "winnt"
 				MakeAndroid()

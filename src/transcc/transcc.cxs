@@ -12,8 +12,8 @@ Import builders
     Const TEST_PATH:="/src/transcc/transcc_test/"
     Const TEST_BUILD:="-run"
     Const TEST_CONFIG:="release"
-    Const TEST_FILE:="cpptool"
-    Const TEST_TARGET:="C++_Tool"
+    Const TEST_FILE:="mojotest"
+    Const TEST_TARGET:="Html5_Game"
   
     ' Comes in handy when needing to debug the parser.
     ' If DebugIsMainCXS(Toker.Path) DebugStop

@@ -228,7 +228,7 @@ Class IosBuilder Extends Builder
 		
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 	
 		Local sim_path:="/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
 		If tcc.opt_run = True 

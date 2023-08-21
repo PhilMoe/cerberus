@@ -247,7 +247,7 @@ Class GlfwBuilder Extends Builder
 		_trans=New CppTranslator
 	End
 	
-	Method MakeTarget:Void()
+	Method MakeTarget:Void(productPath:String)
 		Select HostOS
 		Case "winnt"
 			If GetConfigVar( "GLFW_USE_MINGW" )="1" And tcc.MINGW_PATH
