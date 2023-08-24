@@ -507,7 +507,7 @@ You can use the following escape sequences in string literals:
 | `~n`            | 10 (newline)
 | `~r`            | 13 (return)
 | `~t`            | 9 (tabulator)
-| `~z`            | 0 (null)
+| `~0`            | 0 (null)
 | `~u006F`        | unicode char 0x006F
 | `~~`            | 126 (tilde ~)
 
