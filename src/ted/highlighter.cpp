@@ -88,7 +88,7 @@ Highlighter::~Highlighter()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// HighLighter: PUBLIC MEMEBER FUNCTIONS
+// HighLighter: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Capitalize keywords
 bool Highlighter::capitalize(const QTextBlock &block, QTextCursor cursor)
@@ -269,7 +269,7 @@ QIcon Highlighter::identIcon(const QString &ident)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// HighLighter: PROTECTED MEMEBER FUNCTIONS
+// HighLighter: PROTECTED MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Highlight the code block.
 // NOTE: This has the same issue with #REM/#IF/#END ambiguity as the main Cerberus X/Monkey X parser. e.i. It cannot
@@ -396,7 +396,7 @@ void Highlighter::highlightBlock(const QString &ctext)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// HighLighter: PUBLIC MEMEBER SLOTS
+// HighLighter: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 // In the event that preferences were changed, then update.
 void Highlighter::onPrefsChanged(const QString &name)
@@ -424,7 +424,7 @@ void Highlighter::onPrefsChanged(const QString &name)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// HighLighter: PRIVATE MEMEBER FUNCTIONS
+// HighLighter: PRIVATE MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 void Highlighter::insert(BlockData *data)
 {

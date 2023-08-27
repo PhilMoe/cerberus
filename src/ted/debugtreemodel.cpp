@@ -20,7 +20,7 @@ DebugTreeModel::DebugTreeModel(Process *proc, QObject *parent)
     : QStandardItemModel(parent), _proc(proc), _stopped(false) {}
 
 //----------------------------------------------------------------------------------------------------------------------
-//  DebugTreeModel: PUBLIC MEMEBER FUNCTIONS
+//  DebugTreeModel: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 void DebugTreeModel::stop()
 {
@@ -194,7 +194,7 @@ void DebugTreeModel::fetchMore(const QModelIndex &parent)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  DebugTreeModel: PUBLIC MEMEBER SLOTS
+//  DebugTreeModel: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 void DebugTreeModel::onClicked(const QModelIndex &index)
 {

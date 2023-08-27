@@ -177,7 +177,7 @@ CodeEditor::~CodeEditor()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PUBLIC MEMEBER FUNCTIONS
+//  CodeEditor: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Calculate the size of the line number gutter
 int CodeEditor::lineNumberAreaWidth()
@@ -556,7 +556,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PUBLIC MEMEBER SLOTS
+//  CodeEditor: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 // Set the text modified flag if any text has changed.
 void CodeEditor::onTextChanged()
@@ -728,7 +728,7 @@ void CodeEditor::highlightCurrentLine()
         }
     }
 
-    // Chec of brackets
+    // Check of brackets
     if(doHighlightBrackets) {
 
         if(!isReadOnly()) {
@@ -851,7 +851,7 @@ void CodeEditor::onCodeTreeViewClicked(const QModelIndex &index)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PROTECTED MEMEBER FUNCTIONS
+//  CodeEditor: PROTECTED MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Update the line gutter in the event of a GUI resize.
 void CodeEditor::resizeEvent(QResizeEvent *e)

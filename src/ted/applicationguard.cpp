@@ -30,7 +30,7 @@ ApplicationGuard::~ApplicationGuard()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  ApplicationGuard: PUBLIC MEMEBER FUNCTIONS
+//  ApplicationGuard: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Stop listening to the old and start listening to a new connection.
 void ApplicationGuard::listen(QString name)
@@ -59,7 +59,7 @@ bool ApplicationGuard::hasPrevious(QString name, QStringList arguments)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  ApplicationGuard: PUBLIC MEMEBER SLOTS
+//  ApplicationGuard: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 // Make a new connection and connect the socket to the readyRead method.
 void ApplicationGuard::newConnection()
