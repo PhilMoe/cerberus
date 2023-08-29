@@ -747,6 +747,16 @@ Class Shader
 		Return New GLProgram( program,matuniforms.ToArray() )
 	
 	End
+
+	' Use to ensure that all identifiers are in UTF-8 ASCII.
+	Method ToUpperASCII:String( str:String )
+		Local s:=str.ToChars()
+		For Local i:=0 Until s.Length
+			If (s[i]>127) Error "Shader Parse: Non utf-8 ASCII character detected in identifier "+str
+			If (s[i]>=97 And s[i]<=122) s[i]~=$20
+		Next
+		Return String.FromChars( s )
+	End
 	
 	Method Build:Void()
 		InitMojo2
@@ -770,9 +780,9 @@ Class Shader
 			Local id:=p.CParseIdent()
 			If id
 				If id.StartsWith( "gl_" )
-					vars.Insert "B3D_"+id.ToUpper().Replace("İ", "I")
+					vars.Insert ToUpperASCII( "B3D_"+id )
 				Else If id.StartsWith( "b3d_" ) 
-					vars.Insert id.ToUpper().Replace("İ", "I")
+					vars.Insert ToUpperASCII( id )
 				Endif
 				Continue
 			Endif
