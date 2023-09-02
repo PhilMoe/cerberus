@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     QString name =
         "com.krautapps.Ted"; // This is used to identify our application in the QLocalServer/QLocalSock CerberusGuard
 
-    // Single instance class. Basically creates a QLocalServer/QLocalSocket for inter-process comunication.
+    // Single instance class. Basically creates a QLocalServer/QLocalSocket for inter-process communication.
     ApplicationGuard guardian;
     if(guardian.hasPrevious(name, Application::arguments()))
         return 0;

@@ -31,7 +31,7 @@ Application::~Application()
 
 #ifdef Q_OS_MACX
 //----------------------------------------------------------------------------------------------------------------------
-//  Application: PUBLIC MEMEBER FUNCTIONS
+//  Application: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 void Application::processFiles()
 {
@@ -43,7 +43,7 @@ void Application::processFiles()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  Application: PRIVATE MEMEBER FUNCTIONS
+//  Application: PRIVATE MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Capture any Mac OS X events. Only interested in the FileOpen event here.
 bool Application::event(QEvent *event)

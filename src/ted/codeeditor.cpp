@@ -11,6 +11,9 @@
 // CONTRIBUTORS: See contributors.txt
 //
 //  Changes:
+//          2022-08-27: DAWLANE - Fixed an issue with block tab stop block adjustment.
+//                      Should now insert or remove tab stops based on the preference options.
+//                      NOTE: Depending of the size of the tabs. It will either preserve or remove space characters.
 //          2022-12-23: DAWLANE - Fixed an issue with tap stop width/distance and building with Qt 5.9
 //          2022-11-02: DAWLANE - Move Highlighter and CodeTreeItem into highlighter.h and highlighter.cpp.
 //                      Fixed completer tab and escape key bug.
@@ -134,6 +137,7 @@ CodeEditor::CodeEditor(QWidget *parent)
     _tabs4spaces = Prefs::prefs()->getBool("tabs4spaces");
     _tabSpaceText = " ";
     _tabSpaceText = _tabSpaceText.repeated(Prefs::prefs()->getInt("tabSize"));
+    _tabSize = Prefs::prefs()->getInt("tabSize");
     _capitalizeAPI = Prefs::prefs()->getBool("capitalizeAPI");
 
     onPrefsChanged("");
@@ -177,7 +181,7 @@ CodeEditor::~CodeEditor()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PUBLIC MEMEBER FUNCTIONS
+//  CodeEditor: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Calculate the size of the line number gutter
 int CodeEditor::lineNumberAreaWidth()
@@ -556,7 +560,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PUBLIC MEMEBER SLOTS
+//  CodeEditor: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 // Set the text modified flag if any text has changed.
 void CodeEditor::onTextChanged()
@@ -638,6 +642,7 @@ void CodeEditor::onPrefsChanged(const QString &name)
         _tabs4spaces = prefs->getBool("tabs4spaces");
         _tabSpaceText = " ";
         _tabSpaceText = _tabSpaceText.repeated(prefs->getInt("tabSize"));
+        _tabSize = prefs->getInt("tabSize");
         _capitalizeAPI = prefs->getBool("capitalizeAPI");
     }
 }
@@ -728,7 +733,7 @@ void CodeEditor::highlightCurrentLine()
         }
     }
 
-    // Chec of brackets
+    // Check of brackets
     if(doHighlightBrackets) {
 
         if(!isReadOnly()) {
@@ -851,7 +856,7 @@ void CodeEditor::onCodeTreeViewClicked(const QModelIndex &index)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  CodeEditor: PROTECTED MEMEBER FUNCTIONS
+//  CodeEditor: PROTECTED MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 // Update the line gutter in the event of a GUI resize.
 void CodeEditor::resizeEvent(QResizeEvent *e)
@@ -901,12 +906,14 @@ void CodeEditor::keyPressEvent(QKeyEvent *e)
             setOverwriteMode(false);
     }
 
-    // Insert tabulation or delete tabulation
+    // Depending on the key pressed and if any text is selected. Either insert or adjust indentation.
     if(key == Qt::Key_Tab || key == Qt::Key_Backtab) {
 
         // If text has been selected, then do a block tabulation insert or delete.
         if(hasSel) {
             QTextBlock anchor = document()->findBlock(cursor.anchor());
+
+            // If the anchor is not in the block same block as the cursor, then find which block where the anchor is.
             if(anchor != block) {
                 int beg, end;
                 if(block < anchor) {
@@ -916,29 +923,57 @@ void CodeEditor::keyPressEvent(QKeyEvent *e)
                     beg = anchor.blockNumber();
                     end = document()->findBlock(cursor.position() - 1).blockNumber();
                 }
+
+                // Lock the undo/redo history so a each change is treated as one undo/redo action.
                 cursor.beginEditBlock();
 
+                // Move the block backwards if the shift key is held down.
                 if(key == Qt::Key_Backtab || (e->modifiers() & Qt::ShiftModifier)) {
+
+                    // Iterate each block within the the selected text.
                     for(int i = beg; i <= end; ++i) {
+
                         QTextBlock block = document()->findBlockByNumber(i);
+
                         if(!block.length())
                             continue;
+
                         cursor.setPosition(block.position());
+
+                        // Process a block for the type of white space characters to replace with the currently
+                        // option in the preferences dialog.
                         if(_tabs4spaces) {
+
+                            // First deal with any space characters that need to be removed.
+                            cursor.setPosition(block.position() + _tabSize, QTextCursor::KeepAnchor);
+                            if(cursor.selectedText() == _tabSpaceText) {
+                                cursor.insertText("");
+                                continue;
+                            }
+
+                            // Now check for tab stop characters.
                             cursor.setPosition(block.position() + 1, QTextCursor::KeepAnchor);
                             if(cursor.selectedText() != "\t")
                                 continue;
                         } else {
-                            cursor.setPosition(block.position() +
-                                               Prefs::prefs()->getInt("tabSize"),
-                                               QTextCursor::KeepAnchor);
+
+                            // First deal with any tab stop characters that need to be removed.
+                            cursor.setPosition(block.position() + 1, QTextCursor::KeepAnchor);
+                            if(cursor.selectedText() == '\t') {
+                                cursor.insertText("");
+                                continue;
+                            }
+
+                            cursor.setPosition(block.position() + _tabSize, QTextCursor::KeepAnchor);
                             if(cursor.selectedText() != _tabSpaceText)
                                 continue;
                         }
+
                         cursor.insertText("");
                     }
 
                 } else {
+                    // Move the select text to the right.
                     for(int i = beg; i <= end; ++i) {
                         QTextBlock block = document()->findBlockByNumber(i);
                         cursor.setPosition(block.position());
@@ -956,12 +991,25 @@ void CodeEditor::keyPressEvent(QKeyEvent *e)
                 cursor.setPosition(block0.position());
                 cursor.setPosition(block1.position() + block1.length(),
                                    QTextCursor::KeepAnchor);
+
+                // End the lock on undo/redo history and set the cursor before accepting the key event and returning.
                 cursor.endEditBlock();
                 setTextCursor(cursor);
                 e->accept();
                 return;
             }
         }
+
+        // No selected text, but the key is a tab. So the either add white space characters or tab stops.
+        if(_tabs4spaces)
+            cursor.insertText("\t");
+
+        else
+            cursor.insertText(_tabSpaceText);
+
+        e->accept();
+        return;
+
     } else if(key == Qt::Key_Enter || key == Qt::Key_Return) {
         // auto indent
         if(!hasSel) {
