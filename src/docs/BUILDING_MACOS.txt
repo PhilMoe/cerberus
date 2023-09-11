@@ -42,15 +42,15 @@ The optional arguments to pass to the builder.sh script for the official Qt Inst
 -k or --qtkit with the dot version number for a specific Qt SDK.
 -m or --showmenu will run the script in menu mode.
 -d or --deploy with the full path to where Cerberus will be built and an archive created. NOTE: This requires that git is installed and is only available in menu mode.
--a or --archiver with the archiver to use. NOTE: This currently only supports tar.
--c or --cert. To be use in conjunction with the archive tool to set the trusted archive certificate.
--p or --prefix with the required application bundle identifier.
+-a or --archiver with the archiver to use. The default is to use hdiutil for generating a dmg file.
+--clearbuilds to remove all built files and exit. This also removes those for other systems leaving a clean git repository.
 -h or --help to shows help info.
 
 Executing the builder.sh script with just the Qt installers directory passed as a parameter. It will try to get the highest installed version.
 If the Qt SDK cannot be detected with the version parameters passed with both a Qt Install directory and a version, then the script try to use the distributions default Qt SDK development files.
 Running the builder.sh script without any parameters will just try to detect a distributions default Qt development install.
 
-The deployment of Cerberus on non development MasOS devices requires knowledge of the code signing process.
+DEPLOYING:
+The deployment of Cerberus requires knowledge of the code signing process.
 Information about this can be found on the Apple developers website and documentation.
 https://developer.apple.com/
