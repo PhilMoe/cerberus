@@ -69,6 +69,16 @@ Function GetConfigVar$( key$ )
 	Return _cfgScope.vars.Get( key )
 End
 
+' Overloaded GetConfigVar.
+Function GetConfigVar$( key$, option$, replace$=" ")
+	Local str:=""
+	For Local i:=Eachin _cfgScope.vars.Get( key )
+		' TODO: Once all builders are updated to use the record separator the check for the pipe character can be removed.
+		If i="|"[0] Or i=option[0] Or i="~u001E"[0] str+=replace Else str+=String.FromChar(i)
+	Next
+	Return str
+End
+
 Function GetConfigVarType:Type( key$ )
 	Local decl:=_cfgScope.cdecls.Get( key )
 	If decl Return decl.type
