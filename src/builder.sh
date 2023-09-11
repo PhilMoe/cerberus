@@ -3,20 +3,25 @@
 
 # Get this script directory
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-SCRIPT_VER="1.1.1"
+SCRIPT_VER="1.2.0"
 
 TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
-BULDER_SCRIPT=1                         # Flag to indicate
+BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the buildr script. See freedesktop.sh
 QT_SELECTED=                            # Variable to hold the chosen qmake
 DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
-ARCHIVER=tar                            # Set the archive tool to use to build the deployment archive.
 
 # Import the dependencies that this script relies on.
 source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
 source "$SCRIPTPATH/builders/bash/thirdparty.sh"    # Thirdparty functions. Used to get information from compilers and Qt SDKs.
 
 # For Linux: A stand alone script that can be used to build icons and free sektop launchers.
-[ $HOST = "linux" ] && { source "$SCRIPTPATH/builders/bash/freedesktop.sh"; }
+[ $HOST = "linux" ] && {
+    source "$SCRIPTPATH/builders/bash/freedesktop.sh";
+    ARCHIVER=tar                                # Set the archive tool to use to build the deployment archive for Linux.
+} || {
+    ARCHIVER=hdiutil                            # Set the archive tool to use to build the deployment archive for macOS.
+}
+
 source "$SCRIPTPATH/builders/bash/deploy.sh"        # Script to create a deployment archive.
 source "$SCRIPTPATH/builders/bash/tools.sh"         # Functions to build Cerberus.
 
@@ -36,11 +41,11 @@ while [[ $# -gt 0 ]]; do
             ARCHIVER="$2"
             shift; shift
         ;;
-        -c|--cert)
-            [ $HOST = "macos" ] && {
-                CERT="$2"
-            }
-            shift; shift
+        --clearbuilds)
+            do_header "===== Cerberus X Tool Builder Version $SCRIPT_VER ====="
+            do_clearbuilds
+            do_success "Cerberus X Builder script terminated."
+            exit 0
         ;;
         -d|--deploy)
             DEPLOY="$2"
@@ -100,15 +105,15 @@ while [[ $# -gt 0 ]]; do
             [ $HOST = "linux" ] && {
                 echo -e "\t{-i|--icons} \"APP_ICON.svg\" \"MIME_ICON.svg\"\t- Generate desktop icons.";
                 echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t\t- Set the version of GCC to use."
-            } || {
                 echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use tar."
-                echo -e "\t{-c|--cert}\t\t\t\t\t- Set the certificate for the arcive tools."
+            } || {
+                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use hdiutil."
             }
-
+            echo -e "\t--clearbuilds\t\t\t\t\t- Removes all previous built binaries of Cerberus within local repository."
             echo -e "\t{-h|--help}\t\t\t\t\t- Show usage."
             echo "EXAMPLES:"
-            echo -e "\te.g: ./builder.sh -q $HOME/Qt -v 5.14.0 --showmenu --gcc 11"
-            echo -e "\te.g: ./builder.sh --qtsdk ~/Qt --qtver 5.14.0"
+            echo -e "\te.g: ./builder.sh -q $HOME/Qt -k 5.14.0 --showmenu --gcc 11"
+            echo -e "\te.g: ./builder.sh --qtsdk ~/Qt --qtkit 5.14.0"
             exit 0
         ;;
         -*|--*=) # unsupported flags
