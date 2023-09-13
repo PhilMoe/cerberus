@@ -56,6 +56,8 @@ The optional arguments to pass to the builder.ps1 script are:
 -b or -msbuild will use msbuild to build all tools. Requires that Visual Studio be installed.
 -s or -stdout is used for viewing output of commands after they have completed. Useful for checking build output.
 -d or -deploy with the full path to where Cerberus will be built and an archive created. NOTE: This requires that git is installed and is only available in menu mode.
+--clearbuilds to remove all built files and exit. This also removes those for other systems leaving a clean git repository.
+-h or -help to shows help info.
 
 Executing the builder.ps1 script with no options set will use the default values as list above.
 
