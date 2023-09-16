@@ -12,7 +12,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST macos
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -15997,6 +15997,7 @@ class c_StringStack : public c_Stack{
 	void mark();
 };
 String bb_config_GetConfigVar(String);
+String bb_config_GetConfigVar2(String,String,String);
 String bb_transcc_ReplaceEnv(String);
 class c_Builder : public Object{
 	public:
@@ -18812,7 +18813,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-07-08",35));
+	bbPrint(String(L"TRANS cerberus compiler V2023-09-16",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20233,6 +20234,21 @@ void c_StringStack::mark(){
 String bb_config_GetConfigVar(String t_key){
 	return bb_config__cfgScope->m_vars->p_Get(t_key);
 }
+String bb_config_GetConfigVar2(String t_key,String t_option,String t_replace){
+	String t_str=String();
+	String t_=bb_config__cfgScope->m_vars->p_Get(t_key);
+	int t_2=0;
+	while(t_2<t_.Length()){
+		int t_i=(int)t_[t_2];
+		t_2=t_2+1;
+		if(t_i==124 || t_i==(int)t_option[0] || t_i==30){
+			t_str=t_str+t_replace;
+		}else{
+			t_str=t_str+String((Char)(t_i),1);
+		}
+	}
+	return t_str;
+}
 String bb_transcc_ReplaceEnv(String t_str){
 	c_StringStack* t_bits=(new c_StringStack)->m_new2();
 	do{
@@ -20863,27 +20879,10 @@ void c_AndroidBuilder::p_MakeTarget(){
 	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	String t_ref1=bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_1",27));
-	String t_ref2=bb_config_GetConfigVar(String(L"ANDROID_LIBRARY_REFERENCE_2",27));
-	String t_manifest=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28));
-	if(t_ref1.Contains(String(L";",1))){
-		t_ref1=t_ref1.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
-	}else{
-		t_ref1=t_ref1.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
-	}
-	if(t_ref2.Contains(String(L";",1))){
-		t_ref2=t_ref2.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
-	}else{
-		t_ref2=t_ref2.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
-	}
-	if(t_manifest.Contains(String(L";",1))){
-		t_manifest=t_manifest.Replace(String(L";",1),String(L"\n",1))+String(L"\n",1);
-	}else{
-		t_manifest=t_manifest.Replace(String(L"|",1),String(L"\n",1))+String(L"\n",1);
-	}
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),t_ref1);
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),t_ref2);
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),t_manifest);
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),bb_config_GetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),String(L";",1),String(L"\n",1))+String(L"\n",1));
+	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),bb_config_GetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),String(L";",1),String(L"\n",1))+String(L"\n",1));
+	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),String(L";",1),String(L"\n",1))+String(L"\n",1));
+	String t_manifest=bb_config_GetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),String(L";",1),String(L"\n",1))+String(L"\n",1);
 	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));
 	if(t_admob_appid.Length()>0){
 		String t_admob_appid2=String(L"<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" ",68);
@@ -31511,8 +31510,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 																t_var=String(L"False",5);
 															}
 														}
-														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"|",1))){
-															t_val2=String(L"|",1)+t_val2;
+														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"" L"\x1e" L"",1))){
+															t_val2=String(L"" L"\x1e" L"",1)+t_val2;
 														}
 														bb_config_SetConfigVar2(t_toke2,t_var+t_val2);
 													}
