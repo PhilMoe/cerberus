@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# COMMON FUNCTIONS VERSION
+# COMMON FUNCTIONS
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Get the root directory of the Cerberus installation and set variable for BIN and SRC directories.
