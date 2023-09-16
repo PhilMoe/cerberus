@@ -1,10 +1,21 @@
-***** v2023-08-22 *****
+***** v2023-09-16 *****
 FIX: [brl.json] Add escaping of tab character to json string parsing. (Author: Phil7)
 FIX: [Android] Fix config var separator character not working for AndroidManifest (Author: dawlane)
+FIX: [TED] Fixed platform plugin not being deployed on Linux. (Author: dawlane)
+FIX: [TED] Fixed an issue with block tab stop block adjustment. (Author: dawlane)
 FIX: [Language Reference] Fixed zero string delimiter (Author: MikeHart)
+MOD: [Build scripts] Updated the build scripts. (Author: dawlane)
+MOD: [Mojo2] Update to shader parser fix. Enforce utf8-ascii upper case. (Author: dawlane)
+MOD: [Android] Changed Android Target to support API 33. (Author: Phil7)
 NEW: [Android] Added FileInputStream for Android data files. (Author: Phil7)
 NEW: [Android] Added default Cerberus Icon for Android. (Author: Phil7)
-MOD: [Android] Changed Android Target to support API 33. (Author: Phil7)
+
+
+KNOWN ISSUES: 
+- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
+- GLFW_APP_ICON doesn't work with OSX and Linux.
+- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
+- Because of changes in the Google admob SDK, new apps using brl.admob in iOS can not be submitted atm.
 
 
 ***** v2023-05-26 *****
@@ -34,15 +45,6 @@ MOD: [Tween] Added Tween.FIT constant, SetFitSlope:Void(s0:Float, s1:Float) to u
 MOD: [TED] Restructured and fixed so it can be compiled with QT 6.4.3.   (Author: dawlane)
 MOD: [build] New build scripts and build docs.   (Author: dawlane)
 MOD: [MacOs, XCode] It creates now universal builds supporting Intel and M1/M2 machines.   (Author: dawlane)
-
-
-KNOWN ISSUES: 
-- Window dragging in 32 bit Release mode still crashes, need to figure out why that is.
-- GLFW_APP_ICON doesn't work with OSX and Linux.
-- Because of changes in the Google billing SDK, new apps using brl.cerberusstore in Android can not be submitted atm.
-- Because of changes in the Google admob SDK, new apps using brl.admob in iOS can not be submitted atm.
-- Google/Android needs to be updated to support API 33
-
 
 
 ***** v2022-03-26 *****
