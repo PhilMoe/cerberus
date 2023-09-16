@@ -20,10 +20,11 @@ Param(
     [Alias("h")][switch]$help = $false,
     [Alias("b")][switch]$msbuild = $false,
     [Alias("s")][switch]$stdout = $false,
-    [Alias("d")][string]$deploy = ""
+    [Alias("d")][string]$deploy = "",
+    [switch]$clearbuilds = $false
 )
 
-[string]$SCRIPT_VER = "1.1.1"
+[string]$SCRIPT_VER = "1.2.0"
 
 Clear-Host
 
@@ -43,16 +44,24 @@ Clear-Host
 if ($help -eq $true) {
     do_info "CERBERUS X TOOLS VERSION $SCRIPT_VER"
     Write-Host "USEAGE: ./builder.ps1 [options]`n`t{-m|-showmenu}`t`t`t`t`t- run in menu mode.`n`t{-q|-qtsdk} `"QT_DIR_PATH`"`t`t`t- Set root Qt SDK directory."
-    Write-Host "`t{-v|-qtver} `"DOT.VERSION.NUMBER`"`t`t- Set Qt SDK version.`n`t{-vsi|-vsinstall} `"VISUAL_INSTALLER_PATH`"`t- Set MS Visual Installer directory."
+    Write-Host "`t{-k|-qtkit} `"DOT.VERSION.NUMBER`"`t`t- Set Qt SDK version.`n`t{-vsi|-vsinstall} `"VISUAL_INSTALLER_PATH`"`t- Set MS Visual Installer directory."
     Write-Host "`t{-y|-vsver} `"PRODUCT_YEAR`"`t`t`t- Set Visual Studio product year`n`t{-c|-mingw} `"MINGW_DIR`"`t`t`t`t- Set MiGW root directory."
     Write-Host "`t{-b|-msbuild}`t`t`t`t`t- Build using MSBuild. Requires Visual Studio.`n`t{-s|-stdout}`t`t`t`t`t- Show stdout after execution."
-    Write-Host "`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t- Build a deployment archive in the directory passed.`n`t{-h|-help}`t`t`t`t`t- Show this quick help`n"
-    Write-Host "EXAMPLE:`n`te.g: ./builder.ps1 -qtsdk C:\Qt -v 5.14.0"
-    Write-Host "`te.g: ./builder.ps1 -qtsdk C:\Qt -qtver 5.14.0 -vsver `"2017`" -showmenu"
+    Write-Host "`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t- Build a deployment archive in the directory passed."
+    Write-Host "`t-clearbuilds`t`t`t`t`t- Removes all previous built binaries of Cerberus within local repository.`n`t{-h|-help}`t`t`t`t`t- Show this quick help`n"
+    Write-Host "EXAMPLE:`n`te.g: ./builder.ps1 -qtsdk C:\Qt -k 5.14.0"
+    Write-Host "`te.g: ./builder.ps1 -qtsdk C:\Qt -qtkit 5.14.0 -vsver `"2017`" -showmenu"
     exit 1
 }
 
 do_header "===== Cerberus X Tool Builder Version $SCRIPT_VER ====="
+
+# If the clear builds flag is set, then call the function to remove all previously build items.
+if($clearbuilds) {
+    do_clearbuilds
+    do_success "Cerberus X Builder script terminated."
+    exit 0
+}
 
 # The base requirments for building Cerberus is that a GCC compiler is present.
 do_mingw($mingw)

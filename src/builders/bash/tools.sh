@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TOOL BUILDER FUNCTIONS VERSION
+# TOOL BUILDER FUNCTIONS
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Function to build transcc
@@ -64,7 +64,7 @@ do_cserver(){
                 mv "$PROJECT_DIR/Release/data" "$BIN/data";
             }
             [ -f "$BIN/cserver_$HOST" ] && { rm -f "$BIN/cserver_$HOST"; };
-            } || {
+        } || {
             [ -d "$BIN/cserver_$HOST$EXTENSION" ] && { rm -rf "$BIN/cserver_$HOST$EXTENSION"; };
         }
         
@@ -211,4 +211,47 @@ do_all(){
         do_deploy;
         return $EXITCODE
     }
+}
+
+# Remove all previously built files.
+do_clearbuilds(){
+    do_info "CLEARING OUT PREVIOUS BUILDS"
+
+    # Remove all macOS applications. Ted and CServer
+    find "$BIN" -type d -name '*.app' -exec rm -rf "{}" \;
+
+    # Remove transcc linux, winnt and macos
+    find "$BIN" -type f -name 'transcc_*' -delete
+
+    # Remove the launchers linux, winnt and macos
+    find "$ROOT" -type f -name 'Cerberus.exe' -delete
+    find "$ROOT" -type f -name 'Cerberus' -delete
+    find "$ROOT" -type d -name 'Cerberus.app' -exec rm -rf "{}" \;
+    find "$ROOT" -type f -name '*.desktop' -delete
+  
+    # Remove CServer linux and winnt
+    find "$BIN" -type f -name 'Cerberus.*' -delete
+
+    # Remove makedocs linux, winnt and macos
+    find "$BIN" -type f -name 'makedocs_*' -delete
+
+    # Remove Ted linux and winnt
+    find "$BIN" -type f -name 'Ted.*' -delete
+    find "$BIN" -type f -name 'Ted' -delete
+
+    # Remove Qt Linux support files and directories
+    find "$BIN" -type d -name 'lib*' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'plugins' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'resources' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'translations' -exec rm -rf "{}" \;
+
+    # Remove Qt WinNT support files and directories
+    find "$BIN" -type f -name 'qt.conf' -delete
+    find "$BIN" -type f -name '*.dll' -delete
+    find "$BIN" -type f -name '*.exe' -delete
+    find "$BIN" -type f -name '*.ilk' -delete
+    find "$BIN" -type f -name '*.pdb' -delete
+    find "$BIN" -type f -name 'openal32_*' -delete
+    find "$BIN" -type d -name 'platforms' -exec rm -rf "{}" \;
+
 }

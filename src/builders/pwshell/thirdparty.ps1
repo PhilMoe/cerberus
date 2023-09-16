@@ -1,4 +1,4 @@
-# THIRD-PART FUNCTIONS VERSION
+# THIRD-PARTY FUNCTIONS
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Due to how a MSVC tool chain works. It is necessary to set the environment up correctly.
