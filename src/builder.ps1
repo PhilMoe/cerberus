@@ -24,7 +24,7 @@ Param(
     [switch]$clearbuilds = $false
 )
 
-[string]$SCRIPT_VER = "1.2.0"
+[string]$SCRIPT_VER = "1.2.1"
 
 Clear-Host
 
