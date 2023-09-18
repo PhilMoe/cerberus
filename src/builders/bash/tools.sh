@@ -218,7 +218,7 @@ do_clearbuilds(){
     do_info "CLEARING OUT PREVIOUS BUILDS"
 
     # Remove all macOS applications. Ted and CServer
-    find "$BIN" -type d -name '*.app' -exec rm -rf "{}" \;
+	find "$BIN" -type d -name '*.app' -prune -exec rm -rf "{}" \;
 
     # Remove transcc linux, winnt and macos
     find "$BIN" -type f -name 'transcc_*' -delete
@@ -226,11 +226,11 @@ do_clearbuilds(){
     # Remove the launchers linux, winnt and macos
     find "$ROOT" -type f -name 'Cerberus.exe' -delete
     find "$ROOT" -type f -name 'Cerberus' -delete
-    find "$ROOT" -type d -name 'Cerberus.app' -exec rm -rf "{}" \;
+    find "$ROOT" -type d -name 'Cerberus.app' -prune -exec rm -rf "{}" \;
     find "$ROOT" -type f -name '*.desktop' -delete
   
     # Remove CServer linux and winnt
-    find "$BIN" -type f -name 'Cerberus.*' -delete
+    find "$BIN" -type f -name 'cserver_*' -delete
 
     # Remove makedocs linux, winnt and macos
     find "$BIN" -type f -name 'makedocs_*' -delete
@@ -240,10 +240,12 @@ do_clearbuilds(){
     find "$BIN" -type f -name 'Ted' -delete
 
     # Remove Qt Linux support files and directories
-    find "$BIN" -type d -name 'lib*' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'plugins' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'resources' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'translations' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'lib*' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'iconengines' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'imageformats' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'plugins' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'resources' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'translations' -prune -exec rm -rf "{}" \;
 
     # Remove Qt WinNT support files and directories
     find "$BIN" -type f -name 'qt.conf' -delete
@@ -252,6 +254,6 @@ do_clearbuilds(){
     find "$BIN" -type f -name '*.ilk' -delete
     find "$BIN" -type f -name '*.pdb' -delete
     find "$BIN" -type f -name 'openal32_*' -delete
-    find "$BIN" -type d -name 'platforms' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'platforms' -prune -exec rm -rf "{}" \;
 
 }
