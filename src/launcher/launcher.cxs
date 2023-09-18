@@ -1,10 +1,10 @@
 
 #If HOST<>"linux"
-#Error "Host<>linux"
+#Error "The launcher can only be compiled on a Linux host"
 #Endif
 
 #If TARGET<>"stdcpp"
-#Error "Target<>stdcpp"
+#Error "The launcher can only be built with the stdcpp target."
 #Endif
 
 Import brl.process
@@ -21,18 +21,13 @@ Function Main()
 	Next
 	
 	Local dir:=ExtractDir( AppPath() )
-	
-#If HOST="macos"
 
-	Local cmd:=dir+"/bin/Ted.app"
-	If args cmd="open -n "+cmd+" --args"+args Else cmd="open "+cmd
-	Execute cmd
-	Sleep 100
-	
-#Else If HOST="linux"
-
-	Execute dir+"/bin/Ted"+args+" >/dev/null 2>/dev/null &"
-
-#Endif
-
+	' Ensure that the IDE will pick up the Qt libraries.
+	If GetEnv( "LD_LIBRARY_PATH" ).Contains( dir+"/bin/lib:" )
+		Print "LD_LIBRARY_PATH ALREADY CONTAINS: "+dir+"/bin/lib"
+		Execute  dir+"/bin/Ted"+args+" >/dev/null 2>/dev/null &"
+	Else
+		Print "ADDED "+dir+"/bin/lib to LD_LIBRARY_PATH"
+		Execute  "export LD_LIBRARY_PATH="+dir+"/bin/lib:$LD_LIBRARY_PATH && "+dir+"/bin/Ted"+args+" >/dev/null 2>/dev/null &"
+	Endif
 End
