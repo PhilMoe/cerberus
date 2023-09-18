@@ -249,7 +249,9 @@ function do_clearbuilds() {
     If(Test-Path("$BIN\Ted.exe")) { Remove-Item "$BIN\Ted.exe" -Force }
 
     # Remove Qt Linux support files and directories.
-    Remove-Item "$BIN\lib*" -Recurse -Force
+	Remove-Item "$BIN\lib*" -Recurse -Force
+	if(Test-Path("$BIN\imageformats")) { Remove-Item "$BIN\imageformats" -Recurse -Force }
+	if(Test-Path("$BIN\iconengines")) { Remove-Item "$BIN\iconengines" -Recurse -Force }
     if(Test-Path("$BIN\plugins")) { Remove-Item "$BIN\plugins" -Recurse -Force }
     if(Test-Path("$BIN\resources")) { Remove-Item "$BIN\resources" -Recurse -Force }
     if(Test-Path("$BIN\translations")) { Remove-Item "$BIN\translations" -Recurse -Force }
