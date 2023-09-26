@@ -6,23 +6,20 @@
 Import trans
 Import builders
 
-' Debug transcc
 #If CONFIG="debug"
-    Const VERSION:="2023-09-16 (DEBUG)"
-    Const TEST_PATH:="/src/transcc/transcc_test/"
-    Const TEST_BUILD:="-run"
-    Const TEST_CONFIG:="release"
-    Const TEST_FILE:="cpptool"
-    Const TEST_TARGET:="C++_Tool"
-  
-    ' Comes in handy when needing to debug the parser.
-    ' If DebugIsMainCXS(Toker.Path) DebugStop
-    Function DebugIsMainCXS( path:String )
-        If path.Contains( TEST_FILE+".cxs" ) Return True
-        Return False
-    End
+	'	DEBUG_TEST_CFG: Release,Debug
+	'	DEBUG_TARGET: Desktop,Android,iOS,iOS Metal,HTML
+	'	DEBUG_TEST: TransCC,Reflection,Mojo,Mojo2,Audio
+		
+	' Change the preprocessor directives to select the example to run for debugging transcc
+	#DEBUG_TEST_CFG="Release"
+	#DEBUG_TEST="Audio"
+	#DEBUG_TARGET="HTML"
+	Import debugconf
+	
+	Const VERSION:="2023-09-25 (DEBUG)"
 #Else
-    Const VERSION:="2023-09-16"
+    Const VERSION:="2023-09-25"
 #Endif
 
 Function Main()
