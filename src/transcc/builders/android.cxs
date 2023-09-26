@@ -10,7 +10,9 @@ Class AndroidBuilder Extends Builder
 	Method Config:String()
 		Local config:=New StringStack
 		For Local kv:=Eachin GetConfigVars()
-			config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
+			' config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
+			' Trim leading and trailling white space.
+			config.Push "static final String "+kv.Key+"="+Enquote( kv.Value().Trim(),"java" )+";"
 		Next
 		Return config.Join( "~n" )
 	End
