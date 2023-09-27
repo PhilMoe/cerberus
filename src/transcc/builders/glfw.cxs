@@ -9,8 +9,8 @@ Class GlfwBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin GetConfigVars()
-			config.Push "#define CFG_"+kv.Key+" "+kv.Value
+		For Local key:=Eachin GetConfigVarKeys()
+			config.Push "#define CFG_"+key+" "+GetConfigVar(key)
 		Next
 		Return config.Join( "~n" )
 	End
@@ -65,11 +65,17 @@ Class GlfwBuilder Extends Builder
 
 			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
 
-			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
-			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
-			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
-			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
-			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " ).Replace( "|"," " )
+			UnifyConfigVarSeparator( "GLFW_GCC_CC_OPTS", " ", ["|",";"] )
+			UnifyConfigVarSeparator( "GLFW_GCC_LD_OPTS", " ", ["|",";"] )
+			UnifyConfigVarSeparator( "GLFW_GCC_LIB_OPTS", " ", ["|",";"] )
+			UnifyConfigVarSeparator( "GLFW_GCC_SRC_OPTS", " ", ["|",";"] )
+			UnifyConfigVarSeparator( "GLFW_GCC_VPATH_OPTS", " ", ["|",";"] )
+
+			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" )
+			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" )
+			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" )
+			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" )
+			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" )
 
 			Select ENV_CONFIG
 			Case "debug"
@@ -148,14 +154,18 @@ Class GlfwBuilder Extends Builder
 
 		'If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
 
-		'ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" ).Replace( ";"," " )
-		'ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" ).Replace( ";"," " )
-		libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" ).Replace( ";"," " )
-		'srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" ).Replace( ";"," " )
-		'vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" ).Replace( ";"," " )
+		UnifyConfigVarSeparator( "GLFW_GCC_CC_OPTS", " ", ["|",";"] )
+		UnifyConfigVarSeparator( "GLFW_GCC_LD_OPTS", " ", ["|",";"] )
+		UnifyConfigVarSeparator( "GLFW_GCC_LIB_OPTS", " ", ["|",";"] )
+		UnifyConfigVarSeparator( "GLFW_GCC_SRC_OPTS", " ", ["|",";"] )
+		UnifyConfigVarSeparator( "GLFW_GCC_VPATH_OPTS", " ", ["|",";"] )
 
-
-	
+		'ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" )
+		'ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" )
+		libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" )
+		'srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" )
+		'vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" )
+			
 		CreateDir "msvc/"+casedConfig+msize
 		CreateDir "msvc/"+casedConfig+msize+"/internal"
 		CreateDir "msvc/"+casedConfig+msize+"/external"
@@ -271,8 +281,10 @@ Class GlfwBuilder Extends Builder
 		Local libStr:String
 		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
 		If msize = 64
+			UnifyConfigVarSeparator( "GLFW_COPY_LIBS", "|", ["|",";"] )
 			libStr = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
 		Else
+			UnifyConfigVarSeparator( "GLFW_COPY_LIBS_32", "|", ["|",";"] )
 			libStr = GetConfigVar( "GLFW_COPY_LIBS_32" ).ToLower()
 		Endif
 		If libStr = "" Then Return

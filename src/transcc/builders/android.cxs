@@ -9,10 +9,8 @@ Class AndroidBuilder Extends Builder
 	
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin GetConfigVars()
-			' config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
-			' Trim leading and trailling white space.
-			config.Push "static final String "+kv.Key+"="+Enquote( kv.Value().Trim(),"java" )+";"
+		For Local key:String = Eachin GetConfigVarKeys()
+			config.Push "static final String "+key+"="+Enquote( GetConfigVar(key),"java" )+";"
 		Next
 		Return config.Join( "~n" )
 	End
@@ -51,21 +49,20 @@ Class AndroidBuilder Extends Builder
 		Local app_package:=GetConfigVar( "ANDROID_APP_PACKAGE" )
 		SetEnv "ANDROID_SDK_DIR",tcc.ANDROID_PATH.Replace( "\","\\" )
         SetEnv "ANDROID_NDK_DIR",tcc.ANDROID_NDK_PATH.Replace( "\","\\" )
-
-		SetConfigVar "ANDROID_LIBRARY_REFERENCE_1",GetConfigVar( "ANDROID_LIBRARY_REFERENCE_1",";","~n" )+"~n"
-		SetConfigVar "ANDROID_LIBRARY_REFERENCE_2",GetConfigVar( "ANDROID_LIBRARY_REFERENCE_2",";","~n" )+"~n"
+				
+		UnifyConfigVarSeparator( "ANDROID_LIBRARY_REFERENCE_1","~n")
+		UnifyConfigVarSeparator( "ANDROID_LIBRARY_REFERENCE_2","~n")
+		UnifyConfigVarSeparator( "ANDROID_MANIFEST_MAIN","~n")
+		UnifyConfigVarSeparator( "ANDROID_MANIFEST_APPLICATION","~n")
 		
-		SetConfigVar "ANDROID_MANIFEST_MAIN",GetConfigVar( "ANDROID_MANIFEST_MAIN",";","~n" )+"~n"
-		Local manifest:String = GetConfigVar( "ANDROID_MANIFEST_APPLICATION",";","~n" )+"~n"
-        
+		Local manifestApp:String = GetConfigVar( "ANDROID_MANIFEST_APPLICATION" ) + "~n"
 		Local admob_appid:=GetConfigVar( "ADMOB_ANDROID_ADS_APPID" )
 		If admob_appid.Length()>0 Then 
 			Local admob_appid2:String = "<meta-data android:name=~qcom.google.android.gms.ads.APPLICATION_ID~q "
 			admob_appid2 += "android:value=~q"+admob_appid+"~q />"+"~n"
-			manifest += admob_appid2
+			manifestApp += admob_appid2
 		Endif
-
-		SetConfigVar "ANDROID_MANIFEST_APPLICATION",manifest
+		SetConfigVar "ANDROID_MANIFEST_APPLICATION",manifestApp
 		
 		'create package
 		Local jpath:="app/src/main/java"
@@ -135,6 +132,7 @@ Class AndroidBuilder Extends Builder
 		SaveString main,jpath
 
 		'create 'libs' dir		
+		UnifyConfigVarSeparator("LIBS", "|", ["|",";"])
 		For Local lib:=Eachin GetConfigVar( "LIBS" ).Split( "|" )
 			Select ExtractExt( lib )
 			Case "jar","so"
@@ -155,6 +153,7 @@ Class AndroidBuilder Extends Builder
 		Next
 
 		'copy src files
+		UnifyConfigVarSeparator("SRCS", "|", ["|",";"])
 		For Local src:=Eachin GetConfigVar( "SRCS" ).Split( "|" )
 			Select ExtractExt( src )
 			Case "java","aidl"
@@ -209,7 +208,7 @@ Class AndroidBuilder Extends Builder
 			CreateDir "src/com/cerberus"
 			CopyFile "nativegl/NativeGL.java","src/com/cerberus/NativeGL.java"
 		Endif
-
+		
 		If tcc.opt_build
 		
 			Local gradlecfg:="assembleDebug installDebug"

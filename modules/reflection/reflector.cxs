@@ -482,10 +482,9 @@ Class Reflector
 	End
 
 	Method Semant( app:AppDecl )
-
+		UnifyConfigVarSeparator("REFLECTION_FILTER", "|", ["|",";"])
 		Local filter:=GetConfigVar( "REFLECTION_FILTER" )
 		If Not filter Return
-		filter=filter.Replace( ";","|" )
 		
 		debug=GetConfigVar( "DEBUG_REFLECTION" )="1"
 		

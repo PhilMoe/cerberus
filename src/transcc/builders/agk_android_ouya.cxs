@@ -11,13 +11,13 @@ Class AGKBuilder_android_ouya Extends Builder
 	Method Config:String()
 		Local config:=New StringStack
 		Local l:Int
-		For Local kv:=Eachin GetConfigVars()
-			If kv.Key.StartsWith("AGK_")
-				'l = kv.Key.Length()
-				'config.Push "#define " + kv.Key[4..l] +" "+kv.Value
-				config.Push "#define " + kv.Key +" "+kv.Value
+		For Local key:=Eachin GetConfigVarKeys()
+			If key.StartsWith("AGK_")
+				'l = key.Length()
+				'config.Push "#define " + key[4..l] +" "+GetConfigVar(key)
+				config.Push "#define " + key +" "+GetConfigVar(key)
 			Else
-				config.Push "#define CFG_"+kv.Key+" "+kv.Value
+				config.Push "#define CFG_"+key+" "+GetConfigVar(key)
 			Endif
 		Next
 		'config.Push "#define AGK_PORTRAIT"
