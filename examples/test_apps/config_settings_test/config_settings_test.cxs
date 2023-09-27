@@ -1,6 +1,6 @@
 Strict 
 
-Import mojo
+Import mojo2
 
 'This CONFIG_LOGGING_ENABLED variable is just a reminder 
 'for an idea to create a logging file to check all 
@@ -9,12 +9,23 @@ Import mojo
 
 
 #Rem
-#ANDROID_MANIFEST_APPLICATION+="<bla>"
-#ANDROID_MANIFEST_APPLICATION+="<bla>"
-#ANDROID_MANIFEST_APPLICATION+="~n~t <bla>"
-#ANDROID_MANIFEST_APPLICATION+="~n~t <bla>"
 #End
+#ANDROID_MANIFEST_MAIN+="<ANDROID_MANIFEST_MAIN TestContent>"
+#ANDROID_MANIFEST_MAIN+="<ANDROID_MANIFEST_MAIN TestContent with | (pipe) and ; (semicolon) character>"
 
+#ANDROID_APPLICATION_EXTRAS+="<ANDROID_APPLICATION_EXTRAS TestContent>"
+#ANDROID_APPLICATION_EXTRAS+="<ANDROID_APPLICATION_EXTRAS TestContent with | (pipe) and ; (semicolon) character>"
+
+#ANDROID_MANIFEST_ACTIVITY+="<ANDROID_MANIFEST_ACTIVITY TestContent>"
+#ANDROID_MANIFEST_ACTIVITY+="<ANDROID_MANIFEST_ACTIVITY TestContent with | (pipe) and ; (semicolon) character>"
+
+#ANDROID_MANIFEST_APPLICATION+="<ANDROID_MANIFEST_APPLICATION TestContent>"
+#ANDROID_MANIFEST_APPLICATION+="<ANDROID_MANIFEST_APPLICATION TestContent with | (pipe) and ; (semicolon) character>"
+
+#TestVariable="This is a TestVariable!"
+#TestVariable+="This is the TestVariable with | (pipe) and ; (semicolon) character!"
+
+#MUSIC_FILES += "*.wafer|*.ork|*.empee3ee"
 
 Function Main:Int()
     New ConfigSettingsTest()
@@ -23,10 +34,11 @@ End
 
 
 Class ConfigSettingsTest Extends App
-	
+	Field c:Canvas
 	Field rotation:Float
 	
     Method OnCreate:Int()
+    	c=New Canvas()
 		Print "Here we test again..."
     	Return 0
     End
@@ -40,13 +52,14 @@ Class ConfigSettingsTest Extends App
     
     Method OnRender:Int()
     
-    	Cls()
+    	c.Clear()
     	
-    	PushMatrix()
-      	Translate(DeviceWidth()*0.5, DeviceHeight()*0.5)
-	  	Rotate(-rotation)
-    	DrawRect(-100,-100, 200, 200)
-    	PopMatrix()
+    	c.PushMatrix()
+      	c.Translate(DeviceWidth()*0.5, DeviceHeight()*0.5)
+	  	c.Rotate(-rotation)
+    	c.DrawRect(-100,-100, 200, 200)
+    	c.PopMatrix()
+    	c.Flush()
     	Return 0
     End
 
