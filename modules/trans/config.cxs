@@ -71,10 +71,11 @@ End
 
 ' Overloaded GetConfigVar.
 Function GetConfigVar$( key$, option$, replace$=" ")
-	Local str:=""
-	For Local i:=Eachin _cfgScope.vars.Get( key )
-		' TODO: Once all builders are updated to use the record separator the check for the pipe character can be removed.
-		If i="|"[0] Or i=option[0] Or i="~u001E"[0] str+=replace Else str+=String.FromChar(i)
+	Local str:="", value:=_cfgScope.vars.Get( key )
+	For Local i:=0 Until value.Length()
+		Local char:=value[i]
+		' TODO: Workout how to switch to using the record separator for CX internals.
+		If char="|"[0] Or char=option[0] Or char="~u001E"[0] str+=replace Else str+=String.FromChar(char)
 	Next
 	Return str
 End

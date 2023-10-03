@@ -1,0 +1,122 @@
+' Defaults
+Const TEST_BUILD:="-run"
+
+#If DEBUG_TEST_CFG="Release"
+	Const TEST_CONFIG:="release"
+#Elseif DEBUG_TEST_CFG="Debug"
+	Const TEST_CONFIG:="debug"
+#Else
+#Error "DEBUG_TEST_CFG must be either Release or Debug and not "+DEBUG_TEST_CFG
+#Endif
+
+#If DEBUG_TARGET="Desktop"
+	#If DEBUG_TEST="TransCC"
+	    Const TEST_PATH:="/src/transcc/transcc_test/"
+	    Const TEST_FILE:="cpptool"
+	    Const TEST_TARGET:="C++_Tool"
+	    
+	 #Elseif DEBUG_TEST="Mojo"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Desktop_Game"
+	    
+	 #Elseif DEBUG_TEST="Mojo2"
+	 	Const TEST_PATH:="/examples/mojo2/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Desktop_Game"
+	    
+	 #Elseif DEBUG_TEST="Reflection"
+	 	Const TEST_PATH:="/examples/reflection/"
+	    Const TEST_FILE:="reflectiontest"
+	    Const TEST_TARGET:="Desktop_Game"
+	    
+	 #Elseif DEBUG_TEST="Audio"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="audiotest"
+	    Const TEST_TARGET:="Desktop_Game"
+	    
+	 #Else
+	 	#Error "DEBUG_TEST: Desktop must be Transcc,Mojo,Mojo2,Reflection or Audio and not "+DEBUG_TEST
+	 #Endif
+#Elseif DEBUG_TARGET="Android"
+	#If DEBUG_TEST="Mojo"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Android_Game"
+	    
+	 #Elseif DEBUG_TEST="Mojo2"
+	 	Const TEST_PATH:="/examples/mojo2/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Android_Game"
+	    
+	 #Elseif DEBUG_TEST="Audio"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="audiotest"
+	    Const TEST_TARGET:="Android_Game"
+	 #Else
+	 	#Error "DEBUG_TEST: Android must be Mojo,Mojo2 or Audio and not "+DEBUG_TEST
+	 #Endif
+#Elseif DEBUG_TARGET="iOS"
+	#If DEBUG_TEST="Mojo"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="iOS_Game"
+	    
+	 #Elseif DEBUG_TEST="Mojo2"
+	 	Const TEST_PATH:="/examples/mojo2/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="iOS_Game"
+	    
+	 #Elseif DEBUG_TEST="Audio"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="audiotest"
+	    Const TEST_TARGET:="iOS_Game"
+	 #Else
+	 	#Error "DEBUG_TEST: iOS must be Mojo, Mojo2 or Audio and not "+DEBUG_TEST
+	 #Endif
+#Elseif DEBUG_TARGET="iOS Metal"
+	#If DEBUG_TEST="Mojo"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="iOS_Metal_Game"
+	    
+	 #Elseif DEBUG_TEST="Mojo2"
+	 	Const TEST_PATH:="/examples/mojo2/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="iOS_Metal_Game"
+	    
+	 #Elseif DEBUG_TEST="Audio"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="audiotest"
+	    Const TEST_TARGET:="iOS_Metal_Game"
+	 #Else
+	 	#Error "DEBUG_TEST: iOS must be Mojo, Mojo2 or Audio and not "+DEBUG_TEST
+	 #Endif
+#Elseif DEBUG_TARGET="HTML"
+	#If DEBUG_TEST="Mojo"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Html5_Game"
+	    
+	 #Elseif DEBUG_TEST="Mojo2"
+	 	Const TEST_PATH:="/examples/mojo2/"
+	    Const TEST_FILE:="bouncyaliens"
+	    Const TEST_TARGET:="Html5_Game"
+	    
+	 #Elseif DEBUG_TEST="Audio"
+	 	Const TEST_PATH:="/examples/mojo/mak/"
+	    Const TEST_FILE:="audiotest"
+	    Const TEST_TARGET:="Html5_Game"
+	 #Else
+	 	#Error "DEBUG_TEST: HTML must be Mojo, Mojo2 or Audio and not "+DEBUG_TEST
+	 #Endif
+#Else
+	#Error "DEBUG_TARGET: Must be Desktop,Android,iOS or HTML and not "+DEBUG_TARGET
+#Endif
+
+' Comes in handy when needing to debug the parser.
+' If DebugIsMainCXS(Toker.Path) DebugStop
+Function DebugIsMainCXS( path:String )
+    If path.Contains( TEST_FILE+".cxs" ) Return True
+    Return False
+End

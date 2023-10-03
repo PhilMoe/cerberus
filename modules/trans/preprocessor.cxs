@@ -315,9 +315,9 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 											If var="1" var="True" Else var="False"
 										Endif
 										
-										'If var And Not val.StartsWith( ";" ) val=";"+val
-										'If var And Not val.StartsWith( "|" ) val="|"+val
-										If var And Not val.StartsWith( "~u001E" ) val="~u001E"+val
+										If var And Not val.StartsWith( "|" ) val="|"+val
+										' TODO: Workout how to switch to using the record separator for CX internals.
+										'If var And Not val.StartsWith( "~u001E" ) val="~u001E"+val
 										SetConfigVar toke,var+val
 								End
 							
