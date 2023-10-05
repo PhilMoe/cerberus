@@ -9,7 +9,7 @@
     'Import "native/admob_googleplay.android.java"
     Import "native/admob_googleplay2.android.java"
 
-    #ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.android.gms.ads.AdActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
+    #ANDROID_MANIFEST_APPLICATION+="<activity android:name=~qcom.google.android.gms.ads.AdActivity~q />"
 
     #ANDROID_MANIFEST_APPLICATION+="<meta-data android:name=~qcom.google.android.gms.version~q android:value=~q@integer/google_play_services_version~q />"
     
