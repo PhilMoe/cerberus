@@ -17,9 +17,9 @@ Import builders
 	#DEBUG_TARGET="HTML"
 	Import debugconf
 	
-	Const VERSION:="2023-09-25 (DEBUG)"
+	Const VERSION:="2023-10-11 (DEBUG)"
 #Else
-    Const VERSION:="2023-09-25"
+    Const VERSION:="2023-10-11"
 #Endif
 
 Function Main()
