@@ -18813,7 +18813,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-09-16",35));
+	bbPrint(String(L"TRANS cerberus compiler V2023-09-25",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20236,15 +20236,13 @@ String bb_config_GetConfigVar(String t_key){
 }
 String bb_config_GetConfigVar2(String t_key,String t_option,String t_replace){
 	String t_str=String();
-	String t_=bb_config__cfgScope->m_vars->p_Get(t_key);
-	int t_2=0;
-	while(t_2<t_.Length()){
-		int t_i=(int)t_[t_2];
-		t_2=t_2+1;
-		if(t_i==124 || t_i==(int)t_option[0] || t_i==30){
+	String t_value=bb_config__cfgScope->m_vars->p_Get(t_key);
+	for(int t_i=0;t_i<t_value.Length();t_i=t_i+1){
+		int t_char=(int)t_value[t_i];
+		if(t_char==124 || t_char==(int)t_option[0] || t_char==30){
 			t_str=t_str+t_replace;
 		}else{
-			t_str=t_str+String((Char)(t_i),1);
+			t_str=t_str+String((Char)(t_char),1);
 		}
 	}
 	return t_str;
@@ -20868,7 +20866,7 @@ String c_AndroidBuilder::p_Config(){
 	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"static final String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"java",4))+String(L";",1));
+		t_config->p_Push(String(L"static final String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value().Trim(),String(L"java",4))+String(L";",1));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
@@ -31510,8 +31508,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 																t_var=String(L"False",5);
 															}
 														}
-														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"" L"\x1e" L"",1))){
-															t_val2=String(L"" L"\x1e" L"",1)+t_val2;
+														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"|",1))){
+															t_val2=String(L"|",1)+t_val2;
 														}
 														bb_config_SetConfigVar2(t_toke2,t_var+t_val2);
 													}
