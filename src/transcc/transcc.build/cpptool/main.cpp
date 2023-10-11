@@ -15494,21 +15494,21 @@ int BBFileStream::Write( BBDataBuffer *buffer,int offset,int count ){
 }
 
 class c_TransCC;
-class c_Type;
-class c_StringType;
 class c_Decl;
 class c_ScopeDecl;
 class c_ConfigScope;
-class c_ValDecl;
-class c_ConstDecl;
 class c_Map;
 class c_StringMap;
 class c_Node;
-class c_Expr;
-class c_BoolType;
+class c_Type;
+class c_ValDecl;
+class c_ConstDecl;
 class c_Map2;
 class c_StringMap2;
 class c_Node2;
+class c_BoolType;
+class c_StringType;
+class c_Expr;
 class c_Stack;
 class c_StringStack;
 class c_Builder;
@@ -15656,9 +15656,11 @@ class c_Stack9;
 class c_Translator;
 class c_CTranslator;
 class c_JavaTranslator;
-class c_NodeEnumerator3;
+class c_MapKeys2;
+class c_KeyEnumerator2;
 class c_CppTranslator;
 class c_JsTranslator;
+class c_NodeEnumerator3;
 class c_Stream;
 class c_FileStream;
 class c_DataBuffer;
@@ -15735,38 +15737,6 @@ String bb_os_StripExt(String);
 String bb_os_StripDir(String);
 bool bb_transcc_IsValidSourceFilename(String);
 int bb_transcc_Die(String);
-class c_Type : public Object{
-	public:
-	c_ArrayType* m_arrayOf;
-	c_Type();
-	c_Type* m_new();
-	static c_StringType* m_stringType;
-	static c_IntType* m_intType;
-	static c_FloatType* m_floatType;
-	static c_BoolType* m_boolType;
-	static c_VoidType* m_voidType;
-	static c_IdentType* m_objectType;
-	static c_IdentType* m_throwableType;
-	c_ArrayType* p_ArrayOf();
-	static c_ArrayType* m_emptyArrayType;
-	static c_IdentType* m_nullObjectType;
-	virtual String p_ToString();
-	virtual int p_EqualsType(c_Type*);
-	virtual c_Type* p_Semant();
-	virtual int p_ExtendsType(c_Type*);
-	virtual c_ClassDecl* p_GetClass();
-	void mark();
-};
-class c_StringType : public c_Type{
-	public:
-	c_StringType();
-	c_StringType* m_new();
-	int p_EqualsType(c_Type*);
-	int p_ExtendsType(c_Type*);
-	c_ClassDecl* p_GetClass();
-	String p_ToString();
-	void mark();
-};
 class c_Decl : public Object{
 	public:
 	String m_errInfo;
@@ -15825,8 +15795,8 @@ class c_ScopeDecl : public c_Decl{
 };
 class c_ConfigScope : public c_ScopeDecl{
 	public:
-	c_StringMap* m_cdecls;
-	c_StringMap2* m_vars;
+	c_StringMap* m_vars;
+	c_StringMap2* m_cdecls;
 	c_ConfigScope();
 	c_ConfigScope* m_new();
 	c_ValDecl* p_FindValDecl(String);
@@ -15834,6 +15804,69 @@ class c_ConfigScope : public c_ScopeDecl{
 };
 extern String bb_config__errInfo;
 extern c_ConfigScope* bb_config__cfgScope;
+class c_Map : public Object{
+	public:
+	c_Node* m_root;
+	c_Map();
+	c_Map* m_new();
+	virtual int p_Compare(String,String)=0;
+	c_Node* p_FindNode(String);
+	String p_Get(String);
+	int p_RotateLeft(c_Node*);
+	int p_RotateRight(c_Node*);
+	int p_InsertFixup(c_Node*);
+	bool p_Set(String,String);
+	bool p_Contains(String);
+	c_MapKeys2* p_Keys();
+	c_Node* p_FirstNode();
+	c_NodeEnumerator3* p_ObjectEnumerator();
+	void mark();
+};
+class c_StringMap : public c_Map{
+	public:
+	c_StringMap();
+	c_StringMap* m_new();
+	int p_Compare(String,String);
+	void mark();
+};
+class c_Node : public Object{
+	public:
+	String m_key;
+	c_Node* m_right;
+	c_Node* m_left;
+	String m_value;
+	int m_color;
+	c_Node* m_parent;
+	c_Node();
+	c_Node* m_new(String,String,int,c_Node*);
+	c_Node* m_new2();
+	c_Node* p_NextNode();
+	String p_Key();
+	String p_Value();
+	void mark();
+};
+class c_Type : public Object{
+	public:
+	c_ArrayType* m_arrayOf;
+	c_Type();
+	c_Type* m_new();
+	static c_StringType* m_stringType;
+	static c_IntType* m_intType;
+	static c_FloatType* m_floatType;
+	static c_BoolType* m_boolType;
+	static c_VoidType* m_voidType;
+	static c_IdentType* m_objectType;
+	static c_IdentType* m_throwableType;
+	c_ArrayType* p_ArrayOf();
+	static c_ArrayType* m_emptyArrayType;
+	static c_IdentType* m_nullObjectType;
+	virtual String p_ToString();
+	virtual int p_EqualsType(c_Type*);
+	virtual c_Type* p_Semant();
+	virtual int p_ExtendsType(c_Type*);
+	virtual c_ClassDecl* p_GetClass();
+	void mark();
+};
 class c_ValDecl : public c_Decl{
 	public:
 	c_Type* m_type;
@@ -15855,39 +15888,60 @@ class c_ConstDecl : public c_ValDecl{
 	int p_OnSemant();
 	void mark();
 };
-class c_Map : public Object{
+class c_Map2 : public Object{
 	public:
-	c_Node* m_root;
-	c_Map();
-	c_Map* m_new();
+	c_Node2* m_root;
+	c_Map2();
+	c_Map2* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node* p_FindNode(String);
+	c_Node2* p_FindNode(String);
 	c_ConstDecl* p_Get(String);
-	int p_RotateLeft(c_Node*);
-	int p_RotateRight(c_Node*);
-	int p_InsertFixup(c_Node*);
-	bool p_Set(String,c_ConstDecl*);
+	int p_RotateLeft2(c_Node2*);
+	int p_RotateRight2(c_Node2*);
+	int p_InsertFixup2(c_Node2*);
+	bool p_Set2(String,c_ConstDecl*);
 	bool p_Contains(String);
 	void mark();
 };
-class c_StringMap : public c_Map{
+class c_StringMap2 : public c_Map2{
 	public:
-	c_StringMap();
-	c_StringMap* m_new();
+	c_StringMap2();
+	c_StringMap2* m_new();
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node : public Object{
+class c_Node2 : public Object{
 	public:
 	String m_key;
-	c_Node* m_right;
-	c_Node* m_left;
+	c_Node2* m_right;
+	c_Node2* m_left;
 	c_ConstDecl* m_value;
 	int m_color;
-	c_Node* m_parent;
-	c_Node();
-	c_Node* m_new(String,c_ConstDecl*,int,c_Node*);
-	c_Node* m_new2();
+	c_Node2* m_parent;
+	c_Node2();
+	c_Node2* m_new(String,c_ConstDecl*,int,c_Node2*);
+	c_Node2* m_new2();
+	void mark();
+};
+c_Type* bb_config_GetConfigVarType(String);
+class c_BoolType : public c_Type{
+	public:
+	c_BoolType();
+	c_BoolType* m_new();
+	int p_EqualsType(c_Type*);
+	int p_ExtendsType(c_Type*);
+	c_ClassDecl* p_GetClass();
+	String p_ToString();
+	void mark();
+};
+class c_StringType : public c_Type{
+	public:
+	c_StringType();
+	c_StringType* m_new();
+	int p_EqualsType(c_Type*);
+	int p_ExtendsType(c_Type*);
+	c_ClassDecl* p_GetClass();
+	String p_ToString();
 	void mark();
 };
 class c_Expr : public Object{
@@ -15916,58 +15970,8 @@ class c_Expr : public Object{
 	virtual String p_TransVar();
 	void mark();
 };
-class c_BoolType : public c_Type{
-	public:
-	c_BoolType();
-	c_BoolType* m_new();
-	int p_EqualsType(c_Type*);
-	int p_ExtendsType(c_Type*);
-	c_ClassDecl* p_GetClass();
-	String p_ToString();
-	void mark();
-};
-class c_Map2 : public Object{
-	public:
-	c_Node2* m_root;
-	c_Map2();
-	c_Map2* m_new();
-	virtual int p_Compare(String,String)=0;
-	int p_RotateLeft2(c_Node2*);
-	int p_RotateRight2(c_Node2*);
-	int p_InsertFixup2(c_Node2*);
-	bool p_Set2(String,String);
-	c_Node2* p_FindNode(String);
-	String p_Get(String);
-	bool p_Contains(String);
-	c_Node2* p_FirstNode();
-	c_NodeEnumerator3* p_ObjectEnumerator();
-	void mark();
-};
-class c_StringMap2 : public c_Map2{
-	public:
-	c_StringMap2();
-	c_StringMap2* m_new();
-	int p_Compare(String,String);
-	void mark();
-};
-class c_Node2 : public Object{
-	public:
-	String m_key;
-	c_Node2* m_right;
-	c_Node2* m_left;
-	String m_value;
-	int m_color;
-	c_Node2* m_parent;
-	c_Node2();
-	c_Node2* m_new(String,String,int,c_Node2*);
-	c_Node2* m_new2();
-	c_Node2* p_NextNode();
-	String p_Key();
-	String p_Value();
-	void mark();
-};
 int bb_config_SetConfigVar(String,String,c_Type*);
-int bb_config_SetConfigVar2(String,String);
+int bb_config_SetConfigVar2(String,String,bool);
 class c_Stack : public Object{
 	public:
 	Array<String > m_data;
@@ -15997,7 +16001,6 @@ class c_StringStack : public c_Stack{
 	void mark();
 };
 String bb_config_GetConfigVar(String);
-String bb_config_GetConfigVar2(String,String,String);
 String bb_transcc_ReplaceEnv(String);
 class c_Builder : public Object{
 	public:
@@ -16012,7 +16015,7 @@ class c_Builder : public Object{
 	String m_BINARY_FILES;
 	String m_DATA_FILES;
 	bool m_syncData;
-	c_StringMap2* m_dataFiles;
+	c_StringMap* m_dataFiles;
 	c_Builder();
 	c_Builder* m_new(c_TransCC*);
 	c_Builder* m_new2();
@@ -16109,16 +16112,16 @@ class c_Html5Builder : public c_Builder{
 };
 class c_IosBuilder : public c_Builder{
 	public:
-	c_StringMap2* m__buildFiles;
+	c_StringMap* m__buildFiles;
 	int m__nextFileId;
-	c_StringMap2* m__fileRefs;
+	c_StringMap* m__fileRefs;
 	c_IosBuilder();
 	c_IosBuilder* m_new(c_TransCC*);
 	c_IosBuilder* m_new2();
 	bool p_IsValid();
 	void p_Begin();
 	String p_Config();
-	String p_FileId(String,c_StringMap2*);
+	String p_FileId(String,c_StringMap*);
 	void p_AddBuildFile(String);
 	int p_FindEol(String,String,int);
 	String p_BuildFiles();
@@ -16203,7 +16206,7 @@ class c_AGKBuilder_android_ouya : public c_Builder{
 };
 class c_CustomBuilder : public c_Builder{
 	public:
-	c_StringMap2* m_custVars;
+	c_StringMap* m_custVars;
 	c_CustomBuilder();
 	c_CustomBuilder* m_new(c_TransCC*);
 	c_CustomBuilder* m_new2();
@@ -17674,8 +17677,7 @@ class c_InvokeMemberExpr : public c_Expr{
 c_Expr* bb_preprocessor_EvalExpr(c_Toker*);
 bool bb_preprocessor_EvalBool(c_Toker*);
 String bb_preprocessor_EvalText(c_Toker*);
-c_StringMap2* bb_config_GetConfigVars();
-c_Type* bb_config_GetConfigVarType(String);
+bool bb_config_ConfigVarsContain(String);
 String bb_preprocessor_PreProcess(String,c_ModuleDecl*);
 extern String bb_config_ENV_LANG;
 extern String bb_config_ENV_CUSTOMBUILDSCRIPT;
@@ -17754,7 +17756,7 @@ class c_Reflector : public Object{
 	c_ModuleDecl* m_langmod;
 	c_ModuleDecl* m_boxesmod;
 	c_StringMap7* m_munged;
-	c_StringMap2* m_modexprs;
+	c_StringMap* m_modexprs;
 	c_StringSet* m_refmods;
 	c_Stack9* m_classdecls;
 	c_StringMap7* m_classids;
@@ -17780,6 +17782,7 @@ class c_Reflector : public Object{
 	int p_Semant3(c_AppDecl*);
 	void mark();
 };
+void bb_config_UnifyConfigVarSeparator(String,String,Array<String >);
 class c_MapValues : public Object{
 	public:
 	c_Map5* m_map;
@@ -18005,14 +18008,24 @@ class c_JavaTranslator : public c_CTranslator{
 bool bb_transcc_MatchPathAlt(String,String);
 bool bb_transcc_MatchPath(String,String);
 String bb_transcc_ReplaceBlock(String,String,String,String);
-class c_NodeEnumerator3 : public Object{
+class c_MapKeys2 : public Object{
 	public:
-	c_Node2* m_node;
-	c_NodeEnumerator3();
-	c_NodeEnumerator3* m_new(c_Node2*);
-	c_NodeEnumerator3* m_new2();
+	c_Map* m_map;
+	c_MapKeys2();
+	c_MapKeys2* m_new(c_Map*);
+	c_MapKeys2* m_new2();
+	c_KeyEnumerator2* p_ObjectEnumerator();
+	void mark();
+};
+c_MapKeys2* bb_config_GetConfigVarKeys();
+class c_KeyEnumerator2 : public Object{
+	public:
+	c_Node* m_node;
+	c_KeyEnumerator2();
+	c_KeyEnumerator2* m_new(c_Node*);
+	c_KeyEnumerator2* m_new2();
 	bool p_HasNext();
-	c_Node2* p_NextObject();
+	String p_NextObject();
 	void mark();
 };
 String bb_config_Enquote(String,String);
@@ -18101,6 +18114,16 @@ class c_JsTranslator : public c_CTranslator{
 	String p_TransArrayExpr(c_ArrayExpr*);
 	String p_TransTryStmt(c_TryStmt*);
 	String p_TransIntrinsicExpr(c_Decl*,c_Expr*,Array<c_Expr* >);
+	void mark();
+};
+class c_NodeEnumerator3 : public Object{
+	public:
+	c_Node* m_node;
+	c_NodeEnumerator3();
+	c_NodeEnumerator3* m_new(c_Node*);
+	c_NodeEnumerator3* m_new2();
+	bool p_HasNext();
+	c_Node* p_NextObject();
 	void mark();
 };
 extern int bb_builder__html5_Info_Width;
@@ -18571,7 +18594,7 @@ void c_TransCC::p_ParseArgs(){
 				}
 			}else{
 				if(t_arg.StartsWith(String(L"+",1))){
-					bb_config_SetConfigVar2(t_arg.Slice(1),t_rhs);
+					bb_config_SetConfigVar2(t_arg.Slice(1),t_rhs,false);
 				}else{
 					bb_transcc_Die(String(L"Command line arg error: ",24)+t_arg);
 				}
@@ -18813,7 +18836,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-09-25",35));
+	bbPrint(String(L"TRANS cerberus compiler V2023-10-11",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -18921,73 +18944,6 @@ int bb_transcc_Die(String t_msg){
 	bbPrint(String(L"TRANS FAILED: ",14)+t_msg);
 	ExitApp(-1);
 	return 0;
-}
-c_Type::c_Type(){
-	m_arrayOf=0;
-}
-c_Type* c_Type::m_new(){
-	return this;
-}
-c_StringType* c_Type::m_stringType;
-c_IntType* c_Type::m_intType;
-c_FloatType* c_Type::m_floatType;
-c_BoolType* c_Type::m_boolType;
-c_VoidType* c_Type::m_voidType;
-c_IdentType* c_Type::m_objectType;
-c_IdentType* c_Type::m_throwableType;
-c_ArrayType* c_Type::p_ArrayOf(){
-	if(!((m_arrayOf)!=0)){
-		gc_assign(m_arrayOf,(new c_ArrayType)->m_new(this));
-	}
-	return m_arrayOf;
-}
-c_ArrayType* c_Type::m_emptyArrayType;
-c_IdentType* c_Type::m_nullObjectType;
-String c_Type::p_ToString(){
-	return String(L"??Type??",8);
-}
-int c_Type::p_EqualsType(c_Type* t_ty){
-	return 0;
-}
-c_Type* c_Type::p_Semant(){
-	return this;
-}
-int c_Type::p_ExtendsType(c_Type* t_ty){
-	return p_EqualsType(t_ty);
-}
-c_ClassDecl* c_Type::p_GetClass(){
-	return 0;
-}
-void c_Type::mark(){
-	Object::mark();
-	gc_mark_q(m_arrayOf);
-}
-c_StringType::c_StringType(){
-}
-c_StringType* c_StringType::m_new(){
-	c_Type::m_new();
-	return this;
-}
-int c_StringType::p_EqualsType(c_Type* t_ty){
-	return ((dynamic_cast<c_StringType*>(t_ty)!=0)?1:0);
-}
-int c_StringType::p_ExtendsType(c_Type* t_ty){
-	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-		c_Expr* t_expr=((new c_ConstExpr)->m_new((this),String()))->p_Semant();
-		c_Expr* t_[]={t_expr};
-		c_FuncDecl* t_ctor=t_ty->p_GetClass()->p_FindFuncDecl(String(L"new",3),Array<c_Expr* >(t_,1),1);
-		return ((((t_ctor)!=0) && t_ctor->p_IsCtor())?1:0);
-	}
-	return p_EqualsType(t_ty);
-}
-c_ClassDecl* c_StringType::p_GetClass(){
-	return dynamic_cast<c_ClassDecl*>(bb_decl__env->p_FindDecl(String(L"string",6)));
-}
-String c_StringType::p_ToString(){
-	return String(L"String",6);
-}
-void c_StringType::mark(){
-	c_Type::mark();
 }
 c_Decl::c_Decl(){
 	m_errInfo=String();
@@ -19473,8 +19429,8 @@ void c_ScopeDecl::mark(){
 	gc_mark_q(m_semanted);
 }
 c_ConfigScope::c_ConfigScope(){
-	m_cdecls=(new c_StringMap)->m_new();
-	m_vars=(new c_StringMap2)->m_new();
+	m_vars=(new c_StringMap)->m_new();
+	m_cdecls=(new c_StringMap2)->m_new();
 }
 c_ConfigScope* c_ConfigScope::m_new(){
 	c_ScopeDecl::m_new();
@@ -19488,85 +19444,11 @@ c_ValDecl* c_ConfigScope::p_FindValDecl(String t_ident){
 }
 void c_ConfigScope::mark(){
 	c_ScopeDecl::mark();
-	gc_mark_q(m_cdecls);
 	gc_mark_q(m_vars);
+	gc_mark_q(m_cdecls);
 }
 String bb_config__errInfo;
 c_ConfigScope* bb_config__cfgScope;
-c_ValDecl::c_ValDecl(){
-	m_type=0;
-	m_init=0;
-}
-c_ValDecl* c_ValDecl::m_new(){
-	c_Decl::m_new();
-	return this;
-}
-String c_ValDecl::p_ToString(){
-	String t_t=c_Decl::p_ToString();
-	if((m_type)!=0){
-		return t_t+String(L":",1)+m_type->p_ToString();
-	}
-	return t_t;
-}
-int c_ValDecl::p_OnSemant(){
-	if((m_type)!=0){
-		gc_assign(m_type,m_type->p_Semant());
-		if((m_init)!=0){
-			gc_assign(m_init,m_init->p_Semant2(m_type,0));
-		}
-	}else{
-		if((m_init)!=0){
-			gc_assign(m_init,m_init->p_Semant());
-			gc_assign(m_type,m_init->m_exprType);
-		}else{
-			bb_config_InternalErr(String(L"Internal error",14));
-		}
-	}
-	if((dynamic_cast<c_VoidType*>(m_type))!=0){
-		bb_config_Err(String(L"Declaration has void type.",26));
-	}
-	return 0;
-}
-c_Expr* c_ValDecl::p_CopyInit(){
-	if((m_init)!=0){
-		return m_init->p_Copy();
-	}
-	return 0;
-}
-void c_ValDecl::mark(){
-	c_Decl::mark();
-	gc_mark_q(m_type);
-	gc_mark_q(m_init);
-}
-c_ConstDecl::c_ConstDecl(){
-	m_value=String();
-}
-c_ConstDecl* c_ConstDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr* t_init){
-	c_ValDecl::m_new();
-	this->m_ident=t_ident;
-	this->m_munged=t_ident;
-	this->m_attrs=t_attrs;
-	gc_assign(this->m_type,t_type);
-	gc_assign(this->m_init,t_init);
-	return this;
-}
-c_ConstDecl* c_ConstDecl::m_new2(){
-	c_ValDecl::m_new();
-	return this;
-}
-c_Decl* c_ConstDecl::p_OnCopy(){
-	return ((new c_ConstDecl)->m_new(m_ident,m_attrs,m_type,p_CopyInit()));
-}
-int c_ConstDecl::p_OnSemant(){
-	c_ValDecl::p_OnSemant();
-	if(!((p_IsExtern())!=0)){
-		m_value=m_init->p_Eval();
-	}
-	return 0;
-}
-void c_ConstDecl::mark(){
-	c_ValDecl::mark();
-}
 c_Map::c_Map(){
 	m_root=0;
 }
@@ -19589,12 +19471,12 @@ c_Node* c_Map::p_FindNode(String t_key){
 	}
 	return t_node;
 }
-c_ConstDecl* c_Map::p_Get(String t_key){
+String c_Map::p_Get(String t_key){
 	c_Node* t_node=p_FindNode(t_key);
 	if((t_node)!=0){
 		return t_node->m_value;
 	}
-	return 0;
+	return String();
 }
 int c_Map::p_RotateLeft(c_Node* t_node){
 	c_Node* t_child=t_node->m_right;
@@ -19675,7 +19557,7 @@ int c_Map::p_InsertFixup(c_Node* t_node){
 	m_root->m_color=1;
 	return 0;
 }
-bool c_Map::p_Set(String t_key,c_ConstDecl* t_value){
+bool c_Map::p_Set(String t_key,String t_value){
 	c_Node* t_node=m_root;
 	c_Node* t_parent=0;
 	int t_cmp=0;
@@ -19688,7 +19570,7 @@ bool c_Map::p_Set(String t_key,c_ConstDecl* t_value){
 			if(t_cmp<0){
 				t_node=t_node->m_left;
 			}else{
-				gc_assign(t_node->m_value,t_value);
+				t_node->m_value=t_value;
 				return false;
 			}
 		}
@@ -19708,6 +19590,22 @@ bool c_Map::p_Set(String t_key,c_ConstDecl* t_value){
 }
 bool c_Map::p_Contains(String t_key){
 	return p_FindNode(t_key)!=0;
+}
+c_MapKeys2* c_Map::p_Keys(){
+	return (new c_MapKeys2)->m_new(this);
+}
+c_Node* c_Map::p_FirstNode(){
+	if(!((m_root)!=0)){
+		return 0;
+	}
+	c_Node* t_node=m_root;
+	while((t_node->m_left)!=0){
+		t_node=t_node->m_left;
+	}
+	return t_node;
+}
+c_NodeEnumerator3* c_Map::p_ObjectEnumerator(){
+	return (new c_NodeEnumerator3)->m_new(p_FirstNode());
 }
 void c_Map::mark(){
 	Object::mark();
@@ -19729,13 +19627,13 @@ c_Node::c_Node(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
-	m_value=0;
+	m_value=String();
 	m_color=0;
 	m_parent=0;
 }
-c_Node* c_Node::m_new(String t_key,c_ConstDecl* t_value,int t_color,c_Node* t_parent){
+c_Node* c_Node::m_new(String t_key,String t_value,int t_color,c_Node* t_parent){
 	this->m_key=t_key;
-	gc_assign(this->m_value,t_value);
+	this->m_value=t_value;
 	this->m_color=t_color;
 	gc_assign(this->m_parent,t_parent);
 	return this;
@@ -19743,12 +19641,392 @@ c_Node* c_Node::m_new(String t_key,c_ConstDecl* t_value,int t_color,c_Node* t_pa
 c_Node* c_Node::m_new2(){
 	return this;
 }
+c_Node* c_Node::p_NextNode(){
+	c_Node* t_node=0;
+	if((m_right)!=0){
+		t_node=m_right;
+		while((t_node->m_left)!=0){
+			t_node=t_node->m_left;
+		}
+		return t_node;
+	}
+	t_node=this;
+	c_Node* t_parent=this->m_parent;
+	while(((t_parent)!=0) && t_node==t_parent->m_right){
+		t_node=t_parent;
+		t_parent=t_parent->m_parent;
+	}
+	return t_parent;
+}
+String c_Node::p_Key(){
+	return m_key;
+}
+String c_Node::p_Value(){
+	return m_value;
+}
 void c_Node::mark(){
+	Object::mark();
+	gc_mark_q(m_right);
+	gc_mark_q(m_left);
+	gc_mark_q(m_parent);
+}
+c_Type::c_Type(){
+	m_arrayOf=0;
+}
+c_Type* c_Type::m_new(){
+	return this;
+}
+c_StringType* c_Type::m_stringType;
+c_IntType* c_Type::m_intType;
+c_FloatType* c_Type::m_floatType;
+c_BoolType* c_Type::m_boolType;
+c_VoidType* c_Type::m_voidType;
+c_IdentType* c_Type::m_objectType;
+c_IdentType* c_Type::m_throwableType;
+c_ArrayType* c_Type::p_ArrayOf(){
+	if(!((m_arrayOf)!=0)){
+		gc_assign(m_arrayOf,(new c_ArrayType)->m_new(this));
+	}
+	return m_arrayOf;
+}
+c_ArrayType* c_Type::m_emptyArrayType;
+c_IdentType* c_Type::m_nullObjectType;
+String c_Type::p_ToString(){
+	return String(L"??Type??",8);
+}
+int c_Type::p_EqualsType(c_Type* t_ty){
+	return 0;
+}
+c_Type* c_Type::p_Semant(){
+	return this;
+}
+int c_Type::p_ExtendsType(c_Type* t_ty){
+	return p_EqualsType(t_ty);
+}
+c_ClassDecl* c_Type::p_GetClass(){
+	return 0;
+}
+void c_Type::mark(){
+	Object::mark();
+	gc_mark_q(m_arrayOf);
+}
+c_ValDecl::c_ValDecl(){
+	m_type=0;
+	m_init=0;
+}
+c_ValDecl* c_ValDecl::m_new(){
+	c_Decl::m_new();
+	return this;
+}
+String c_ValDecl::p_ToString(){
+	String t_t=c_Decl::p_ToString();
+	if((m_type)!=0){
+		return t_t+String(L":",1)+m_type->p_ToString();
+	}
+	return t_t;
+}
+int c_ValDecl::p_OnSemant(){
+	if((m_type)!=0){
+		gc_assign(m_type,m_type->p_Semant());
+		if((m_init)!=0){
+			gc_assign(m_init,m_init->p_Semant2(m_type,0));
+		}
+	}else{
+		if((m_init)!=0){
+			gc_assign(m_init,m_init->p_Semant());
+			gc_assign(m_type,m_init->m_exprType);
+		}else{
+			bb_config_InternalErr(String(L"Internal error",14));
+		}
+	}
+	if((dynamic_cast<c_VoidType*>(m_type))!=0){
+		bb_config_Err(String(L"Declaration has void type.",26));
+	}
+	return 0;
+}
+c_Expr* c_ValDecl::p_CopyInit(){
+	if((m_init)!=0){
+		return m_init->p_Copy();
+	}
+	return 0;
+}
+void c_ValDecl::mark(){
+	c_Decl::mark();
+	gc_mark_q(m_type);
+	gc_mark_q(m_init);
+}
+c_ConstDecl::c_ConstDecl(){
+	m_value=String();
+}
+c_ConstDecl* c_ConstDecl::m_new(String t_ident,int t_attrs,c_Type* t_type,c_Expr* t_init){
+	c_ValDecl::m_new();
+	this->m_ident=t_ident;
+	this->m_munged=t_ident;
+	this->m_attrs=t_attrs;
+	gc_assign(this->m_type,t_type);
+	gc_assign(this->m_init,t_init);
+	return this;
+}
+c_ConstDecl* c_ConstDecl::m_new2(){
+	c_ValDecl::m_new();
+	return this;
+}
+c_Decl* c_ConstDecl::p_OnCopy(){
+	return ((new c_ConstDecl)->m_new(m_ident,m_attrs,m_type,p_CopyInit()));
+}
+int c_ConstDecl::p_OnSemant(){
+	c_ValDecl::p_OnSemant();
+	if(!((p_IsExtern())!=0)){
+		m_value=m_init->p_Eval();
+	}
+	return 0;
+}
+void c_ConstDecl::mark(){
+	c_ValDecl::mark();
+}
+c_Map2::c_Map2(){
+	m_root=0;
+}
+c_Map2* c_Map2::m_new(){
+	return this;
+}
+c_Node2* c_Map2::p_FindNode(String t_key){
+	c_Node2* t_node=m_root;
+	while((t_node)!=0){
+		int t_cmp=p_Compare(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_ConstDecl* c_Map2::p_Get(String t_key){
+	c_Node2* t_node=p_FindNode(t_key);
+	if((t_node)!=0){
+		return t_node->m_value;
+	}
+	return 0;
+}
+int c_Map2::p_RotateLeft2(c_Node2* t_node){
+	c_Node2* t_child=t_node->m_right;
+	gc_assign(t_node->m_right,t_child->m_left);
+	if((t_child->m_left)!=0){
+		gc_assign(t_child->m_left->m_parent,t_node);
+	}
+	gc_assign(t_child->m_parent,t_node->m_parent);
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_left){
+			gc_assign(t_node->m_parent->m_left,t_child);
+		}else{
+			gc_assign(t_node->m_parent->m_right,t_child);
+		}
+	}else{
+		gc_assign(m_root,t_child);
+	}
+	gc_assign(t_child->m_left,t_node);
+	gc_assign(t_node->m_parent,t_child);
+	return 0;
+}
+int c_Map2::p_RotateRight2(c_Node2* t_node){
+	c_Node2* t_child=t_node->m_left;
+	gc_assign(t_node->m_left,t_child->m_right);
+	if((t_child->m_right)!=0){
+		gc_assign(t_child->m_right->m_parent,t_node);
+	}
+	gc_assign(t_child->m_parent,t_node->m_parent);
+	if((t_node->m_parent)!=0){
+		if(t_node==t_node->m_parent->m_right){
+			gc_assign(t_node->m_parent->m_right,t_child);
+		}else{
+			gc_assign(t_node->m_parent->m_left,t_child);
+		}
+	}else{
+		gc_assign(m_root,t_child);
+	}
+	gc_assign(t_child->m_right,t_node);
+	gc_assign(t_node->m_parent,t_child);
+	return 0;
+}
+int c_Map2::p_InsertFixup2(c_Node2* t_node){
+	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
+		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
+			c_Node2* t_uncle=t_node->m_parent->m_parent->m_right;
+			if(((t_uncle)!=0) && t_uncle->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle->m_color=1;
+				t_uncle->m_parent->m_color=-1;
+				t_node=t_uncle->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_right){
+					t_node=t_node->m_parent;
+					p_RotateLeft2(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateRight2(t_node->m_parent->m_parent);
+			}
+		}else{
+			c_Node2* t_uncle2=t_node->m_parent->m_parent->m_left;
+			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
+				t_node->m_parent->m_color=1;
+				t_uncle2->m_color=1;
+				t_uncle2->m_parent->m_color=-1;
+				t_node=t_uncle2->m_parent;
+			}else{
+				if(t_node==t_node->m_parent->m_left){
+					t_node=t_node->m_parent;
+					p_RotateRight2(t_node);
+				}
+				t_node->m_parent->m_color=1;
+				t_node->m_parent->m_parent->m_color=-1;
+				p_RotateLeft2(t_node->m_parent->m_parent);
+			}
+		}
+	}
+	m_root->m_color=1;
+	return 0;
+}
+bool c_Map2::p_Set2(String t_key,c_ConstDecl* t_value){
+	c_Node2* t_node=m_root;
+	c_Node2* t_parent=0;
+	int t_cmp=0;
+	while((t_node)!=0){
+		t_parent=t_node;
+		t_cmp=p_Compare(t_key,t_node->m_key);
+		if(t_cmp>0){
+			t_node=t_node->m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node->m_left;
+			}else{
+				gc_assign(t_node->m_value,t_value);
+				return false;
+			}
+		}
+	}
+	t_node=(new c_Node2)->m_new(t_key,t_value,-1,t_parent);
+	if((t_parent)!=0){
+		if(t_cmp>0){
+			gc_assign(t_parent->m_right,t_node);
+		}else{
+			gc_assign(t_parent->m_left,t_node);
+		}
+		p_InsertFixup2(t_node);
+	}else{
+		gc_assign(m_root,t_node);
+	}
+	return true;
+}
+bool c_Map2::p_Contains(String t_key){
+	return p_FindNode(t_key)!=0;
+}
+void c_Map2::mark(){
+	Object::mark();
+	gc_mark_q(m_root);
+}
+c_StringMap2::c_StringMap2(){
+}
+c_StringMap2* c_StringMap2::m_new(){
+	c_Map2::m_new();
+	return this;
+}
+int c_StringMap2::p_Compare(String t_lhs,String t_rhs){
+	return t_lhs.Compare(t_rhs);
+}
+void c_StringMap2::mark(){
+	c_Map2::mark();
+}
+c_Node2::c_Node2(){
+	m_key=String();
+	m_right=0;
+	m_left=0;
+	m_value=0;
+	m_color=0;
+	m_parent=0;
+}
+c_Node2* c_Node2::m_new(String t_key,c_ConstDecl* t_value,int t_color,c_Node2* t_parent){
+	this->m_key=t_key;
+	gc_assign(this->m_value,t_value);
+	this->m_color=t_color;
+	gc_assign(this->m_parent,t_parent);
+	return this;
+}
+c_Node2* c_Node2::m_new2(){
+	return this;
+}
+void c_Node2::mark(){
 	Object::mark();
 	gc_mark_q(m_right);
 	gc_mark_q(m_left);
 	gc_mark_q(m_value);
 	gc_mark_q(m_parent);
+}
+c_Type* bb_config_GetConfigVarType(String t_key){
+	c_ConstDecl* t_decl=bb_config__cfgScope->m_cdecls->p_Get(t_key);
+	if((t_decl)!=0){
+		return t_decl->m_type;
+	}
+	return 0;
+}
+c_BoolType::c_BoolType(){
+}
+c_BoolType* c_BoolType::m_new(){
+	c_Type::m_new();
+	return this;
+}
+int c_BoolType::p_EqualsType(c_Type* t_ty){
+	return ((dynamic_cast<c_BoolType*>(t_ty)!=0)?1:0);
+}
+int c_BoolType::p_ExtendsType(c_Type* t_ty){
+	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+		c_Expr* t_expr=((new c_ConstExpr)->m_new((this),String()))->p_Semant();
+		c_Expr* t_[]={t_expr};
+		c_FuncDecl* t_ctor=t_ty->p_GetClass()->p_FindFuncDecl(String(L"new",3),Array<c_Expr* >(t_,1),1);
+		return ((((t_ctor)!=0) && t_ctor->p_IsCtor())?1:0);
+	}
+	return ((dynamic_cast<c_IntType*>(t_ty)!=0 || dynamic_cast<c_BoolType*>(t_ty)!=0)?1:0);
+}
+c_ClassDecl* c_BoolType::p_GetClass(){
+	return dynamic_cast<c_ClassDecl*>(bb_decl__env->p_FindDecl(String(L"bool",4)));
+}
+String c_BoolType::p_ToString(){
+	return String(L"Bool",4);
+}
+void c_BoolType::mark(){
+	c_Type::mark();
+}
+c_StringType::c_StringType(){
+}
+c_StringType* c_StringType::m_new(){
+	c_Type::m_new();
+	return this;
+}
+int c_StringType::p_EqualsType(c_Type* t_ty){
+	return ((dynamic_cast<c_StringType*>(t_ty)!=0)?1:0);
+}
+int c_StringType::p_ExtendsType(c_Type* t_ty){
+	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
+		c_Expr* t_expr=((new c_ConstExpr)->m_new((this),String()))->p_Semant();
+		c_Expr* t_[]={t_expr};
+		c_FuncDecl* t_ctor=t_ty->p_GetClass()->p_FindFuncDecl(String(L"new",3),Array<c_Expr* >(t_,1),1);
+		return ((((t_ctor)!=0) && t_ctor->p_IsCtor())?1:0);
+	}
+	return p_EqualsType(t_ty);
+}
+c_ClassDecl* c_StringType::p_GetClass(){
+	return dynamic_cast<c_ClassDecl*>(bb_decl__env->p_FindDecl(String(L"string",6)));
+}
+String c_StringType::p_ToString(){
+	return String(L"String",6);
+}
+void c_StringType::mark(){
+	c_Type::mark();
 }
 c_Expr::c_Expr(){
 	m_exprType=0;
@@ -19875,258 +20153,13 @@ void c_Expr::mark(){
 	Object::mark();
 	gc_mark_q(m_exprType);
 }
-c_BoolType::c_BoolType(){
-}
-c_BoolType* c_BoolType::m_new(){
-	c_Type::m_new();
-	return this;
-}
-int c_BoolType::p_EqualsType(c_Type* t_ty){
-	return ((dynamic_cast<c_BoolType*>(t_ty)!=0)?1:0);
-}
-int c_BoolType::p_ExtendsType(c_Type* t_ty){
-	if((dynamic_cast<c_ObjectType*>(t_ty))!=0){
-		c_Expr* t_expr=((new c_ConstExpr)->m_new((this),String()))->p_Semant();
-		c_Expr* t_[]={t_expr};
-		c_FuncDecl* t_ctor=t_ty->p_GetClass()->p_FindFuncDecl(String(L"new",3),Array<c_Expr* >(t_,1),1);
-		return ((((t_ctor)!=0) && t_ctor->p_IsCtor())?1:0);
-	}
-	return ((dynamic_cast<c_IntType*>(t_ty)!=0 || dynamic_cast<c_BoolType*>(t_ty)!=0)?1:0);
-}
-c_ClassDecl* c_BoolType::p_GetClass(){
-	return dynamic_cast<c_ClassDecl*>(bb_decl__env->p_FindDecl(String(L"bool",4)));
-}
-String c_BoolType::p_ToString(){
-	return String(L"Bool",4);
-}
-void c_BoolType::mark(){
-	c_Type::mark();
-}
-c_Map2::c_Map2(){
-	m_root=0;
-}
-c_Map2* c_Map2::m_new(){
-	return this;
-}
-int c_Map2::p_RotateLeft2(c_Node2* t_node){
-	c_Node2* t_child=t_node->m_right;
-	gc_assign(t_node->m_right,t_child->m_left);
-	if((t_child->m_left)!=0){
-		gc_assign(t_child->m_left->m_parent,t_node);
-	}
-	gc_assign(t_child->m_parent,t_node->m_parent);
-	if((t_node->m_parent)!=0){
-		if(t_node==t_node->m_parent->m_left){
-			gc_assign(t_node->m_parent->m_left,t_child);
-		}else{
-			gc_assign(t_node->m_parent->m_right,t_child);
-		}
-	}else{
-		gc_assign(m_root,t_child);
-	}
-	gc_assign(t_child->m_left,t_node);
-	gc_assign(t_node->m_parent,t_child);
-	return 0;
-}
-int c_Map2::p_RotateRight2(c_Node2* t_node){
-	c_Node2* t_child=t_node->m_left;
-	gc_assign(t_node->m_left,t_child->m_right);
-	if((t_child->m_right)!=0){
-		gc_assign(t_child->m_right->m_parent,t_node);
-	}
-	gc_assign(t_child->m_parent,t_node->m_parent);
-	if((t_node->m_parent)!=0){
-		if(t_node==t_node->m_parent->m_right){
-			gc_assign(t_node->m_parent->m_right,t_child);
-		}else{
-			gc_assign(t_node->m_parent->m_left,t_child);
-		}
-	}else{
-		gc_assign(m_root,t_child);
-	}
-	gc_assign(t_child->m_right,t_node);
-	gc_assign(t_node->m_parent,t_child);
-	return 0;
-}
-int c_Map2::p_InsertFixup2(c_Node2* t_node){
-	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
-		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node2* t_uncle=t_node->m_parent->m_parent->m_right;
-			if(((t_uncle)!=0) && t_uncle->m_color==-1){
-				t_node->m_parent->m_color=1;
-				t_uncle->m_color=1;
-				t_uncle->m_parent->m_color=-1;
-				t_node=t_uncle->m_parent;
-			}else{
-				if(t_node==t_node->m_parent->m_right){
-					t_node=t_node->m_parent;
-					p_RotateLeft2(t_node);
-				}
-				t_node->m_parent->m_color=1;
-				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateRight2(t_node->m_parent->m_parent);
-			}
-		}else{
-			c_Node2* t_uncle2=t_node->m_parent->m_parent->m_left;
-			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
-				t_node->m_parent->m_color=1;
-				t_uncle2->m_color=1;
-				t_uncle2->m_parent->m_color=-1;
-				t_node=t_uncle2->m_parent;
-			}else{
-				if(t_node==t_node->m_parent->m_left){
-					t_node=t_node->m_parent;
-					p_RotateRight2(t_node);
-				}
-				t_node->m_parent->m_color=1;
-				t_node->m_parent->m_parent->m_color=-1;
-				p_RotateLeft2(t_node->m_parent->m_parent);
-			}
-		}
-	}
-	m_root->m_color=1;
-	return 0;
-}
-bool c_Map2::p_Set2(String t_key,String t_value){
-	c_Node2* t_node=m_root;
-	c_Node2* t_parent=0;
-	int t_cmp=0;
-	while((t_node)!=0){
-		t_parent=t_node;
-		t_cmp=p_Compare(t_key,t_node->m_key);
-		if(t_cmp>0){
-			t_node=t_node->m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node->m_left;
-			}else{
-				t_node->m_value=t_value;
-				return false;
-			}
-		}
-	}
-	t_node=(new c_Node2)->m_new(t_key,t_value,-1,t_parent);
-	if((t_parent)!=0){
-		if(t_cmp>0){
-			gc_assign(t_parent->m_right,t_node);
-		}else{
-			gc_assign(t_parent->m_left,t_node);
-		}
-		p_InsertFixup2(t_node);
-	}else{
-		gc_assign(m_root,t_node);
-	}
-	return true;
-}
-c_Node2* c_Map2::p_FindNode(String t_key){
-	c_Node2* t_node=m_root;
-	while((t_node)!=0){
-		int t_cmp=p_Compare(t_key,t_node->m_key);
-		if(t_cmp>0){
-			t_node=t_node->m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node->m_left;
-			}else{
-				return t_node;
-			}
-		}
-	}
-	return t_node;
-}
-String c_Map2::p_Get(String t_key){
-	c_Node2* t_node=p_FindNode(t_key);
-	if((t_node)!=0){
-		return t_node->m_value;
-	}
-	return String();
-}
-bool c_Map2::p_Contains(String t_key){
-	return p_FindNode(t_key)!=0;
-}
-c_Node2* c_Map2::p_FirstNode(){
-	if(!((m_root)!=0)){
-		return 0;
-	}
-	c_Node2* t_node=m_root;
-	while((t_node->m_left)!=0){
-		t_node=t_node->m_left;
-	}
-	return t_node;
-}
-c_NodeEnumerator3* c_Map2::p_ObjectEnumerator(){
-	return (new c_NodeEnumerator3)->m_new(p_FirstNode());
-}
-void c_Map2::mark(){
-	Object::mark();
-	gc_mark_q(m_root);
-}
-c_StringMap2::c_StringMap2(){
-}
-c_StringMap2* c_StringMap2::m_new(){
-	c_Map2::m_new();
-	return this;
-}
-int c_StringMap2::p_Compare(String t_lhs,String t_rhs){
-	return t_lhs.Compare(t_rhs);
-}
-void c_StringMap2::mark(){
-	c_Map2::mark();
-}
-c_Node2::c_Node2(){
-	m_key=String();
-	m_right=0;
-	m_left=0;
-	m_value=String();
-	m_color=0;
-	m_parent=0;
-}
-c_Node2* c_Node2::m_new(String t_key,String t_value,int t_color,c_Node2* t_parent){
-	this->m_key=t_key;
-	this->m_value=t_value;
-	this->m_color=t_color;
-	gc_assign(this->m_parent,t_parent);
-	return this;
-}
-c_Node2* c_Node2::m_new2(){
-	return this;
-}
-c_Node2* c_Node2::p_NextNode(){
-	c_Node2* t_node=0;
-	if((m_right)!=0){
-		t_node=m_right;
-		while((t_node->m_left)!=0){
-			t_node=t_node->m_left;
-		}
-		return t_node;
-	}
-	t_node=this;
-	c_Node2* t_parent=this->m_parent;
-	while(((t_parent)!=0) && t_node==t_parent->m_right){
-		t_node=t_parent;
-		t_parent=t_parent->m_parent;
-	}
-	return t_parent;
-}
-String c_Node2::p_Key(){
-	return m_key;
-}
-String c_Node2::p_Value(){
-	return m_value;
-}
-void c_Node2::mark(){
-	Object::mark();
-	gc_mark_q(m_right);
-	gc_mark_q(m_left);
-	gc_mark_q(m_parent);
-}
 int bb_config_SetConfigVar(String t_key,String t_val,c_Type* t_type){
 	c_ConstDecl* t_decl=bb_config__cfgScope->m_cdecls->p_Get(t_key);
 	if((t_decl)!=0){
 		gc_assign(t_decl->m_type,t_type);
 	}else{
 		t_decl=(new c_ConstDecl)->m_new(t_key,1048576,t_type,0);
-		bb_config__cfgScope->m_cdecls->p_Set(t_key,t_decl);
+		bb_config__cfgScope->m_cdecls->p_Set2(t_key,t_decl);
 	}
 	t_decl->m_value=t_val;
 	if((dynamic_cast<c_BoolType*>(t_type))!=0){
@@ -20136,10 +20169,24 @@ int bb_config_SetConfigVar(String t_key,String t_val,c_Type* t_type){
 			t_val=String(L"0",1);
 		}
 	}
-	bb_config__cfgScope->m_vars->p_Set2(t_key,t_val);
+	bb_config__cfgScope->m_vars->p_Set(t_key,t_val);
 	return 0;
 }
-int bb_config_SetConfigVar2(String t_key,String t_val){
+int bb_config_SetConfigVar2(String t_key,String t_val,bool t_append){
+	if(t_append){
+		String t_oldVal=bb_config__cfgScope->m_vars->p_Get(t_key);
+		if((dynamic_cast<c_BoolType*>(bb_config_GetConfigVarType(t_key)))!=0){
+			if(t_oldVal==String(L"1",1)){
+				t_oldVal=String(L"True",4);
+			}else{
+				t_oldVal=String(L"False",5);
+			}
+		}
+		if((t_oldVal).Length()!=0){
+			String t_[]={t_oldVal,t_val};
+			t_val=String(L"" L"\x1e" L"",1).Join(Array<String >(t_,2));
+		}
+	}
 	bb_config_SetConfigVar(t_key,t_val,(c_Type::m_stringType));
 	return 0;
 }
@@ -20232,20 +20279,14 @@ void c_StringStack::mark(){
 	c_Stack::mark();
 }
 String bb_config_GetConfigVar(String t_key){
-	return bb_config__cfgScope->m_vars->p_Get(t_key);
-}
-String bb_config_GetConfigVar2(String t_key,String t_option,String t_replace){
-	String t_str=String();
-	String t_value=bb_config__cfgScope->m_vars->p_Get(t_key);
-	for(int t_i=0;t_i<t_value.Length();t_i=t_i+1){
-		int t_char=(int)t_value[t_i];
-		if(t_char==124 || t_char==(int)t_option[0] || t_char==30){
-			t_str=t_str+t_replace;
-		}else{
-			t_str=t_str+String((Char)(t_char),1);
-		}
+	String t_rawVal=bb_config__cfgScope->m_vars->p_Get(t_key);
+	if(!((t_rawVal).Length()!=0)){
+		return String();
 	}
-	return t_str;
+	if(!t_rawVal.Contains(String(L"" L"\x1e" L"",1))){
+		return t_rawVal;
+	}
+	return t_rawVal.Replace(String(L"" L"\x1e" L"",1),String());
 }
 String bb_transcc_ReplaceEnv(String t_str){
 	c_StringStack* t_bits=(new c_StringStack)->m_new2();
@@ -20290,7 +20331,7 @@ c_Builder::c_Builder(){
 	m_BINARY_FILES=String();
 	m_DATA_FILES=String();
 	m_syncData=false;
-	m_dataFiles=(new c_StringMap2)->m_new();
+	m_dataFiles=(new c_StringMap)->m_new();
 }
 c_Builder* c_Builder::m_new(c_TransCC* t_tcc){
 	gc_assign(this->m_tcc,t_tcc);
@@ -20336,11 +20377,11 @@ void c_Builder::p_Make(){
 		return;
 	}
 	bbPrint(String(L"Parsing...",10));
-	bb_config_SetConfigVar2(String(L"HOST",4),bb_config_ENV_HOST);
-	bb_config_SetConfigVar2(String(L"LANG",4),bb_config_ENV_LANG);
-	bb_config_SetConfigVar2(String(L"TARGET",6),bb_config_ENV_TARGET);
-	bb_config_SetConfigVar2(String(L"CONFIG",6),bb_config_ENV_CONFIG);
-	bb_config_SetConfigVar2(String(L"SAFEMODE",8),String(bb_config_ENV_SAFEMODE));
+	bb_config_SetConfigVar2(String(L"HOST",4),bb_config_ENV_HOST,false);
+	bb_config_SetConfigVar2(String(L"LANG",4),bb_config_ENV_LANG,false);
+	bb_config_SetConfigVar2(String(L"TARGET",6),bb_config_ENV_TARGET,false);
+	bb_config_SetConfigVar2(String(L"CONFIG",6),bb_config_ENV_CONFIG,false);
+	bb_config_SetConfigVar2(String(L"SAFEMODE",8),String(bb_config_ENV_SAFEMODE),false);
 	gc_assign(m_app,bb_parser_ParseApp(m_tcc->m_opt_srcpath));
 	bbPrint(String(L"Semanting...",12));
 	if((bb_config_GetConfigVar(String(L"REFLECTION_FILTER",17))).Length()!=0){
@@ -20400,6 +20441,16 @@ void c_Builder::p_Make(){
 	if(FileType(t_cfgPath)==1){
 		bb_preprocessor_PreProcess(t_cfgPath,0);
 	}
+	String t_2[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"TEXT_FILES",10),String(L"|",1),Array<String >(t_2,2));
+	String t_3[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"IMAGE_FILES",11),String(L"|",1),Array<String >(t_3,2));
+	String t_4[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"SOUND_FILES",11),String(L"|",1),Array<String >(t_4,2));
+	String t_5[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"MUSIC_FILES",11),String(L"|",1),Array<String >(t_5,2));
+	String t_6[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"BINARY_FILES",12),String(L"|",1),Array<String >(t_6,2));
 	m_TEXT_FILES=bb_config_GetConfigVar(String(L"TEXT_FILES",10));
 	m_IMAGE_FILES=bb_config_GetConfigVar(String(L"IMAGE_FILES",11));
 	m_SOUND_FILES=bb_config_GetConfigVar(String(L"SOUND_FILES",11));
@@ -20418,7 +20469,6 @@ void c_Builder::p_Make(){
 	if((m_BINARY_FILES).Length()!=0){
 		m_DATA_FILES=m_DATA_FILES+(String(L"|",1)+m_BINARY_FILES);
 	}
-	m_DATA_FILES=m_DATA_FILES.Replace(String(L";",1),String(L"|",1));
 	m_syncData=bb_config_GetConfigVar(String(L"FAST_SYNC_PROJECT_DATA",22))==String(L"1",1);
 	String t_cd=CurrentDir();
 	ChangeDir(t_targetPath);
@@ -20466,7 +20516,7 @@ void c_Builder::p_CreateDataDir(String t_dir){
 					if(bb_transcc_MatchPath(t_r.ToLower(),m_DATA_FILES.ToLower())){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
+						m_dataFiles->p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_22==2){
@@ -20485,7 +20535,7 @@ void c_Builder::p_CreateDataDir(String t_dir){
 		if(bb_transcc_MatchPath(t_r2.ToLower(),m_DATA_FILES.ToLower())){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
+			m_dataFiles->p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).Length()!=0){
@@ -20863,10 +20913,10 @@ bool c_AndroidBuilder::p_CreateDirRecursive(String t_path){
 }
 String c_AndroidBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"static final String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value().Trim(),String(L"java",4))+String(L";",1));
+		String t_key=t_->p_NextObject();
+		t_config->p_Push(String(L"static final String ",20)+t_key+String(L"=",1)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"java",4))+String(L";",1));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
@@ -20877,17 +20927,18 @@ void c_AndroidBuilder::p_MakeTarget(){
 	String t_app_package=bb_config_GetConfigVar(String(L"ANDROID_APP_PACKAGE",19));
 	SetEnv(String(L"ANDROID_SDK_DIR",15),m_tcc->m_ANDROID_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
 	SetEnv(String(L"ANDROID_NDK_DIR",15),m_tcc->m_ANDROID_NDK_PATH.Replace(String(L"\\",1),String(L"\\\\",2)));
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),bb_config_GetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_1",27),String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),bb_config_GetConfigVar2(String(L"ANDROID_LIBRARY_REFERENCE_2",27),String(L";",1),String(L"\n",1))+String(L"\n",1));
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),bb_config_GetConfigVar2(String(L"ANDROID_MANIFEST_MAIN",21),String(L";",1),String(L"\n",1))+String(L"\n",1));
-	String t_manifest=bb_config_GetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),String(L";",1),String(L"\n",1))+String(L"\n",1);
+	bb_config_UnifyConfigVarSeparator(String(L"ANDROID_LIBRARY_REFERENCE_1",27),String(L"\n",1),Array<String >());
+	bb_config_UnifyConfigVarSeparator(String(L"ANDROID_LIBRARY_REFERENCE_2",27),String(L"\n",1),Array<String >());
+	bb_config_UnifyConfigVarSeparator(String(L"ANDROID_MANIFEST_MAIN",21),String(L"\n",1),Array<String >());
+	bb_config_UnifyConfigVarSeparator(String(L"ANDROID_MANIFEST_APPLICATION",28),String(L"\n",1),Array<String >());
+	String t_manifestApp=bb_config_GetConfigVar(String(L"ANDROID_MANIFEST_APPLICATION",28))+String(L"\n",1);
 	String t_admob_appid=bb_config_GetConfigVar(String(L"ADMOB_ANDROID_ADS_APPID",23));
 	if(t_admob_appid.Length()>0){
 		String t_admob_appid2=String(L"<meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" ",68);
 		t_admob_appid2=t_admob_appid2+(String(L"android:value=\"",15)+t_admob_appid+String(L"\" />",4)+String(L"\n",1));
-		t_manifest=t_manifest+t_admob_appid2;
+		t_manifestApp=t_manifestApp+t_admob_appid2;
 	}
-	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),t_manifest);
+	bb_config_SetConfigVar2(String(L"ANDROID_MANIFEST_APPLICATION",28),t_manifestApp,false);
 	String t_jpath=String(L"app/src/main/java",17);
 	bb_os_DeleteDir(t_jpath,true);
 	CreateDir(t_jpath);
@@ -20958,11 +21009,13 @@ void c_AndroidBuilder::p_MakeTarget(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"IMPORTS",7),t_imps->p_Join(String(L"\n",1)),String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"PACKAGE",7),String(L"package ",8)+t_app_package+String(L";",1),String(L"\n//",3));
 	SaveString(t_main,t_jpath);
-	Array<String > t_7=bb_config_GetConfigVar(String(L"LIBS",4)).Split(String(L"|",1));
-	int t_8=0;
-	while(t_8<t_7.Length()){
-		String t_lib=t_7[t_8];
-		t_8=t_8+1;
+	String t_7[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"LIBS",4),String(L"|",1),Array<String >(t_7,2));
+	Array<String > t_8=bb_config_GetConfigVar(String(L"LIBS",4)).Split(String(L"|",1));
+	int t_9=0;
+	while(t_9<t_8.Length()){
+		String t_lib=t_8[t_9];
+		t_9=t_9+1;
 		String t_22=bb_os_ExtractExt(t_lib);
 		if(t_22==String(L"jar",3) || t_22==String(L"so",2)){
 			String t_tdir=String();
@@ -20982,11 +21035,13 @@ void c_AndroidBuilder::p_MakeTarget(){
 			CopyFile(t_lib,String(L"libs/",5)+t_tdir+bb_os_StripDir(t_lib));
 		}
 	}
-	Array<String > t_9=bb_config_GetConfigVar(String(L"SRCS",4)).Split(String(L"|",1));
-	int t_10=0;
-	while(t_10<t_9.Length()){
-		String t_src=t_9[t_10];
-		t_10=t_10+1;
+	String t_10[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"SRCS",4),String(L"|",1),Array<String >(t_10,2));
+	Array<String > t_11=bb_config_GetConfigVar(String(L"SRCS",4)).Split(String(L"|",1));
+	int t_12=0;
+	while(t_12<t_11.Length()){
+		String t_src=t_11[t_12];
+		t_12=t_12+1;
 		String t_42=bb_os_ExtractExt(t_src);
 		if(t_42==String(L"java",4) || t_42==String(L"aidl",4)){
 			int t_i3=t_src.FindLast(String(L"/src/",5));
@@ -21012,11 +21067,11 @@ void c_AndroidBuilder::p_MakeTarget(){
 	}
 	if(bb_config_GetConfigVar(String(L"ANDROID_APP_ICON",16))!=String()){
 		Array<String > t_iconfiles=Array<String >();
-		String t_11[]={String(L"app/src/main/res/mipmap-hdpi/ic_launcher.png",44),String(L"72",2),String(L"72",2),String(L"app/src/main/res/mipmap-mdpi/ic_launcher.png",44),String(L"48",2),String(L"48",2),String(L"app/src/main/res/mipmap-xhdpi/ic_launcher.png",45),String(L"96",2),String(L"96",2),String(L"app/src/main/res/mipmap-xxhdpi/ic_launcher.png",46),String(L"144",3),String(L"144",3),String(L"app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",47),String(L"192",3),String(L"192",3)};
-		t_iconfiles=Array<String >(t_11,15);
+		String t_13[]={String(L"app/src/main/res/mipmap-hdpi/ic_launcher.png",44),String(L"72",2),String(L"72",2),String(L"app/src/main/res/mipmap-mdpi/ic_launcher.png",44),String(L"48",2),String(L"48",2),String(L"app/src/main/res/mipmap-xhdpi/ic_launcher.png",45),String(L"96",2),String(L"96",2),String(L"app/src/main/res/mipmap-xxhdpi/ic_launcher.png",46),String(L"144",3),String(L"144",3),String(L"app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",47),String(L"192",3),String(L"192",3)};
+		t_iconfiles=Array<String >(t_13,15);
 		p_MakeIcons(bb_config_GetConfigVar(String(L"ANDROID_APP_ICON",16)),t_iconfiles,0);
-		String t_12[]={String(L"app/src/main/res/mipmap-hdpi/ic_launcher_round.png",50),String(L"72",2),String(L"72",2),String(L"app/src/main/res/mipmap-mdpi/ic_launcher_round.png",50),String(L"48",2),String(L"48",2),String(L"app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",51),String(L"96",2),String(L"96",2),String(L"app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",52),String(L"144",3),String(L"144",3),String(L"app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",53),String(L"192",3),String(L"192",3)};
-		t_iconfiles=Array<String >(t_12,15);
+		String t_14[]={String(L"app/src/main/res/mipmap-hdpi/ic_launcher_round.png",50),String(L"72",2),String(L"72",2),String(L"app/src/main/res/mipmap-mdpi/ic_launcher_round.png",50),String(L"48",2),String(L"48",2),String(L"app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",51),String(L"96",2),String(L"96",2),String(L"app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",52),String(L"144",3),String(L"144",3),String(L"app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",53),String(L"192",3),String(L"192",3)};
+		t_iconfiles=Array<String >(t_14,15);
 		if(bb_config_GetConfigVar(String(L"ANDROID_APP_ROUND_ICON",22))==String()){
 			p_MakeIcons(bb_config_GetConfigVar(String(L"ANDROID_APP_ICON",16)),t_iconfiles,1);
 		}else{
@@ -21144,10 +21199,10 @@ void c_GlfwBuilder::p_Begin(){
 }
 String c_GlfwBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
@@ -21155,8 +21210,12 @@ int c_GlfwBuilder::p_ProcessExternalLibs(String t_config,String t_arch,String t_
 	String t_libStr=String();
 	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
 	if(t_msize==String(L"64",2)){
+		String t_[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_COPY_LIBS",14),String(L"|",1),Array<String >(t_,2));
 		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
 	}else{
+		String t_2[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_COPY_LIBS_32",17),String(L"|",1),Array<String >(t_2,2));
 		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS_32",17)).ToLower();
 	}
 	if(t_libStr==String()){
@@ -21164,11 +21223,11 @@ int c_GlfwBuilder::p_ProcessExternalLibs(String t_config,String t_arch,String t_
 	}
 	Array<String > t_libcopy=t_libStr.Split(String(L"|",1));
 	String t_dst=t_config+t_arch;
-	Array<String > t_=t_libcopy;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		String t_i=t_[t_2];
-		t_2=t_2+1;
+	Array<String > t_3=t_libcopy;
+	int t_4=0;
+	while(t_4<t_3.Length()){
+		String t_i=t_3[t_4];
+		t_4=t_4+1;
 		if(HostOS()==String(L"winnt",5)){
 			if(t_i!=String()){
 				if(FileType(t_dst+String(L"/",1)+t_i+String(L".dll",4))==1){
@@ -21229,11 +21288,21 @@ void c_GlfwBuilder::p_MakeGcc(){
 			t_ccopts=t_ccopts+(String(L" -m",3)+t_msize);
 			t_ldopts=t_ldopts+(String(L" -m",3)+t_msize);
 		}
-		t_ccopts=t_ccopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16)).Replace(String(L";",1),String(L" ",1)).Replace(String(L"|",1),String(L" ",1)));
-		t_ldopts=t_ldopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16)).Replace(String(L";",1),String(L" ",1)).Replace(String(L"|",1),String(L" ",1)));
-		t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)).Replace(String(L";",1),String(L" ",1)).Replace(String(L"|",1),String(L" ",1)));
-		t_srcopts=t_srcopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_SRC_OPTS",17)).Replace(String(L";",1),String(L" ",1)).Replace(String(L"|",1),String(L" ",1)));
-		t_vpathopts=t_vpathopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_VPATH_OPTS",19)).Replace(String(L";",1),String(L" ",1)).Replace(String(L"|",1),String(L" ",1)));
+		String t_[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_CC_OPTS",16),String(L" ",1),Array<String >(t_,2));
+		String t_2[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LD_OPTS",16),String(L" ",1),Array<String >(t_2,2));
+		String t_3[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LIB_OPTS",17),String(L" ",1),Array<String >(t_3,2));
+		String t_4[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_SRC_OPTS",17),String(L" ",1),Array<String >(t_4,2));
+		String t_5[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_VPATH_OPTS",19),String(L" ",1),Array<String >(t_5,2));
+		t_ccopts=t_ccopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16)));
+		t_ldopts=t_ldopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16)));
+		t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)));
+		t_srcopts=t_srcopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_SRC_OPTS",17)));
+		t_vpathopts=t_vpathopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_VPATH_OPTS",19)));
 		String t_1=bb_config_ENV_CONFIG;
 		if(t_1==String(L"debug",5)){
 			t_ccopts=t_ccopts+String(L" -O0",4);
@@ -21288,7 +21357,17 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	String t_srcopts=String();
 	String t_vpathopts=String();
 	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
-	t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)).Replace(String(L";",1),String(L" ",1)));
+	String t_[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_CC_OPTS",16),String(L" ",1),Array<String >(t_,2));
+	String t_2[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LD_OPTS",16),String(L" ",1),Array<String >(t_2,2));
+	String t_3[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LIB_OPTS",17),String(L" ",1),Array<String >(t_3,2));
+	String t_4[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_SRC_OPTS",17),String(L" ",1),Array<String >(t_4,2));
+	String t_5[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_VPATH_OPTS",19),String(L" ",1),Array<String >(t_5,2));
+	t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)));
 	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize);
 	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/internal",9));
 	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/external",9));
@@ -21384,7 +21463,7 @@ String c_Html5Builder::p_MetaData(){
 	c_StringStack* t_meta=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
+		c_Node* t_kv=t_->p_NextObject();
 		String t_src=t_kv->p_Key();
 		String t_ext=bb_os_ExtractExt(t_src).ToLower();
 		String t_1=t_ext;
@@ -21416,10 +21495,10 @@ String c_Html5Builder::p_MetaData(){
 }
 String c_Html5Builder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"CFG_",4)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"js",2))+String(L";",1));
+		String t_key=t_->p_NextObject();
+		t_config->p_Push(String(L"CFG_",4)+t_key+String(L"=",1)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"js",2))+String(L";",1));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
@@ -21451,9 +21530,9 @@ void c_Html5Builder::mark(){
 	c_Builder::mark();
 }
 c_IosBuilder::c_IosBuilder(){
-	m__buildFiles=(new c_StringMap2)->m_new();
+	m__buildFiles=(new c_StringMap)->m_new();
 	m__nextFileId=0;
-	m__fileRefs=(new c_StringMap2)->m_new();
+	m__fileRefs=(new c_StringMap)->m_new();
 }
 c_IosBuilder* c_IosBuilder::m_new(c_TransCC* t_tcc){
 	c_Builder::m_new(t_tcc);
@@ -21476,21 +21555,21 @@ void c_IosBuilder::p_Begin(){
 }
 String c_IosBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
-String c_IosBuilder::p_FileId(String t_path,c_StringMap2* t_map){
+String c_IosBuilder::p_FileId(String t_path,c_StringMap* t_map){
 	String t_id=t_map->p_Get(t_path);
 	if((t_id).Length()!=0){
 		return t_id;
 	}
 	m__nextFileId+=1;
 	t_id=String(L"1ACECAFEBABE",12)+(String(L"0000000000000000",16)+String(m__nextFileId)).Slice(-12);
-	t_map->p_Set2(t_path,t_id);
+	t_map->p_Set(t_path,t_id);
 	return t_id;
 }
 void c_IosBuilder::p_AddBuildFile(String t_path){
@@ -21513,7 +21592,7 @@ String c_IosBuilder::p_BuildFiles(){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m__buildFiles->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_it=t_->p_NextObject();
+		c_Node* t_it=t_->p_NextObject();
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_fileRef=p_FileId(t_path,m__fileRefs);
@@ -21533,7 +21612,7 @@ String c_IosBuilder::p_FileRefs(){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m__fileRefs->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_it=t_->p_NextObject();
+		c_Node* t_it=t_->p_NextObject();
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_dir=bb_os_ExtractDir(t_path);
@@ -21570,7 +21649,7 @@ String c_IosBuilder::p_FrameworksBuildPhase(){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m__buildFiles->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_it=t_->p_NextObject();
+		c_Node* t_it=t_->p_NextObject();
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_4=bb_os_ExtractExt(t_path);
@@ -21587,7 +21666,7 @@ String c_IosBuilder::p_FrameworksGroup(){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m__fileRefs->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_it=t_->p_NextObject();
+		c_Node* t_it=t_->p_NextObject();
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_5=bb_os_ExtractExt(t_path);
@@ -21604,7 +21683,7 @@ String c_IosBuilder::p_LibsGroup(){
 	c_StringStack* t_buf=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m__fileRefs->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_it=t_->p_NextObject();
+		c_Node* t_it=t_->p_NextObject();
 		String t_path=t_it->p_Key();
 		String t_id=t_it->p_Value();
 		String t_6=bb_os_ExtractExt(t_path);
@@ -21699,13 +21778,15 @@ void c_IosBuilder::p_MakeTarget(){
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
 	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
 	SaveString(t_main,String(L"main.mm",7));
+	String t_2[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"LIBS",4),String(L"|",1),Array<String >(t_2,2));
 	String t_libs=bb_config_GetConfigVar(String(L"LIBS",4));
 	if((t_libs).Length()!=0){
-		Array<String > t_2=t_libs.Split(String(L"|",1));
-		int t_3=0;
-		while(t_3<t_2.Length()){
-			String t_lib=t_2[t_3];
-			t_3=t_3+1;
+		Array<String > t_3=t_libs.Split(String(L"|",1));
+		int t_4=0;
+		while(t_4<t_3.Length()){
+			String t_lib=t_3[t_4];
+			t_4=t_4+1;
 			if(!((t_lib).Length()!=0)){
 				continue;
 			}
@@ -21776,10 +21857,10 @@ void c_StdcppBuilder::p_Begin(){
 }
 String c_StdcppBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
@@ -21986,13 +22067,13 @@ void c_StdcppBuilder::p_MakeXcode2(String t_cc_opts,String t_cc_libs,String t_cc
 void c_StdcppBuilder::p_MakeTarget(){
 	String t_2=bb_config_ENV_CONFIG;
 	if(t_2==String(L"debug",5)){
-		bb_config_SetConfigVar2(String(L"DEBUG",5),String(L"1",1));
+		bb_config_SetConfigVar2(String(L"DEBUG",5),String(L"1",1),false);
 	}else{
 		if(t_2==String(L"release",7)){
-			bb_config_SetConfigVar2(String(L"RELEASE",7),String(L"1",1));
+			bb_config_SetConfigVar2(String(L"RELEASE",7),String(L"1",1),false);
 		}else{
 			if(t_2==String(L"profile",7)){
-				bb_config_SetConfigVar2(String(L"PROFILE",7),String(L"1",1));
+				bb_config_SetConfigVar2(String(L"PROFILE",7),String(L"1",1),false);
 			}
 		}
 	}
@@ -22068,14 +22149,14 @@ void c_AGKBuilder::p_Begin(){
 String c_AGKBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
 	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_l=t_kv->p_Key().Length();
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key().Slice(4,t_l)+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		if(t_key.StartsWith(String(L"AGK_",4))){
+			t_l=t_key.Length();
+			t_config->p_Push(String(L"#define ",8)+t_key.Slice(4,t_l)+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+			t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}
 	}
 	t_config->p_Push(String(L"#define WINDOW_TITLE \"CerberusGame\"",35));
@@ -22116,7 +22197,7 @@ void c_AGKBuilder::p_CreateMediaDir(String t_dir){
 					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
+						m_dataFiles->p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_3==2){
@@ -22135,7 +22216,7 @@ void c_AGKBuilder::p_CreateMediaDir(String t_dir){
 		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
+			m_dataFiles->p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).Length()!=0){
@@ -22249,13 +22330,13 @@ void c_AGKBuilder_ios::p_Begin(){
 String c_AGKBuilder_ios::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
 	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		if(t_key.StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+			t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}
 	}
 	return t_config->p_Join(String(L"\n",1));
@@ -22295,7 +22376,7 @@ void c_AGKBuilder_ios::p_CreateMediaDir(String t_dir){
 					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
+						m_dataFiles->p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_3==2){
@@ -22314,7 +22395,7 @@ void c_AGKBuilder_ios::p_CreateMediaDir(String t_dir){
 		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
+			m_dataFiles->p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).Length()!=0){
@@ -22422,13 +22503,13 @@ void c_AGKBuilder_android::p_Begin(){
 String c_AGKBuilder_android::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
 	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		if(t_key.StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+			t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}
 	}
 	return t_config->p_Join(String(L"\n",1));
@@ -22468,7 +22549,7 @@ void c_AGKBuilder_android::p_CreateMediaDir(String t_dir){
 					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
+						m_dataFiles->p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_3==2){
@@ -22487,7 +22568,7 @@ void c_AGKBuilder_android::p_CreateMediaDir(String t_dir){
 		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
+			m_dataFiles->p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).Length()!=0){
@@ -22651,13 +22732,13 @@ void c_AGKBuilder_android_ouya::p_Begin(){
 String c_AGKBuilder_android_ouya::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
 	int t_l=0;
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
-		if(t_kv->p_Key().StartsWith(String(L"AGK_",4))){
-			t_config->p_Push(String(L"#define ",8)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+		String t_key=t_->p_NextObject();
+		if(t_key.StartsWith(String(L"AGK_",4))){
+			t_config->p_Push(String(L"#define ",8)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}else{
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+			t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}
 	}
 	return t_config->p_Join(String(L"\n",1));
@@ -22697,7 +22778,7 @@ void c_AGKBuilder_android_ouya::p_CreateMediaDir(String t_dir){
 					if(bb_transcc_MatchPath(t_r,m_DATA_FILES)){
 						p_CCopyFile(t_p,t_t);
 						t_udata->p_Insert(t_t);
-						m_dataFiles->p_Set2(t_p,t_r);
+						m_dataFiles->p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_3==2){
@@ -22716,7 +22797,7 @@ void c_AGKBuilder_android_ouya::p_CreateMediaDir(String t_dir){
 		if(bb_transcc_MatchPath(t_r2,m_DATA_FILES)){
 			p_CCopyFile(t_p2,t_t2);
 			t_udata->p_Insert(t_t2);
-			m_dataFiles->p_Set2(t_p2,t_r2);
+			m_dataFiles->p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).Length()!=0){
@@ -22852,7 +22933,7 @@ c_CustomBuilder::c_CustomBuilder(){
 }
 c_CustomBuilder* c_CustomBuilder::m_new(c_TransCC* t_tcc){
 	c_Builder::m_new(t_tcc);
-	gc_assign(m_custVars,(new c_StringMap2)->m_new());
+	gc_assign(m_custVars,(new c_StringMap)->m_new());
 	return this;
 }
 c_CustomBuilder* c_CustomBuilder::m_new2(){
@@ -22888,7 +22969,7 @@ String c_CustomBuilder::p_MetaData(){
 	c_StringStack* t_meta=(new c_StringStack)->m_new2();
 	c_NodeEnumerator3* t_=m_dataFiles->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
+		c_Node* t_kv=t_->p_NextObject();
 		String t_src=t_kv->p_Key();
 		String t_ext=bb_os_ExtractExt(t_src).ToLower();
 		String t_2=t_ext;
@@ -22920,24 +23001,24 @@ String c_CustomBuilder::p_MetaData(){
 }
 String c_CustomBuilder::p_Config(){
 	c_StringStack* t_config=(new c_StringStack)->m_new2();
-	c_NodeEnumerator3* t_=bb_config_GetConfigVars()->p_ObjectEnumerator();
+	c_KeyEnumerator2* t_=bb_config_GetConfigVarKeys()->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
-		c_Node2* t_kv=t_->p_NextObject();
+		String t_key=t_->p_NextObject();
 		String t_1=bb_config_ENV_LANG;
 		if(t_1==String(L"cpp",3)){
-			t_config->p_Push(String(L"#define CFG_",12)+t_kv->p_Key()+String(L" ",1)+t_kv->p_Value());
+			t_config->p_Push(String(L"#define CFG_",12)+t_key+String(L" ",1)+bb_config_GetConfigVar(t_key));
 		}else{
 			if(t_1==String(L"cs",2)){
-				t_config->p_Push(String(L"public const String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"cs",2))+String(L";",1));
+				t_config->p_Push(String(L"public const String ",20)+t_key+String(L"=",1)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"cs",2))+String(L";",1));
 			}else{
 				if(t_1==String(L"js",2)){
-					t_config->p_Push(String(L"CFG_",4)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"js",2))+String(L";",1));
+					t_config->p_Push(String(L"CFG_",4)+t_key+String(L"=",1)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"js",2))+String(L";",1));
 				}else{
 					if(t_1==String(L"as",2)){
-						t_config->p_Push(String(L"internal static var ",20)+t_kv->p_Key()+String(L":String=",8)+bb_config_Enquote(t_kv->p_Value(),String(L"as",2)));
+						t_config->p_Push(String(L"internal static var ",20)+t_key+String(L":String=",8)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"as",2)));
 					}else{
 						if(t_1==String(L"java",4)){
-							t_config->p_Push(String(L"static final String ",20)+t_kv->p_Key()+String(L"=",1)+bb_config_Enquote(t_kv->p_Value(),String(L"java",4))+String(L";",1));
+							t_config->p_Push(String(L"static final String ",20)+t_key+String(L"=",1)+bb_config_Enquote(bb_config_GetConfigVar(t_key),String(L"java",4))+String(L";",1));
 						}
 					}
 				}
@@ -23180,13 +23261,13 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 																		}else{
 																			if(t_6==String(L"getenv",6)){
 																				String t_ev=GetEnv(t_parToken[0]);
-																				m_custVars->p_Set2(t_parToken[1],t_ev);
+																				m_custVars->p_Set(t_parToken[1],t_ev);
 																			}else{
 																				if(t_6==String(L"setenv",6)){
 																					SetEnv(t_parToken[0],t_parToken[1]);
 																				}else{
 																					if(t_6==String(L"set",3)){
-																						m_custVars->p_Set2(t_parToken[0],t_parToken[1]);
+																						m_custVars->p_Set(t_parToken[0],t_parToken[1]);
 																					}else{
 																						if(t_6==String(L"inject",6)){
 																							if(FileType(t_parToken[0])!=1){
@@ -23237,13 +23318,13 @@ void c_CustomBuilder::p_ParseBuildScript(String t_scriptFile){
 void c_CustomBuilder::p_MakeTarget(){
 	String t_5=bb_config_ENV_CONFIG;
 	if(t_5==String(L"debug",5)){
-		bb_config_SetConfigVar2(String(L"DEBUG",5),String(L"1",1));
+		bb_config_SetConfigVar2(String(L"DEBUG",5),String(L"1",1),false);
 	}else{
 		if(t_5==String(L"release",7)){
-			bb_config_SetConfigVar2(String(L"RELEASE",7),String(L"1",1));
+			bb_config_SetConfigVar2(String(L"RELEASE",7),String(L"1",1),false);
 		}else{
 			if(t_5==String(L"profile",7)){
-				bb_config_SetConfigVar2(String(L"PROFILE",7),String(L"1",1));
+				bb_config_SetConfigVar2(String(L"PROFILE",7),String(L"1",1),false);
 			}
 		}
 	}
@@ -31297,15 +31378,8 @@ String bb_preprocessor_EvalText(c_Toker* t_toker){
 	}
 	return t_val;
 }
-c_StringMap2* bb_config_GetConfigVars(){
-	return bb_config__cfgScope->m_vars;
-}
-c_Type* bb_config_GetConfigVarType(String t_key){
-	c_ConstDecl* t_decl=bb_config__cfgScope->m_cdecls->p_Get(t_key);
-	if((t_decl)!=0){
-		return t_decl->m_type;
-	}
-	return 0;
+bool bb_config_ConfigVarsContain(String t_key){
+	return bb_config__cfgScope->m_vars->p_Contains(t_key);
 }
 String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	int t_cnest=0;
@@ -31317,11 +31391,11 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 	bb_decl_PushEnv(bb_config_GetConfigScope());
 	String t_p_cd=bb_config_GetConfigVar(String(L"CD",2));
 	String t_p_modpath=bb_config_GetConfigVar(String(L"MODPATH",7));
-	bb_config_SetConfigVar2(String(L"CD",2),bb_os_ExtractDir(RealPath(t_path)));
+	bb_config_SetConfigVar2(String(L"CD",2),bb_os_ExtractDir(RealPath(t_path)),false);
 	if((t_mdecl)!=0){
-		bb_config_SetConfigVar2(String(L"MODPATH",7),t_mdecl->m_rmodpath);
+		bb_config_SetConfigVar2(String(L"MODPATH",7),t_mdecl->m_rmodpath,false);
 	}else{
-		bb_config_SetConfigVar2(String(L"MODPATH",7),String());
+		bb_config_SetConfigVar2(String(L"MODPATH",7),String(),false);
 	}
 	c_Toker* t_toker=(new c_Toker)->m_new(t_path,LoadString(t_path));
 	t_toker->p_NextToke();
@@ -31491,7 +31565,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 												if(t_5==String(L"=",1)){
 													c_Expr* t_expr=bb_preprocessor_EvalExpr(t_toker);
 													String t_val=t_expr->p_Eval();
-													if(!bb_config_GetConfigVars()->p_Contains(t_toke2)){
+													if(!bb_config_ConfigVarsContain(t_toke2)){
 														if((dynamic_cast<c_StringType*>(t_expr->m_exprType))!=0){
 															t_val=bb_config_EvalConfigTags(t_val);
 														}
@@ -31500,18 +31574,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 												}else{
 													if(t_5==String(L"+=",2)){
 														String t_val2=bb_preprocessor_EvalText(t_toker);
-														String t_var=bb_config_GetConfigVar(t_toke2);
-														if((dynamic_cast<c_BoolType*>(bb_config_GetConfigVarType(t_toke2)))!=0){
-															if(t_var==String(L"1",1)){
-																t_var=String(L"True",4);
-															}else{
-																t_var=String(L"False",5);
-															}
-														}
-														if(((t_var).Length()!=0) && !t_val2.StartsWith(String(L"|",1))){
-															t_val2=String(L"|",1)+t_val2;
-														}
-														bb_config_SetConfigVar2(t_toke2,t_var+t_val2);
+														bb_config_SetConfigVar2(t_toke2,t_val2,true);
 													}
 												}
 											}else{
@@ -31552,8 +31615,8 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 		t_trace->p_Clear();
 		t_tracknesting->p_Clear();
 	}
-	bb_config_SetConfigVar2(String(L"MODPATH",7),t_p_modpath);
-	bb_config_SetConfigVar2(String(L"CD",2),t_p_cd);
+	bb_config_SetConfigVar2(String(L"MODPATH",7),t_p_modpath,false);
+	bb_config_SetConfigVar2(String(L"CD",2),t_p_cd,false);
 	bb_decl_PopEnv();
 	return t_source->p_Join(String());
 }
@@ -31842,7 +31905,7 @@ c_Reflector::c_Reflector(){
 	m_langmod=0;
 	m_boxesmod=0;
 	m_munged=(new c_StringMap7)->m_new();
-	m_modexprs=(new c_StringMap2)->m_new();
+	m_modexprs=(new c_StringMap)->m_new();
 	m_refmods=(new c_StringSet)->m_new();
 	m_classdecls=(new c_Stack9)->m_new();
 	m_classids=(new c_StringMap7)->m_new();
@@ -31975,7 +32038,7 @@ String c_Reflector::p_DeclExpr(c_Decl* t_decl,bool t_path){
 			bbPrint(String(L"REFLECTION ERROR",16));
 			t_expr=p_Mung(t_mdecl->m_rmodpath);
 			m_refmod->p_InsertDecl((new c_AliasDecl)->m_new(t_expr,0,(t_mdecl)));
-			m_modexprs->p_Set2(t_mdecl->m_filepath,t_expr);
+			m_modexprs->p_Set(t_mdecl->m_filepath,t_expr);
 		}
 		return t_expr;
 	}
@@ -32402,15 +32465,16 @@ String c_Reflector::p_Emit6(c_GlobalDecl* t_gdecl){
 	return t_ident;
 }
 int c_Reflector::p_Semant3(c_AppDecl* t_app){
+	String t_[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"REFLECTION_FILTER",17),String(L"|",1),Array<String >(t_,2));
 	String t_filter=bb_config_GetConfigVar(String(L"REFLECTION_FILTER",17));
 	if(!((t_filter).Length()!=0)){
 		return 0;
 	}
-	t_filter=t_filter.Replace(String(L";",1),String(L"|",1));
 	m_debug=bb_config_GetConfigVar(String(L"DEBUG_REFLECTION",16))==String(L"1",1);
-	c_ValueEnumerator* t_=t_app->m_imported->p_Values()->p_ObjectEnumerator();
-	while(t_->p_HasNext()){
-		c_ModuleDecl* t_mdecl=t_->p_NextObject();
+	c_ValueEnumerator* t_2=t_app->m_imported->p_Values()->p_ObjectEnumerator();
+	while(t_2->p_HasNext()){
+		c_ModuleDecl* t_mdecl=t_2->p_NextObject();
 		String t_path=t_mdecl->m_rmodpath;
 		if(t_path==String(L"reflection",10)){
 			gc_assign(m_refmod,t_mdecl);
@@ -32430,24 +32494,24 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 	if(m_debug){
 		bbPrint(String(L"Semanting all",13));
 	}
-	c_ValueEnumerator* t_2=t_app->m_imported->p_Values()->p_ObjectEnumerator();
-	while(t_2->p_HasNext()){
-		c_ModuleDecl* t_mdecl2=t_2->p_NextObject();
+	c_ValueEnumerator* t_3=t_app->m_imported->p_Values()->p_ObjectEnumerator();
+	while(t_3->p_HasNext()){
+		c_ModuleDecl* t_mdecl2=t_3->p_NextObject();
 		String t_path2=t_mdecl2->m_rmodpath;
 		if(t_mdecl2!=m_boxesmod && t_mdecl2!=m_langmod && !m_MatchPath(t_path2,t_filter)){
 			continue;
 		}
 		String t_expr=p_Mung(t_path2);
 		m_refmod->p_InsertDecl((new c_AliasDecl)->m_new(t_expr,0,(t_mdecl2)));
-		m_modexprs->p_Set2(t_mdecl2->m_filepath,t_expr);
+		m_modexprs->p_Set(t_mdecl2->m_filepath,t_expr);
 		m_refmods->p_Insert(t_mdecl2->m_filepath);
 		t_mdecl2->p_SemantAll();
 	}
 	do{
 		int t_n=t_app->m_allSemantedDecls->p_Count();
-		c_ValueEnumerator* t_3=t_app->m_imported->p_Values()->p_ObjectEnumerator();
-		while(t_3->p_HasNext()){
-			c_ModuleDecl* t_mdecl3=t_3->p_NextObject();
+		c_ValueEnumerator* t_4=t_app->m_imported->p_Values()->p_ObjectEnumerator();
+		while(t_4->p_HasNext()){
+			c_ModuleDecl* t_mdecl3=t_4->p_NextObject();
 			if(!m_refmods->p_Contains(t_mdecl3->m_filepath)){
 				continue;
 			}
@@ -32461,9 +32525,9 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 			bbPrint(String(L"Semanting more: ",16)+String(t_n));
 		}
 	}while(!(false));
-	c_Enumerator3* t_4=t_app->m_allSemantedDecls->p_ObjectEnumerator();
-	while(t_4->p_HasNext()){
-		c_Decl* t_decl=t_4->p_NextObject();
+	c_Enumerator3* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
+	while(t_5->p_HasNext()){
+		c_Decl* t_decl=t_5->p_NextObject();
 		if(!m_refmods->p_Contains(t_decl->p_ModuleScope()->m_filepath)){
 			continue;
 		}
@@ -32481,9 +32545,9 @@ int c_Reflector::p_Semant3(c_AppDecl* t_app){
 	if(m_debug){
 		bbPrint(String(L"Generating reflection info",26));
 	}
-	c_Enumerator3* t_5=t_app->m_allSemantedDecls->p_ObjectEnumerator();
-	while(t_5->p_HasNext()){
-		c_Decl* t_decl2=t_5->p_NextObject();
+	c_Enumerator3* t_6=t_app->m_allSemantedDecls->p_ObjectEnumerator();
+	while(t_6->p_HasNext()){
+		c_Decl* t_decl2=t_6->p_NextObject();
 		if(!m_refmods->p_Contains(t_decl2->p_ModuleScope()->m_filepath)){
 			continue;
 		}
@@ -32585,6 +32649,33 @@ void c_Reflector::mark(){
 	gc_mark_q(m_classdecls);
 	gc_mark_q(m_classids);
 	gc_mark_q(m_output);
+}
+void bb_config_UnifyConfigVarSeparator(String t_key,String t_specificSeparator,Array<String > t_inlineSeparators){
+	String t_result=String();
+	String t_rawVal=bb_config__cfgScope->m_vars->p_Get(t_key);
+	String t_replace=String();
+	if(!((t_rawVal).Length()!=0)){
+		return;
+	}
+	String t_=t_rawVal;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		int t_c=(int)t_[t_2];
+		t_2=t_2+1;
+		String t_s=String((Char)(t_c),1);
+		if(t_s==String(L"" L"\x1e" L"",1)){
+			t_result=t_result+t_specificSeparator;
+		}else{
+			t_replace=t_s;
+			for(int t_i=0;t_i<t_inlineSeparators.Length();t_i=t_i+1){
+				if(t_s==t_inlineSeparators[t_i]){
+					t_replace=t_specificSeparator;
+				}
+			}
+			t_result=t_result+t_replace;
+		}
+	}
+	bb_config_SetConfigVar2(t_key,t_result,false);
 }
 c_MapValues::c_MapValues(){
 	m_map=0;
@@ -34426,25 +34517,45 @@ String bb_transcc_ReplaceBlock(String t_text,String t_tag,String t_repText,Strin
 	}
 	return t_text.Slice(0,t_i)+t_repText+t_text.Slice(t_i2);
 }
-c_NodeEnumerator3::c_NodeEnumerator3(){
+c_MapKeys2::c_MapKeys2(){
+	m_map=0;
+}
+c_MapKeys2* c_MapKeys2::m_new(c_Map* t_map){
+	gc_assign(this->m_map,t_map);
+	return this;
+}
+c_MapKeys2* c_MapKeys2::m_new2(){
+	return this;
+}
+c_KeyEnumerator2* c_MapKeys2::p_ObjectEnumerator(){
+	return (new c_KeyEnumerator2)->m_new(m_map->p_FirstNode());
+}
+void c_MapKeys2::mark(){
+	Object::mark();
+	gc_mark_q(m_map);
+}
+c_MapKeys2* bb_config_GetConfigVarKeys(){
+	return bb_config__cfgScope->m_vars->p_Keys();
+}
+c_KeyEnumerator2::c_KeyEnumerator2(){
 	m_node=0;
 }
-c_NodeEnumerator3* c_NodeEnumerator3::m_new(c_Node2* t_node){
+c_KeyEnumerator2* c_KeyEnumerator2::m_new(c_Node* t_node){
 	gc_assign(this->m_node,t_node);
 	return this;
 }
-c_NodeEnumerator3* c_NodeEnumerator3::m_new2(){
+c_KeyEnumerator2* c_KeyEnumerator2::m_new2(){
 	return this;
 }
-bool c_NodeEnumerator3::p_HasNext(){
+bool c_KeyEnumerator2::p_HasNext(){
 	return m_node!=0;
 }
-c_Node2* c_NodeEnumerator3::p_NextObject(){
-	c_Node2* t_t=m_node;
+String c_KeyEnumerator2::p_NextObject(){
+	c_Node* t_t=m_node;
 	gc_assign(m_node,m_node->p_NextNode());
-	return t_t;
+	return t_t->m_key;
 }
-void c_NodeEnumerator3::mark(){
+void c_KeyEnumerator2::mark(){
 	Object::mark();
 	gc_mark_q(m_node);
 }
@@ -36034,6 +36145,28 @@ String c_JsTranslator::p_TransIntrinsicExpr(c_Decl* t_decl,c_Expr* t_expr,Array<
 }
 void c_JsTranslator::mark(){
 	c_CTranslator::mark();
+}
+c_NodeEnumerator3::c_NodeEnumerator3(){
+	m_node=0;
+}
+c_NodeEnumerator3* c_NodeEnumerator3::m_new(c_Node* t_node){
+	gc_assign(this->m_node,t_node);
+	return this;
+}
+c_NodeEnumerator3* c_NodeEnumerator3::m_new2(){
+	return this;
+}
+bool c_NodeEnumerator3::p_HasNext(){
+	return m_node!=0;
+}
+c_Node* c_NodeEnumerator3::p_NextObject(){
+	c_Node* t_t=m_node;
+	gc_assign(m_node,m_node->p_NextNode());
+	return t_t;
+}
+void c_NodeEnumerator3::mark(){
+	Object::mark();
+	gc_mark_q(m_node);
 }
 int bb_builder__html5_Info_Width;
 int bb_builder__html5_Info_Height;
@@ -38503,9 +38636,9 @@ void c_Enumerator8::mark(){
 }
 int bbInit(){
 	GC_CTOR
-	c_Type::m_stringType=(new c_StringType)->m_new();
 	bb_config__errInfo=String();
 	bb_config__cfgScope=(new c_ConfigScope)->m_new();
+	c_Type::m_stringType=(new c_StringType)->m_new();
 	bb_config__cfgScopeStack=(new c_Stack2)->m_new();
 	bb_decl__env=0;
 	bb_decl__envStack=(new c_List2)->m_new();
@@ -38545,8 +38678,8 @@ int bbInit(){
 	return 0;
 }
 void gc_mark(){
-	gc_mark_q(c_Type::m_stringType);
 	gc_mark_q(bb_config__cfgScope);
+	gc_mark_q(c_Type::m_stringType);
 	gc_mark_q(bb_config__cfgScopeStack);
 	gc_mark_q(bb_decl__env);
 	gc_mark_q(bb_decl__envStack);
