@@ -16,7 +16,7 @@ Param(
     [Alias("c")][string]$mingw = "C:\TDM-GCC-64",
     [Alias("y")][string]$vsver = "",
     [Alias("i")][string]$vsinstall = "$([System.Environment]::GetEnvironmentVariable('ProgramFiles(x86)'))\Microsoft Visual Studio\Installer",
-    [Alias("m")][switch]$showmenu = $false,
+    [Alias("m")][switch]$showmenu = $true,
     [Alias("h")][switch]$help = $false,
     [Alias("b")][switch]$msbuild = $false,
     [Alias("s")][switch]$stdout = $false,
