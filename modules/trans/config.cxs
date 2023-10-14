@@ -58,7 +58,9 @@ Function SetConfigVar( key$,val$,append?=False )
 			If oldVal="1" oldVal="True" Else oldVal="False"
 		Endif
 		
-		If oldVal val = INTERNAL_SEPARATOR.Join( [oldVal,val] )
+		If oldVal 
+			val = oldVal + INTERNAL_SEPARATOR + val
+		EndIf
 	EndIf
 	
 	SetConfigVar( key,val,Type.stringType )
@@ -79,23 +81,18 @@ Function SetConfigVar( key$,val$,type:Type )
 	_cfgScope.vars.Set key,val
 End
 
-Function UnifyConfigVarSeparator:Void( key$,specificSeparator:String="|",inlineSeparators$[]=[] )
+Function UnifyConfigVarSeparator:Void( key$,utilizedSeparator:String="|",allowedSeparators:String[]=[] )
 	Local result:String = ""
 	Local rawVal:String = _cfgScope.vars.Get( key )
 	Local replace:String
 	If (Not rawVal) Return
 	
-	For Local c:=Eachin rawVal	
-		Local s:String = String.FromChar(c)		
-		If s=INTERNAL_SEPARATOR
-			result += specificSeparator	
-		Else
-			replace = s
-			For Local i:Int = 0 Until inlineSeparators.Length()
-				If s=inlineSeparators[i] replace=specificSeparator
-			Next
-			result += replace
-		EndIf
+	result = rawVal.Replace( INTERNAL_SEPARATOR, utilizedSeparator )
+	
+	For Local i:Int=0 Until allowedSeparators.Length()	
+		If allowedSeparators[i] And allowedSeparators[i]<>utilizedSeparator
+			result = result.Replace( allowedSeparators[i], utilizedSeparator )
+		EndIf	
 	Next
 		
 	SetConfigVar(key, result)
