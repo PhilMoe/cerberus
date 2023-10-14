@@ -14915,7 +14915,7 @@ std::string get_file_contents(const char *filename)
 		in.close();
 		return(contents);
 	}
-	return {};
+	return std::string();
 }
 
 std::ifstream::pos_type getFileSize(const char* filename)
@@ -18836,7 +18836,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-10-11",35));
+	bbPrint(String(L"TRANS cerberus compiler V2023-10-14",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -20183,8 +20183,7 @@ int bb_config_SetConfigVar2(String t_key,String t_val,bool t_append){
 			}
 		}
 		if((t_oldVal).Length()!=0){
-			String t_[]={t_oldVal,t_val};
-			t_val=String(L"" L"\x1e" L"",1).Join(Array<String >(t_,2));
+			t_val=t_oldVal+String(L"" L"\x1e" L"",1)+t_val;
 		}
 	}
 	bb_config_SetConfigVar(t_key,t_val,(c_Type::m_stringType));
@@ -32650,29 +32649,17 @@ void c_Reflector::mark(){
 	gc_mark_q(m_classids);
 	gc_mark_q(m_output);
 }
-void bb_config_UnifyConfigVarSeparator(String t_key,String t_specificSeparator,Array<String > t_inlineSeparators){
+void bb_config_UnifyConfigVarSeparator(String t_key,String t_utilizedSeparator,Array<String > t_allowedSeparators){
 	String t_result=String();
 	String t_rawVal=bb_config__cfgScope->m_vars->p_Get(t_key);
 	String t_replace=String();
 	if(!((t_rawVal).Length()!=0)){
 		return;
 	}
-	String t_=t_rawVal;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		int t_c=(int)t_[t_2];
-		t_2=t_2+1;
-		String t_s=String((Char)(t_c),1);
-		if(t_s==String(L"" L"\x1e" L"",1)){
-			t_result=t_result+t_specificSeparator;
-		}else{
-			t_replace=t_s;
-			for(int t_i=0;t_i<t_inlineSeparators.Length();t_i=t_i+1){
-				if(t_s==t_inlineSeparators[t_i]){
-					t_replace=t_specificSeparator;
-				}
-			}
-			t_result=t_result+t_replace;
+	t_result=t_rawVal.Replace(String(L"" L"\x1e" L"",1),t_utilizedSeparator);
+	for(int t_i=0;t_i<t_allowedSeparators.Length();t_i=t_i+1){
+		if(((t_allowedSeparators[t_i]).Length()!=0) && t_allowedSeparators[t_i]!=t_utilizedSeparator){
+			t_result=t_result.Replace(t_allowedSeparators[t_i],t_utilizedSeparator);
 		}
 	}
 	bb_config_SetConfigVar2(t_key,t_result,false);
