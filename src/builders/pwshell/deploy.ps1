@@ -87,11 +87,7 @@ Function do_deploy() {
     }
 
     # Get what should be the first line in the VERSION.TXT file to retrieve the version number.
-    [string]$cx_version = $(Get-Content "$cx_deploy_target\VERSIONS.TXT") | ForEach-Object {
-        if($_.ToString().Substring(0,1)) {
-           $_.ToString() -Replace '[*v ]', ''
-        }
-    } | Select-Object -First 1
+    [string]$cx_version = $(do_cx_vers)
     
     # Clear out any old compressed files and recompress.
     if (Test-Path("$cx_deploy_root\Cerberus_$cx_version-$buildtype-qt$qtkit-winnt.zip")) { Remove-Item -Force "$cx_deploy_root\Cerberus_$cx_version-$buildtype-qt$qtkit-winnt.zip" }

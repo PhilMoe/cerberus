@@ -93,3 +93,14 @@ function transcc([string]$_name, [string]$_target, [string]$_srcfile, [string]$_
         return
     }
 }
+
+# Function to get the Cerberus X version from the VERSIONS.TXT file
+function do_cx_vers() {
+    # Get what should be the first line in the VERSION.TXT file to retrieve the version number.
+    [string]$cx_version = $(Get-Content "$ROOT\VERSIONS.TXT") | ForEach-Object {
+        if($_.ToString().Substring(0,1)) {
+           $_.ToString() -Replace '[*v ]', ''
+        }
+    } | Select-Object -First 1
+    return $cx_version
+}
