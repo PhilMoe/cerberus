@@ -21,10 +21,11 @@ Param(
     [Alias("b")][switch]$msbuild = $false,
     [Alias("s")][switch]$stdout = $false,
     [Alias("d")][string]$deploy = "",
+    [Alias("t")][string]$tool = "",
     [switch]$clearbuilds = $false
 )
 
-[string]$SCRIPT_VER = "1.2.0"
+[string]$SCRIPT_VER = "1.3.0"
 
 Clear-Host
 
@@ -43,12 +44,12 @@ Clear-Host
 
 if ($help -eq $true) {
     do_info "CERBERUS X TOOLS VERSION $SCRIPT_VER"
-    Write-Host "USEAGE: ./builder.ps1 [options]`n`t{-m|-showmenu}`t`t`t`t`t- run in menu mode.`n`t{-q|-qtsdk} `"QT_DIR_PATH`"`t`t`t- Set root Qt SDK directory."
-    Write-Host "`t{-k|-qtkit} `"DOT.VERSION.NUMBER`"`t`t- Set Qt SDK version.`n`t{-vsi|-vsinstall} `"VISUAL_INSTALLER_PATH`"`t- Set MS Visual Installer directory."
-    Write-Host "`t{-y|-vsver} `"PRODUCT_YEAR`"`t`t`t- Set Visual Studio product year`n`t{-c|-mingw} `"MINGW_DIR`"`t`t`t`t- Set MiGW root directory."
-    Write-Host "`t{-b|-msbuild}`t`t`t`t`t- Build using MSBuild. Requires Visual Studio.`n`t{-s|-stdout}`t`t`t`t`t- Show stdout after execution."
-    Write-Host "`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t- Build a deployment archive in the directory passed."
-    Write-Host "`t-clearbuilds`t`t`t`t`t- Removes all previous built binaries of Cerberus within local repository.`n`t{-h|-help}`t`t`t`t`t- Show this quick help`n"
+    Write-Host "USEAGE: ./builder.ps1 [options]`n`t{-m|-showmenu}`t`t`t`t`t`t`t- run in menu mode.`n`t{-q|-qtsdk} `"QT_DIR_PATH`"`t`t`t`t`t- Set root Qt SDK directory."
+    Write-Host "`t{-k|-qtkit} `"DOT.VERSION.NUMBER`"`t`t`t`t- Set Qt SDK version.`n`t{-vsi|-vsinstall} `"VISUAL_INSTALLER_PATH`"`t`t`t- Set MS Visual Installer directory."
+    Write-Host "`t{-y|-vsver} `"PRODUCT_YEAR`"`t`t`t`t`t- Set Visual Studio product year`n`t{-c|-mingw} `"MINGW_DIR`"`t`t`t`t`t`t- Set MiGW root directory."
+    Write-Host "`t{-b|-msbuild}`t`t`t`t`t`t`t- Build using MSBuild. Requires Visual Studio.`n`t{-s|-stdout}`t`t`t`t`t`t`t- Show stdout after execution."
+    Write-Host "`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t`t`t- Build a deployment archive in the directory passed.`n`t{-t|-tool} `"{boot|transcc|makdocs|cserver|launcher|ted}`"`t`- Build a specific tool."
+    Write-Host "`t-clearbuilds`t`t`t`t`t`t`t- Removes all previous built binaries of Cerberus within local repository.`n`t{-h|-help}`t`t`t`t`t`t`t- Show this quick help`n"
     Write-Host "EXAMPLE:`n`te.g: ./builder.ps1 -qtsdk C:\Qt -k 5.14.0"
     Write-Host "`te.g: ./builder.ps1 -qtsdk C:\Qt -qtkit 5.14.0 -vsver `"2017`" -showmenu"
     exit 1
@@ -99,11 +100,11 @@ if ($global:EXITCODE -ne 0) {
 # Set up the menu items. The array DISPLAY_ITEMS, holds the human readable menu items.
 # The array MENU_ITEMS, holds the function names to call.
 function do_items() {
-    $global:display_items = @("All", "Transcc")
-    $global:menu_items = @("do_all", "do_transcc")
+    $global:display_items = @("All", "Boot Transcc")
+    $global:menu_items = @("do_all", "do_boot" )
     if ($global:TRANSCC_EXE -eq $true) {
-        $global:display_items += @("CServer", "Makedocs", "Launcher")
-        $global:menu_items += @("do_cserver", "do_makedocs", "do_launcher")
+        $global:display_items += @("Transcc", "CServer", "Makedocs", "Launcher")
+        $global:menu_items += @("do_transcc", "do_cserver", "do_makedocs", "do_launcher")
     }
     if (($global:MSVC_INSTALLS.Count -gt 0) -and ($global:QT_INSTALLS.Count -gt 0)) {
         $global:display_items += "Ted"
@@ -188,6 +189,28 @@ if ($showmenu -eq $true) {
         }
     }
     until ($loop -eq $false)
+} elseif(-not([string]::IsNullOrEmpty($tool))) {
+
+    $tools= @("boot", "transcc", "makedocs", "launcher", "cserver", "ted")
+
+    if(-not($tools.Contains($tool))) {
+        do_error "$tool not found."
+    } else {
+    
+        if (($global:QT_SELECTED_IDX -lt 0)-and($tool == "ted")) {
+            do_error "Ted requires a Qt SDK to be installed."
+        } else {
+            do_show_deps
+            execute "$BIN/transcc_winnt"
+            if ($global:EXITCODE -ne 0) {
+                do_info "Building of tools requires that boot transcc is built first."
+                do_boot
+            }
+            do_info "BUILDING $TOOL_OPT"
+            & do_$tool
+        }
+    }
+
 } else {
     do_info "`nBUILD TOOLS INSTALLED"
     do_show_deps

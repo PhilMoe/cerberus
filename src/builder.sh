@@ -3,12 +3,13 @@
 
 # Get this script directory
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-SCRIPT_VER="1.2.0"
+SCRIPT_VER="1.3.0"
 
 TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
 BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the buildr script. See freedesktop.sh
 QT_SELECTED=                            # Variable to hold the chosen qmake
 DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
+TOOL_OPT=                               # Variable to hold the tool to be built.
 
 # Import the dependencies that this script relies on.
 source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
@@ -36,6 +37,10 @@ while [[ $# -gt 0 ]]; do
             } || {
                shift; 
             }
+        ;;
+        -t|--tool)
+            TOOL_OPT="$2"
+            shift; shift
         ;;
         -a|--archiver)
             ARCHIVER="$2"
@@ -139,11 +144,11 @@ do_qtsdk_check
 # Set up the menu items. The array DISPLAY_ITEMS, holds the human readable menu items.
 # The array MENU_ITEMS, holds the function names to call.
 do_items(){
-    DISPLAY_ITEMS=("All" "Transcc")
-    MENU_ITEMS=("do_all" "do_transcc")
+    DISPLAY_ITEMS=("All" "Boot Transcc")
+    MENU_ITEMS=("do_all" "do_boot")
     [ $TRANSCC_EXE -eq 1 ] && {
-        DISPLAY_ITEMS+=("CServer" "Makedocs" "Launcher")
-        MENU_ITEMS+=("do_cserver" "do_makedocs" "do_launcher")
+        DISPLAY_ITEMS+=("Transcc" "CServer" "Makedocs" "Launcher")
+        MENU_ITEMS+=("do_transcc" "do_cserver" "do_makedocs" "do_launcher")
         
         [ $HOST = "linux" ] && {
             DISPLAY_ITEMS+=("Generate Free Desktop Launcher")
@@ -186,7 +191,7 @@ do_title() {
 }
 
 # Loop for selecting menu options.
-[ $SHOW_MENU -eq 1 ] && {
+if [ $SHOW_MENU -eq 1 ]; then
     while true; do
         
         # Test to see if transcc has been built.
@@ -215,8 +220,39 @@ do_title() {
     
     clear
     do_success "Cerberus X Builder script terminated."
-} || {
+elif [ -n "$TOOL_OPT" ]; then
+    do_info "MENU MODE OFF"
+    do_info "TOOL BUILD ON"
+
+    # Check that the tool exists
+    BUILD_TOOL=
+    TOOLS=("boot" "transcc" "makedocs" "launcher" "cserver" "ted")
+    for i in "${TOOLS[@]}"; do
+        if [ $i = $TOOL_OPT ]; then BUILD_TOOL=$i; fi
+    done
+    
+    [ -z "$BUILD_TOOL" ] && {
+        do_error "$TOOL_OPT not found.";
+    } || {
+        if [ ${#QT_INSTALLS[@]} -eq 0 ] && [ "$TOOL_OPT" = "ted" ]; then
+            do_error "Ted requires a Qt SDK to be installed."
+        else
+            do_show_deps
+            execute $BIN/transcc_$HOST
+            [ $EXITCODE -eq 0 ] || {
+                do_info "Building of tools requires that boot transcc is built first."
+                do_boot;
+            }
+
+            do_info "BUILDING $TOOL_OPT"
+            TOOL_OPT="do_$TOOL_OPT"
+            $TOOL_OPT
+            do_build_result
+        fi;
+    }
+
+else
     do_info "MENU MODE OFF"
     do_show_deps
     do_all
-}
+fi
