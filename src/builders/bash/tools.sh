@@ -4,9 +4,9 @@
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Function to build transcc
-do_transcc(){
+do_boot(){
     EXITCODE=0
-    do_info "BUILDING TRANSCC WITH $COMPILER"
+    do_info "BUILDING BOOT TRANSCC WITH $COMPILER"
     
     # Check for an exisiting transcc
     [ -f "$BIN/transcc_$HOST" ] && { rm -f "$BIN/transcc_$HOST"; }
@@ -44,6 +44,20 @@ do_transcc(){
     do_build_result
     
     return $EXITCODE
+}
+
+do_transcc() {
+    EXITCODE=0
+    do_info "BUILDING TransCC from transcc.cxs"
+    local build_dir="$SRC/transcc/transcc.build$(do_cx_vers)/cpptool"
+    
+    execute "$BIN/transcc_$HOST -target=C++_Tool -clean -config=release +CPP_GC_MODE=0 +CC_OUTPUT_NAME=transcc_$HOST $SRC/transcc/transcc.cxs"
+    [ $EXITCODE -eq 0 ] && {
+        [ -f "$BIN/transcc_$HOST" ] && { rm -f "$BIN/transcc_$HOST"; }
+        mv "$build_dir/transcc_$HOST" "$BIN/transcc_$HOST";
+    }
+
+    return $EXITCODE;
 }
 
 # Function to build CServer
@@ -181,7 +195,7 @@ do_freedesktop(){
 do_all(){
     do_header "\n====== BUILDING ALL TOOLS ======"
     do_info "BUILDING TransCC"
-    do_transcc;
+    do_boot;
     [ $EXITCODE -eq 0 ] && {
         do_info "BUILDING CServer"
         do_cserver;
@@ -218,7 +232,7 @@ do_clearbuilds(){
     do_info "CLEARING OUT PREVIOUS BUILDS"
 
     # Remove all macOS applications. Ted and CServer
-    find "$BIN" -type d -name '*.app' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name '*.app' -prune -exec rm -rf "{}" \;
 
     # Remove transcc linux, winnt and macos
     find "$BIN" -type f -name 'transcc_*' -delete
@@ -226,11 +240,11 @@ do_clearbuilds(){
     # Remove the launchers linux, winnt and macos
     find "$ROOT" -type f -name 'Cerberus.exe' -delete
     find "$ROOT" -type f -name 'Cerberus' -delete
-    find "$ROOT" -type d -name 'Cerberus.app' -exec rm -rf "{}" \;
+    find "$ROOT" -type d -name 'Cerberus.app' -prune -exec rm -rf "{}" \;
     find "$ROOT" -type f -name '*.desktop' -delete
   
     # Remove CServer linux and winnt
-    find "$BIN" -type f -name 'Cerberus.*' -delete
+    find "$BIN" -type f -name 'cserver_*' -delete
 
     # Remove makedocs linux, winnt and macos
     find "$BIN" -type f -name 'makedocs_*' -delete
@@ -240,10 +254,10 @@ do_clearbuilds(){
     find "$BIN" -type f -name 'Ted' -delete
 
     # Remove Qt Linux support files and directories
-    find "$BIN" -type d -name 'lib*' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'plugins' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'resources' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'translations' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'lib*' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'plugins' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'resources' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'translations' -prune -exec rm -rf "{}" \;
 
     # Remove Qt WinNT support files and directories
     find "$BIN" -type f -name 'qt.conf' -delete
@@ -252,6 +266,6 @@ do_clearbuilds(){
     find "$BIN" -type f -name '*.ilk' -delete
     find "$BIN" -type f -name '*.pdb' -delete
     find "$BIN" -type f -name 'openal32_*' -delete
-    find "$BIN" -type d -name 'platforms' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'platforms' -prune -exec rm -rf "{}" \;
 
 }
