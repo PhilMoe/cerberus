@@ -132,6 +132,12 @@ Class Builder
 		Local cfgPath:=targetPath+"/config.cxs"
 		If FileType( cfgPath )=FILETYPE_FILE PreProcess cfgPath
 		
+		UnifyConfigVarSeparator( "TEXT_FILES", "|", ["|",";"] )
+		UnifyConfigVarSeparator( "IMAGE_FILES", "|", ["|",";"]  )
+		UnifyConfigVarSeparator( "SOUND_FILES", "|", ["|",";"]  )
+		UnifyConfigVarSeparator( "MUSIC_FILES", "|", ["|",";"]  )
+		UnifyConfigVarSeparator( "BINARY_FILES", "|", ["|",";"]  )
+		
 		TEXT_FILES=GetConfigVar( "TEXT_FILES" )
 		IMAGE_FILES=GetConfigVar( "IMAGE_FILES" )
 		SOUND_FILES=GetConfigVar( "SOUND_FILES" )
@@ -143,8 +149,7 @@ Class Builder
 		If SOUND_FILES DATA_FILES+="|"+SOUND_FILES
 		If MUSIC_FILES DATA_FILES+="|"+MUSIC_FILES
 		If BINARY_FILES DATA_FILES+="|"+BINARY_FILES
-		DATA_FILES=DATA_FILES.Replace( ";","|" )
-	
+		
 		syncData=GetConfigVar( "FAST_SYNC_PROJECT_DATA" )="1"
 		
 		Local cd:=CurrentDir

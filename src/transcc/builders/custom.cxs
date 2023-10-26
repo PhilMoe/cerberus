@@ -11,18 +11,18 @@ Class CustomBuilder Extends Builder
 
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin GetConfigVars()
+		For Local key:=Eachin GetConfigVarKeys()
 			Select ENV_LANG
 				Case "cpp"
-					config.Push "#define CFG_"+kv.Key+" "+kv.Value
+					config.Push "#define CFG_"+key+" "+GetConfigVar(key)
 			    Case "cs"
-					config.Push "public const String "+kv.Key+"="+Enquote( kv.Value,"cs" )+";"
+					config.Push "public const String "+key+"="+Enquote( GetConfigVar(key),"cs" )+";"
 				Case "js"
-					config.Push "CFG_"+kv.Key+"="+Enquote( kv.Value,"js" )+";"
+					config.Push "CFG_"+key+"="+Enquote( GetConfigVar(key),"js" )+";"
 				Case "as"
-					config.Push "internal static var "+kv.Key+":String="+Enquote( kv.Value,"as" )
+					config.Push "internal static var "+key+":String="+Enquote( GetConfigVar(key),"as" )
 				Case "java"
-					config.Push "static final String "+kv.Key+"="+Enquote( kv.Value,"java" )+";"
+					config.Push "static final String "+key+"="+Enquote( GetConfigVar(key),"java" )+";"
 			End
 		Next
 		Return config.Join( "~n" )

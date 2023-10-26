@@ -19,10 +19,12 @@ Import reflection
 
 However, this will cause *all* modules to be reflected, which in the case of even moderately sized programs will incur major overhead both in terms of compilation time and runtime app size. Instead, it's best to set the filter to only specify the modules you need reflected.
 
-Multiple reflection filters may be specified using the ';' separator character, eg:
+Multiple reflection filters may be specified using the '|' character as a separator.
+
+(The ';' character was used in older versions and is still accepted, but it is deprecated.)
 
 <pre>
-#REFLECTION_FILTER="myapp.gadgets;myapp.listeneres"	'reflect both the myapp.gadgets and myapp.listeners modules
+#REFLECTION_FILTER="myapp.gadgets|myapp.listeners"	'reflect both the myapp.gadgets and myapp.listeners modules
 </pre>
 
 The reflection filter may also be appended to using the preprocessor += operator, eg:
@@ -35,7 +37,7 @@ REFLECTION_FILTER+="myapp.listeners"					'...and the myapp.listeners module.
 Using the '*' wildcard, sets of 'submodules can be specified, eg:
 
 <pre>
-REFLECTION_FILTER="myapp.gadgets;myapp.gadgets.*"		'reflect the myapp.gadgets module AND any myapp.gadgets submodules.
+REFLECTION_FILTER="myapp.gadgets|myapp.gadgets.*"		'reflect the myapp.gadgets module AND any myapp.gadgets submodules.
 </pre>
 
 >>> Declaration names

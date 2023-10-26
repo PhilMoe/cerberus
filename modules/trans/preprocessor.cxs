@@ -302,23 +302,15 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 										Local expr:=EvalExpr( toker )
 										Local val:=expr.Eval()
 										
-										If Not GetConfigVars().Contains( toke )
+										If Not ConfigVarsContain( toke )
 											If StringType( expr.exprType ) val=EvalConfigTags( val )
 											SetConfigVar toke,val,expr.exprType
 										Endif
 									
 									Case "+="
 										Local val:=EvalText( toker )
-										Local var:=GetConfigVar( toke )
+										SetConfigVar toke,val,True
 										
-										If BoolType( GetConfigVarType( toke ) )
-											If var="1" var="True" Else var="False"
-										Endif
-										
-										If var And Not val.StartsWith( "|" ) val="|"+val
-										' TODO: Workout how to switch to using the record separator for CX internals.
-										'If var And Not val.StartsWith( "~u001E" ) val="~u001E"+val
-										SetConfigVar toke,var+val
 								End
 							
 							Default

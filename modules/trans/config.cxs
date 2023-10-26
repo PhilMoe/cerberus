@@ -6,6 +6,10 @@
 
 Import trans
 
+' This is the internally used character for separating += config settings. 
+' It is a nonprintable "record separator" ASCII character.
+Const INTERNAL_SEPARATOR:String = "~u001E" 
+
 Global ENV_HOST$
 Global ENV_LANG$
 Global ENV_CONFIG$
@@ -46,7 +50,19 @@ Function GetConfigScope:ScopeDecl()
 	Return _cfgScope
 End
 
-Function SetConfigVar( key$,val$ )
+Function SetConfigVar( key$,val$,append?=False )
+	If append 
+		Local oldVal:String = _cfgScope.vars.Get( key )
+		
+		If BoolType( GetConfigVarType( key ) )
+			If oldVal="1" oldVal="True" Else oldVal="False"
+		Endif
+		
+		If oldVal 
+			val = oldVal + INTERNAL_SEPARATOR + val
+		EndIf
+	EndIf
+	
 	SetConfigVar( key,val,Type.stringType )
 End
 
@@ -65,19 +81,32 @@ Function SetConfigVar( key$,val$,type:Type )
 	_cfgScope.vars.Set key,val
 End
 
-Function GetConfigVar$( key$ )
-	Return _cfgScope.vars.Get( key )
+Function UnifyConfigVarSeparator:Void( key$,utilizedSeparator:String="|",allowedSeparators:String[]=[] )
+	Local result:String = ""
+	Local rawVal:String = _cfgScope.vars.Get( key )
+	Local replace:String
+	If (Not rawVal) Return
+	
+	result = rawVal.Replace( INTERNAL_SEPARATOR, utilizedSeparator )
+	
+	For Local i:Int=0 Until allowedSeparators.Length()	
+		If allowedSeparators[i] And allowedSeparators[i]<>utilizedSeparator
+			result = result.Replace( allowedSeparators[i], utilizedSeparator )
+		EndIf	
+	Next
+		
+	SetConfigVar(key, result)
 End
 
-' Overloaded GetConfigVar.
-Function GetConfigVar$( key$, option$, replace$=" ")
-	Local str:="", value:=_cfgScope.vars.Get( key )
-	For Local i:=0 Until value.Length()
-		Local char:=value[i]
-		' TODO: Workout how to switch to using the record separator for CX internals.
-		If char="|"[0] Or char=option[0] Or char="~u001E"[0] str+=replace Else str+=String.FromChar(char)
-	Next
-	Return str
+Function GetConfigVar$( key$ )
+	Local rawVal:String = _cfgScope.vars.Get( key )
+	If Not rawVal Return ""
+	
+	If Not rawVal.Contains(INTERNAL_SEPARATOR) 
+		Return rawVal
+	EndIf
+	
+	Return rawVal.Replace(INTERNAL_SEPARATOR, "")
 End
 
 Function GetConfigVarType:Type( key$ )
@@ -86,14 +115,26 @@ Function GetConfigVarType:Type( key$ )
 	Return Null
 End
 
-Function GetConfigVars:StringMap<String>()
-	Return _cfgScope.vars
+Function GetConfigVarKeys:MapKeys<String,String>()
+	Return _cfgScope.vars.Keys()
+End
+
+Function ConfigVarsContain?(key$)
+	Return _cfgScope.vars.Contains(key)
 End
 
 'Function RemoveConfigVar( key$ )
 '	_cfgScope.cdecls.Remove key
 '	_cfgScope.vars.Remove key
 'End
+
+Function PrintAllConfigVars:Void()
+	Print "*** Print all config Vars: ***"
+	For Local var:=Eachin _cfgScope.vars
+		Print "  * " + var.Key() + " = " + var.Value()
+	Next
+	Print "*****************************"
+End
 
 Function EvalConfigTags$( cfg$ )
 	Local i:=0
