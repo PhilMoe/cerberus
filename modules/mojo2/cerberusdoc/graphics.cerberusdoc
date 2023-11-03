@@ -3,6 +3,107 @@
 
 # Import mojo2.renderer Private
 
+
+# Function LoadImage:Image( path:String,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+
+Load an image from @path.
+
+The @flags parameter can be a bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter		| The image is filtered
+| Image.Mipmap		| The image is mipmapped
+
+If @shader is null, the default shader is used.
+
+Loaded images should not be used as render targets.
+
+See also: [[Shader.DefaultShader]]
+
+
+# Function LoadImageFrames:Image[]( path:String,numFrames:Int,padded:Bool,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+
+Load image frames from @path.
+
+Image frames should be laid out horizontally within the source image.
+
+If @padded is true, then each frame is assumed to have a transparent one pixel padding border around it.
+
+The @flags parameter can be a bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter	| The image is filtered
+| Image.Mipmap	| The image is mipmapped
+| Image.Managed	| The image is managed
+
+If @shader is null, the default shader is used.
+
+Loaded images should not be used as render targets.
+
+See also: [[Shader.DefaultShader]]
+
+
+# Function LoadImageFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null)
+
+Load image frames from @path.
+
+Image frames should be laid out in a grid. You determine the size of one grid cell with @cellWidth and @cellWidth. 
+
+If @padded is true, then each frame is assumed to have a transparent one pixel padding border around it.
+
+The @flags parameter can be a bitwise combination of:
+
+| @Flags			| @Description
+| Image.Filter	| The image is filtered
+| Image.Mipmap	| The image is mipmapped
+| Image.Managed	| The image is managed
+
+If @shader is null, the default shader is used.
+
+Loaded images should not be used as render targets.
+
+See also: [[Shader.DefaultShader]]
+
+
+# Function LoadTexture:Texture( path:String,format:Int,flags:Int )
+
+Load a texture from a file.
+
+
+# Function LoadMaterial:Material( path:String,texFlags:Int,shader:Shader )
+
+Load a material.
+
+If @shader is null, the [[Shader.DefaultShader]] is used.
+
+
+# Function LoadFont:Font( imagePath:String,firstChar:Int,numChars:Int,padded:Bool )
+
+Load a fixed width font from @imagePath.
+
+Glyphs should be laid out horizontally within the source image.
+
+@firstChar represents the ASCII code of the first char.
+
+If @padded is true, then each glyph is assumed to have a transparent one pixel padding border around it.
+
+
+# Function LoadFont:Font( path:String,cellWidth:Int,cellHeight:Int,glyphX:Int,glyphY:Int,glyphWidth:Int,glyphHeight:Int,firstChar:Int,numChars:Int )
+
+Load a fixed width font from @path.
+
+@firstChar represents the ASCII code of the first char.
+
+
+# Function LoadFont:Font(path:String, flags:Int=Image.Filter)
+
+Loads a bitmap font file created in tools like GlyphDesigner and alike. 
+
+@path represents the filename of the texfile that defines the font and its individual glyphs.
+
+@flags represents the Image filter that is applied at loading the image sheet.
+
+
 # Class Shader
 
 Mojo2 provides support for simple shaders that fetch texture/color data and produce values for use by the lighting equations. Shaders must be written in the opengl shading language. Shaders should declare a single void shader(){} function.
@@ -171,22 +272,50 @@ The @flags parameter can be a bitwise combination of:
 | Texture.Managed		| Texture contents are preserved when graphics are lost
 
 
-# Method Width:Int() Property
+# Method GetWidth:Int()
 
 Get texture width.
 
 
-# Method Height:Int() Property
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get texture width.
+
+
+# Method GetHeight:Int()
 
 Get texture height.
 
 
-# Method Format:Int() Property
+# Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
+
+Get texture height.
+
+
+# Method GetFormat:Int()
 
 Get texture format.
 
 
+# Method Format:Int() Property
+
+Deprecated: Please use [[GetFormat]]() instead!
+
+Get texture format.
+
+
+# Method GetFlags:Int()
+
+Get texture flags.
+
+
 # Method Flags:Int() Property
+
+Deprecated: Please use [[GetFlags]]() instead!
 
 Get texture flags.
 
@@ -228,7 +357,14 @@ Materials contain shader parameters that map to shader uniforms variables when r
 Create a new material.
 
 
+# Method GetShader:Shader()
+
+Get material shader.
+
+
 # Method Shader:Shader() Property
+
+Deprecated: Please use [[GetShader]]() instead!
 
 Get material shader.
 
@@ -279,12 +415,26 @@ See also:
 [[DrawList.SetFont]], [[DrawList.DrawText]], [[DrawList.DrawTextBox]]
 
 
-# Method TextWidth:Int( text:String )
+# Method GetTextWidth:Int( text:String )
 
 Get width of @text drawn in this font.
 
 
+# Method TextWidth:Int( text:String )
+
+Deprecated: Please use [[GetTextWidth]]() instead!
+
+Get width of @text drawn in this font.
+
+
+# Method GetTextHeight:Int( text:String = "" )
+
+Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
+
+
 # Method TextHeight:Int( text:String = "" )
+
+Deprecated: Please use [[GetTextHeight]]() instead!
 
 Get height of @text drawn in this font. If no text is given as a parameter, it will return the maximum height of the font.
 
@@ -336,7 +486,14 @@ See also:
 Set shadow caster vertices.
 
 
+# Method GetVertices:Float[]()
+
+Get shadow caster vertices.
+
+
 # Method Vertices:Float[]() Property
+
+Deprecated: Please use [[GetVertices]]() instead!
 
 Get shadow caster vertices.
 
@@ -389,7 +546,18 @@ For example, by setting the flags mask to just Image.Managed, the Image.Filter a
 The default flags mask is Image.Filter|Image.Mipmap|Image.Managed, which effectively disables the filter.
 
 
+# Function GetFlagsMask:Int()
+
+Returns the current flags mask.
+
+See also:
+
+SetFlagsMask
+
+
 # Function FlagsMask:Int()
+
+Deprecated: Please use [[GetFlagsMask]]() instead!
 
 Returns the current flags mask.
 
@@ -403,12 +571,26 @@ SetFlagsMask
 Discard any internal resources such as videomem used by the image.
 
  
-# Method Width:Int() Property
+# Method GetWidth:Int()
 
 Get image width.
 
 
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get image width.
+
+
+# Method GetHeight:Int()
+
+Get image height.
+
+
 # Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
 
 Get image height.
 
@@ -418,17 +600,48 @@ Get image height.
 Set image handle.
 
 
-# Method HandleX:Float() Property
+# Method SetHandle:Void( handle:Float[] )
+
+Set image handle by providing a float array [x, y].
+
+
+# Method GetHandleX:Float()
 
 Get image x handle.
 
 
-# Method HandleY:Float() Property
+# Method HandleX:Float() Property
+
+Deprecated: Please use [[GetHandleX]]() instead!
+
+Get image x handle.
+
+
+# Method GetHandleY:Float()
 
 Get image y handle.
 
 
+# Method HandleY:Float() Property
+
+Deprecated: Please use [[GetHandleY]]() instead!
+
+Get image y handle.
+
+
+# Method GetHandle:Float[]()
+
+Get image handle as a float array [x, y].
+
+
+# Method GetShadowCaster:ShadowCaster()
+
+Get attached shadow caster.
+
+
 # Method ShadowCaster:ShadowCaster() Property
+
+Deprecated: Please use [[GetShadowCaster]]() instead!
 
 Get attached shadow caster.
 
@@ -447,22 +660,50 @@ Returns true if image is currently busy loading.
 On targets other than html5, this will always return false.
 
 
-# Method X0:Float() Property
+# Method GetX0:Float()
 
 Get x coordinate of the left edge of the image rect.
 
 
-# Method Y0:Float() Property
+# Method X0:Float() Property
+
+Deprecated: Please use [[GetX0]]() instead!
+
+Get x coordinate of the left edge of the image rect.
+
+
+# Method GetY0:Float()
 
 Get y coordinate of the top edge of the image rect.
 
 
-# Method X1:Float() Property
+# Method Y0:Float() Property
+
+Deprecated: Please use [[GetY0]]() instead!
+
+Get y coordinate of the top edge of the image rect.
+
+
+# Method GetX1:Float()
 
 Get x coordinate of the right edge of the image rect.
 
 
+# Method X1:Float() Property
+
+Deprecated: Please use [[GetX1]]() instead!
+
+Get x coordinate of the right edge of the image rect.
+
+
+# Method GetY1:Float()
+
+Get y coordinate of the bottom edge of the image rect.
+
+
 # Method Y1:Float() Property
+
+Deprecated: Please use [[GetY1]]() instead!
 
 Get y coordinate of the bottom edge of the image rect.
 
@@ -518,6 +759,7 @@ If @shader is null, the default shader is used.
 Loaded images should not be used as render targets.
 
 See also: [[Shader.DefaultShader]]
+
 
 # Function LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null)
 
@@ -594,14 +836,30 @@ Set color to specified hex color value.
 Set color to specified [[Color]].
 
 
-# Method Color:Float[]() Property
+# Method GetColor:Float[]()
 
 Returns a 4 component float array containing current color and alpha.
 
 Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
 
 
+# Method Color:Float[]() Property
+
+Deprecated: Please use [[GetColor]]() instead!
+
+Returns a 4 component float array containing current color and alpha.
+
+Note: To avoid the overhead of an array copy, use [[GetColor]] instead.
+
+
+# Method GetAlpha:Float()
+
+Return current alpha.
+
+
 # Method Alpha:Float() Property
+
+Deprecated: Please use [[GetAlpha]]() instead!
 
 Return current alpha.
 
@@ -640,7 +898,14 @@ Image1 is rendered opaque, then Image2 and Image3 are rendered on top with indic
 For the *Render to back buffer*, background is first cleared with a brownish color.
 
 
+# Method GetBlendMode:Int()
+
+Get blend mode.
+
+
 # Method BlendMode:Int() Property
+
+Deprecated: Please use [[GetBlendMode]]() instead!
 
 Get blend mode.
 
@@ -652,7 +917,14 @@ Set current font for use with DrawText and DrawTextBox.
 If @font is null, a default font is used.
 
 
+# Method GetFont:Font()
+
+Get font.
+
+
 # Method Font:Font() Property
+
+Deprecated: Please use [[GetFont]]() instead!
 
 Get font.
 
@@ -664,7 +936,16 @@ Set the maximum number of 2d matrices that can be pushed onto the matrix stack u
 See also: [[MatrixStackCapacity]]
 
 
+# Method GetMatrixStackCapacity:Int()
+
+Get the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
+
+See also: [[SetMatrixStackCapacity]]
+
+
 # Method MatrixStackCapacity:Int() Property
+
+Deprecated: Please use [[GetMatrixStackCapacity]]() instead!
 
 Get the maximum number of 2d matrices that can be pushed onto the matrix stack using [[PushMatrix]].
 
@@ -740,7 +1021,16 @@ Set the default material used for drawing operations that use a null material.
 See also: [[DefaultMaterial]]
 
 
+# Method GetDefaultMaterial:Material()
+
+Return the current default material.
+
+See also: [[SetDefaultMaterial]]
+
+
 # Method DefaultMaterial:Material() Property
+
+Deprecated: Please use [[GetDefaultMaterial]]() instead!
 
 Return the current default material.
 
@@ -1219,17 +1509,38 @@ Change canvas render target.
 Note: Changing the render target does not affect the viewport.
 
 
-# Method RenderTarget:Object() Property
+# Method GetRenderTarget:Object()
 
 Get current render target.
 
 
-# Method Width:Int() Property
+# Method RenderTarget:Object() Property
+
+Deprecated: Please use [[GetRenderTarget]]() instead!
+
+Get current render target.
+
+
+# Method GetWidth:Int()
 
 Get canvas width.
 
 
+# Method Width:Int() Property
+
+Deprecated: Please use [[GetWidth]]() instead!
+
+Get canvas width.
+
+
+# Method GetHeight:Int()
+
+Get canvas height.
+
+ 
 # Method Height:Int() Property
+
+Deprecated: Please use [[GetHeight]]() instead!
 
 Get canvas height.
 
@@ -1241,7 +1552,14 @@ Set viewport.
 By default, the viewport is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
 
 
+# Method GetViewport:Int[]()
+
+Get viewport.
+
+
 # Method Viewport:Int[]() Property
+
+Deprecated: Please use [[GetViewport]]() instead!
 
 Get viewport.
 
@@ -1255,7 +1573,14 @@ All rendering operations are clipped to the scissor rect and the viewport.
 By default, the scissor rect is initialized to 0,0,width,height where width and height are the dimensions of the canvas.
 
 
+# Method GetScissor:Int[]()
+
+Get scissor rect.
+
+
 # Method Scissor:Int[]() Property
+
+Deprecated: Please use [[GetScissor]]() instead!
 
 Get scissor rect.
 
@@ -1274,7 +1599,14 @@ Set arbitrary projection matrix.
 Defaults to the identity matrix.
 
 
+# Method GetProjectionMatrix:Float[]()
+
+Get projection matrix.
+
+
 # Method ProjectionMatrix:Float[]() Property
+
+Deprecated: Please use [[GetProjectionMatrix]]() instead!
 
 Get projection matrix.
 
@@ -1286,7 +1618,14 @@ Set view matrix, ie: the matrix the transforms points in world space to view spa
 Defaults to the identity matrix.
 
 
+# Method GetViewMatrix:Float[]()
+
+Get view matrix.
+
+
 # Method ViewMatrix:Float[]() Property
+
+Deprecated: Please use [[GetViewMatrix]]() instead!
 
 Get view matrix.
 
@@ -1298,7 +1637,14 @@ Set model matrix, ie: the matrix that transforms points in 2d canvas space into 
 Defaults to the identity matrix.
 
 
+# Method GetModelMatrix:Float[]()
+
+Get model matrix.
+
+
 # Method ModelMatrix:Float[]() Property
+
+Deprecated: Please use [[GetModelMatrix]]() instead!
 
 Get model matrix.
 
@@ -1312,7 +1658,14 @@ The @alpha paramater controls the strength of the fog. If this is 1, all pixels 
 By default, fog color is 0,0,0,0.
 
 
+# Method GetFogColor:Float[]()
+
+Get fog color.
+
+
 # Method FogColor:Float[]() Property
+
+Deprecated: Please use [[GetFogColor]]() instead!
 
 Get fog color.
 
@@ -1324,7 +1677,14 @@ Set ambient light color.
 By default, ambient light is 0,0,0.
 
 
+# Method GetAmbientLight:Float[]()
+
+Get ambient light color.
+
+
 # Method AmbientLight:Float[]() Property
+
+Deprecated: Please use [[GetAmbientLight]]() instead!
 
 Get ambient light color.
 
@@ -1398,7 +1758,14 @@ Get light range.
 Set which color components are writeable.
 
 
+# Method GetColorMask:Bool[]()
+
+Get color mask.
+
+
 # Method ColorMask:Bool[]() Property
+
+Deprecated: Please use [[GetColorMask]]() instead!
 
 Get color mask.
 
@@ -1410,7 +1777,14 @@ Set shadow map to use when lighting.
 If @shadowMap is null (the default), shadow mapping is disabled.
 
 
+# Method GetShadowMap:Image()
+
+Get shadow map.
+
+
 # Method ShadowMap:Image() Property
+
+Deprecated: Please use [[GetShadowMap]]() instead!
 
 Get shadow map.
 

@@ -1,0 +1,101 @@
+
+# Module mojo2.defaultcanvas
+
+# Import mojo2
+
+The DefaultCanvas module provides a simple way to draw to the screen using the same functions for drawing like with a regular [[Canvas]] object but without having to deal with a canvas at all. 
+The purose of this module is to make it easy to write readable example code and to provide a simple way to port old mojo code to mojo2. 
+
+It also resets the drawing state of the canvas to its initial state after every OnRender() call. This is similar to the behaviour of the old mojo rendering module.
+
+
+>>> Usage
+To use the Module you simply don't care about the definition, intialisation and the Flush() calls of a Canvas object and just call equally named funktions but without a preceding canvas object.
+
+For example:  `myCanvas.DrawCircle(x, y, r)` simply becomes `DrawCircle(x, y, r)`. 
+
+With the DefaultCanvas you have access to all documented Canvas functionality including: draw-functions, Matrix, BlendModes, Color,  etc. 
+
+
+>>> Config Variables
+
+You can disable the automatic reset of the drawing state and make the default Canvas behave like any other Canvas object you create in your app by setting
+<pre>
+#MOJO2_DEFAULTCANVAS_AUTORESET_DISABLED = True
+</pre>
+
+The whole DefaultCanvas functionality is enabled by default, but you can easily shut it off completely by setting  
+<pre>
+#MOJO2_DEFAULTCANVAS_DISABLED = True
+</pre>
+
+Important: These config variables have to be placed in your main source file before any Import statement!
+
+
+>>> Example Code
+
+To get an impression of the difference in terms of code length and readablility, here is a basic hello world example:
+
+
+>>>> Using regular mojo2:
+
+<pre>
+Strict
+
+Import mojo2
+
+Function Main:Int()
+	New MyApp()
+	Return 0
+End
+
+Class MyApp Extends App
+	Field myCanvas:Canvas
+
+	Method OnCreate:Int()
+		myCanvas = New Canvas()
+		Return 0
+	End
+	
+	Method OnRender:Int()
+		myCanvas.Clear()		
+		myCanvas.DrawText("Hello World!", 10, 10)
+		myCanvas.Flush()
+		Return 0
+	End
+End
+</pre>
+
+
+>>>> ...versus using the DefaultCanvas functions:
+
+<pre>
+Strict
+
+Import mojo2
+
+Function Main:Int()
+	New MyApp()
+	Return 0
+End
+
+Class MyApp Extends App
+	Method OnRender:Int()
+		Clear()		
+		DrawText("Hello World!", 10, 10)
+		Return 0
+	End
+End
+</pre>
+	
+
+Using the defaultcanvas module obviously shortens it a few lines and makes it easier to spot the essence of the example. 
+The code should also appear less complicated to a beginner, because there is nearly no distracting OOP usage visible anymore. 
+
+---
+
+>>> How it works behind the scenes
+* It creates a default Canvas object before your App calls OnCreate().
+* It provides global functions named like the [[Canvas]] methods. 
+* The default canvas is flushed and reset to its initial state after every execution of OnRender().
+

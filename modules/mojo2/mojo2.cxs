@@ -1,6 +1,7 @@
 #COLOR_USE_NORMALISED_COMPONENTS = True
-Import mojo.app
+#MOJO2_IMPORTED = True
 Import mojo.input
 Import mojo.audio
 Import mojo2.graphics
 Import mojo2.renderer
+Import mojo.app
