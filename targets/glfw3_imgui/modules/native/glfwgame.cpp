@@ -748,6 +748,19 @@ void BBGlfwGame::SetDeviceWindow( int width,int height,int flags ){
 	glfwGetFramebufferSize(_window, &_framebufWidth, &_framebufHeight);
 	SetHighDPI_Factor((double)(_framebufWidth) / (double)(_width));
 
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(_window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+	ImGui_ImplOpenGL3_Init("#version 110");
+
 #if CFG_OPENGL_INIT_EXTENSIONS
 	Init_GL_Exts();
 #endif
@@ -810,6 +823,8 @@ void BBGlfwGame::UpdateEvents(){
 		glfwWaitEvents();
 	}else{
 		glfwPollEvents();
+
+
 	}
 	if( glfwGetWindowAttrib( _window,GLFW_FOCUSED ) ){
 		_focus=true;
@@ -851,11 +866,39 @@ void BBGlfwGame::Run(){
 #endif
 
 	StartGame();
-	
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+
 	while( !glfwWindowShouldClose( _window ) ){
-	
+				// (Your code calls glfwPollEvents())
+		// ...
+		// Start the Dear ImGui frame
+		glGetError();
+		ImGui_ImplOpenGL3_NewFrame();
+		//glGetError();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow(); // Show demo window! :)
+		//glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        //glClear(GL_COLOR_BUFFER_BIT);
+glfwMakeContextCurrent( _window );
 		RenderGame();
-		
+
+		// Rendering
+		// (Your code clears your framebuffer, renders your other stuff etc.)
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		// (Your code calls glfwSwapBuffers() etc.)
+
+glfwMakeContextCurrent( _window );
+        {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
+
+
 		glfwSwapBuffers( _window );
 		
 		//Wait for next update
@@ -897,5 +940,8 @@ void BBGlfwGame::Run(){
 		
 		if( i==4 ) _nextUpdate=0;
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 

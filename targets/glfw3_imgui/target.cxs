@@ -1,4 +1,4 @@
 
-#TARGET_NAME="Desktop Game"
+#TARGET_NAME="Desktop imgui Game"
 #TARGET_SYSTEM="glfw"
 #TARGET_BUILDER="glfw"

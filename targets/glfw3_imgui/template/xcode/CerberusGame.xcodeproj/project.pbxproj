@@ -7,6 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A41360D2B7557920064FF39 /* imgui_impl_glfw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136092B7557920064FF39 /* imgui_impl_glfw.cpp */; };
+		4A41360F2B7557920064FF39 /* imgui_impl_opengl3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A41360B2B7557920064FF39 /* imgui_impl_opengl3.cpp */; };
+		4A41361C2B7557B70064FF39 /* imgui_tables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136102B7557B70064FF39 /* imgui_tables.cpp */; };
+		4A41361D2B7557B70064FF39 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136132B7557B70064FF39 /* imgui_draw.cpp */; };
+		4A41361E2B7557B70064FF39 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136142B7557B70064FF39 /* imgui.cpp */; };
+		4A41361F2B7557B70064FF39 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136162B7557B70064FF39 /* imgui_widgets.cpp */; };
+		4A4136202B7557B70064FF39 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136172B7557B70064FF39 /* imgui_demo.cpp */; };
+		4A4136212B7557B70064FF39 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A41361B2B7557B70064FF39 /* LICENSE.txt */; };
+		4A4136252B7558030064FF39 /* imgui_stdlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4136222B7558030064FF39 /* imgui_stdlib.cpp */; };
+		4A4136262B7558030064FF39 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136232B7558030064FF39 /* README.txt */; };
+		4A41362B2B7558470064FF39 /* imgui.natvis in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136272B7558470064FF39 /* imgui.natvis */; };
+		4A41362C2B7558470064FF39 /* imgui.natstepfilter in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136282B7558470064FF39 /* imgui.natstepfilter */; };
+		4A41362D2B7558470064FF39 /* imgui.gdb in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136292B7558470064FF39 /* imgui.gdb */; };
+		4A4136472B7558710064FF39 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136302B7558710064FF39 /* Roboto-Medium.ttf */; };
+		4A4136482B7558710064FF39 /* DroidSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136312B7558710064FF39 /* DroidSans.ttf */; };
+		4A4136492B7558710064FF39 /* ProggyTiny.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136322B7558710064FF39 /* ProggyTiny.ttf */; };
+		4A41364A2B7558710064FF39 /* ProggyClean.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136332B7558710064FF39 /* ProggyClean.ttf */; };
+		4A41364B2B7558710064FF39 /* Cousine-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136342B7558710064FF39 /* Cousine-Regular.ttf */; };
+		4A41364C2B7558710064FF39 /* Karla-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136352B7558710064FF39 /* Karla-Regular.ttf */; };
+		4A41364E2B7558710064FF39 /* imgui.gdb in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136382B7558710064FF39 /* imgui.gdb */; };
+		4A41364F2B7558710064FF39 /* imgui.natstepfilter in Resources */ = {isa = PBXBuildFile; fileRef = 4A4136392B7558710064FF39 /* imgui.natstepfilter */; };
+		4A4136512B7558710064FF39 /* imgui.natvis in Resources */ = {isa = PBXBuildFile; fileRef = 4A41363B2B7558710064FF39 /* imgui.natvis */; };
+		4A4136532B7558710064FF39 /* imgui_stdlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A41363F2B7558710064FF39 /* imgui_stdlib.cpp */; };
 		5B5444E21F0BC72800A09B8D /* cocoa_joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444D31F0BC72800A09B8D /* cocoa_joystick.m */; };
 		5B5444E31F0BC72800A09B8D /* cocoa_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444D41F0BC72800A09B8D /* cocoa_time.c */; };
 		5B5444E41F0BC72800A09B8D /* egl_context.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5444D51F0BC72800A09B8D /* egl_context.c */; };
@@ -44,6 +67,41 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		4A4136072B7557920064FF39 /* imgui_impl_opengl3_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_impl_opengl3_loader.h; path = ../imgui/backends/imgui_impl_opengl3_loader.h; sourceTree = "<group>"; };
+		4A4136082B7557920064FF39 /* imgui_impl_opengl3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_impl_opengl3.h; path = ../imgui/backends/imgui_impl_opengl3.h; sourceTree = "<group>"; };
+		4A4136092B7557920064FF39 /* imgui_impl_glfw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_impl_glfw.cpp; path = ../imgui/backends/imgui_impl_glfw.cpp; sourceTree = "<group>"; };
+		4A41360B2B7557920064FF39 /* imgui_impl_opengl3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_impl_opengl3.cpp; path = ../imgui/backends/imgui_impl_opengl3.cpp; sourceTree = "<group>"; };
+		4A41360C2B7557920064FF39 /* imgui_impl_glfw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_impl_glfw.h; path = ../imgui/backends/imgui_impl_glfw.h; sourceTree = "<group>"; };
+		4A4136102B7557B70064FF39 /* imgui_tables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_tables.cpp; path = ../imgui/imgui_tables.cpp; sourceTree = "<group>"; };
+		4A4136112B7557B70064FF39 /* imgui_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_internal.h; path = ../imgui/imgui_internal.h; sourceTree = "<group>"; };
+		4A4136122B7557B70064FF39 /* imconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imconfig.h; path = ../imgui/imconfig.h; sourceTree = "<group>"; };
+		4A4136132B7557B70064FF39 /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_draw.cpp; path = ../imgui/imgui_draw.cpp; sourceTree = "<group>"; };
+		4A4136142B7557B70064FF39 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../imgui/imgui.cpp; sourceTree = "<group>"; };
+		4A4136152B7557B70064FF39 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../imgui/imgui.h; sourceTree = "<group>"; };
+		4A4136162B7557B70064FF39 /* imgui_widgets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_widgets.cpp; path = ../imgui/imgui_widgets.cpp; sourceTree = "<group>"; };
+		4A4136172B7557B70064FF39 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../imgui/imgui_demo.cpp; sourceTree = "<group>"; };
+		4A4136182B7557B70064FF39 /* imstb_textedit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imstb_textedit.h; path = ../imgui/imstb_textedit.h; sourceTree = "<group>"; };
+		4A4136192B7557B70064FF39 /* imstb_truetype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imstb_truetype.h; path = ../imgui/imstb_truetype.h; sourceTree = "<group>"; };
+		4A41361A2B7557B70064FF39 /* imstb_rectpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imstb_rectpack.h; path = ../imgui/imstb_rectpack.h; sourceTree = "<group>"; };
+		4A41361B2B7557B70064FF39 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../imgui/LICENSE.txt; sourceTree = "<group>"; };
+		4A4136222B7558030064FF39 /* imgui_stdlib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_stdlib.cpp; path = ../imgui/misc/cpp/imgui_stdlib.cpp; sourceTree = "<group>"; };
+		4A4136232B7558030064FF39 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.txt; path = ../imgui/misc/cpp/README.txt; sourceTree = "<group>"; };
+		4A4136242B7558030064FF39 /* imgui_stdlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_stdlib.h; path = ../imgui/misc/cpp/imgui_stdlib.h; sourceTree = "<group>"; };
+		4A4136272B7558470064FF39 /* imgui.natvis */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = imgui.natvis; path = ../imgui/misc/debuggers/imgui.natvis; sourceTree = "<group>"; };
+		4A4136282B7558470064FF39 /* imgui.natstepfilter */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = imgui.natstepfilter; path = ../imgui/misc/debuggers/imgui.natstepfilter; sourceTree = "<group>"; };
+		4A4136292B7558470064FF39 /* imgui.gdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = imgui.gdb; path = ../imgui/misc/debuggers/imgui.gdb; sourceTree = "<group>"; };
+		4A4136302B7558710064FF39 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		4A4136312B7558710064FF39 /* DroidSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DroidSans.ttf; sourceTree = "<group>"; };
+		4A4136322B7558710064FF39 /* ProggyTiny.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ProggyTiny.ttf; sourceTree = "<group>"; };
+		4A4136332B7558710064FF39 /* ProggyClean.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ProggyClean.ttf; sourceTree = "<group>"; };
+		4A4136342B7558710064FF39 /* Cousine-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Cousine-Regular.ttf"; sourceTree = "<group>"; };
+		4A4136352B7558710064FF39 /* Karla-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Karla-Regular.ttf"; sourceTree = "<group>"; };
+		4A4136382B7558710064FF39 /* imgui.gdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = imgui.gdb; sourceTree = "<group>"; };
+		4A4136392B7558710064FF39 /* imgui.natstepfilter */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imgui.natstepfilter; sourceTree = "<group>"; };
+		4A41363B2B7558710064FF39 /* imgui.natvis */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = imgui.natvis; sourceTree = "<group>"; };
+		4A41363D2B7558710064FF39 /* imgui_stdlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imgui_stdlib.h; sourceTree = "<group>"; };
+		4A41363F2B7558710064FF39 /* imgui_stdlib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_stdlib.cpp; sourceTree = "<group>"; };
+		4A4136462B7558710064FF39 /* imgui_single_file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imgui_single_file.h; sourceTree = "<group>"; };
 		5B5444D21F0BC72800A09B8D /* cocoa_joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cocoa_joystick.h; path = ../glfw3/src/cocoa_joystick.h; sourceTree = "<group>"; };
 		5B5444D31F0BC72800A09B8D /* cocoa_joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cocoa_joystick.m; path = ../glfw3/src/cocoa_joystick.m; sourceTree = "<group>"; };
 		5B5444D41F0BC72800A09B8D /* cocoa_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cocoa_time.c; path = ../glfw3/src/cocoa_time.c; sourceTree = "<group>"; };
@@ -153,6 +211,33 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				4A41363C2B7558710064FF39 /* cpp */,
+				4A4136372B7558710064FF39 /* debuggers */,
+				4A41362F2B7558710064FF39 /* fonts */,
+				4A4136452B7558710064FF39 /* single_file */,
+				4A4136292B7558470064FF39 /* imgui.gdb */,
+				4A4136282B7558470064FF39 /* imgui.natstepfilter */,
+				4A4136272B7558470064FF39 /* imgui.natvis */,
+				4A4136222B7558030064FF39 /* imgui_stdlib.cpp */,
+				4A4136242B7558030064FF39 /* imgui_stdlib.h */,
+				4A4136232B7558030064FF39 /* README.txt */,
+				4A4136122B7557B70064FF39 /* imconfig.h */,
+				4A4136172B7557B70064FF39 /* imgui_demo.cpp */,
+				4A4136132B7557B70064FF39 /* imgui_draw.cpp */,
+				4A4136112B7557B70064FF39 /* imgui_internal.h */,
+				4A4136102B7557B70064FF39 /* imgui_tables.cpp */,
+				4A4136162B7557B70064FF39 /* imgui_widgets.cpp */,
+				4A4136142B7557B70064FF39 /* imgui.cpp */,
+				4A4136152B7557B70064FF39 /* imgui.h */,
+				4A41361A2B7557B70064FF39 /* imstb_rectpack.h */,
+				4A4136182B7557B70064FF39 /* imstb_textedit.h */,
+				4A4136192B7557B70064FF39 /* imstb_truetype.h */,
+				4A41361B2B7557B70064FF39 /* LICENSE.txt */,
+				4A4136092B7557920064FF39 /* imgui_impl_glfw.cpp */,
+				4A41360C2B7557920064FF39 /* imgui_impl_glfw.h */,
+				4A4136072B7557920064FF39 /* imgui_impl_opengl3_loader.h */,
+				4A41360B2B7557920064FF39 /* imgui_impl_opengl3.cpp */,
+				4A4136082B7557920064FF39 /* imgui_impl_opengl3.h */,
 				5B9A66E91F2F246600EF062C /* include */,
 				5B5444EE1F0BC88300A09B8D /* posix_thread.c */,
 				5B5444EF1F0BC88300A09B8D /* posix_thread.h */,
@@ -212,6 +297,50 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4A41362F2B7558710064FF39 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				4A4136302B7558710064FF39 /* Roboto-Medium.ttf */,
+				4A4136312B7558710064FF39 /* DroidSans.ttf */,
+				4A4136322B7558710064FF39 /* ProggyTiny.ttf */,
+				4A4136332B7558710064FF39 /* ProggyClean.ttf */,
+				4A4136342B7558710064FF39 /* Cousine-Regular.ttf */,
+				4A4136352B7558710064FF39 /* Karla-Regular.ttf */,
+			);
+			name = fonts;
+			path = ../imgui/misc/fonts;
+			sourceTree = "<group>";
+		};
+		4A4136372B7558710064FF39 /* debuggers */ = {
+			isa = PBXGroup;
+			children = (
+				4A4136382B7558710064FF39 /* imgui.gdb */,
+				4A4136392B7558710064FF39 /* imgui.natstepfilter */,
+				4A41363B2B7558710064FF39 /* imgui.natvis */,
+			);
+			name = debuggers;
+			path = ../imgui/misc/debuggers;
+			sourceTree = "<group>";
+		};
+		4A41363C2B7558710064FF39 /* cpp */ = {
+			isa = PBXGroup;
+			children = (
+				4A41363D2B7558710064FF39 /* imgui_stdlib.h */,
+				4A41363F2B7558710064FF39 /* imgui_stdlib.cpp */,
+			);
+			name = cpp;
+			path = ../imgui/misc/cpp;
+			sourceTree = "<group>";
+		};
+		4A4136452B7558710064FF39 /* single_file */ = {
+			isa = PBXGroup;
+			children = (
+				4A4136462B7558710064FF39 /* imgui_single_file.h */,
+			);
+			name = single_file;
+			path = ../imgui/misc/single_file;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -266,12 +395,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A4136472B7558710064FF39 /* Roboto-Medium.ttf in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				4A41362B2B7558470064FF39 /* imgui.natvis in Resources */,
 				7CACF8E812B5D1AF002E52F2 /* data in Resources */,
 				7CD5046E165B1A60009581D7 /* external in Resources */,
+				4A41364F2B7558710064FF39 /* imgui.natstepfilter in Resources */,
+				4A41364C2B7558710064FF39 /* Karla-Regular.ttf in Resources */,
 				5B9A66EA1F2F246600EF062C /* include in Resources */,
+				4A41364A2B7558710064FF39 /* ProggyClean.ttf in Resources */,
+				4A41362C2B7558470064FF39 /* imgui.natstepfilter in Resources */,
 				7CD5046F165B1A60009581D7 /* internal in Resources */,
 				D56BBAB62465D8E50020D5F1 /* cerberus.icns in Resources */,
+				4A41362D2B7558470064FF39 /* imgui.gdb in Resources */,
+				4A4136482B7558710064FF39 /* DroidSans.ttf in Resources */,
+				4A41364E2B7558710064FF39 /* imgui.gdb in Resources */,
+				4A4136492B7558710064FF39 /* ProggyTiny.ttf in Resources */,
+				4A4136262B7558030064FF39 /* README.txt in Resources */,
+				4A4136512B7558710064FF39 /* imgui.natvis in Resources */,
+				4A41364B2B7558710064FF39 /* Cousine-Regular.ttf in Resources */,
+				4A4136212B7557B70064FF39 /* LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,20 +428,29 @@
 				5B5444E51F0BC72800A09B8D /* osmesa_context.c in Sources */,
 				5B5444E41F0BC72800A09B8D /* egl_context.c in Sources */,
 				5B5444E31F0BC72800A09B8D /* cocoa_time.c in Sources */,
+				4A4136532B7558710064FF39 /* imgui_stdlib.cpp in Sources */,
 				7C17EE5212BAD553007B72A6 /* stb_image.c in Sources */,
 				7C83FECA15730D2B007D5B80 /* stb_vorbis.c in Sources */,
+				4A41361E2B7557B70064FF39 /* imgui.cpp in Sources */,
+				4A41361D2B7557B70064FF39 /* imgui_draw.cpp in Sources */,
 				5B5444F01F0BC88300A09B8D /* posix_thread.c in Sources */,
 				7CCA8A3F1B1A8672003926E3 /* main.mm in Sources */,
+				4A4136252B7558030064FF39 /* imgui_stdlib.cpp in Sources */,
 				7CE1AA7B17E154F600D079FE /* cocoa_init.m in Sources */,
 				7CE1AA7D17E154F600D079FE /* cocoa_monitor.m in Sources */,
 				7CE1AA7F17E154F600D079FE /* cocoa_window.m in Sources */,
+				4A41360F2B7557920064FF39 /* imgui_impl_opengl3.cpp in Sources */,
 				7CE1AA8017E154F600D079FE /* context.c in Sources */,
 				7CE1AA8217E154F600D079FE /* init.c in Sources */,
+				4A4136202B7557B70064FF39 /* imgui_demo.cpp in Sources */,
 				7CE1AA8317E154F600D079FE /* input.c in Sources */,
 				5B5444E81F0BC72800A09B8D /* vulkan.c in Sources */,
+				4A41361F2B7557B70064FF39 /* imgui_widgets.cpp in Sources */,
 				7CE1AA8517E154F600D079FE /* monitor.c in Sources */,
 				7CE1AA8617E154F600D079FE /* nsgl_context.m in Sources */,
+				4A41360D2B7557920064FF39 /* imgui_impl_glfw.cpp in Sources */,
 				7CE1AA8817E154F600D079FE /* window.c in Sources */,
+				4A41361C2B7557B70064FF39 /* imgui_tables.cpp in Sources */,
 				5B5444E21F0BC72800A09B8D /* cocoa_joystick.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,6 +539,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -411,6 +564,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
