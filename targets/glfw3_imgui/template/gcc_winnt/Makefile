@@ -13,7 +13,9 @@ CPPFLAGS=$(CCOPTS) \
 -I../stb \
 -I../tinyfiledialogs \
 -I../zlib-1.2.8 \
--I../lpng1610
+-I../lpng1610 \
+-I../imgui \
+-I../imgui/backends
 
 LD=g++
 LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
@@ -30,6 +32,8 @@ VPATH= $(VPATHOPTS) \
 %.c ../glfw3/src \
 %.c ../stb \
 %.c ../tinyfiledialogs \
+%.cpp ../imgui \
+%.cpp ../imgui/backends \
 %.cpp .. \
 %.rc ..
 
@@ -52,6 +56,13 @@ window.o \
 stb_vorbis.o \
 stb_image.o \
 resource.o \
+imgui.o \
+imgui_demo.o \
+imgui_draw.o \
+imgui_tables.o \
+imgui_widgets.o \
+imgui_impl_glfw.o \
+imgui_impl_opengl3.o \
 tinyfiledialogs.o \
 main.o
 
