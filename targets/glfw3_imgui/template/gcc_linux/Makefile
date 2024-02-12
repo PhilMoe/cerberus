@@ -16,6 +16,8 @@ CPPFLAGS=$(CCOPTS) \
 -I../glfw3/deps \
 -I../glfw3/deps/vulkan \
 -D_GLFW_HAS_GLXGETPROCADDRESS \
+-I../imgui \
+-I../imgui/backends \
 -pthread
 
 LD=g++
@@ -26,6 +28,8 @@ VPATH= $(VPATHOPTS) \
 %.c ../glfw3/src \
 %.c ../stb \
 %.c ../tinyfiledialogs \
+%.cpp ../imgui \
+%.cpp ../imgui/backends \
 %.cpp ..
 
 OBJS0= $(SRCOPTS) \
@@ -47,6 +51,13 @@ osmesa_context.o \
 xkb_unicode.o \
 stb_vorbis.o \
 stb_image.o \
+imgui.o \
+imgui_demo.o \
+imgui_draw.o \
+imgui_tables.o \
+imgui_widgets.o \
+imgui_impl_glfw.o \
+imgui_impl_opengl3.o \
 tinyfiledialogs.o \
 main.o
 
