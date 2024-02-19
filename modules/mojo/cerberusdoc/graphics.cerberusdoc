@@ -412,7 +412,7 @@ Draws text at coordinates x, y in the current font.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-xalign and yalign allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+xhandle and yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
@@ -423,7 +423,7 @@ Draws a multiline text beginning at coordinates x, y in the current font.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-xalign and yalign allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+xhandle and yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
@@ -436,7 +436,7 @@ Everything outside of the box dimensions will not be rendered.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
