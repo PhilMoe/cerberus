@@ -347,9 +347,9 @@ An image is a rectangular area of pixels within a material, that can be drawn us
 
 You can create a new image using one of the [[Image.New]] methods, or load an image from file using [[Image.Load|Image.Load]].
 
-An image also has a handle, an offset within the image that represents it's origin whan it is drawn. Image handles are specified in fractional values, where 0,0 is the top-left of an image, 1,1 is the bottom-right and .5,.5 is the center.
+An image also has a handle, an offset within the image that represents it's origin whan it is drawn. Image handles are specified in fractional values, where 0.0,0.0 is the top-left of an image, 1.0,1.0 is the bottom-right and 0.5,0.5 is the center.
 
-# Method New( width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter )
+# Method New( width:Int,height:Int,xhandle:Float=0.5,yhandle:Float=0.5,flags:Int=Image.Filter )
 
 Create a new image for rendering. The new image can be used as a render target for a [[Canvas]].
 
@@ -363,19 +363,19 @@ The @flags parameter can be any bitwise combination of:
 The Image.Managed flag should be used if you want mojo2 to preserve the image contents when the graphics mode changes. This is not necessary if the image is being re-rendered every frame. Image.Managed consumes more memory, and slows down image rendering somewhat so should be avoided if possible.
 
 
-# Method New( sourceImage:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,xhandle:Float=.5,yhandle:Float=.5 )
+# Method New( sourceImage:Image,sourceX:Int,sourceY:Int,sourceWidth:Int,sourceHeight:Int,xhandle:Float=0.5,yhandle:Float=0.5 )
 
 Create a new image from a region within an existing image.
 
 The new image shares the same material and image flags as @sourceImage.
 
 
-# Method New( material:Material,xhandle:Float=.5,yhandle:Float=.5 )
+# Method New( material:Material,xhandle:Float=0.5,yhandle:Float=0.5 )
 
 Create a new image from a material.
 
 
-# Method New( material:Material,x:Int,y:Int,width:Int,height:Int,xhandle:Float=.5,yhandle:Float=.5 )
+# Method New( material:Material,x:Int,y:Int,width:Int,height:Int,xhandle:Float=0.5,yhandle:Float=0.5 )
 
 Create a new image representing a rect within a material.
 
@@ -481,7 +481,7 @@ Returns true if any images are currently busy loading.
 On targets other than html5, this will always return false.
 
 
-# Function Load:Image( path:String,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+# Function Load:Image( path:String,xhandle:Float=0.5,yhandle:Float=0.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
 
 Load an image from @path.
 
@@ -498,7 +498,7 @@ Loaded images should not be used as render targets.
 See also: [[Shader.DefaultShader]]
 
 
-# Function LoadFrames:Image[]( path:String,numFrames:Int,padded:Bool,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
+# Function LoadFrames:Image[]( path:String,numFrames:Int,padded:Bool,xhandle:Float=0.5,yhandle:Float=0.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null )
 
 Load image frames from @path.
 
@@ -519,7 +519,7 @@ Loaded images should not be used as render targets.
 
 See also: [[Shader.DefaultShader]]
 
-# Function LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=.5,yhandle:Float=.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null)
+# Function LoadFrames:Image[]( path:String,cellWidth:Int,cellHeight:Int,padded:Bool=False,xhandle:Float=0.5,yhandle:Float=0.5,flags:Int=Image.Filter|Image.Mipmap,shader:Shader=Null)
 
 Load image frames from @path.
 
@@ -997,7 +997,7 @@ Draws a @text at coordinates @x, @y in the current font.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
@@ -1008,7 +1008,7 @@ Draws a multiline text beginning at coordinates x, y in the current font.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-@xhandle and @handle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
@@ -1021,7 +1021,7 @@ Everything outside of the box dimensions will not be rendered.
 
 The current font may be modified using SetFont. By default, an internal 7 x 13 white-on-black font is used.
 
-@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0 for left/top alignment to 1 for right/bottom alignment. A value of .5 can be used for centering text horizontally or vertically.
+@xhandle and @yhandle allow you to control the alignment of the text and should be in the range 0.0 for left/top alignment to 1.0 for right/bottom alignment. A value of 0.5 can be used for centering text horizontally or vertically.
 
 The text is drawn using the current color, alpha, blend mode and matrix, and is clipped to the current scissor rectangle.
 
@@ -1188,7 +1188,7 @@ In addition, for lighting to work correctly images and materials drawn with ligh
 
 The easiest way to load images for use with lighting is to use the matte shader when loading an image, eg:
 
-Local image:=Image.Load( "myimage.png",.5,.,5,Image.Filter|Image.Mipmap,Shader.MatteShader() )
+Local image:=Image.Load( "myimage.png",0.5,0.5,Image.Filter|Image.Mipmap,Shader.MatteShader() )
 
 This will allow simple images with no specular or normal maps to be used with lighting.
 
