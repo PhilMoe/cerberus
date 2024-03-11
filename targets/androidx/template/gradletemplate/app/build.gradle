@@ -15,6 +15,7 @@ android {
         targetSdkVersion ${ANDROID_TARGET_SDK_VERSION}
         versionCode ${ANDROID_VERSION_CODE}
         versionName "${ANDROID_VERSION_NAME}"
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -43,6 +44,7 @@ android {
 dependencies {
     ${ANDROID_LIBRARY_REFERENCE_1}
     ${ANDROID_LIBRARY_REFERENCE_2}
+    ${ANDROID_BUILD_DEPENDENCIES}
 	implementation 'androidx.appcompat:appcompat:1.6.1'
-    //implementation 'com.android.support:appcompat-v7:28.0.0'
+	implementation 'androidx.multidex:multidex:2.0.1'
 }
