@@ -94,7 +94,8 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 ' In this case, the MINGW_PATH would only need to be set if there is more than one version of MinGW installed and the first entry
 ' in environment PATH is not to be used.
 
-MINGW_PATH="C:\TDM-GCC-64"
+'MINGW_PATH="C:\TDM-GCC-64"
+MINGW_PATH="${CERBERUSDIR}\TDM-GCC-64"
 '--------------------
 
 '--------------------
