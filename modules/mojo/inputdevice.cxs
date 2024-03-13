@@ -31,6 +31,7 @@ Class InputDevice
 	Method Reset:Void()
 		For Local i=0 Until 512
 			_keyDown[i]=False
+			_keyHitIntern[i]=0
 			_keyHit[i]=0
 		Next
 		_keyHitPut=0
@@ -225,11 +226,14 @@ Class InputDevice
 				Endif
 			Next
 		Next
+		For Local i:=0 Until 512
+			_keyHit[i]=_keyHitIntern[i]
+		Next
 	End
 	
 	Method EndUpdate:Void()
 		For Local i:=0 Until _keyHitPut
-			_keyHit[_keyHitQueue[i]]=0
+			_keyHitIntern[_keyHitQueue[i]]=0
 		Next
 		_keyHitPut=0
 		_charGet=0
@@ -243,6 +247,7 @@ Private
 
 	Field _keyDown:Bool[512]
 	Field _keyHit:Int[512]
+	Field _keyHitIntern:Int[512]
 	Field _keyHitQueue:Int[33]
 	Field _keyHitPut:int
 	Field _charQueue:Int[32]
@@ -260,7 +265,7 @@ Private
 	
 	Method PutKeyHit:Void( key:Int )
 		If _keyHitPut=_keyHitQueue.Length Return
-		_keyHit[key]+=1
+		_keyHitIntern[key]+=1
 		_keyHitQueue[_keyHitPut]=key
 		_keyHitPut+=1
 	End
