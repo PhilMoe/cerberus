@@ -3,7 +3,7 @@
 
 # Get this script directory
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-SCRIPT_VER="1.2.0"
+SCRIPT_VER="1.2.1"
 
 TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
 BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the buildr script. See freedesktop.sh

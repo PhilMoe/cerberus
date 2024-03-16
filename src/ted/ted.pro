@@ -4,6 +4,11 @@
 #
 #-------------------------------------------------
 # Change log
+# 2023-08-20 - Dawlane
+#                   Changed to how information is displayed.
+#                   Renaming of a few variables.
+#                   Add iconengine and imageformats for Linux to fix issue with no, or incorrect icons theme
+#                   in project browser.
 # 2023-04-27 - Dawlane
 #                   Fixed issue with platform pluging not being deployed on Linux builds.
 # 2023-04-12 - Dawlane
@@ -106,6 +111,54 @@ defineTest(print) {
   !build_pass:message($$1)
 }
 
+# Function to show a message spaced only once.
+defineTest(tabPrint) {
+  !build_pass:message("$$escape_expand(\\t)$$1")
+}
+
+defineTest(output) {
+    # Qt information
+    print("Qt Information:")
+
+    # Linux specific, else general qt.io installs
+    contains( QMAKE_QMAKE, ^/usr/.*) {
+        tabPrint("Qt Version: $${QT_VERSION} (local)")
+    } else {
+        tabPrint("Qt Version: $${QT_VERSION}")
+    }
+    tabPrint("Qt root directory: $$[QT_INSTALL_DATA]")
+    tabPrint("Qt plugins directory: $$[QT_INSTALL_PLUGINS]")
+
+    # Build information
+    print("Build:")
+    CONFIG(debug, debug|release) {
+        tabPrint("Config: Debug")
+    } else {
+        tabPrint("Config: Release")
+    }
+
+    # Print the target output
+    !isEmpty(DESTDIR_PATH) {
+        tabPrint("Target output path: $${DESTDIR_PATH}")
+    } else {
+        tabPrint("Target output path: $${DESTDIR}")
+    }
+    !isEmpty(INSTALLS) { tabPrint("Installs: $${INSTALLS}") }
+    !isEmpty(QMAKE_TARGET_BUNDLE_PREFIX) { tabPrint("Application bundle prefix: $${QMAKE_TARGET_BUNDLE_PREFIX}") }
+    !isEmpty(QMAKE_APPLE_DEVICE_ARCHS) { tabPrint("Target CPU architectures: $${QMAKE_APPLE_DEVICE_ARCHS}") }
+
+    # For windeployqt and macdeployqt
+    !isEmpty(DEPLOYQT_APP) {
+        print("Deployment Application Information:")
+        tabPrint("Application: $${DEPLOYQT_APP}")
+        tabPrint("Application options: $${DEPLOYQT_OPTS}")
+        tabPrint("Application input: $${DEPLOYQT_TARGET}")
+    }
+    !isEmpty(QMAKE_POST_LINK) {
+        print("Post link commands:$$escape_expand(\\n)$${QMAKE_POST_LINK}")
+    }
+}
+
 # NOTE: Currently for Qt Deployment it's best to use the Linux repositories instead of
 #       Trying to distribute Qt Libraries. If a version other than the distributions default is chosen, then
 #       try to set things up for that Qt kit.
@@ -149,18 +202,27 @@ linux{
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}WebEngineWidgets.so.$${QT_MAJOR_VERSION}
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}Widgets.so.$${QT_MAJOR_VERSION}
 
+        # Plugins
+        platforms.files += $$[QT_INSTALL_PLUGINS]/platforms/libqxcb.so
+        platforms.path += $(DESTDIR)/plugins/platforms
+
+        xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
+        xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
+
+        INSTALLS += platforms xcbglintegrations
+
         # Version Specific
         equals(QT_MAJOR_VERSION, 5) {
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt5XcbQpa.so.5
+            greaterThan(QT_MINOR_VERSION, 13) {
+                QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt5Svg.so.5
+                iconengines.files += $$[QT_INSTALL_PLUGINS]/iconengines/libqsvgicon.so
+                iconengines.path += $(DESTDIR)/plugins/iconengines
 
-            # Plugins
-            platforms.files += $$[QT_INSTALL_PLUGINS]/platforms/libqxcb.so
-            platforms.path += $(DESTDIR)/plugins/platforms
-
-            xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
-            xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
-
-            INSTALLS += platforms xcbglintegrations
+                imageformats.files += $$[QT_INSTALL_PLUGINS]/imageformats/lib*.so
+                imageformats.path += $(DESTDIR)/plugins/imageformats
+                INSTALLS += iconengines imageformats
+            }
         }
 
         equals(QT_MAJOR_VERSION, 6) {
@@ -168,15 +230,14 @@ linux{
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlModels.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6XcbQpa.so.6
 
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6Svg.so.6
 
-            # Plugins
-            platforms.files += $$[QT_INSTALL_PLUGINS]/platforms/libqxcb.so
-            platforms.path += $(DESTDIR)/plugins/platforms
+            iconengines.files += $$[QT_INSTALL_PLUGINS]/iconengines/libqsvgicon.so
+            iconengines.path += $(DESTDIR)/plugins/iconengines
 
-            xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
-            xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
-
-            INSTALLS += platforms xcbglintegrations
+            imageformats.files += $$[QT_INSTALL_PLUGINS]/imageformats/lib*.so
+            imageformats.path += $(DESTDIR)/plugins/imageformats
+            INSTALLS += iconengines imageformats
         }
 
         libs.files += $$QTLIBS
@@ -194,31 +255,19 @@ linux{
         webengineprocess.files += $$[QT_INSTALL_DATA]/libexec/QtWebEngineProcess
         webengineprocess.path += $(DESTDIR)/libexec
 
-        config1.files += $(_PRO_FILE_PWD_)/configs/linux/bin/qt.conf
-        config1.path += $(DESTDIR)
+        ted_qcfg.files += $(_PRO_FILE_PWD_)/configs/linux/bin/qt.conf
+        ted_qcfg.path += $(DESTDIR)
 
-        config2.files += $(_PRO_FILE_PWD_)/configs/linux/libexec/qt.conf
-        config2.path += $(DESTDIR)/libexec
+        libexec_qcfg.files += $(_PRO_FILE_PWD_)/configs/linux/libexec/qt.conf
+        libexec_qcfg.path += $(DESTDIR)/libexec
 
-        INSTALLS += libs translations resources webengineprocess config1 config2
+        INSTALLS += libs translations resources webengineprocess ted_qcfg libexec_qcfg
         install:   $(INSTALLS)
-
-        QTKIT = "Installer Qt $${QT_VERSION}"
-    } else {
-        QTKIT = "Qt Local Default"
     }
 
     # Output all values to make sure that they are correct
     print("==== Linux ====")
-    print("$$escape_expand(\\t)QT SDK VERSION: $${QT_VERSION}")
-    print("$$escape_expand(\\t)Config: $${CONFIG}")
-    print("$$escape_expand(\\t)CFLAGS: $${QMAKE_CFLAGS}")
-    print("$$escape_expand(\\t)CXXFLAGS: $${QMAKE_CXXFLAGS}")
-    print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
-    print("$$escape_expand(\\t)LIBS: $${LIBS}")
-    print("$$escape_expand(\\t)Qt Kit: $${QTKIT}")
-    print("$$escape_expand(\\t)Qt ROOT DIRECTORY: $$[QT_INSTALL_DATA]")
-    print("$$escape_expand(\\t)Qt PLUGINS DIRECTORY: $$[QT_INSTALL_PLUGINS]")
+    output()
 
     # Remove deployment files every time a build or clean action is started. Linux commands.
     system(rm -rf $$shell_quote($${DESTDIR}/plugins))
@@ -242,35 +291,35 @@ win32{
 
     # Deployment
     # To run external commands on MS Windows correctly. The paths have to be converted to MS DOS format.
-    WINDEPLOYQT = $$dirname(QMAKE_QMAKE)/windeployqt.exe
-    WINDEPLOYQT ~= s,/,\\,g S
+    DEPLOYQT_APP = $$dirname(QMAKE_QMAKE)/windeployqt.exe
+    DEPLOYQT_APP ~= s,/,\\,g S
 
     DESTDIR_PATH = $${DESTDIR}
     DESTDIR_PATH ~= s,/,\\,g
 
     QT_SDK_PLATFORMS_DIR ~= s,/,\\,g
 
-    WINDEPLOYQT_TARGET = $$shell_quote($$shell_path($${DESTDIR}/$${TARGET}.exe))
-    WINDEPLOYQT_TARGET ~= s,/,\\,g
+    DEPLOYQT_TARGET = $$shell_quote($$shell_path($${DESTDIR}/$${TARGET}.exe))
+    DEPLOYQT_TARGET ~= s,/,\\,g
 
     # Set up the commandline to use with windeployqt
-    WINDEPLOYQT_OPTS = "$${WINDEPLOYQT}"  --no-svg -core -webenginecore -webenginewidgets -webchannel
-    WINDEPLOYQT_OPTS += --no-translations --no-system-d3d-compiler --no-compiler-runtime
-    WINDEPLOYQT_OPTS += --no-opengl-sw --no-plugins
+    DEPLOYQT_OPTS =  --no-svg -core -webenginecore -webenginewidgets -webchannel
+    DEPLOYQT_OPTS += --no-translations --no-system-d3d-compiler --no-compiler-runtime
+    DEPLOYQT_OPTS += --no-opengl-sw --no-plugins
 
     # Append additional options based on the Qt version.
     lessThan(QT_MAJOR_VERSION, 6) {
-        WINDEPLOYQT_OPTS+= --no-serialport
+        DEPLOYQT_OPTS+= --no-serialport
         lessThan(QT_MINOR_VERSION, 14) {
-            WINDEPLOYQT_OPTS += --no-angle
+            DEPLOYQT_OPTS += --no-angle
         } else {
-            WINDEPLOYQT_OPTS += --no-angle --no-virtualkeyboard 
+            DEPLOYQT_OPTS += --no-angle --no-virtualkeyboard
         }
     } else {
         lessThan(QT_MINOR_VERSION, 5) {
-            WINDEPLOYQT_OPTS += --no-serialport
+            DEPLOYQT_OPTS += --no-serialport
         }
-        WINDEPLOYQT_OPTS += --no-virtualkeyboard
+        DEPLOYQT_OPTS += --no-virtualkeyboard
     }
 
     # Set up the debug or release
@@ -278,33 +327,22 @@ win32{
 
     CONFIG(debug, debug|release) {
         CONFIG_TYPE = "d"
-        WINDEPLOYQT_OPTS += --debug
+        DEPLOYQT_OPTS += --debug
     } else {
-        WINDEPLOYQT_OPTS += --release
+        DEPLOYQT_OPTS += --release
     }
 
-    WINDEPLOYQT_OPTS += "$${WINDEPLOYQT_TARGET}"
+    DEPLOY_CMDLINE = "$${DEPLOYQT_APP}" $${DEPLOYQT_OPTS} "$${DEPLOYQT_TARGET}"
 
     # Execute the windeployqt command, create the platforms directory and copy over the qwindows plugin.
-    QMAKE_POST_LINK +=  $${WINDEPLOYQT_OPTS} $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK +=  $${DEPLOY_CMDLINE} $$escape_expand(\\n\\t)
     QMAKE_POST_LINK +=  $$QMAKE_MKDIR $$quote($$DESTDIR_PATH\\platforms) $$escape_expand(\\n\\t)
     QMAKE_POST_LINK += 	$$QMAKE_COPY $$quote($${QT_SDK_PLATFORMS_DIR}\\qwindows$${CONFIG_TYPE}.dll) \
                         $$quote($${DESTDIR_PATH}\\platforms) $$escape_expand(\\n\\t)
 
     # Output all values to make sure that they are correct
     print("==== MS WINDOWS ====")
-    print("$$escape_expand(\\t)QT SDK VERSION: $${QT_VERSION}")
-    print("$$escape_expand(\\t)windeployqt.exe location: $${WINDEPLOYQT}")
-    print("$$escape_expand(\\t)Application destinaton path: $${DESTDIR_PATH}")
-    print("$$escape_expand(\\t)Qt Platforms path: $${QT_SDK_PLATFORMS_DIR}")
-    print("$$escape_expand(\\t)Full application path: $${WINDEPLOYQT_TARGET}")
-    print("$$escape_expand(\\t)windeployqt options: $${WINDEPLOYQT_OPTS}$$escape_expand(\\n\\t)")
-    print("$$escape_expand(\\t)Post link commands: $${QMAKE_POST_LINK}$$escape_expand(\\n\\t)")
-    print("$$escape_expand(\\t)Config: $${CONFIG}")
-    print("$$escape_expand(\\t)CFLAGS: $${QMAKE_CFLAGS}")
-    print("$$escape_expand(\\t)CXXFLAGS: $${QMAKE_CXXFLAGS}")
-    print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
-    print("$$escape_expand(\\t)LIBS: $${LIBS}")
+    output()
 
     # Remove deployment files every time a build or clean action is started. MS Windows commands.
     system(rmdir /Q /S $$shell_quote($${DESTDIR_PATH}\\platforms))
@@ -348,56 +386,33 @@ macx{
 
     # Create a universal app bundle
     QMAKE_APPLE_DEVICE_ARCHS = x86_64
-    greaterThan(QT_MAJOR_VERSION, 4) {
-        # According to the documentation. Qt 5.9 onwards supports x86_64h (haswell).
-        # Doesn't show up in the dylibs
-        #equals(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 8)|equals(QT_MAJOR_VERSION, 6) {
-        #        QMAKE_APPLE_DEVICE_ARCHS += x86_64h
-        #}
-
-        # Qt 5.15 onwards, according to the documentation, supports apple silicon.
-        # equals(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 14)|
-        equals(QT_MAJOR_VERSION, 6) {
-            QMAKE_APPLE_DEVICE_ARCHS += arm64
-        }
+    greaterThan(QT_MAJOR_VERSION, 5) {
+        QMAKE_APPLE_DEVICE_ARCHS += arm64
     }
 
     # Set up some basic path to save typing out the full paths.
-    MACDEPLOYQT = $$dirname(QMAKE_QMAKE)/macdeployqt
-    MACDEPLOYQT_TARGET = $$shell_path($${DESTDIR}/$${TARGET}.app)
+    DEPLOYQT_APP = $$dirname(QMAKE_QMAKE)/macdeployqt
+    DEPLOYQT_TARGET = $$shell_path($${DESTDIR}/$${TARGET}.app)
 
-    APP_CONTENTS_DIR = $${MACDEPLOYQT_TARGET}/Contents
+    APP_CONTENTS_DIR = $${DEPLOYQT_TARGET}/Contents
     APP_PLUGINS_DIR = $${APP_CONTENTS_DIR}/Plugins
     APP_PLUGINS_PLATFORM = $${APP_PLUGINS_DIR}/platforms
 
     # Set up the commandline to use with macdeployqt
-    MACDEPLOYQT_OPTS = "$${MACDEPLOYQT}" "$${MACDEPLOYQT_TARGET}"
-    MACDEPLOYQT_OPTS += -no-plugins
+    DEPLOYQT_OPTS += -no-plugins
+
+    DEPLOY_CMDLINE = "$${DEPLOYQT_APP}" "$${DEPLOYQT_TARGET}" $${DEPLOYQT_OPTS}
 
     # Execute the macdeployqt command, create the platforms directory and copy over the libqcoca plugin.
-    QMAKE_POST_LINK +=  $${MACDEPLOYQT_OPTS} $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK +=  $${DEPLOY_CMDLINE} $$escape_expand(\\n\\t)
     QMAKE_POST_LINK +=  $$QMAKE_MKDIR $$quote($${APP_PLUGINS_PLATFORM}) $$escape_expand(\\n\\t)
     QMAKE_POST_LINK +=  $$QMAKE_COPY $$quote($${QT_SDK_PLATFORMS_DIR}/libqcocoa.dylib) \
                         $$quote($${APP_PLUGINS_PLATFORM}) $$escape_expand(\\n\\t)
 
     # Output all values to make sure that they are correct
     print("==== MacOS ====")
-    print("$$escape_expand(\\t)QT SDK VERSION: $${QT_VERSION}")
-    print("$$escape_expand(\\t)Architectures supported: $${QMAKE_APPLE_DEVICE_ARCHS}")
-    print("$$escape_expand(\\t)macdeployqt location: $${MACDEPLOYQT}")
-    print("$$escape_expand(\\t)Application destinaton path: $${DESTDIR}")
-    print("$$escape_expand(\\t)Qt Platforms path: $${QT_SDK_PLATFORMS_DIR}")
-    print("$$escape_expand(\\t)Full application path: $${MACDEPLOYQT_TARGET}")
-    print("$$escape_expand(\\t)macdeployqt options: $${MACDEPLOYQT_OPTS}$$escape_expand(\\n\\t)")
-    print("$$escape_expand(\\t)Post link commands: $${QMAKE_POST_LINK}$$escape_expand(\\n\\t)")
-
-    print("$$escape_expand(\\t)Config: $${CONFIG}")
-    print("$$escape_expand(\\t)CFLAGS: $${QMAKE_CFLAGS}")
-    print("$$escape_expand(\\t)CXXFLAGS: $${QMAKE_CXXFLAGS}")
-    print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
-    print("$$escape_expand(\\t)LIBS: $${LIBS}")
-    print("$$escape_expand(\\t)QMAKE_TARGET_BUNDLE_PREFIX: $${QMAKE_TARGET_BUNDLE_PREFIX}")
+    output()
 
     # Remove deployment files every time a build or clean action is started.
-    system(rm -rf $$shell_quote($$shell_path($${MACDEPLOYQT_TARGET})))
+    system(rm -rf $$shell_quote($$shell_path($${DEPLOYQT_TARGET})))
 }
