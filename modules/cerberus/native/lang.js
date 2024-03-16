@@ -32,11 +32,16 @@ function stackTrace(){
 }
 
 function print( str ){
-	var cons=document.getElementById( "GameConsole" );
-	if( cons ){
-		cons.value+=str+"\n";
-		cons.scrollTop=cons.scrollHeight-cons.clientHeight;
-	}else if( window.console!=undefined ){
+	if( editor!=0 ){
+		var ll = editor.session.getLength();
+		editor.gotoLine(ll);
+		editor.moveCursorTo(9999999,0);
+		editor.insert(str+"\n");
+		editor.scrollToRow(9999999);
+		editor.moveCursorTo(9999999,0);
+	}
+
+	if( window.console!=undefined ){
 		window.console.log( str );
 	}
 	return 0;
@@ -56,11 +61,16 @@ function error( err ){
 //}
 
 function debugLog( str ){
-	var cons=document.getElementById( "GameConsole" );
-	if( cons ){
-		cons.value+=str+"\n";
-		cons.scrollTop=cons.scrollHeight-cons.clientHeight;
-	}else if( window.console!=undefined ){
+	if( editor!=0 ){
+		var ll = editor.session.getLength();
+		editor.gotoLine(ll);
+		editor.moveCursorTo(9999999,0);
+		editor.insert(str+"\n");
+		editor.scrollToRow(9999999);
+		editor.moveCursorTo(9999999,0);
+	}
+
+	if( window.console!=undefined ){
 		window.console.log( str );
 	}
 	return 0;
