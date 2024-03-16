@@ -110,12 +110,7 @@ do_deploy(){
     }
     
     # Get the version from the Cerberus versions text file.
-    while IFS= read -r line; do
-        [ "${line:0:1}" = "*" ] && {
-            CX_VERSION=$(echo "$line" | sed 's/[* ]//g')
-            break;
-        }
-    done < "$CX_DEPLOY_TARGET/VERSIONS.TXT"
+    CX_VERSION=$(do_cx_vers)
 
     ARCHIVE_CMD=()
 

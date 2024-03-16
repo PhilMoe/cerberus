@@ -27,9 +27,9 @@ function do_get_config_var([string]$_path, [string]$_key) {
 }
 
 # Build the transcc tool
-function do_transcc() {
+function do_boot() {
 
-    do_info "BUILDING TransCC"
+    do_info "BUILDING Boot TransCC"
 
     # Create a variable to where the project files are located.
     [string]$cpptool_dir = "$SRC\transcc\transcc.build\cpptool"
@@ -59,6 +59,36 @@ function do_transcc() {
 
     do_success "BUILD SUCCESSFUL`n"
     $global:EXITCODE = 0
+}
+
+function do_transcc() {
+    do_info "BUILDING TransCC from transcc.cxs"
+
+    [string]$build_dir="$SRC\transcc\transcc.buildv$(do_cx_vers)\cpptool"
+    # Set the toolchain based upon the target and msbuild
+    [string]$toolchain = ""
+    if ($msbuild -eq $true) {
+        if ($_target -eq "C++_Tool") {
+            $toolchain = "+CC_USE_MINGW=0"
+        } else {
+            $toolchain = "+GLFW_USE_MINGW=0"
+        }
+    }
+ 
+    execute "$BIN\transcc_winnt.exe" "-target=C++_Tool -clean -config=release +CPP_GC_MODE=0 +CC_OUTPUT_NAME=transcc_winnt $toolchain `"$SRC\transcc\transcc.cxs`""
+    if ($global:EXITCODE -ne 0) {
+        $global:EXITCODE = 1
+        do_error "$global:MESSAGE`n"
+    } else {
+        if(Test-Path("$BIN\transcc_winnt.exe")) {
+            Remove-Item "$BIN\transcc_winnt.exe"
+        }
+        Move-Item "$build_dir\transcc_winnt.exe" "$BIN\transcc_winnt.exe"
+        do_success "BUILD SUCCESSFUL`n"
+    }
+
+    clean_build "$build_dir"
+    return
 }
 
 # Build the CServer tool.
@@ -109,7 +139,6 @@ function do_makedocs() {
     move-item "$SRC\makedocs\makedocs.build\cpptool\main_winnt.exe" "$BIN\makedocs_winnt.exe"
 
     clean_build "makedocs"
-
 
     do_success "BUILD SUCCESSFUL`n"
     $global:EXITCODE = 0
@@ -196,7 +225,7 @@ function do_ted() {
 # Function to do build all
 function do_all() {
     do_header "`n====== BUILDING ALL TOOLS ======"
-    do_transcc
+    do_boot
     if ($global:EXITCODE -eq 0) { do_cserver }
     if ($global:EXITCODE -eq 0) { do_makedocs }
     if ($global:EXITCODE -eq 0) { do_launcher }
