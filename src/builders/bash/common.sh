@@ -99,10 +99,21 @@ do_build_result(){
     [ $EXITCODE -eq 0 ] && {
         do_success "BUILD SUCCESSFUL"
         echo "";
-        } || {
+    } || {
         do_error "BUILD FAILED"
         echo "";
     }
+}
+
+# Function to get the Cerberus X version from the VERSIONS.TXT file
+do_cx_vers() {
+    while IFS= read -r line; do
+        [ "${line:0:1}" = "*" ] && {
+            CX_VERSION=$(echo "$line" | sed 's/[* ]//g')
+            break;
+        }
+    done < "$CERBERUS_ROOT_DIR/VERSIONS.TXT"
+    echo $CX_VERSION
 }
 
 # Function to execute transcc
