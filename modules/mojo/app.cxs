@@ -8,17 +8,16 @@
 Import mojox.app
 #Else
 
-#If MOJO2_IMPORTED And Not MOJO2_DEFAULTCANVAS_DISABLED
+#If MOJO2_DEFAULTCANVAS_ENABLED
 	Import mojo2.defaultcanvas
-	#DEFAULTCANVAS_IMPORTED=True
 #Else
-	#Print "mojo2.defaultcanvas is disabled. Global drawing functions are not supported!"
+	#Print "mojo2.defaultcanvas is not used. Global drawing functions like Clear(), DrawSOMETHING(), Flush(), are not available!"
 #Endif
 
 Private
 
 Import graphicsdevice
-Import audiodevice
+Import audiodevice  
 Import inputdevice
 
 Import graphics
@@ -100,7 +99,7 @@ Class GameDelegate Extends BBGameDelegate
 
 		EnumDisplayModes
 		
-#If DEFAULTCANVAS_IMPORTED
+#If MOJO2_DEFAULTCANVAS_ENABLED
 		CreateDefaultCanvas()
 #EndIf		
 
@@ -133,7 +132,7 @@ Class GameDelegate Extends BBGameDelegate
 			_app.OnLoading 
 		Else 
 			_app.OnRender
-#If DEFAULTCANVAS_IMPORTED
+#If MOJO2_DEFAULTCANVAS_ENABLED
 			'Print "Flush"
 			FlushDefaultCanvas()
 #EndIf	
