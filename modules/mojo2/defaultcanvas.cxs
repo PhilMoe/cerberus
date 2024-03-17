@@ -2,7 +2,7 @@ Strict
 
 Private
 
-Import mojo2
+Import graphics
 Import brl.databuffer
 
 
@@ -17,7 +17,7 @@ End
 
 Function FlushDefaultCanvas:Void()
 	DefaultCanvas.Flush()
-	#If MOJO2_DEFAULTCANVAS_AUTORESET_DISABLED=False
+	#If MOJO2_DEFAULTCANVAS_AUTORESET_ENABLED=True
 		ResetDefaultCanvas()
 		'Print "ResetDefaultCanvas called!"
 	#EndIf

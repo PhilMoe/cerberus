@@ -1,5 +1,10 @@
+#MOJO2_DEFAULTCANVAS_ENABLED=True
+#If MOJO2_DEFAULTCANVAS_ENABLED
+	Import mojo2.defaultcanvas
+#EndIf
+
 #COLOR_USE_NORMALISED_COMPONENTS = True
-#MOJO2_IMPORTED = True
+
 Import mojo.input
 Import mojo.audio
 Import mojo2.graphics

@@ -19,14 +19,14 @@ With the DefaultCanvas you have access to all documented Canvas functionality in
 
 >>> Config Variables
 
-You can disable the automatic reset of the drawing state and make the default Canvas behave like any other Canvas object you create in your app by setting
-<pre>
-#MOJO2_DEFAULTCANVAS_AUTORESET_DISABLED = True
-</pre>
-
 The whole DefaultCanvas functionality is enabled by default, but you can easily shut it off completely by setting  
 <pre>
-#MOJO2_DEFAULTCANVAS_DISABLED = True
+#MOJO2_DEFAULTCANVAS_ENABLED = False
+</pre>
+
+You can disable the automatic reset of the drawing state and make the default Canvas behave like any other Canvas object you create in your app by setting
+<pre>
+#MOJO2_DEFAULTCANVAS_AUTORESET_ENABLED = False
 </pre>
 
 Important: These config variables have to be placed in your main source file before any Import statement!
