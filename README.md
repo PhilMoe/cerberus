@@ -16,6 +16,8 @@ Cerberus X is based on Monkey X programming language created by [Mark Sibly](htt
 
 ### Useful links
 
+### Important: We are currently working on the new forum and homepage. In the meantime you can visit the [temporary readonly version of the old forum](https://www.fantomgl.com/index.php) Mike set up thankfully.
+
 * Official **website**:
 	* https://www.cerberus-x.com/
 
