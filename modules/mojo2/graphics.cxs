@@ -595,12 +595,15 @@ Class GLProgram
 		If lightVectors<>-1 glUniform4fv lightVectors,rs_numLights,rs_lightVectors
 
 		glActiveTexture GL_TEXTURE0+7
+		
 		If shadowTexture<>-1 And rs_shadowTexture
 			glBindTexture GL_TEXTURE_2D,rs_shadowTexture.GLTexture
-			glUniform1i shadowTexture,7
 		Else
 			glBindTexture GL_TEXTURE_2D,Texture.White().GLTexture
 		End
+		
+		If shadowTexture<>-1 Then glUniform1i(shadowTexture, 7)
+		
 		glActiveTexture GL_TEXTURE0
 	End
 	
