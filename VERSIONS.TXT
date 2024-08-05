@@ -1,5 +1,6 @@
-***** v2024-07-30 *****
+***** v2024-08-05 *****
 
+FIX: [admob] Make Ads work with Android 14 (API 34). (Author: Phil)
 FIX: [docs] Fix ambiguous usage of xhandle, yhandle. (Author: Phil)
 FIX: [admob] Fix admob example build error. (Author: Phil)
 FIX: [brl.json] Add escaping of tab character to json string parsing. (Author: Phil7)
@@ -7,11 +8,11 @@ FIX: [Android] Fix config var separator character not working for AndroidManifes
 FIX: [TED] Fixed platform plugin not being deployed on Linux. (Author: dawlane)
 FIX: [TED] Fixed an issue with block tab stop block adjustment. (Author: dawlane)
 FIX: [Language Reference] Fixed zero string delimiter (Author: MikeHart)
+MOD: [Android] Changed Android Target to support API 34. (Author: Phil7)
 MOD: [config.winnt] Change MINGW_PATH to suggested default one. (Author: Phil)
 MOD: [Trans] Change handling of config settings with separators. (Author: Phil)
 MOD: [Build scripts] Updated the build scripts. (Author: dawlane)
 MOD: [Mojo2] Update to shader parser fix. Enforce utf8-ascii upper case. (Author: dawlane)
-MOD: [Android] Changed Android Target to support API 33. (Author: Phil7)
 NEW: [transcc] Add new handling of examples for transcc debugging. (Author: dawlane)
 NEW: [Android] Added FileInputStream for Android data files. (Author: Phil7)
 NEW: [Android] Added default Cerberus Icon for Android. (Author: Phil7)
