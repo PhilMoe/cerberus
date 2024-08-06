@@ -1,4 +1,4 @@
-***** v2024-08-05 *****
+***** v2024-08-06 *****
 
 FIX: [admob] Make Ads work with Android 14 (API 34). (Author: Phil)
 FIX: [docs] Fix ambiguous usage of xhandle, yhandle. (Author: Phil)
