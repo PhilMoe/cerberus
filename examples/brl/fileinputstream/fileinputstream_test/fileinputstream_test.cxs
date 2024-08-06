@@ -1,0 +1,42 @@
+Import mojo2
+Import brl.fileinputstream
+
+Class FileInputStreamTest Extends App
+	
+	Field stream:FileInputStream
+
+    Method OnCreate()
+    	Print "Attempting to open FileInputStream using data file ..."
+
+    	stream = New FileInputStream("cerberus://data/" + "test.txt")
+
+    	Print "... Stream opened successfully!"
+
+    	Print "File Size: " + stream.Length()
+
+    	'Print "Content:~n" + stream.ReadString()
+
+     	While Not stream.Eof()
+    		Print stream.ReadString(1)
+    	Wend
+
+    	'stream.WriteString("Hey")
+
+    	stream.Close()
+    	Print "Stream closed!"
+    End
+    
+    Method OnUpdate()
+    	 
+    End
+    
+    Method OnRender()
+    
+    End
+
+End
+
+
+Function Main()
+    New FileInputStreamTest()
+End		

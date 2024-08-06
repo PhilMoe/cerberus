@@ -93,7 +93,7 @@ void FindInFilesDialog::show(const QString &path)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  FindDialog: PUBLIC MEMEBER SLOTS
+//  FindDialog: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 void FindInFilesDialog::find()
 {

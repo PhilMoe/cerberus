@@ -15,7 +15,7 @@ std::string get_file_contents(const char *filename)
 		in.close();
 		return(contents);
 	}
-	return {};
+	return std::string();
 }
 
 std::ifstream::pos_type getFileSize(const char* filename)

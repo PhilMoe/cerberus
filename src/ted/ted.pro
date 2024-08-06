@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 # Change log
+# 2023-04-27 - Dawlane
+#                   Fixed issue with platform pluging not being deployed on Linux builds.
 # 2023-04-12 - Dawlane
 #                   Updated macOS to take into account changes to Qt 6.5.0 minimum target.
 #                   Reinstated Linux distribution of Qt dependencies if not built with the Linux repository.
@@ -158,7 +160,7 @@ linux{
             xcbglintegrations.files += $$[QT_INSTALL_PLUGINS]/xcbglintegrations/libqxcb-glx-integration.so
             xcbglintegrations.path += $(DESTDIR)/plugins/xcbglintegrations
 
-            INSTALLS += plugins xcbglintegrations
+            INSTALLS += platforms xcbglintegrations
         }
 
         equals(QT_MAJOR_VERSION, 6) {

@@ -17,8 +17,8 @@ Class StdcppBuilder Extends Builder
 
 	Method Config:String()
 		Local config:=New StringStack
-		For Local kv:=Eachin GetConfigVars()
-			config.Push "#define CFG_"+kv.Key+" "+kv.Value
+		For Local key:=Eachin GetConfigVarKeys()
+			config.Push "#define CFG_"+key+" "+GetConfigVar(key)
 		Next
 		Return config.Join( "~n" )
 	End

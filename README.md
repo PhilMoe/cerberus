@@ -20,13 +20,13 @@ Cerberus X is based on Monkey X programming language created by [Mark Sibly](htt
 	* https://www.cerberus-x.com/
 
 * Official community **forum**:
-	* https://www.cerberus-x.com/community/
+	* https://community.cerberus-x.com/
 
 * Online **documentation** (including tutorials and samples):
 	* https://www.cerberus-x.com/cxDocs/Home.html
 
 * Download pre-built **Cerberus X** for **Windows/Linux/Mac OS**:
-	* https://www.cerberus-x.com/community/resources/categories/cerberus-x.6/
+	* https://community.cerberus-x.com/filebase/
 
 
 ### License

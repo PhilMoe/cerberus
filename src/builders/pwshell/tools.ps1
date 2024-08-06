@@ -1,4 +1,4 @@
-# TOOLS FUNCTIONS VERSION
+# TOOLS FUNCTIONS
 # THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
 
 # Replace the first key/value pair that matched the key.
@@ -220,4 +220,46 @@ function do_all() {
             do_error "$msg"
         }
     }
+}
+
+# Function to remove all previously built files.
+function do_clearbuilds() {
+    do_info "CLEARING OUT PREVIOUS BUILDS"
+
+    # Remove all macOS applications. Ted and CServer
+    Remove-Item "$BIN\*.app" -Recurse -Force
+
+    # Remove transcc linux, macos winnt
+    Remove-Item "$BIN\transcc_*" -Force
+
+    # Remove the launchers linux, macOS and winnt.
+    if(Test-Path("$ROOT\Cerberus")) { Remove-Item "$ROOT\Cerberus" -Force }
+    if(Test-Path("$ROOT\Cerberus.exe")) { Remove-Item "$ROOT\Cerberus.exe" -Force }
+    if(Test-Path("$ROOT\Cerberus.app")) { Remove-Item "$ROOT\Cerberus.app" -Recurse -Force }
+    Remove-Item "$ROOT\*.desktop"
+
+    # Remove CServer linux and winnt.
+    Remove-Item "$BIN\cserver_*" -Force
+
+    # Remove makedocs linux and winnt.
+    Remove-Item "$BIN\makedocs_*" -Force
+
+    # Remove Ted linus and winnt
+    If(Test-Path("$BIN\Ted")) { Remove-Item "$BIN\Ted" -Force }
+    If(Test-Path("$BIN\Ted.exe")) { Remove-Item "$BIN\Ted.exe" -Force }
+
+    # Remove Qt Linux support files and directories.
+    Remove-Item "$BIN\lib*" -Recurse -Force
+    if(Test-Path("$BIN\plugins")) { Remove-Item "$BIN\plugins" -Recurse -Force }
+    if(Test-Path("$BIN\resources")) { Remove-Item "$BIN\resources" -Recurse -Force }
+    if(Test-Path("$BIN\translations")) { Remove-Item "$BIN\translations" -Recurse -Force }
+
+    # Remove Qt WinNT support files and directories.
+    if(Test-Path("$BIN\platforms")) { Remove-Item "$BIN\platforms" -Recurse -Force }
+    if(Test-Path("$BIN\qt.conf")) { Remove-Item "$BIN\qt.conf" -Force }
+    Remove-Item "$BIN\*.dll" -Force
+    Remove-Item "$BIN\*.exe" -Force
+    Remove-Item "$BIN\*.ilk" -Force
+    Remove-Item "$BIN\*.pdb" -Force
+    Remove-Item "$BIN\openal32_*" -Force
 }

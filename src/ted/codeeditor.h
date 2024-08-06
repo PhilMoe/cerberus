@@ -282,6 +282,7 @@ private:
     bool _modSignal;
     bool _tabs4spaces;
     bool _capitalizeAPI;
+    int _tabSize;
 
     friend class Highlighter;
 

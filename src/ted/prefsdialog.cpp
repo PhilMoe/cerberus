@@ -34,7 +34,7 @@ PrefsDialog::~PrefsDialog()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// PrefsDialog: PUBLIC MEMEBER FUNCTIONS
+// PrefsDialog: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 void PrefsDialog::readSettings()
 {
@@ -124,7 +124,7 @@ int PrefsDialog::exec()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// PrefsDialog: PUBLIC MEMEBER SLOTS
+// PrefsDialog: PUBLIC MEMBER SLOTS
 //----------------------------------------------------------------------------------------------------------------------
 // Save the current theme colours
 void PrefsDialog::onSaveThemeColor()

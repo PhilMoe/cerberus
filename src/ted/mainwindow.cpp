@@ -307,7 +307,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), _ui(new Ui::MainW
     connect(_ui->actionFileQuit, &QAction::triggered, this, &MainWindow::onFileQuit);
 
     // NOTE: AKA from Mac OS El Capitan (10.11). Full screen should automatically be added to the view menu.
-    // So the full screen toggle is removed from the main UI and is added in the main window construtor. On Macs, Only
+    // So the full screen toggle is removed from the main UI and is added in the main window constructor. On Macs, Only
     // the action is defined to match that of the key combination of Command+CTRL+F, which appears to be the most common
     // key combination for entering and exiting full screen mode.
     _ui->menuView->addSeparator();
@@ -363,7 +363,7 @@ MainWindow::~MainWindow()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  MainWindow: PUBLIC MEMEBER FUNCTIONS
+//  MainWindow: PUBLIC MEMBER FUNCTIONS
 //----------------------------------------------------------------------------------------------------------------------
 void MainWindow::cdebug(const QString &str)
 {

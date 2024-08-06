@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="${ANDROID_APP_PACKAGE}"
   android:installLocation="auto">
 
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -22,7 +21,8 @@
       android:screenOrientation="${ANDROID_SCREEN_ORIENTATION}"
       android:configChanges="keyboardHidden|orientation|screenSize"
       android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-      android:launchMode="singleTop">
+      android:launchMode="singleTop"
+      android:exported="true">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

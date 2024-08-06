@@ -180,3 +180,41 @@ The following app config settings are currently supported:
 </pre>
 
 Not all settings are supported by all targets, and when not supported they will silently fail.
+
+The following config settings allow multiple values in one single line, using the "|" character as a separator.~n
+(The ';' character was used in older versions and is still accepted, but it is deprecated.)
+
+<pre>
+#TEXT_FILES="*.txt|*.xml|*.json"
+#IMAGE_FILES="*.png|*.jpg"
+#SOUND_FILES="*.wav|*.ogg"
+#MUSIC_FILES="*.wav|*.ogg"
+#BINARY_FILES="*.bin|*.dat"
+
+#GLFW_GCC_CC_OPTS=""
+#GLFW_GCC_LD_OPTS=""
+#GLFW_GCC_LIB_OPTS=""
+#GLFW_GCC_SRC_OPTS=""
+#GLFW_GCC_VPATH_OPTS=""
+#GLFW_COPY_LIBS=""
+#GLFW_COPY_LIBS_32=""
+
+#LIBS=""
+
+#REFLECTION_FILTER=""
+
+</pre>
+
+
+For the following Android settings only the "~n" character is allowed as a separator because all other charactes can be used as content:
+
+<pre>
+
+#ANDROID_LIBRARY_REFERENCE_1=""
+#ANDROID_LIBRARY_REFERENCE_2=""
+#ANDROID_MANIFEST_MAIN=""
+#ANDROID_MANIFEST_APPLICATION=""
+
+</pre>
+
+
