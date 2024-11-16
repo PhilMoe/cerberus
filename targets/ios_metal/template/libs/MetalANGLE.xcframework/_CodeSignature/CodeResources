@@ -4,18 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>.DS_Store</key>
-		<data>
-		jB6I9u4PEkenC86brYuppjleCMI=
-		</data>
-		<key>ios-arm64_armv7/.DS_Store</key>
-		<data>
-		ybBlgn4ihLdi04V+o+lp1ogvSj4=
-		</data>
-		<key>ios-arm64_armv7/MetalANGLE.framework/.DS_Store</key>
-		<data>
-		Y/zzZVahlzqsXsKRy9ythZX/tmM=
-		</data>
 		<key>ios-arm64_armv7/MetalANGLE.framework/Headers/EGL/egl.h</key>
 		<data>
 		ErK2VQcIbRW+xdkdNMGy1lQ23Co=
@@ -278,11 +266,11 @@
 		</data>
 		<key>ios-arm64_i386_x86_64-simulator/MetalANGLE.framework/MetalANGLE</key>
 		<data>
-		MyihHVWv1Vq81WOq22Cr2e3Zcgg=
+		8jmXoFktZYUfAgtIIXj2keY/AnU=
 		</data>
 		<key>ios-arm64_i386_x86_64-simulator/MetalANGLE.framework/_CodeSignature/CodeResources</key>
 		<data>
-		JWkO7AsV7QVi4N03sVk/030qpFk=
+		oe8HS1SWHxTvQ16+nK24IJrMZS8=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -1006,22 +994,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			MyihHVWv1Vq81WOq22Cr2e3Zcgg=
+			8jmXoFktZYUfAgtIIXj2keY/AnU=
 			</data>
 			<key>hash2</key>
 			<data>
-			DFMWdYPlaxEamrBXdCq4KNUAEYE7vnCDziDj99Ig9SM=
+			hrWDUCfR4yH0SEcegEoCDT3+VACiOHmKQqhqEZyRIAM=
 			</data>
 		</dict>
 		<key>ios-arm64_i386_x86_64-simulator/MetalANGLE.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			JWkO7AsV7QVi4N03sVk/030qpFk=
+			oe8HS1SWHxTvQ16+nK24IJrMZS8=
 			</data>
 			<key>hash2</key>
 			<data>
-			MbmRxVq++0QTteVpmvYTWCayiUcXH7pncTw7QZQSDB4=
+			vLA7N6XdAEeW9dazdwXFI1E6DeFzzHQioOtVvwgxf1g=
 			</data>
 		</dict>
 	</dict>
