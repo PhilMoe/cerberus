@@ -54,11 +54,11 @@ Class Tween
 	End
 
 	Method RangeValueAtX:Float(x:Float)
-		Return range_start + range * TweenValue(x) 
+		Return range_start + range * TweenValueAtX(x) 
 	End
 
 	Method RangeValueAtTime:Float(time:Float)
-		Return range_start + range * TweenValue(time) 
+		Return range_start + range * TweenValueAtTime(time)  
 	End
 
 	Method SetRange:Void(startValue:Int,endValue:Int)
