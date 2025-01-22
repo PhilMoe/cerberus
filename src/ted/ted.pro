@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 # Change log
+# 2025-01-21 - Dawlane
+#                   Updated Windows and Linux deployment for Qt 6.8.
 # 2024-08-31 - Dawlane
 #                   Changed how additional options are added to the MS Windows deployment.
 # 2023-04-27 - Dawlane
@@ -132,7 +134,7 @@ linux{
         QMAKE_RPATHDIR = $ORIGIN/lib
 
         # Copy over all the required libraries
-        # Common
+	    # Missing libraries are just skipped. But for speed, it is recommended that the should be version specific.
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.56
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.56
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.56
@@ -169,6 +171,15 @@ linux{
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6OpenGL.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlModels.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6XcbQpa.so.6
+
+            # Qt 6.8 needs these
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlMeta.so.6
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlWorkerScript.so.6
+
+            # Not sure when this were introduced.
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.73
 
 
             # Plugins
@@ -275,8 +286,10 @@ win32{
         # Qt kit < 6.5
         lessThan(QT_MINOR_VERSION, 5) {
             WINDEPLOYQT_OPTS += --no-serialport
-        } else {
+        }
+
         # Qt kit 6.5.x
+        equals(QT_MINOR_VERSION,5) {
             lessThan(QT_PATCH_VERSION, 1) {
                 WINDEPLOYQT_OPTS += --no-virtualkeyboard
             }
