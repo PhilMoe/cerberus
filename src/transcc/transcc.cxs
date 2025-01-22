@@ -12,9 +12,13 @@ Import builders
 	'	DEBUG_TEST: TransCC,Reflection,Mojo,Mojo2,Audio
 		
 	' Change the preprocessor directives to select the example to run for debugging transcc
+	' #DEBUG_TEST_CFG="Release"
+	' #DEBUG_TEST="TransCC"
+	' #DEBUG_TARGET="Desktop"
+	' NOTE: If changes are made to the following, then they should be reset back to the defaults as above to avoid unneccessary commit of this file.
 	#DEBUG_TEST_CFG="Release"
-	#DEBUG_TEST="Audio"
-	#DEBUG_TARGET="HTML"
+	#DEBUG_TEST="TransCC"
+	#DEBUG_TARGET="Desktop"
 	Import debugconf
 	
 	Const VERSION:="2023-10-14 (DEBUG)"
@@ -160,43 +164,45 @@ Function MatchPath:Bool( text:String,pattern:String )
     Return match
 End
 
-Function ExpandEnv:String( text:String )
-	
-	Local resolved:="", char:="", idx1:=0, terminator:=0, idx2:=0
-	While idx1<text.Length
-		char=String.FromChar( text[idx1] )
-		
-		Select char
-		' MS Windows style environment expansion
-		Case "%"
-			terminator=text.Find( "%",idx1+1 )
-			resolved+=GetEnv(text[idx1+1..terminator])
-			If terminator<0 terminator=text.Length
-			idx1+=(terminator+1)-idx1
-		
-		' Unix style environment expansion
-		Case "$"
-			terminator=-1
-			idx2=idx1
-			
-			' Look ahead for one of the known termination characters.
-			While idx2<text.Length And terminator<0
-				If text[idx2]="/"[0] Or text[idx2]=":"[0] Or text[idx2]=";"[0] terminator=idx2
-				idx2+=1
-			Wend
-			If terminator<0 terminator=text.Length
-			resolved+=GetEnv(text[idx1+1..terminator])
-			idx1+=(terminator)-idx1
-			
-		Default
-			resolved+=char
-			idx1+=1
-			
-		End
-	Wend
-	
-	Return resolved
-End
+' NOTE: Scheduled for removal as it increases compile times
+' Use ${KEY} to get environment variables. 
+'Function ExpandEnv:String( text:String )
+'	
+'	Local resolved:="", char:="", idx1:=0, terminator:=0, idx2:=0
+'	While idx1<text.Length
+'		char=String.FromChar( text[idx1] )
+'		
+'		Select char
+'		' MS Windows style environment expansion
+'		Case "%"
+'			terminator=text.Find( "%",idx1+1 )
+'			resolved+=GetEnv(text[idx1+1..terminator])
+'			If terminator<0 terminator=text.Length
+'			idx1+=(terminator+1)-idx1
+'		
+'		' Unix style environment expansion
+'		Case "$"
+'			terminator=-1
+'			idx2=idx1
+'			
+'			' Look ahead for one of the known termination characters.
+'			While idx2<text.Length And terminator<0
+'				If text[idx2]="/"[0] Or text[idx2]=":"[0] Or text[idx2]=";"[0] terminator=idx2
+'				idx2+=1
+'			Wend
+'			If terminator<0 terminator=text.Length
+'			resolved+=GetEnv(text[idx1+1..terminator])
+'			idx1+=(terminator)-idx1
+'			
+'		Default
+'			resolved+=char
+'			idx1+=1
+'			
+'		End
+'	Wend
+'	
+'	Return resolved
+'End
 
 Function CreateDirs( path:String,delim:String="/" )
 	
@@ -283,7 +289,7 @@ Class TransCC
   
     Field _builders:=New StringMap<Builder>
     Field _targets:=New StringMap<Target>
-    Field _libs:String
+    Field _libs:String	' NOTE: Scheduled for removal as it is defined elsewhere
   
     Method Run:Void( args:String[] )
 
@@ -292,7 +298,7 @@ Class TransCC
         Print "TRANS cerberus compiler V"+VERSION
       
         cerberusdir=GetEnv( "CERBERUS_DIR" )
-        _libs=cerberusdir+"/libs/"
+        _libs=cerberusdir+"/libs/"	' NOTE: Scheduled for removal as it is defined elsewhere
 
         SetEnv "CERBERUSDIR",cerberusdir
         SetEnv "MONKEYDIR",cerberusdir 'this is for Jungle compatibility
