@@ -17,6 +17,8 @@ Global ENV_TARGET$
 Global ENV_MODPATH$
 Global ENV_SAFEMODE
 Global ENV_CUSTOMBUILDSCRIPT$
+Global ENV_PROJECTDIRECTORY$
+Global ENV_CERBERUSLIBSDIR$
 
 Private
 
@@ -148,6 +150,9 @@ Function EvalConfigTags$( cfg$ )
 		
 		Local key:=cfg[i+2..e]
 		Local val:=_cfgScope.vars.Get( key )
+
+		' If no value is returned from a stored config, then try the systems environment variables.
+		If val="" val=GetEnv( key )
 		
 		cfg=cfg[..i]+val+cfg[e+1..]
 		i+=val.Length
