@@ -55,6 +55,8 @@ Class Builder
 		ENV_TARGET=tcc.target.system
 		ENV_LANG=tcc.target.lang
 		ENV_CUSTOMBUILDSCRIPT=tcc.target.buildscript
+		ENV_PROJECTDIRECTORY=ExtractDir( tcc.opt_srcpath )
+		ENV_CERBERUSLIBSDIR=tcc.cerberusdir+"/libs"
 			
 		Self.Begin
 
@@ -68,6 +70,8 @@ Class Builder
 		SetConfigVar "TARGET",ENV_TARGET
 		SetConfigVar "CONFIG",ENV_CONFIG
 		SetConfigVar "SAFEMODE",ENV_SAFEMODE
+		SetConfigVar "PROJECTDIR",ENV_PROJECTDIRECTORY
+		SetConfigVar "CXLIBSDIR",ENV_CERBERUSLIBSDIR
 		'SetConfigVar "CUSTOMBUILDSCRIPT",ENV_CUSTOMBUILDSCRIPT
 		
 		app=ParseApp( tcc.opt_srcpath )
