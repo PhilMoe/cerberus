@@ -1,17 +1,28 @@
 #If HOST="winnt"
 #CC_OUTPUT_NAME="test_winnt"
-#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
+#CC_OUTPUT_PATH="${USERPROFILE}/Documents/Cerberus-X"
 #CC_MSIZE="64"
 #CC_USE_MINGW=True
 #Elseif HOST="macos"
 #CC_OUTPUT_NAME="test_macos"
-#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+#CC_OUTPUT_PATH="${HOME}/Documents/Cerberus-X"
 #Else
 #CC_OUTPUT_NAME="test_linux"
-#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+#CC_OUTPUT_PATH="${HOME}/Documents/Cerberus-X"
 #Endif
 Import brl.filesystem
 'Import os
+#ENV_TEST=1
+
+#If ENV_TEST=1
+#CERB_TAGS="${CERBERUS_DIR}"
+#CERB_LIB_TAGS="${CXLIBSDIR}"
+#PROJECT_FULL="${CC_OUTPUT_PATH}/${CC_OUTPUT_NAME}"
+#Print "CERB:  "+CERB_TAGS
+#Print "CERB_LIB: "+CERB_LIB_TAGS
+#Print "PROJECT DIR: "+PROJECTDIR
+#Print "PROJECT PATH FULL: "+PROJECT_FULL
+#Endif
 
 Function Main:Int()
 	Print "Hello World!"
