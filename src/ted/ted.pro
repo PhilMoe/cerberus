@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 # Change log
+# 2025-02-07 - Dawlane
+#                   Updated to include passing a codesign certificate for macos
 # 2025-01-21 - Dawlane
 #                   Updated Windows and Linux deployment for Qt 6.8.
 # 2024-08-31 - Dawlane
@@ -395,6 +397,9 @@ macx{
 
     # Set up the commandline to use with macdeployqt
     MACDEPLOYQT_OPTS = "$${MACDEPLOYQT}" "$${MACDEPLOYQT_TARGET}"
+    !equals(CODESIGN_CERT,) {
+        MACDEPLOYQT_OPTS += -codesign=$${CODESIGN_CERT}
+    }
     MACDEPLOYQT_OPTS += -no-plugins
 
     # Execute the macdeployqt command, create the platforms directory and copy over the libqcoca plugin.
@@ -420,6 +425,7 @@ macx{
     print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
     print("$$escape_expand(\\t)LIBS: $${LIBS}")
     print("$$escape_expand(\\t)QMAKE_TARGET_BUNDLE_PREFIX: $${QMAKE_TARGET_BUNDLE_PREFIX}")
+    print("$$escape_expand(\\t)CODESIGN_CERT: $${CODESIGN_CERT}")
 
     # Remove deployment files every time a build or clean action is started.
     system(rm -rf $$shell_quote($$shell_path($${MACDEPLOYQT_TARGET})))
