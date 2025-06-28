@@ -162,7 +162,7 @@ Class MethodInfo
 		Return _argTypes
 	End
 
-	Method Invoke:Object( inst:Object,args:Object[] ) Abstract
+	Method Invoke:Object( inst:Object,args:Object[]=[] ) Abstract
 
 	Private
 		
@@ -198,7 +198,7 @@ Class FunctionInfo
 		Return _argTypes
 	End
 
-	Method Invoke:Object( args:Object[] ) Abstract
+	Method Invoke:Object( args:Object[]=[] ) Abstract
 
 	Private
 		
@@ -329,7 +329,7 @@ Class ClassInfo
 		Return _methods
 	End
 	
-	Method GetMethod:MethodInfo( name$,argTypes:ClassInfo[],recursive?=True )
+	Method GetMethod:MethodInfo( name$,argTypes:ClassInfo[]=[],recursive?=True )
 		If Not _methodsMap
 			_methodsMap=New StringMap<List<MethodInfo>>
 			For Local f:=Eachin _methods
@@ -534,7 +534,7 @@ Function GetFunctions:FunctionInfo[]()
 	Return _functions
 End
 
-Function GetFunction:FunctionInfo( name$,argTypes:ClassInfo[] )
+Function GetFunction:FunctionInfo( name$,argTypes:ClassInfo[]=[] )
 	If Not _functionsMap
 		_functionsMap=New StringMap<List<FunctionInfo>>
 		For Local f:=Eachin _functions

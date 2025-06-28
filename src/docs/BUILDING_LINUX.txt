@@ -35,7 +35,7 @@ Navigate to:
 7 - Advanced options >> A7 - GL Driver >> G1 - GL (Full KMS) OpenGL desktop driver with full KMS
 
 sudo apt-get -y install g++ libglu1-mesa-dev libopenal-dev libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev libxxf86vm-dev libx11-dev libgl1-mesa-dev
-sudo apt-get -y install libqt5webkit5-dev libqt5sensors5-dev qtlocation5-dev libxslt1-dev libsqlite3-dev libgstreamer-plugins-base0.10-dev qt5-default libicu-dev
+sudo apt-get -y install libqt5webkit5-dev libqt5sensors5-dev qtlocation5-dev libxslt1-dev libsqlite3-dev libgstreamer-plugins-base1.0-dev qtbase5-dev qtwebengine5-dev libicu-dev
 
 NOTES ON USING THE OFFICIAL QT ONLINE/OFFLINE INSTALLER FROM https://www.qt.io/download
 It is possible to build against the Qt SDK kits downloaded from the Qt Installer application, but there is a possibility that some issues may occur when it comes to deploying the IDE Ted.
