@@ -1,0 +1,39 @@
+Strict
+
+#If TARGET = "android"
+	
+	#If Not ADMOB_ANDROID_APP_ID
+		#Print "*** Warning *** Admob App Id was not specified before importing admob! Therefore Test App Id is used. ***"
+		#ADMOB_ANDROID_APP_ID = "ca-app-pub-3940256099942544~~3347511713"
+	#Else
+		#Print "*** Applying your Admob App Id: ~q${ADMOB_ANDROID_APP_ID}~q ***"
+	#Endif
+	
+	#ANDROID_MANIFEST_APPLICATION += "<meta-data android:name=~qcom.google.android.gms.ads.APPLICATION_ID~q android:value=~q${ADMOB_ANDROID_APP_ID}~q/>"
+	
+	#ANDROID_BUILD_DEPENDENCIES += "implementation ~qcom.google.android.gms:play-services-ads:22.6.0~q~n"
+	#ANDROID_BUILD_DEPENDENCIES += "implementation ~qcom.google.android.ump:user-messaging-platform:2.2.0~q~n"  ' For consent dialog and management. 
+	
+#Elseif TARGET = "ios"
+	
+	' The version "12.6.0" part of these paths needs to be updated as soon as Google provides a different latest Version.
+	#LIBS+="${CD}/admob-sdk_ios/GoogleMobileAdsSdkiOS-12.6.0/GoogleMobileAds.xcframework"
+	#LIBS+="${CD}/admob-sdk_ios/GoogleMobileAdsSdkiOS-12.6.0/UserMessagingPlatform.xcframework"
+
+	#LIBS+="AdSupport.framework"
+	#LIBS+="CFNetwork.framework"
+	#LIBS+="CoreMedia.framework"
+	#LIBS+="CoreMotion.framework"
+	#LIBS+="CoreTelephony.framework"
+	#LIBS+="CoreVideo.framework"
+	#LIBS+="EventKit.framework"
+	#LIBS+="EventKitUI.framework"
+	#LIBS+="MediaPlayer.framework"
+	#LIBS+="MessageUI.framework"
+	#LIBS+="MobileCoreServices.framework"
+	#LIBS+="StoreKit.framework"
+	#LIBS+="SystemConfiguration.framework"
+	#LIBS+="CoreAudio.framework"
+	#LIBS+="JavaScriptCore.framework"
+
+#End

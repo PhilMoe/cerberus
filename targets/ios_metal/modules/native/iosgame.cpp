@@ -476,6 +476,28 @@ void BBIosGame::ViewDisappeared(){
 
 @implementation BBCerberusView
 
+
+-(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event{
+	BBIosGame::IosGame()->TouchesEvent( event );
+	[super touchesBegan:touches withEvent:event];
+}
+
+-(void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event{
+	BBIosGame::IosGame()->TouchesEvent( event );
+	[super touchesMoved:touches withEvent:event];
+}
+
+-(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event{
+	BBIosGame::IosGame()->TouchesEvent( event );
+	[super touchesEnded:touches withEvent:event];
+}
+
+-(void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event{
+	BBIosGame::IosGame()->TouchesEvent( event );
+	[super touchesCancelled:touches withEvent:event];
+}
+
+
 +(Class)layerClass{
 	return [MGLLayer class];
 }
@@ -570,22 +592,6 @@ void BBIosGame::ViewDisappeared(){
 //***** BBCerberusWindow implementation *****
 
 @implementation BBCerberusWindow
-
--(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event{
-	BBIosGame::IosGame()->TouchesEvent( event );
-}
-
--(void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event{
-	BBIosGame::IosGame()->TouchesEvent( event );
-}
-
--(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event{
-	BBIosGame::IosGame()->TouchesEvent( event );
-}
-
--(void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event{
-	BBIosGame::IosGame()->TouchesEvent( event );
-}
 
 @end
 

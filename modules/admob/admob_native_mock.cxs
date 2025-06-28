@@ -1,0 +1,115 @@
+	Import callback_serializer
+	
+	Class AdmobNative
+		Global EVENT_ADMOB_INITIALIZED:Int = 0
+	
+		Global EVENT_BANNER_LOADED:Int = 1
+		Global EVENT_BANNER_FAILED:Int = 2
+		Global EVENT_BANNER_CLICKED:Int = 3	
+
+		Global EVENT_INTERSTITIAL_LOADED:Int = 4	
+		Global EVENT_INTERSTITIAL_FAILED:Int = 5	
+		Global EVENT_INTERSTITIAL_SHOWN:Int = 6	
+		Global EVENT_INTERSTITIAL_DISMISSED:Int = 7	
+		Global EVENT_INTERSTITIAL_FAILED_TO_SHOW:Int = 8	
+		Global EVENT_INTERSTITIAL_CLICKED:Int = 9	
+
+		Global EVENT_REWARDED_LOADED:Int = 10	
+		Global EVENT_REWARDED_FAILED:Int = 11	
+		Global EVENT_REWARDED_SHOWN:Int = 12	
+		Global EVENT_REWARDED_DISMISSED:Int = 13	
+		Global EVENT_REWARDED_FAILED_TO_SHOW:Int = 14	
+		Global EVENT_REWARDED_CLICKED:Int = 15	
+		Global EVENT_REWARD_EARNED:Int = 16
+
+		Global DEBUG_GEOGRAPHY_DISABLED:Int = 0	
+		Global DEBUG_GEOGRAPHY_EEA:Int = 1	
+		Global DEBUG_GEOGRAPHY_NOT_EEA:Int = 2	
+
+		Function SetDebugGeography:Void(debugGeographySetting:Int=DEBUG_GEOGRAPHY_DISABLED)
+		End
+		
+		Function SetTestDevices:Void(testDeviceIds:String[]=[])
+		End
+		
+
+		Function Initialize:Void(bannerAdUnitId:String="", interstitialAdUnitId:String="", rewardedAdUnitId:String="", serializer:CallbackSerializerNative)
+		End
+		
+		Function IsInitialized:Bool()
+		End
+		
+
+		Function ResetConsentStatus:Void()  'Only for testing purposes!
+		End
+		
+		Function ShowConsentDialog:Void() 'Only shows if IsConsentButtonMandatory=True
+		End
+		
+		Function IsConsentButtonMandatory:Bool()
+		End
+		
+		
+		Function LoadBanner:Void(Position:Int=0)
+		End
+		
+		Function SetBannerVisibility:Void(isVisible:Bool)
+		End
+		
+		Function RemoveBanner:Void()
+		End
+		
+		Function GetBannerPosition:Int()
+		End
+		
+		Function GetBannerWidth:Int()
+		End
+		
+		Function GetBannerHeight:Int()
+		End
+		
+		Function GetBannerSafeAreaX:Int()
+		End
+		
+		Function GetBannerSafeAreaY:Int()
+		End
+		
+		Function GetBannerSafeAreaWidth:Int()
+		End
+		
+		Function GetBannerSafeAreaHeight:Int()
+		End
+		
+		Function IsBannerLoaded:Bool()
+		End
+		
+		
+		Function LoadInterstitial:Void()
+		End
+		
+		Function ShowInterstitial:Void()
+		End
+		
+		Function IsInterstitialLoaded:Bool()
+		End
+		
+		
+		Function LoadRewarded:Void()
+		End
+		
+		Function ShowRewarded:Void()
+		End
+		
+		Function IsRewardedLoaded:Bool()
+		End
+		
+		Function IsRewardEarned:Bool()
+		End
+		
+		Function GetRewardAmount:Int()
+		End
+		
+		Function GetRewardType:String()
+		End
+		
+	End

@@ -1,0 +1,26 @@
+Strict
+
+Import mojo2
+Import "CxImage.png"
+
+Class ProtoLogo
+	Global img:Image
+	Global x:Float
+	Global y:Float
+	Global rotation:Float
+
+	
+	Function Create:Void(x:Float, y:Float, type:Int=0)
+		img = Image.Load("CxImage.png")
+		ProtoLogo.x = x
+		ProtoLogo.y = y
+	End
+
+	Function Render:Void(canvas:Canvas)
+		rotation = 10.0 * Sin(Millisecs() * 0.10)
+		Local scale:Float 
+		If img scale = Min(DeviceWidth(), DeviceHeight())*0.2 / Max(img.Width(), img.Height())
+		If img canvas.DrawImage(img, x + rotation * 5.0, y, rotation, scale, scale)
+	End
+
+End

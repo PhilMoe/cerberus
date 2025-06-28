@@ -1,0 +1,347 @@
+	Strict
+	
+	Import brl.asyncevent
+	
+#If Not (TARGET = "android" Or TARGET = "ios")
+	
+	Import admob_native_mock
+	Import callback_serializer
+	
+#Else
+
+	Import "native/admob.${TARGET}.${LANG}"
+	Import admob_setup
+
+	Import callback_serializer
+	
+	Extern
+	
+		Class AdmobNative
+			Global EVENT_ADMOB_INITIALIZED:Int
+		
+			Global EVENT_BANNER_LOADED:Int
+			Global EVENT_BANNER_FAILED:Int
+			Global EVENT_BANNER_CLICKED:Int
+
+			Global EVENT_INTERSTITIAL_LOADED:Int
+			Global EVENT_INTERSTITIAL_FAILED:Int
+			Global EVENT_INTERSTITIAL_SHOWN:Int
+			Global EVENT_INTERSTITIAL_DISMISSED:Int
+			Global EVENT_INTERSTITIAL_FAILED_TO_SHOW:Int
+			Global EVENT_INTERSTITIAL_CLICKED:Int
+
+			Global EVENT_REWARDED_LOADED:Int
+			Global EVENT_REWARDED_FAILED:Int
+			Global EVENT_REWARDED_SHOWN:Int
+			Global EVENT_REWARDED_DISMISSED:Int
+			Global EVENT_REWARDED_FAILED_TO_SHOW:Int
+			Global EVENT_REWARDED_CLICKED:Int
+			Global EVENT_REWARD_EARNED:Int
+
+			Global DEBUG_GEOGRAPHY_DISABLED:Int
+			Global DEBUG_GEOGRAPHY_EEA:Int
+			Global DEBUG_GEOGRAPHY_NOT_EEA:Int
+	
+			Function SetDebugGeography:Void(debugGeographySetting:Int=DEBUG_GEOGRAPHY_DISABLED)
+			Function SetTestDevices:Void(testDeviceIds:String[]=[])
+
+			Function Initialize:Void(bannerAdUnitId:String="", interstitialAdUnitId:String="", rewardedAdUnitId:String="", serializer:CallbackSerializerNative)
+			Function IsInitialized:Bool()
+
+			Function ResetConsentStatus:Void()  'Only for testing purposes!
+			Function ShowConsentDialog:Void() 'Only shows if IsConsentButtonMandatory=True
+			Function IsConsentButtonMandatory:Bool()
+			
+			Function LoadBanner:Void(Position:Int=0)
+			Function SetBannerVisibility:Void(isVisible:Bool)
+			Function RemoveBanner:Void()
+			Function GetBannerPosition:Int()
+			Function GetBannerWidth:Int()
+			Function GetBannerHeight:Int()
+			Function GetBannerSafeAreaX:Int()
+			Function GetBannerSafeAreaY:Int()
+			Function GetBannerSafeAreaWidth:Int()
+			Function GetBannerSafeAreaHeight:Int()
+			Function IsBannerLoaded:Bool()
+			
+			Function LoadInterstitial:Void()
+			Function ShowInterstitial:Void()
+			Function IsInterstitialLoaded:Bool()
+			
+			Function LoadRewarded:Void()
+			Function ShowRewarded:Void()
+			Function IsRewardedLoaded:Bool()
+			Function IsRewardEarned:Bool()
+			Function GetRewardAmount:Int()
+			Function GetRewardType:String()
+		End
+	
+Public
+		
+#End
+
+		Class Admob Extends AdmobNative
+			Private
+			
+				Global callbackSerializer:CallbackSerializer = New CallbackSerializer()							
+				
+			Public
+				Function GetCallbackSerializer:CallbackSerializer()
+					Return callbackSerializer
+				End
+				
+				Function Initialize:Void(bannerAdUnitId:String="", interstitialAdUnitId:String="", rewardedAdUnitId:String="")
+					AdmobNative.Initialize(bannerAdUnitId, interstitialAdUnitId, rewardedAdUnitId, callbackSerializer)
+				End
+				
+
+				Function SetInitializedHandler:Void(handler:BannerEventHandler)
+					AdmobAsyncEventManager.Instance().initializedHandler = handler
+				End
+
+				Function SetBannerEventHandler:Void(handler:BannerEventHandler)
+					AdmobAsyncEventManager.Instance().bannerEventHandler = handler
+				End
+
+				Function SetInterstitialEventHandler:Void(handler:InterstitialEventHandler)
+					AdmobAsyncEventManager.Instance().interstitialEventHandler = handler
+				End
+
+				Function SetRewardedEventHandler:Void(handler:RewardedEventHandler)
+					AdmobAsyncEventManager.Instance().rewardedEventHandler = handler
+				End
+
+				Function SetRewardEarnedHandler:Void(handler:RewardEarnedHandler)
+					AdmobAsyncEventManager.Instance().rewardEarnedHandler = handler					
+				End
+							
+		End
+
+
+		Class AdmobAsyncEventManager Implements IAsyncEventSource
+			Private
+				Global instance:AdmobAsyncEventManager
+
+				Field initializedHandler:InitializedHandler
+				Field bannerEventHandler:BannerEventHandler
+				Field interstitialEventHandler:InterstitialEventHandler
+				Field rewardedEventHandler:RewardedEventHandler
+				Field rewardEarnedHandler:RewardEarnedHandler
+
+			Public
+											
+				Function Instance:AdmobAsyncEventManager()
+					If Not instance 
+						instance = New AdmobAsyncEventManager()
+						AddAsyncEventSource(instance)
+					EndIf
+					
+					Return instance
+				End
+				
+				
+				Method UpdateAsyncEvents:Void()
+					If Not Admob.GetCallbackSerializer() Return	
+
+					If Not initializedHandler
+						initializedHandler = DefaultEventHandler.Instance()
+					EndIf
+									
+					If Not bannerEventHandler
+						bannerEventHandler = DefaultEventHandler.Instance()
+					EndIf
+									
+					If Not interstitialEventHandler
+						interstitialEventHandler = DefaultEventHandler.Instance()
+					EndIf
+									
+					If Not rewardedEventHandler
+						rewardedEventHandler = DefaultEventHandler.Instance()
+					EndIf
+
+					If Not rewardEarnedHandler
+						rewardEarnedHandler = DefaultEventHandler.Instance()
+					EndIf
+														
+					For Local eventType:Int = EachIn Admob.GetCallbackSerializer().GetCallbacks()
+						'Print "UpdateAsyncEvents.EventType: " + eventType
+						Select eventType
+							Case AdmobNative.EVENT_ADMOB_INITIALIZED
+								initializedHandler.OnInitialized()
+
+							Case AdmobNative.EVENT_BANNER_LOADED
+								bannerEventHandler.OnBannerLoaded()
+
+							Case AdmobNative.EVENT_BANNER_FAILED
+								bannerEventHandler.OnBannerFailed()
+
+							Case AdmobNative.EVENT_BANNER_CLICKED
+								bannerEventHandler.OnBannerClicked()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_LOADED
+								interstitialEventHandler.OnInterstitialLoaded()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_FAILED
+								interstitialEventHandler.OnInterstitialFailed()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_SHOWN
+								interstitialEventHandler.OnInterstitialShown()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_DISMISSED
+								interstitialEventHandler.OnInterstitialDismissed()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_FAILED_TO_SHOW
+								interstitialEventHandler.OnInterstitialFailedToShow()
+
+							Case AdmobNative.EVENT_INTERSTITIAL_CLICKED
+								interstitialEventHandler.OnInterstitialClicked()
+
+							Case AdmobNative.EVENT_REWARDED_LOADED
+								rewardedEventHandler.OnRewardedLoaded()
+
+							Case AdmobNative.EVENT_REWARDED_FAILED
+								rewardedEventHandler.OnRewardedFailed()
+
+							Case AdmobNative.EVENT_REWARDED_SHOWN
+								rewardedEventHandler.OnRewardedShown()
+
+							Case AdmobNative.EVENT_REWARDED_DISMISSED
+								rewardedEventHandler.OnRewardedDismissed()
+
+							Case AdmobNative.EVENT_REWARDED_FAILED_TO_SHOW
+								rewardedEventHandler.OnRewardedFailedToShow()
+
+							Case AdmobNative.EVENT_REWARDED_CLICKED
+								rewardedEventHandler.OnRewardedClicked()
+
+							Case AdmobNative.EVENT_REWARD_EARNED
+								rewardEarnedHandler.OnRewardEarned(AdmobNative.GetRewardType(), AdmobNative.GetRewardAmount())
+						End
+					Next
+				End
+				
+		End
+		
+		
+		Interface InitializedHandler
+			Method OnInitialized:Void()
+		End
+
+
+		Interface BannerEventHandler
+			Method OnBannerLoaded:Void()
+			Method OnBannerFailed:Void()
+			Method OnBannerClicked:Void()
+		End
+		
+
+		Interface InterstitialEventHandler
+			Method OnInterstitialLoaded:Void()
+			Method OnInterstitialFailed:Void()
+			Method OnInterstitialShown:Void()
+			Method OnInterstitialDismissed:Void()
+			Method OnInterstitialFailedToShow:Void()
+			Method OnInterstitialClicked:Void()
+		End
+		
+
+		Interface RewardedEventHandler
+			Method OnRewardedLoaded:Void()
+			Method OnRewardedFailed:Void()
+			Method OnRewardedShown:Void()
+			Method OnRewardedDismissed:Void()
+			Method OnRewardedFailedToShow:Void()
+			Method OnRewardedClicked:Void()
+		End
+
+		
+		Interface RewardEarnedHandler
+			Method OnRewardEarned:Void(type:String, amount:Float)
+		End
+
+
+		Class DefaultEventHandler Implements InitializedHandler, BannerEventHandler, InterstitialEventHandler, RewardedEventHandler, RewardEarnedHandler
+
+			Global instance:DefaultEventHandler
+			
+			
+			Function Instance:DefaultEventHandler()
+				If Not instance 
+					instance = New DefaultEventHandler()
+				EndIf
+				
+				Return instance
+			End
+
+
+			Method OnInitialized:Void()
+				Print "OnInitialized"
+			End
+			
+			Method OnBannerLoaded:Void()
+				Print "OnBannerLoaded"
+			End
+
+			Method OnBannerFailed:Void()
+				Print "OnBannerFailed"
+			End
+
+			Method OnBannerClicked:Void()
+				Print "OnBannerClicked"
+			End
+ 
+
+ 			Method OnInterstitialLoaded:Void()
+				Print "OnInterstitialLoaded"
+			End
+
+			Method OnInterstitialFailed:Void()
+				Print "OnInterstitialFailed"
+			End
+
+			Method OnInterstitialShown:Void()
+				Print "OnInterstitialShown"
+			End
+
+			Method OnInterstitialDismissed:Void()
+				Print "OnInterstitialDismissed"
+			End
+
+			Method OnInterstitialFailedToShow:Void()
+				Print "OnInterstitialFailedToShow"
+			End
+
+			Method OnInterstitialClicked:Void()
+				Print "OnInterstitialClicked"
+			End
+
+
+			Method OnRewardedLoaded:Void()
+				Print "OnRewardedLoaded"
+			End
+
+			Method OnRewardedFailed:Void()
+				Print "OnRewardedFailed"
+			End
+
+			Method OnRewardedShown:Void()
+				Print "OnRewardedShown"
+			End
+
+			Method OnRewardedDismissed:Void()
+				Print "OnRewardedDismissed"
+			End
+
+			Method OnRewardedFailedToShow:Void()
+				Print "OnRewardedFailedToShow"
+			End
+
+			Method OnRewardedClicked:Void()
+				Print "OnRewardedClicked"
+			End
+
+
+			Method OnRewardEarned:Void(type:String, amount:Float)
+				Print "OnRewardEarned: " + type + ", " + amount
+			End
+		End

@@ -1,0 +1,18 @@
+
+
+Class CallbackSerializerNative
+	
+	Field callbackStack:IntStack = New IntStack()
+	
+	Method AddCallback:Void(eventType:Int)
+		'Print "AddCallback() called: " + eventType
+		callbackStack.Push(eventType)
+	End
+
+
+	Method GetCallbacks:Int[]()
+		'Print "GetCallbacks() called"
+		Return callbackStack.ToArray()
+	End
+	
+End

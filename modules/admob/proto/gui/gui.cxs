@@ -1,0 +1,206 @@
+Strict
+
+
+Import mojo2
+
+
+Class ProtoGui
+
+
+	Function Render:Void(canvas:Canvas)
+		ProtoButton.RenderAll(canvas)
+	End
+	
+End
+
+
+Class ProtoButton
+
+	Global buttonList:List<ProtoButton	> = New List<ProtoButton	>()
+	
+	Global btnAreaX:Float
+	Global btnAreaY:Float
+	Global btnAreaWidth:Float
+	Global btnAreaHeight:Float
+	Global textScale:Float = 2.0
+	
+	Global maxColumnCnt:Int = 3
+
+	Field name:String
+	Field caption:String
+	Field isEnabled:Bool = True
+	Field x:Float
+	Field y:Float
+	Field width:Float
+	Field height:Float
+	
+	
+	Function Create:Void(name:String="", caption:String="")
+		Local btn:ProtoButton = New ProtoButton(name, caption)
+		buttonList.AddLast(btn)
+		
+		If btnAreaWidth = 0 Or btnAreaHeight = 0 
+			SetButtonArea(0, 0.33*DeviceHeight(), DeviceWidth(), 0.5*DeviceHeight())
+		EndIf
+		
+		ApplyAutoLayout()
+	End
+
+
+	Method New(name:String, caption:String="")
+		Self.name = name
+		Self.caption = caption
+	End
+	
+	
+	Function SetButtonArea:Void(x:Float, y:Float, width:Float, height:Float)
+		btnAreaX = x
+		btnAreaY = y
+		btnAreaWidth = width
+		btnAreaHeight = height
+	End
+	
+	
+	Function SetButtonColumnCount:Void(count:Int)
+		maxColumnCnt = count
+	End
+	
+	
+	Function RenderAll:Void(canvas:Canvas)
+		textScale = Min(DeviceWidth(), DeviceHeight()) / canvas.Font().TextWidth("M") / 40.0
+		For Local btn:ProtoButton = EachIn buttonList
+			btn.Render(canvas)
+		Next
+	End
+	
+	
+	Method Render:Void(canvas:Canvas)
+		Local curColor:Float[4] 
+		canvas.GetColor(curColor)
+		canvas.PushMatrix()
+		canvas.SetColor($c96d37)
+		canvas.DrawRoundedRect(x, y, width, height, 10.0)
+		canvas.SetColor($000000)
+		If IsTouchDown() canvas.SetColor($0f1e28)
+		canvas.DrawRoundedRect(x+4, y+4, width-8, height-8, 6.0)
+		
+		canvas.PushMatrix()
+		
+		If isEnabled 
+			canvas.SetColor($d1d2d3)
+		Else
+			canvas.SetColor($333333)
+		EndIf
+		
+		canvas.TranslateRotateScale(x+width*0.5, y+height*0.5, 0.0, textScale, textScale)
+		Local btnText:String[] = WrapTextForButton(name, canvas.Font, width)
+		canvas.DrawText(btnText, 0, 0, 0.5, 0.5)
+		canvas.PopMatrix()
+		
+		canvas.PopMatrix()
+		
+		canvas.SetColor(curColor[0], curColor[1], curColor[2], curColor[3])
+	End
+	
+	
+	Method WrapTextForButton:String[](text:String, font:Font, buttonWidth:Float)
+		Local splitText:String[]
+		Local resultList:StringList = New StringList()
+		If font.TextWidth(text)*textScale > 0.8 * buttonWidth	
+			splitText = text.Split(" ")
+			Local line:String
+			For Local word:String = EachIn splitText
+				If line=""
+					line = word
+				ElseIf font.TextWidth(" ".Join([line, word]))*textScale < 0.8 * buttonWidth
+					line = " ".Join([line, word])
+				Else
+					resultList.AddLast(line)
+					line = word
+				EndIf				
+			Next
+			If line resultList.AddLast(line)
+		Else
+			resultList.AddLast(text)
+		EndIf
+		Return resultList.ToArray()
+	End
+	
+	
+	Function SetButtonEnabled:Void(name:String, isEnabled:Bool)
+		For Local btn:ProtoButton = EachIn buttonList
+			If btn.name = name btn.isEnabled = isEnabled
+		Next
+		'Print "Button not found: " + name
+	End
+	
+	
+	Function IsClicked:Bool(name:String)
+		For Local btn:ProtoButton = EachIn buttonList
+			If btn.name = name Return btn.IsClicked()
+		Next
+		Return False
+	End
+	
+	
+	Method IsClicked:Bool()
+		If Not isEnabled Return False
+		Return TouchHit(0) And Collision.PointRect(MouseX(), MouseY(), x, y, width, height)
+	End
+	
+	
+	Method IsTouchDown:Bool()
+		If Not isEnabled Return False
+		Return TouchDown(0) And Collision.PointRect(MouseX(), MouseY(), x, y, width, height)
+	End
+	
+	
+	Function ApplyAutoLayout:Void()
+		Const REL_MARGIN:Float = 0.02
+		Const REL_DISTANCE:Float = 0.02
+		
+		Local btnCnt:Int = buttonList.Count()
+		Local colCnt:Int = Min(maxColumnCnt, btnCnt)
+		Local rowCnt:Int = (btnCnt-1)/ colCnt + 1
+		Local relBtnWidth:Float = (1.0 - 2*REL_MARGIN - (colCnt-1)*REL_DISTANCE) / colCnt
+		Local btnHeight:Float = btnAreaWidth * relBtnWidth * 0.618
+		Local relBtnHeight:Float = btnHeight / btnAreaHeight
+		Local relDistanceY:Float = REL_DISTANCE * btnAreaWidth / btnAreaHeight
+		
+		If (rowCnt * relBtnHeight + (rowCnt-1) * relDistanceY + REL_MARGIN * 2.0) > 1.0
+			relBtnHeight = (1.0 - 2*REL_MARGIN - (rowCnt-1)*relDistanceY) / rowCnt
+		EndIf
+		
+		Local index:Int = 0
+		Local col:Int
+		Local row:Int
+		For Local btn:ProtoButton = EachIn buttonList
+			col = index Mod colCnt
+			row = index / colCnt
+			btn.x = btnAreaX + (REL_MARGIN + col * (relBtnWidth + REL_DISTANCE)) * btnAreaWidth
+			btn.y = btnAreaY + (REL_MARGIN + row * (relBtnHeight + relDistanceY)) * btnAreaHeight
+			btn.width = relBtnWidth * btnAreaWidth
+			btn.height = relBtnHeight * btnAreaHeight
+			index += 1
+		Next
+	End
+	
+End
+
+
+Class Collision
+
+	Function PointRect:Bool(pointX:Float, pointY:Float, rectX:Float, rectY:Float, rectWidth:Float, rectHeight:Float)
+		Return IsInRange(pointX, rectX, rectX + rectWidth) And IsInRange(pointY, rectY, rectY + rectHeight)
+	End
+	
+	
+	Function RectRect:Bool()
+	
+	End
+	
+	Function IsInRange:Bool(val:Float, min:Float, max:Float)
+		Return val > min And val < max
+	End
+
+End

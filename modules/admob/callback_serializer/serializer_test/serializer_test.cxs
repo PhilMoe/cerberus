@@ -1,0 +1,65 @@
+
+#ANDROID_LOGCAT_OPTION="-v tag -s [Cerberus]:V AdmobNative:V"
+
+Import mojo2
+Import brl.asyncevent
+Import admob.callback_serializer
+Import admob.proto
+
+#HTML5_CANVAS_WIDTH=500
+#HTML5_CANVAS_HEIGHT=900
+
+Class MyApp Extends App
+
+	Field can:Canvas
+	
+	Field ser:CallbackSerializerNative
+	Field numbers:Int[]
+    
+    Method OnCreate()
+    	can = New Canvas()
+		ser = New CallbackSerializerNative()
+		'Util.SetSerializer(ser)
+        Proto.CreateButton("Add Number")
+        Proto.CreateButton("Get Numbers")
+ 
+        SetUpdateRate 60
+    End
+    
+    Method OnUpdate()
+    	If Proto.IsButtonClicked("Add Number")
+			Print "Add Number"
+			'numbers = [5,2,5,6]
+			ser.AddCallback(Rnd(10))
+			'Util.AddNumber(Rnd(100))
+		End
+		
+    	If Proto.IsButtonClicked("Get Numbers")
+    		Print "Get Numbers"
+    		numbers = ser.GetCallbacks()
+    		
+		End
+		
+     End
+    
+    Method OnRender()
+        can.Clear()  
+        Local numText:String = ""
+        can.PushMatrix()
+        can.Scale(4.0, 4.0)
+        For Local i:Int = EachIn numbers
+        	numText += i + ", "
+        Next
+        can.DrawText(numText,10,200)
+        can.PopMatrix()
+        Proto.Render(can)
+        can.Flush()
+    End
+    
+
+    
+End
+
+Function Main()
+    New MyApp
+End

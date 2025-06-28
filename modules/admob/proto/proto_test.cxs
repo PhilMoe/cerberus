@@ -1,0 +1,49 @@
+Strict
+
+'#HTML5_CANVAS_WIDTH=500
+'#HTML5_CANVAS_HEIGHT=900
+
+'#HTML5_CANVAS_RESIZE_MODE=2
+
+Import mojo2
+Import proto
+
+
+Function Main:Int()
+    New ProtoTest
+    Return 0
+End
+
+
+Class ProtoTest Extends App
+
+	Field can:Canvas    
+    Field btnCnt:Int=1
+    
+    Method OnCreate:Int()
+    	can = New Canvas()
+    	Print "OnCreate"
+    	'Proto.SetButtonArea(0, DeviceHeight()*0.5, DeviceWidth(), DeviceHeight()*0.5)
+    	Proto.CreateLogo(DeviceWidth()*0.5, 200)
+    	Proto.SetButtonColumnCount(2)
+        Proto.CreateButton("Add Button Test here and don't stop")
+        SetUpdateRate 60
+        Return 0
+    End
+    
+    Method OnUpdate:Int()
+    	If Proto.IsButtonClicked("Add Button Test here and don't stop")
+			Proto.CreateButton("Button" + btnCnt)
+			btnCnt += 1
+		EndIf
+		Return 0
+    End
+    
+    Method OnRender:Int()
+        can.Clear()
+        Proto.Render(can)
+        can.Flush()
+        Return 0
+    End
+    
+End

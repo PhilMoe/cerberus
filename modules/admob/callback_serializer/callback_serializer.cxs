@@ -1,0 +1,35 @@
+	Strict
+	
+	Import brl.asyncevent
+	
+#If Not (TARGET = "android" Or TARGET = "ios")
+	
+	Import serializer_native_mock
+	
+#Else
+
+	Import "native/callback_serializer.${TARGET}.${LANG}"
+
+	
+	Extern
+	
+		Class CallbackSerializerNative
+			
+			Method AddCallback:Void(eventType:Int)
+
+			Method GetCallbacks:Int[]()
+	
+		End
+	
+		'Class Util
+		'	Function SetSerializer:Void(serializer:CallbackSerializerNative)
+		'	Function AddNumber:Void(number:Int)
+		'End
+	Public
+		
+#End
+
+
+		Class CallbackSerializer Extends CallbackSerializerNative
+		
+		End

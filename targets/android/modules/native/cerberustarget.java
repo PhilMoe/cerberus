@@ -21,6 +21,13 @@ public class CerberusGame extends AndroidGame{
 	
 	@Override
 	public void onCreate( Bundle savedInstanceState ){
+		EdgeToEdge.enable(this);
+
+		WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+		// Configure the behavior of the hidden system bars.
+		//windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+		windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+		
 		super.onCreate( savedInstanceState );
 		
 		setContentView( R.layout.main );

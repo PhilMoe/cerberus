@@ -1,0 +1,144 @@
+
+#ANDROID_LOGCAT_OPTION="-v tag -s [Cerberus]:V AdmobNative:V"
+
+Import mojo2
+Import brl.asyncevent
+
+' You need to set your Admob App Id (from the Admob dashboard) before importing admob. 
+' The one defined here is just the general Admob App Id for testing.
+#ADMOB_ANDROID_APP_ID="ca-app-pub-3940256099942544~~3347511713"
+Import admob
+
+Import admob.proto ' This is a new prototyping module - Work in Progress.
+
+#HTML5_CANVAS_WIDTH=500
+#HTML5_CANVAS_HEIGHT=900
+
+Class MyApp Extends App Implements RewardEarnedHandler
+
+	Field can:Canvas
+	Field bannerPos:Int = 0
+	Field rot:Float = 0.0
+    
+    Field btnCnt:Int=1
+    
+    Field coinCnt:Int=0
+    
+    Method OnCreate()
+    	can = New Canvas()
+
+        'Admob.SetDebugGeography(Admob.DEBUG_GEOGRAPHY_NOT_EEA)
+        
+        Admob.Initialize()
+        Admob.SetRewardEarnedHandler(Self)
+        
+        Proto.CreateLogo(DeviceWidth()*0.5, DeviceHeight*0.25)
+        Proto.SetButtonColumnCount(2)
+        Proto.CreateButton("Load Banner")
+        Proto.CreateButton("Show Banner")
+        Proto.CreateButton("Hide Banner")
+        Proto.CreateButton("Remove Banner")
+        Proto.CreateButton("Load Interstitial")
+        Proto.CreateButton("Show Interstitial")
+        Proto.CreateButton("Load Rewarded Video")
+        Proto.CreateButton("Show Rewarded Video")
+        Proto.CreateButton("Show Consent Dialog")
+        Proto.CreateButton("Reset Consent Status (For Testing only)")
+        
+        SetUpdateRate 60
+    End
+    
+    Method OnUpdate()
+    	If Proto.IsButtonClicked("Load Banner")
+    		Admob.LoadBanner(bannerPos)
+    		bannerPos = (bannerPos+1) Mod 2
+		End
+		
+    	If Proto.IsButtonClicked("Show Banner")
+    		Admob.SetBannerVisibility(True)
+		End
+		
+    	If Proto.IsButtonClicked("Hide Banner")
+    		Admob.SetBannerVisibility(False)
+		End
+		
+    	If Proto.IsButtonClicked("Remove Banner")
+    		Admob.RemoveBanner()
+		End
+		
+    	If Proto.IsButtonClicked("Load Interstitial")
+			Admob.LoadInterstitial()
+		End
+		
+    	If Proto.IsButtonClicked("Show Interstitial")
+			Admob.ShowInterstitial()
+		End
+		
+    	If Proto.IsButtonClicked("Load Rewarded Video")
+			Admob.LoadRewarded()
+		End
+		
+    	If Proto.IsButtonClicked("Show Rewarded Video")
+			Admob.ShowRewarded()
+		End
+		
+    	If Proto.IsButtonClicked("Reset Consent Status (For Testing only)")
+			Admob.ResetConsentStatus()
+		End
+		
+		If Proto.IsButtonClicked("Show Consent Dialog")
+			Admob.ShowConsentDialog()
+		End
+		
+		Proto.SetButtonEnabled("Show Consent Dialog", Admob.IsConsentButtonMandatory())
+		Proto.SetButtonEnabled("Show Interstitial", Admob.IsInterstitialLoaded())
+		Proto.SetButtonEnabled("Show Rewarded Video", Admob.IsRewardedLoaded())
+		
+		UpdateAsyncEvents()
+    End
+    
+    Method OnRender()
+        can.Clear()  
+        
+        DrawFrame(can, 0, 0, DeviceWidth(), DeviceHeight(), $ffffff, 10)
+        DrawFrame(can, Admob.GetBannerSafeAreaX(), Admob.GetBannerSafeAreaY(), Admob.GetBannerSafeAreaWidth(), Admob.GetBannerSafeAreaHeight(), $00ff00, 5)
+        can.PushMatrix()
+        can.Translate(Admob.GetBannerSafeAreaX()+10, Admob.GetBannerSafeAreaY() + 20)
+        can.Scale(3.0, 3.0)
+        If Admob.IsRewardEarned() can.DrawText("Earned Reward: " + Admob.GetRewardAmount() + " " + Admob.GetRewardType(), 10, 0)
+        can.DrawText("Coins Total: " + coinCnt, 10, 20)
+        can.PopMatrix()
+        Proto.Render(can)
+        can.Flush()
+    End
+    
+    
+    Method OnRewardEarned:Void(type:String, amount:Float)
+    	Print "OnRewardEarned: " + amount + " " + type
+    	coinCnt += amount
+    End
+    
+    
+    Method DrawFrame(canvas:Canvas, x:Float, y:Float, width:Float, height:Float, color:Int=$c96d37, borderWidth:Int)
+		Local curColor:Float[4] 
+		canvas.GetColor(curColor)
+		
+		canvas.PushMatrix()
+		canvas.SetColor(color)
+		canvas.SetAlpha(0.1)
+		canvas.DrawRect(x, y, width, height)
+		canvas.SetAlpha(1.0)
+		canvas.DrawRect(x, y, width, borderWidth)
+		canvas.DrawRect(x+width-borderWidth, y, borderWidth, height)
+		canvas.DrawRect(x, y+height-borderWidth, width, borderWidth)
+		canvas.DrawRect(x, y, borderWidth, height)
+		
+		canvas.PopMatrix()
+		canvas.SetColor(curColor[0], curColor[1], curColor[2], curColor[3])
+    End
+    
+End
+
+Function Main()
+    New MyApp
+End

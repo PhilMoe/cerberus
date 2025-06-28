@@ -13,6 +13,13 @@ import android.view.inputmethod.*;
 import android.content.res.*;
 import android.opengl.*;
 import android.text.*;
+import androidx.fragment.app.FragmentActivity;
+
+import androidx.activity.EdgeToEdge;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -43,7 +50,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 
 	static BBAndroidGame _androidGame;
 	
-	Activity _activity;
+	FragmentActivity _activity;
 	GameView _view;
 	
 	List<ActivityDelegate> _activityDelegates=new LinkedList<ActivityDelegate>();
@@ -83,7 +90,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 	//Grant Edit clipboard for Android ---- end
 
-	public BBAndroidGame( Activity activity,GameView view ){
+	public BBAndroidGame( FragmentActivity activity,GameView view ){
 		_androidGame=this;
 
 		_activity=activity;
@@ -483,7 +490,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 		return null;
 	}
 
-	public Activity GetActivity(){
+	public FragmentActivity GetActivity(){
 		return _activity;
 	}
 
@@ -712,7 +719,7 @@ class BBAndroidGame extends BBGame implements GLSurfaceView.Renderer,SensorEvent
 	}
 }
 
-class AndroidGame extends Activity{
+class AndroidGame extends FragmentActivity{
 
 	BBAndroidGame _game;
 	
@@ -805,6 +812,7 @@ class AndroidGame extends Activity{
 	
 	@Override
 	protected void onActivityResult( int requestCode,int resultCode,Intent data ){
+		super.onActivityResult( requestCode,resultCode,data);
 		for( ActivityDelegate delegate : _game._activityDelegates ){
 			delegate.onActivityResult( requestCode,resultCode,data );
 		}

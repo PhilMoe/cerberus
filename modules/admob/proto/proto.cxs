@@ -1,0 +1,43 @@
+Strict
+
+Import admob.proto.gui
+Import admob.proto.logo
+
+Class Proto
+	
+	Function CreateLogo:Void(x:Float, y:Float, type:Int=0)
+		ProtoLogo.Create(x, y, type)
+	End
+	
+	
+	Function CreateButton:Void(name:String, caption:String="")
+		ProtoButton.Create(name, caption)
+	End
+	
+	
+	Function SetButtonArea:Void(x:Float, y:Float, width:Float, height:Float)
+		ProtoButton.SetButtonArea(x, y, width, height)
+	End
+	
+	
+	Function SetButtonColumnCount:Void(count:Int)
+		ProtoButton.SetButtonColumnCount(count)
+	End
+	
+	
+	Function SetButtonEnabled:Void(name:String, isEnabled:Bool)
+		ProtoButton.SetButtonEnabled(name, isEnabled)
+	End
+	
+	
+	Function IsButtonClicked:Bool(name:String)
+		Return ProtoButton.IsClicked(name)
+	End
+	
+	
+	Function Render:Void(canvas:Canvas)
+		ProtoGui.Render(canvas)
+		ProtoLogo.Render(canvas)
+	End
+	
+End
