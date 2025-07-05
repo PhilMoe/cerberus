@@ -1,0 +1,49 @@
+Strict
+
+Import mojo2
+Import mojo.asyncloaders
+
+
+Function Main:Int()
+	New TestApp()
+	Return 0
+End
+
+
+Class TestApp Extends App Implements IOnLoadStringComplete
+
+	Field can:Canvas
+	Field text:String = "NO STRING LOADED!"
+
+
+	Method OnCreate:Int()
+		can = New Canvas()
+		LoadStringAsync("TextFile.txt", Self)
+		Return 0
+	End
+
+
+	Method OnUpdate:Int()
+		UpdateAsyncEvents()
+		Return 0
+	End
+
+
+	Method OnRender:Int()
+		can.Clear(0.3, 0.3, 0.3)
+		can.DrawText(text.Split("~n"), DeviceWidth()*0.5, DeviceHeight()*0.5, 0.5, 0.5)
+		can.Flush()
+		Return 0
+	End
+
+
+	Method OnLoadStringComplete:Void(loadedString:String, path:String)
+		Print "OnLoadStringComplete from " + path
+		If loadedString
+			text = loadedString
+		EndIf
+	End
+	
+End
+
+

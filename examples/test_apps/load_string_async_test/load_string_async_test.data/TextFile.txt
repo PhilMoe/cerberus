@@ -1,0 +1,4 @@
+If you can read this,
+loading the string
+from file asynchronously
+was successful!

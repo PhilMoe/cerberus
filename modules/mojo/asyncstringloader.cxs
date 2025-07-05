@@ -1,0 +1,29 @@
+
+Import mojo.asyncloaders
+Import brl.databuffer
+Import mojo.data
+
+Class AsyncStringLoader Implements IOnLoadDataComplete 
+
+	Private
+		Field _onComplete:IOnLoadStringComplete
+	
+	Public
+		Method New(path:String, onComplete:IOnLoadStringComplete )
+			_onComplete=onComplete
+			DataBuffer.LoadAsync(FixDataPath( path ), Self )
+		End
+			
+		
+		Method OnLoadDataComplete:Void(dataBuffer:DataBuffer, path:String)
+			Local loadedString:String
+			
+			If dataBuffer 
+				loadedString = dataBuffer.PeekString(0)
+			EndIf
+			
+			_onComplete.OnLoadStringComplete( loadedString, path )
+			_onComplete = Null
+		End
+		
+End

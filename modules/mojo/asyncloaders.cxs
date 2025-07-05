@@ -12,6 +12,7 @@ Private
 
 Import mojo.asyncimageloader
 Import mojo.asyncsoundloader
+Import mojo.asyncstringloader
 
 Public
 
@@ -23,6 +24,10 @@ Interface IOnLoadSoundComplete
 	Method OnLoadSoundComplete:Void( sound:Sound,path:String,source:IAsyncEventSource )
 End
 
+Interface IOnLoadStringComplete
+	Method OnLoadStringComplete:Void( loadedString:String, path:String )
+End
+
 Function LoadImageAsync:Void( path:String,frames:Int=1,flags:Int=Image.DefaultFlags,onComplete:IOnLoadImageComplete )
 	Local loader:=New AsyncImageLoader( path,frames,flags,onComplete )
 	loader.Start
@@ -31,4 +36,8 @@ End
 Function LoadSoundAsync:Void( path:String,onComplete:IOnLoadSoundComplete )
 	Local loader:=New AsyncSoundLoader( path,onComplete )
 	loader.Start
+End
+
+Function LoadStringAsync:Void( path:String,onComplete:IOnLoadStringComplete )
+	Local loader:=New AsyncStringLoader( path, onComplete )
 End
