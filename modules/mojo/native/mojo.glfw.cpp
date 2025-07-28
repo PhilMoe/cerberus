@@ -739,374 +739,159 @@ gxtkSurface *gxtkGraphics::CreateSurface( int width,int height ){
 
 //***** gxtkAudio.h *****
 
+// SoLoud-based gxtkAudio implementation for Cerberus X
+
+//#include "soloud.h"
+//#include "soloud_wav.h"
+//#include "soloud_wavstream.h"
+//#include <map>
+
 class gxtkSample;
 
-class gxtkChannel{
+class gxtkChannel {
 public:
-	ALuint source;
-	gxtkSample *sample;
-	int flags;
-	int state;
-	
-	int AL_Source();
+	int handle = -1; // SoLoud voice handle
+	gxtkSample* sample = nullptr;
+	int flags = 0;
+	int state = 0; // 0 = stopped, 1 = playing, 2 = paused
 };
 
-class gxtkAudio : public Object{
+class gxtkSample : public Object {
 public:
-	static gxtkAudio *audio;
-	
-	ALCdevice *alcDevice;
-	ALCcontext *alcContext;
+	SoLoud::Wav wav;
+	gxtkSample() {}
+	~gxtkSample() {}
+	int Discard() { return 0; } // no-op, SoLoud managed
+};
+
+class gxtkAudio : public Object {
+public:
+	static gxtkAudio* audio;
+	SoLoud::Soloud soloud;
 	gxtkChannel channels[33];
 
-	gxtkAudio();
+	gxtkAudio() {
+		audio = this;
+		soloud.init();
+	}
 
-	virtual void mark();
+	virtual void mark() {
+		// Garbage collection marker if needed
+	}
 
-	//***** GXTK API *****
-	virtual int Suspend();
-	virtual int Resume();
+	virtual int Suspend() {
+		soloud.setPauseAll(true);
+		return 0;
+	}
 
-	virtual gxtkSample *LoadSample( String path );
-	virtual bool LoadSample__UNSAFE__( gxtkSample *sample,String path );
-	
-	virtual int PlaySample( gxtkSample *sample,int channel,int flags );
+	virtual int Resume() {
+		soloud.setPauseAll(false);
+		return 0;
+	}
 
-	virtual int StopChannel( int channel );
-	virtual int PauseChannel( int channel );
-	virtual int ResumeChannel( int channel );
-	virtual int ChannelState( int channel );
-	virtual int SetVolume( int channel,float volume );
-	virtual int SetPan( int channel,float pan );
-	virtual int SetRate( int channel,float rate );
-	
-	virtual int PlayMusic( String path,int flags );
-	virtual int StopMusic();
-	virtual int PauseMusic();
-	virtual int ResumeMusic();
-	virtual int MusicState();
-	virtual int SetMusicVolume( float volume );
+	virtual gxtkSample* LoadSample(String path) {
+		path=BBGlfwGame::GlfwGame()->PathToFilePath( path );
+		gxtkSample* sample = new gxtkSample();
+		
+		if (sample->wav.load(path.ToCString<char>()) != SoLoud::SO_NO_ERROR) {
+			delete sample;
+			return nullptr;
+		}
+		sample->wav.setSingleInstance(false);
+		return sample;
+	}
+
+	virtual bool LoadSample__UNSAFE__(gxtkSample* sample, String path) {
+		return sample->wav.load(path.ToCString<char>()) == SoLoud::SO_NO_ERROR;
+	}
+
+	virtual int PlaySample(gxtkSample* sample, int channel, int flags) {
+		gxtkChannel& chan = channels[channel];
+		if (chan.state != 0) StopChannel(channel);
+		chan.handle = soloud.play(sample->wav);
+		chan.sample = sample;
+		chan.flags = flags;
+		chan.state = 1;
+		if (flags) soloud.setLooping(chan.handle, true);
+		return 0;
+	}
+
+	virtual int StopChannel(int channel) {
+		gxtkChannel& chan = channels[channel];
+		if (chan.state != 0) {
+			soloud.stop(chan.handle);
+			chan.state = 0;
+		}
+		return 0;
+	}
+
+	virtual int PauseChannel(int channel) {
+		gxtkChannel& chan = channels[channel];
+		if (chan.state == 1) {
+			soloud.setPause(chan.handle, true);
+			chan.state = 2;
+		}
+		return 0;
+	}
+
+	virtual int ResumeChannel(int channel) {
+		gxtkChannel& chan = channels[channel];
+		if (chan.state == 2) {
+			soloud.setPause(chan.handle, false);
+			chan.state = 1;
+		}
+		return 0;
+	}
+
+	virtual int ChannelState(int channel) {
+		gxtkChannel& chan = channels[channel];
+		if (chan.state == 1 && !soloud.isValidVoiceHandle(chan.handle)) {
+			chan.state = 0;
+		}
+		return chan.state;
+	}
+
+	virtual int SetVolume(int channel, float volume) {
+		gxtkChannel& chan = channels[channel];
+		soloud.setVolume(chan.handle, volume);
+		return 0;
+	}
+
+	virtual int SetPan(int channel, float pan) {
+		gxtkChannel& chan = channels[channel];
+		soloud.setPan(chan.handle, pan);
+		return 0;
+	}
+
+	virtual int SetRate(int channel, float rate) {
+		gxtkChannel& chan = channels[channel];
+		soloud.setRelativePlaySpeed(chan.handle, rate);
+		return 0;
+	}
+
+	virtual int PlayMusic(String path, int flags) {
+		path=BBGlfwGame::GlfwGame()->PathToFilePath( path );
+		StopMusic();
+		SoLoud::WavStream* stream = new SoLoud::WavStream();
+		if (stream->load(path.ToCString<char>()) != SoLoud::SO_NO_ERROR) {
+			delete stream;
+			return -1;
+		}
+		int handle = soloud.play(*stream);
+		channels[32].handle = handle;
+		channels[32].sample = nullptr;
+		channels[32].flags = flags;
+		channels[32].state = 1;
+		if (flags) soloud.setLooping(handle, true);
+		return 0;
+	}
+
+	virtual int StopMusic() { return StopChannel(32); }
+	virtual int PauseMusic() { return PauseChannel(32); }
+	virtual int ResumeMusic() { return ResumeChannel(32); }
+	virtual int MusicState() { return ChannelState(32); }
+	virtual int SetMusicVolume(float volume) { return SetVolume(32, volume); }
 };
 
-class gxtkSample : public Object{
-public:
-	ALuint al_buffer;
-
-	gxtkSample();
-	gxtkSample( ALuint buf );
-	~gxtkSample();
-	
-	void SetBuffer( ALuint buf );
-	
-	//***** GXTK API *****
-	virtual int Discard();
-};
-
-//***** gxtkAudio.cpp *****
-
-gxtkAudio *gxtkAudio::audio;
-
-static std::vector<ALuint> discarded;
-
-static void FlushDiscarded(){
-
-	if( !discarded.size() ) return;
-	
-	for( int i=0;i<33;++i ){
-		gxtkChannel *chan=&gxtkAudio::audio->channels[i];
-		if( chan->state ){
-			int state=0;
-			alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-			if( state==AL_STOPPED ) alSourcei( chan->source,AL_BUFFER,0 );
-		}
-	}
-	
-	std::vector<ALuint> out;
-	
-	for( int i=0;i<discarded.size();++i ){
-		ALuint buf=discarded[i];
-		alDeleteBuffers( 1,&buf );
-		ALenum err=alGetError();
-		if( err==AL_NO_ERROR ){
-//			printf( "alDeleteBuffers OK!\n" );fflush( stdout );
-		}else{
-//			printf( "alDeleteBuffers failed...\n" );fflush( stdout );
-			out.push_back( buf );
-		}
-	}
-	discarded=out;
-}
-
-int gxtkChannel::AL_Source(){
-	if( source ) return source;
-
-	alGetError();
-	alGenSources( 1,&source );
-	if( alGetError()==AL_NO_ERROR ) return source;
-	
-	//couldn't create source...steal a free source...?
-	//
-	source=0;
-	for( int i=0;i<32;++i ){
-		gxtkChannel *chan=&gxtkAudio::audio->channels[i];
-		if( !chan->source || gxtkAudio::audio->ChannelState( i ) ) continue;
-//		puts( "Stealing source!" );
-		source=chan->source;
-		chan->source=0;
-		break;
-	}
-	return source;
-}
-
-gxtkAudio::gxtkAudio(){
-
-	audio=this;
-	
-	alcDevice=alcOpenDevice( 0 );
-	if( !alcDevice ){
-		alcDevice=alcOpenDevice( "Generic Hardware" );
-		if( !alcDevice ) alcDevice=alcOpenDevice( "Generic Software" );
-	}
-
-//	bbPrint( "opening openal device" );
-	if( alcDevice ){
-		if( (alcContext=alcCreateContext( alcDevice,0 )) ){
-			if( (alcMakeContextCurrent( alcContext )) ){
-				//alc all go!
-			}else{
-				bbPrint( "OpenAl error: alcMakeContextCurrent failed" );
-			}
-		}else{
-			bbPrint( "OpenAl error: alcCreateContext failed" );
-		}
-	}else{
-		bbPrint( "OpenAl error: alcOpenDevice failed" );
-	}
-
-	alDistanceModel( AL_NONE );
-	
-	memset( channels,0,sizeof(channels) );
-
-	channels[32].AL_Source();
-}
-
-void gxtkAudio::mark(){
-	for( int i=0;i<33;++i ){
-		gxtkChannel *chan=&channels[i];
-		if( chan->state!=0 ){
-			int state=0;
-			alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-			if( state!=AL_STOPPED ) gc_mark( chan->sample );
-		}
-	}
-}
-
-int gxtkAudio::Suspend(){
-	for( int i=0;i<33;++i ){
-		gxtkChannel *chan=&channels[i];
-		if( chan->state==1 ){
-			int state=0;
-			alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-			if( state==AL_PLAYING ) alSourcePause( chan->source );
-		}
-	}
-	return 0;
-}
-
-int gxtkAudio::Resume(){
-	for( int i=0;i<33;++i ){
-		gxtkChannel *chan=&channels[i];
-		if( chan->state==1 ){
-			int state=0;
-			alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-			if( state==AL_PAUSED ) alSourcePlay( chan->source );
-		}
-	}
-	return 0;
-}
-
-bool gxtkAudio::LoadSample__UNSAFE__( gxtkSample *sample,String path ){
-
-	int length=0;
-	int channels=0;
-	int format=0;
-	int hertz=0;
-	unsigned char *data=BBGlfwGame::GlfwGame()->LoadAudioData( path,&length,&channels,&format,&hertz );
-	if( !data ) return false;
-	
-	int al_format=0;
-	if( format==1 && channels==1 ){
-		al_format=AL_FORMAT_MONO8;
-	}else if( format==1 && channels==2 ){
-		al_format=AL_FORMAT_STEREO8;
-	}else if( format==2 && channels==1 ){
-		al_format=AL_FORMAT_MONO16;
-	}else if( format==2 && channels==2 ){
-		al_format=AL_FORMAT_STEREO16;
-	}
-	
-	int size=length*channels*format;
-	
-	ALuint al_buffer;
-	alGenBuffers( 1,&al_buffer );
-	alBufferData( al_buffer,al_format,data,size,hertz );
-	free( data );
-	
-	sample->SetBuffer( al_buffer );
-	return true;
-}
-
-gxtkSample *gxtkAudio::LoadSample( String path ){
-	FlushDiscarded();
-	gxtkSample *sample=new gxtkSample();
-	if( !LoadSample__UNSAFE__( sample,path ) ) return 0;
-	return sample;
-}
-
-int gxtkAudio::PlaySample( gxtkSample *sample,int channel,int flags ){
-
-	FlushDiscarded();
-	
-	gxtkChannel *chan=&channels[channel];
-	
-	if( !chan->AL_Source() ) return -1;
-	
-	alSourceStop( chan->source );
-	alSourcei( chan->source,AL_BUFFER,sample->al_buffer );
-	alSourcei( chan->source,AL_LOOPING,flags ? 1 : 0 );
-	alSourcePlay( chan->source );
-	
-	gc_assign( chan->sample,sample );
-
-	chan->flags=flags;
-	chan->state=1;
-
-	return 0;
-}
-
-int gxtkAudio::StopChannel( int channel ){
-	gxtkChannel *chan=&channels[channel];
-
-	if( chan->state!=0 ){
-		alSourceStop( chan->source );
-		chan->state=0;
-	}
-	return 0;
-}
-
-int gxtkAudio::PauseChannel( int channel ){
-	gxtkChannel *chan=&channels[channel];
-
-	if( chan->state==1 ){
-		int state=0;
-		alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-		if( state==AL_STOPPED ){
-			chan->state=0;
-		}else{
-			alSourcePause( chan->source );
-			chan->state=2;
-		}
-	}
-	return 0;
-}
-
-int gxtkAudio::ResumeChannel( int channel ){
-	gxtkChannel *chan=&channels[channel];
-
-	if( chan->state==2 ){
-		alSourcePlay( chan->source );
-		chan->state=1;
-	}
-	return 0;
-}
-
-int gxtkAudio::ChannelState( int channel ){
-	gxtkChannel *chan=&channels[channel];
-	
-	if( chan->state==1 ){
-		int state=0;
-		alGetSourcei( chan->source,AL_SOURCE_STATE,&state );
-		if( state==AL_STOPPED ) chan->state=0;
-	}
-	return chan->state;
-}
-
-int gxtkAudio::SetVolume( int channel,float volume ){
-	gxtkChannel *chan=&channels[channel];
-
-	alSourcef( chan->AL_Source(),AL_GAIN,volume );
-	return 0;
-}
-
-int gxtkAudio::SetPan( int channel,float pan ){
-	gxtkChannel *chan=&channels[channel];
-	
-	float x=sinf( pan ),y=0,z=-cosf( pan );
-	alSource3f( chan->AL_Source(),AL_POSITION,x,y,z );
-	return 0;
-}
-
-int gxtkAudio::SetRate( int channel,float rate ){
-	gxtkChannel *chan=&channels[channel];
-
-	alSourcef( chan->AL_Source(),AL_PITCH,rate );
-	return 0;
-}
-
-int gxtkAudio::PlayMusic( String path,int flags ){
-	StopMusic();
-	
-	gxtkSample *music=LoadSample( path );
-	if( !music ) return -1;
-	
-	PlaySample( music,32,flags );
-	return 0;
-}
-
-int gxtkAudio::StopMusic(){
-	StopChannel( 32 );
-	return 0;
-}
-
-int gxtkAudio::PauseMusic(){
-	PauseChannel( 32 );
-	return 0;
-}
-
-int gxtkAudio::ResumeMusic(){
-	ResumeChannel( 32 );
-	return 0;
-}
-
-int gxtkAudio::MusicState(){
-	return ChannelState( 32 );
-}
-
-int gxtkAudio::SetMusicVolume( float volume ){
-	SetVolume( 32,volume );
-	return 0;
-}
-
-gxtkSample::gxtkSample():
-al_buffer(0){
-}
-
-gxtkSample::gxtkSample( ALuint buf ):
-al_buffer(buf){
-}
-
-gxtkSample::~gxtkSample(){
-	Discard();
-}
-
-void gxtkSample::SetBuffer( ALuint buf ){
-	al_buffer=buf;
-}
-
-int gxtkSample::Discard(){
-	if( al_buffer ){
-		discarded.push_back( al_buffer );
-		al_buffer=0;
-	}
-	return 0;
-}
+// static member init
+gxtkAudio* gxtkAudio::audio = nullptr;
