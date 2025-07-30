@@ -41,24 +41,12 @@
 //OpenGL...
 #include <GLFW/glfw3.h>
 
-//OpenAL...
-//
-//#include <al.h>
-//#include <alc.h>
-
 //SoLoud Audio Lib
 #include <soloud.h>
 #include <soloud_wav.h>
 #include <soloud_wavstream.h>
 #include <map>
 
-
-
 //stb_image lib
 //
 #include <stb_image.h>
-
-//stb_vorbis lib
-//
-#define STB_VORBIS_HEADER_ONLY
-#include <stb_vorbis.c>

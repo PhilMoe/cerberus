@@ -24,6 +24,6 @@
 
 #TEXT_FILES+="*.txt|*.xml|*.json"
 #IMAGE_FILES+="*.png|*.jpg"
-#SOUND_FILES+="*.wav|*.ogg"
-#MUSIC_FILES+="*.wav|*.ogg"
+#SOUND_FILES+="*.wav|*.ogg|*.mp3"
+#MUSIC_FILES+="*.wav|*.ogg|*.mp3"
 #BINARY_FILES+="*.bin|*.dat"

@@ -13,11 +13,12 @@ CPPFLAGS=$(CCOPTS) \
 -I../stb \
 -I../tinyfiledialogs \
 -I../zlib-1.2.8 \
--I../lpng1610
+-I../lpng1610 \
+-I../soloud/include
 
 LD=g++
-LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
-LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32 -lole32
+LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows -L../soloud/lib
+LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32 -lole32 -lsoloud_static -lwinmm 
 
 RES=windres
 ifeq ($(ARCH),64)
@@ -49,7 +50,6 @@ win32_time.o \
 win32_thread.o \
 win32_window.o \
 window.o \
-stb_vorbis.o \
 stb_image.o \
 resource.o \
 tinyfiledialogs.o \

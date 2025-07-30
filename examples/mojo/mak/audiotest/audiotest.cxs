@@ -20,7 +20,7 @@ Class MyApp Extends App
 		'
 		'GLFW supports WAV/OGG - OGG doesn't stream yet.
 		'
-		soundFmt="wav"
+		soundFmt="mp3"
 		'musicFmt="ogg"
 		musicFmt="wav"
 		'musicFmt="mp3"
@@ -94,7 +94,7 @@ Class MyApp Extends App
 	Method LoadStuff()
 		shoot=LoadSound( "shoot."+soundFmt )
 		tinkle=LoadSound( "tinkle."+soundFmt )
-		music="happy3."+musicFmt
+		music="happy."+musicFmt
 	End
 	
 	Method OnUpdate()

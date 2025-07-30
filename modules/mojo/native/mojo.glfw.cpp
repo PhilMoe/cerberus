@@ -741,19 +741,16 @@ gxtkSurface *gxtkGraphics::CreateSurface( int width,int height ){
 
 // SoLoud-based gxtkAudio implementation for Cerberus X
 
-//#include "soloud.h"
-//#include "soloud_wav.h"
-//#include "soloud_wavstream.h"
-//#include <map>
-
 class gxtkSample;
 
 class gxtkChannel {
 public:
-	int handle = -1; // SoLoud voice handle
-	gxtkSample* sample = nullptr;
-	int flags = 0;
-	int state = 0; // 0 = stopped, 1 = playing, 2 = paused
+	int handle; // SoLoud voice handle
+	gxtkSample* sample;
+	int flags;
+	int state; // 0 = stopped, 1 = playing, 2 = paused
+	
+	gxtkChannel() : handle(-1), sample(0), flags(0), state(0) {}
 };
 
 class gxtkSample : public Object {
@@ -795,7 +792,7 @@ public:
 		
 		if (sample->wav.load(path.ToCString<char>()) != SoLoud::SO_NO_ERROR) {
 			delete sample;
-			return nullptr;
+			return 0;
 		}
 		sample->wav.setSingleInstance(false);
 		return sample;
@@ -879,7 +876,7 @@ public:
 		}
 		int handle = soloud.play(*stream);
 		channels[32].handle = handle;
-		channels[32].sample = nullptr;
+		channels[32].sample = 0;
 		channels[32].flags = flags;
 		channels[32].state = 1;
 		if (flags) soloud.setLooping(handle, true);
@@ -894,4 +891,4 @@ public:
 };
 
 // static member init
-gxtkAudio* gxtkAudio::audio = nullptr;
+gxtkAudio* gxtkAudio::audio = 0;
