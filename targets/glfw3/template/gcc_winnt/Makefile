@@ -39,11 +39,17 @@ egl_context.o \
 init.o \
 input.o \
 monitor.o \
+null_init.o \
+null_joystick.o \
+null_monitor.o \
+null_window.o \
 osmesa_context.o \
+platform.o \
 vulkan.o \
 wgl_context.o \
 win32_init.o \
 win32_joystick.o \
+win32_module.o \
 win32_monitor.o \
 win32_time.o \
 win32_thread.o \

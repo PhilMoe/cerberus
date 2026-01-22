@@ -16,6 +16,8 @@
 #include <shlobj.h>
 #include <direct.h>
 #include <sys/stat.h>
+//#include <internal.h>
+//#include <../src/platform.h>
 #undef LoadString
 
 #elif __APPLE__
