@@ -30,24 +30,35 @@ VPATH= $(VPATHOPTS) \
 
 OBJS0= $(SRCOPTS) \
 context.o \
+egl_context.o \
+glx_context.o \
 init.o \
 input.o \
-monitor.o \
-window.o \
-glx_context.o \
-x11_init.o \
-x11_monitor.o \
-x11_window.o \
-posix_time.o \
-posix_thread.o \
 linux_joystick.o \
-vulkan.o \
-egl_context.o \
+monitor.o \
+null_init.o \
+null_joystick.o \
+null_monitor.o \
+null_window.o \
 osmesa_context.o \
-xkb_unicode.o \
+platform.o \
+posix_module.o \
+posix_poll.o \
+posix_thread.o \
+posix_time.o \
 stb_vorbis.o \
 stb_image.o \
 tinyfiledialogs.o \
+vulkan.o \
+wgl_context.o \
+window.o \
+wl_init.o \
+wl_monitor.o \
+wl_window.o \
+x11_init.o \
+x11_monitor.o \
+x11_window.o \
+xkb_unicode.o \
 main.o
 
 TMP=build/$(dir $(OUT))
