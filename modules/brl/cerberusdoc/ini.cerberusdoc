@@ -116,3 +116,11 @@ Writes the Boolean value of a key inside a section. If it doesn't exist, it will
 # Method WriteBoolArray:Void(sectionName:String, key:String, value:Bool[])
 
 Writes an array of Boolean values of a key inside a section. If it doesn't exist, it will create a new section and/or key if needed.
+
+# Method GetSectionMap:StringMap<String>( section:String )
+
+Returns the string map associated with a section.
+
+# Method ClearData:Void()
+
+Clears all ini data stored in memory. 

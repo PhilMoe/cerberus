@@ -1,0 +1,57 @@
+' Fully test all ini methods.
+Strict
+Import brl.ini
+Import brl.filestream
+
+Function Main:Int()
+	Local iniData:=New IniHandler()
+	
+	iniData.Load( "./../../data/iniReadTest.ini" )
+	
+	Print "THE INI FILE"
+	Print iniData.SaveToString().Trim()
+	
+	Local str:=""
+	
+	Print "~nTESTS ARRAYS"
+	For Local i:=Eachin iniData.ReadStringArray( "Read Array Tests","stringArray",["Failed"] )
+		str+=i+","
+	Next
+	Print "stringArray: "+str[..str.Length()-1]
+	
+	str=""
+	For Local i:=Eachin iniData.ReadFloatArray( "Read Array Tests","floatArray",[0.0] )
+		str+=i+","
+	Next
+	Print "floatArray: "+str[..str.Length()-1]
+	
+	str=""
+	For Local i:=Eachin iniData.ReadIntArray( "Read Array Tests","intArray",[0] )
+		str+=i+","
+	Next
+	Print "intArray: "+str[..str.Length()-1]
+	
+	str=""
+	For Local i:=Eachin iniData.ReadBoolArray( "Read Array Tests","boolArray",[False] )
+		If i str+="True," Else str+=
+		"False,"
+	Next
+	Print "boolArray: "+str[..str.Length()-1]
+	
+	Print "~nTEST COMMENT OUT"
+	If iniData.DoesKeyExist( "Read Normal","commentKey" ) Print "Comment Checks key 'commentKey' should see this." Else Print "Comment Checks key 'commentKey' is commented out."
+	
+	' Test for bad values. Uncomment out each on to test.
+	'Print "BAD VALUE TEST"
+	
+	'Print "intBad: "+iniData.ReadInt( "Bad Tests","intBad", 5 )
+	'Print "floatBad: "+iniData.ReadFloat( "Bad Tests","floatBad", 5 )
+	'If iniData.ReadBool( "Bad Tests","boolBad", True ) Print "booBad is True" Else Print "booBad is False"
+	
+	'Local intArrayBad:=iniData.ReadIntArray( "Bad Arrays","intArrayBad",[0] )
+	'Local floatArrayBad:=iniData.ReadFloatArray( "Bad Arrays","floatArrayBad",[0.0] )
+	'Local boolArrayBad:=iniData.ReadBoolArray( "Bad Arrays","boolArrayBad",[False] )
+	
+	Return 0
+	
+End
