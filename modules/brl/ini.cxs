@@ -6,6 +6,16 @@ Strict
 
 Import brl.filestream
 
+Function IniError:Void( msg:String )
+	Throw New IniExecption( "INI MODULE ERROR: "+msg )
+End
+
+Class IniExecption Extends Throwable
+	Method New( msg:String )
+		Print msg
+	End
+End
+
 Class KeyValuePair
 Public
 	Field _isValid:Bool
@@ -36,7 +46,6 @@ Public
 	Method LoadFromString:Void(iniString:String)
 		_iniString = iniString
 		_Refresh()
-		file.Close()
 	End
 
 	Method SaveToString:String()
@@ -150,13 +159,16 @@ Public
 
 	Method ReadInt:Int(sectionName:String, key:String, defaultValue:Int=0)
 		Local str:String = ReadString(sectionName, key, String(defaultValue))
-		str = _SplitComment(str)
+		If Not _IsInt( str ) IniError( "ReadInt non numeric charater in section<"+sectionName+"> on key<"+key+">." )
+		'str = _SplitComment(str)
 		Return Int(str)
 	End
 
 	Method ReadFloat:Float(sectionName:String, key:String, defaultValue:Float=0.0)
 		Local str:String = ReadString(sectionName, key, String(defaultValue))
-		str = _SplitComment(str)
+		If Not _IsFloat( str ) IniError( "ReadFloat non numeric charater in section<"+sectionName+"> on key<"+key+">.")
+		
+		'str = _SplitComment(str)
 		Return Float(str)
 	End
 
@@ -164,7 +176,9 @@ Public
 		Local defaultStr:String = "False"
 		If defaultValue Then defaultStr = "True"
 		Local str:String = ReadString(sectionName, key, defaultStr)
-		str = _SplitComment(str)
+		'str = _SplitComment(str)
+		If Not _IsBool( str ) IniError( "ReadBool non boolean value in section<"+sectionName+"> on key<"+key+">." )
+		
 		If str.ToLower() = "true"
 			Return True
 		Else
@@ -181,15 +195,10 @@ Public
 			EndIf
 		Next
 		Local str:String = ReadString(sectionName, key, defaultStr)
-		str = _SplitComment(str)
+		'str = _SplitComment(str)
 		Local val:String[] = str.Split(",")
-		' convert to int
-		Local valFinal:Int[] = New Int[val.Length]
-		For Local i:Int = 0 Until val.Length
-			valFinal[i] = Int(val[i])
-		Next
-
-		Return valFinal
+		
+		Return val
 	End
 
 
@@ -203,11 +212,13 @@ Public
 			EndIf
 		Next
 		Local str:String = ReadString(sectionName, key, defaultStr)
-		str = _SplitComment(str)
+		'str = _SplitComment(str)
 		Local val:String[] = str.Split(",")
 		' convert to int
 		Local valFinal:Int[] = New Int[val.Length]
 		For Local i:Int = 0 Until val.Length
+			If Not _IsInt( val[i] ) IniError( "ReadIntArray non numeric value in section<"+sectionName+"> on key<"+key+"> at index<"+i+">." )
+			
 			valFinal[i] = Int(val[i])
 		Next
 
@@ -223,11 +234,12 @@ Public
 			EndIf
 		Next
 		Local str:String = ReadString(sectionName, key, defaultStr)
-		str = _SplitComment(str)
+		'str = _SplitComment(str)
 		Local val:String[] = str.Split(",")
 		' convert to float
 		Local valFinal:Float[] = New Float[val.Length]
 		For Local i:Int = 0 Until val.Length
+			If Not _IsFloat( val[i] ) IniError( "ReadFloatArray non numeric value in section<"+sectionName+"> on key<"+key+"> at index<"+i+">." )
 			valFinal[i] = Float(val[i])
 		Next
 		
@@ -247,11 +259,12 @@ Public
 			EndIf
 		Next
 		Local str:String = ReadString(sectionName, key, defaultStr)
-		str = _SplitComment(str)
+		'str = _SplitComment(str)
 		Local val:String[] = str.Split(",")
 		' convert to bool
 		Local valFinal:Bool[] = New Bool[val.Length]
 		For Local i:Int = 0 Until val.Length
+			If Not _IsBool( val[i] ) IniError( "ReadBoolArray non numeric value in section<"+sectionName+"> on key<"+key+"> at index<"+i+">." )	
 			If val[i].ToLower() = "true"
 				valFinal[i] = True
 			Else
@@ -261,8 +274,40 @@ Public
 
 		Return valFinal
 	End
+	
+	' Return the section as a string map
+	Method GetSectionMap:StringMap<String>( section:String )
+		Return _sections.Get( section )
+	End
+	
+	' Clears the ini section string map object of all data.
+	Method ClearData:Void()
+		_sections.Clear()
+	End
 
 Private
+
+	Method _IsInt:Bool( str:String )
+		For Local i:=Eachin str
+			If i>="0"[0] And i<="9"[0] Continue
+			Return False
+		Next
+		Return True
+	End
+	
+	Method _IsFloat:Bool( str:String )
+		For Local i:=Eachin str
+			If i>="0"[0] And i<="9"[0] Or i="."[0] Continue
+			Return False
+		Next
+		Return True
+	End
+	
+	Method _IsBool:Bool( str:String )
+		If str.ToLower()="true" Or str.ToLower()="false" Return True
+		Return False
+	End
+	
 	Method _Refresh:Void()
 		' clear local cache
 		_sections.Clear()
@@ -301,21 +346,21 @@ Private
 		Next
 	End
 
-	Method _SplitComment:String(str:String)
-		Local retStr:String[]
-		If str.Contains("//")
-			retStr = str.Split("//")
-		ElseIf str.Contains("#")
-			retStr = str.Split("#")
-		ElseIf str.Contains(";")
-			retStr = str.Split(";")
-		Else
-			retStr = New String[1]
-			retStr[0] = str
-		EndIf
-
-		Return retStr[0].Trim()
-	End
+'	Method _SplitComment:String(str:String)
+'		Local retStr:String[]
+'		If str.Contains("//")
+'			retStr = str.Split("//")
+'		ElseIf str.Contains("#")
+'			retStr = str.Split("#")
+'		ElseIf str.Contains(";")
+'			retStr = str.Split(";")
+'		Else
+'			retStr = New String[1]
+'			retStr[0] = str
+'		EndIf
+'
+'		Return retStr[0].Trim()
+'	End
 
 	Method _ParseSectionName:String(s:String)
 		If s.StartsWith("//") Or s.StartsWith("#") Or s.StartsWith(";") ' comment
