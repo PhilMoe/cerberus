@@ -4,6 +4,10 @@
 #
 #-------------------------------------------------
 # Change log
+# 2025-02-07 - Dawlane
+#                   Updated to include passing a codesign certificate for macos
+# 2025-01-21 - Dawlane
+#                   Updated Windows and Linux deployment for Qt 6.8.
 # 2024-08-31 - Dawlane
 #                   Changed how additional options are added to the MS Windows deployment.
 # 2023-04-27 - Dawlane
@@ -21,7 +25,7 @@
 #                   Updated the macdeployqt options and clean up.
 # 2023-02-03 - Dawlane
 #                   Fixed path separators for windeployqt executable.
-#                   Updated the QMAKE_TARGET_BUNDLE_PREFIX to com.whiteskygames    
+#                   Updated the QMAKE_TARGET_BUNDLE_PREFIX to com.whiteskygames
 # 2022-12-26 - Dawlane
 #                   Remove deployment files every time a build or clean action is preformed.
 # 2022-12-24 - DawLane
@@ -132,7 +136,7 @@ linux{
         QMAKE_RPATHDIR = $ORIGIN/lib
 
         # Copy over all the required libraries
-        # Common
+	# Missing libraries are just skipped. But for speed, it is recommended that the should be version specific.
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.56
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.56
         QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.56
@@ -169,6 +173,15 @@ linux{
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6OpenGL.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlModels.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6XcbQpa.so.6
+
+            # Qt 6.8 needs these
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlMeta.so.6
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlWorkerScript.so.6
+
+            # Not sure when this were introduced.
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.73
 
 
             # Plugins
@@ -266,7 +279,7 @@ win32{
         lessThan(QT_MINOR_VERSION, 14) {
             WINDEPLOYQT_OPTS += --no-angle
         } else {
-            WINDEPLOYQT_OPTS += --no-angle --no-virtualkeyboard 
+            WINDEPLOYQT_OPTS += --no-angle --no-virtualkeyboard
         }
     }
 
@@ -275,8 +288,10 @@ win32{
         # Qt kit < 6.5
         lessThan(QT_MINOR_VERSION, 5) {
             WINDEPLOYQT_OPTS += --no-serialport
-        } else {
+        }
+
         # Qt kit 6.5.x
+        equals(QT_MINOR_VERSION,5) {
             lessThan(QT_PATCH_VERSION, 1) {
                 WINDEPLOYQT_OPTS += --no-virtualkeyboard
             }
@@ -344,6 +359,7 @@ macx{
     equals(QT_MAJOR_VERSION, 6) {
         lessThan(QT_MINOR_VERSION, 5) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14 }
         equals(QT_MINOR_VERSION, 5) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.00 }
+        equals(QT_MINOR_VERSION, 8) { QMAKE_MACOSX_DEPLOYMENT_TARGET = 14.00 }
     }
 
     QMAKE_BUNDLE = Ted          # Application bundle name.
@@ -382,6 +398,9 @@ macx{
 
     # Set up the commandline to use with macdeployqt
     MACDEPLOYQT_OPTS = "$${MACDEPLOYQT}" "$${MACDEPLOYQT_TARGET}"
+    !equals(CODESIGN_CERT,) {
+        MACDEPLOYQT_OPTS += -codesign=$${CODESIGN_CERT}
+    }
     MACDEPLOYQT_OPTS += -no-plugins
 
     # Execute the macdeployqt command, create the platforms directory and copy over the libqcoca plugin.
@@ -407,6 +426,7 @@ macx{
     print("$$escape_expand(\\t)LFLAGS: $${QMAKE_LFLAGS}")
     print("$$escape_expand(\\t)LIBS: $${LIBS}")
     print("$$escape_expand(\\t)QMAKE_TARGET_BUNDLE_PREFIX: $${QMAKE_TARGET_BUNDLE_PREFIX}")
+    print("$$escape_expand(\\t)CODESIGN_CERT: $${CODESIGN_CERT}")
 
     # Remove deployment files every time a build or clean action is started.
     system(rm -rf $$shell_quote($$shell_path($${MACDEPLOYQT_TARGET})))
