@@ -1,0 +1,68 @@
+' Fully test all ini methods.
+Strict
+Import brl.ini
+Import brl.filestream
+
+Function Main:Int()
+	Local iniData:=New IniHandler()
+	
+	Print "Creating iniWriteTest1.ini"
+	Local floatArray:=[ 10.5,5.5,201 ]
+	Local intArray:=[ 10,5,201 ]
+	Local boolArray:=[ True, False, False, True, True ]
+	Local stringArray:=[ "item#1","item#2","item#3","item#4" ]
+	
+	Local floatNormal:=34.5
+	Local intNormal:=64
+	Local boolNormal:=False
+	Local stringNormal:="Hello world!"
+	
+	iniData.WriteFloatArray( "Write Array Tests","floatArray",floatArray )
+	iniData.WriteIntArray( "Write Array Tests","intArray",intArray )
+	iniData.WriteBoolArray( "Write Array Tests","boolArray",boolArray )
+	iniData.WriteStringArray( "Write Array Tests","stringArray",stringArray )
+	
+	iniData.WriteFloat( "Write Normal Tests","float",floatNormal )
+	iniData.WriteInt( "Write Normal Tests","int",intNormal )
+	iniData.WriteBool( "Write Normal Tests","bool",boolNormal )
+	iniData.WriteString( "Write Normal Tests","string",stringNormal )
+	iniData.WriteString( "INI DATA CHECK","KeyCheck","check" )
+	
+	Local file:=FileStream.Open( "./../../data/iniWriteTest1.ini","w" )
+		file.WriteString( iniData.SaveToString().Trim() )
+	file.Close()
+	
+	iniData.ClearData()
+	
+	Print "Creating iniWriteTest2.ini"
+	floatArray=[ 0.1,0.2,0.3 ]
+	intArray=[ 0,1,2,3,4,5,6 ]
+	boolArray=[ False,True,False,True ]
+	stringArray=[ "The","cat","sat","on","the","mat" ]
+	floatNormal= 20.5
+	intNormal= 5
+	stringNormal="Good bye cruel world!"
+	
+	iniData.WriteFloatArray( "Write Array Tests2","floatArray",floatArray )
+	iniData.WriteIntArray( "Write Array Tests2","intArray",intArray )
+	iniData.WriteBoolArray( "Write Array Tests2","boolArray",boolArray )
+	iniData.WriteStringArray( "Write Array Tests2","stringArray",stringArray )
+	
+	iniData.WriteFloat( "Write Normal Tests2","float",floatNormal )
+	iniData.WriteInt( "Write Normal Tests2","int",intNormal )
+	iniData.WriteBool( "Write Normal Tests2","bool",boolNormal )
+	iniData.WriteString( "Write Normal Tests2","string",stringNormal )
+	
+	file=FileStream.Open( "./../../data/iniWriteTest2.ini","w" )
+		file.WriteString( iniData.SaveToString().Trim() )
+	file.Close()
+	
+	Print "List keys and values for Write Array Tests2"
+	Local sectionMap:=iniData.GetSectionMap( "Write Array Tests2" )
+	For Local k:=Eachin sectionMap.Keys()
+		Local v:=sectionMap.Get( k )
+		Print "Key: "+k+" = Value: "+v
+	Next
+	
+	Return 0
+End
