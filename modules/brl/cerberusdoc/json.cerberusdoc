@@ -60,6 +60,7 @@ Function Main:Int()
 		For Local jn := Eachin JsonObject( json ).GetData()
 			Print "node "+ jn.Key() +" containing "+ jn.Value().ToJson()
 		End
+		Print JsonObject( json ).ToPrettyJson()
 	' JsonArray
 	Case JsonValue.ARRAYTYPE
 		For Local entry := Eachin JsonArray( json ).GetData()
@@ -142,6 +143,12 @@ Otherwise, it throws a [[JsonError]].
 # Method ToJson:String()
 
 Converts value to a JSON string.
+
+# Method ToPrettyJson:String( tab2spaces:Bool=False,tabsize:Int=4 )
+
+Generates a formatted Json string.~n
+The default indent tabulation character is set to the ASCII charater for horizontal tabs (code 0x09). You can change this by setting to use the space character (ASCII code 0x20) by passing *`True`* for @tab2spaces parameter, and the number of space characters to use in the @tabsize parameter.~n
+The method is most useful when used with [[JsonObject]] when generating a Json string for outputing to a file.
 
 
 # Class JsonObject Extends JsonValue

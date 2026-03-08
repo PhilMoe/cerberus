@@ -63,6 +63,65 @@ Class JsonValue Abstract
 	' implement a proper ToJson OR a proper PushJson.
 	' Nodes that can contain childs (Object and Array) implement PushJson
 	' Nodes that only have value (Null, Bool, Number, String) implement ToJson
+	
+	' Outputs a pretty formatted jason string.
+	Method ToPrettyJson:String( tab2spaces:Bool=False,tabsize:Int=4 )
+		Local result:String = "", indent:Int = 0, inString:Bool = False, prev:="",
+			json:=Self.ToJson(), tabs:=""
+		
+		If tab2spaces
+			For Local i:=0 Until tabsize
+				tabs+=" "
+			Next
+		Else
+			tabs="~t"
+		Endif
+		
+		For Local i:Int = 0 Until json.Length	
+			Local c:= String.FromChar( json[i] )
+			
+			' detect string start/end
+			If c = "~q" And prev <> "\" Then
+				inString = Not inString
+			Endif
+			
+			If Not inString
+				Select c
+					Case "{","["
+						result += c + "~n"
+						indent += 1
+						result += Indent( indent,tabs )	
+					Case "}","]"
+						result += "~n"
+						indent -= 1
+						result += Indent( indent,tabs ) + c	
+					Case ","
+						result += c + "~n" + Indent( indent,tabs )
+					Case ":"
+						result += ": "
+					Default
+						If Not (c=" " Or c="~t")
+							result += c
+						Endif		
+				End Select	
+			Else
+				result += c
+			Endif	
+			
+			prev = c
+		Next
+		
+		Return result	
+	End
+	
+	Method Indent:String( level:Int,tabs:String )
+		Local s:String = ""
+		For Local i:Int = 0 Until level
+			s += tabs
+		Next	
+		Return s	
+	End
+	
 End
 
 ' object - can contain 'string : value' pairs
