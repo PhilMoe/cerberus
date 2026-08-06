@@ -36,6 +36,7 @@ Thumbs.db
 /src/ted-build-*
 /src/build-ted-*
 /src/ted/ted.pro.user*
+/src/build*
 
 /targets/__deprecated__/android_ndk
 
@@ -54,3 +55,5 @@ Thumbs.db
 .vscode
 *.code-workspace
 *.desktop
+.vs
+*vcxproj.user
