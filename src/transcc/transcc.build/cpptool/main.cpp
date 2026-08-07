@@ -1527,7 +1527,7 @@ void dbg_throw( const char *err ){
 
 void dbg_stop(){
 
-#ifdef TARGET_OS_IPHONE
+#ifdef DEBUG_TARGET_OS_IPHONE
 	dbg_throw( "STOP" );
 #endif
 
@@ -1588,7 +1588,7 @@ void dbg_stop(){
 
 void dbg_error( const char *err ){
 
-#ifdef TARGET_OS_IPHONE
+#ifdef DEBUG_TARGET_OS_IPHONE
 	dbg_throw( err );
 #endif
 
@@ -15659,6 +15659,11 @@ class c_JavaTranslator;
 class c_MapKeys2;
 class c_KeyEnumerator2;
 class c_CppTranslator;
+class c_TupleString;
+class c_List11;
+class c_Node19;
+class c_HeadNode11;
+class c_Enumerator6;
 class c_JsTranslator;
 class c_NodeEnumerator3;
 class c_Stream;
@@ -15666,26 +15671,26 @@ class c_FileStream;
 class c_DataBuffer;
 class c_CsTranslator;
 class c_AsTranslator;
-class c_List11;
-class c_Node19;
-class c_HeadNode11;
-class c_Enumerator6;
+class c_List12;
+class c_Node20;
+class c_HeadNode12;
+class c_Enumerator7;
 class c_InvokeExpr;
 class c_StmtExpr;
 class c_MemberVarExpr;
 class c_VarExpr;
 class c_Map9;
 class c_StringMap8;
-class c_Node20;
+class c_Node21;
 class c_Map10;
 class c_StringMap9;
-class c_Node21;
+class c_Node22;
 class c_Map11;
 class c_StringMap10;
-class c_Node22;
-class c_Enumerator7;
-class c_Stack10;
+class c_Node23;
 class c_Enumerator8;
+class c_Stack10;
+class c_Enumerator9;
 class c_TransCC : public Object{
 	public:
 	Array<String > m_args;
@@ -15716,6 +15721,8 @@ class c_TransCC : public Object{
 	String m_AGK_PATH;
 	String m_HTML_PLAYER;
 	String m_FLASH_PLAYER;
+	String m_WIN_SDK;
+	String m_PLATFORM_TOOLSET;
 	c_StringMap3* m__builders;
 	c_StringMap6* m__targets;
 	c_Target* m_target;
@@ -16090,9 +16097,12 @@ class c_GlfwBuilder : public c_Builder{
 	bool p_IsValid();
 	void p_Begin();
 	String p_Config();
+	void p_UpdateMainSourceFile();
+	int p_CreateOutputDirectory(String);
 	int p_ProcessExternalLibs(String,String,String);
+	void p_OptionRun(String,String);
+	void p_BuildOption(String,String,String,String);
 	void p_MakeGcc();
-	void p_MakeVc2010();
 	void p_MakeMsvc();
 	void p_MakeXcode();
 	void p_MakeTarget();
@@ -17107,7 +17117,7 @@ class c_List7 : public Object{
 	c_Node12* p_AddLast7(c_Stmt*);
 	c_List7* m_new2(Array<c_Stmt* >);
 	bool p_IsEmpty();
-	c_Enumerator6* p_ObjectEnumerator();
+	c_Enumerator7* p_ObjectEnumerator();
 	c_Node12* p_AddFirst(c_Stmt*);
 	void mark();
 };
@@ -17639,7 +17649,7 @@ class c_List10 : public Object{
 	c_List10* m_new();
 	c_Node16* p_AddLast10(c_GlobalDecl*);
 	c_List10* m_new2(Array<c_GlobalDecl* >);
-	c_Enumerator7* p_ObjectEnumerator();
+	c_Enumerator8* p_ObjectEnumerator();
 	void mark();
 };
 class c_Node16 : public Object{
@@ -18084,6 +18094,55 @@ class c_CppTranslator : public c_CTranslator{
 	String p_TransAssignStmt2(c_AssignStmt*);
 	void mark();
 };
+String bb_transcc_ExpandEnv(String);
+int bb_transcc_CreateDirs(String,String);
+class c_TupleString : public Object{
+	public:
+	String m_src;
+	String m_dst;
+	c_TupleString();
+	c_TupleString* m_new(String,String);
+	c_TupleString* m_new2();
+	void mark();
+};
+class c_List11 : public Object{
+	public:
+	c_Node19* m__head;
+	c_List11();
+	c_List11* m_new();
+	c_Node19* p_AddLast11(c_TupleString*);
+	c_List11* m_new2(Array<c_TupleString* >);
+	int p_Count();
+	c_Enumerator6* p_ObjectEnumerator();
+	void mark();
+};
+class c_Node19 : public Object{
+	public:
+	c_Node19* m__succ;
+	c_Node19* m__pred;
+	c_TupleString* m__data;
+	c_Node19();
+	c_Node19* m_new(c_Node19*,c_Node19*,c_TupleString*);
+	c_Node19* m_new2();
+	void mark();
+};
+class c_HeadNode11 : public c_Node19{
+	public:
+	c_HeadNode11();
+	c_HeadNode11* m_new();
+	void mark();
+};
+class c_Enumerator6 : public Object{
+	public:
+	c_List11* m__list;
+	c_Node19* m__curr;
+	c_Enumerator6();
+	c_Enumerator6* m_new(c_List11*);
+	c_Enumerator6* m_new2();
+	bool p_HasNext();
+	c_TupleString* p_NextObject();
+	void mark();
+};
 class c_JsTranslator : public c_CTranslator{
 	public:
 	c_JsTranslator();
@@ -18165,8 +18224,6 @@ class c_DataBuffer : public BBDataBuffer{
 int bb_builder_GetInfo_PNG(String);
 int bb_builder_GetInfo_JPG(String);
 int bb_builder_GetInfo_GIF(String);
-String bb_transcc_ExpandEnv(String);
-int bb_transcc_CreateDirs(String,String);
 class c_CsTranslator : public c_CTranslator{
 	public:
 	c_CsTranslator();
@@ -18235,45 +18292,45 @@ class c_AsTranslator : public c_CTranslator{
 	String p_TransTryStmt(c_TryStmt*);
 	void mark();
 };
-class c_List11 : public Object{
+class c_List12 : public Object{
 	public:
-	c_Node19* m__head;
-	c_List11();
-	c_List11* m_new();
-	c_Node19* p_AddLast11(c_ModuleDecl*);
-	c_List11* m_new2(Array<c_ModuleDecl* >);
+	c_Node20* m__head;
+	c_List12();
+	c_List12* m_new();
+	c_Node20* p_AddLast12(c_ModuleDecl*);
+	c_List12* m_new2(Array<c_ModuleDecl* >);
 	bool p_IsEmpty();
 	c_ModuleDecl* p_RemoveLast();
 	bool p_Equals5(c_ModuleDecl*,c_ModuleDecl*);
-	c_Node19* p_FindLast9(c_ModuleDecl*,c_Node19*);
-	c_Node19* p_FindLast10(c_ModuleDecl*);
+	c_Node20* p_FindLast9(c_ModuleDecl*,c_Node20*);
+	c_Node20* p_FindLast10(c_ModuleDecl*);
 	void p_RemoveLast6(c_ModuleDecl*);
 	void mark();
 };
-class c_Node19 : public Object{
+class c_Node20 : public Object{
 	public:
-	c_Node19* m__succ;
-	c_Node19* m__pred;
+	c_Node20* m__succ;
+	c_Node20* m__pred;
 	c_ModuleDecl* m__data;
-	c_Node19();
-	c_Node19* m_new(c_Node19*,c_Node19*,c_ModuleDecl*);
-	c_Node19* m_new2();
+	c_Node20();
+	c_Node20* m_new(c_Node20*,c_Node20*,c_ModuleDecl*);
+	c_Node20* m_new2();
 	int p_Remove();
 	void mark();
 };
-class c_HeadNode11 : public c_Node19{
+class c_HeadNode12 : public c_Node20{
 	public:
-	c_HeadNode11();
-	c_HeadNode11* m_new();
+	c_HeadNode12();
+	c_HeadNode12* m_new();
 	void mark();
 };
-class c_Enumerator6 : public Object{
+class c_Enumerator7 : public Object{
 	public:
 	c_List7* m__list;
 	c_Node12* m__curr;
-	c_Enumerator6();
-	c_Enumerator6* m_new(c_List7*);
-	c_Enumerator6* m_new2();
+	c_Enumerator7();
+	c_Enumerator7* m_new(c_List7*);
+	c_Enumerator7* m_new2();
 	bool p_HasNext();
 	c_Stmt* p_NextObject();
 	void mark();
@@ -18336,15 +18393,15 @@ class c_VarExpr : public c_Expr{
 extern int bb_decl__loopnest;
 class c_Map9 : public Object{
 	public:
-	c_Node20* m_root;
+	c_Node21* m_root;
 	c_Map9();
 	c_Map9* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node20* p_FindNode(String);
+	c_Node21* p_FindNode(String);
 	c_FuncDeclList* p_Get(String);
-	int p_RotateLeft9(c_Node20*);
-	int p_RotateRight9(c_Node20*);
-	int p_InsertFixup9(c_Node20*);
+	int p_RotateLeft9(c_Node21*);
+	int p_RotateRight9(c_Node21*);
+	int p_InsertFixup9(c_Node21*);
 	bool p_Set8(String,c_FuncDeclList*);
 	void mark();
 };
@@ -18355,30 +18412,30 @@ class c_StringMap8 : public c_Map9{
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node20 : public Object{
+class c_Node21 : public Object{
 	public:
 	String m_key;
-	c_Node20* m_right;
-	c_Node20* m_left;
+	c_Node21* m_right;
+	c_Node21* m_left;
 	c_FuncDeclList* m_value;
 	int m_color;
-	c_Node20* m_parent;
-	c_Node20();
-	c_Node20* m_new(String,c_FuncDeclList*,int,c_Node20*);
-	c_Node20* m_new2();
+	c_Node21* m_parent;
+	c_Node21();
+	c_Node21* m_new(String,c_FuncDeclList*,int,c_Node21*);
+	c_Node21* m_new2();
 	void mark();
 };
 class c_Map10 : public Object{
 	public:
-	c_Node21* m_root;
+	c_Node22* m_root;
 	c_Map10();
 	c_Map10* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node21* p_FindNode(String);
+	c_Node22* p_FindNode(String);
 	bool p_Contains(String);
-	int p_RotateLeft10(c_Node21*);
-	int p_RotateRight10(c_Node21*);
-	int p_InsertFixup10(c_Node21*);
+	int p_RotateLeft10(c_Node22*);
+	int p_RotateRight10(c_Node22*);
+	int p_InsertFixup10(c_Node22*);
 	bool p_Set9(String,c_FuncDecl*);
 	void mark();
 };
@@ -18389,30 +18446,30 @@ class c_StringMap9 : public c_Map10{
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node21 : public Object{
+class c_Node22 : public Object{
 	public:
 	String m_key;
-	c_Node21* m_right;
-	c_Node21* m_left;
+	c_Node22* m_right;
+	c_Node22* m_left;
 	c_FuncDecl* m_value;
 	int m_color;
-	c_Node21* m_parent;
-	c_Node21();
-	c_Node21* m_new(String,c_FuncDecl*,int,c_Node21*);
-	c_Node21* m_new2();
+	c_Node22* m_parent;
+	c_Node22();
+	c_Node22* m_new(String,c_FuncDecl*,int,c_Node22*);
+	c_Node22* m_new2();
 	void mark();
 };
 class c_Map11 : public Object{
 	public:
-	c_Node22* m_root;
+	c_Node23* m_root;
 	c_Map11();
 	c_Map11* m_new();
 	virtual int p_Compare(String,String)=0;
-	c_Node22* p_FindNode(String);
+	c_Node23* p_FindNode(String);
 	c_StringSet* p_Get(String);
-	int p_RotateLeft11(c_Node22*);
-	int p_RotateRight11(c_Node22*);
-	int p_InsertFixup11(c_Node22*);
+	int p_RotateLeft11(c_Node23*);
+	int p_RotateRight11(c_Node23*);
+	int p_InsertFixup11(c_Node23*);
 	bool p_Set10(String,c_StringSet*);
 	void mark();
 };
@@ -18423,26 +18480,26 @@ class c_StringMap10 : public c_Map11{
 	int p_Compare(String,String);
 	void mark();
 };
-class c_Node22 : public Object{
+class c_Node23 : public Object{
 	public:
 	String m_key;
-	c_Node22* m_right;
-	c_Node22* m_left;
+	c_Node23* m_right;
+	c_Node23* m_left;
 	c_StringSet* m_value;
 	int m_color;
-	c_Node22* m_parent;
-	c_Node22();
-	c_Node22* m_new(String,c_StringSet*,int,c_Node22*);
-	c_Node22* m_new2();
+	c_Node23* m_parent;
+	c_Node23();
+	c_Node23* m_new(String,c_StringSet*,int,c_Node23*);
+	c_Node23* m_new2();
 	void mark();
 };
-class c_Enumerator7 : public Object{
+class c_Enumerator8 : public Object{
 	public:
 	c_List10* m__list;
 	c_Node16* m__curr;
-	c_Enumerator7();
-	c_Enumerator7* m_new(c_List10*);
-	c_Enumerator7* m_new2();
+	c_Enumerator8();
+	c_Enumerator8* m_new(c_List10*);
+	c_Enumerator8* m_new2();
 	bool p_HasNext();
 	c_GlobalDecl* p_NextObject();
 	void mark();
@@ -18456,7 +18513,7 @@ class c_Stack10 : public Object{
 	c_Stack10* m_new2(Array<c_LocalDecl* >);
 	static c_LocalDecl* m_NIL;
 	void p_Clear();
-	c_Enumerator8* p_ObjectEnumerator();
+	c_Enumerator9* p_ObjectEnumerator();
 	void p_Length(int);
 	int p_Length2();
 	void p_Push28(c_LocalDecl*);
@@ -18464,13 +18521,13 @@ class c_Stack10 : public Object{
 	void p_Push30(Array<c_LocalDecl* >,int);
 	void mark();
 };
-class c_Enumerator8 : public Object{
+class c_Enumerator9 : public Object{
 	public:
 	c_Stack10* m_stack;
 	int m_index;
-	c_Enumerator8();
-	c_Enumerator8* m_new(c_Stack10*);
-	c_Enumerator8* m_new2();
+	c_Enumerator9();
+	c_Enumerator9* m_new(c_Stack10*);
+	c_Enumerator9* m_new2();
 	bool p_HasNext();
 	c_LocalDecl* p_NextObject();
 	void mark();
@@ -18504,6 +18561,8 @@ c_TransCC::c_TransCC(){
 	m_AGK_PATH=String();
 	m_HTML_PLAYER=String();
 	m_FLASH_PLAYER=String();
+	m_WIN_SDK=String(L"10.0",4);
+	m_PLATFORM_TOOLSET=String(L"v142",4);
 	m__builders=(new c_StringMap3)->m_new();
 	m__targets=(new c_StringMap6)->m_new();
 	m_target=0;
@@ -18528,26 +18587,26 @@ void c_TransCC::p_ParseArgs(){
 			t_arg=t_arg.Slice(0,t_j);
 		}
 		if(t_j==-1){
-			String t_3=t_arg.ToLower();
-			if(t_3==String(L"-safe",5)){
+			String t_2=t_arg.ToLower();
+			if(t_2==String(L"-safe",5)){
 				m_opt_safe=true;
 			}else{
-				if(t_3==String(L"-clean",6)){
+				if(t_2==String(L"-clean",6)){
 					m_opt_clean=true;
 				}else{
-					if(t_3==String(L"-check",6)){
+					if(t_2==String(L"-check",6)){
 						m_opt_check=true;
 					}else{
-						if(t_3==String(L"-update",7)){
+						if(t_2==String(L"-update",7)){
 							m_opt_check=true;
 							m_opt_update=true;
 						}else{
-							if(t_3==String(L"-build",6)){
+							if(t_2==String(L"-build",6)){
 								m_opt_check=true;
 								m_opt_update=true;
 								m_opt_build=true;
 							}else{
-								if(t_3==String(L"-run",4)){
+								if(t_2==String(L"-run",4)){
 									m_opt_check=true;
 									m_opt_update=true;
 									m_opt_build=true;
@@ -18562,26 +18621,26 @@ void c_TransCC::p_ParseArgs(){
 			}
 		}else{
 			if(t_arg.StartsWith(String(L"-",1))){
-				String t_4=t_arg.ToLower();
-				if(t_4==String(L"-cfgfile",8)){
+				String t_3=t_arg.ToLower();
+				if(t_3==String(L"-cfgfile",8)){
 					m_opt_cfgfile=t_rhs;
 				}else{
-					if(t_4==String(L"-output",7)){
+					if(t_3==String(L"-output",7)){
 						m_opt_output=t_rhs;
 					}else{
-						if(t_4==String(L"-config",7)){
+						if(t_3==String(L"-config",7)){
 							m_opt_config=t_rhs.ToLower();
 						}else{
-							if(t_4==String(L"-target",7)){
+							if(t_3==String(L"-target",7)){
 								m_opt_target=t_rhs;
 							}else{
-								if(t_4==String(L"-modpath",8)){
+								if(t_3==String(L"-modpath",8)){
 									m_opt_modpath=t_rhs;
 								}else{
-									if(t_4==String(L"-targetpath",11)){
+									if(t_3==String(L"-targetpath",11)){
 										m_opt_targetpath=t_rhs;
 									}else{
-										if(t_4==String(L"-builddir",9)){
+										if(t_3==String(L"-builddir",9)){
 											m_opt_builddir=t_rhs;
 										}else{
 											bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
@@ -18633,69 +18692,77 @@ void c_TransCC::p_LoadConfig(){
 		while(t_path.EndsWith(String(L"/",1)) || t_path.EndsWith(String(L"\\",1))){
 			t_path=t_path.Slice(0,-1);
 		}
-		String t_5=t_lhs;
-		if(t_5==String(L"MODPATH",7)){
+		String t_4=t_lhs;
+		if(t_4==String(L"MODPATH",7)){
 			if(!((m_opt_modpath).Length()!=0)){
 				m_opt_modpath=t_path;
 			}
 		}else{
-			if(t_5==String(L"TARGETPATH",10)){
+			if(t_4==String(L"TARGETPATH",10)){
 				if(!((m_opt_targetpath).Length()!=0)){
 					m_opt_targetpath=t_path;
 				}
 			}else{
-				if(t_5==String(L"ANDROID_PATH",12)){
+				if(t_4==String(L"ANDROID_PATH",12)){
 					if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
 						m_ANDROID_PATH=t_path;
 					}
 				}else{
-					if(t_5==String(L"ANDROID_NDK_PATH",16)){
+					if(t_4==String(L"ANDROID_NDK_PATH",16)){
 						if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
 							m_ANDROID_NDK_PATH=t_path;
 						}
 					}else{
-						if(t_5==String(L"JDK_PATH",8)){
+						if(t_4==String(L"JDK_PATH",8)){
 							if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
 								m_JDK_PATH=t_path;
 							}
 						}else{
-							if(t_5==String(L"ANT_PATH",8)){
+							if(t_4==String(L"ANT_PATH",8)){
 								if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
 									m_ANT_PATH=t_path;
 								}
 							}else{
-								if(t_5==String(L"FLEX_PATH",9)){
+								if(t_4==String(L"FLEX_PATH",9)){
 									if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
 										m_FLEX_PATH=t_path;
 									}
 								}else{
-									if(t_5==String(L"MINGW_PATH",10)){
+									if(t_4==String(L"MINGW_PATH",10)){
 										if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
 											m_MINGW_PATH=t_path;
 										}
 									}else{
-										if(t_5==String(L"PSM_PATH",8)){
+										if(t_4==String(L"PSM_PATH",8)){
 											if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
 												m_PSM_PATH=t_path;
 											}
 										}else{
-											if(t_5==String(L"MSBUILD_PATH",12)){
+											if(t_4==String(L"MSBUILD_PATH",12)){
 												if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
 													m_MSBUILD_PATH=t_path;
 												}
 											}else{
-												if(t_5==String(L"AGK_PATH",8)){
+												if(t_4==String(L"AGK_PATH",8)){
 													if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
 														m_AGK_PATH=t_path;
 													}
 												}else{
-													if(t_5==String(L"HTML_PLAYER",11)){
+													if(t_4==String(L"HTML_PLAYER",11)){
 														m_HTML_PLAYER=t_rhs;
 													}else{
-														if(t_5==String(L"FLASH_PLAYER",12)){
+														if(t_4==String(L"FLASH_PLAYER",12)){
 															m_FLASH_PLAYER=t_rhs;
 														}else{
-															bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+															if(t_4==String(L"WIN_SDK",7)){
+																m_WIN_SDK=t_rhs;
+															}else{
+																if(t_4==String(L"PLATFORM_TOOLSET",16)){
+																	m_PLATFORM_TOOLSET=t_rhs;
+																}else{
+																	bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
+																}
+															}
 														}
 													}
 												}
@@ -18710,8 +18777,8 @@ void c_TransCC::p_LoadConfig(){
 			}
 		}
 	}
-	String t_6=HostOS();
-	if(t_6==String(L"winnt",5)){
+	String t_5=HostOS();
+	if(t_5==String(L"winnt",5)){
 		String t_path2=GetEnv(String(L"PATH",4));
 		if((m_ANDROID_PATH).Length()!=0){
 			t_path2=t_path2+(String(L";",1)+m_ANDROID_PATH+String(L"/tools",6));
@@ -18736,7 +18803,7 @@ void c_TransCC::p_LoadConfig(){
 			SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 		}
 	}else{
-		if(t_6==String(L"macos",5)){
+		if(t_5==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
 			if((m_JDK_PATH).Length()!=0){
 				t_path3=m_JDK_PATH+String(L"/bin:",5)+t_path3;
@@ -18758,7 +18825,7 @@ void c_TransCC::p_LoadConfig(){
 				SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 			}
 		}else{
-			if(t_6==String(L"linux",5)){
+			if(t_5==String(L"linux",5)){
 				String t_path4=GetEnv(String(L"PATH",4));
 				if((m_JDK_PATH).Length()!=0){
 					t_path4=m_JDK_PATH+String(L"/bin:",5)+t_path4;
@@ -18836,7 +18903,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2023-10-14",35));
+	bbPrint(String(L"TRANS cerberus compiler V2026-08-07",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -21182,9 +21249,9 @@ c_GlfwBuilder* c_GlfwBuilder::m_new2(){
 	return this;
 }
 bool c_GlfwBuilder::p_IsValid(){
-	String t_2=HostOS();
-	if(t_2==String(L"winnt",5)){
-		if(((m_tcc->m_MINGW_PATH).Length()!=0) || ((m_tcc->m_MSBUILD_PATH).Length()!=0)){
+	String t_4=HostOS();
+	if(t_4==String(L"winnt",5)){
+		if(((m_tcc->m_MINGW_PATH).Length()!=0) || FileType(m_tcc->m_MSBUILD_PATH)==1){
 			return true;
 		}
 	}else{
@@ -21205,191 +21272,259 @@ String c_GlfwBuilder::p_Config(){
 	}
 	return t_config->p_Join(String(L"\n",1));
 }
-int c_GlfwBuilder::p_ProcessExternalLibs(String t_config,String t_arch,String t_link){
-	String t_libStr=String();
-	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
-	if(t_msize==String(L"64",2)){
-		String t_[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_COPY_LIBS",14),String(L"|",1),Array<String >(t_,2));
-		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS",14)).ToLower();
-	}else{
-		String t_2[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_COPY_LIBS_32",17),String(L"|",1),Array<String >(t_2,2));
-		t_libStr=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS_32",17)).ToLower();
+void c_GlfwBuilder::p_UpdateMainSourceFile(){
+	p_CopySourceFiles(String(L".",1));
+	String t_main=LoadString(String(L"main.cpp",8));
+	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
+	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
+	SaveString(t_main,String(L"main.cpp",8));
+}
+int c_GlfwBuilder::p_CreateOutputDirectory(String t_outpath){
+	bb_transcc_CreateDirs(t_outpath,String(L"/",1));
+	CreateDir(t_outpath+String(L"/internal",9));
+	CreateDir(t_outpath+String(L"/external",9));
+	p_CreateDataDir(t_outpath+String(L"/data",5));
+	return 0;
+}
+int c_GlfwBuilder::p_ProcessExternalLibs(String t_outpath,String t_srcDir,String t_msize){
+	String t_append=String();
+	String t_6=t_msize;
+	if(t_6==String(L"32",2)){
+		t_append=String(L"_32",3);
 	}
-	if(t_libStr==String()){
+	String t_[]={String(L"|",1),String(L";",1)};
+	bb_config_UnifyConfigVarSeparator(String(L"GLFW_COPY_LIBS",14)+t_append,String(L"|",1),Array<String >(t_,2));
+	c_List11* t_srcList=(new c_List11)->m_new();
+	Array<String > t_2=bb_config_GetConfigVar(String(L"GLFW_COPY_LIBS_32",17)).ToLower().Split(String(L"|",1));
+	int t_3=0;
+	while(t_3<t_2.Length()){
+		String t_i=t_2[t_3];
+		t_3=t_3+1;
+		if(t_i==String()){
+			continue;
+		}
+		String t_7=HostOS();
+		if(t_7==String(L"winnt",5)){
+			if(FileType(m_tcc->m__libs+t_srcDir+String(L"/",1)+t_i+String(L".dll",4))==1){
+				t_srcList->p_AddLast11((new c_TupleString)->m_new(m_tcc->m__libs+t_srcDir+String(L"/",1)+t_i+String(L".dll",4),t_outpath+String(L"/",1)+t_i+String(L".dll",4)));
+			}
+		}
+		if(FileType(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_COPYING",8))==1){
+			t_srcList->p_AddLast11((new c_TupleString)->m_new(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_COPYING",8),t_outpath+String(L"/",1)+t_i+String(L"_COPYING",8)));
+		}
+		if(FileType(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_LICENCE",8))==1){
+			t_srcList->p_AddLast11((new c_TupleString)->m_new(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_LICENCE",8),t_outpath+String(L"/",1)+t_i+String(L"_LICENCE",8)));
+		}
+	}
+	if(t_srcList->p_Count()<=0){
 		return 0;
 	}
-	Array<String > t_libcopy=t_libStr.Split(String(L"|",1));
-	String t_dst=t_config+t_arch;
-	Array<String > t_3=t_libcopy;
-	int t_4=0;
-	while(t_4<t_3.Length()){
-		String t_i=t_3[t_4];
-		t_4=t_4+1;
-		if(HostOS()==String(L"winnt",5)){
-			if(t_i!=String()){
-				if(FileType(t_dst+String(L"/",1)+t_i+String(L".dll",4))==1){
-					continue;
-				}
-				if(CopyFile(m_tcc->m__libs+String(L"Win",3)+t_arch+String(L"/",1)+t_i+String(L".dll",4),t_dst+String(L"/",1)+t_i+String(L".dll",4))==1){
-					bbPrint(String(L"Copied ",7)+t_i+String(L".dll to ",8)+t_dst);
-				}else{
-					bbPrint(String(L"Failed to copy ",15)+t_i+String(L" to ",4)+t_dst);
-				}
-				if(FileType(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_COPYING",8))!=0){
-					if(CopyFile(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_COPYING",8),t_dst+String(L"/",1)+t_i+String(L"_COPYING",8))==1){
-						bbPrint(String(L"Copied ",7)+t_i+String(L"_COPYING to ",12)+t_dst);
-					}else{
-						bbPrint(String(L"Failed to copy ",15)+t_i+String(L"_COPYING To ",12)+t_dst);
-					}
-				}
-				if(FileType(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_LICENCE",8))!=0){
-					if(CopyFile(m_tcc->m__libs+String(L"/",1)+t_i+String(L"_LICENCE",8),t_dst+String(L"/",1)+t_i+String(L"_LICENCE",8))==1){
-						bbPrint(String(L"Copied ",7)+t_i+String(L"_LICENCE to ",12)+t_dst);
-					}else{
-						bbPrint(String(L"Failed to copy ",15)+t_i+String(L"_COPYING To ",12)+t_dst);
-					}
-				}
-			}
+	c_Enumerator6* t_4=t_srcList->p_ObjectEnumerator();
+	while(t_4->p_HasNext()){
+		c_TupleString* t_i2=t_4->p_NextObject();
+		if(FileType(t_i2->m_dst)==1){
+			continue;
+		}
+		if(CopyFile(t_i2->m_src,t_i2->m_dst)==1){
+			bbPrint(String(L"Copied file ",12)+t_i2->m_src);
+		}else{
+			bbPrint(String(L"Failed to copy ",15)+t_i2->m_src+String(L" to ",4)+t_i2->m_dst);
 		}
 	}
 	return 0;
 }
-void c_GlfwBuilder::p_MakeGcc(){
-	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
-	String t_tconfig=m_casedConfig+t_msize;
-	String t_dst=String(L"gcc_",4)+HostOS();
-	CreateDir(t_dst+String(L"/",1)+t_tconfig);
-	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/internal",9));
-	CreateDir(t_dst+String(L"/",1)+t_tconfig+String(L"/external",9));
-	if(FileType(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11))==1){
-		DeleteFile(t_dst+String(L"/build/",7)+t_tconfig+String(L"/resource.o",11));
+void c_GlfwBuilder::p_OptionRun(String t_outpath,String t_out){
+	ChangeDir(RealPath(t_outpath));
+	bbPrint(String(L"\nExecute Dir:\n",14)+CurrentDir()+String(L"\nExecuting: ",12)+t_out);
+	if(!(HostOS()==String(L"winnt",5))){
+		p_Execute(String(L"./",2)+t_out,true);
+	}else{
+		p_Execute(t_out,true);
 	}
-	p_CreateDataDir(t_dst+String(L"/",1)+t_tconfig+String(L"/data",5));
-	p_CopySourceFiles(String(L".",1));
-	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/cerberus.ico",13));
-	String t_main=LoadString(String(L"main.cpp",8));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"main.cpp",8));
+}
+void c_GlfwBuilder::p_BuildOption(String t_buildDir,String t_outpath,String t_cmd,String t_out){
+	ChangeDir(t_buildDir);
+	if(!((FileType(t_outpath))!=0)){
+		bb_transcc_CreateDirs(t_outpath,String(L"/",1));
+	}
+	bbPrint(String(L"\nOutput Dir:\n",13)+t_outpath+String(L"\n\nBuild Dir:\n",13)+CurrentDir());
+	p_Execute(t_cmd,true);
+	if(m_tcc->m_opt_run){
+		p_OptionRun(t_outpath,t_out);
+	}
+}
+void c_GlfwBuilder::p_MakeGcc(){
+	p_UpdateMainSourceFile();
+	String t_cc_opts=String();
+	String t_ld_lib_opts=String();
+	String t_ld_opts=String();
+	String t_src_opts=String();
+	String t_vpath_opts=String();
+	String t_maketool=String(L"make",4);
+	String t_cxx=String(L"g++",3);
+	String t_cc=String(L"gcc",3);
+	String t_exec=String();
+	String t_dst=String(L"gcc_",4)+HostOS();
+	String t_msize=bb_config_GetConfigVar(String(L"GLFW_MSIZE_",11)+HostOS().ToUpper());
+	String t_out=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_NAME",16));
+	String t_outpath=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_PATH",16));
+	String t_build_dir=String(L"build/",6)+m_casedConfig;
+	if(t_outpath==String()){
+		t_outpath=CurrentDir()+String(L"/",1)+t_dst;
+	}else{
+		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+	}
+	if(t_out==String()){
+		t_out=String(L"CerberusGame",12);
+	}
+	String t_1=t_msize;
+	if(t_1==String(L"32",2)){
+		t_cc_opts=t_cc_opts+String(L"-m32",4);
+		t_ld_opts=t_ld_opts+String(L"-m32",4);
+		t_build_dir=t_build_dir+String(L"32",2);
+		bbPrint(String(L"Setting GLFW build to 32-bit",28));
+	}else{
+		if(t_1==String(L"64",2)){
+			t_cc_opts=t_cc_opts+String(L"-m64",4);
+			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_build_dir=t_build_dir+String(L"64",2);
+			bbPrint(String(L"Setting GLFW build to 64-bit",28));
+		}else{
+			if(t_msize!=String()){
+				bbPrint(String(L"WARNING: Value assigned to GLFW_GCC_MSIZE is ",45)+t_msize+String(L"\nOnly 32 and 64 are permitted.",30));
+			}
+			bbPrint(String(L"Setting default GLFW build to 64-bit",36));
+			t_cc_opts=t_cc_opts+String(L"-m64",4);
+			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_build_dir=t_build_dir+String(L"64",2);
+			t_msize=String(L"64",2);
+		}
+	}
+	if(bb_config_GetConfigVar(String(L"DEBUG",5))==String(L"1",1)){
+		t_cc_opts=t_cc_opts+String(L" -O0",4);
+	}else{
+		if(bb_config_GetConfigVar(String(L"RELEASE",7))==String(L"1",1)){
+			t_cc_opts=t_cc_opts+String(L" -O3 -DNDEBUG",13);
+			t_ld_opts=t_ld_opts+String(L" -s",3);
+		}else{
+			if(bb_config_GetConfigVar(String(L"PROFILE",7))==String(L"1",1)){
+				t_cc_opts=t_cc_opts+String(L" -pg",4);
+			}
+		}
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_GCC_CC_OPTS",16))){
+		String t_[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_CC_OPTS",16),String(L" ",1),Array<String >(t_,2));
+		t_cc_opts=t_cc_opts+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_GCC_LD_OPTS",16))){
+		String t_2[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LD_OPTS",16),String(L" ",1),Array<String >(t_2,2));
+		t_ld_opts=t_ld_opts+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_GCC_LIB_OPTS",17))){
+		String t_3[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LIB_OPTS",17),String(L" ",1),Array<String >(t_3,2));
+		t_ld_lib_opts=t_ld_lib_opts+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_GCC_SRC_OPTS",17))){
+		String t_4[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_SRC_OPTS",17),String(L" ",1),Array<String >(t_4,2));
+		t_src_opts=t_src_opts+bb_config_GetConfigVar(String(L"GLFW_GCC_SRC_OPTS",17));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_GCC_VPATH_OPTS",19))){
+		String t_5[]={String(L"|",1),String(L";",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_VPATH_OPTS",19),String(L" ",1),Array<String >(t_5,2));
+		t_vpath_opts=t_vpath_opts+bb_config_GetConfigVar(String(L"GLFW_GCC_VPATH_OPTS",19));
+	}
+	p_UpdateMainSourceFile();
+	t_outpath=t_outpath+String(L"/",1)+m_casedConfig+t_msize;
+	p_CreateOutputDirectory(t_outpath);
+	String t_22=HostOS();
+	if(t_22==String(L"winnt",5)){
+		t_maketool=String(L"mingw32-make",12);
+		if(FileType(t_build_dir+String(L"/resource.o",11))==1){
+			DeleteFile(t_build_dir+String(L"/resource.o",11));
+		}
+		p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
+		p_ProcessExternalLibs(t_outpath,String(L"Win",3)+t_msize,t_msize);
+		t_ld_opts=t_ld_opts+(String(L" -L",3)+m_tcc->m__libs+String(L"Win",3)+t_msize);
+	}else{
+		if(t_22==String(L"linux",5)){
+			t_exec=String(L"./",2)+t_out;
+		}
+	}
 	if(m_tcc->m_opt_build){
 		ChangeDir(t_dst);
 		CreateDir(String(L"build",5));
-		CreateDir(String(L"build/",6)+t_tconfig);
-		String t_ccopts=String();
-		String t_ldopts=String();
-		String t_libopts=String();
-		String t_libcopy=String();
-		String t_srcopts=String();
-		String t_vpathopts=String();
-		if((t_msize).Length()!=0){
-			t_ccopts=t_ccopts+(String(L" -m",3)+t_msize);
-			t_ldopts=t_ldopts+(String(L" -m",3)+t_msize);
-		}
-		String t_[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_CC_OPTS",16),String(L" ",1),Array<String >(t_,2));
-		String t_2[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LD_OPTS",16),String(L" ",1),Array<String >(t_2,2));
-		String t_3[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LIB_OPTS",17),String(L" ",1),Array<String >(t_3,2));
-		String t_4[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_SRC_OPTS",17),String(L" ",1),Array<String >(t_4,2));
-		String t_5[]={String(L"|",1),String(L";",1)};
-		bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_VPATH_OPTS",19),String(L" ",1),Array<String >(t_5,2));
-		t_ccopts=t_ccopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_CC_OPTS",16)));
-		t_ldopts=t_ldopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LD_OPTS",16)));
-		t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)));
-		t_srcopts=t_srcopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_SRC_OPTS",17)));
-		t_vpathopts=t_vpathopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_VPATH_OPTS",19)));
-		String t_1=bb_config_ENV_CONFIG;
-		if(t_1==String(L"debug",5)){
-			t_ccopts=t_ccopts+String(L" -O0",4);
-		}else{
-			if(t_1==String(L"release",7)){
-				t_ccopts=t_ccopts+String(L" -O3 -DNDEBUG",13);
-				t_ldopts=t_ldopts+String(L" -s",3);
-			}
-		}
-		p_ProcessExternalLibs(CurrentDir()+String(L"\\",1)+m_casedConfig,t_msize,t_libopts);
-		if(HostOS()==String(L"winnt",5)){
-			t_ldopts=t_ldopts+(String(L" -L",3)+m_tcc->m__libs+String(L"Win",3)+t_msize);
-		}
-		String t_cmd=String(L"make",4);
-		if(HostOS()==String(L"winnt",5) && ((FileType(m_tcc->m_MINGW_PATH+String(L"/bin/mingw32-make.exe",21)))!=0)){
-			t_cmd=String(L"mingw32-make",12);
-		}
-		p_Execute(t_cmd+String(L" ARCH=\"",7)+t_msize+String(L"\" CCOPTS=\"",10)+t_ccopts+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" LIBOPTS=\"",11)+t_libopts+String(L"\" SRCOPTS=\"",11)+t_srcopts+String(L"\" VPATHOPTS=\"",13)+t_vpathopts+String(L"\" OUT=\"",7)+t_tconfig+String(L"/CerberusGame\"",14),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(t_tconfig);
-			if(HostOS()==String(L"winnt",5)){
-				p_Execute(String(L"CerberusGame",12),true);
-			}else{
-				p_Execute(String(L"./CerberusGame",14),true);
-			}
-		}
-	}
-}
-void c_GlfwBuilder::p_MakeVc2010(){
-	CreateDir(String(L"vc2010/",7)+m_casedConfig);
-	CreateDir(String(L"vc2010/",7)+m_casedConfig+String(L"/internal",9));
-	CreateDir(String(L"vc2010/",7)+m_casedConfig+String(L"/external",9));
-	p_CreateDataDir(String(L"vc2010/",7)+m_casedConfig+String(L"/data",5));
-	String t_main=LoadString(String(L"main.cpp",8));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"main.cpp",8));
-	if(m_tcc->m_opt_build){
-		ChangeDir(String(L"vc2010",6));
-		p_Execute(String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=Win32 CerberusGame.sln",35),true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(m_casedConfig);
-			p_Execute(String(L"CerberusGame",12),true);
-		}
+		CreateDir(t_build_dir);
+		p_BuildOption(t_dst,t_outpath,t_maketool+String(L" C_COMPILER=\"",13)+t_cc+String(L"\" CXX_COMPILER=\"",16)+t_cxx+String(L"\" CC_OPTS=\"",11)+t_cc_opts+String(L"\" LD_LIB_OPTS=\"",15)+t_ld_lib_opts+String(L"\" LD_OPTS=\"",11)+t_ld_opts+String(L"\" SRC_OPTS=\"",12)+t_src_opts+String(L"\" VPATH_OPTS=\"",14)+t_vpath_opts+String(L"\" MSIZE=\"",9)+t_msize+String(L"\" STATIC_LINK=\"",15)+bb_config_GetConfigVar(String(L"GLFW_MINGW_STATIC_LINK",22))+String(L"\" BUILD_DIR=\"",13)+RealPath(t_build_dir)+String(L"\" OUT_PATH=\"",12)+t_outpath+String(L"\" OUT=\"",7)+t_out+String(L"\"",1),t_out);
 	}
 }
 void c_GlfwBuilder::p_MakeMsvc(){
-	String t_ccopts=String();
-	String t_ldopts=String();
-	String t_libopts=String();
-	String t_libcopy=String();
-	String t_srcopts=String();
-	String t_vpathopts=String();
-	String t_msize=bb_config_GetConfigVar(String(L"GLFW_GCC_MSIZE_",15)+HostOS().ToUpper());
-	String t_[]={String(L"|",1),String(L";",1)};
-	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_CC_OPTS",16),String(L" ",1),Array<String >(t_,2));
-	String t_2[]={String(L"|",1),String(L";",1)};
-	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LD_OPTS",16),String(L" ",1),Array<String >(t_2,2));
-	String t_3[]={String(L"|",1),String(L";",1)};
-	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_LIB_OPTS",17),String(L" ",1),Array<String >(t_3,2));
-	String t_4[]={String(L"|",1),String(L";",1)};
-	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_SRC_OPTS",17),String(L" ",1),Array<String >(t_4,2));
-	String t_5[]={String(L"|",1),String(L";",1)};
-	bb_config_UnifyConfigVarSeparator(String(L"GLFW_GCC_VPATH_OPTS",19),String(L" ",1),Array<String >(t_5,2));
-	t_libopts=t_libopts+(String(L" ",1)+bb_config_GetConfigVar(String(L"GLFW_GCC_LIB_OPTS",17)));
-	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize);
-	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/internal",9));
-	CreateDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/external",9));
-	p_CreateDataDir(String(L"msvc/",5)+m_casedConfig+t_msize+String(L"/data",5));
-	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
-	String t_main=LoadString(String(L"main.cpp",8));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"main.cpp",8));
-	p_ProcessExternalLibs(String(L"msvc/",5)+m_casedConfig,t_msize,t_libopts);
-	if(m_tcc->m_opt_build){
-		ChangeDir(String(L"msvc",4));
-		String t_sBuild=String();
-		if(t_msize==String(L"32",2)){
-			t_sBuild=String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=win32",18);
+	String t_out=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_NAME",16));
+	String t_outpath=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_PATH",16));
+	String t_winsdk=bb_config_GetConfigVar(String(L"GLFW_WINSDK_VERSION",19));
+	String t_platformtToolset=bb_config_GetConfigVar(String(L"GLFW_PLATFORM_TOOLSET",21));
+	String t_msize=String();
+	String t_platform=String();
+	String t_cc_opts=String();
+	String t_cc_libs=String();
+	String t_cc_ldopts=String();
+	if(t_outpath==String()){
+		t_outpath=CurrentDir()+String(L"/msvc",5);
+	}else{
+		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+	}
+	if(t_out==String()){
+		t_out=String(L"CerberusGame",12);
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_CC_OPTS",17))){
+		String t_[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_MSVC_CC_OPTS",17),String(L" ",1),Array<String >(t_,1));
+		t_cc_opts=bb_config_GetConfigVar(String(L"GLFW_MSVC_CC_OPTS",17));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_LIB_OPTS",18))){
+		String t_2[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_MSVC_LD_OPTS",17),String(L" ",1),Array<String >(t_2,1));
+		t_cc_libs=bb_config_GetConfigVar(String(L"GLFW_MSVC_LIB_OPTS",18));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_LD_OPTS",17))){
+		String t_3[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_MSVC_LIB_OPTS",18),String(L" ",1),Array<String >(t_3,1));
+		t_cc_ldopts=bb_config_GetConfigVar(String(L"GLFW_MSVC_LD_OPTS",17));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_MSIZE_WINNT",21))){
+		t_msize=bb_config_GetConfigVar(String(L"GLFW_MSVC_MSIZE_WINNT",21));
+	}
+	String t_32=t_msize;
+	if(t_32==String(L"32",2)){
+		t_platform=String(L"x86",3);
+	}else{
+		if(t_32==String(L"64",2)){
+			t_platform=String(L"x64",3);
 		}else{
-			t_sBuild=String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" /p:Configuration=",19)+m_casedConfig+String(L" /p:Platform=x64",16);
+			if(t_msize!=String()){
+				bbPrint(String(L"WARNING: Value assigned to CC_MSIZE is ",39)+t_msize+String(L"\nOnly 32 and 64 are permitted.\nDefaulting to Win32.",51));
+			}
+			t_msize=String(L"32",2);
+			t_platform=String(L"x86",3);
 		}
-		p_Execute(t_sBuild,true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(m_casedConfig+t_msize);
-			p_Execute(String(L"CerberusGame",12),true);
-		}
+	}
+	if(t_winsdk==String()){
+		t_winsdk=m_tcc->m_WIN_SDK;
+	}
+	if(t_platformtToolset==String()){
+		t_platformtToolset=m_tcc->m_PLATFORM_TOOLSET;
+	}
+	t_outpath=t_outpath+String(L"/",1)+m_casedConfig+t_msize;
+	p_CreateOutputDirectory(t_outpath);
+	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
+	p_UpdateMainSourceFile();
+	p_ProcessExternalLibs(t_outpath,String(L"Win",3)+t_msize,t_msize);
+	bbPrint(String(L"MSBUILD_PATH: ",14)+m_tcc->m_MSBUILD_PATH);
+	if(m_tcc->m_opt_build){
+		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalOptions=\"",21)+t_cc_opts+String(L" ",1)+t_cc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalDependencies=\"",26)+t_cc_libs+String(L"\" CerberusGame.sln",18),t_out);
 	}
 }
 void c_GlfwBuilder::p_MakeXcode(){
@@ -21411,28 +21546,24 @@ void c_GlfwBuilder::p_MakeXcode(){
 	}
 }
 void c_GlfwBuilder::p_MakeTarget(){
-	String t_3=HostOS();
-	if(t_3==String(L"winnt",5)){
+	String t_5=HostOS();
+	if(t_5==String(L"winnt",5)){
 		if(bb_config_GetConfigVar(String(L"GLFW_USE_MINGW",14))==String(L"1",1) && ((m_tcc->m_MINGW_PATH).Length()!=0)){
 			p_MakeGcc();
 		}else{
-			if(FileType(String(L"vc2010",6))==2){
-				p_MakeVc2010();
+			if(FileType(String(L"msvc",4))==2){
+				p_MakeMsvc();
 			}else{
-				if(FileType(String(L"msvc",4))==2){
-					p_MakeMsvc();
-				}else{
-					if((m_tcc->m_MINGW_PATH).Length()!=0){
-						p_MakeGcc();
-					}
+				if((m_tcc->m_MINGW_PATH).Length()!=0){
+					p_MakeGcc();
 				}
 			}
 		}
 	}else{
-		if(t_3==String(L"macos",5)){
+		if(t_5==String(L"macos",5)){
 			p_MakeXcode();
 		}else{
-			if(t_3==String(L"linux",5)){
+			if(t_5==String(L"linux",5)){
 				p_MakeGcc();
 			}
 		}
@@ -21842,7 +21973,7 @@ c_StdcppBuilder* c_StdcppBuilder::m_new2(){
 bool c_StdcppBuilder::p_IsValid(){
 	String t_1=HostOS();
 	if(t_1==String(L"winnt",5)){
-		if((m_tcc->m_MINGW_PATH).Length()!=0){
+		if(((m_tcc->m_MINGW_PATH).Length()!=0) || FileType(m_tcc->m_MSBUILD_PATH)==1){
 			return true;
 		}
 	}else{
@@ -21890,18 +22021,20 @@ void c_StdcppBuilder::p_BuildOption(String t_buildDir,String t_outpath,String t_
 		p_OptionRun(t_outpath,t_out);
 	}
 }
-void c_StdcppBuilder::p_MakeGcc2(String t_cc_opts,String t_cc_libs,String t_cc_ldopts){
+void c_StdcppBuilder::p_MakeGcc2(String t_gcc_opts,String t_gcc_libs,String t_gcc_ldopts){
 	p_UpdateMainSourceFile();
-	String t_opts=String();
-	String t_libs=String();
-	String t_ldopts=String();
+	String t_cc_opts=String();
+	String t_ld_lib_opts=String();
+	String t_ld_opts=String();
+	String t_exec=String();
+	String t_src_opts=String();
+	String t_vpath_opts=String();
 	String t_maketool=String(L"make",4);
-	String t_msize=bb_config_GetConfigVar(String(L"CC_MSIZE",8));
 	String t_cxx=String(L"g++",3);
 	String t_cc=String(L"gcc",3);
 	String t_dst=String(L"gcc_",4)+HostOS();
+	String t_msize=bb_config_GetConfigVar(String(L"CC_MSIZE",8));
 	String t_out=bb_config_GetConfigVar(String(L"CC_OUTPUT_NAME",14));
-	String t_exec=String();
 	String t_outpath=bb_config_GetConfigVar(String(L"CC_OUTPUT_PATH",14));
 	String t_build_dir=String(L"build/",6)+m_casedConfig;
 	if(t_outpath==String()){
@@ -21913,88 +22046,131 @@ void c_StdcppBuilder::p_MakeGcc2(String t_cc_opts,String t_cc_libs,String t_cc_l
 		t_out=String(L"main_",5)+HostOS();
 	}
 	if(bb_config_GetConfigVar(String(L"DEBUG",5))==String(L"1",1)){
-		t_opts=t_opts+String(L" -O0",4);
+		t_cc_opts=t_cc_opts+String(L" -O0",4);
 	}else{
 		if(bb_config_GetConfigVar(String(L"RELEASE",7))==String(L"1",1)){
-			t_opts=t_opts+String(L" -O3 -DNDEBUG",13);
-			t_libs=t_libs+String(L" -s",3);
+			t_cc_opts=t_cc_opts+String(L" -O3 -DNDEBUG",13);
+			t_ld_lib_opts=t_ld_lib_opts+String(L" -s",3);
 		}else{
 			if(bb_config_GetConfigVar(String(L"PROFILE",7))==String(L"1",1)){
-				t_opts=t_opts+String(L" -pg",4);
+				t_cc_opts=t_cc_opts+String(L" -pg",4);
 			}
 		}
 	}
 	String t_4=HostOS();
 	if(t_4==String(L"winnt",5)){
-		if((bb_config_GetConfigVar(String(L"CC_MINGW_OPTS",13))).Length()!=0){
-			t_cc_opts=bb_config_GetConfigVar(String(L"CC_MINGW_OPTS",13));
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_OPTS",13))){
+			String t_[]={String(L"|",1),String(L";",1)};
+			bb_config_UnifyConfigVarSeparator(String(L"CC_MINGW_OPTS",13),String(L" ",1),Array<String >(t_,2));
+			t_gcc_opts=bb_config_GetConfigVar(String(L"CC_MINGW_OPTS",13));
 		}
-		if((bb_config_GetConfigVar(String(L"CC_MINGW_LIBS",13))).Length()!=0){
-			t_cc_libs=bb_config_GetConfigVar(String(L"CC_MINGW_LIBS",13));
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_LIBS",13))){
+			String t_2[]={String(L"|",1),String(L";",1)};
+			bb_config_UnifyConfigVarSeparator(String(L"CC_MINGW_LIBS",13),String(L" ",1),Array<String >(t_2,2));
+			t_gcc_libs=bb_config_GetConfigVar(String(L"CC_MINGW_LIBS",13));
 		}
-		if((bb_config_GetConfigVar(String(L"CC_MINGW_LDOPTS",15))).Length()!=0){
-			t_cc_ldopts=bb_config_GetConfigVar(String(L"CC_MINGW_LDOPTS",15));
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_LDOPTS",15))){
+			String t_3[]={String(L"|",1),String(L";",1)};
+			bb_config_UnifyConfigVarSeparator(String(L"CC_MINGW_LDOPTS",15),String(L" ",1),Array<String >(t_3,2));
+			t_gcc_ldopts=bb_config_GetConfigVar(String(L"CC_MINGW_LDOPTS",15));
 		}
-		if((bb_config_GetConfigVar(String(L"CC_MINGW_MSIZE",14))).Length()!=0){
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_SRC_OPTS",17))){
+			String t_5[]={String(L"|",1),String(L";",1)};
+			bb_config_UnifyConfigVarSeparator(String(L"CC_MINGW_SRC_OPTS",17),String(L" ",1),Array<String >(t_5,2));
+			t_src_opts=bb_config_GetConfigVar(String(L"CC_MINGW_SRC_OPTS",17));
+		}
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_VPATH_OPTS",19))){
+			String t_6[]={String(L"|",1),String(L";",1)};
+			bb_config_UnifyConfigVarSeparator(String(L"CC_MINGW_VPATH_OPTS",19),String(L" ",1),Array<String >(t_6,2));
+			t_vpath_opts=bb_config_GetConfigVar(String(L"CC_MINGW_VPATH_OPTS",19));
+		}
+		if(bb_config_ConfigVarsContain(String(L"CC_MINGW_MSIZE",14))){
 			t_msize=bb_config_GetConfigVar(String(L"CC_MINGW_MSIZE",14));
 		}
-		t_opts=t_opts+(String(L" -Wno-free-nonheap-object ",26)+t_cc_opts);
-		t_libs=t_libs+(String(L" ",1)+t_cc_libs);
-		t_ldopts=t_ldopts+(String(L" ",1)+t_cc_ldopts);
+		t_cc_opts=t_cc_opts+(String(L" -Wno-free-nonheap-object ",26)+t_gcc_opts);
+		t_ld_lib_opts=t_ld_lib_opts+(String(L" ",1)+t_gcc_libs);
+		t_ld_opts=t_ld_opts+(String(L" ",1)+t_gcc_ldopts);
 		t_maketool=String(L"mingw32-make",12);
 	}else{
 		if(t_4==String(L"linux",5)){
-			if((bb_config_GetConfigVar(String(L"CC_GCC_OPTS",11))).Length()!=0){
-				t_cc_opts=bb_config_GetConfigVar(String(L"CC_GCC_OPTS",11));
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_OPTS",11))){
+				String t_7[]={String(L"|",1),String(L";",1)};
+				bb_config_UnifyConfigVarSeparator(String(L"CC_GCC_OPTS",11),String(L" ",1),Array<String >(t_7,2));
+				t_gcc_opts=bb_config_GetConfigVar(String(L"CC_GCC_OPTS",11));
 			}
-			if((bb_config_GetConfigVar(String(L"CC_GCC_LIBS",11))).Length()!=0){
-				t_cc_libs=bb_config_GetConfigVar(String(L"CC_GCC_LIBS",11));
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_LIBS",11))){
+				String t_8[]={String(L"|",1),String(L";",1)};
+				bb_config_UnifyConfigVarSeparator(String(L"CC_GCC_LIBS",11),String(L" ",1),Array<String >(t_8,2));
+				t_gcc_libs=bb_config_GetConfigVar(String(L"CC_GCC_LIBS",11));
 			}
-			if((bb_config_GetConfigVar(String(L"CC_GCC_LDOPTS",13))).Length()!=0){
-				t_cc_ldopts=bb_config_GetConfigVar(String(L"CC_GCC_LDOPTS",13));
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_LDOPTS",13))){
+				String t_9[]={String(L"|",1),String(L";",1)};
+				bb_config_UnifyConfigVarSeparator(String(L"CC_GCC_LDOPTS",13),String(L" ",1),Array<String >(t_9,2));
+				t_gcc_ldopts=bb_config_GetConfigVar(String(L"CC_GCC_LDOPTS",13));
 			}
-			if((bb_config_GetConfigVar(String(L"CC_GCC_MSIZE",12))).Length()!=0){
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_SRC_OPTS",15))){
+				String t_10[]={String(L"|",1),String(L";",1)};
+				bb_config_UnifyConfigVarSeparator(String(L"CC_GCC_SRC_OPTS",15),String(L" ",1),Array<String >(t_10,2));
+				t_src_opts=bb_config_GetConfigVar(String(L"CC_GCC_SRC_OPTS",15));
+			}
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_VPATH_OPTS",17))){
+				String t_11[]={String(L"|",1),String(L";",1)};
+				bb_config_UnifyConfigVarSeparator(String(L"CC_GCC_VPATH_OPTS",17),String(L" ",1),Array<String >(t_11,2));
+				t_vpath_opts=bb_config_GetConfigVar(String(L"CC_GCC_VPATH_OPTS",17));
+			}
+			if(bb_config_ConfigVarsContain(String(L"CC_GCC_MSIZE",12))){
 				t_msize=bb_config_GetConfigVar(String(L"CC_GCC_MSIZE",12));
 			}
-			if((bb_config_GetConfigVar(String(L"CC_GCC_MSIZE",12))).Length()!=0){
-				t_msize=bb_config_GetConfigVar(String(L"CC_GCC_MSIZE",12));
-			}
-			if((bb_config_GetConfigVar(String(L"CC_LINUX_CC",11))).Length()!=0){
+			if(bb_config_ConfigVarsContain(String(L"CC_LINUX_CC",11))){
 				t_cc=bb_config_GetConfigVar(String(L"CC_LINUX_CC",11));
 			}
-			if((bb_config_GetConfigVar(String(L"CC_LINUX_CXX",12))).Length()!=0){
+			if(bb_config_ConfigVarsContain(String(L"CC_LINUX_CXX",12))){
 				t_cxx=bb_config_GetConfigVar(String(L"CC_LINUX_CXX",12));
 			}
-			t_opts=t_opts+(String(L" -Wno-unused-result ",20)+t_cc_opts);
-			t_libs=t_libs+(String(L" ",1)+t_cc_libs+String(L" -lpthread -ldl",15));
-			t_ldopts=t_ldopts+(String(L" ",1)+t_cc_ldopts+String(L" -no-pie",8));
+			t_cc_opts=t_cc_opts+(String(L" -Wno-unused-result ",20)+t_gcc_opts);
+			t_ld_lib_opts=t_ld_lib_opts+(String(L" ",1)+t_gcc_libs+String(L" -lpthread -ldl",15));
+			t_ld_opts=t_ld_opts+(String(L" ",1)+t_gcc_ldopts+String(L" -no-pie",8));
 			t_exec=String(L"./",2)+t_out;
 		}
 	}
-	if(t_msize!=String()){
-		if(t_msize==String(L"32",2)){
-			t_msize=String(L"-m32",4);
+	String t_52=t_msize;
+	if(t_52==String(L"32",2)){
+		t_cc_opts=t_cc_opts+String(L"-m32",4);
+		t_ld_opts=t_ld_opts+String(L"-m32",4);
+		t_build_dir=t_build_dir+String(L"32",2);
+		bbPrint(String(L"Setting CC build to 32-bit",26));
+	}else{
+		if(t_52==String(L"64",2)){
+			t_cc_opts=t_cc_opts+String(L"-m64",4);
+			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_build_dir=t_build_dir+String(L"64",2);
+			bbPrint(String(L"Setting CC build to 64-bit",26));
 		}else{
-			if(t_msize==String(L"64",2)){
-				t_msize=String(L"-m64",4);
-			}else{
-				bbPrint(String(L"WARNING: Value assigned to CC_MSIZE is ",39)+t_msize+String(L"\nOnly 32 and 64 are permitted.",30));
+			if(t_msize!=String()){
+				bbPrint(String(L"WARNING: Value assigned to GLFW_GCC_MSIZE is ",45)+t_msize+String(L"\nOnly 32 and 64 are permitted.",30));
 			}
+			bbPrint(String(L"Setting default CC build to 64-bit",34));
+			t_cc_opts=t_cc_opts+String(L"-m64",4);
+			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_build_dir=t_build_dir+String(L"64",2);
+			t_msize=String(L"64",2);
 		}
 	}
 	if(m_tcc->m_opt_build){
 		ChangeDir(t_dst);
 		CreateDir(String(L"build",5));
 		CreateDir(t_build_dir);
-		p_BuildOption(t_dst,t_outpath,t_maketool+String(L" C_COMPILER=\"",13)+t_cc+String(L"\" CXX_COMPILER=\"",16)+t_cxx+String(L"\" CCOPTS=\"",10)+t_opts+String(L"\" LDLIBS=\"",10)+t_libs+String(L"\" LDOPTS=\"",10)+t_ldopts+String(L"\" BUILD_DIR=\"",13)+RealPath(t_build_dir)+String(L"\" OUT_PATH=\"",12)+t_outpath+String(L"\" OUT=\"",7)+t_out+String(L"\"",1),t_out);
+		p_BuildOption(t_dst,t_outpath,t_maketool+String(L" C_COMPILER=\"",13)+t_cc+String(L"\" CXX_COMPILER=\"",16)+t_cxx+String(L"\" CC_OPTS=\"",11)+t_cc_opts+String(L"\" LD_LIB_OPTS=\"",15)+t_ld_lib_opts+String(L"\" LD_OPTS=\"",11)+t_ld_opts+String(L"\" VPATH_OPTS=\"",14)+t_vpath_opts+String(L"\" SRC_OPTS=\"",12)+t_src_opts+String(L"\" STATIC_LINK=\"",15)+bb_config_GetConfigVar(String(L"CC_MINGW_STATIC_LINK",20))+String(L"\" BUILD_DIR=\"",13)+RealPath(t_build_dir)+String(L"\" OUT_PATH=\"",12)+t_outpath+String(L"\" OUT=\"",7)+t_out+String(L"\"",1),t_out);
 	}
 }
-void c_StdcppBuilder::p_MakeMsvc2(String t_cc_opts,String t_cc_libs,String t_cc_ldopts){
+void c_StdcppBuilder::p_MakeMsvc2(String t_gcc_opts,String t_gcc_libs,String t_gcc_ldopts){
 	p_UpdateMainSourceFile();
 	String t_out=bb_config_GetConfigVar(String(L"CC_OUTPUT_NAME",14));
 	String t_outpath=bb_config_GetConfigVar(String(L"CC_OUTPUT_PATH",14));
 	String t_msize=bb_config_GetConfigVar(String(L"CC_MSIZE",8));
 	String t_platform=String();
+	String t_winsdk=bb_config_GetConfigVar(String(L"CC_WINSDK_VERSION",17));
+	String t_platformtToolset=bb_config_GetConfigVar(String(L"CC_PLATFORM_TOOLSET",19));
 	if(t_outpath==String()){
 		t_outpath=CurrentDir();
 	}else{
@@ -22003,17 +22179,29 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_cc_opts,String t_cc_libs,String t_cc_
 	if(t_out==String()){
 		t_out=String(L"main_",5)+HostOS();
 	}
-	if((bb_config_GetConfigVar(String(L"CC_MSVC_OPTS",12))).Length()!=0){
-		t_cc_opts=bb_config_GetConfigVar(String(L"CC_MSVC_OPTS",12));
+	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_OPTS",12))){
+		String t_[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"CC_MSVC_OPTS",12),String(L" ",1),Array<String >(t_,1));
+		t_gcc_opts=bb_config_GetConfigVar(String(L"CC_MSVC_OPTS",12));
 	}
-	if((bb_config_GetConfigVar(String(L"CC_MSVC_LIBS",12))).Length()!=0){
-		t_cc_libs=bb_config_GetConfigVar(String(L"CC_MSVC_LIBS",12));
+	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_LIBS",12))){
+		String t_2[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"CC_MSVC_LIBS",12),String(L" ",1),Array<String >(t_2,1));
+		t_gcc_libs=bb_config_GetConfigVar(String(L"CC_MSVC_LIBS",12));
 	}
-	if((bb_config_GetConfigVar(String(L"CC_MSVC_LDOPTS",14))).Length()!=0){
-		t_cc_ldopts=bb_config_GetConfigVar(String(L"CC_MSVC_LDOPTS",14));
+	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_LDOPTS",14))){
+		String t_3[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"CC_MSVC_LDOPTS",14),String(L" ",1),Array<String >(t_3,1));
+		t_gcc_ldopts=bb_config_GetConfigVar(String(L"CC_MSVC_LDOPTS",14));
 	}
-	if((bb_config_GetConfigVar(String(L"CC_MSVC_MSIZE",13))).Length()!=0){
+	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_MSIZE",13))){
 		t_msize=bb_config_GetConfigVar(String(L"CC_MSVC_MSIZE",13));
+	}
+	if(t_winsdk==String()){
+		t_winsdk=m_tcc->m_WIN_SDK;
+	}
+	if(t_platformtToolset==String()){
+		t_platformtToolset=m_tcc->m_PLATFORM_TOOLSET;
 	}
 	if(t_msize!=String()){
 		if(t_msize==String(L"32",2)){
@@ -22034,7 +22222,7 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_cc_opts,String t_cc_libs,String t_cc_
 		t_platform=String(L"x86",3);
 	}
 	if(m_tcc->m_opt_build){
-		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalOptions=\"",21)+t_cc_opts+String(L" ",1)+t_cc_ldopts+String(L"\";AdditionalDependencies=\"",26)+t_cc_libs+String(L"\" msvc.sln",10),t_out);
+		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalOptions=\"",21)+t_gcc_opts+String(L" ",1)+t_gcc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalDependencies=\"",26)+t_gcc_libs+String(L"\" msvc.sln",10),t_out);
 	}
 }
 void c_StdcppBuilder::p_MakeXcode2(String t_cc_opts,String t_cc_libs,String t_cc_ldopts){
@@ -23792,9 +23980,9 @@ Object* c_ModuleDecl::p_GetDecl2(String t_ident){
 	return c_ScopeDecl::p_GetDecl(t_ident);
 }
 Object* c_ModuleDecl::p_GetDecl(String t_ident){
-	c_List11* t_todo=(new c_List11)->m_new();
+	c_List12* t_todo=(new c_List12)->m_new();
 	c_StringMap5* t_done=(new c_StringMap5)->m_new();
-	t_todo->p_AddLast11(this);
+	t_todo->p_AddLast12(this);
 	t_done->p_Insert3(m_filepath,this);
 	Object* t_decl=0;
 	String t_declmod=String();
@@ -23844,7 +24032,7 @@ Object* c_ModuleDecl::p_GetDecl(String t_ident){
 		while(t_2->p_HasNext()){
 			c_ModuleDecl* t_mdecl2=t_2->p_NextObject();
 			if(!t_done->p_Contains(t_mdecl2->m_filepath)){
-				t_todo->p_AddLast11(t_mdecl2);
+				t_todo->p_AddLast12(t_mdecl2);
 				t_done->p_Insert3(t_mdecl2->m_filepath,t_mdecl2);
 			}
 		}
@@ -27635,7 +27823,7 @@ c_BlockDecl* c_BlockDecl::m_new2(){
 }
 c_Decl* c_BlockDecl::p_OnCopy(){
 	c_BlockDecl* t_t=(new c_BlockDecl)->m_new2();
-	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator7* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_t->p_AddStmt(t_stmt->p_Copy2(t_t));
@@ -27644,7 +27832,7 @@ c_Decl* c_BlockDecl::p_OnCopy(){
 }
 int c_BlockDecl::p_OnSemant(){
 	bb_decl_PushEnv(this);
-	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator7* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_stmt->p_Semant();
@@ -27730,7 +27918,7 @@ c_Decl* c_FuncDecl::p_OnCopy(){
 		gc_assign(t_args[t_i],dynamic_cast<c_ArgDecl*>(t_args[t_i]->p_Copy()));
 	}
 	c_FuncDecl* t_t=(new c_FuncDecl)->m_new(m_ident,m_attrs,m_retType,t_args);
-	c_Enumerator6* t_=m_stmts->p_ObjectEnumerator();
+	c_Enumerator7* t_=m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		t_t->p_AddStmt(t_stmt->p_Copy2(t_t));
@@ -29330,8 +29518,8 @@ c_List7* c_List7::m_new2(Array<c_Stmt* > t_data){
 bool c_List7::p_IsEmpty(){
 	return m__head->m__succ==m__head;
 }
-c_Enumerator6* c_List7::p_ObjectEnumerator(){
-	return (new c_Enumerator6)->m_new(this);
+c_Enumerator7* c_List7::p_ObjectEnumerator(){
+	return (new c_Enumerator7)->m_new(this);
 }
 c_Node12* c_List7::p_AddFirst(c_Stmt* t_data){
 	return (new c_Node12)->m_new(m__head->m__succ,m__head,t_data);
@@ -31239,8 +31427,8 @@ c_List10* c_List10::m_new2(Array<c_GlobalDecl* > t_data){
 	}
 	return this;
 }
-c_Enumerator7* c_List10::p_ObjectEnumerator(){
-	return (new c_Enumerator7)->m_new(this);
+c_Enumerator8* c_List10::p_ObjectEnumerator(){
+	return (new c_Enumerator8)->m_new(this);
 }
 void c_List10::mark(){
 	Object::mark();
@@ -33258,7 +33446,7 @@ int c_CTranslator::p_EmitBlock(c_BlockDecl* t_block,bool t_realBlock){
 		}
 	}
 	c_Stmt* t_lastStmt=0;
-	c_Enumerator6* t_=t_block->m_stmts->p_ObjectEnumerator();
+	c_Enumerator7* t_=t_block->m_stmts->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_Stmt* t_stmt=t_->p_NextObject();
 		bb_config__errInfo=t_stmt->m_errInfo;
@@ -33957,7 +34145,7 @@ String c_JavaTranslator::p_TransApp(c_AppDecl* t_app){
 		if(t_mdecl==t_app->m_mainModule){
 			p_BeginLocalScope();
 			p_Emit(String(L"public static int bbInit(){",27));
-			c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+			c_Enumerator8* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 			while(t_7->p_HasNext()){
 				c_GlobalDecl* t_decl6=t_7->p_NextObject();
 				p_Emit(p_TransGlobal(t_decl6)+String(L"=",1)+t_decl6->m_init->p_Trans()+String(L";",1));
@@ -34749,7 +34937,7 @@ int c_CppTranslator::p_EmitSetErr(String t_info){
 		return 0;
 	}
 	m_lastDbgInfo=t_info;
-	c_Enumerator8* t_=m_dbgLocals->p_ObjectEnumerator();
+	c_Enumerator9* t_=m_dbgLocals->p_ObjectEnumerator();
 	while(t_->p_HasNext()){
 		c_LocalDecl* t_decl=t_->p_NextObject();
 		if(((t_decl->m_ident).Length()!=0) && p_IsDebuggable(t_decl->m_type)){
@@ -35120,7 +35308,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 	p_BeginLocalScope();
 	p_Emit(String(L"int bbInit(){",13));
 	p_Emit(String(L"GC_CTOR",7));
-	c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator8* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_7->p_HasNext()){
 		c_GlobalDecl* t_decl7=t_7->p_NextObject();
 		String t_munged=p_TransGlobal(t_decl7);
@@ -35133,7 +35321,7 @@ String c_CppTranslator::p_TransApp(c_AppDecl* t_app){
 	p_Emit(String(L"}",1));
 	p_EndLocalScope();
 	p_Emit(String(L"void gc_mark(){",15));
-	c_Enumerator7* t_8=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator8* t_8=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_8->p_HasNext()){
 		c_GlobalDecl* t_decl8=t_8->p_NextObject();
 		p_EmitMark(p_TransGlobal(t_decl8),t_decl8->m_type,true);
@@ -35530,6 +35718,187 @@ void c_CppTranslator::mark(){
 	c_CTranslator::mark();
 	gc_mark_q(m_dbgLocals);
 }
+String bb_transcc_ExpandEnv(String t_text){
+	String t_resolved=String();
+	String t_char=String();
+	int t_idx1=0;
+	int t_terminator=0;
+	int t_idx2=0;
+	while(t_idx1<t_text.Length()){
+		t_char=String((Char)((int)t_text[t_idx1]),1);
+		String t_1=t_char;
+		if(t_1==String(L"%",1)){
+			t_terminator=t_text.Find(String(L"%",1),t_idx1+1);
+			t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
+			if(t_terminator<0){
+				t_terminator=t_text.Length();
+			}
+			t_idx1+=t_terminator+1-t_idx1;
+		}else{
+			if(t_1==String(L"$",1)){
+				t_terminator=-1;
+				t_idx2=t_idx1;
+				while(t_idx2<t_text.Length() && t_terminator<0){
+					if((int)t_text[t_idx2]==47 || (int)t_text[t_idx2]==58 || (int)t_text[t_idx2]==59){
+						t_terminator=t_idx2;
+					}
+					t_idx2+=1;
+				}
+				if(t_terminator<0){
+					t_terminator=t_text.Length();
+				}
+				t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
+				t_idx1+=t_terminator-t_idx1;
+			}else{
+				t_resolved=t_resolved+t_char;
+				t_idx1+=1;
+			}
+		}
+	}
+	return t_resolved;
+}
+int bb_transcc_CreateDirs(String t_path,String t_delim){
+	bbPrint(String(L"Creating output directory structure:\n",37)+t_path);
+	Array<String > t_dirs=t_path.Split(t_delim);
+	String t_currentDir=CurrentDir();
+	if(HostOS()!=String(L"winnt",5)){
+		if(t_dirs[0]==String()){
+			t_dirs[0]=String(L"/",1);
+		}
+	}
+	String t_check=String();
+	Array<String > t_=t_dirs;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		String t_i=t_[t_2];
+		t_2=t_2+1;
+		t_check=t_check+(t_i+t_delim);
+		if(FileType(t_i)==1){
+			bb_transcc_Die(String(L"Directory creation error: Path is a regular file. Cannot continue.\n",67)+t_check);
+		}
+		CreateDir(t_i.Trim());
+		if(((!((FileType(t_check))!=0))?1:0)==2){
+			bb_transcc_Die(String(L"Failed to create directory:\n",28)+t_check);
+		}
+		ChangeDir(t_i.Trim()+t_delim);
+	}
+	if(FileType(t_path)==2){
+		bbPrint(String(L"Created output directory success.",33));
+	}
+	ChangeDir(t_currentDir);
+	return 0;
+}
+c_TupleString::c_TupleString(){
+	m_src=String();
+	m_dst=String();
+}
+c_TupleString* c_TupleString::m_new(String t_src,String t_dst){
+	this->m_src=t_src;
+	this->m_dst=t_dst;
+	return this;
+}
+c_TupleString* c_TupleString::m_new2(){
+	return this;
+}
+void c_TupleString::mark(){
+	Object::mark();
+}
+c_List11::c_List11(){
+	m__head=((new c_HeadNode11)->m_new());
+}
+c_List11* c_List11::m_new(){
+	return this;
+}
+c_Node19* c_List11::p_AddLast11(c_TupleString* t_data){
+	return (new c_Node19)->m_new(m__head,m__head->m__pred,t_data);
+}
+c_List11* c_List11::m_new2(Array<c_TupleString* > t_data){
+	Array<c_TupleString* > t_=t_data;
+	int t_2=0;
+	while(t_2<t_.Length()){
+		c_TupleString* t_t=t_[t_2];
+		t_2=t_2+1;
+		p_AddLast11(t_t);
+	}
+	return this;
+}
+int c_List11::p_Count(){
+	int t_n=0;
+	c_Node19* t_node=m__head->m__succ;
+	while(t_node!=m__head){
+		t_node=t_node->m__succ;
+		t_n+=1;
+	}
+	return t_n;
+}
+c_Enumerator6* c_List11::p_ObjectEnumerator(){
+	return (new c_Enumerator6)->m_new(this);
+}
+void c_List11::mark(){
+	Object::mark();
+	gc_mark_q(m__head);
+}
+c_Node19::c_Node19(){
+	m__succ=0;
+	m__pred=0;
+	m__data=0;
+}
+c_Node19* c_Node19::m_new(c_Node19* t_succ,c_Node19* t_pred,c_TupleString* t_data){
+	gc_assign(m__succ,t_succ);
+	gc_assign(m__pred,t_pred);
+	gc_assign(m__succ->m__pred,this);
+	gc_assign(m__pred->m__succ,this);
+	gc_assign(m__data,t_data);
+	return this;
+}
+c_Node19* c_Node19::m_new2(){
+	return this;
+}
+void c_Node19::mark(){
+	Object::mark();
+	gc_mark_q(m__succ);
+	gc_mark_q(m__pred);
+	gc_mark_q(m__data);
+}
+c_HeadNode11::c_HeadNode11(){
+}
+c_HeadNode11* c_HeadNode11::m_new(){
+	c_Node19::m_new2();
+	gc_assign(m__succ,(this));
+	gc_assign(m__pred,(this));
+	return this;
+}
+void c_HeadNode11::mark(){
+	c_Node19::mark();
+}
+c_Enumerator6::c_Enumerator6(){
+	m__list=0;
+	m__curr=0;
+}
+c_Enumerator6* c_Enumerator6::m_new(c_List11* t_list){
+	gc_assign(m__list,t_list);
+	gc_assign(m__curr,t_list->m__head->m__succ);
+	return this;
+}
+c_Enumerator6* c_Enumerator6::m_new2(){
+	return this;
+}
+bool c_Enumerator6::p_HasNext(){
+	while(m__curr->m__succ->m__pred!=m__curr){
+		gc_assign(m__curr,m__curr->m__succ);
+	}
+	return m__curr!=m__list->m__head;
+}
+c_TupleString* c_Enumerator6::p_NextObject(){
+	c_TupleString* t_data=m__curr->m__data;
+	gc_assign(m__curr,m__curr->m__succ);
+	return t_data;
+}
+void c_Enumerator6::mark(){
+	Object::mark();
+	gc_mark_q(m__list);
+	gc_mark_q(m__curr);
+}
 c_JsTranslator::c_JsTranslator(){
 }
 c_JsTranslator* c_JsTranslator::m_new(){
@@ -35749,7 +36118,7 @@ String c_JsTranslator::p_TransApp(c_AppDecl* t_app){
 		}
 	}
 	p_Emit(String(L"function bbInit(){",18));
-	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator8* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_GlobalDecl* t_decl5=t_5->p_NextObject();
 		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
@@ -36316,76 +36685,6 @@ int bb_builder_GetInfo_GIF(String t_path){
 	}
 	return -1;
 }
-String bb_transcc_ExpandEnv(String t_text){
-	String t_resolved=String();
-	String t_char=String();
-	int t_idx1=0;
-	int t_terminator=0;
-	int t_idx2=0;
-	while(t_idx1<t_text.Length()){
-		t_char=String((Char)((int)t_text[t_idx1]),1);
-		String t_1=t_char;
-		if(t_1==String(L"%",1)){
-			t_terminator=t_text.Find(String(L"%",1),t_idx1+1);
-			t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
-			if(t_terminator<0){
-				t_terminator=t_text.Length();
-			}
-			t_idx1+=t_terminator+1-t_idx1;
-		}else{
-			if(t_1==String(L"$",1)){
-				t_terminator=-1;
-				t_idx2=t_idx1;
-				while(t_idx2<t_text.Length() && t_terminator<0){
-					if((int)t_text[t_idx2]==47 || (int)t_text[t_idx2]==58 || (int)t_text[t_idx2]==59){
-						t_terminator=t_idx2;
-					}
-					t_idx2+=1;
-				}
-				if(t_terminator<0){
-					t_terminator=t_text.Length();
-				}
-				t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
-				t_idx1+=t_terminator-t_idx1;
-			}else{
-				t_resolved=t_resolved+t_char;
-				t_idx1+=1;
-			}
-		}
-	}
-	return t_resolved;
-}
-int bb_transcc_CreateDirs(String t_path,String t_delim){
-	bbPrint(String(L"Creating output directory structure:\n",37)+t_path);
-	Array<String > t_dirs=t_path.Split(t_delim);
-	String t_currentDir=CurrentDir();
-	if(HostOS()!=String(L"winnt",5)){
-		if(t_dirs[0]==String()){
-			t_dirs[0]=String(L"/",1);
-		}
-	}
-	Array<String > t_=t_dirs;
-	int t_2=0;
-	while(t_2<t_.Length()){
-		String t_i=t_[t_2];
-		t_2=t_2+1;
-		int t_22=FileType(t_i);
-		if(t_22==2){
-			bbPrint(String(L"Directory already exists:\n",26)+RealPath(t_i));
-		}else{
-			if(t_22==1){
-				bb_transcc_Die(String(L"Directory creation error: Path is a regular file. Cannot continue.\n",67)+RealPath(t_i));
-			}else{
-				if((CreateDir(t_i.Trim()))!=0){
-					bbPrint(String(L"Created directory:\n",19)+RealPath(t_i));
-				}
-			}
-		}
-		ChangeDir(t_i.Trim());
-	}
-	ChangeDir(t_currentDir);
-	return 0;
-}
 c_CsTranslator::c_CsTranslator(){
 }
 c_CsTranslator* c_CsTranslator::m_new(){
@@ -36686,7 +36985,7 @@ String c_CsTranslator::p_TransApp(c_AppDecl* t_app){
 		if(t_mdecl==t_app->m_mainModule){
 			p_BeginLocalScope();
 			p_Emit(String(L"public static int bbInit(){",27));
-			c_Enumerator7* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
+			c_Enumerator8* t_7=t_app->m_semantedGlobals->p_ObjectEnumerator();
 			while(t_7->p_HasNext()){
 				c_GlobalDecl* t_decl6=t_7->p_NextObject();
 				p_Emit(p_TransGlobal(t_decl6)+String(L"=",1)+t_decl6->m_init->p_Trans()+String(L";",1));
@@ -37321,7 +37620,7 @@ String c_AsTranslator::p_TransApp(c_AppDecl* t_app){
 	}
 	p_BeginLocalScope();
 	p_Emit(String(L"function bbInit():void{",23));
-	c_Enumerator7* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
+	c_Enumerator8* t_5=t_app->m_semantedGlobals->p_ObjectEnumerator();
 	while(t_5->p_HasNext()){
 		c_GlobalDecl* t_decl5=t_5->p_NextObject();
 		p_Emit(p_TransGlobal(t_decl5)+String(L"=",1)+t_decl5->m_init->p_Trans()+String(L";",1));
@@ -37692,37 +37991,37 @@ String c_AsTranslator::p_TransTryStmt(c_TryStmt* t_stmt){
 void c_AsTranslator::mark(){
 	c_CTranslator::mark();
 }
-c_List11::c_List11(){
-	m__head=((new c_HeadNode11)->m_new());
+c_List12::c_List12(){
+	m__head=((new c_HeadNode12)->m_new());
 }
-c_List11* c_List11::m_new(){
+c_List12* c_List12::m_new(){
 	return this;
 }
-c_Node19* c_List11::p_AddLast11(c_ModuleDecl* t_data){
-	return (new c_Node19)->m_new(m__head,m__head->m__pred,t_data);
+c_Node20* c_List12::p_AddLast12(c_ModuleDecl* t_data){
+	return (new c_Node20)->m_new(m__head,m__head->m__pred,t_data);
 }
-c_List11* c_List11::m_new2(Array<c_ModuleDecl* > t_data){
+c_List12* c_List12::m_new2(Array<c_ModuleDecl* > t_data){
 	Array<c_ModuleDecl* > t_=t_data;
 	int t_2=0;
 	while(t_2<t_.Length()){
 		c_ModuleDecl* t_t=t_[t_2];
 		t_2=t_2+1;
-		p_AddLast11(t_t);
+		p_AddLast12(t_t);
 	}
 	return this;
 }
-bool c_List11::p_IsEmpty(){
+bool c_List12::p_IsEmpty(){
 	return m__head->m__succ==m__head;
 }
-c_ModuleDecl* c_List11::p_RemoveLast(){
+c_ModuleDecl* c_List12::p_RemoveLast(){
 	c_ModuleDecl* t_data=m__head->m__pred->m__data;
 	m__head->m__pred->p_Remove();
 	return t_data;
 }
-bool c_List11::p_Equals5(c_ModuleDecl* t_lhs,c_ModuleDecl* t_rhs){
+bool c_List12::p_Equals5(c_ModuleDecl* t_lhs,c_ModuleDecl* t_rhs){
 	return t_lhs==t_rhs;
 }
-c_Node19* c_List11::p_FindLast9(c_ModuleDecl* t_value,c_Node19* t_start){
+c_Node20* c_List12::p_FindLast9(c_ModuleDecl* t_value,c_Node20* t_start){
 	while(t_start!=m__head){
 		if(p_Equals5(t_value,t_start->m__data)){
 			return t_start;
@@ -37731,25 +38030,25 @@ c_Node19* c_List11::p_FindLast9(c_ModuleDecl* t_value,c_Node19* t_start){
 	}
 	return 0;
 }
-c_Node19* c_List11::p_FindLast10(c_ModuleDecl* t_value){
+c_Node20* c_List12::p_FindLast10(c_ModuleDecl* t_value){
 	return p_FindLast9(t_value,m__head->m__pred);
 }
-void c_List11::p_RemoveLast6(c_ModuleDecl* t_value){
-	c_Node19* t_node=p_FindLast10(t_value);
+void c_List12::p_RemoveLast6(c_ModuleDecl* t_value){
+	c_Node20* t_node=p_FindLast10(t_value);
 	if((t_node)!=0){
 		t_node->p_Remove();
 	}
 }
-void c_List11::mark(){
+void c_List12::mark(){
 	Object::mark();
 	gc_mark_q(m__head);
 }
-c_Node19::c_Node19(){
+c_Node20::c_Node20(){
 	m__succ=0;
 	m__pred=0;
 	m__data=0;
 }
-c_Node19* c_Node19::m_new(c_Node19* t_succ,c_Node19* t_pred,c_ModuleDecl* t_data){
+c_Node20* c_Node20::m_new(c_Node20* t_succ,c_Node20* t_pred,c_ModuleDecl* t_data){
 	gc_assign(m__succ,t_succ);
 	gc_assign(m__pred,t_pred);
 	gc_assign(m__succ->m__pred,this);
@@ -37757,55 +38056,55 @@ c_Node19* c_Node19::m_new(c_Node19* t_succ,c_Node19* t_pred,c_ModuleDecl* t_data
 	gc_assign(m__data,t_data);
 	return this;
 }
-c_Node19* c_Node19::m_new2(){
+c_Node20* c_Node20::m_new2(){
 	return this;
 }
-int c_Node19::p_Remove(){
+int c_Node20::p_Remove(){
 	gc_assign(m__succ->m__pred,m__pred);
 	gc_assign(m__pred->m__succ,m__succ);
 	return 0;
 }
-void c_Node19::mark(){
+void c_Node20::mark(){
 	Object::mark();
 	gc_mark_q(m__succ);
 	gc_mark_q(m__pred);
 	gc_mark_q(m__data);
 }
-c_HeadNode11::c_HeadNode11(){
+c_HeadNode12::c_HeadNode12(){
 }
-c_HeadNode11* c_HeadNode11::m_new(){
-	c_Node19::m_new2();
+c_HeadNode12* c_HeadNode12::m_new(){
+	c_Node20::m_new2();
 	gc_assign(m__succ,(this));
 	gc_assign(m__pred,(this));
 	return this;
 }
-void c_HeadNode11::mark(){
-	c_Node19::mark();
+void c_HeadNode12::mark(){
+	c_Node20::mark();
 }
-c_Enumerator6::c_Enumerator6(){
+c_Enumerator7::c_Enumerator7(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator6* c_Enumerator6::m_new(c_List7* t_list){
+c_Enumerator7* c_Enumerator7::m_new(c_List7* t_list){
 	gc_assign(m__list,t_list);
 	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
-c_Enumerator6* c_Enumerator6::m_new2(){
+c_Enumerator7* c_Enumerator7::m_new2(){
 	return this;
 }
-bool c_Enumerator6::p_HasNext(){
+bool c_Enumerator7::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
-c_Stmt* c_Enumerator6::p_NextObject(){
+c_Stmt* c_Enumerator7::p_NextObject(){
 	c_Stmt* t_data=m__curr->m__data;
 	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
-void c_Enumerator6::mark(){
+void c_Enumerator7::mark(){
 	Object::mark();
 	gc_mark_q(m__list);
 	gc_mark_q(m__curr);
@@ -37985,8 +38284,8 @@ c_Map9::c_Map9(){
 c_Map9* c_Map9::m_new(){
 	return this;
 }
-c_Node20* c_Map9::p_FindNode(String t_key){
-	c_Node20* t_node=m_root;
+c_Node21* c_Map9::p_FindNode(String t_key){
+	c_Node21* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -38002,14 +38301,14 @@ c_Node20* c_Map9::p_FindNode(String t_key){
 	return t_node;
 }
 c_FuncDeclList* c_Map9::p_Get(String t_key){
-	c_Node20* t_node=p_FindNode(t_key);
+	c_Node21* t_node=p_FindNode(t_key);
 	if((t_node)!=0){
 		return t_node->m_value;
 	}
 	return 0;
 }
-int c_Map9::p_RotateLeft9(c_Node20* t_node){
-	c_Node20* t_child=t_node->m_right;
+int c_Map9::p_RotateLeft9(c_Node21* t_node){
+	c_Node21* t_child=t_node->m_right;
 	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
 		gc_assign(t_child->m_left->m_parent,t_node);
@@ -38028,8 +38327,8 @@ int c_Map9::p_RotateLeft9(c_Node20* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map9::p_RotateRight9(c_Node20* t_node){
-	c_Node20* t_child=t_node->m_left;
+int c_Map9::p_RotateRight9(c_Node21* t_node){
+	c_Node21* t_child=t_node->m_left;
 	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
 		gc_assign(t_child->m_right->m_parent,t_node);
@@ -38048,10 +38347,10 @@ int c_Map9::p_RotateRight9(c_Node20* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map9::p_InsertFixup9(c_Node20* t_node){
+int c_Map9::p_InsertFixup9(c_Node21* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node20* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node21* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -38067,7 +38366,7 @@ int c_Map9::p_InsertFixup9(c_Node20* t_node){
 				p_RotateRight9(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node20* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node21* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -38088,8 +38387,8 @@ int c_Map9::p_InsertFixup9(c_Node20* t_node){
 	return 0;
 }
 bool c_Map9::p_Set8(String t_key,c_FuncDeclList* t_value){
-	c_Node20* t_node=m_root;
-	c_Node20* t_parent=0;
+	c_Node21* t_node=m_root;
+	c_Node21* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -38105,7 +38404,7 @@ bool c_Map9::p_Set8(String t_key,c_FuncDeclList* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node20)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node21)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			gc_assign(t_parent->m_right,t_node);
@@ -38134,7 +38433,7 @@ int c_StringMap8::p_Compare(String t_lhs,String t_rhs){
 void c_StringMap8::mark(){
 	c_Map9::mark();
 }
-c_Node20::c_Node20(){
+c_Node21::c_Node21(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -38142,17 +38441,17 @@ c_Node20::c_Node20(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node20* c_Node20::m_new(String t_key,c_FuncDeclList* t_value,int t_color,c_Node20* t_parent){
+c_Node21* c_Node21::m_new(String t_key,c_FuncDeclList* t_value,int t_color,c_Node21* t_parent){
 	this->m_key=t_key;
 	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
 	gc_assign(this->m_parent,t_parent);
 	return this;
 }
-c_Node20* c_Node20::m_new2(){
+c_Node21* c_Node21::m_new2(){
 	return this;
 }
-void c_Node20::mark(){
+void c_Node21::mark(){
 	Object::mark();
 	gc_mark_q(m_right);
 	gc_mark_q(m_left);
@@ -38165,8 +38464,8 @@ c_Map10::c_Map10(){
 c_Map10* c_Map10::m_new(){
 	return this;
 }
-c_Node21* c_Map10::p_FindNode(String t_key){
-	c_Node21* t_node=m_root;
+c_Node22* c_Map10::p_FindNode(String t_key){
+	c_Node22* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -38184,8 +38483,8 @@ c_Node21* c_Map10::p_FindNode(String t_key){
 bool c_Map10::p_Contains(String t_key){
 	return p_FindNode(t_key)!=0;
 }
-int c_Map10::p_RotateLeft10(c_Node21* t_node){
-	c_Node21* t_child=t_node->m_right;
+int c_Map10::p_RotateLeft10(c_Node22* t_node){
+	c_Node22* t_child=t_node->m_right;
 	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
 		gc_assign(t_child->m_left->m_parent,t_node);
@@ -38204,8 +38503,8 @@ int c_Map10::p_RotateLeft10(c_Node21* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map10::p_RotateRight10(c_Node21* t_node){
-	c_Node21* t_child=t_node->m_left;
+int c_Map10::p_RotateRight10(c_Node22* t_node){
+	c_Node22* t_child=t_node->m_left;
 	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
 		gc_assign(t_child->m_right->m_parent,t_node);
@@ -38224,10 +38523,10 @@ int c_Map10::p_RotateRight10(c_Node21* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map10::p_InsertFixup10(c_Node21* t_node){
+int c_Map10::p_InsertFixup10(c_Node22* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node21* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node22* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -38243,7 +38542,7 @@ int c_Map10::p_InsertFixup10(c_Node21* t_node){
 				p_RotateRight10(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node21* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node22* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -38264,8 +38563,8 @@ int c_Map10::p_InsertFixup10(c_Node21* t_node){
 	return 0;
 }
 bool c_Map10::p_Set9(String t_key,c_FuncDecl* t_value){
-	c_Node21* t_node=m_root;
-	c_Node21* t_parent=0;
+	c_Node22* t_node=m_root;
+	c_Node22* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -38281,7 +38580,7 @@ bool c_Map10::p_Set9(String t_key,c_FuncDecl* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node21)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node22)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			gc_assign(t_parent->m_right,t_node);
@@ -38310,7 +38609,7 @@ int c_StringMap9::p_Compare(String t_lhs,String t_rhs){
 void c_StringMap9::mark(){
 	c_Map10::mark();
 }
-c_Node21::c_Node21(){
+c_Node22::c_Node22(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -38318,17 +38617,17 @@ c_Node21::c_Node21(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node21* c_Node21::m_new(String t_key,c_FuncDecl* t_value,int t_color,c_Node21* t_parent){
+c_Node22* c_Node22::m_new(String t_key,c_FuncDecl* t_value,int t_color,c_Node22* t_parent){
 	this->m_key=t_key;
 	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
 	gc_assign(this->m_parent,t_parent);
 	return this;
 }
-c_Node21* c_Node21::m_new2(){
+c_Node22* c_Node22::m_new2(){
 	return this;
 }
-void c_Node21::mark(){
+void c_Node22::mark(){
 	Object::mark();
 	gc_mark_q(m_right);
 	gc_mark_q(m_left);
@@ -38341,8 +38640,8 @@ c_Map11::c_Map11(){
 c_Map11* c_Map11::m_new(){
 	return this;
 }
-c_Node22* c_Map11::p_FindNode(String t_key){
-	c_Node22* t_node=m_root;
+c_Node23* c_Map11::p_FindNode(String t_key){
+	c_Node23* t_node=m_root;
 	while((t_node)!=0){
 		int t_cmp=p_Compare(t_key,t_node->m_key);
 		if(t_cmp>0){
@@ -38358,14 +38657,14 @@ c_Node22* c_Map11::p_FindNode(String t_key){
 	return t_node;
 }
 c_StringSet* c_Map11::p_Get(String t_key){
-	c_Node22* t_node=p_FindNode(t_key);
+	c_Node23* t_node=p_FindNode(t_key);
 	if((t_node)!=0){
 		return t_node->m_value;
 	}
 	return 0;
 }
-int c_Map11::p_RotateLeft11(c_Node22* t_node){
-	c_Node22* t_child=t_node->m_right;
+int c_Map11::p_RotateLeft11(c_Node23* t_node){
+	c_Node23* t_child=t_node->m_right;
 	gc_assign(t_node->m_right,t_child->m_left);
 	if((t_child->m_left)!=0){
 		gc_assign(t_child->m_left->m_parent,t_node);
@@ -38384,8 +38683,8 @@ int c_Map11::p_RotateLeft11(c_Node22* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map11::p_RotateRight11(c_Node22* t_node){
-	c_Node22* t_child=t_node->m_left;
+int c_Map11::p_RotateRight11(c_Node23* t_node){
+	c_Node23* t_child=t_node->m_left;
 	gc_assign(t_node->m_left,t_child->m_right);
 	if((t_child->m_right)!=0){
 		gc_assign(t_child->m_right->m_parent,t_node);
@@ -38404,10 +38703,10 @@ int c_Map11::p_RotateRight11(c_Node22* t_node){
 	gc_assign(t_node->m_parent,t_child);
 	return 0;
 }
-int c_Map11::p_InsertFixup11(c_Node22* t_node){
+int c_Map11::p_InsertFixup11(c_Node23* t_node){
 	while(((t_node->m_parent)!=0) && t_node->m_parent->m_color==-1 && ((t_node->m_parent->m_parent)!=0)){
 		if(t_node->m_parent==t_node->m_parent->m_parent->m_left){
-			c_Node22* t_uncle=t_node->m_parent->m_parent->m_right;
+			c_Node23* t_uncle=t_node->m_parent->m_parent->m_right;
 			if(((t_uncle)!=0) && t_uncle->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle->m_color=1;
@@ -38423,7 +38722,7 @@ int c_Map11::p_InsertFixup11(c_Node22* t_node){
 				p_RotateRight11(t_node->m_parent->m_parent);
 			}
 		}else{
-			c_Node22* t_uncle2=t_node->m_parent->m_parent->m_left;
+			c_Node23* t_uncle2=t_node->m_parent->m_parent->m_left;
 			if(((t_uncle2)!=0) && t_uncle2->m_color==-1){
 				t_node->m_parent->m_color=1;
 				t_uncle2->m_color=1;
@@ -38444,8 +38743,8 @@ int c_Map11::p_InsertFixup11(c_Node22* t_node){
 	return 0;
 }
 bool c_Map11::p_Set10(String t_key,c_StringSet* t_value){
-	c_Node22* t_node=m_root;
-	c_Node22* t_parent=0;
+	c_Node23* t_node=m_root;
+	c_Node23* t_parent=0;
 	int t_cmp=0;
 	while((t_node)!=0){
 		t_parent=t_node;
@@ -38461,7 +38760,7 @@ bool c_Map11::p_Set10(String t_key,c_StringSet* t_value){
 			}
 		}
 	}
-	t_node=(new c_Node22)->m_new(t_key,t_value,-1,t_parent);
+	t_node=(new c_Node23)->m_new(t_key,t_value,-1,t_parent);
 	if((t_parent)!=0){
 		if(t_cmp>0){
 			gc_assign(t_parent->m_right,t_node);
@@ -38490,7 +38789,7 @@ int c_StringMap10::p_Compare(String t_lhs,String t_rhs){
 void c_StringMap10::mark(){
 	c_Map11::mark();
 }
-c_Node22::c_Node22(){
+c_Node23::c_Node23(){
 	m_key=String();
 	m_right=0;
 	m_left=0;
@@ -38498,47 +38797,47 @@ c_Node22::c_Node22(){
 	m_color=0;
 	m_parent=0;
 }
-c_Node22* c_Node22::m_new(String t_key,c_StringSet* t_value,int t_color,c_Node22* t_parent){
+c_Node23* c_Node23::m_new(String t_key,c_StringSet* t_value,int t_color,c_Node23* t_parent){
 	this->m_key=t_key;
 	gc_assign(this->m_value,t_value);
 	this->m_color=t_color;
 	gc_assign(this->m_parent,t_parent);
 	return this;
 }
-c_Node22* c_Node22::m_new2(){
+c_Node23* c_Node23::m_new2(){
 	return this;
 }
-void c_Node22::mark(){
+void c_Node23::mark(){
 	Object::mark();
 	gc_mark_q(m_right);
 	gc_mark_q(m_left);
 	gc_mark_q(m_value);
 	gc_mark_q(m_parent);
 }
-c_Enumerator7::c_Enumerator7(){
+c_Enumerator8::c_Enumerator8(){
 	m__list=0;
 	m__curr=0;
 }
-c_Enumerator7* c_Enumerator7::m_new(c_List10* t_list){
+c_Enumerator8* c_Enumerator8::m_new(c_List10* t_list){
 	gc_assign(m__list,t_list);
 	gc_assign(m__curr,t_list->m__head->m__succ);
 	return this;
 }
-c_Enumerator7* c_Enumerator7::m_new2(){
+c_Enumerator8* c_Enumerator8::m_new2(){
 	return this;
 }
-bool c_Enumerator7::p_HasNext(){
+bool c_Enumerator8::p_HasNext(){
 	while(m__curr->m__succ->m__pred!=m__curr){
 		gc_assign(m__curr,m__curr->m__succ);
 	}
 	return m__curr!=m__list->m__head;
 }
-c_GlobalDecl* c_Enumerator7::p_NextObject(){
+c_GlobalDecl* c_Enumerator8::p_NextObject(){
 	c_GlobalDecl* t_data=m__curr->m__data;
 	gc_assign(m__curr,m__curr->m__succ);
 	return t_data;
 }
-void c_Enumerator7::mark(){
+void c_Enumerator8::mark(){
 	Object::mark();
 	gc_mark_q(m__list);
 	gc_mark_q(m__curr);
@@ -38562,8 +38861,8 @@ void c_Stack10::p_Clear(){
 	}
 	m_length=0;
 }
-c_Enumerator8* c_Stack10::p_ObjectEnumerator(){
-	return (new c_Enumerator8)->m_new(this);
+c_Enumerator9* c_Stack10::p_ObjectEnumerator(){
+	return (new c_Enumerator9)->m_new(this);
 }
 void c_Stack10::p_Length(int t_newlength){
 	if(t_newlength<m_length){
@@ -38599,25 +38898,25 @@ void c_Stack10::mark(){
 	Object::mark();
 	gc_mark_q(m_data);
 }
-c_Enumerator8::c_Enumerator8(){
+c_Enumerator9::c_Enumerator9(){
 	m_stack=0;
 	m_index=0;
 }
-c_Enumerator8* c_Enumerator8::m_new(c_Stack10* t_stack){
+c_Enumerator9* c_Enumerator9::m_new(c_Stack10* t_stack){
 	gc_assign(this->m_stack,t_stack);
 	return this;
 }
-c_Enumerator8* c_Enumerator8::m_new2(){
+c_Enumerator9* c_Enumerator9::m_new2(){
 	return this;
 }
-bool c_Enumerator8::p_HasNext(){
+bool c_Enumerator9::p_HasNext(){
 	return m_index<m_stack->p_Length2();
 }
-c_LocalDecl* c_Enumerator8::p_NextObject(){
+c_LocalDecl* c_Enumerator9::p_NextObject(){
 	m_index+=1;
 	return m_stack->m_data[m_index-1];
 }
-void c_Enumerator8::mark(){
+void c_Enumerator9::mark(){
 	Object::mark();
 	gc_mark_q(m_stack);
 }
