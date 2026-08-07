@@ -1,10 +1,12 @@
+# GLFW GCC MINGW MAKE FILE
 CC=gcc
 CFLAGS=-D_GLFW_WIN32
 
 CXX=g++
 CXXFLAGS=
 
-CPPFLAGS=$(CCOPTS) \
+# Compiler flags.
+CPPFLAGS=$(CC_OPTS) \
 -Wno-free-nonheap-object \
 -I../curl/include \
 -I../glfw3/include \
@@ -15,25 +17,32 @@ CPPFLAGS=$(CCOPTS) \
 -I../zlib-1.2.8 \
 -I../lpng1610
 
+# Linker flags
 LD=g++
-LDFLAGS=$(LDOPTS) -Wl,--subsystem,windows
-LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LIBOPTS) -lws2_32 -lole32
-
-RES=windres
-ifeq ($(ARCH),64)
-    RES_ARCH=pe-x86-64
+LDFLAGS=$(LD_OPTS) -Wl,--subsystem,windows
+ifeq ($(STATIC_LINK),1)
+LDLIBS=-static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -lcomdlg32 -lgdi32 -lopengl32 $(LD_LIB_OPTS) -lws2_32 -lole32
 else
-    RES_ARCH=pe-i386
+LDLIBS=-lcomdlg32 -lgdi32 -lopengl32 $(LD_LIB_OPTS) -lws2_32 -lole32
 endif
 
-VPATH= $(VPATHOPTS) \
+# Set the resource compiler flags
+RES=windres
+RES_ARCH=pe-x86-64
+ifeq ($(MSIZE),32)
+   RES_ARCH=pe-i386 
+endif
+
+# Add virtual paths to search
+VPATH= $(VPATH_OPTS) \
 %.c ../glfw3/src \
 %.c ../stb \
 %.c ../tinyfiledialogs \
 %.cpp .. \
 %.rc ..
 
-OBJS0= $(SRCOPTS) \
+# Add source files.
+OBJS0= $(SRC_OPTS) \
 context.o \
 egl_context.o \
 init.o \
@@ -61,13 +70,16 @@ resource.o \
 tinyfiledialogs.o \
 main.o
 
-TMP=build/$(dir $(OUT))
+# Setup build directory
+TMP=$(BUILD_DIR)/$(dir $(OUT))
 
+# File subsitution
 OBJS=$(patsubst %.o,$(TMP)%.o,$(OBJS0))
 
-all : $(OUT)
+# Final build output
+all : $(OUT_PATH)/$(OUT)
 
-$(OUT) : $(OBJS)
+$(OUT_PATH)/$(OUT) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 $(TMP)%.o : %.c
