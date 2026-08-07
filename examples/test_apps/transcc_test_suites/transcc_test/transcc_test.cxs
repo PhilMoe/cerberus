@@ -1,14 +1,15 @@
 #If HOST="winnt"
-#CC_OUTPUT_NAME="test_winnt"
-#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
-#CC_MSIZE="64"
-#CC_USE_MINGW=True
+	#CC_OUTPUT_NAME="test_winnt"
+	'#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
+	#CC_MINGW_STATIC_LINK=True
+	#CC_MSIZE="64"
+	#CC_USE_MINGW=False 'True
 #Elseif HOST="macos"
-#CC_OUTPUT_NAME="test_macos"
-#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+	#CC_OUTPUT_NAME="test_macos"
+	#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
 #Else
-#CC_OUTPUT_NAME="test_linux"
-#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
+	#CC_OUTPUT_NAME="test_linux"
+	#CC_OUTPUT_PATH="$HOME/Documents/Cerberus-X"
 #Endif
 Import brl.filesystem
 'Import os
