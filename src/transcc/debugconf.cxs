@@ -11,8 +11,8 @@ Const TEST_BUILD:="-run"
 
 #If DEBUG_TARGET="Desktop"
 	#If DEBUG_TEST="TransCC"
-	    Const TEST_PATH:="/src/transcc/transcc_test/"
-	    Const TEST_FILE:="cpptool"
+	    Const TEST_PATH:="/examples/test_apps/transcc_test_suites/"
+	    Const TEST_FILE:="transcc_test"
 	    Const TEST_TARGET:="C++_Tool"
 	    
 	 #Elseif DEBUG_TEST="Mojo"
