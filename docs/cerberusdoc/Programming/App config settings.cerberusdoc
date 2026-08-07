@@ -46,18 +46,30 @@ The following app config settings are currently supported:
 
 'GLFW settings, defaults shown
 '
+#GLFW_OUTPUT_NAME="CerberusGame"		'The file name for the final executable file.
+#GLFW_OUTPUT_PATH=""					'The final output path for the game files. The default is in the targets build directory for the target build system.
+
 #GLFW_USE_MINGW=True					'Set to false on Windows to use MSVC instead of MinGW to build glfw apps. Needs at least VS 2015 installed.
+#GLFW_MINGW_STATIC_LINK=False			'Force the static linking of winpthreads, and GCC runtimes into the executable. Windows only.
+										'NOTE: Check the licencing for winpthreads and GCC.
+
 #GLFW_GCC_MSIZE_WINNT="64"				'When building glfw apps with mingw/gcc, controls whether 32 or 64 bit apps are generated.
 										'Set to "64" to force 64 bit builds on Windows (needs mingw64), or "" to use compiler default.
-										'Currently that also works for MSVC!!!
+#GLFW_MSVC_MSIZE_WINNT="32"				'Ditto for Visual Studio.
 #GLFW_GCC_MSIZE_LINUX=""				'Ditto for Linux.
+
 #GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
 #GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers
 #GLFW_GCC_LIB_OPTS=""				    'Pass additional libraries to link against for GCC type compilers.
-#GLFW_GCC_SRC_OPTS=""				    'Pass additional source files to be build.
-#GLFW_GCC_VPATH_OPTS=""				    'Pass additional virtual paths to look into when building.
-#GLFW_COPY_LIBS=""						'Copy 64bit external libraries to build directory. Windows GCC only for now!
-#GLFW_COPY_LIBS_32=""					'Copy 32bit external libraries to build directory. Windows GCC only for now!
+#GLFW_GCC_SRC_OPTS=""				    'Pass additional source files to be build. GCC compilers only.
+#GLFW_GCC_VPATH_OPTS=""				    'Pass additional virtual paths to look into when building. GCC compilers only.
+
+#GLFW_MSVC_CC_OPTS=""					'Pass compiler options to MSVC type compilers
+#GLFW_MSVC_LD_OPTS=""					'Pass linker options to MSVC type compilers
+#GLFW_MSVC_LIB_OPTS=""				    'Pass additional libraries to link against for MSVC type compilers.
+
+#GLFW_COPY_LIBS=""						'Copy 64bit external libraries to build directory. Windows GCC & MSVC only for now!
+#GLFW_COPY_LIBS_32=""					'Copy 32bit external libraries to build directory. Windows GCC & MSVC only for now!
 
 #GLFW_WINDOW_TITLE="Cerberus X Game"
 #GLFW_WINDOW_WIDTH=640					
@@ -159,14 +171,18 @@ The following app config settings are currently supported:
 
 #CC_USE_MINGW="1"
 #CC_MINGW_OPTS=""					'Pass additional MinGW options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
-#CC_MINGS_LIBS=""					'Pass additional libraries to link against for MINGW type compilers.
+#CC_MINGW_LIBS=""					'Pass additional libraries to link against for MINGW type compilers.
 #CC_MINGW_LDOPTS=""					'Pass additional linker options for stdcpp target, eg: #CC_OPTS+="-L../FILE_PATH"
 #CC_MINGW_MSIZE=""					'Pass architeture size for MINGW. If not set, defaults to compiler default.
+#CC_MINGW_SRC_OPTS=""				'Pass additional source files to be build. GCC compilers only.
+#CC_MINGW_VPATH_OPTS=""				'Pass additional virtual paths to look into when building. GCC compilers only.
 
 #CC_GCC_OPTS=""						'Pass additional gcc options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 #CC_GCC_LIBS=""						'Pass additional libraries to link against for GCC type compilers.
 #CC_GCC_LDOPTS=""					'Pass additional linker options for stdcpp target, eg: #CC_OPTS+="-L../FILE_PATH"
 #CC_GCC_MSIZE=""					'Pass architeture size for GCC. If not set, defaults to compiler default.
+#CC_GCC_SRC_OPTS=""				    'Pass additional source files to be build. GCC compilers only.
+#CC_GCC_VPATH_OPTS=""			    'Pass additional virtual paths to look into when building. GCC compilers only.
 
 #CC_MSVC_OPTS=""					'Pass additional MSVC options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 #CC_MSVC_LIBS=""					'Pass additional libraries to link against for MSVC compilers.
