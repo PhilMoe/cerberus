@@ -37,6 +37,7 @@ Thumbs.db
 /src/build-ted-*
 /src/ted/ted.pro.user*
 /src/build*
+/src/transcc/transcc.build/**/build
 
 /targets/__deprecated__/android_ndk
 
@@ -57,3 +58,5 @@ Thumbs.db
 *.desktop
 .vs
 *vcxproj.user
+
+/**/xcode/**/*.xcuserdatad
