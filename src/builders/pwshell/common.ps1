@@ -54,7 +54,7 @@ function execute([String]$_cmd, [string[]]$_argList) {
     do_build "EXECUTING: $_cmd $_argList"
     $expr = "& `"$_cmd`" $_argList"
     try {
-        $global:MESSAGE = Invoke-Expression "$expr 2>&1"  | Out-String
+        $global:MESSAGE = Invoke-Expression "$expr"  | Out-String
         if ($stdstream -eq $true) { Write-Host $global:MESSAGE }
         if (-not($LASTEXITCODE -eq 0)) { throw $global:MESSAGE }
     }
@@ -62,6 +62,7 @@ function execute([String]$_cmd, [string[]]$_argList) {
         $global:EXITCODE = 1
         $global:MESSAGE = $_ | Out-String
     }
+  
 }
 
 ###############################################
@@ -95,18 +96,61 @@ function transcc([string]$_name, [string]$_target, [string]$_srcfile, [string]$_
     }
 
     do_info "BUILDING $_name"
+ 
+    [string[]]$arguments=(
+        "-target=$_target",
+        "-builddir=`"$_srcfile.build`"",
+        "-clean",
+        "-config=release",
+        "+CPP_GC_MODE=$_gc_mode"
+    )
 
-    # Set the toolchain based upon the target and msbuild.
-    [string]$toolchain = ""
-    if ($msbuild -eq $true) {
+    # If the build tool is MSBuild, then pass the Windows SDK and Platform Toolset versions.
+    if ($global:msbuild -eq $true) {
         if ($_target -eq "C++_Tool") {
-            $toolchain = "+CC_USE_MINGW=0"
+            $arguments += (
+                "+CC_USE_MINGW=0",
+                "+CC_MSVC_MSIZE=`"$msize`"",
+                "+CC_WINSDK_VERSION=`"$winsdk`"",
+                "+CC_PLATFORM_TOOLSET=`"$platformtoolset`""
+            )
         } else {
-            $toolchain = "+GLFW_USE_MINGW=0"
+            $arguments += (
+                "+GLFW_USE_MINGW=0",
+                "+GLFW_MSVC_MSIZE_WINNT=`"$msize`"",
+                "+GLFW_WINSDK_VERSION=`"$winsdk`"",
+                "+GLFW_PLATFORM_TOOLSET=`"$platformtoolset`""
+            )
+        }
+    } else {
+        if ($_target -eq "C++_Tool") {
+            $arguments += (
+                "+CC_USE_MINGW=1",
+                "+CC_MINGW_MSIZE=`"$msize`""
+            )
+
+            if ($mingwstatic -eq $true) {
+                $arguments += ( "+CC_MINGW_STATIC_LINK=1" )
+            }
+
+        } else {
+            $arguments += (
+                "+GLFW_USE_MINGW=1",
+                "+GLFW_MSIZE_WINNT=`"$msize`""
+            )
+
+            if ($mingwstatic -eq $true) {
+                $arguments += ( "+GLFW_MINGW_STATIC_LINK=1" )
+            }
         }
     }
- 
-    execute "$BIN\transcc_winnt.exe" "-target=$_target -builddir=`"$_srcfile.build`" -clean -config=release +CPP_GC_MODE=$_gc_mode $toolchain `"$srcpath\$_srcfile.cxs`""
+
+    $arguments+=(
+        "`"$srcpath\$_srcfile.cxs`""
+    )
+
+    execute "$BIN\transcc_winnt.exe" $arguments
+    #execute "$BIN\transcc_winnt.exe" "-target=$_target -builddir=`"$_srcfile.build`" -clean -config=release +CPP_GC_MODE=$_gc_mode $toolchain `"$srcpath\$_srcfile.cxs`""
     if ($global:EXITCODE -ne 0) {
         $global:EXITCODE = 1
         return

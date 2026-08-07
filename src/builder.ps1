@@ -16,16 +16,19 @@ Param(
     [Alias("c")][string]$mingw = "C:\TDM-GCC-64",
     [Alias("y")][string]$vsver = "",
     [Alias("i")][string]$vsinstall = "$([System.Environment]::GetEnvironmentVariable('ProgramFiles(x86)'))\Microsoft Visual Studio\Installer",
+    [Alias("p")][string]$platformtoolset ="v142",
+    [Alias("w")][string]$winsdk = "10.0",
     [Alias("m")][switch]$showmenu = $false,
     [Alias("h")][switch]$help = $false,
-    [Alias("b")][switch]$msbuild = $false,
-    [Alias("s")][switch]$stdout = $false,
+    [Alias("b")][switch]$global:msbuild = $false,
+    [Alias("o")][switch]$stdout = $false,
     [Alias("d")][string]$deploy = "",
+    [Alias("a")][string]$msize = "64",
+    [Alias("s")][switch]$mingwstatic = $false,
     [switch]$clearbuilds = $false
 )
 
-[string]$SCRIPT_VER = "1.3.0"
-
+[string]$SCRIPT_VER = "1.3.1"
 Clear-Host
 
 # Basic variable for common Cerberus directories.
@@ -45,8 +48,9 @@ if ($help -eq $true) {
     Write-Host "USEAGE: ./builder.ps1 [options]`n`t{-m|-showmenu}`t`t`t`t`t- run in menu mode.`n`t{-q|-qtsdk} `"QT_DIR_PATH`"`t`t`t- Set root Qt SDK directory."
     Write-Host "`t{-k|-qtkit} `"DOT.VERSION.NUMBER`"`t`t- Set Qt SDK version.`n`t{-vsi|-vsinstall} `"VISUAL_INSTALLER_PATH`"`t- Set MS Visual Installer directory."
     Write-Host "`t{-y|-vsver} `"PRODUCT_YEAR`"`t`t`t- Set Visual Studio product year`n`t{-c|-mingw} `"MINGW_DIR`"`t`t`t`t- Set MiGW root directory."
-    Write-Host "`t{-b|-msbuild}`t`t`t`t`t- Build using MSBuild. Requires Visual Studio.`n`t{-s|-stdout}`t`t`t`t`t- Show stdout after execution."
-    Write-Host "`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t- Build a deployment archive in the directory passed."
+    Write-Host "`t{-b|-msbuild}`t`t`t`t`t- Build using MSBuild. Requires Visual Studio.`n`t{-p|-platformtoolset}`t`t`t`t- Set the Windows platform tool set to use. Default is v142"
+    Write-Host "`t{-w|-winsdk}`t`t`t`t`t- Select the Windows SDk to use. Default is 10.0`n`t{-a|-msize}`t`t`t`t`t- Set the architecture to build for: 32, or 64 bit."
+    Write-Host "`n`t{-s|-stdout}`t`t`t`t`t- Show stdout after execution.`n`t{-d|-deploy} `"DEPLOY_DIR`"`t`t`t- Build a deployment archive in the directory passed."
     Write-Host "`t-clearbuilds`t`t`t`t`t- Removes all previous built binaries of Cerberus within local repository.`n`t{-h|-help}`t`t`t`t`t- Show this quick help`n"
     Write-Host "EXAMPLE:`n`te.g: ./builder.ps1 -qtsdk C:\Qt -k 5.14.0"
     Write-Host "`te.g: ./builder.ps1 -qtsdk C:\Qt -qtkit 5.14.0 -vsver `"2017`" -showmenu"
@@ -112,7 +116,7 @@ if ($global:EXITCODE -ne 0) {
 }
 
 ###############
-# MEUN/DISPLAY
+# MENU/DISPLAY
 ###############
 # Set up the menu items. The array DISPLAY_ITEMS, holds the human readable menu items.
 # The array MENU_ITEMS, holds the function names to call.
@@ -153,11 +157,21 @@ function do_show_deps() {
         do_unknown "Qt SDK not installed."
     }
 
-    if ($msbuild -eq $true) {
+    if ($global:msbuild -eq $true) {
         do_info "Toolchain: MSBuild"
     } else {
-        do_info "Toolchain: MinGW"
+        if ("$mingw" -ne "NOT INSTALLED") {
+            if ($mingwstatic -eq $true) {
+                do_info "Toolchain: MinGW (Static Linking)"
+            } else {
+                do_info "Toolchain: MinGW"
+            }
+        } else {
+            do_info "Toolchain: MSBuild"
+            $global:msbuild = $true
+        }
     }
+    do_info "Target Architecture: $msize"
 }
 
 function do_title() {

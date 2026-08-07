@@ -19,18 +19,64 @@ function do_transcc() {
     # Check for an exisiting transcc and remove it.
     if (Test-Path("$BIN\transcc_winnt.exe")) { Remove-Item "$BIN\transcc_winnt.exe" }
 
-    # Build transcc from the c++ source files using the tool chain selected. If it is installed.
-    if (($msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
-        $build_dir = "$cpptool_dir\msvc\Release64"
-        execute "msbuild" "/p:OutDir=`"$BIN\`" /p:TargetName=`"transcc_winnt`" /p:Configuration=Release64 /p:Platform=x64 $cpptool_dir\msvc\msvc.sln"
+    # Build transcc from the c++ source files using the tool chain selected. That is if it's installed.
+    if (($global:msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
+
+        [string[]]$arguments = (
+            "/p:OutDir=`"$BIN\`"",
+            "/p:TargetName=`"transcc_winnt`"",
+            "/p:Configuration=Release$msize",
+            "/p:PlatformToolset=$platformtoolset",
+            "/p:WindowsTargetPlatformVersion=$winsdk"
+        )
+
+        if ($msize -eq "64") {
+            $arguments += (
+                "/p:Platform=x64"
+            )
+        } else {
+            $arguments += (
+                "/p:Platform=x86"
+            )
+        }
+
+        $arguments += ( "$cpptool_dir\msvc\msvc.sln" )
+
+        $build_dir = "$cpptool_dir\msvc\Release$msize"
+        execute "msbuild" $arguments
     } else {
+
         $build_dir = "$cpptool_dir\gcc_winnt\build"
+
+        [string[]]$arguments = (
+            "OUT_PATH=`"$BIN`"",
+            "OUT=`"transcc_winnt`"",
+            "BUILD_DIR=`"$build_dir`""
+        )
+
+        [string]$local:arch = "-m64"
+        if ($msize -eq "32") { $local:arch = "-m32" }
+
+        $arguments += (
+            "CC_OPTS=`"-O3 -DNDEBUG $local:arch -Wno-free-nonheap-object`""
+        )
+
+        if ($mingwstatic -eq $true) {
+            $arguments += (
+                "STATIC_LINK=1"
+            )
+        } else {
+             
+        }
+
         New-Item "$build_dir" -Type Directory -Force
         Push-Location
         Set-Location "$cpptool_dir\gcc_winnt"
-        execute "mingw32-make" "CCOPTS=`"-O3 -DNDEBUG -Wno-free-nonheap-object`" OUT_PATH=`"$BIN`" OUT=`"transcc_winnt`" BUILD_DIR=`"$build_dir`""
+        execute "mingw32-make" $arguments
         Pop-Location
+
     }
+
     if ($global:EXITCODE -ne 0) {
         do_error "$global:MESSAGE`n"
         return
@@ -54,10 +100,10 @@ function do_cserver() {
 
     # Set the relase directory based on the toolchain
     [string]$release_dir = "$SRC\cserver\cserver.build\glfw3\"
-    if ($msbuild -eq $true) {
-        $release_dir += "msvc\Release64"
+    if ($global:msbuild -eq $true) {
+        $release_dir += "msvc\Release$msize"
     } else {
-        $release_dir += "gcc_winnt\Release64"
+        $release_dir += "gcc_winnt\Release$msize"
     }
 
     # Remove the old version before moving the new one into the cerberus bin directory.
@@ -100,15 +146,39 @@ function do_launcher() {
     do_info "BUILDING Launcher"
 
     # Create a variable to where the project files are located.
+    [string]$parent_dir = "$SRC\launcher\"
     [string]$project_dir = "$SRC\launcher\winnt"
-    [string]$build_dir = "$project_dir\Release64"
+    [string]$build_dir = "$project_dir\Release$msize"
     [string]$icon = "$SRC\launcher\cerberus.ico"
     
     # Remove the previous launcher if detected.
     if (Test-Path("$ROOT\Cerberus.exe")) { Remove-Item "$ROOT\Cerberus.exe" }
 
-    if (($msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
-        execute "msbuild" "/p:OutDir=`"$ROOT\`" /p:ApplicationIcon=`"$icon`" /p:TargetName=`"Cerberus`" /p:Configuration=Release64 /p:Platform=x64 $project_dir\msvc.sln"
+    if (($global:msbuild -eq $true)-and($global:MSVC_SELECTED_IDX -ge 0)) {
+
+        [string[]]$arguments = (
+            "/p:OutDir=`"$ROOT\`"",
+            "/p:ApplicationIcon=`"$icon`"",
+            "/p:TargetName=`"Cerberus`"",
+            "/p:Configuration=Release$msize",
+            "/p:PlatformToolset=$platformtoolset",
+            "/p:WindowsTargetPlatformVersion=$winsdk"
+        )
+
+        if($msize -eq "64") {
+            $arguments += (
+                "/p:Platform=x64"
+            )
+        } else {
+            $arguments += (
+                "/p:Platform=x86"
+            )
+        }
+
+        $arguments += (
+            "$project_dir\msvc.sln"
+        )
+        execute "msbuild" $arguments
         clean_build "$build_dir" $false
         clean_build "$SRC\launcher\resource.o" $false
 
@@ -118,18 +188,36 @@ function do_launcher() {
         }
     } else {
 
-        execute "windres.exe" "`"$SRC\launcher\resource.rc`" -O coff -o `"$SRC\launcher\res.o`""
-        if ($global:EXITCODE -ne 0) {
-            do_error "$global:MESSAGE`n"
-            return
+        [string]$local:srcDir = $(Get-Location)
+        
+        [string]$local:arch = "-m64"
+        if ($msize -eq "32") { $local:arch = "-m32" }
+
+        $arguments = (
+            "-f",
+            "`"$project_dir\Makefile`"",
+            "BUILD_DIR=`"$build_dir`"",
+            "OUT_PATH=`"$ROOT`"",
+            "OUT=`"Cerberus.exe`"",
+            "CC_OPTS=`"-Os -DNDEBUG $local:arch -s`"",
+            "MSIZE=$msize"
+        )
+
+        if ($mingwstatic -eq $true) {
+            $arguments += (
+                "STATIC_LINK=1"
+            )
         }
 
-        execute "g++.exe" "-Os -DNDEBUG -o `"$ROOT\Cerberus.exe`" `"$project_dir\launcher.cpp`" `"$SRC\launcher\res.o`" -ladvapi32 -s"
-        clean_build "$SRC\launcher\res.o" $false
+        New-Item -ItemType Directory -Force -Path "$build_dir"
+        Set-Location "$project_dir"
+        execute "mingw32-make.exe" $arguments
         if ($global:EXITCODE -ne 0) {
             do_error "$global:MESSAGE`n"
             return
         }
+        clean_build "$build_dir" $false
+        Set-Location $local:srcDir
     }
 
     do_success "BUILD SUCCESSFUL`n"
@@ -150,7 +238,13 @@ function do_ted() {
 
     # Get the select path for the Qt KIT chosen and run qmake to generate the build files.
     [string]$qtdir = $global:QT_INSTALLS[$global:QT_SELECTED_IDX]
-    execute "$qtdir\bin\qmake.exe" "-config release $SRC\ted\ted.pro"
+
+    [string[]]$arguments = (
+        "-config",
+        "release",
+        "$SRC\ted\ted.pro"
+    )
+    execute "$qtdir\bin\qmake.exe" $arguments
     if ($global:EXITCODE -ne 0) {
         Pop-Location
         Remove-Item -Force -Recurse "$SRC\build-ted-Desktop-Release"

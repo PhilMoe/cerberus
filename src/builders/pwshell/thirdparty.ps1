@@ -99,8 +99,6 @@ function do_msvc([string]$_vsver, [string]$_vsi) {
     [string[]]$vsversions = $global:MESSAGE.Split("`n") | ForEach-Object { "$_".Trim() }
     $vsversions = $vsversions.Where({ $_ -ne "" })
 
-    #if($vsversions.count -lt 1) { return }
-
     execute "$global:VSINSTALLER_PATH\vswhere.exe" "-sort -property installationPath"
     if ($global:EXITCODE -ne 0) { return }
 
@@ -140,14 +138,14 @@ function do_mingw([string]$_mingw) {
 
     # The first thing is to check to see if the parameter passed has a valid MinGW install. If so, then add it to the
     # current sessions PATH variable, else issue a message and try to look for a system wide install.
-    execute "$_mingw/bin/g++" "--version"
+    execute "$_mingw/bin/g++" "--version" "2>$null"
     if ($global:EXITCODE -eq 0) {
 
         # Now get the current PATH variable for checking to see if the MinGW path passed is already in the systems PATH variable.
         [string]$path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
         # Only pre-end the passed parameter to the systems environment variable if there isn't one already there.
-        if (-not($path.Contains($_mingw))) {
+        if (-not($path.Contains("$_mingw\bin"))) {
             [Environment]::SetEnvironmentVariable('PATH', $_mingw + "\bin;" + $path)
         }
 
@@ -159,11 +157,11 @@ function do_mingw([string]$_mingw) {
 
     # If the above failed, try to see if there is already one installed on the systems PATH.
     # Note: Only checks the first one found in the systems environment PATH variable.
-    [string]$local:SYSMINGW = Split-Path $(Split-Path $(get-command g++.exe).Path -Parent) -Parent
+    [string]$local:GCC = $(get-command g++.exe 2>$null).Path
+    
+    if(-not([string]::IsNullOrEmpty($GCC))) {
 
-    # If SYSMINGW returns a non empty string, then try to run the compiler.
-    if(-not([string]::IsNullOrEmpty($SYSMINGW))) {
-        
+        [string]$local:SYSMINGW = Split-Path $(Split-Path $GCC -Parent) -Parent        
         execute "g++" "--version"
         if ($global:EXITCODE -ne 0) {
             $global:COMPILER_INSTALLED = $false
