@@ -18,194 +18,221 @@ Class GlfwBuilder Extends Builder
 	'***** GCC *****
 	Method MakeGcc:Void()
 	
-		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
+		UpdateMainSourceFile()	' Call common main.cpp update method
 		
-		Local tconfig:=casedConfig+msize
-	
-		Local dst:="gcc_"+HostOS
+		' Set up build variables.
+		Local cc_opts:="", ld_lib_opts:="", ld_opts:="", src_opts:="", vpath_opts:="",
+			maketool:="make", cxx:="g++", cc:="gcc", exec:="", dst:="gcc_"+HostOS,
+			msize:=GetConfigVar( "GLFW_MSIZE_"+HostOS().ToUpper() ),
+			out:=GetConfigVar( "GLFW_OUTPUT_NAME" ),
+			outpath:=GetConfigVar( "GLFW_OUTPUT_PATH" ),
+			build_dir:="build/"+casedConfig
+
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir()+"/"+dst Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="CerberusGame"
 		
-		CreateDir dst+"/"+tconfig
-		CreateDir dst+"/"+tconfig+"/internal"
-		CreateDir dst+"/"+tconfig+"/external"
+		' If the msize has been set; then set the correct switch to use.
+		Select msize
 		
-'		If msize=32
-'			If FileType(dst+"/Makefile32")=FILETYPE_FILE
-'				CopyFile(dst+"/Makefile32",dst+"/Makefile")
-'			Endif
-'		Else
-'			If FileType(dst+"/Makefile64")=FILETYPE_FILE
-'				CopyFile(dst+"/Makefile64",dst+"/Makefile")
-'			Endif
-'		Endif
-		If FileType(dst+"/build/"+tconfig+"/resource.o")=FILETYPE_FILE
-			DeleteFile(dst+"/build/"+tconfig+"/resource.o")
+			Case "32"
+				cc_opts+="-m32"
+				ld_opts+="-m32"
+				build_dir+="32"
+				Print "Setting GLFW build to 32-bit"
+				
+			Case "64"
+				cc_opts+="-m64"
+				ld_opts+="-m64"
+				build_dir+="64"
+				Print "Setting GLFW build to 64-bit"
+				
+			' Any other value should set to the default x64 configuration.
+			Default
+				If msize<>"" Print "WARNING: Value assigned to GLFW_GCC_MSIZE is "+msize+"~nOnly 32 and 64 are permitted."
+				Print "Setting default GLFW build to 64-bit"
+				cc_opts+="-m64"
+				ld_opts+="-m64"
+				build_dir+="64"
+				msize="64"
+				
+		End Select
+		
+		' Set options for build configuration.
+		If GetConfigVar( "DEBUG" )="1"
+			cc_opts+=" -O0"
+		Elseif GetConfigVar( "RELEASE" )="1"
+			cc_opts+=" -O3 -DNDEBUG"
+			ld_opts+=" -s"
+		Elseif GetConfigVar( "PROFILE" )="1"
+			' NOTE: Read https://ftp.gnu.org/old-gnu/Manuals/gprof-2.9.1/html_mono/gprof.html
+			cc_opts+=" -pg"
 		Endif
 		
-		CreateDataDir dst+"/"+tconfig+"/data"
+		' Options to pass to the compiler
+		If ConfigVarsContain( "GLFW_GCC_CC_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_GCC_CC_OPTS", " ", ["|",";"] )
+			cc_opts+=GetConfigVar( "GLFW_GCC_CC_OPTS" )
+		Endif
+		
+		' Options to pass to the linker
+		If ConfigVarsContain( "GLFW_GCC_LD_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_GCC_LD_OPTS", " ", ["|",";"] )
+			ld_opts+=GetConfigVar( "GLFW_GCC_LD_OPTS" )
+		Endif
+		
+		' Library options to pass to the linker
+		If ConfigVarsContain( "GLFW_GCC_LIB_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_GCC_LIB_OPTS", " ", ["|",";"] )
+			ld_lib_opts+=GetConfigVar( "GLFW_GCC_LIB_OPTS" )
+		Endif
+		
+		' Additional source file to pass to the compiler
+		If ConfigVarsContain( "GLFW_GCC_SRC_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_GCC_SRC_OPTS", " ", ["|",";"] )
+			src_opts+=GetConfigVar( "GLFW_GCC_SRC_OPTS" )
+		Endif
+		
+		' Additional search paths for source files
+		If ConfigVarsContain( "GLFW_GCC_VPATH_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_GCC_VPATH_OPTS", " ", ["|",";"] )
+			vpath_opts+=GetConfigVar( "GLFW_GCC_VPATH_OPTS" )
+		Endif
+		
+		' Update the primary source files
+		UpdateMainSourceFile()
+		
+		' Update the output path before generating directories and copying files.
+		outpath=outpath+"/"+casedConfig+msize
+		
+		' Create the output directory. NOTE: Should also pass the current target root make directory
+		CreateOutputDirectory( outpath )
+		
+		' Set defaults and any addiAndnal requirements
+		Select HostOS
+			Case "winnt"
+				maketool="mingw32-make"
+				If FileType(build_dir+"/resource.o")=FILETYPE_FILE DeleteFile(build_dir+"/resource.o")
+				CopyIcon(GetConfigVar( "GLFW_APP_ICON" ),CurrentDir()+"\cerberus.ico")
+				ProcessExternalLibs( outpath, "Win"+msize, msize )
+				ld_opts+=" -L"+tcc._libs+"Win"+msize
+			Case "linux"
+				exec="./"+out
+		End Select
 
-		CopySourceFiles(".")
-		
-		' need to rewrite resources.rc so that icon is rebuilt
-		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"/cerberus.ico")
-		
-		Local main:=LoadString( "main.cpp" )
-		
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-		
-		SaveString main,"main.cpp"
-		
+		' Start the build
 		If tcc.opt_build
-
 			ChangeDir dst
 			CreateDir "build"
-			CreateDir "build/"+tconfig
+			CreateDir build_dir
 			
-			Local ccopts:="",ldopts:="", libopts:="", libcopy:="", srcopts:= "", vpathopts:=""
+			BuildOption( dst,outpath,maketool+
+						" C_COMPILER=~q"+cc+
+						"~q CXX_COMPILER=~q"+cxx+
+						"~q CC_OPTS=~q"+cc_opts+
+						"~q LD_LIB_OPTS=~q"+ld_lib_opts+
+						"~q LD_OPTS=~q"+ld_opts+
+						"~q SRC_OPTS=~q"+src_opts+
+						"~q VPATH_OPTS=~q"+vpath_opts+
+						"~q MSIZE=~q"+msize+
+						"~q STATIC_LINK=~q"+GetConfigVar( "GLFW_MINGW_STATIC_LINK" )+
+						"~q BUILD_DIR=~q"+RealPath( build_dir )+
+						"~q OUT_PATH=~q"+outpath+
+						"~q OUT=~q"+out+"~q", out )
 
-			If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
-
-			UnifyConfigVarSeparator( "GLFW_GCC_CC_OPTS", " ", ["|",";"] )
-			UnifyConfigVarSeparator( "GLFW_GCC_LD_OPTS", " ", ["|",";"] )
-			UnifyConfigVarSeparator( "GLFW_GCC_LIB_OPTS", " ", ["|",";"] )
-			UnifyConfigVarSeparator( "GLFW_GCC_SRC_OPTS", " ", ["|",";"] )
-			UnifyConfigVarSeparator( "GLFW_GCC_VPATH_OPTS", " ", ["|",";"] )
-
-			ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" )
-			ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" )
-			libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" )
-			srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" )
-			vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" )
-
-			Select ENV_CONFIG
-			Case "debug"
-				ccopts+=" -O0"
-			Case "release"
-				ccopts+=" -O3 -DNDEBUG"
-				ldopts+=" -s"
-			End
-
-			' Process external libs to copy over
-			ProcessExternalLibs( CurrentDir()+"\"+casedConfig, msize, libopts )
-
-			' Point the linker in the direction of the prebuilt share libraries
-			If HostOS="winnt"
-				ldopts+=" -L"+tcc._libs+"Win"+msize
-			Endif
-
-			Local cmd:="make"
-			If HostOS="winnt" And FileType( tcc.MINGW_PATH+"/bin/mingw32-make.exe" ) cmd="mingw32-make"
-
-			'Execute cmd+" CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
-			'Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
-			Execute cmd+" ARCH=~q"+msize+"~q CCOPTS=~q"+ccopts+"~q LDOPTS=~q"+ldopts+"~q LIBOPTS=~q"+libopts+"~q SRCOPTS=~q"+srcopts+"~q VPATHOPTS=~q"+vpathopts+"~q OUT=~q"+tconfig+"/CerberusGame~q"
-
-			If tcc.opt_run
-
-				ChangeDir tconfig
-
-				If HostOS="winnt"
-					Execute "CerberusGame"
-				Else
-					Execute "./CerberusGame"
-				Endif
-			Endif
 		Endif
 			
-	End
-	
-	'***** Vc2010 *****
-	Method MakeVc2010:Void()
-	
-		CreateDir "vc2010/"+casedConfig
-		CreateDir "vc2010/"+casedConfig+"/internal"
-		CreateDir "vc2010/"+casedConfig+"/external"
-		
-		CreateDataDir "vc2010/"+casedConfig+"/data"
-		
-		Local main:=LoadString( "main.cpp" )
-		
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-		
-		SaveString main,"main.cpp"
-		
-		If tcc.opt_build
-
-			ChangeDir "vc2010"
-
-			Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=Win32 CerberusGame.sln"
-			
-			If tcc.opt_run
-			
-				ChangeDir casedConfig
-
-				Execute "CerberusGame"
-				
-			Endif
-		Endif
 	End
 
 	'***** Msvc *****
 	Method MakeMsvc:Void()
-
-		Local ccopts:="",ldopts:="", libopts:="", libcopy:="", srcopts:= "", vpathopts:=""
-		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
-
-		'If msize ccopts+=" -m"+msize;ldopts+=" -m"+msize
-
-		UnifyConfigVarSeparator( "GLFW_GCC_CC_OPTS", " ", ["|",";"] )
-		UnifyConfigVarSeparator( "GLFW_GCC_LD_OPTS", " ", ["|",";"] )
-		UnifyConfigVarSeparator( "GLFW_GCC_LIB_OPTS", " ", ["|",";"] )
-		UnifyConfigVarSeparator( "GLFW_GCC_SRC_OPTS", " ", ["|",";"] )
-		UnifyConfigVarSeparator( "GLFW_GCC_VPATH_OPTS", " ", ["|",";"] )
-
-		'ccopts+=" "+GetConfigVar( "GLFW_GCC_CC_OPTS" )
-		'ldopts+=" "+GetConfigVar( "GLFW_GCC_LD_OPTS" )
-		libopts+=" "+GetConfigVar( "GLFW_GCC_LIB_OPTS" )
-		'srcopts+=" "+GetConfigVar( "GLFW_GCC_SRC_OPTS" )
-		'vpathopts+=" "+GetConfigVar( "GLFW_GCC_VPATH_OPTS" )
+		Local out:=GetConfigVar( "GLFW_OUTPUT_NAME" ),
+			outpath:=GetConfigVar( "GLFW_OUTPUT_PATH" ),
+			winsdk:=GetConfigVar( "GLFW_WINSDK_VERSION" ),
+			platformtToolset:=GetConfigVar( "GLFW_PLATFORM_TOOLSET" ),
+			msize:="", platform:="", cc_opts:="", cc_libs:="", cc_ldopts:=""
 			
-		CreateDir "msvc/"+casedConfig+msize
-		CreateDir "msvc/"+casedConfig+msize+"/internal"
-		CreateDir "msvc/"+casedConfig+msize+"/external"
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir()+"/msvc" Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="CerberusGame"
 		
-		CreateDataDir "msvc/"+casedConfig+msize+"/data"
+		' NOTE: MSBuild and MS Windows in general uses semi-colons as options and path separators.
+		' DO NOT TRY TO REPLACE THEM.
+		' Pass options to the compiler
+		If ConfigVarsContain( "GLFW_MSVC_CC_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_MSVC_CC_OPTS", " ", ["|"] )
+			cc_opts=GetConfigVar( "GLFW_MSVC_CC_OPTS" )
+		Endif
+		
+		' Pass library options to the linker
+		If ConfigVarsContain( "GLFW_MSVC_LIB_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_MSVC_LD_OPTS", " ", ["|"] )
+			cc_libs=GetConfigVar( "GLFW_MSVC_LIB_OPTS" )
+		Endif
+		
+		' Pass options to the linker
+		If ConfigVarsContain( "GLFW_MSVC_LD_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_MSVC_LIB_OPTS", " ", ["|"] )
+			cc_ldopts=GetConfigVar( "GLFW_MSVC_LD_OPTS" )
+		Endif
+		
+		' Set the the architecture
+		If ConfigVarsContain( "GLFW_MSVC_MSIZE_WINNT" ) msize=GetConfigVar( "GLFW_MSVC_MSIZE_WINNT" )
+		
+		' If the msize has been set; then set the correct switch to use.
+		Select msize
+			Case "32"
+				platform="x86"
+			Case "64"
+				platform="x64"
+			
+			' Any other value should default to the x86 configuration
+			Default
+				If msize<>"" Print "WARNING: Value assigned to CC_MSIZE is "+msize+"~nOnly 32 and 64 are permitted.~nDefaulting to Win32."
+				msize="32"
+				platform="x86"
+				
+		End Select
+		
+		' Check if platform toolset or Windows SDK version
+		If winsdk="" winsdk=tcc.WIN_SDK
+		If platformtToolset="" platformtToolset=tcc.PLATFORM_TOOLSET
+		
+		' Update the output path before generating directories and copying files.
+		outpath=outpath+"/"+casedConfig+msize
+		
+		' Create the output directory. NOTE: Should also pass the current target root make directory
+		CreateOutputDirectory( outpath )
 		
 		' need to rewrite resources.rc so that icon is rebuilt
-		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"\cerberus.ico")
+		CopyIcon(GetConfigVar( "GLFW_APP_ICON" ),CurrentDir()+"\cerberus.ico")
 		
-		Local main:=LoadString( "main.cpp" )
-		
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-		
-		SaveString main,"main.cpp"
+		UpdateMainSourceFile()
 		
 		' Process external libs to copy over
-		ProcessExternalLibs( "msvc/"+casedConfig, msize, libopts )
+		ProcessExternalLibs( outpath, "Win"+msize, msize )
 		
+		Print "MSBUILD_PATH: "+tcc.MSBUILD_PATH
+		' Start the build
 		If tcc.opt_build
-
-			ChangeDir "msvc"
-			Local sBuild:String
-			If msize = 32
-				sBuild = "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=win32"
-			Else
-				sBuild = "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+" /p:Platform=x64"
-			Endif
-			
-			'Execute "~q"+tcc.MSBUILD_PATH+"~q /p:Configuration="+casedConfig+msize'+" /p:Platform=win32 CerberusGame.sln"
-			Execute sBuild
-			
-			If tcc.opt_run
-			
-				ChangeDir casedConfig+msize
-
-				Execute "CerberusGame"
-				
-			Endif
+			BuildOption( "msvc", outpath,
+			"~q"+tcc.MSBUILD_PATH+
+			"~q -p:OutDir=~q"+outpath+
+			"/~q;TargetName="+out+
+			";Configuration=~q"+casedConfig+msize+
+			"~q;platform=~q"+platform+
+			"~q;AdditionalOptions=~q"+cc_opts+" "+cc_ldopts+
+			"~q;PlatformToolset=~q"+platformtToolset+
+			"~q;WindowsTargetPlatformVersion=~q"+winsdk+
+			"~q;AdditionalDependencies=~q"+cc_libs+
+			"~q CerberusGame.sln",
+			out )
 		Endif
+		
 	End
 
 	'***** Xcode *****	
@@ -245,7 +272,7 @@ Class GlfwBuilder Extends Builder
 	Method IsValid:Bool()
 		Select HostOS
 		Case "winnt"
-			If tcc.MINGW_PATH Or tcc.MSBUILD_PATH Return True
+			If tcc.MINGW_PATH Or FileType( tcc.MSBUILD_PATH )=FILETYPE_FILE Return True
 		Default
 			Return True
 		End
@@ -262,8 +289,6 @@ Class GlfwBuilder Extends Builder
 		Case "winnt"
 			If GetConfigVar( "GLFW_USE_MINGW" )="1" And tcc.MINGW_PATH
 				MakeGcc
-			Else If FileType( "vc2010" )=FILETYPE_DIR
-				MakeVc2010
 			Else If FileType( "msvc" )=FILETYPE_DIR
 				MakeMsvc
 			Else If tcc.MINGW_PATH
@@ -275,50 +300,85 @@ Class GlfwBuilder Extends Builder
 			MakeGcc
 		End
 	End
+	
+	Method BuildOption:Void( buildDir:String,outpath:String,cmd:String,out:String )
+		ChangeDir buildDir
+		If Not FileType( outpath ) CreateDirs( outpath )
+
+		Print "~nOutput Dir:~n"+outpath+"~n~nBuild Dir:~n"+CurrentDir
+		Execute cmd
+		
+		' If the run option has been set; then run.
+		If tcc.opt_run OptionRun( outpath,out )
+	End
+	
+	' Common method to start the built application.
+	Method OptionRun:Void( outpath:String,out:String )
+		ChangeDir RealPath( outpath )
+		Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out
+		If Not(HostOS="winnt") Execute "./"+out Else Execute out
+	End
+	
+	' Common main.cpp update method.
+	Method UpdateMainSourceFile:Void()
+	
+		CopySourceFiles( "." )
+		
+		Local main:=LoadString( "main.cpp" )
+		
+		main=ReplaceBlock( main,"TRANSCODE",transCode )
+		main=ReplaceBlock( main,"CONFIG",Config() )
+		
+		SaveString main,"main.cpp"
+	End
+	
+	Method CreateOutputDirectory( outpath:String )
+		CreateDirs outpath
+		CreateDir outpath+"/internal"
+		CreateDir outpath+"/external"
+		
+		CreateDataDir outpath+"/data"
+	End
 
 	' Process external shared libraries	to copy
-	Method ProcessExternalLibs( config:String, arch:String, link:String )
-		Local libStr:String
-		Local msize:=GetConfigVar( "GLFW_GCC_MSIZE_"+HostOS.ToUpper() )
-		If msize = 64
-			UnifyConfigVarSeparator( "GLFW_COPY_LIBS", "|", ["|",";"] )
-			libStr = GetConfigVar( "GLFW_COPY_LIBS" ).ToLower()
-		Else
-			UnifyConfigVarSeparator( "GLFW_COPY_LIBS_32", "|", ["|",";"] )
-			libStr = GetConfigVar( "GLFW_COPY_LIBS_32" ).ToLower()
-		Endif
-		If libStr = "" Then Return
+	Method ProcessExternalLibs( outpath:String, srcDir:String, msize:String )
+		
+		Local append:=""
+		Select msize
+			Case "32"
+				append="_32"
+		End Select
+		
+		UnifyConfigVarSeparator( "GLFW_COPY_LIBS"+append, "|", ["|",";"] )
 
-		Local libcopy:String[] = libStr.Split( "|" )
-		Local dst:String = config+arch
-		For Local i:= Eachin libcopy
-			If HostOS="winnt"
-				If i <> ""
-					If FileType( dst+"/"+i+".dll" ) = FILETYPE_FILE Continue
-
-					If CopyFile( tcc._libs+"Win"+arch+"/"+i+".dll", dst+"/"+i+".dll" ) = 1
-						Print "Copied "+i+".dll to "+dst
-					Else
-						Print "Failed to copy "+i+" to "+dst
-					EndIf
-
-					If FileType( tcc._libs+"/"+i+"_COPYING" )<> FILETYPE_NONE
-						If CopyFile( tcc._libs+"/"+i+"_COPYING", dst+"/"+i+"_COPYING" ) = 1
-							Print "Copied "+i+"_COPYING to "+dst
-						Else
-							Print "Failed to copy "+i+"_COPYING To "+dst
-						Endif
-					Endif
-
-					If FileType( tcc._libs+"/"+i+"_LICENCE" )<> FILETYPE_NONE
-						If CopyFile( tcc._libs+"/"+i+"_LICENCE", dst+"/"+i+"_LICENCE" ) = 1
-							Print "Copied "+i+"_LICENCE to "+dst
-						Else
-							Print "Failed to copy "+i+"_COPYING To "+dst
-						Endif
-					Endif
-				Endif
-			EndIf
+		Local srcList:=New List<TupleString>()
+		For Local i:= Eachin GetConfigVar( "GLFW_COPY_LIBS_32" ).ToLower().Split( "|" )
+			If i="" Continue
+			Select HostOS
+				Case "winnt"
+					If FileType( tcc._libs+srcDir+"/"+i+".dll" )=FILETYPE_FILE srcList.AddLast( New TupleString( tcc._libs+srcDir+"/"+i+".dll", outpath+"/"+i+".dll" ) )
+			End Select
+			
+			If FileType( tcc._libs+"/"+i+"_COPYING" )=FILETYPE_FILE srcList.AddLast( New TupleString( tcc._libs+"/"+i+"_COPYING", outpath+"/"+i+"_COPYING" ) )
+			If FileType( tcc._libs+"/"+i+"_LICENCE" )=FILETYPE_FILE srcList.AddLast( New TupleString( tcc._libs+"/"+i+"_LICENCE", outpath+"/"+i+"_LICENCE" ) )
 		Next
+		
+		If srcList.Count<=0 Return
+		
+		For Local i:=Eachin srcList
+			If FileType( i.dst )=FILETYPE_FILE Continue
+			If CopyFile( i.src, i.dst )=1 Print "Copied file "+i.src Else Print "Failed to copy "+i.src+" to "+i.dst
+		Next
+		
+	End
+End
+
+Class TupleString
+	Field src:String
+	Field dst:String
+	
+	Method New( src:String, dst:String )
+		Self.src = src
+		Self.dst=dst
 	End
 End

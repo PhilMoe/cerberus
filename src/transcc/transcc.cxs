@@ -13,13 +13,13 @@ Import builders
 		
 	' Change the preprocessor directives to select the example to run for debugging transcc
 	#DEBUG_TEST_CFG="Release"
-	#DEBUG_TEST="Audio"
-	#DEBUG_TARGET="HTML"
+	#DEBUG_TARGET="Desktop"
+	#DEBUG_TEST="TransCC"
 	Import debugconf
 	
-	Const VERSION:="2023-10-14 (DEBUG)"
+	Const VERSION:="2026-08-07 (DEBUG)"
 #Else
-    Const VERSION:="2023-10-14"
+    Const VERSION:="2026-08-07"
 #Endif
 
 Function Main()
@@ -207,19 +207,21 @@ Function CreateDirs( path:String,delim:String="/" )
 	If HostOS<>"winnt"
 		If dirs[0]="" Then dirs[0]="/"
 	Endif
-		
+	
+	Local check:=""
 	For Local i:=Eachin dirs
-
-		Select FileType( i )
-		Case FILETYPE_DIR
-			Print "Directory already exists:~n"+RealPath( i )
-		Case FILETYPE_FILE
-			Die "Directory creation error: Path is a regular file. Cannot continue.~n"+RealPath( i )
-		Default
-			If CreateDir( i.Trim ) Print "Created directory:~n"+RealPath( i )
-		End
-		ChangeDir i.Trim
+		check+=i+delim
+		If FileType( i )=FILETYPE_FILE Die "Directory creation error: Path is a regular file. Cannot continue.~n"+check
+		
+		CreateDir( i.Trim() )		
+		If Not FileType( check )=FILETYPE_DIR Die "Failed to create directory:~n"+check
+		
+		ChangeDir( i.Trim()+delim )
+		
 	Next
+	
+	If FileType( path )=FILETYPE_DIR Print "Created output directory success."
+	
 	ChangeDir currentDir
 End
 
@@ -276,6 +278,8 @@ Class TransCC
     Field AGK_PATH:String
     Field HTML_PLAYER:String
     Field FLASH_PLAYER:String
+    Field WIN_SDK:String="10.0"
+    Field PLATFORM_TOOLSET:String="v142"	' VS 2019
   
     Field args:String[]
     Field cerberusdir:String
@@ -531,6 +535,10 @@ Class TransCC
                 HTML_PLAYER=rhs
             Case "FLASH_PLAYER"
                 FLASH_PLAYER=rhs
+            Case "WIN_SDK"
+            	WIN_SDK=rhs
+            Case "PLATFORM_TOOLSET"
+            	PLATFORM_TOOLSET=rhs
             Default
                 Print "Trans: ignoring unrecognized config var: "+lhs
             End
