@@ -9,6 +9,7 @@ TRANSCC_EXE=0                           # Flag to indicate that transcc has been
 BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the buildr script. See freedesktop.sh
 QT_SELECTED=                            # Variable to hold the chosen qmake
 DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
+MSIZE=64                                # Holds the machine architecture to build for.
 
 # Import the dependencies that this script relies on.
 source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
@@ -69,6 +70,14 @@ while [[ $# -gt 0 ]]; do
                 shift;
             }
         ;;
+        -c|--msize)
+            if [ $HOST = "linux" ]; then
+                MSIZE="$2"
+                shift; shift;
+            else
+                shift;
+            fi
+        ;;
         -m|--showmenu)
             SHOW_MENU=1
             shift
@@ -108,6 +117,7 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\t{-i|--icons} \"APP_ICON.svg\" \"MIME_ICON.svg\"\t- Generate desktop icons.";
                 echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t\t- Set the version of GCC to use."
                 echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use tar."
+                echo -e "\t{-c|--msize} \t\t\t\t\t- Set the architecture to build for: 32, or 64 bit."
             } || {
                 echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use hdiutil."
             }
@@ -174,7 +184,8 @@ do_show_deps() {
         do_unknown "Qt SDK is not installed.";
     }
     [ $HOST = "linux" ] && {
-        [ -n "$GCC_VER" ] && { do_info "GCC Version: $GCC_VER"; } || { do_info "GCC Standard"; };
+        [ -n "$GCC_VER" ] && { do_info "GCC Version: $GCC_VER"; } || { do_info "GCC Standard"; }
+        do_info "Target Architecture: $MSIZE"
     } || {
         do_info "APPLICATION BUNDLE PREFIX: $MACOS_BUNDLE_PREFIX";
     }
