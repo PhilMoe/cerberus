@@ -216,7 +216,6 @@ Class GlfwBuilder Extends Builder
 		' Process external libs to copy over
 		ProcessExternalLibs( outpath, "Win"+msize, msize )
 		
-		Print "MSBUILD_PATH: "+tcc.MSBUILD_PATH
 		' Start the build
 		If tcc.opt_build
 			BuildOption( "msvc", outpath,
@@ -237,34 +236,50 @@ Class GlfwBuilder Extends Builder
 
 	'***** Xcode *****	
 	Method MakeXcode:Void()
+	
+		Local out:=GetConfigVar( "GLFW_OUTPUT_NAME" ),
+			outpath:=GetConfigVar( "GLFW_OUTPUT_PATH" ),
+			cc_opts:="", ld_lib_opts:="", ld_opts:="",
+			build_dir:="build/"+casedConfig
+			
+		' Set the output file name and path.
+		' If there isn't an output path, then use the current directory.
+		' Else check the path passed and expand any environment variables.
+		If outpath="" outpath=CurrentDir()+"/xcode" Else outpath=RealPath( ExpandEnv( outpath ) )
+		If out="" out="CerberusGame"
 
 		CreateDataDir "xcode/data"
-		
 		CopySourceFiles("xcode")
 
-		Local main:=LoadString( "main.cpp" )
-		
-		main=ReplaceBlock( main,"TRANSCODE",transCode )
-		main=ReplaceBlock( main,"CONFIG",Config() )
-		
-		SaveString main,"main.cpp"
+		UpdateMainSourceFile()
 		
 		CopyIcon(GetConfigVar( "GLFW_APP_ICON"),CurrentDir()+"/xcode/cerberus.icns")
+		
+		If ConfigVarsContain( "GLFW_XCODE_CC_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_XCODE_CC_OPTS", " ", ["|"] )
+			cc_opts=GetConfigVar( "GLFW_XCODE_CC_OPTS" )
+		Endif
+		
+		' Pass library options to the linker
+		If ConfigVarsContain( "GLFW_XCODE_LIB_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_XCODE_LIB_OPTS", " ", ["|"] )
+			ld_lib_opts=GetConfigVar( "GLFW_XCODE_LIB_OPTS" )
+		Endif
+		
+		' Pass options to the linker
+		If ConfigVarsContain( "GLFW_XCODE_LD_OPTS" )
+			UnifyConfigVarSeparator( "GLFW_XCODE_LD_OPTS", " ", ["|"] )
+			ld_opts=GetConfigVar( "GLFW_XCODE_LD_OPTS" )
+		Endif
 
 		If tcc.opt_build
-		
-			ChangeDir "xcode"
-			
-'			Execute "set -o pipefail && xcodebuild -configuration "+casedConfig+" | egrep -A 5 ~q(error|warning):~q"
-			Execute "xcodebuild -configuration "+casedConfig
-			
-			If tcc.opt_run
-			
-				ChangeDir "build/"+casedConfig
-				ChangeDir "CerberusGame.app/Contents/MacOS"
-				
-				Execute "./CerberusGame"
-			Endif
+			' Start the build
+			BuildOption( "xcode", outpath, "xcodebuild -configuration "+casedConfig+
+						" OTHER_CPLUSPLUSFLAGS=~q"+cc_opts+"~q"+
+						" OTHER_LIBTOOLFLAGS=~q"+ld_lib_opts+"~q"+
+						" OTHER_LDFLAGS=~q"+ld_opts+"~q"+
+						" PRODUCT_NAME=~q"+out+"~q"+
+						" CONFIGURATION_BUILD_DIR=~q"+outpath+"~q", out )
 		Endif
 	End
 	
@@ -315,8 +330,18 @@ Class GlfwBuilder Extends Builder
 	' Common method to start the built application.
 	Method OptionRun:Void( outpath:String,out:String )
 		ChangeDir RealPath( outpath )
-		Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out
-		If Not(HostOS="winnt") Execute "./"+out Else Execute out
+		
+		Select HostOS
+			Case "winnt"
+				Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out
+				Execute out
+			Case "linux"
+				Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out
+				Execute "./"+out
+			Case "macos"
+				Print "~nExecute Dir:~n"+CurrentDir+"~nExecuting: "+out+".app"
+				Execute out+".app/Contents/MacOS/"+out
+		End Select
 	End
 	
 	' Common main.cpp update method.
