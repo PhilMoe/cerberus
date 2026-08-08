@@ -75,12 +75,13 @@ do_cserver(){
                 mv "$PROJECT_DIR/Release$MSIZE/data" "$BIN/data";
             }
             [ -f "$BIN/cserver_$HOST" ] && { rm -f "$BIN/cserver_$HOST"; };
+            # Move the newly built CServer into the Cerberus bin directory.
+            mv "$PROJECT_DIR/Release$MSIZE/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         } || {
             [ -d "$BIN/cserver_$HOST$EXTENSION" ] && { rm -rf "$BIN/cserver_$HOST$EXTENSION"; };
+            # Move the newly built CServer into the Cerberus bin directory.
+            mv "$PROJECT_DIR/Release/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         }
-
-        # Move the newly built CServer into the Cerberus bin directory.
-        mv "$PROJECT_DIR/Release$MSIZE/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         
         # Clean up the .build directory.
         clean_build "cserver" "dotbuild"
@@ -108,12 +109,21 @@ do_launcher(){
         };
     else 
         # Execute xcodebuild
-        execute xcodebuild "PRODUCT_BUNDLE_IDENTIFIER=$MACOS_BUNDLE_PREFIX.launcher" -scheme Cerberus -configuration release -project $SRC/launcher/xcode/Cerberus.xcodeproj -derivedDataPath $SRC/launcher/launcher.build
+        ARGUMENTS=("xcodebuild")
+        ARGUMENTS+=("-project" "$SRC/launcher/xcode/Cerberus.xcodeproj")
+        ARGUMENTS+=("-scheme" "Cerberus")
+        ARGUMENTS+=("-configuration" "Release")
+        ARGUMENTS+=("PRODUCT_BUNDLE_IDENTIFIER=$MACOS_BUNDLE_PREFIX.launcher")
+        ARGUMENTS+=("-derivedDataPath" "$SRC/launcher/launcher.build/DerivedData")
+        ARGUMENTS+=("SYMROOT=$SRC/launcher/launcher.build/Products")
+        ARGUMENTS+=("OBJROOT=$SRC/launcher/launcher.build/Intermediates")
+        ARGUMENTS+=("clean" "build")
         
+        execute ${ARGUMENTS[@]}
         # Only update the launcher if the build was successful.
         [ $EXITCODE -eq 0 ] && {
             [ -d "$ROOT/Cerberus$EXTENSION" ] && { rm -rf "$ROOT/Cerberus$EXTENSION"; }
-            mv "$PROJECT_DIR/Build/Products/Release/Cerberus.app" "$ROOT/Cerberus.app";
+            mv "$PROJECT_DIR/Products/Release/Cerberus.app" "$ROOT/Cerberus.app";
         };
     fi
 
