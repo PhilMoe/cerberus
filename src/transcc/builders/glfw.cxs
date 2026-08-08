@@ -38,14 +38,14 @@ Class GlfwBuilder Extends Builder
 		Select msize
 		
 			Case "32"
-				cc_opts+="-m32"
-				ld_opts+="-m32"
+				cc_opts+=" -m32"
+				ld_opts+=" -m32"
 				build_dir+="32"
 				Print "Setting GLFW build to 32-bit"
 				
 			Case "64"
-				cc_opts+="-m64"
-				ld_opts+="-m64"
+				cc_opts+=" -m64"
+				ld_opts+=" -m64"
 				build_dir+="64"
 				Print "Setting GLFW build to 64-bit"
 				
@@ -53,8 +53,8 @@ Class GlfwBuilder Extends Builder
 			Default
 				If msize<>"" Print "WARNING: Value assigned to GLFW_GCC_MSIZE is "+msize+"~nOnly 32 and 64 are permitted."
 				Print "Setting default GLFW build to 64-bit"
-				cc_opts+="-m64"
-				ld_opts+="-m64"
+				cc_opts+=" -m64"
+				ld_opts+=" -m64"
 				build_dir+="64"
 				msize="64"
 				
