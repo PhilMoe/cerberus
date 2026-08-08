@@ -12,7 +12,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST winnt
+#define CFG_HOST linux
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -18903,7 +18903,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2026-08-07",35));
+	bbPrint(String(L"TRANS cerberus compiler V2026-08-08",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -21379,14 +21379,14 @@ void c_GlfwBuilder::p_MakeGcc(){
 	}
 	String t_1=t_msize;
 	if(t_1==String(L"32",2)){
-		t_cc_opts=t_cc_opts+String(L"-m32",4);
-		t_ld_opts=t_ld_opts+String(L"-m32",4);
+		t_cc_opts=t_cc_opts+String(L" -m32",5);
+		t_ld_opts=t_ld_opts+String(L" -m32",5);
 		t_build_dir=t_build_dir+String(L"32",2);
 		bbPrint(String(L"Setting GLFW build to 32-bit",28));
 	}else{
 		if(t_1==String(L"64",2)){
-			t_cc_opts=t_cc_opts+String(L"-m64",4);
-			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_cc_opts=t_cc_opts+String(L" -m64",5);
+			t_ld_opts=t_ld_opts+String(L" -m64",5);
 			t_build_dir=t_build_dir+String(L"64",2);
 			bbPrint(String(L"Setting GLFW build to 64-bit",28));
 		}else{
@@ -21394,8 +21394,8 @@ void c_GlfwBuilder::p_MakeGcc(){
 				bbPrint(String(L"WARNING: Value assigned to GLFW_GCC_MSIZE is ",45)+t_msize+String(L"\nOnly 32 and 64 are permitted.",30));
 			}
 			bbPrint(String(L"Setting default GLFW build to 64-bit",36));
-			t_cc_opts=t_cc_opts+String(L"-m64",4);
-			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_cc_opts=t_cc_opts+String(L" -m64",5);
+			t_ld_opts=t_ld_opts+String(L" -m64",5);
 			t_build_dir=t_build_dir+String(L"64",2);
 			t_msize=String(L"64",2);
 		}
@@ -22135,14 +22135,14 @@ void c_StdcppBuilder::p_MakeGcc2(String t_gcc_opts,String t_gcc_libs,String t_gc
 	}
 	String t_52=t_msize;
 	if(t_52==String(L"32",2)){
-		t_cc_opts=t_cc_opts+String(L"-m32",4);
-		t_ld_opts=t_ld_opts+String(L"-m32",4);
+		t_cc_opts=t_cc_opts+String(L" -m32",5);
+		t_ld_opts=t_ld_opts+String(L" -m32",5);
 		t_build_dir=t_build_dir+String(L"32",2);
 		bbPrint(String(L"Setting CC build to 32-bit",26));
 	}else{
 		if(t_52==String(L"64",2)){
-			t_cc_opts=t_cc_opts+String(L"-m64",4);
-			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_cc_opts=t_cc_opts+String(L" -m64",5);
+			t_ld_opts=t_ld_opts+String(L" -m64",5);
 			t_build_dir=t_build_dir+String(L"64",2);
 			bbPrint(String(L"Setting CC build to 64-bit",26));
 		}else{
@@ -22150,8 +22150,8 @@ void c_StdcppBuilder::p_MakeGcc2(String t_gcc_opts,String t_gcc_libs,String t_gc
 				bbPrint(String(L"WARNING: Value assigned to GLFW_GCC_MSIZE is ",45)+t_msize+String(L"\nOnly 32 and 64 are permitted.",30));
 			}
 			bbPrint(String(L"Setting default CC build to 64-bit",34));
-			t_cc_opts=t_cc_opts+String(L"-m64",4);
-			t_ld_opts=t_ld_opts+String(L"-m64",4);
+			t_cc_opts=t_cc_opts+String(L" -m64",5);
+			t_ld_opts=t_ld_opts+String(L" -m64",5);
 			t_build_dir=t_build_dir+String(L"64",2);
 			t_msize=String(L"64",2);
 		}
