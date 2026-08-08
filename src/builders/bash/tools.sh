@@ -13,36 +13,41 @@
 do_transcc(){
     EXITCODE=0
     do_info "BUILDING TRANSCC WITH $COMPILER"
-    
+    local arch="-m64"
     # Check for an exisiting transcc
     [ -f "$BIN/transcc_$HOST" ] && { rm -f "$BIN/transcc_$HOST"; }
     
     PROJECT_DIR="$SRC/transcc/transcc.build/cpptool"
     # Host specific parameters to pass the the C++ compiler
     [ $HOST = "linux" ] && {
-        BUILD_DIR="$PROJECT_DIR/gcc_linux/Release"
 
-        ARG=("make")
-        ARG+=("CXX_COMPILER=$COMPILER" "C_COMPILER=$C_COMPILER" "CCOPTS=-DNDEBUG" "CCOPTS+=-Os")
-        ARG+=("BUILD_DIR=$BUILD_DIR")
-        ARG+=("OUT=transcc_linux" "OUT_PATH=$BIN" "LIBOPTS=-lpthread" "LIBOPTS+=-ldl" "LDOPTS=-no-pie" "LDOPTS+=-s");
+        if [ $MSIZE == "32" ]; then arch="-m32"; fi
+
+        BUILD_DIR="$PROJECT_DIR/gcc_linux/Release$MSIZE"
+
+        ARGUMENTS=("make")
+        ARGUMENTS+=("CXX_COMPILER=$COMPILER" "C_COMPILER=$C_COMPILER")
+        ARGUMENTS+=("BUILD_DIR=$BUILD_DIR")
+        ARGUMENTS+=("OUT=transcc_linux" "OUT_PATH=$BIN")
+        ARGUMENTS+=("CC_OPTS=-DNDEBUG" "CC_OPTS+=-Os" "CC_OPTS+=$arch")
+        ARGUMENTS+=("LD_LIB_OPTS=$arch" "LD_LIB_OPTS+=-lpthread" "LD_LIB_OPTS+=-ldl" "LD_OPTS=-no-pie" "LD_OPTS+=-s");
 
         mkdir -p $BUILD_DIR
         cd $SRC/transcc/transcc.build/cpptool/gcc_linux
-        execute ${ARG[@]}
+        execute ${ARGUMENTS[@]}
         cd $SRC
 
         clean_build "$BUILD_DIR";
     } || {
         BUILD_DIR="$PROJECT_DIR/xcode/build"
         
-        ARG=("xcodebuild" "-project" "$ROOT/src/transcc/transcc.build/cpptool/xcode/main_macos.xcodeproj")
-    	ARG+=("-configuration" "Release")
-    	ARG+=("CONFIGURATION_BUILD_DIR=$ROOT/bin")
-    	ARG+=("TARGET_NAME=transcc_macos")
+        ARGUMENTS=("xcodebuild" "-project" "$ROOT/src/transcc/transcc.build/cpptool/xcode/main_macos.xcodeproj")
+    	ARGUMENTS+=("-configuration" "Release")
+    	ARGUMENTS+=("CONFIGURATION_BUILD_DIR=$ROOT/bin")
+    	ARGUMENTS+=("TARGET_NAME=transcc_macos")
      
         cd "$SRC/transcc/transcc.build/cpptool/xcode"
-        execute ${ARG[@]}
+        execute ${ARGUMENTS[@]}
         cd "$SRC"
         clean_build "$BUILD_DIR";
     }
@@ -67,15 +72,15 @@ do_cserver(){
         # If the host system is Linux; then add the data directory if one is not present.
         [ $HOST = "linux" ] && {
             [ ! -d "$BIN/data" ] && {
-                mv "$PROJECT_DIR/Release/data" "$BIN/data";
+                mv "$PROJECT_DIR/Release$MSIZE/data" "$BIN/data";
             }
             [ -f "$BIN/cserver_$HOST" ] && { rm -f "$BIN/cserver_$HOST"; };
         } || {
             [ -d "$BIN/cserver_$HOST$EXTENSION" ] && { rm -rf "$BIN/cserver_$HOST$EXTENSION"; };
         }
-        
+
         # Move the newly built CServer into the Cerberus bin directory.
-        mv "$PROJECT_DIR/Release/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
+        mv "$PROJECT_DIR/Release$MSIZE/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         
         # Clean up the .build directory.
         clean_build "cserver" "dotbuild"
@@ -231,7 +236,7 @@ do_clearbuilds(){
     do_info "CLEARING OUT PREVIOUS BUILDS"
 
     # Remove all macOS applications. Ted and CServer
-    find "$BIN" -type d -name '*.app' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name '*.app' -prune -exec rm -rf "{}" \;
 
     # Remove transcc linux, winnt and macos
     find "$BIN" -type f -name 'transcc_*' -delete
@@ -239,7 +244,7 @@ do_clearbuilds(){
     # Remove the launchers linux, winnt and macos
     find "$ROOT" -type f -name 'Cerberus.exe' -delete
     find "$ROOT" -type f -name 'Cerberus' -delete
-    find "$ROOT" -type d -name 'Cerberus.app' -exec rm -rf "{}" \;
+    find "$ROOT" -type d -name 'Cerberus.app' -prune -exec rm -rf "{}" \;
     find "$ROOT" -type f -name '*.desktop' -delete
   
     # Remove CServer linux and winnt
@@ -253,10 +258,10 @@ do_clearbuilds(){
     find "$BIN" -type f -name 'Ted' -delete
 
     # Remove Qt Linux support files and directories
-    find "$BIN" -type d -name 'lib*' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'plugins' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'resources' -exec rm -rf "{}" \;
-    find "$BIN" -type d -name 'translations' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'lib*' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'plugins' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'resources' -prune -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'translations' -prune -exec rm -rf "{}" \;
 
     # Remove Qt WinNT support files and directories
     find "$BIN" -type f -name 'qt.conf' -delete
@@ -265,6 +270,6 @@ do_clearbuilds(){
     find "$BIN" -type f -name '*.ilk' -delete
     find "$BIN" -type f -name '*.pdb' -delete
     find "$BIN" -type f -name 'openal32_*' -delete
-    find "$BIN" -type d -name 'platforms' -exec rm -rf "{}" \;
+    find "$BIN" -type d -name 'platforms' -prune -exec rm -rf "{}" \;
 
 }

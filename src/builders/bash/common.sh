@@ -125,13 +125,28 @@ transcc(){
         do_error "NO TRANSCC PRESENT"
         EXITCODE=1
         return $EXITCODE;
-        } || {
+    } || {
         local target=$2
         local srcpath="$SRC/$3"
         local srcfile="$3"
         [ -z "$4" ] && { gc_mode="0"; } || { gc_mode="1"; }
-        
-        execute "$BIN/transcc_$HOST -target=$target -builddir=$srcfile.build -clean -config=release +CPP_GC_MODE=$gc_mode $srcpath/$srcfile.cxs"
+
+        ARGUMENTS=("$BIN/transcc_$HOST")
+        ARGUMENTS+=("-target=$target")
+        ARGUMENTS+=("-builddir=$srcfile.build")
+        ARGUMENTS+=("-clean" "-config=release")
+        ARGUMENTS+=("+CPP_GC_MODE=$gc_mode")
+        if [ "$HOST" = "linux" ]; then
+            if [ "$target" = "C++_Tool" ]; then
+                ARGUMENTS+=("+CC_GCC_MSIZE=$MSIZE")
+            elif [ "$target" = "Desktop_Game" ]; then
+                ARGUMENTS+=("+GLFW_MSIZE_LINUX=$MSIZE")
+            fi
+        fi
+
+        ARGUMENTS+=("$srcpath/$srcfile.cxs")
+
+        execute "${ARGUMENTS[@]}"
         do_build_result
         
         return $EXITCODE;
