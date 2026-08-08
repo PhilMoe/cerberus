@@ -1,6 +1,6 @@
 #If HOST="winnt"
 	#CC_OUTPUT_NAME="test_winnt"
-	'#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
+	#CC_OUTPUT_PATH="$USERPROFILE/Documents/Cerberus-X"
 	#CC_MINGW_STATIC_LINK=True
 	#CC_MSIZE="64"
 	#CC_USE_MINGW=False 'True
