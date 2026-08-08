@@ -36,7 +36,15 @@ Thumbs.db
 /src/ted-build-*
 /src/build-ted-*
 /src/ted/ted.pro.user*
-/src/build*/
+
+# QtCreator may try to set the build directory to:
+# /src/build
+# /src/ted/build/
+/src/build/
+/src/ted/build/
+/src/ted/.qtcreator
+
+# This should filter out any XCode build directory created.
 /src/transcc/transcc.build/**/build/
 
 /targets/__deprecated__/android_ndk
