@@ -169,6 +169,11 @@ linux{
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6OpenGL.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6QmlModels.so.6
             QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt6XcbQpa.so.6
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicui18n.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicuuc.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libicudata.so.73
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}QmlMeta.so.$${QT_MAJOR_VERSION}
+            QTLIBS += $$[QT_INSTALL_DATA]/lib/libQt$${QT_MAJOR_VERSION}QmlWorkerScript.so.$${QT_MAJOR_VERSION}
 
 
             # Plugins
