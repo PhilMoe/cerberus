@@ -58,8 +58,8 @@ The following app config settings are currently supported:
 #GLFW_MSVC_MSIZE_WINNT="32"				'Ditto for Visual Studio.
 #GLFW_GCC_MSIZE_LINUX=""				'Ditto for Linux.
 
-#GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers
-#GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers
+#GLFW_GCC_CC_OPTS=""					'Pass compiler options to GCC type compilers.
+#GLFW_GCC_LD_OPTS=""					'Pass linker options to GCC type compilers.
 #GLFW_GCC_LIB_OPTS=""				    'Pass additional libraries to link against for GCC type compilers.
 #GLFW_GCC_SRC_OPTS=""				    'Pass additional source files to be build. GCC compilers only.
 #GLFW_GCC_VPATH_OPTS=""				    'Pass additional virtual paths to look into when building. GCC compilers only.
@@ -67,6 +67,10 @@ The following app config settings are currently supported:
 #GLFW_MSVC_CC_OPTS=""					'Pass compiler options to MSVC type compilers
 #GLFW_MSVC_LD_OPTS=""					'Pass linker options to MSVC type compilers
 #GLFW_MSVC_LIB_OPTS=""				    'Pass additional libraries to link against for MSVC type compilers.
+
+#GLFW_XCODE_CC_OPTS=""					'Pass compiler options to XCODE.
+#GLFW_XCODE_LD_OPTS=""					'Pass linker options to XCODE.
+#GLFW_XCODE_LIB_OPTS=""				    'Pass additional libraries to link against for XCODE.
 
 #GLFW_COPY_LIBS=""						'Copy 64bit external libraries to build directory. Windows GCC & MSVC only for now!
 #GLFW_COPY_LIBS_32=""					'Copy 32bit external libraries to build directory. Windows GCC & MSVC only for now!
