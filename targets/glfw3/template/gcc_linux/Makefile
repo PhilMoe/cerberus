@@ -1,10 +1,11 @@
+# GLFW GCC LINUX MAKE FILE
 CC=gcc
 CFLAGS=-D_GLFW_X11
 
 CXX=g++
 CXXFLAGS=
 
-CPPFLAGS=$(CCOPTS) \
+CPPFLAGS=$(CC_OPTS) \
 -Wno-int-to-pointer-cast \
 -Wno-free-nonheap-object \
 -Wno-unused-result \
@@ -19,16 +20,16 @@ CPPFLAGS=$(CCOPTS) \
 -pthread
 
 LD=g++
-LDFLAGS=$(LDOPTS) -no-pie
-LDLIBS=-lGL -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor $(LIBOPTS) -lpthread -ldl 
+LDFLAGS=$(LD_OPTS) -no-pie
+LDLIBS=-lGL -lX11 -lXxf86vm -lXi -lXrandr -lXinerama -lXcursor $(LD_LIB_OPTS) -lpthread -ldl 
 
-VPATH= $(VPATHOPTS) \
+VPATH= $(VPATH_OPTS) \
 %.c ../glfw3/src \
 %.c ../stb \
 %.c ../tinyfiledialogs \
 %.cpp ..
 
-OBJS0= $(SRCOPTS) \
+OBJS0= $(SRC_OPTS) \
 context.o \
 egl_context.o \
 glx_context.o \
@@ -61,13 +62,14 @@ x11_window.o \
 xkb_unicode.o \
 main.o
 
-TMP=build/$(dir $(OUT))
+# Setup build directory
+TMP=$(BUILD_DIR)/$(dir $(OUT))
 
 OBJS=$(patsubst %.o,$(TMP)%.o,$(OBJS0))
 
-all : $(OUT)
+all : $(OUT_PATH)/$(OUT)
 
-$(OUT) : $(OBJS)
+$(OUT_PATH)/$(OUT) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 $(TMP)%.o : %.c
