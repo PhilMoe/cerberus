@@ -290,7 +290,7 @@ Function PreProcess$( path$,mdecl:ModuleDecl=Null )
 							Case "=","+="
 
 								Select toke
-									Case "HOST","LANG","CONFIG","TARGET","SAFEMODE"
+									Case "HOST","LANG","CONFIG","TARGET","SAFEMODE","PROJECTDIR","TARGETPATH"
 										Err "App config var '"+toke+"' cannot be modified"
 								End
 								

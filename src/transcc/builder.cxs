@@ -55,6 +55,20 @@ Class Builder
 		ENV_TARGET=tcc.target.system
 		ENV_LANG=tcc.target.lang
 		ENV_CUSTOMBUILDSCRIPT=tcc.target.buildscript
+		ENV_PROJECTDIRECTORY=ExtractDir( tcc.opt_srcpath )
+		
+		' Moved creation of the build path forward so that it can be made available as a ${tag} for file paths.
+		Local buildPath:String
+		
+		If tcc.opt_builddir
+			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+		Else
+			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
+		Endif
+		
+		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
+		
+		ENV_PROJECT_TARGETPATH=targetPath
 			
 		Self.Begin
 
@@ -69,6 +83,8 @@ Class Builder
 		SetConfigVar "CONFIG",ENV_CONFIG
 		SetConfigVar "SAFEMODE",ENV_SAFEMODE
 		'SetConfigVar "CUSTOMBUILDSCRIPT",ENV_CUSTOMBUILDSCRIPT
+		SetConfigVar "PROJECTDIR",ENV_PROJECTDIRECTORY
+		SetConfigVar "TARGETPATH",ENV_PROJECT_TARGETPATH
 		
 		app=ParseApp( tcc.opt_srcpath )
 
@@ -102,15 +118,15 @@ Class Builder
 
 		transCode=transbuf.Join()
 		
-		Local buildPath:String
-		
-		If tcc.opt_builddir
-			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
-		Else
-			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
-		Endif
-		
-		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
+'		Local buildPath:String
+'		
+'		If tcc.opt_builddir
+'			buildPath=ExtractDir( tcc.opt_srcpath )+"/"+tcc.opt_builddir
+'		Else
+'			buildPath=StripExt( tcc.opt_srcpath )+".build"+tcc.GetReleaseVersion()
+'		Endif
+'		
+'		Local targetPath:=buildPath+"/"+tcc.target.dir	'ENV_TARGET
 		
 		If tcc.opt_clean
 			DeleteDir targetPath,True

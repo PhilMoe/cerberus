@@ -1787,15 +1787,18 @@ The `#If` and `#ElseIf` directives must be followed by a constant Cerberus&nbsp;
 
 The following built in constants may be used in preprocessor expressions:
 
-| Constant	| Description
-| HOST		| Host operating system, one of: *winnt* , *macos* , *linux*
-| LANG		| Target language, one of: *js* , *as* , *cs* , *cpp* , *java*
-| TARGET	| Target system, one of: *ios* , *android* , *winrt* , *glfw* , *html5* , *flash*
-| CONFIG	| Target build config, one of: *debug* , *release*
-| CD		| Directory of source file being built
-| MODPATH	| Module being built
+| Constant	    | Description
+| HOST		    | Host operating system, one of: *winnt* , *macos* , *linux*
+| LANG		    | Target language, one of: *js* , *as* , *cs* , *cpp* , *java*
+| TARGET	    | Target system, one of: *ios* , *android* , *winrt* , *glfw* , *html5* , *flash*
+| CONFIG	    | Target build config, one of: *debug* , *release*
+| CD		    | Directory of source file being built
+| MODPATH	    | Module being built
+| PROJECTDIR    | Root directory for the current project being compiled
+| TARGETPATH    | The full path to the copied target template in the build directory
 
-The `#Rem` directive is exactly the same as `#If False` - it unconditionally disables code generation. Note that this allows 'block rems' to be 'nested'.
+The `#Rem` directive is exactly the same as `#If False` - it unconditionally disables code generation. Note that this allows 'block rems' to be 'nested'.~n
+*NOTE:* Rem blocks may have issue with preprocessor directives due to the ambiguity of the `#End`.
 
 
 >>> <a name="preprocessor_customs"></a> Custom preprocessor directives

@@ -95,7 +95,7 @@ Class StdcppBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( outpath )
 		If out="" out="main_"+HostOS
 		
 		' Set options for build configuration.
@@ -245,7 +245,7 @@ Class StdcppBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( outpath )
 		If out="" out="main_"+HostOS
 		
 		' NOTE: MSBuild and MS Windows in general uses semi-colons as options and path separators.
@@ -322,7 +322,7 @@ Class StdcppBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir() Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir() Else outpath=RealPath( outpath )
 		If out="" out="main_"+HostOS
 		
 		' If used, override the CC_OPTS, CC_LIBS, CC_LDOPTS.

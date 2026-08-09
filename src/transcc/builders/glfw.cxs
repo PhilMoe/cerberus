@@ -31,7 +31,7 @@ Class GlfwBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir()+"/"+dst Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir()+"/"+dst Else outpath=RealPath( outpath )
 		If out="" out="CerberusGame"
 		
 		' If the msize has been set; then set the correct switch to use.
@@ -157,7 +157,7 @@ Class GlfwBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir()+"/msvc" Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir()+"/msvc" Else outpath=RealPath( outpath )
 		If out="" out="CerberusGame"
 		
 		' NOTE: MSBuild and MS Windows in general uses semi-colons as options and path separators.
@@ -253,7 +253,7 @@ Class GlfwBuilder Extends Builder
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
 		' Else check the path passed and expand any environment variables.
-		If outpath="" outpath=CurrentDir()+"/xcode" Else outpath=RealPath( ExpandEnv( outpath ) )
+		If outpath="" outpath=CurrentDir()+"/xcode" Else outpath=RealPath( outpath )
 		If out="" out="CerberusGame"
 
 		CreateDataDir "xcode/data"

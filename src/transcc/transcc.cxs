@@ -160,43 +160,43 @@ Function MatchPath:Bool( text:String,pattern:String )
     Return match
 End
 
-Function ExpandEnv:String( text:String )
-	
-	Local resolved:="", char:="", idx1:=0, terminator:=0, idx2:=0
-	While idx1<text.Length
-		char=String.FromChar( text[idx1] )
-		
-		Select char
-		' MS Windows style environment expansion
-		Case "%"
-			terminator=text.Find( "%",idx1+1 )
-			resolved+=GetEnv(text[idx1+1..terminator])
-			If terminator<0 terminator=text.Length
-			idx1+=(terminator+1)-idx1
-		
-		' Unix style environment expansion
-		Case "$"
-			terminator=-1
-			idx2=idx1
-			
-			' Look ahead for one of the known termination characters.
-			While idx2<text.Length And terminator<0
-				If text[idx2]="/"[0] Or text[idx2]=":"[0] Or text[idx2]=";"[0] terminator=idx2
-				idx2+=1
-			Wend
-			If terminator<0 terminator=text.Length
-			resolved+=GetEnv(text[idx1+1..terminator])
-			idx1+=(terminator)-idx1
-			
-		Default
-			resolved+=char
-			idx1+=1
-			
-		End
-	Wend
-	
-	Return resolved
-End
+'Function ExpandEnv:String( text:String )
+'	
+'	Local resolved:="", char:="", idx1:=0, terminator:=0, idx2:=0
+'	While idx1<text.Length
+'		char=String.FromChar( text[idx1] )
+'		
+'		Select char
+'		' MS Windows style environment expansion
+'		Case "%"
+'			terminator=text.Find( "%",idx1+1 )
+'			resolved+=GetEnv(text[idx1+1..terminator])
+'			If terminator<0 terminator=text.Length
+'			idx1+=(terminator+1)-idx1
+'		
+'		' Unix style environment expansion
+'		Case "$"
+'			terminator=-1
+'			idx2=idx1
+'			
+'			' Look ahead for one of the known termination characters.
+'			While idx2<text.Length And terminator<0
+'				If text[idx2]="/"[0] Or text[idx2]=":"[0] Or text[idx2]=";"[0] terminator=idx2
+'				idx2+=1
+'			Wend
+'			If terminator<0 terminator=text.Length
+'			resolved+=GetEnv(text[idx1+1..terminator])
+'			idx1+=(terminator)-idx1
+'			
+'		Default
+'			resolved+=char
+'			idx1+=1
+'			
+'		End
+'	Wend
+'	
+'	Return resolved
+'End
 
 Function CreateDirs( path:String,delim:String="/" )
 	

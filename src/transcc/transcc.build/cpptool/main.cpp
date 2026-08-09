@@ -12,7 +12,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST winnt
+#define CFG_HOST linux
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -17757,6 +17757,8 @@ class c_NodeEnumerator2 : public Object{
 extern String bb_config_ENV_HOST;
 extern String bb_config_ENV_CONFIG;
 extern String bb_config_ENV_TARGET;
+extern String bb_config_ENV_PROJECTDIRECTORY;
+extern String bb_config_ENV_PROJECT_TARGETPATH;
 String bb_os_StripAll(String);
 c_AppDecl* bb_parser_ParseApp(String);
 class c_Reflector : public Object{
@@ -18094,7 +18096,6 @@ class c_CppTranslator : public c_CTranslator{
 	String p_TransAssignStmt2(c_AssignStmt*);
 	void mark();
 };
-String bb_transcc_ExpandEnv(String);
 int bb_transcc_CreateDirs(String,String);
 class c_TupleString : public Object{
 	public:
@@ -18587,26 +18588,26 @@ void c_TransCC::p_ParseArgs(){
 			t_arg=t_arg.Slice(0,t_j);
 		}
 		if(t_j==-1){
-			String t_2=t_arg.ToLower();
-			if(t_2==String(L"-safe",5)){
+			String t_1=t_arg.ToLower();
+			if(t_1==String(L"-safe",5)){
 				m_opt_safe=true;
 			}else{
-				if(t_2==String(L"-clean",6)){
+				if(t_1==String(L"-clean",6)){
 					m_opt_clean=true;
 				}else{
-					if(t_2==String(L"-check",6)){
+					if(t_1==String(L"-check",6)){
 						m_opt_check=true;
 					}else{
-						if(t_2==String(L"-update",7)){
+						if(t_1==String(L"-update",7)){
 							m_opt_check=true;
 							m_opt_update=true;
 						}else{
-							if(t_2==String(L"-build",6)){
+							if(t_1==String(L"-build",6)){
 								m_opt_check=true;
 								m_opt_update=true;
 								m_opt_build=true;
 							}else{
-								if(t_2==String(L"-run",4)){
+								if(t_1==String(L"-run",4)){
 									m_opt_check=true;
 									m_opt_update=true;
 									m_opt_build=true;
@@ -18621,26 +18622,26 @@ void c_TransCC::p_ParseArgs(){
 			}
 		}else{
 			if(t_arg.StartsWith(String(L"-",1))){
-				String t_3=t_arg.ToLower();
-				if(t_3==String(L"-cfgfile",8)){
+				String t_2=t_arg.ToLower();
+				if(t_2==String(L"-cfgfile",8)){
 					m_opt_cfgfile=t_rhs;
 				}else{
-					if(t_3==String(L"-output",7)){
+					if(t_2==String(L"-output",7)){
 						m_opt_output=t_rhs;
 					}else{
-						if(t_3==String(L"-config",7)){
+						if(t_2==String(L"-config",7)){
 							m_opt_config=t_rhs.ToLower();
 						}else{
-							if(t_3==String(L"-target",7)){
+							if(t_2==String(L"-target",7)){
 								m_opt_target=t_rhs;
 							}else{
-								if(t_3==String(L"-modpath",8)){
+								if(t_2==String(L"-modpath",8)){
 									m_opt_modpath=t_rhs;
 								}else{
-									if(t_3==String(L"-targetpath",11)){
+									if(t_2==String(L"-targetpath",11)){
 										m_opt_targetpath=t_rhs;
 									}else{
-										if(t_3==String(L"-builddir",9)){
+										if(t_2==String(L"-builddir",9)){
 											m_opt_builddir=t_rhs;
 										}else{
 											bb_transcc_Die(String(L"Unrecognized command line option: ",34)+t_arg);
@@ -18692,72 +18693,72 @@ void c_TransCC::p_LoadConfig(){
 		while(t_path.EndsWith(String(L"/",1)) || t_path.EndsWith(String(L"\\",1))){
 			t_path=t_path.Slice(0,-1);
 		}
-		String t_4=t_lhs;
-		if(t_4==String(L"MODPATH",7)){
+		String t_3=t_lhs;
+		if(t_3==String(L"MODPATH",7)){
 			if(!((m_opt_modpath).Length()!=0)){
 				m_opt_modpath=t_path;
 			}
 		}else{
-			if(t_4==String(L"TARGETPATH",10)){
+			if(t_3==String(L"TARGETPATH",10)){
 				if(!((m_opt_targetpath).Length()!=0)){
 					m_opt_targetpath=t_path;
 				}
 			}else{
-				if(t_4==String(L"ANDROID_PATH",12)){
+				if(t_3==String(L"ANDROID_PATH",12)){
 					if(!((m_ANDROID_PATH).Length()!=0) && FileType(t_path)==2){
 						m_ANDROID_PATH=t_path;
 					}
 				}else{
-					if(t_4==String(L"ANDROID_NDK_PATH",16)){
+					if(t_3==String(L"ANDROID_NDK_PATH",16)){
 						if(!((m_ANDROID_NDK_PATH).Length()!=0) && FileType(t_path)==2){
 							m_ANDROID_NDK_PATH=t_path;
 						}
 					}else{
-						if(t_4==String(L"JDK_PATH",8)){
+						if(t_3==String(L"JDK_PATH",8)){
 							if(!((m_JDK_PATH).Length()!=0) && FileType(t_path)==2){
 								m_JDK_PATH=t_path;
 							}
 						}else{
-							if(t_4==String(L"ANT_PATH",8)){
+							if(t_3==String(L"ANT_PATH",8)){
 								if(!((m_ANT_PATH).Length()!=0) && FileType(t_path)==2){
 									m_ANT_PATH=t_path;
 								}
 							}else{
-								if(t_4==String(L"FLEX_PATH",9)){
+								if(t_3==String(L"FLEX_PATH",9)){
 									if(!((m_FLEX_PATH).Length()!=0) && FileType(t_path)==2){
 										m_FLEX_PATH=t_path;
 									}
 								}else{
-									if(t_4==String(L"MINGW_PATH",10)){
+									if(t_3==String(L"MINGW_PATH",10)){
 										if(!((m_MINGW_PATH).Length()!=0) && FileType(t_path)==2){
 											m_MINGW_PATH=t_path;
 										}
 									}else{
-										if(t_4==String(L"PSM_PATH",8)){
+										if(t_3==String(L"PSM_PATH",8)){
 											if(!((m_PSM_PATH).Length()!=0) && FileType(t_path)==2){
 												m_PSM_PATH=t_path;
 											}
 										}else{
-											if(t_4==String(L"MSBUILD_PATH",12)){
+											if(t_3==String(L"MSBUILD_PATH",12)){
 												if(!((m_MSBUILD_PATH).Length()!=0) && FileType(t_path)==1){
 													m_MSBUILD_PATH=t_path;
 												}
 											}else{
-												if(t_4==String(L"AGK_PATH",8)){
+												if(t_3==String(L"AGK_PATH",8)){
 													if(!((m_AGK_PATH).Length()!=0) && FileType(t_path)==2){
 														m_AGK_PATH=t_path;
 													}
 												}else{
-													if(t_4==String(L"HTML_PLAYER",11)){
+													if(t_3==String(L"HTML_PLAYER",11)){
 														m_HTML_PLAYER=t_rhs;
 													}else{
-														if(t_4==String(L"FLASH_PLAYER",12)){
+														if(t_3==String(L"FLASH_PLAYER",12)){
 															m_FLASH_PLAYER=t_rhs;
 														}else{
-															if(t_4==String(L"WIN_SDK",7)){
+															if(t_3==String(L"WIN_SDK",7)){
 																m_WIN_SDK=t_rhs;
 															}else{
-																if(t_4==String(L"PLATFORM_TOOLSET",16)){
+																if(t_3==String(L"PLATFORM_TOOLSET",16)){
 																	m_PLATFORM_TOOLSET=t_rhs;
 																}else{
 																	bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
@@ -18777,8 +18778,8 @@ void c_TransCC::p_LoadConfig(){
 			}
 		}
 	}
-	String t_5=HostOS();
-	if(t_5==String(L"winnt",5)){
+	String t_4=HostOS();
+	if(t_4==String(L"winnt",5)){
 		String t_path2=GetEnv(String(L"PATH",4));
 		if((m_ANDROID_PATH).Length()!=0){
 			t_path2=t_path2+(String(L";",1)+m_ANDROID_PATH+String(L"/tools",6));
@@ -18803,7 +18804,7 @@ void c_TransCC::p_LoadConfig(){
 			SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 		}
 	}else{
-		if(t_5==String(L"macos",5)){
+		if(t_4==String(L"macos",5)){
 			String t_path3=GetEnv(String(L"PATH",4));
 			if((m_JDK_PATH).Length()!=0){
 				t_path3=m_JDK_PATH+String(L"/bin:",5)+t_path3;
@@ -18825,7 +18826,7 @@ void c_TransCC::p_LoadConfig(){
 				SetEnv(String(L"JAVA_HOME",9),m_JDK_PATH);
 			}
 		}else{
-			if(t_5==String(L"linux",5)){
+			if(t_4==String(L"linux",5)){
 				String t_path4=GetEnv(String(L"PATH",4));
 				if((m_JDK_PATH).Length()!=0){
 					t_path4=m_JDK_PATH+String(L"/bin:",5)+t_path4;
@@ -20438,6 +20439,15 @@ void c_Builder::p_Make(){
 	bb_config_ENV_TARGET=m_tcc->m_target->m_system;
 	bb_config_ENV_LANG=m_tcc->m_target->m_lang;
 	bb_config_ENV_CUSTOMBUILDSCRIPT=m_tcc->m_target->m_buildscript;
+	bb_config_ENV_PROJECTDIRECTORY=bb_os_ExtractDir(m_tcc->m_opt_srcpath);
+	String t_buildPath=String();
+	if((m_tcc->m_opt_builddir).Length()!=0){
+		t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
+	}else{
+		t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
+	}
+	String t_targetPath=t_buildPath+String(L"/",1)+m_tcc->m_target->m_dir;
+	bb_config_ENV_PROJECT_TARGETPATH=t_targetPath;
 	this->p_Begin();
 	if(!m_tcc->m_opt_check){
 		return;
@@ -20448,6 +20458,8 @@ void c_Builder::p_Make(){
 	bb_config_SetConfigVar2(String(L"TARGET",6),bb_config_ENV_TARGET,false);
 	bb_config_SetConfigVar2(String(L"CONFIG",6),bb_config_ENV_CONFIG,false);
 	bb_config_SetConfigVar2(String(L"SAFEMODE",8),String(bb_config_ENV_SAFEMODE),false);
+	bb_config_SetConfigVar2(String(L"PROJECTDIR",10),bb_config_ENV_PROJECTDIRECTORY,false);
+	bb_config_SetConfigVar2(String(L"TARGETPATH",10),bb_config_ENV_PROJECT_TARGETPATH,false);
 	gc_assign(m_app,bb_parser_ParseApp(m_tcc->m_opt_srcpath));
 	bbPrint(String(L"Semanting...",12));
 	if((bb_config_GetConfigVar(String(L"REFLECTION_FILTER",17))).Length()!=0){
@@ -20476,13 +20488,6 @@ void c_Builder::p_Make(){
 	}
 	bbPrint(String(L"Building...",11));
 	m_transCode=t_transbuf->p_Join(String());
-	String t_buildPath=String();
-	if((m_tcc->m_opt_builddir).Length()!=0){
-		t_buildPath=bb_os_ExtractDir(m_tcc->m_opt_srcpath)+String(L"/",1)+m_tcc->m_opt_builddir;
-	}else{
-		t_buildPath=bb_os_StripExt(m_tcc->m_opt_srcpath)+String(L".build",6)+m_tcc->p_GetReleaseVersion();
-	}
-	String t_targetPath=t_buildPath+String(L"/",1)+m_tcc->m_target->m_dir;
 	if(m_tcc->m_opt_clean){
 		bb_os_DeleteDir(t_targetPath,true);
 		if(FileType(t_targetPath)!=0){
@@ -21381,7 +21386,7 @@ void c_GlfwBuilder::p_MakeGcc(){
 	if(t_outpath==String()){
 		t_outpath=CurrentDir()+String(L"/",1)+t_dst;
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"CerberusGame",12);
@@ -21484,7 +21489,7 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	if(t_outpath==String()){
 		t_outpath=CurrentDir()+String(L"/msvc",5);
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"CerberusGame",12);
@@ -21551,7 +21556,7 @@ void c_GlfwBuilder::p_MakeXcode(){
 	if(t_outpath==String()){
 		t_outpath=CurrentDir()+String(L"/xcode",6);
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"CerberusGame",12);
@@ -22074,7 +22079,7 @@ void c_StdcppBuilder::p_MakeGcc2(String t_gcc_opts,String t_gcc_libs,String t_gc
 	if(t_outpath==String()){
 		t_outpath=CurrentDir();
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"main_",5)+HostOS();
@@ -22209,7 +22214,7 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_gcc_opts,String t_gcc_libs,String t_g
 	if(t_outpath==String()){
 		t_outpath=CurrentDir();
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"main_",5)+HostOS();
@@ -22273,7 +22278,7 @@ void c_StdcppBuilder::p_MakeXcode2(String t_cc_opts,String t_cc_libs,String t_cc
 	if(t_outpath==String()){
 		t_outpath=CurrentDir();
 	}else{
-		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+		t_outpath=RealPath(t_outpath);
 	}
 	if(t_out==String()){
 		t_out=String(L"main_",5)+HostOS();
@@ -27685,6 +27690,9 @@ String bb_config_EvalConfigTags(String t_cfg){
 		}
 		String t_key=t_cfg.Slice(t_i+2,t_e);
 		String t_val=bb_config__cfgScope->m_vars->p_Get(t_key);
+		if(t_val==String()){
+			t_val=GetEnv(t_key);
+		}
 		t_cfg=t_cfg.Slice(0,t_i)+t_val+t_cfg.Slice(t_e+1);
 		t_i+=t_val.Length();
 	}while(!(false));
@@ -31784,7 +31792,7 @@ String bb_preprocessor_PreProcess(String t_path,c_ModuleDecl* t_mdecl){
 											String t_3=t_op;
 											if(t_3==String(L"=",1) || t_3==String(L"+=",2)){
 												String t_4=t_toke2;
-												if(t_4==String(L"HOST",4) || t_4==String(L"LANG",4) || t_4==String(L"CONFIG",6) || t_4==String(L"TARGET",6) || t_4==String(L"SAFEMODE",8)){
+												if(t_4==String(L"HOST",4) || t_4==String(L"LANG",4) || t_4==String(L"CONFIG",6) || t_4==String(L"TARGET",6) || t_4==String(L"SAFEMODE",8) || t_4==String(L"PROJECTDIR",10) || t_4==String(L"TARGETPATH",10)){
 													bb_config_Err(String(L"App config var '",16)+t_toke2+String(L"' cannot be modified",20));
 												}
 												t_toker->p_NextToke();
@@ -32116,6 +32124,8 @@ void c_NodeEnumerator2::mark(){
 String bb_config_ENV_HOST;
 String bb_config_ENV_CONFIG;
 String bb_config_ENV_TARGET;
+String bb_config_ENV_PROJECTDIRECTORY;
+String bb_config_ENV_PROJECT_TARGETPATH;
 String bb_os_StripAll(String t_path){
 	return bb_os_StripDir(bb_os_StripExt(t_path));
 }
@@ -35758,45 +35768,6 @@ void c_CppTranslator::mark(){
 	c_CTranslator::mark();
 	gc_mark_q(m_dbgLocals);
 }
-String bb_transcc_ExpandEnv(String t_text){
-	String t_resolved=String();
-	String t_char=String();
-	int t_idx1=0;
-	int t_terminator=0;
-	int t_idx2=0;
-	while(t_idx1<t_text.Length()){
-		t_char=String((Char)((int)t_text[t_idx1]),1);
-		String t_1=t_char;
-		if(t_1==String(L"%",1)){
-			t_terminator=t_text.Find(String(L"%",1),t_idx1+1);
-			t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
-			if(t_terminator<0){
-				t_terminator=t_text.Length();
-			}
-			t_idx1+=t_terminator+1-t_idx1;
-		}else{
-			if(t_1==String(L"$",1)){
-				t_terminator=-1;
-				t_idx2=t_idx1;
-				while(t_idx2<t_text.Length() && t_terminator<0){
-					if((int)t_text[t_idx2]==47 || (int)t_text[t_idx2]==58 || (int)t_text[t_idx2]==59){
-						t_terminator=t_idx2;
-					}
-					t_idx2+=1;
-				}
-				if(t_terminator<0){
-					t_terminator=t_text.Length();
-				}
-				t_resolved=t_resolved+GetEnv(t_text.Slice(t_idx1+1,t_terminator));
-				t_idx1+=t_terminator-t_idx1;
-			}else{
-				t_resolved=t_resolved+t_char;
-				t_idx1+=1;
-			}
-		}
-	}
-	return t_resolved;
-}
 int bb_transcc_CreateDirs(String t_path,String t_delim){
 	bbPrint(String(L"Creating output directory structure:\n",37)+t_path);
 	Array<String > t_dirs=t_path.Split(t_delim);
@@ -38993,6 +38964,8 @@ int bbInit(){
 	bb_config_ENV_HOST=String();
 	bb_config_ENV_CONFIG=String();
 	bb_config_ENV_TARGET=String();
+	bb_config_ENV_PROJECTDIRECTORY=String();
+	bb_config_ENV_PROJECT_TARGETPATH=String();
 	c_Stack9::m_NIL=0;
 	c_Stack::m_NIL=String();
 	bb_translator__trans=0;
