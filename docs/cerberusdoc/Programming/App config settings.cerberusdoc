@@ -67,6 +67,7 @@ The following app config settings are currently supported:
 #GLFW_MSVC_CC_OPTS=""					'Pass compiler options to MSVC type compilers
 #GLFW_MSVC_LD_OPTS=""					'Pass linker options to MSVC type compilers
 #GLFW_MSVC_LIB_OPTS=""				    'Pass additional libraries to link against for MSVC type compilers.
+#GLFW_MSVC_LIB_DIRS=""					'Pass additional directories to search for libraries.
 
 #GLFW_XCODE_CC_OPTS=""					'Pass compiler options to XCODE.
 #GLFW_XCODE_LD_OPTS=""					'Pass linker options to XCODE.
@@ -192,6 +193,7 @@ The following app config settings are currently supported:
 #CC_MSVC_LIBS=""					'Pass additional libraries to link against for MSVC compilers.
 #CC_MSVC_LDOPTS=""					'Pass additional linker options for MSVC compiler.
 #CC_MSVC_MSIZE=""					'Set the CPU architecture to build for. Not setting this defaults to 32 bit.
+#CC_MSVC_LIB_DIRS=""				'Pass additional directories to search for libraries.
 
 #CC_XCODE_OPTS=""					'Pass additional Xcode options for stdcpp target, eg: #CC_OPTS+="-DMyDefine"
 #CC_XCODE_LIBS=""					'Pass additional libraries to link against for Xcode compilers.
