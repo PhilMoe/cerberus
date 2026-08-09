@@ -152,7 +152,7 @@ Class GlfwBuilder Extends Builder
 			outpath:=GetConfigVar( "GLFW_OUTPUT_PATH" ),
 			winsdk:=GetConfigVar( "GLFW_WINSDK_VERSION" ),
 			platformtToolset:=GetConfigVar( "GLFW_PLATFORM_TOOLSET" ),
-			msize:="", platform:="", cc_opts:="", cc_libs:="", cc_ldopts:=""
+			msize:="", platform:="", cc_opts:="", cc_libs:="", cc_ldopts:="", cc_lib_dir:=""
 			
 		' Set the output file name and path.
 		' If there isn't an output path, then use the current directory.
@@ -178,6 +178,12 @@ Class GlfwBuilder Extends Builder
 		If ConfigVarsContain( "GLFW_MSVC_LD_OPTS" )
 			UnifyConfigVarSeparator( "GLFW_MSVC_LIB_OPTS", " ", ["|"] )
 			cc_ldopts=GetConfigVar( "GLFW_MSVC_LD_OPTS" )
+		Endif
+		
+		' Pass options to the linker
+		If ConfigVarsContain( "GLFW_MSVC_LIB_DIRS" )
+			UnifyConfigVarSeparator( "GLFW_MSVC_LIB_DIRS", " ", ["|"] )
+			cc_lib_dir=GetConfigVar( "GLFW_MSVC_LIB_DIRS" )
 		Endif
 		
 		' Set the the architecture
@@ -224,10 +230,12 @@ Class GlfwBuilder Extends Builder
 			"/~q;TargetName="+out+
 			";Configuration=~q"+casedConfig+msize+
 			"~q;platform=~q"+platform+
-			"~q;AdditionalOptions=~q"+cc_opts+" "+cc_ldopts+
+			"~q;AdditionalCompilerOptions=~q"+cc_opts+
+			"~q;AdditionalLinkerOptions=~q"+cc_ldopts+
 			"~q;PlatformToolset=~q"+platformtToolset+
 			"~q;WindowsTargetPlatformVersion=~q"+winsdk+
-			"~q;AdditionalDependencies=~q"+cc_libs+
+			"~q;AdditionalLibraryDependencies=~q"+cc_libs+
+			"~q;AdditionalUserLibraryDirectories=~q"+cc_lib_dir+
 			"~q CerberusGame.sln",
 			out )
 		Endif
