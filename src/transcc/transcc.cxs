@@ -17,9 +17,9 @@ Import builders
 	#DEBUG_TEST="TransCC"
 	Import debugconf
 	
-	Const VERSION:="2026-08-08 (DEBUG)"
+	Const VERSION:="2026-08-09 (DEBUG)"
 #Else
-    Const VERSION:="2026-08-08"
+    Const VERSION:="2026-08-09"
 #Endif
 
 Function Main()
