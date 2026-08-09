@@ -12,7 +12,7 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST linux
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
 #define CFG_RELEASE 1
@@ -18903,7 +18903,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2026-08-08",35));
+	bbPrint(String(L"TRANS cerberus compiler V2026-08-09",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
@@ -21288,8 +21288,8 @@ int c_GlfwBuilder::p_CreateOutputDirectory(String t_outpath){
 }
 int c_GlfwBuilder::p_ProcessExternalLibs(String t_outpath,String t_srcDir,String t_msize){
 	String t_append=String();
-	String t_6=t_msize;
-	if(t_6==String(L"32",2)){
+	String t_7=t_msize;
+	if(t_7==String(L"32",2)){
 		t_append=String(L"_32",3);
 	}
 	String t_[]={String(L"|",1),String(L";",1)};
@@ -21303,8 +21303,8 @@ int c_GlfwBuilder::p_ProcessExternalLibs(String t_outpath,String t_srcDir,String
 		if(t_i==String()){
 			continue;
 		}
-		String t_7=HostOS();
-		if(t_7==String(L"winnt",5)){
+		String t_8=HostOS();
+		if(t_8==String(L"winnt",5)){
 			if(FileType(m_tcc->m__libs+t_srcDir+String(L"/",1)+t_i+String(L".dll",4))==1){
 				t_srcList->p_AddLast11((new c_TupleString)->m_new(m_tcc->m__libs+t_srcDir+String(L"/",1)+t_i+String(L".dll",4),t_outpath+String(L"/",1)+t_i+String(L".dll",4)));
 			}
@@ -21335,11 +21335,20 @@ int c_GlfwBuilder::p_ProcessExternalLibs(String t_outpath,String t_srcDir,String
 }
 void c_GlfwBuilder::p_OptionRun(String t_outpath,String t_out){
 	ChangeDir(RealPath(t_outpath));
-	bbPrint(String(L"\nExecute Dir:\n",14)+CurrentDir()+String(L"\nExecuting: ",12)+t_out);
-	if(!(HostOS()==String(L"winnt",5))){
-		p_Execute(String(L"./",2)+t_out,true);
-	}else{
+	String t_6=HostOS();
+	if(t_6==String(L"winnt",5)){
+		bbPrint(String(L"\nExecute Dir:\n",14)+CurrentDir()+String(L"\nExecuting: ",12)+t_out);
 		p_Execute(t_out,true);
+	}else{
+		if(t_6==String(L"linux",5)){
+			bbPrint(String(L"\nExecute Dir:\n",14)+CurrentDir()+String(L"\nExecuting: ",12)+t_out);
+			p_Execute(String(L"./",2)+t_out,true);
+		}else{
+			if(t_6==String(L"macos",5)){
+				bbPrint(String(L"\nExecute Dir:\n",14)+CurrentDir()+String(L"\nExecuting: ",12)+t_out+String(L".app",4));
+				p_Execute(t_out+String(L".app/Contents/MacOS/",20)+t_out,true);
+			}
+		}
 	}
 }
 void c_GlfwBuilder::p_BuildOption(String t_buildDir,String t_outpath,String t_cmd,String t_out){
@@ -21471,6 +21480,7 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	String t_cc_opts=String();
 	String t_cc_libs=String();
 	String t_cc_ldopts=String();
+	String t_cc_lib_dir=String();
 	if(t_outpath==String()){
 		t_outpath=CurrentDir()+String(L"/msvc",5);
 	}else{
@@ -21493,6 +21503,11 @@ void c_GlfwBuilder::p_MakeMsvc(){
 		String t_3[]={String(L"|",1)};
 		bb_config_UnifyConfigVarSeparator(String(L"GLFW_MSVC_LIB_OPTS",18),String(L" ",1),Array<String >(t_3,1));
 		t_cc_ldopts=bb_config_GetConfigVar(String(L"GLFW_MSVC_LD_OPTS",17));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_LIB_DIRS",18))){
+		String t_4[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_MSVC_LIB_DIRS",18),String(L" ",1),Array<String >(t_4,1));
+		t_cc_lib_dir=bb_config_GetConfigVar(String(L"GLFW_MSVC_LIB_DIRS",18));
 	}
 	if(bb_config_ConfigVarsContain(String(L"GLFW_MSVC_MSIZE_WINNT",21))){
 		t_msize=bb_config_GetConfigVar(String(L"GLFW_MSVC_MSIZE_WINNT",21));
@@ -21522,27 +21537,46 @@ void c_GlfwBuilder::p_MakeMsvc(){
 	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"\\cerberus.ico",13));
 	p_UpdateMainSourceFile();
 	p_ProcessExternalLibs(t_outpath,String(L"Win",3)+t_msize,t_msize);
-	bbPrint(String(L"MSBUILD_PATH: ",14)+m_tcc->m_MSBUILD_PATH);
 	if(m_tcc->m_opt_build){
-		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalOptions=\"",21)+t_cc_opts+String(L" ",1)+t_cc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalDependencies=\"",26)+t_cc_libs+String(L"\" CerberusGame.sln",18),t_out);
+		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalCompilerOptions=\"",29)+t_cc_opts+String(L"\";AdditionalLinkerOptions=\"",27)+t_cc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalLibraryDependencies=\"",33)+t_cc_libs+String(L"\";AdditionalUserLibraryDirectories=\"",36)+t_cc_lib_dir+String(L"\" CerberusGame.sln",18),t_out);
 	}
 }
 void c_GlfwBuilder::p_MakeXcode(){
+	String t_out=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_NAME",16));
+	String t_outpath=bb_config_GetConfigVar(String(L"GLFW_OUTPUT_PATH",16));
+	String t_cc_opts=String();
+	String t_ld_lib_opts=String();
+	String t_ld_opts=String();
+	String t_build_dir=String(L"build/",6)+m_casedConfig;
+	if(t_outpath==String()){
+		t_outpath=CurrentDir()+String(L"/xcode",6);
+	}else{
+		t_outpath=RealPath(bb_transcc_ExpandEnv(t_outpath));
+	}
+	if(t_out==String()){
+		t_out=String(L"CerberusGame",12);
+	}
 	p_CreateDataDir(String(L"xcode/data",10));
 	p_CopySourceFiles(String(L"xcode",5));
-	String t_main=LoadString(String(L"main.cpp",8));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"TRANSCODE",9),m_transCode,String(L"\n//",3));
-	t_main=bb_transcc_ReplaceBlock(t_main,String(L"CONFIG",6),p_Config(),String(L"\n//",3));
-	SaveString(t_main,String(L"main.cpp",8));
+	p_UpdateMainSourceFile();
 	p_CopyIcon(bb_config_GetConfigVar(String(L"GLFW_APP_ICON",13)),CurrentDir()+String(L"/xcode/cerberus.icns",20));
+	if(bb_config_ConfigVarsContain(String(L"GLFW_XCODE_CC_OPTS",18))){
+		String t_[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_XCODE_CC_OPTS",18),String(L" ",1),Array<String >(t_,1));
+		t_cc_opts=bb_config_GetConfigVar(String(L"GLFW_XCODE_CC_OPTS",18));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_XCODE_LIB_OPTS",19))){
+		String t_2[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_XCODE_LIB_OPTS",19),String(L" ",1),Array<String >(t_2,1));
+		t_ld_lib_opts=bb_config_GetConfigVar(String(L"GLFW_XCODE_LIB_OPTS",19));
+	}
+	if(bb_config_ConfigVarsContain(String(L"GLFW_XCODE_LD_OPTS",18))){
+		String t_3[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"GLFW_XCODE_LD_OPTS",18),String(L" ",1),Array<String >(t_3,1));
+		t_ld_opts=bb_config_GetConfigVar(String(L"GLFW_XCODE_LD_OPTS",18));
+	}
 	if(m_tcc->m_opt_build){
-		ChangeDir(String(L"xcode",5));
-		p_Execute(String(L"xcodebuild -configuration ",26)+m_casedConfig,true);
-		if(m_tcc->m_opt_run){
-			ChangeDir(String(L"build/",6)+m_casedConfig);
-			ChangeDir(String(L"CerberusGame.app/Contents/MacOS",31));
-			p_Execute(String(L"./CerberusGame",14),true);
-		}
+		p_BuildOption(String(L"xcode",5),t_outpath,String(L"xcodebuild -configuration ",26)+m_casedConfig+String(L" OTHER_CPLUSPLUSFLAGS=\"",23)+t_cc_opts+String(L"\"",1)+String(L" OTHER_LIBTOOLFLAGS=\"",21)+t_ld_lib_opts+String(L"\"",1)+String(L" OTHER_LDFLAGS=\"",16)+t_ld_opts+String(L"\"",1)+String(L" PRODUCT_NAME=\"",15)+t_out+String(L"\"",1)+String(L" CONFIGURATION_BUILD_DIR=\"",26)+t_outpath+String(L"\"",1),t_out);
 	}
 }
 void c_GlfwBuilder::p_MakeTarget(){
@@ -22169,6 +22203,7 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_gcc_opts,String t_gcc_libs,String t_g
 	String t_outpath=bb_config_GetConfigVar(String(L"CC_OUTPUT_PATH",14));
 	String t_msize=bb_config_GetConfigVar(String(L"CC_MSIZE",8));
 	String t_platform=String();
+	String t_gcc_lib_dirs=String();
 	String t_winsdk=bb_config_GetConfigVar(String(L"CC_WINSDK_VERSION",17));
 	String t_platformtToolset=bb_config_GetConfigVar(String(L"CC_PLATFORM_TOOLSET",19));
 	if(t_outpath==String()){
@@ -22193,6 +22228,11 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_gcc_opts,String t_gcc_libs,String t_g
 		String t_3[]={String(L"|",1)};
 		bb_config_UnifyConfigVarSeparator(String(L"CC_MSVC_LDOPTS",14),String(L" ",1),Array<String >(t_3,1));
 		t_gcc_ldopts=bb_config_GetConfigVar(String(L"CC_MSVC_LDOPTS",14));
+	}
+	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_LIB_DIRS",16))){
+		String t_4[]={String(L"|",1)};
+		bb_config_UnifyConfigVarSeparator(String(L"CC_MSVC_LIB_DIRS",16),String(L" ",1),Array<String >(t_4,1));
+		t_gcc_lib_dirs=bb_config_GetConfigVar(String(L"CC_MSVC_LIB_DIRS",16));
 	}
 	if(bb_config_ConfigVarsContain(String(L"CC_MSVC_MSIZE",13))){
 		t_msize=bb_config_GetConfigVar(String(L"CC_MSVC_MSIZE",13));
@@ -22222,7 +22262,7 @@ void c_StdcppBuilder::p_MakeMsvc2(String t_gcc_opts,String t_gcc_libs,String t_g
 		t_platform=String(L"x86",3);
 	}
 	if(m_tcc->m_opt_build){
-		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalOptions=\"",21)+t_gcc_opts+String(L" ",1)+t_gcc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalDependencies=\"",26)+t_gcc_libs+String(L"\" msvc.sln",10),t_out);
+		p_BuildOption(String(L"msvc",4),t_outpath,String(L"\"",1)+m_tcc->m_MSBUILD_PATH+String(L"\" -p:OutDir=\"",13)+t_outpath+String(L"/\";TargetName=",14)+t_out+String(L";Configuration=\"",16)+m_casedConfig+t_msize+String(L"\";platform=\"",12)+t_platform+String(L"\";AdditionalCompilerOptions=\"",29)+t_gcc_opts+String(L"\";AdditionalLinkerOptions=\"",27)+t_gcc_ldopts+String(L"\";PlatformToolset=\"",19)+t_platformtToolset+String(L"\";WindowsTargetPlatformVersion=\"",32)+t_winsdk+String(L"\";AdditionalUserLibraryDirectories=\"",36)+t_gcc_lib_dirs+String(L"\";AdditionalLibraryDependencies=\"",33)+t_gcc_libs+String(L"\" msvc.sln",10),t_out);
 	}
 }
 void c_StdcppBuilder::p_MakeXcode2(String t_cc_opts,String t_cc_libs,String t_cc_ldopts){
