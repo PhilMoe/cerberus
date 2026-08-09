@@ -238,7 +238,7 @@ Class StdcppBuilder Extends Builder
 		Local out:=GetConfigVar( "CC_OUTPUT_NAME" ),
 			outpath:=GetConfigVar( "CC_OUTPUT_PATH" ),
 			msize:=GetConfigVar( "CC_MSIZE" ),
-			platform:="",
+			platform:="", gcc_lib_dirs:="",
 			winsdk:=GetConfigVar( "CC_WINSDK_VERSION" ),
 			platformtToolset:=GetConfigVar( "CC_PLATFORM_TOOLSET" )
 		
@@ -264,6 +264,11 @@ Class StdcppBuilder Extends Builder
 		If ConfigVarsContain( "CC_MSVC_LDOPTS" )
 			UnifyConfigVarSeparator( "CC_MSVC_LDOPTS", " ", ["|"] )
 			gcc_ldopts=GetConfigVar( "CC_MSVC_LDOPTS" )
+		Endif
+		
+		If ConfigVarsContain( "CC_MSVC_LIB_DIRS" )
+			UnifyConfigVarSeparator( "CC_MSVC_LIB_DIRS", " ", ["|"] )
+			gcc_lib_dirs=GetConfigVar( "CC_MSVC_LIB_DIRS" )
 		Endif
 		
 		' Set the the architecture
@@ -296,10 +301,12 @@ Class StdcppBuilder Extends Builder
 			"/~q;TargetName="+out+
 			";Configuration=~q"+casedConfig+msize+
 			"~q;platform=~q"+platform+
-			"~q;AdditionalOptions=~q"+gcc_opts+" "+gcc_ldopts+
+			"~q;AdditionalCompilerOptions=~q"+gcc_opts+
+			"~q;AdditionalLinkerOptions=~q"+gcc_ldopts+
 			"~q;PlatformToolset=~q"+platformtToolset+
 			"~q;WindowsTargetPlatformVersion=~q"+winsdk+
-			"~q;AdditionalDependencies=~q"+gcc_libs+
+			"~q;AdditionalUserLibraryDirectories=~q"+gcc_lib_dirs+
+			"~q;AdditionalLibraryDependencies=~q"+gcc_libs+
 			"~q msvc.sln",
 			out )
 		Endif
