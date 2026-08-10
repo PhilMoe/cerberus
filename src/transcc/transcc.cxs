@@ -17,9 +17,9 @@ Import builders
 	#DEBUG_TEST="TransCC"
 	Import debugconf
 	
-	Const VERSION:="2026-08-09 (DEBUG)"
+	Const VERSION:="2026-08-10 (DEBUG)"
 #Else
-    Const VERSION:="2026-08-09"
+    Const VERSION:="2026-08-10"
 #Endif
 
 Function Main()
@@ -535,9 +535,9 @@ Class TransCC
                 HTML_PLAYER=rhs
             Case "FLASH_PLAYER"
                 FLASH_PLAYER=rhs
-            Case "WIN_SDK"
+            Case "WIN_SDK_VERSION"
             	WIN_SDK=rhs
-            Case "PLATFORM_TOOLSET"
+            Case "PLATFORM_TOOLSET_VERSION"
             	PLATFORM_TOOLSET=rhs
             Default
                 Print "Trans: ignoring unrecognized config var: "+lhs
