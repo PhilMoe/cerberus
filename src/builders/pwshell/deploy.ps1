@@ -1,5 +1,5 @@
 # DEPLOYMENT BUILDER FUNCTIONS
-# THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
+# THE SCRIPT IS PART OF THE CERBERUS X BUILDER TOOL.
 
 #############################################
 # BUILD A DEPLOYMENT ARCHIVE
@@ -20,7 +20,7 @@ Function do_deploy() {
 
     # Test for a .git folder. If there isn't one, then it must be a normal set of sources files.
     if (-not(Test-Path("$ROOT\.git"))) {
-        do_error "Delopyment requires that the sources containe in a git repository."
+        do_error "Deployment requires that the sources contain in a git repository."
         return
     }
 
@@ -47,7 +47,7 @@ Function do_deploy() {
     execute "git" "status"  | Out-Null
     if (-not($global:MESSAGE.Contains("nothing to commit, working tree clean"))) {
         do_info "$global:MESSAGE"
-        do_error "Repository is not clean. Check for untracked and uncommited files."
+        do_error "Repository is not clean. Check for untracked and uncommitted files."
         return
     }
 
@@ -68,7 +68,7 @@ Function do_deploy() {
     # Generate parameters to pass on to the cloned builder script.
     # Only the basic parameters need to be passed on.
     [string]$buildtype = "mingw"    # Used from part of the final archive name
-    [string]$param = "-q `"$qtsdk`" -c `"$mingw`" -i `"$vsinstall`""
+    [string]$param = "-q `"$qtsdk`" -c `"$mingw`" -i `"$vsinstall`" -w `"$winsdk`" -p `"$platformtoolset`""
     if (-not([string]::IsNullOrEmpty($qtkit))) { $param += " -k $qtkit" }
     if (-not([string]::IsNullOrEmpty($vsver))) { $param += " -y $vsver" }
     if ($msbuild -eq $true) {
