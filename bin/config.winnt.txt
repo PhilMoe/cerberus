@@ -96,7 +96,8 @@ HTML_PLAYER="${CERBERUSDIR}\bin\cserver_winnt.exe"
 
 'MINGW_PATH="C:\TDM-GCC-64"
 'MINGW_PATH="NOT INSTALLED"
-MINGW_PATH="C:\developer\mingw64"
+'MINGW_PATH="C:\developer\mingw64"
+MINGW_PATH="${CERBERUSDIR}\TDM-GCC-64"
 '--------------------
 
 '--------------------
@@ -164,15 +165,18 @@ ANDROID_NDK_PATH="${LOCALAPPDATA}\Android\Sdk\ndk\23.0.7599858"
 ' MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 ' MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
 ' MSBUILD_PATH="${PROGRAMFILES(x86)}\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
+' MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
 
-MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
+MSBUILD_PATH="${PROGRAMFILES}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 '--------------------
 
 '--------------------
 ' WINDOWS SDK & PLATFROM TOOLSET Versions
 '
 ' Used to override the default Windows SDK and MSVC Platform Toolset.
-' NOTE: TransCC sets these internally. You can change them here, or via source config variables.
+' NOTE: TransCC sets these internally. You can change them here, or via source config variables:
+' #CC/GLFW_WINSDK_VERSION
+' #CC/GLFW_PLATFORM_TOOLSET
 '
 ' WIN_SDK_VERSION="10.0"
 ' PLATFORM_TOOLSET_VERSION="v142"
