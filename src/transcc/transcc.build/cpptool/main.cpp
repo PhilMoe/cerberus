@@ -12,12 +12,14 @@
 #define CFG_CONFIG release
 #define CFG_CPP_DOUBLE_PRECISION_FLOATS 1
 #define CFG_CPP_GC_MODE 1
-#define CFG_HOST linux
+#define CFG_HOST winnt
 #define CFG_LANG cpp
 #define CFG_MODPATH 
+#define CFG_PROJECTDIR C:/Users/Jason/workspaces/Cerberus-X/main_repository/development-branch/src/transcc
 #define CFG_RELEASE 1
 #define CFG_SAFEMODE 0
 #define CFG_TARGET stdcpp
+#define CFG_TARGETPATH C:/Users/Jason/workspaces/Cerberus-X/main_repository/development-branch/src/transcc/transcc.buildv2024-08-06/cpptool
 //${CONFIG_END}
 
 //${TRANSCODE_BEGIN}
@@ -18755,10 +18757,10 @@ void c_TransCC::p_LoadConfig(){
 														if(t_3==String(L"FLASH_PLAYER",12)){
 															m_FLASH_PLAYER=t_rhs;
 														}else{
-															if(t_3==String(L"WIN_SDK",7)){
+															if(t_3==String(L"WIN_SDK_VERSION",15)){
 																m_WIN_SDK=t_rhs;
 															}else{
-																if(t_3==String(L"PLATFORM_TOOLSET",16)){
+																if(t_3==String(L"PLATFORM_TOOLSET_VERSION",24)){
 																	m_PLATFORM_TOOLSET=t_rhs;
 																}else{
 																	bbPrint(String(L"Trans: ignoring unrecognized config var: ",41)+t_lhs);
@@ -18904,7 +18906,7 @@ String c_TransCC::p_GetReleaseVersion(){
 }
 void c_TransCC::p_Run(Array<String > t_args){
 	gc_assign(this->m_args,t_args);
-	bbPrint(String(L"TRANS cerberus compiler V2026-08-09",35));
+	bbPrint(String(L"TRANS cerberus compiler V2026-08-10",35));
 	m_cerberusdir=GetEnv(String(L"CERBERUS_DIR",12));
 	m__libs=m_cerberusdir+String(L"/libs/",6);
 	SetEnv(String(L"CERBERUSDIR",11),m_cerberusdir);
