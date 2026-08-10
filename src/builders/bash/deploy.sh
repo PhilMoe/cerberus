@@ -103,7 +103,7 @@ do_deploy(){
             do_success "Found: $i"
             CHECK_COUNT=$((CHECK_COUNT + 1));
         } || {
-            do_error "Not found: $i
+            do_error "Not found: $i"
         }
     done
 
