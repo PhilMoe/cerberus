@@ -7,13 +7,19 @@ Desktop apps use the OpenGL API for graphics rendering and the OpenAL API for au
 >> Windows Requirements
 
 * [MinGW 4.9.2](https://www.cerberus-x.com/downloads/tdm-gcc-64.zip) or [Visual Studio Community 2019 for Windows Desktop](https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16).
-
 * [OpenAL Windows Drivers](https://www.cerberus-x.com/downloads/oalinst.zip).
+
+*NOTES:*~n
+For Visual Studio. The default is to use Visual Studio 2019, which uses v142 of the platform tool set. To select another, uncomment and set `PLATFORM_TOOLSET_VERSION` in the [[../../bin/config.winnt.txt|config.winnt.txt]] file.~n
+Platform tool sets can also be set via source file preprocessor config variables. See the GLFW settings in [[Programming/App config settings]]~n
+For Cerberus-X to find the Visual Studio build tools. You must set `MSBUILD_PATH` in the [[../../bin/config.winnt.txt|config.winnt.txt]] file to point to the MSBuild executable file. 
+
+For MinGW, you will need to set the `MINGW_PATH` var in your [[Trans]] config file. This should point to the actual MinGW directory, not the 'bin' sub-directory.
 
 >> MacOS Requirements
 
-* [XCode](http://developer.apple.com/xcode) developer tools. XCode is also available via the Mac 'App Store' app.
+* [XCode](http://developer.apple.com/xcode) developer tools, and the XCode Commandline Tools. XCode is also available via the Mac 'App Store' app.
 
->> Notes
+>> Linux Requirements
 
-On Windows, either MinGW or MSVC may be used to build desktop apps. If you are using MinGW, the `MINGW_PATH` var in your [[Trans]] config file must be set correctly. If you are using MSVC, the `MSBUILD_PATH` var in your [[Trans]] config file must be set correctly.
+* GCC C/C++ Compiler.

@@ -4,10 +4,20 @@ The stdcpp (standard c++) target allows you to write command line utilities in C
 
 >> You will need
 
-* (Windows) [MinGW 4.9.2](https://www.cerberus-x/downloads/tdm-gcc-4.9.2.exe).
+>> Windows Requirements
 
-* [XCode](http://developer.apple.com/xcode) developer tools.
+* [MinGW 4.9.2](https://www.cerberus-x.com/downloads/tdm-gcc-64.zip) or [Visual Studio Community 2019 for Windows Desktop](https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16).
+*NOTES:*~n
+For Visual Studio. The default is to use Visual Studio 2019, which uses v142 of the platform tool set. To select another, uncomment and set `PLATFORM_TOOLSET_VERSION` in the [[../../bin/config.winnt.txt|config.winnt.txt]] file.~n
+Platform tool sets can also be set via source file preprocessor config variables. See the C++ Tool settings in [[Programming/App config settings]]~n
+For Cerberus-X to find the Visual Studio build tools. You must set `MSBUILD_PATH` in the [[../../bin/config.winnt.txt|config.winnt.txt]] file to point to the MSBuild executable file. 
 
->> Notes
+For MinGW, you will need to set the `MINGW_PATH` var in your [[Trans]] config file. This should point to the actual MinGW directory, not the 'bin' sub-directory.
 
-On Windows, you will need to set the `MINGW_PATH` var in your [[Trans]] config file. This should point to the actual MinGW directory, not the 'bin' sub-directory.
+>> Apple macOS Requirements
+
+* [XCode](http://developer.apple.com/xcode) developer tools, and the XCode Commandline Tools. XCode is also available via the Mac 'App Store' app.
+
+>> Linux Requirements
+
+* GCC C/C++ Compiler.
