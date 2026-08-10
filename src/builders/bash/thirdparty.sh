@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # THIRD-PARTY FUNCTIONS
-# THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
+# THE SCRIPT IS PART OF THE CERBERUS X BUILDER TOOL.
 
 #######################################################################################################
 #   DETECTION AND SET UP OF THIRD PARTY TOOLS, FRAME WORKS AND COMPILER TOOL CHAINS

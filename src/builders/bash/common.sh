@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # COMMON FUNCTIONS
-# THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
+# THE SCRIPT IS PART OF THE CERBERUS X BUILDER TOOL.
 
 ########################################
 # COMMON FUNCTION USE BY OTHER SCRIPTS
@@ -30,14 +30,14 @@ SHOW_MENU=0                 # Flag used to show the menu
 } || {
     QTDIR="$HOME/Qt";    # Set the default Qt Installer directory location to the users home directory.
     EXTENSION=".app"
-    TARGET="xcode/build"
+    TARGET="xcode"
     HOST="macos"
     
     # From Qt 6.2.4 the directory is no longer clang_64, but macOS. So extra checks will be needed.
     QMAKE_TYPE="clang_64";
 
-    CERT=                                   # For macOS: Holds the developer certiciate for use wikt xip or pkg files.
-    MACOS_BUNDLE_PREFIX="com.cerberus-x"    # For macOS: Holds the default applcation bundle prefix.
+    CERT=                                   # For macOS: Holds the developer certificate for use with xip or pkg files.
+    MACOS_BUNDLE_PREFIX="com.cerberus-x"    # For macOS: Holds the default application bundle prefix.
 }
 
 #########################################

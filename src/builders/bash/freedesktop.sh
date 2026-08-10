@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BASH SCRIPT TO SET UP FOR LINUX FREE DESKTOP VERSION 1.0.1
-# THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
+# THE SCRIPT IS PART OF THE CERBERUS X BUILDER TOOL.
 # THIS SCRIPT REQUIRE THE USE OF TWO SVG FILES FOR THE LAUNCHER ICON AND THE SOURCE FILE MIME ICON.
 
 # THIS SCRIPT RELIES ON THE XDG-UTILS BEING INSTALLED.
@@ -33,7 +33,7 @@ APPLICATION_NAME="cerberusx"
 # DESKTOP_NAME is the file name of the .desktop
 DESKTOP_NAME="$VENDOR_PREFIX-$APPLICATION_NAME"
 
-# MIME_ICON_NAME and APP_ICON_NAME are used as the icon-name identifier when using the xdg-icon-resorce application.
+# MIME_ICON_NAME and APP_ICON_NAME are used as the icon-name identifier when using the xdg-icon-resource application.
 MIME_ICON_NAME="application-x-$APPLICATION_NAME"
 APP_ICON_NAME="$DESKTOP_NAME-icon"
 
@@ -190,7 +190,7 @@ do_generate_remove_launcher(){
 # Function to generate the .desktop file to be used in ./loval/shared/applications and the user desktop.
 do_generate_menu_launcher(){
     
-    do_freedesktop_header "Creating Cerberus X memu desktop launcher"
+    do_freedesktop_header "Creating Cerberus X menu desktop launcher"
 
     local DESKTOP_FILE_USER=(
         "#!/usr/bin/env xdg-open"
@@ -289,7 +289,7 @@ do_install_xdg_memu_check(){
 
 # Install all generates file that are meant for XDG
 do_install_xdg_items(){
-    do_freedesktop_header "Installing Ceberus X XDG items"
+    do_freedesktop_header "Installing Cerberus X XDG items"
     do_xdg_setup                    # Make sure that the directories are correct.
     do_install_xdg_mime_xml_check   # Make sure that there is a mime xml association file.
     do_install_xdg_memu_check       # Make sure that there is a desktop menu file.
@@ -315,7 +315,7 @@ do_install_xdg_items(){
 }
 
 do_uninstall_xdg_items(){
-    do_freedesktop_header "Unisntalling Ceberus X XDG items"
+    do_freedesktop_header "Uninstalling Cerberus X XDG items"
 
     # Un register the XDG icon associations
     for icon_size in "${ICON_SIZES[@]}"; do
@@ -357,7 +357,7 @@ do_init_linux_desktop(){
 }
 
 # LINUX ONLY
-# This allows for the creation of new icon files and removel of the freedesktop files.
+# This allows for the creation of new icon files and removal of the freedesktop files.
 
 if [ "$(uname -s)" = "Linux" ]; then
     [ -z "$BULDER_SCRIPT" ] && {

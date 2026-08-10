@@ -6,16 +6,16 @@ SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 SCRIPT_VER="1.3.1"
 
 TRANSCC_EXE=0                           # Flag to indicate that transcc has been built.
-BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the buildr script. See freedesktop.sh
+BULDER_SCRIPT=1                         # Flag that should be used to indicate to other scripts that they should be part of the builder script. See freedesktop.sh
 QT_SELECTED=                            # Variable to hold the chosen qmake
 DEPLOY=                                 # Variable to hold the path where deployment builds are to take place
 MSIZE=64                                # Holds the machine architecture to build for.
 
 # Import the dependencies that this script relies on.
 source "$SCRIPTPATH/builders/bash/common.sh"        # Common functions and variables.
-source "$SCRIPTPATH/builders/bash/thirdparty.sh"    # Thirdparty functions. Used to get information from compilers and Qt SDKs.
+source "$SCRIPTPATH/builders/bash/thirdparty.sh"    # Third-party functions. Used to get information from compilers and Qt SDKs.
 
-# For Linux: A stand alone script that can be used to build icons and free sektop launchers.
+# For Linux: A stand alone script that can be used to build icons and free desktop launchers.
 [ $HOST = "linux" ] && {
     source "$SCRIPTPATH/builders/bash/freedesktop.sh";
     ARCHIVER=tar                                # Set the archive tool to use to build the deployment archive for Linux.
@@ -116,10 +116,10 @@ while [[ $# -gt 0 ]]; do
             [ $HOST = "linux" ] && {
                 echo -e "\t{-i|--icons} \"APP_ICON.svg\" \"MIME_ICON.svg\"\t- Generate desktop icons.";
                 echo -e "\t{-g|--gcc) \"VERSION\"\t\t\t\t- Set the version of GCC to use."
-                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use tar."
+                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The default is to use tar."
                 echo -e "\t{-c|--msize} \t\t\t\t\t- Set the architecture to build for: 32, or 64 bit."
             } || {
-                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The defualt is to use hdiutil."
+                echo -e "\t{-a|--archiver} \"ARCHIVE_TOOL\"\t\t\t- Set the archive tool. The default is to use hdiutil."
             }
             echo -e "\t--clearbuilds\t\t\t\t\t- Removes all previous built binaries of Cerberus within local repository."
             echo -e "\t{-h|--help}\t\t\t\t\t- Show usage."
@@ -149,7 +149,7 @@ setcompiler
 do_qtsdk_check
 
 ###############
-# MEUN/DISPLAY
+# MENU/DISPLAY
 ###############
 # Set up the menu items. The array DISPLAY_ITEMS, holds the human readable menu items.
 # The array MENU_ITEMS, holds the function names to call.

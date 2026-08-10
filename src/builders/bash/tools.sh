@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # TOOL BUILDER FUNCTIONS
-# THE SCRIPT IS PART OF THE CERBERUS X BUILER TOOL.
+# THE SCRIPT IS PART OF THE CERBERUS X BUILDER TOOL.
 
 #######################################################################################################
 #   Build transcc, cserver, makedocs, launcher and the IDE Ted
@@ -66,7 +66,7 @@ do_cserver(){
     
     PROJECT_DIR="$SRC/cserver/cserver.build/glfw3/$TARGET"
 
-    # If transcc execution was successful; then update cerver.
+    # If transcc execution was successful; then update CServer.
     [ $EXITCODE -eq 0 ] && {
         # Clean out the olds and move new associated CServer files into the Cerberus bin directory.
         # If the host system is Linux; then add the data directory if one is not present.
@@ -80,7 +80,7 @@ do_cserver(){
         } || {
             [ -d "$BIN/cserver_$HOST$EXTENSION" ] && { rm -rf "$BIN/cserver_$HOST$EXTENSION"; };
             # Move the newly built CServer into the Cerberus bin directory.
-            mv "$PROJECT_DIR/Release/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
+            mv "$PROJECT_DIR/CerberusGame$EXTENSION" "$BIN/cserver_$HOST$EXTENSION"
         }
         
         # Clean up the .build directory.
