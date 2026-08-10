@@ -158,7 +158,7 @@ function do_show_deps() {
     }
 
     if ($global:msbuild -eq $true) {
-        do_info "Toolchain: MSBuild"
+        do_info "Toolchain: MSBuild (platform tool set: $platformtoolset, win sdk: $winsdk)"
     } else {
         if ("$mingw" -ne "NOT INSTALLED") {
             if ($mingwstatic -eq $true) {
@@ -167,7 +167,7 @@ function do_show_deps() {
                 do_info "Toolchain: MinGW"
             }
         } else {
-            do_info "Toolchain: MSBuild"
+            do_info "Toolchain: MSBuild (platform tool set: $platformtoolset, win sdk: $winsdk)"
             $global:msbuild = $true
         }
     }
