@@ -22,4 +22,13 @@ For MinGW, you will need to set the `MINGW_PATH` var in your [[Trans]] config fi
 
 >> Linux Requirements
 
-* GCC C/C++ Compiler.
+* GCC C/C++ Compiler
+* OpenALSoft
+* xcursor
+* xrandr
+* xinerama
+* mesa
+* glut
+* xxf86vm
+* xi
+* joystick/joyutils (optional)
